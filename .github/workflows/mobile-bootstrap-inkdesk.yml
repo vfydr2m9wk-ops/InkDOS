@@ -36,8 +36,13 @@ jobs:
           if [ ! -f "$PACKAGE_NAME" ]; then
             echo "Package not found: $PACKAGE_NAME"
             echo
-            echo "ZIP files currently available in the repository root:"
-            find . -maxdepth 1 -type f -iname "*.zip" -printf "%f\n" | sort
+            echo "ZIP files available in the repository root:"
+            find . \
+              -maxdepth 1 \
+              -type f \
+              -iname "*.zip" \
+              -printf "%f\n" \
+              | sort
             exit 1
           fi
 
@@ -58,6 +63,7 @@ jobs:
           from pathlib import PurePosixPath
 
           archive_path = sys.argv[1]
+
           maximum_uncompressed_size = 500 * 1024 * 1024
           total_uncompressed_size = 0
 
@@ -79,14 +85,16 @@ jobs:
 
                   if total_uncompressed_size > maximum_uncompressed_size:
                       raise SystemExit(
-                          "The extracted package would exceed the 500 MB safety limit."
+                          "The extracted package would exceed the "
+                          "500 MB safety limit."
                       )
 
               archive.extractall(".mobile-import")
 
+          print("Package extracted successfully.")
           print(
-              f"Package extracted successfully. "
-              f"Uncompressed size: {total_uncompressed_size} bytes."
+              f"Total uncompressed size: "
+              f"{total_uncompressed_size} bytes."
           )
           PYTHON
 
@@ -137,8 +145,14 @@ jobs:
                   candidates.append(candidate)
 
           unique_candidates = sorted(
-              {candidate.resolve() for candidate in candidates},
-              key=lambda path: (len(path.parts), path.as_posix()),
+              {
+                  candidate.resolve()
+                  for candidate in candidates
+              },
+              key=lambda path: (
+                  len(path.parts),
+                  path.as_posix(),
+              ),
           )
 
           if len(unique_candidates) == 1:
@@ -147,10 +161,12 @@ jobs:
 
           if not unique_candidates:
               raise SystemExit(
-                  "No valid InkDesk project root was found inside the ZIP."
+                  "No valid InkDesk project root was found "
+                  "inside the ZIP."
               )
 
           print("Multiple possible project roots were found:")
+
           for candidate in unique_candidates:
               print(f"- {candidate}")
 
@@ -165,8 +181,12 @@ jobs:
           echo "Detected project root: $PROJECT_ROOT"
 
           echo
-          echo "Detected root contents:"
-          find "$PROJECT_ROOT" -maxdepth 2 -type f | sort | head -100
+          echo "Detected project files:"
+          find "$PROJECT_ROOT" \
+            -maxdepth 2 \
+            -type f \
+            | sort \
+            | head -100
 
       - name: Verify InkDesk metadata
         shell: bash
@@ -180,19 +200,30 @@ jobs:
 
           version_path = Path(sys.argv[1])
 
-          with version_path.open("r", encoding="utf-8") as file:
+          with version_path.open(
+              "r",
+              encoding="utf-8",
+          ) as file:
               metadata = json.load(file)
 
-          project_name = str(metadata.get("name", "")).strip()
-          version = str(metadata.get("version", "")).strip()
+          project_name = str(
+              metadata.get("name", "")
+          ).strip()
+
+          version = str(
+              metadata.get("version", "")
+          ).strip()
 
           if project_name != "InkDesk":
               raise SystemExit(
-                  f"Unexpected project name in VERSION.json: {project_name!r}"
+                  "Unexpected project name in VERSION.json: "
+                  f"{project_name!r}"
               )
 
           if not version:
-              raise SystemExit("VERSION.json does not contain a valid version.")
+              raise SystemExit(
+                  "VERSION.json does not contain a valid version."
+              )
 
           print(f"Verified project: {project_name}")
           print(f"Verified version: {version}")
@@ -226,7 +257,7 @@ jobs:
             -p "test_*.py" \
             -v
 
-      - name: Validate JavaScript syntax
+      - name: Validate extracted JavaScript syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -248,11 +279,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          TEMP_WORKFLOW_DIR=$(mktemp -d)
-
-          if [ -d ".github/workflows" ]; then
-            cp -a ".github/workflows/." "$TEMP_WORKFLOW_DIR/"
-          fi
+          echo "Removing temporary repository contents."
 
           find . \
             -mindepth 1 \
@@ -262,18 +289,20 @@ jobs:
             ! -name "$PACKAGE_NAME" \
             -exec rm -rf {} +
 
+          echo "Copying InkDesk project files."
+
           shopt -s dotglob nullglob
           cp -a "$PROJECT_ROOT"/. .
 
-          mkdir -p .github/workflows
+          echo "Removing temporary bootstrap resources."
 
-          if [ -d "$TEMP_WORKFLOW_DIR" ]; then
-            cp -a "$TEMP_WORKFLOW_DIR/." .github/workflows/
-          fi
-
-          rm -rf "$TEMP_WORKFLOW_DIR"
           rm -rf .mobile-import
           rm -f "$PACKAGE_NAME"
+
+          # The bootstrap workflow is temporary and must not remain
+          # in the final repository.
+          rm -f \
+            .github/workflows/mobile-bootstrap-inkdesk.yml
 
           echo "Repository contents replaced successfully."
 
@@ -288,6 +317,8 @@ jobs:
             python3 scripts/audit_source.py
           elif [ -f "scripts/audit_repository.py" ]; then
             python3 scripts/audit_repository.py
+          else
+            echo "No optional structural audit script was found."
           fi
 
           python3 -m unittest discover \
@@ -313,7 +344,11 @@ jobs:
           VERSION=$(python3 - <<'PYTHON'
           import json
 
-          with open("VERSION.json", "r", encoding="utf-8") as file:
+          with open(
+              "VERSION.json",
+              "r",
+              encoding="utf-8",
+          ) as file:
               metadata = json.load(file)
 
           print(metadata["version"])
@@ -323,15 +358,28 @@ jobs:
           CODENAME=$(python3 - <<'PYTHON'
           import json
 
-          with open("VERSION.json", "r", encoding="utf-8") as file:
+          with open(
+              "VERSION.json",
+              "r",
+              encoding="utf-8",
+          ) as file:
               metadata = json.load(file)
 
-          print(metadata.get("codename", "Foundation"))
+          print(
+              metadata.get(
+                  "codename",
+                  "Foundation",
+              )
+          )
           PYTHON
           )
 
-          git config user.name "github-actions[bot]"
-          git config user.email \
+          git config \
+            user.name \
+            "github-actions[bot]"
+
+          git config \
+            user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A
@@ -350,11 +398,19 @@ jobs:
       - name: Write summary
         shell: bash
         run: |
+          set -euo pipefail
+
           VERSION=$(python3 - <<'PYTHON'
           import json
 
-          with open("VERSION.json", "r", encoding="utf-8") as file:
-              print(json.load(file)["version"])
+          with open(
+              "VERSION.json",
+              "r",
+              encoding="utf-8",
+          ) as file:
+              print(
+                  json.load(file)["version"]
+              )
           PYTHON
           )
 
@@ -366,5 +422,6 @@ jobs:
             echo "- Package: \`${PACKAGE_NAME}\`"
             echo "- Validation: passed"
             echo "- Tests: passed"
+            echo "- Temporary importer: removed"
             echo "- Repository commit: created"
           } >> "$GITHUB_STEP_SUMMARY"
