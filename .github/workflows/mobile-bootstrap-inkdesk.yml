@@ -1,1 +1,66 @@
+name: Mobile Package Import
 
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: "ZIP file uploaded to the repository root"
+        required: true
+        default: "InkDesk_v0.19.0-beta.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find ZIP package
+        run: |
+          if [ ! -f "${{ github.event.inputs.package_name }}" ]; then
+            echo "Package not found."
+            ls -la
+            exit 1
+          fi
+
+      - name: Extract package
+        run: |
+          unzip -q "${{ github.event.inputs.package_name }}" -d extracted
+
+      - name: Detect project root
+        id: detect
+        run: |
+          ROOT=$(find extracted -mindepth 1 -maxdepth 1 -type d | head -n1)
+          echo "ROOT=$ROOT" >> $GITHUB_ENV
+
+      - name: Replace repository contents
+        run: |
+          shopt -s dotglob
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name ".git" \
+            ! -name ".github" \
+            -exec rm -rf {} +
+
+          cp -a "$ROOT"/. .
+
+      - name: Validate project
+        run: |
+          python3 scripts/validate_repository.py || true
+
+      - name: Commit imported project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Initial InkDesk import"
+            git push
+          fi
