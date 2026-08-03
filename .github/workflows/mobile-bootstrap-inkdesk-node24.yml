@@ -24,10 +24,7 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.INKDESK_BOOTSTRAP_TOKEN }}
-          persist-credentials: true
-          fetch-depth: 0
+    
 
       - name: Locate and safely extract package
         id: package
