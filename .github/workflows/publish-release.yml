@@ -69,21 +69,9 @@ jobs:
             exit 1
           fi
 
-          resolved_browser_path="$(readlink -f "$browser_path")"
-if [[ ! -x "$resolved_browser_path" ]]; then
-  echo "Resolved browser path is not executable: $resolved_browser_path" >&2
-  exit 1
-fi
-
-# One browser regression still uses /usr/bin/chromium directly.
-# Avoid replacing Chromium with a self-referential symbolic link.
-if [[ "$resolved_browser_path" != "/usr/bin/chromium" ]]; then
-  sudo rm -f /usr/bin/chromium
-  sudo ln -s "$resolved_browser_path" /usr/bin/chromium
-fi
-
-echo "CHROMIUM_PATH=$resolved_browser_path" >> "$GITHUB_ENV"
-/usr/bin/chromium --version
+          sudo ln -sfn "$browser_path" /usr/bin/chromium
+          echo "CHROMIUM_PATH=/usr/bin/chromium" >> "$GITHUB_ENV"
+          /usr/bin/chromium --version
 
       - name: Read release metadata
         id: metadata
