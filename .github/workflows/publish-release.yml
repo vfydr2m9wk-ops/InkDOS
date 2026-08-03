@@ -1,0 +1,241 @@
+name: Publish validated release ZIP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inkdesk-release-publish
+  cancel-in-progress: false
+
+jobs:
+  validate-package-and-publish:
+    name: Validate, package, and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Install browser-test dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install beautifulsoup4 openpyxl playwright
+
+      - name: Locate a Chromium-compatible browser
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          browser_path=""
+          for candidate in \
+            /usr/bin/chromium \
+            /usr/bin/chromium-browser \
+            /usr/bin/google-chrome \
+            /usr/bin/google-chrome-stable; do
+            if [[ -x "$candidate" ]]; then
+              browser_path="$candidate"
+              break
+            fi
+          done
+
+          if [[ -z "$browser_path" ]]; then
+            python -m playwright install --with-deps chromium
+            browser_path="$(python -c 'from playwright.sync_api import sync_playwright; runtime = sync_playwright().start(); print(runtime.chromium.executable_path); runtime.stop()')"
+          fi
+
+          if [[ ! -x "$browser_path" ]]; then
+            echo "No usable Chromium-compatible browser was found." >&2
+            exit 1
+          fi
+
+          sudo ln -sfn "$browser_path" /usr/bin/chromium
+          echo "CHROMIUM_PATH=/usr/bin/chromium" >> "$GITHUB_ENV"
+          /usr/bin/chromium --version
+
+      - name: Read release metadata
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          release_name="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8")).get("releaseName", "Validated release"))')"
+
+          tag="v${version}"
+          title="InkDesk ${version} — ${release_name}"
+          package_base="InkDesk_v${version}-reviewed"
+
+          if [[ "$version" == *-* ]]; then
+            prerelease="true"
+          else
+            prerelease="false"
+          fi
+
+          {
+            echo "version=$version"
+            echo "tag=$tag"
+            echo "title=$title"
+            echo "package_base=$package_base"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Refresh distributable checksums
+        run: python3 scripts/generate_checksums.py
+
+      - name: Run three consecutive release-validation cycles
+        shell: bash
+        run: |
+          set -euo pipefail
+          for cycle in 1 2 3; do
+            echo "=== Release-validation cycle ${cycle}/3 ==="
+            python3 scripts/run_release_validation.py
+          done
+
+      - name: Build validated release archive
+        id: package
+        shell: bash
+        env:
+          PACKAGE_BASE: ${{ steps.metadata.outputs.package_base }}
+        run: |
+          set -euo pipefail
+
+          release_root="$RUNNER_TEMP/inkdesk-release"
+          package_dir="$release_root/$PACKAGE_BASE"
+          zip_path="$GITHUB_WORKSPACE/${PACKAGE_BASE}.zip"
+          checksum_path="${zip_path}.sha256"
+
+          rm -rf "$release_root" "$zip_path" "$checksum_path"
+          mkdir -p "$package_dir"
+
+          rsync -a \
+            --exclude='/.git/' \
+            --exclude='/_site/' \
+            --exclude='/test-results/' \
+            --exclude='/tests/browser/results/' \
+            --exclude='/.DS_Store' \
+            --exclude='Thumbs.db' \
+            --exclude='__pycache__/' \
+            --exclude='*.pyc' \
+            --exclude='*.pyo' \
+            --exclude='*.zip' \
+            ./ "$package_dir/"
+
+          (
+            cd "$release_root"
+            zip -q -r -9 "$zip_path" "$PACKAGE_BASE"
+          )
+
+          sha256sum "$(basename "$zip_path")" > "$(basename "$checksum_path")"
+
+          {
+            echo "zip_path=$zip_path"
+            echo "checksum_path=$checksum_path"
+            echo "zip_name=$(basename "$zip_path")"
+            echo "checksum_name=$(basename "$checksum_path")"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Verify packaged archive
+        shell: bash
+        env:
+          PACKAGE_BASE: ${{ steps.metadata.outputs.package_base }}
+          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
+          CHECKSUM_PATH: ${{ steps.package.outputs.checksum_path }}
+        run: |
+          set -euo pipefail
+
+          sha256sum --check "$CHECKSUM_PATH"
+
+          verification_root="$RUNNER_TEMP/inkdesk-release-verification"
+          rm -rf "$verification_root"
+          mkdir -p "$verification_root"
+          unzip -q "$ZIP_PATH" -d "$verification_root"
+
+          cd "$verification_root/$PACKAGE_BASE"
+          python3 scripts/verify_checksums.py
+          python3 scripts/validate_repository.py
+          python3 scripts/audit_source.py
+          python3 -m unittest discover -s tests -p "test_*.py"
+
+      - name: Preserve package as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.metadata.outputs.package_base }}
+          path: |
+            ${{ steps.package.outputs.zip_path }}
+            ${{ steps.package.outputs.checksum_path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Create or update GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.metadata.outputs.tag }}
+          RELEASE_TITLE: ${{ steps.metadata.outputs.title }}
+          IS_PRERELEASE: ${{ steps.metadata.outputs.prerelease }}
+          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
+          CHECKSUM_PATH: ${{ steps.package.outputs.checksum_path }}
+        run: |
+          set -euo pipefail
+
+          release_flags=()
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            release_flags+=(--prerelease)
+          fi
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release edit "$RELEASE_TAG" \
+              --title "$RELEASE_TITLE" \
+              --notes-file RELEASE_NOTES.md \
+              "${release_flags[@]}"
+
+            gh release upload "$RELEASE_TAG" \
+              "$ZIP_PATH#Validated application ZIP" \
+              "$CHECKSUM_PATH#SHA-256 checksum" \
+              --clobber
+          else
+            gh release create "$RELEASE_TAG" \
+              "$ZIP_PATH#Validated application ZIP" \
+              "$CHECKSUM_PATH#SHA-256 checksum" \
+              --target "$(git rev-parse HEAD)" \
+              --title "$RELEASE_TITLE" \
+              --notes-file RELEASE_NOTES.md \
+              "${release_flags[@]}"
+          fi
+
+      - name: Write workflow summary
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.metadata.outputs.tag }}
+          ZIP_NAME: ${{ steps.package.outputs.zip_name }}
+          CHECKSUM_NAME: ${{ steps.package.outputs.checksum_name }}
+        run: |
+          {
+            echo "## InkDesk release published"
+            echo
+            echo "- Tag: \`$RELEASE_TAG\`"
+            echo "- Archive: \`$ZIP_NAME\`"
+            echo "- Checksum: \`$CHECKSUM_NAME\`"
+            echo "- Validation: three consecutive release-validation cycles passed"
+          } >> "$GITHUB_STEP_SUMMARY"
