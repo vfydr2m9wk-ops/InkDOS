@@ -4,63 +4,367 @@ on:
   workflow_dispatch:
     inputs:
       package_name:
-        description: "ZIP file uploaded to the repository root"
+        description: "Exact ZIP filename uploaded to the repository root"
         required: true
         default: "InkDesk_v0.19.0-beta.zip"
+        type: string
 
 permissions:
   contents: write
 
+concurrency:
+  group: inkdesk-mobile-package-import
+  cancel-in-progress: false
+
 jobs:
-  bootstrap:
+  import-package:
+    name: Import InkDesk Package
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Find ZIP package
+      - name: Locate package
+        env:
+          PACKAGE_NAME: ${{ inputs.package_name }}
+        shell: bash
         run: |
-          if [ ! -f "${{ github.event.inputs.package_name }}" ]; then
-            echo "Package not found."
-            ls -la
+          set -euo pipefail
+
+          if [ ! -f "$PACKAGE_NAME" ]; then
+            echo "Package not found: $PACKAGE_NAME"
+            echo
+            echo "ZIP files currently available in the repository root:"
+            find . -maxdepth 1 -type f -iname "*.zip" -printf "%f\n" | sort
             exit 1
           fi
 
-      - name: Extract package
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> "$GITHUB_ENV"
+          echo "Package found: $PACKAGE_NAME"
+
+      - name: Extract package safely
+        shell: bash
         run: |
-          unzip -q "${{ github.event.inputs.package_name }}" -d extracted
+          set -euo pipefail
+
+          rm -rf .mobile-import
+          mkdir -p .mobile-import
+
+          python3 - "$PACKAGE_NAME" <<'PYTHON'
+          import sys
+          import zipfile
+          from pathlib import PurePosixPath
+
+          archive_path = sys.argv[1]
+          maximum_uncompressed_size = 500 * 1024 * 1024
+          total_uncompressed_size = 0
+
+          with zipfile.ZipFile(archive_path) as archive:
+              for member in archive.infolist():
+                  member_path = PurePosixPath(member.filename)
+
+                  if member_path.is_absolute():
+                      raise SystemExit(
+                          f"Unsafe absolute path in ZIP: {member.filename}"
+                      )
+
+                  if ".." in member_path.parts:
+                      raise SystemExit(
+                          f"Unsafe parent path in ZIP: {member.filename}"
+                      )
+
+                  total_uncompressed_size += member.file_size
+
+                  if total_uncompressed_size > maximum_uncompressed_size:
+                      raise SystemExit(
+                          "The extracted package would exceed the 500 MB safety limit."
+                      )
+
+              archive.extractall(".mobile-import")
+
+          print(
+              f"Package extracted successfully. "
+              f"Uncompressed size: {total_uncompressed_size} bytes."
+          )
+          PYTHON
 
       - name: Detect project root
-        id: detect
+        shell: bash
         run: |
-          ROOT=$(find extracted -mindepth 1 -maxdepth 1 -type d | head -n1)
-          echo "ROOT=$ROOT" >> $GITHUB_ENV
+          set -euo pipefail
+
+          PROJECT_ROOT=$(python3 <<'PYTHON'
+          from pathlib import Path
+
+          extraction_root = Path(".mobile-import")
+
+          ignored_names = {
+              "__MACOSX",
+              ".DS_Store",
+          }
+
+          def is_project_root(path: Path) -> bool:
+              return (
+                  path.is_dir()
+                  and (path / "VERSION.json").is_file()
+                  and (path / "index.html").is_file()
+                  and (path / "apps").is_dir()
+              )
+
+          if is_project_root(extraction_root):
+              print(extraction_root.as_posix())
+              raise SystemExit(0)
+
+          direct_entries = [
+              entry
+              for entry in extraction_root.iterdir()
+              if entry.name not in ignored_names
+          ]
+
+          for entry in direct_entries:
+              if is_project_root(entry):
+                  print(entry.as_posix())
+                  raise SystemExit(0)
+
+          candidates = []
+
+          for version_file in extraction_root.rglob("VERSION.json"):
+              candidate = version_file.parent
+
+              if is_project_root(candidate):
+                  candidates.append(candidate)
+
+          unique_candidates = sorted(
+              {candidate.resolve() for candidate in candidates},
+              key=lambda path: (len(path.parts), path.as_posix()),
+          )
+
+          if len(unique_candidates) == 1:
+              print(unique_candidates[0].as_posix())
+              raise SystemExit(0)
+
+          if not unique_candidates:
+              raise SystemExit(
+                  "No valid InkDesk project root was found inside the ZIP."
+              )
+
+          print("Multiple possible project roots were found:")
+          for candidate in unique_candidates:
+              print(f"- {candidate}")
+
+          raise SystemExit(
+              "The package structure is ambiguous. "
+              "Keep only one InkDesk source tree in the ZIP."
+          )
+          PYTHON
+          )
+
+          echo "PROJECT_ROOT=$PROJECT_ROOT" >> "$GITHUB_ENV"
+          echo "Detected project root: $PROJECT_ROOT"
+
+          echo
+          echo "Detected root contents:"
+          find "$PROJECT_ROOT" -maxdepth 2 -type f | sort | head -100
+
+      - name: Verify InkDesk metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 - "$PROJECT_ROOT/VERSION.json" <<'PYTHON'
+          import json
+          import sys
+          from pathlib import Path
+
+          version_path = Path(sys.argv[1])
+
+          with version_path.open("r", encoding="utf-8") as file:
+              metadata = json.load(file)
+
+          project_name = str(metadata.get("name", "")).strip()
+          version = str(metadata.get("version", "")).strip()
+
+          if project_name != "InkDesk":
+              raise SystemExit(
+                  f"Unexpected project name in VERSION.json: {project_name!r}"
+              )
+
+          if not version:
+              raise SystemExit("VERSION.json does not contain a valid version.")
+
+          print(f"Verified project: {project_name}")
+          print(f"Verified version: {version}")
+          PYTHON
+
+      - name: Validate extracted project
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cd "$PROJECT_ROOT"
+
+          if [ ! -f "scripts/validate_repository.py" ]; then
+            echo "Required validation script is missing:"
+            echo "scripts/validate_repository.py"
+            exit 1
+          fi
+
+          python3 scripts/validate_repository.py
+
+          if [ -f "scripts/audit_source.py" ]; then
+            python3 scripts/audit_source.py
+          elif [ -f "scripts/audit_repository.py" ]; then
+            python3 scripts/audit_repository.py
+          else
+            echo "No optional structural audit script was found."
+          fi
+
+          python3 -m unittest discover \
+            -s tests \
+            -p "test_*.py" \
+            -v
+
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cd "$PROJECT_ROOT"
+
+          while IFS= read -r -d '' file; do
+            echo "Checking JavaScript syntax: $file"
+            node --check "$file"
+          done < <(
+            find apps shared \
+              -type f \
+              -name "*.js" \
+              -print0
+          )
 
       - name: Replace repository contents
+        shell: bash
         run: |
-          shopt -s dotglob
-          find . -mindepth 1 -maxdepth 1 \
+          set -euo pipefail
+
+          TEMP_WORKFLOW_DIR=$(mktemp -d)
+
+          if [ -d ".github/workflows" ]; then
+            cp -a ".github/workflows/." "$TEMP_WORKFLOW_DIR/"
+          fi
+
+          find . \
+            -mindepth 1 \
+            -maxdepth 1 \
             ! -name ".git" \
-            ! -name ".github" \
+            ! -name ".mobile-import" \
+            ! -name "$PACKAGE_NAME" \
             -exec rm -rf {} +
 
-          cp -a "$ROOT"/. .
+          shopt -s dotglob nullglob
+          cp -a "$PROJECT_ROOT"/. .
 
-      - name: Validate project
+          mkdir -p .github/workflows
+
+          if [ -d "$TEMP_WORKFLOW_DIR" ]; then
+            cp -a "$TEMP_WORKFLOW_DIR/." .github/workflows/
+          fi
+
+          rm -rf "$TEMP_WORKFLOW_DIR"
+          rm -rf .mobile-import
+          rm -f "$PACKAGE_NAME"
+
+          echo "Repository contents replaced successfully."
+
+      - name: Validate imported repository
+        shell: bash
         run: |
-          python3 scripts/validate_repository.py || true
+          set -euo pipefail
+
+          python3 scripts/validate_repository.py
+
+          if [ -f "scripts/audit_source.py" ]; then
+            python3 scripts/audit_source.py
+          elif [ -f "scripts/audit_repository.py" ]; then
+            python3 scripts/audit_repository.py
+          fi
+
+          python3 -m unittest discover \
+            -s tests \
+            -p "test_*.py" \
+            -v
+
+          while IFS= read -r -d '' file; do
+            echo "Checking JavaScript syntax: $file"
+            node --check "$file"
+          done < <(
+            find apps shared \
+              -type f \
+              -name "*.js" \
+              -print0
+          )
 
       - name: Commit imported project
+        shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          set -euo pipefail
 
-          git add .
+          VERSION=$(python3 - <<'PYTHON'
+          import json
+
+          with open("VERSION.json", "r", encoding="utf-8") as file:
+              metadata = json.load(file)
+
+          print(metadata["version"])
+          PYTHON
+          )
+
+          CODENAME=$(python3 - <<'PYTHON'
+          import json
+
+          with open("VERSION.json", "r", encoding="utf-8") as file:
+              metadata = json.load(file)
+
+          print(metadata.get("codename", "Foundation"))
+          PYTHON
+          )
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
 
           if git diff --cached --quiet; then
-            echo "No changes."
-          else
-            git commit -m "Initial InkDesk import"
-            git push
+            echo "No repository changes were detected."
+            exit 0
           fi
+
+          git commit \
+            -m "release: publish InkDesk ${VERSION}" \
+            -m "${CODENAME}"
+
+          git push
+
+      - name: Write summary
+        shell: bash
+        run: |
+          VERSION=$(python3 - <<'PYTHON'
+          import json
+
+          with open("VERSION.json", "r", encoding="utf-8") as file:
+              print(json.load(file)["version"])
+          PYTHON
+          )
+
+          {
+            echo "# InkDesk Mobile Import"
+            echo
+            echo "- Project: InkDesk"
+            echo "- Version: \`${VERSION}\`"
+            echo "- Package: \`${PACKAGE_NAME}\`"
+            echo "- Validation: passed"
+            echo "- Tests: passed"
+            echo "- Repository commit: created"
+          } >> "$GITHUB_STEP_SUMMARY"
