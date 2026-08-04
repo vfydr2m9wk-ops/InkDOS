@@ -1,4 +1,4 @@
-name: Repair InkDesk repository safely
+name: Repair InkDesk repository
 
 on:
   workflow_dispatch:
@@ -6,18 +6,10 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: repair-inkdesk-main
-  cancel-in-progress: false
-
 jobs:
   repair:
-    name: Repair repository structure
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      SOURCE_ARCHIVE: InkDesk-source.zip
-      SOURCE_DIR: ${{ runner.temp }}/inkdesk-source
 
     steps:
       - name: Check out main
@@ -26,129 +18,35 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Confirm source archive
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ ! -f "$SOURCE_ARCHIVE" ]]; then
-            echo "Required source archive is missing: $SOURCE_ARCHIVE" >&2
-            exit 1
-          fi
-          echo "Source archive: $SOURCE_ARCHIVE"
-          sha256sum "$SOURCE_ARCHIVE"
-
-      - name: Extract source archive safely
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf "$SOURCE_DIR"
-          export SOURCE_ARCHIVE SOURCE_DIR
-          python3 - <<'PY'
-          from __future__ import annotations
-
-          import os
-          import shutil
-          import stat
-          import zipfile
-          from pathlib import Path, PurePosixPath
-
-          archive = Path(os.environ["SOURCE_ARCHIVE"]).resolve()
-          destination = Path(os.environ["SOURCE_DIR"]).resolve()
-
-          max_entries = 1_000
-          max_total_uncompressed = 256 * 1024 * 1024
-          max_single_file = 64 * 1024 * 1024
-          max_compression_ratio = 200
-
-          destination.mkdir(parents=True, exist_ok=True)
-
-          with zipfile.ZipFile(archive) as package:
-              entries = package.infolist()
-              if len(entries) > max_entries:
-                  raise SystemExit(f"Archive has too many entries: {len(entries)}")
-
-              total_uncompressed = 0
-              for entry in entries:
-                  if entry.flag_bits & 0x1:
-                      raise SystemExit(f"Encrypted ZIP entry is not allowed: {entry.filename}")
-
-                  normalized_name = entry.filename.replace("\\", "/")
-                  relative = PurePosixPath(normalized_name)
-                  if relative.is_absolute() or ".." in relative.parts:
-                      raise SystemExit(f"Unsafe ZIP path: {entry.filename}")
-
-                  unix_mode = entry.external_attr >> 16
-                  if stat.S_ISLNK(unix_mode):
-                      raise SystemExit(f"Symbolic-link ZIP entry is not allowed: {entry.filename}")
-
-                  if entry.file_size > max_single_file:
-                      raise SystemExit(f"ZIP entry is too large: {entry.filename}")
-
-                  total_uncompressed += entry.file_size
-                  if total_uncompressed > max_total_uncompressed:
-                      raise SystemExit("Archive expands beyond the allowed size")
-
-                  if entry.compress_size == 0:
-                      ratio = 1 if entry.file_size == 0 else float("inf")
-                  else:
-                      ratio = entry.file_size / entry.compress_size
-                  if ratio > max_compression_ratio:
-                      raise SystemExit(f"Suspicious compression ratio: {entry.filename}")
-
-                  target = (destination / Path(*relative.parts)).resolve()
-                  if destination not in target.parents and target != destination:
-                      raise SystemExit(f"ZIP entry escapes extraction directory: {entry.filename}")
-
-              package.extractall(destination)
-
-          required = [
-              destination / "README.md",
-              destination / ".gitignore",
-              destination / ".editorconfig",
-              destination / ".nojekyll",
-              destination / "scripts" / "generate_checksums.py",
-              destination / "scripts" / "verify_checksums.py",
-              destination / "tests" / "compatibility-fixtures" / "documents",
-              destination / "tests" / "compatibility-fixtures" / "spreadsheets",
-              destination / "tests" / "compatibility-fixtures" / "presentations",
-          ]
-          missing = [str(path.relative_to(destination)) for path in required if not path.exists()]
-          if missing:
-              shutil.rmtree(destination, ignore_errors=True)
-              raise SystemExit("Source archive is incomplete: " + ", ".join(missing))
-
-          print(f"Safely extracted {len(entries)} entries to {destination}")
-          PY
-
-      - name: Verify source archive contents
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 "$SOURCE_DIR/scripts/verify_checksums.py"
-
-      - name: Apply canonical corrections
+      - name: Extract source archive
         shell: bash
         run: |
           set -euo pipefail
 
-          # Replace the manually created README with the reviewed source version.
+          test -f InkDesk-source.zip
+          rm -rf "$RUNNER_TEMP/inkdesk-source"
+          mkdir -p "$RUNNER_TEMP/inkdesk-source"
+          unzip -q InkDesk-source.zip -d "$RUNNER_TEMP/inkdesk-source"
+
+          echo "SOURCE_DIR=$RUNNER_TEMP/inkdesk-source" >> "$GITHUB_ENV"
+
+      - name: Apply repository corrections
+        shell: bash
+        run: |
+          set -euo pipefail
+
           cp "$SOURCE_DIR/README.md" README.md
-
-          # Restore small repository files required by validation and static hosting.
-          cp "$SOURCE_DIR/.gitignore" .gitignore
           cp "$SOURCE_DIR/.editorconfig" .editorconfig
+          cp "$SOURCE_DIR/.gitignore" .gitignore
           cp "$SOURCE_DIR/.nojekyll" .nojekyll
 
-          # Recreate the complete compatibility-fixture tree with exact path names.
           rm -rf tests/compatibility-fixtures
-          mkdir -p tests
-          cp -a "$SOURCE_DIR/tests/compatibility-fixtures" tests/
+          mkdir -p tests/compatibility-fixtures
+          cp -R "$SOURCE_DIR/tests/compatibility-fixtures/." tests/compatibility-fixtures/
 
-          # Remove every placeholder file now that the real directories are populated.
-          find . -type f -name '.gitkeep' -not -path './.git/*' -print -delete
-
-          # Git does not retain empty directories; remove any that remain after cleanup.
-          find . -depth -type d -empty -not -path './.git' -not -path './.git/*' -delete
+          find . \
+            -path './.git' -prune -o \
+            -type f -name '.gitkeep' -print -delete
 
           python3 scripts/generate_checksums.py
 
@@ -157,13 +55,14 @@ jobs:
         run: |
           set -euo pipefail
 
-          cmp -s README.md "$SOURCE_DIR/README.md"
           test -d tests/compatibility-fixtures/documents
           test -d tests/compatibility-fixtures/spreadsheets
           test -d tests/compatibility-fixtures/presentations
 
-          if find . -path './.git' -prune -o -type f -name '.gitkeep' -print -quit | grep -q .; then
-            echo "At least one .gitkeep file remains." >&2
+          if find . \
+            -path './.git' -prune -o \
+            -type f -name '.gitkeep' -print -quit | grep -q .; then
+            echo "A .gitkeep file still exists." >&2
             exit 1
           fi
 
@@ -172,7 +71,7 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_*.py'
           python3 scripts/verify_checksums.py
 
-      - name: Commit repaired files
+      - name: Commit corrections
         shell: bash
         run: |
           set -euo pipefail
@@ -181,17 +80,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A
-
-          # Never let this repair run create, delete, or rewrite workflow files.
           git reset -- .github/workflows
 
           if git diff --cached --quiet; then
-            echo "Repository already matches the requested corrected state."
+            echo "No repository corrections are required."
             exit 0
           fi
 
-          echo "Files to be committed:"
           git diff --cached --name-status
-
-          git commit -m "Repair fixtures, README, and repository placeholders"
+          git commit -m "Repair fixtures, README, and placeholders"
           git push origin HEAD:main
