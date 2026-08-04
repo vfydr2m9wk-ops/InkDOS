@@ -1,4 +1,4 @@
-name: Repair InkDesk repository safely
+name: .github/workflows/repair-inkdesk-repository
 
 on:
   workflow_dispatch:
