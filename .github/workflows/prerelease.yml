@@ -42,7 +42,7 @@ jobs:
           python3 -m unittest discover -s tests -p "test_*.py" 2>&1 | tee validation-unit.log
           while IFS= read -r -d '' file; do node --check "$file"; done < <(find apps shared -type f -name '*.js' -print0)
       - name: Upload validation logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: validation-${{ github.sha }}
           path: validation-*.log
@@ -79,7 +79,7 @@ jobs:
         run: python3 scripts/run_browser_regressions.py --group "${{ matrix.group }}"
       - name: Upload browser evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: prerelease-browser-${{ matrix.browser }}-${{ matrix.group }}-${{ github.sha }}
           path: tests/browser/results/
@@ -118,7 +118,7 @@ jobs:
           EOF
           sha256sum dist/*.zip
       - name: Upload reviewable prerelease artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: InkDesk-${{ inputs.tag }}-${{ github.sha }}
           path: |
