@@ -1,393 +1,64 @@
-InkDesk
+<p align="center">
+  <img src="docs/images/readme-banner.png" alt="InkDesk — local-first browser productivity suite" width="100%">
+</p>
 
-InkDesk is a local-first, offline Office suite built with standard web technologies.
+# InkDesk
 
-It provides three independent workspaces:
+> **The lightweight local-first productivity suite.**
 
-* Documents — open, view, create, edit, and export text documents.
-* Spreadsheets — open, view, create, edit, calculate, and export spreadsheets.
-* Presentations — open, view, create, edit, present, and export slide decks.
+InkDesk is an open-source, browser-native suite for focused DOCX, XLS/XLSX, and PPTX workflows. It is distributed as static HTML, CSS, and JavaScript, processes documents inside the current browser context, and does not require a project-operated backend.
 
-InkDesk is designed for situations where privacy, offline availability, portability, and local file control are more important than cloud collaboration.
+**Project status: Beta (`0.19.0-beta`).** Compatibility with advanced Microsoft Office features is partial. InkDesk does not claim complete Microsoft Office fidelity.
 
-Project status
+## Workspaces
 
-Current version: 0.19.0-beta
+| Workspace | Formats | Current focus |
+|---|---|---|
+| Documents | DOCX | Basic editing, formatting, images, tables, lists, headers/footers, and package-preserving copy export |
+| Spreadsheets | XLS import; XLSX open/save | BIFF8 import, values, cached formulas, styles, images, worksheet editing, and XLSX copy export |
+| Presentations | PPTX | Basic slide editing, images, layouts, presentation mode, and package-preserving copy export |
 
-InkDesk is currently considered beta-quality software.
+## Privacy and offline operation
 
-It is suitable for testing, personal workflows, document viewing, and basic editing. It should not yet be considered a complete replacement for Microsoft Office, LibreOffice, or other full desktop office suites.
+Core processing is local. InkDesk has no accounts, telemetry, analytics, mandatory cloud synchronization, or remote document-processing API. Runtime libraries are bundled in `shared/vendor/`. The optional service worker caches only same-origin application assets when the project is served over HTTP(S); it is skipped under `file://`.
 
-Important documents should always be backed up before editing.
+## Quick start
 
-Main principles
+Serve the repository with any static server:
 
-* Local-first operation
-* Fully offline usage after download or installation
-* No backend server
-* No user accounts
-* No authentication system
-* No telemetry or analytics
-* No document uploads
-* No remote document processing
-* No mandatory cloud services
-* No macros or active document content
-* No unnecessary framework or build-system dependency
-
-Supported workspaces
-
-Document Workspace
-
-The Document Workspace is intended for basic document viewing and editing.
-
-Current capabilities include:
-
-* Create new documents
-* Open supported Word documents
-* Edit text
-* Basic text formatting
-* Paragraph alignment
-* Lists
-* Undo and redo
-* Rename documents
-* Save and export documents
-* Reopen exported documents
-* Page-oriented document display
-* Local image and content handling
-
-Primary format:
-
-* .docx
-
-Spreadsheet Workspace
-
-The Spreadsheet Workspace is intended for basic spreadsheet viewing, editing, and calculation.
-
-Current capabilities include:
-
-* Create new spreadsheets
-* Open supported Excel files
-* Edit text and numeric cells
-* Basic formulas
-* Multiple worksheets
-* Add and remove rows or columns
-* Basic formatting
-* Images
-* Undo and redo
-* Rename spreadsheets
-* Save and export spreadsheets
-* Reopen exported spreadsheets
-* Formula results containing zero
-* Separation between empty, zero, false, and missing values
-
-Primary formats:
-
-* .xlsx
-* .xls for supported legacy BIFF8 files
-
-Legacy .xls support is limited and may not preserve every workbook feature.
-
-Presentation Workspace
-
-The Presentation Workspace is intended for basic slide viewing, editing, and presentation.
-
-Current capabilities include:
-
-* Create new presentations
-* Open supported PowerPoint presentations
-* Add slides
-* Duplicate slides
-* Delete slides
-* Reorder slides
-* Edit text elements
-* Move and resize elements
-* Manage basic images and shapes
-* Undo and redo
-* Rename presentations
-* Presentation mode
-* Save and export presentations
-* Reopen exported presentations
-
-Primary format:
-
-* .pptx
-
-Offline operation
-
-InkDesk does not require a backend or remote server.
-
-The application can operate from locally downloaded project files in compatible browser environments.
-
-When served through HTTPS or localhost, supported browsers may also install InkDesk as a Progressive Web App.
-
-Service workers are not available when the application is opened directly through file://. This does not prevent the main application from operating locally, but PWA installation and service-worker caching require a compatible web origin.
-
-Running InkDesk
-
-Local file mode
-
-1. Download or clone the repository.
-2. Extract all project files.
-3. Open index.html in a compatible browser or embedded browser environment.
-4. Select the required workspace.
-
-Some browsers restrict local-file access, downloads, storage, or communication between files. Behavior may therefore differ between browsers and operating systems.
-
-Local static server
-
-A local static server provides the most consistent browser behavior.
-
-Example using Python:
-
+```bash
 python3 -m http.server 8080
+```
 
-Then open:
+Open `http://localhost:8080/`. Compatible local-file or embedded hosts may open `index.html` directly. Saving creates a new downloadable copy and does not silently overwrite the selected source file.
 
-http://localhost:8080
+A standard web manifest and service worker are included for installable/offline-hosted use where the browser supports them. Native installation and offline reload must still be validated on the target browser and device.
 
-No application backend is started. Python is used only to serve the static files locally.
+## Validation
 
-GitHub Pages or another static host
+```bash
+python3 scripts/verify_checksums.py
+python3 scripts/validate_repository.py
+python3 scripts/audit_source.py
+python3 -m unittest discover -s tests -p "test_*.py"
+python3 scripts/run_browser_regressions.py
+python3 scripts/run_release_validation.py
+```
 
-InkDesk can be deployed to any static hosting service that preserves the project directory structure.
+The reviewed package contains 43 unit/package tests and eight Chromium/Playwright regression scripts covering OOXML round trips, BIFF8 import, zero-valued formulas, hostile-package guards, transactional open failures, restricted browser APIs, presentation text Undo/Redo, and cross-workspace isolation. Native Firefox, Safari/WebKit, iPadOS, and embedded-host validation remain separate device tests.
 
-No server-side processing is required.
+## Documentation
 
-Browser compatibility
+- [Architecture](docs/ARCHITECTURE.md)
+- [Compatibility](docs/COMPATIBILITY.md)
+- [Development](docs/DEVELOPMENT.md)
+- [Testing](docs/TESTING.md)
+- [Validation report](docs/VALIDATION_REPORT.md)
+- [Final codebase review](docs/FINAL_REVIEW_REPORT.md)
+- [Security](SECURITY.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Contributing](CONTRIBUTING.md)
 
-InkDesk is designed with compatibility fallbacks for:
+## License
 
-* Chromium-based desktop browsers
-* Firefox
-* Safari and WebKit-based environments
-* iPadOS browsers
-* Embedded browser environments
-* Local static hosting
-* Restricted browser APIs
-* Environments without the File System Access API
-
-Browser support may vary for:
-
-* Direct local-file access
-* IndexedDB
-* Local storage
-* Clipboard access
-* Fullscreen mode
-* Service workers
-* Progressive Web App installation
-* File downloads on iPadOS
-* Before-unload confirmation dialogs
-* Private browsing or restricted storage modes
-
-Chromium is currently the most extensively automated test environment.
-
-Native Firefox, Safari, physical iPadOS, and embedded-browser testing may require additional manual validation for each release.
-
-Data and privacy
-
-InkDesk processes documents locally in the browser.
-
-The project does not intentionally:
-
-* Upload documents
-* Track users
-* Send analytics
-* Create user profiles
-* Require accounts
-* Use advertising services
-* Execute Office macros
-* Execute embedded scripts from imported documents
-* Follow remote instructions contained in Office files
-
-Imported files must still be treated as untrusted input.
-
-InkDesk includes defensive checks for malformed or unreasonable Office packages, but no parser should be assumed to be completely immune to malicious files.
-
-Saving files
-
-InkDesk uses browser-supported download and file-access mechanisms.
-
-Depending on the platform, saving may:
-
-* Download a new copy
-* Open the browser download interface
-* Use the File System Access API
-* Require confirmation through the operating system file picker
-
-A download request does not guarantee that the operating system completed the write successfully. Users should confirm that the exported file exists and can be reopened before closing important work.
-
-File compatibility
-
-InkDesk focuses on basic compatibility and preservation of commonly used Office document structures.
-
-It does not claim complete compatibility with Microsoft Office.
-
-Advanced or unsupported features may be ignored, simplified, converted, or preserved without being editable. Examples may include:
-
-* Macros
-* ActiveX controls
-* Embedded scripts
-* Complex charts
-* External data connections
-* Advanced formulas
-* Pivot tables
-* Complex page layouts
-* SmartArt
-* Advanced transitions
-* Animations
-* Protected or encrypted documents
-* Digital signatures
-* Embedded applications
-* Remote templates
-* Unsupported fonts
-
-Always verify exported documents in the application that will ultimately be used to present, print, or distribute them.
-
-Project structure
-
-.
-├── apps/
-│   ├── documents/
-│   ├── spreadsheets/
-│   └── presentations/
-├── assets/
-├── docs/
-├── scripts/
-├── shared/
-│   └── vendor/
-├── tests/
-├── index.html
-├── manifest.webmanifest
-├── service-worker.js
-├── VERSION.json
-├── CHECKSUMS.sha256
-├── LICENSE
-└── README.md
-
-The three workspaces maintain separate document state, filename state, editing history, temporary data, and export flows.
-
-Shared modules should contain only behavior that is genuinely equivalent across workspaces.
-
-Development guidelines
-
-All source code, comments, filenames, internal identifiers, documentation, and developer-facing messages must remain in English.
-
-Development should follow these principles:
-
-* Preserve currently working behavior
-* Prefer small and reversible changes
-* Avoid unnecessary dependencies
-* Maintain offline operation
-* Avoid Chromium-only assumptions
-* Preserve browser compatibility fallbacks
-* Keep workspace state isolated
-* Treat data loss and silent save failures as critical defects
-* Validate imported files as untrusted input
-* Do not introduce telemetry or remote processing
-* Do not report a defect as fixed without rerunning the relevant tests
-
-Testing
-
-The repository includes lightweight validation scripts and browser-oriented regression tests.
-
-Typical checks include:
-
-* JavaScript syntax
-* JSON and manifest validity
-* Missing files
-* Broken relative paths
-* Duplicate element IDs
-* Unsafe package paths
-* Package-size limits
-* Office package preservation
-* Document export and reopen
-* Spreadsheet formulas returning zero
-* Corrupted-file handling
-* Presentation undo and redo
-* Workspace state isolation
-* Restricted browser API fallbacks
-* Internal file checksums
-
-Run the available validation scripts from the project root according to the instructions in the scripts and tests directories.
-
-A release should not be considered validated unless the complete regression suite passes repeatedly without intermittent failures.
-
-Known limitations
-
-Current technical limitations include:
-
-* Incomplete Microsoft Office feature compatibility
-* Limited support for advanced formatting and embedded objects
-* Limited legacy .xls compatibility
-* Browser-dependent saving behavior
-* Browser-dependent fullscreen behavior
-* Service-worker limitations under file://
-* Limited automated validation outside Chromium
-* No guarantee of recovery after every unexpected browser or operating-system termination
-* Potential performance limitations with very large documents
-* Partial support for fonts unavailable on the local system
-
-See the project documentation and release notes for version-specific limitations.
-
-Security
-
-InkDesk does not intentionally execute macros, embedded JavaScript, remote Office instructions, or active content from imported documents.
-
-Security-sensitive code should validate:
-
-* ZIP entry paths
-* Package size
-* Entry count
-* Compression ratios
-* XML structure
-* External URLs
-* Imported HTML
-* Message origins
-* Object URLs
-* Browser storage failures
-* Unsupported or encrypted packages
-
-Security issues should not be disclosed through public documents containing private user files.
-
-Third-party libraries
-
-Third-party libraries required by InkDesk are distributed locally so that the application can operate offline.
-
-Their original license notices and attribution files must remain intact.
-
-Dependencies should not be removed, updated, or replaced without confirming:
-
-* Their actual use
-* Their version
-* Their license
-* Offline compatibility
-* Browser compatibility
-* Security implications
-* Regression-test results
-
-Contributing
-
-Contributions should be focused, reversible, and supported by testing.
-
-A contribution should clearly describe:
-
-1. The problem being corrected.
-2. The affected files.
-3. The practical consequence.
-4. The proposed solution.
-5. The regression risk.
-6. The validation performed.
-
-Unrelated changes should not be combined in the same pull request.
-
-License
-
-See the LICENSE file for the project license.
-
-Third-party components may use different licenses. Their notices and attribution files remain applicable to those components.
-
-Disclaimer
-
-InkDesk is provided without a guarantee of complete document fidelity or compatibility with every Office file.
-
-Users are responsible for maintaining backups and verifying exported files before relying on them for critical, legal, financial, medical, academic, or professional use.
+Original InkDesk code is licensed under the MIT License. Bundled third-party components retain their upstream licenses and notices.
