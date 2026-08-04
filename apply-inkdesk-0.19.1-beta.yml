@@ -1,0 +1,309 @@
+name: Apply InkDesk 0.19.1-beta safely
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_base_sha:
+        description: "Original main commit reviewed before uploading this installer"
+        required: true
+        default: "39814a695f56e3b57b479230d4316b6132d32e64"
+      target_branch:
+        description: "Review branch to create; main is never updated directly"
+        required: true
+        default: "hardening/0.19.1-beta-current-main"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inkdesk-0.19.1-beta-safe-upgrade
+  cancel-in-progress: false
+
+jobs:
+  integrate:
+    name: Validate, integrate, and create review branch
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    env:
+      UPDATE_ARCHIVE: InkDesk_0.19.1-beta_main-update.zip
+      INSTALLER_WORKFLOW: .github/workflows/apply-inkdesk-0.19.1-beta.yml
+      LEGACY_WORKFLOW: .github/workflows/bootstrap-inkdesk.yml
+
+    steps:
+      - name: Check out current main with history
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Verify reviewed base and installer-only changes
+        shell: bash
+        env:
+          EXPECTED_BASE_SHA: ${{ inputs.expected_base_sha }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          set -Eeuo pipefail
+
+          git cat-file -e "${EXPECTED_BASE_SHA}^{commit}"
+
+          if [[ ! "$TARGET_BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]] || [[ "$TARGET_BRANCH" == "main" ]]; then
+            echo "Unsafe target branch name: $TARGET_BRANCH" >&2
+            exit 1
+          fi
+
+          mapfile -t changed_since_base < <(git diff --name-only "$EXPECTED_BASE_SHA"..HEAD)
+          for path in "${changed_since_base[@]}"; do
+            case "$path" in
+              "$UPDATE_ARCHIVE"|"$INSTALLER_WORKFLOW"|"$LEGACY_WORKFLOW") ;;
+              *)
+                echo "Main changed outside the installer files after the reviewed commit:" >&2
+                printf '  %s\n' "${changed_since_base[@]}" >&2
+                echo "Stop and review/rebase the update instead of overriding this check." >&2
+                exit 1
+                ;;
+            esac
+          done
+
+          test -f "$UPDATE_ARCHIVE"
+          test -f VERSION.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          version = json.loads(Path("VERSION.json").read_text(encoding="utf-8"))
+          observed = version.get("version")
+          if observed != "0.19.0-beta":
+              raise SystemExit(f"Expected version 0.19.0-beta, found {observed!r}")
+          print(f"Current version accepted: {observed}")
+          PY
+
+          if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
+            echo "Remote branch already exists: $TARGET_BRANCH" >&2
+            exit 1
+          fi
+
+          echo "Reviewed base: $EXPECTED_BASE_SHA"
+          echo "Installer HEAD: $(git rev-parse HEAD)"
+
+      - name: Extract and authenticate update package
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          export UPDATE_DIR="$RUNNER_TEMP/inkdesk-0.19.1-update"
+          export SOURCE_DIR="$RUNNER_TEMP/inkdesk-0.19.1-source"
+          rm -rf "$UPDATE_DIR" "$SOURCE_DIR"
+          mkdir -p "$UPDATE_DIR" "$SOURCE_DIR"
+
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          import os
+          import stat
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+
+          def safe_extract(archive: Path, destination: Path, *, max_entries: int, max_size: int) -> None:
+              with ZipFile(archive) as package:
+                  entries = package.infolist()
+                  if not entries or len(entries) > max_entries:
+                      raise SystemExit(f"Unexpected entry count in {archive.name}.")
+                  total = sum(entry.file_size for entry in entries)
+                  if total > max_size:
+                      raise SystemExit(f"Expanded archive is too large: {archive.name}.")
+                  seen: set[str] = set()
+                  for entry in entries:
+                      raw = entry.filename
+                      path = PurePosixPath(raw)
+                      normalized = path.as_posix()
+                      if not raw or path.is_absolute() or ".." in path.parts or "\\" in raw or "\x00" in raw:
+                          raise SystemExit(f"Unsafe archive path: {raw!r}")
+                      folded = normalized.casefold()
+                      if folded in seen:
+                          raise SystemExit(f"Duplicate archive path: {raw!r}")
+                      seen.add(folded)
+                      if entry.flag_bits & 0x1:
+                          raise SystemExit(f"Encrypted archive entry: {raw!r}")
+                      file_type = (entry.external_attr >> 16) & 0o170000
+                      if file_type == stat.S_IFLNK:
+                          raise SystemExit(f"Symbolic link not allowed: {raw!r}")
+                  package.extractall(destination)
+
+          update_archive = Path(os.environ["UPDATE_ARCHIVE"])
+          update_dir = Path(os.environ["UPDATE_DIR"])
+          source_dir = Path(os.environ["SOURCE_DIR"])
+          safe_extract(update_archive, update_dir, max_entries=20, max_size=10 * 1024 * 1024)
+
+          manifest = json.loads((update_dir / "UPDATE_MANIFEST.json").read_text(encoding="utf-8"))
+          required = {"compatible-source.zip", "update_readme.py"}
+          declared = manifest.get("files", {})
+          if not required.issubset(declared):
+              raise SystemExit("Update manifest is missing required files.")
+          for name, expected in declared.items():
+              path = update_dir / name
+              if not path.is_file():
+                  raise SystemExit(f"Missing update file: {name}")
+              observed = hashlib.sha256(path.read_bytes()).hexdigest()
+              if observed != expected:
+                  raise SystemExit(f"Checksum mismatch in update package: {name}")
+
+          safe_extract(
+              update_dir / "compatible-source.zip",
+              source_dir,
+              max_entries=5000,
+              max_size=300 * 1024 * 1024,
+          )
+
+          required_source = {
+              "index.html",
+              "VERSION.json",
+              "shared/file-lifecycle.js",
+              "shared/formula-engine.js",
+              "shared/safe-dom.js",
+              "shared/office-runtime.js",
+              "apps/documents/index.html",
+              "apps/spreadsheets/index.html",
+              "apps/presentations/index.html",
+              ".github/workflows/quality-gate.yml",
+              ".github/workflows/browser-regression.yml",
+              ".github/workflows/pages.yml",
+              ".github/workflows/prerelease.yml",
+          }
+          missing = sorted(name for name in required_source if not (source_dir / name).is_file())
+          if missing:
+              raise SystemExit("Compatible source is incomplete: " + ", ".join(missing))
+          print("Update package and compatible source checksums verified.")
+          PY
+
+      - name: Validate compatible source before installation
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          SOURCE_DIR="$RUNNER_TEMP/inkdesk-0.19.1-source"
+          cd "$SOURCE_DIR"
+          python3 scripts/verify_checksums.py
+          python3 scripts/validate_repository.py
+          python3 scripts/audit_source.py
+          python3 -m unittest discover -s tests -p "test_*.py"
+          node tests/js/security-modules.test.js
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find apps shared -type f -name '*.js' -print0)
+
+      - name: Install hardening while preserving current repaired content
+        shell: bash
+        env:
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          set -Eeuo pipefail
+          SOURCE_DIR="$RUNNER_TEMP/inkdesk-0.19.1-source"
+          UPDATE_DIR="$RUNNER_TEMP/inkdesk-0.19.1-update"
+
+          git switch -c "$TARGET_BRANCH"
+
+          # The latest main repair intentionally replaced these paths. Keep them,
+          # then merge the hardening documentation into the current README.
+          rsync -a \
+            --exclude='/README.md' \
+            --exclude='/CHECKSUMS.sha256' \
+            --exclude='/.editorconfig' \
+            --exclude='/.gitignore' \
+            --exclude='/.nojekyll' \
+            --exclude='/tests/compatibility-fixtures/' \
+            "$SOURCE_DIR/" ./
+
+          python3 "$UPDATE_DIR/update_readme.py"
+
+          rm -f -- \
+            "$UPDATE_ARCHIVE" \
+            "$INSTALLER_WORKFLOW" \
+            "$LEGACY_WORKFLOW" \
+            InkDesk-source.zip
+
+          python3 scripts/generate_checksums.py
+
+      - name: Validate integrated source and compatibility page
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          python3 scripts/verify_checksums.py
+          python3 scripts/validate_repository.py
+          python3 scripts/audit_source.py
+          python3 -m unittest discover -s tests -p "test_*.py"
+          node tests/js/security-modules.test.js
+
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find apps shared -type f -name '*.js' -print0)
+
+          python3 - <<'PY'
+          import json
+          from html.parser import HTMLParser
+          from pathlib import Path
+
+          class PageParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links = []
+                  self.scripts = []
+              def handle_starttag(self, tag, attrs):
+                  data = dict(attrs)
+                  if tag in {"a", "link"} and data.get("href"):
+                      self.links.append(data["href"])
+                  if tag == "script" and data.get("src"):
+                      self.scripts.append(data)
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          parser = PageParser()
+          parser.feed(html)
+
+          local_links = [value for value in parser.links if not value.startswith(("http://", "https://", "mailto:"))]
+          if any(value.startswith("/") for value in local_links):
+              raise SystemExit("Root-relative links break GitHub Pages project subpaths.")
+          if "https://vfydr2m9wk-ops.github.io/InkDesk/docs/images/social-preview.png" not in html:
+              raise SystemExit("GitHub Pages Open Graph path has incorrect repository casing.")
+          registration = [item for item in parser.scripts if "register-service-worker.js" in item.get("src", "")]
+          if not registration or "defer" not in registration[0]:
+              raise SystemExit("Service-worker registration must be deferred.")
+
+          manifest = json.loads(Path("manifest.webmanifest").read_text(encoding="utf-8"))
+          purposes = {icon.get("purpose") for icon in manifest.get("icons", [])}
+          if "any maskable" in purposes:
+              raise SystemExit("The existing icon is not independently validated as maskable.")
+          if manifest.get("scope") != "./" or not str(manifest.get("start_url", "")).startswith("./"):
+              raise SystemExit("PWA scope/start_url are unsafe for a project subpath.")
+          print("Landing page and PWA subpath compatibility checks passed.")
+          PY
+
+          python3 -m unittest tests.test_release_packaging -v
+
+      - name: Commit review branch
+        shell: bash
+        env:
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          set -Eeuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No update changes were produced." >&2
+            exit 1
+          fi
+
+          echo "Files prepared for review:"
+          git diff --cached --name-status
+          git commit -m "Harden export lifecycle and Office parsing"
+          git push --set-upstream origin "$TARGET_BRANCH"
+
+          {
+            echo "## InkDesk 0.19.1-beta branch created"
+            echo
+            echo "Branch: \`$TARGET_BRANCH\`"
+            echo
+            echo "Open a pull request from this branch into \`main\`. Do not merge until the pull-request quality and browser workflows pass."
+          } >> "$GITHUB_STEP_SUMMARY"
