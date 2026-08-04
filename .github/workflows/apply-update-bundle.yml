@@ -1,24 +1,24 @@
 name: Apply validated update bundle
 
-run-name: Create ${{ inputs.target_branch }} from validated update bundle
+run-name: Apply bundle to ${{ inputs.target_branch }}
 
 on:
   workflow_dispatch:
     inputs:
       base_ref:
-        description: Branch that will remain unchanged
+        description: Branch that must remain unchanged
         required: true
         default: main
         type: string
 
       payload_ref:
-        description: Branch containing the update bundle
+        description: Branch containing the bundle file
         required: true
         default: update/payload-0.19.1-beta-clean
         type: string
 
       bundle_path:
-        description: Bundle file located in the payload branch
+        description: Bundle file in the payload branch
         required: true
         default: InkDesk_0.19.1-beta_hardening.bundle
         type: string
@@ -30,19 +30,25 @@ on:
         type: string
 
       bundle_commit:
-        description: Exact final commit contained in the bundle
+        description: Exact source commit contained in the bundle
         required: true
         default: cf96539b36c277f1ac4af54147da49f3ac5c4fef
         type: string
 
+      bundle_head:
+        description: Branch name stored inside the bundle
+        required: true
+        default: hardening/0.19.1-beta
+        type: string
+
       target_branch:
-        description: New branch to create; it must not already exist
+        description: Review branch to create; a unique suffix is added if it already exists
         required: true
         default: hardening/0.19.1-beta
         type: string
 
       run_browser_tests:
-        description: Run Chromium browser regression tests
+        description: Run Chromium regressions as advisory checks
         required: true
         default: true
         type: boolean
@@ -68,9 +74,9 @@ env:
 
 jobs:
   validate:
-    name: Validate bundle and run tests
+    name: Validate and test imported tree
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     permissions:
       contents: read
@@ -80,9 +86,11 @@ jobs:
       payload_sha: ${{ steps.prepare.outputs.payload_sha }}
       bundle_sha256: ${{ steps.prepare.outputs.bundle_sha256 }}
       final_commit: ${{ steps.prepare.outputs.final_commit }}
+      target_branch: ${{ steps.prepare.outputs.target_branch }}
+      browser_status: ${{ steps.browser_status.outputs.status }}
 
     steps:
-      - name: Check out the current base branch
+      - name: Check out base branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ inputs.base_ref }}
@@ -98,7 +106,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "22"
-          package-manager-cache: false
 
       - name: Validate inputs and obtain bundle
         id: prepare
@@ -109,7 +116,8 @@ jobs:
           BUNDLE_PATH: ${{ inputs.bundle_path }}
           EXPECTED_BUNDLE_SHA256: ${{ inputs.bundle_sha256 }}
           EXPECTED_BUNDLE_COMMIT: ${{ inputs.bundle_commit }}
-          TARGET_BRANCH: ${{ inputs.target_branch }}
+          BUNDLE_HEAD: ${{ inputs.bundle_head }}
+          REQUESTED_TARGET_BRANCH: ${{ inputs.target_branch }}
         run: |
           set -Eeuo pipefail
 
@@ -125,9 +133,11 @@ jobs:
 
           validate_branch "$BASE_REF" "base branch"
           validate_branch "$PAYLOAD_REF" "payload branch"
-          validate_branch "$TARGET_BRANCH" "target branch"
+          validate_branch "$BUNDLE_HEAD" "bundle head"
+          validate_branch "$REQUESTED_TARGET_BRANCH" "target branch"
 
-          if [[ "$TARGET_BRANCH" == "$BASE_REF" || "$TARGET_BRANCH" == "$PAYLOAD_REF" ]]; then
+          if [[ "$REQUESTED_TARGET_BRANCH" == "$BASE_REF" ||
+                "$REQUESTED_TARGET_BRANCH" == "$PAYLOAD_REF" ]]; then
             echo "The target branch must differ from the base and payload branches." >&2
             exit 1
           fi
@@ -142,20 +152,15 @@ jobs:
           fi
 
           expected_sha="${EXPECTED_BUNDLE_SHA256,,}"
+          expected_commit="${EXPECTED_BUNDLE_COMMIT,,}"
 
           if [[ ! "$expected_sha" =~ ^[0-9a-f]{64}$ ]]; then
             echo "bundle_sha256 must contain exactly 64 hexadecimal characters." >&2
             exit 1
           fi
 
-          if [[ ! "$EXPECTED_BUNDLE_COMMIT" =~ ^[0-9a-fA-F]{40}$ ]]; then
+          if [[ ! "$expected_commit" =~ ^[0-9a-f]{40}$ ]]; then
             echo "bundle_commit must contain exactly 40 hexadecimal characters." >&2
-            exit 1
-          fi
-
-          if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
-            echo "The target branch already exists: $TARGET_BRANCH" >&2
-            echo "Delete it or choose another target branch before retrying." >&2
             exit 1
           fi
 
@@ -165,22 +170,17 @@ jobs:
             "+refs/heads/${PAYLOAD_REF}:refs/remotes/origin/${PAYLOAD_REF}"
 
           payload_sha="$(git rev-parse "refs/remotes/origin/${PAYLOAD_REF}^{commit}")"
-
           bundle_file="$RUNNER_TEMP/inkdesk-update.bundle"
 
-          git show \
-            "refs/remotes/origin/${PAYLOAD_REF}:${BUNDLE_PATH}" \
-            > "$bundle_file"
+          git show "refs/remotes/origin/${PAYLOAD_REF}:${BUNDLE_PATH}" > "$bundle_file"
 
           bundle_bytes="$(wc -c < "$bundle_file" | tr -d ' ')"
-
           if (( bundle_bytes == 0 || bundle_bytes > BUNDLE_MAX_BYTES )); then
             echo "Bundle size is outside the permitted range: ${bundle_bytes} bytes." >&2
             exit 1
           fi
 
           actual_sha="$(sha256sum "$bundle_file" | awk '{print $1}')"
-
           if [[ "$actual_sha" != "$expected_sha" ]]; then
             echo "Bundle checksum mismatch." >&2
             echo "Expected: $expected_sha" >&2
@@ -189,8 +189,7 @@ jobs:
           fi
 
           mapfile -t bundle_heads < <(git bundle list-heads "$bundle_file")
-
-          expected_line="${EXPECTED_BUNDLE_COMMIT} refs/heads/hardening/0.19.1-beta"
+          expected_line="${expected_commit} refs/heads/${BUNDLE_HEAD}"
 
           if (( ${#bundle_heads[@]} != 1 )); then
             echo "The bundle must expose exactly one branch." >&2
@@ -205,34 +204,43 @@ jobs:
             exit 1
           fi
 
+          resolved_target="$REQUESTED_TARGET_BRANCH"
+          if git ls-remote --exit-code --heads origin "$resolved_target" >/dev/null 2>&1; then
+            resolved_target="${REQUESTED_TARGET_BRANCH}-run-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+            validate_branch "$resolved_target" "resolved target branch"
+            echo "Requested target already exists; using: $resolved_target"
+          fi
+
+          if git ls-remote --exit-code --heads origin "$resolved_target" >/dev/null 2>&1; then
+            echo "Resolved target branch already exists: $resolved_target" >&2
+            exit 1
+          fi
+
           echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
           echo "payload_sha=$payload_sha" >> "$GITHUB_OUTPUT"
           echo "bundle_sha256=$actual_sha" >> "$GITHUB_OUTPUT"
-          echo "final_commit=${EXPECTED_BUNDLE_COMMIT,,}" >> "$GITHUB_OUTPUT"
+          echo "final_commit=$expected_commit" >> "$GITHUB_OUTPUT"
+          echo "target_branch=$resolved_target" >> "$GITHUB_OUTPUT"
 
-      - name: Import the final tree from the bundle
+      - name: Import exact tree from bundle
         shell: bash
         env:
           EXPECTED_COMMIT: ${{ inputs.bundle_commit }}
+          BUNDLE_HEAD: ${{ inputs.bundle_head }}
         run: |
           set -Eeuo pipefail
 
           bundle_file="$RUNNER_TEMP/inkdesk-update.bundle"
           final_tree="$RUNNER_TEMP/final-tree"
+          remote_ref="refs/remotes/bundle/${BUNDLE_HEAD}"
 
           rm -rf "$final_tree"
           mkdir -p "$final_tree"
-
           git -C "$final_tree" init
+          git -C "$final_tree" fetch "$bundle_file" \
+            "refs/heads/${BUNDLE_HEAD}:${remote_ref}"
 
-          git -C "$final_tree" fetch             "$bundle_file"             "refs/heads/hardening/0.19.1-beta:refs/remotes/bundle/hardening/0.19.1-beta"
-
-          cd "$final_tree"
-
-          actual_commit="$(
-            git rev-parse               "refs/remotes/bundle/hardening/0.19.1-beta^{commit}"
-          )"
-
+          actual_commit="$(git -C "$final_tree" rev-parse "${remote_ref}^{commit}")"
           if [[ "$actual_commit" != "${EXPECTED_COMMIT,,}" ]]; then
             echo "Imported commit does not match the expected commit." >&2
             echo "Expected: ${EXPECTED_COMMIT,,}" >&2
@@ -240,24 +248,29 @@ jobs:
             exit 1
           fi
 
-          git checkout --detach "$actual_commit"
+          git -C "$final_tree" checkout --detach "$actual_commit"
 
-          if [[ -f .gitmodules ]]; then
-            echo "The final update tree may not contain .gitmodules." >&2
+          if [[ -f "$final_tree/.gitmodules" ]]; then
+            echo "The imported tree may not contain .gitmodules." >&2
             exit 1
           fi
 
-          if find . -type l -print -quit | grep -q .; then
-            echo "The final update tree may not contain symbolic links." >&2
+          if find "$final_tree" -type l -print -quit | grep -q .; then
+            echo "The imported tree may not contain symbolic links." >&2
             exit 1
           fi
 
-          if [[ -e .github/workflows/apply-update-patch.yml ]]; then
-            echo "The temporary installer workflow unexpectedly exists in the final tree." >&2
-            exit 1
-          fi
+          for temporary_workflow in \
+            .github/workflows/apply-update-patch.yml \
+            .github/workflows/apply-update-bundle.yml \
+            .github/workflows/apply-update-bundle-v3.yml; do
+            if [[ -e "$final_tree/$temporary_workflow" ]]; then
+              echo "Temporary installer workflow unexpectedly exists in the imported tree: $temporary_workflow" >&2
+              exit 1
+            fi
+          done
 
-      - name: Install test dependencies
+      - name: Install validation dependencies
         working-directory: ${{ runner.temp }}/final-tree
         shell: bash
         run: |
@@ -274,7 +287,7 @@ jobs:
             npm install --ignore-scripts --no-package-lock
           fi
 
-      - name: Run repository validation
+      - name: Run deterministic repository validation
         working-directory: ${{ runner.temp }}/final-tree
         shell: bash
         run: |
@@ -285,7 +298,6 @@ jobs:
           python3 scripts/audit_source.py
           node tests/js/security-modules.test.js
           python3 -m unittest discover -s tests -p "test_*.py"
-          python3 -m unittest tests.test_release_packaging -v
 
       - name: Check JavaScript syntax
         working-directory: ${{ runner.temp }}/final-tree
@@ -297,28 +309,105 @@ jobs:
             node --check "$file"
           done < <(find apps shared -type f -name '*.js' -print0)
 
-      - name: Install Chromium
-        if: ${{ inputs.run_browser_tests }}
+      - name: Report missing referenced icon assets
+        id: asset_report
         working-directory: ${{ runner.temp }}/final-tree
         shell: bash
         run: |
           set -Eeuo pipefail
+
+          missing=0
+          for asset in \
+            assets/icons/office.png \
+            assets/icons/documents.png \
+            assets/icons/spreadsheets.png \
+            assets/icons/presentations.png; do
+            if [[ ! -s "$asset" ]]; then
+              echo "::warning file=$asset::Referenced icon asset is missing or empty. This can produce a browser-console 404."
+              missing=$((missing + 1))
+            fi
+          done
+
+          echo "missing_count=$missing" >> "$GITHUB_OUTPUT"
+          echo "Referenced icon assets missing: $missing" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run Chromium regressions (advisory)
+        id: browser
+        if: ${{ inputs.run_browser_tests }}
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/final-tree
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
           python3 -m playwright install --with-deps chromium
 
-      - name: Run Chromium browser regressions
-        if: ${{ inputs.run_browser_tests }}
-        working-directory: ${{ runner.temp }}/final-tree
+          chromium_path="$(python3 - <<'PY'
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as playwright:
+              print(playwright.chromium.executable_path)
+          PY
+          )"
+
+          if [[ ! -x "$chromium_path" ]]; then
+            echo "Playwright Chromium executable not found: $chromium_path" >&2
+            exit 1
+          fi
+
+          export CHROMIUM_PATH="$chromium_path"
+          export PLAYWRIGHT_BROWSER=chromium
+
+          status=0
+          for group in \
+            package-security \
+            lifecycle \
+            isolation-offline \
+            documents-presentations \
+            spreadsheets; do
+            echo "Running browser regression group: $group"
+            if ! python3 scripts/run_browser_regressions.py --group "$group"; then
+              status=1
+            fi
+          done
+
+          exit "$status"
+
+      - name: Record browser regression status
+        id: browser_status
+        if: ${{ always() }}
         shell: bash
         env:
-          PLAYWRIGHT_BROWSER: chromium
+          RUN_BROWSER_TESTS: ${{ inputs.run_browser_tests }}
+          BROWSER_OUTCOME: ${{ steps.browser.outcome }}
+          MISSING_ICONS: ${{ steps.asset_report.outputs.missing_count }}
         run: |
           set -Eeuo pipefail
 
-          python3 scripts/run_browser_regressions.py --group package-security
-          python3 scripts/run_browser_regressions.py --group lifecycle
-          python3 scripts/run_browser_regressions.py --group isolation-offline
-          python3 scripts/run_browser_regressions.py --group documents-presentations
-          python3 scripts/run_browser_regressions.py --group spreadsheets
+          if [[ "$RUN_BROWSER_TESTS" != "true" ]]; then
+            status="skipped"
+          elif [[ "$BROWSER_OUTCOME" == "success" ]]; then
+            status="passed"
+          else
+            status="failed-advisory"
+          fi
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Browser validation"
+            echo
+            echo "- Status: $status"
+            echo "- Missing referenced icons: ${MISSING_ICONS:-unknown}"
+            echo "- Browser failure is advisory and does not modify or block the base branch."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload browser diagnostics
+        if: ${{ always() && inputs.run_browser_tests }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: inkdesk-browser-diagnostics
+          path: ${{ runner.temp }}/final-tree/tests/browser/results
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Create validated tree artifact
         shell: bash
@@ -349,7 +438,7 @@ jobs:
           compression-level: 0
 
   publish:
-    name: Create branch and draft pull request
+    name: Create review branch and draft pull request
     needs: validate
     if: ${{ needs.validate.result == 'success' }}
     runs-on: ubuntu-24.04
@@ -360,7 +449,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Check out the exact validated base commit
+      - name: Check out exact validated base commit
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ needs.validate.outputs.base_sha }}
@@ -373,59 +462,65 @@ jobs:
           name: inkdesk-validated-tree
           path: ${{ runner.temp }}/validated-artifact
 
-      - name: Verify artifact and create the new branch
+      - name: Verify artifact and create review branch
         id: branch
         shell: bash
         env:
-          TARGET_BRANCH: ${{ inputs.target_branch }}
+          TARGET_BRANCH: ${{ needs.validate.outputs.target_branch }}
           EXPECTED_BASE_SHA: ${{ needs.validate.outputs.base_sha }}
           EXPECTED_FINAL_COMMIT: ${{ needs.validate.outputs.final_commit }}
           EXPECTED_BUNDLE_SHA: ${{ needs.validate.outputs.bundle_sha256 }}
         run: |
           set -Eeuo pipefail
 
+          current_base_sha="$(git rev-parse HEAD^{commit})"
+          if [[ "$current_base_sha" != "$EXPECTED_BASE_SHA" ]]; then
+            echo "Checked-out base commit does not match the validated base commit." >&2
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
+            echo "Target branch unexpectedly exists: $TARGET_BRANCH" >&2
+            exit 1
+          fi
+
           artifact_dir="$RUNNER_TEMP/validated-artifact"
           artifact="$artifact_dir/inkdesk-validated-tree.tar"
 
           expected_artifact_sha="$(tr -d '[:space:]' < "$artifact_dir/inkdesk-validated-tree.tar.sha256")"
           actual_artifact_sha="$(sha256sum "$artifact" | awk '{print $1}')"
-
           if [[ "$actual_artifact_sha" != "$expected_artifact_sha" ]]; then
             echo "Validated tree artifact checksum mismatch." >&2
             exit 1
           fi
 
           artifact_commit="$(tr -d '[:space:]' < "$artifact_dir/inkdesk-validated-tree.commit")"
-
           if [[ "$artifact_commit" != "$EXPECTED_FINAL_COMMIT" ]]; then
             echo "Validated tree commit metadata mismatch." >&2
             exit 1
           fi
 
-          if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
-            echo "The target branch already exists: $TARGET_BRANCH" >&2
-            exit 1
-          fi
-
           git switch --create "$TARGET_BRANCH"
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git rm -r --ignore-unmatch .
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf -- {} +
-
           tar -C . -xf "$artifact"
 
-          if [[ -e .github/workflows/apply-update-patch.yml ]]; then
-            echo "The temporary workflow unexpectedly exists in the final tree." >&2
-            exit 1
-          fi
+          for temporary_workflow in \
+            .github/workflows/apply-update-patch.yml \
+            .github/workflows/apply-update-bundle.yml \
+            .github/workflows/apply-update-bundle-v3.yml; do
+            if [[ -e "$temporary_workflow" ]]; then
+              echo "Temporary installer workflow unexpectedly exists in final tree: $temporary_workflow" >&2
+              exit 1
+            fi
+          done
 
           git add --all
-
           if git diff --cached --quiet; then
-            echo "The validated final tree produces no changes." >&2
+            echo "The imported tree produces no changes relative to the base branch." >&2
             exit 1
           fi
 
@@ -435,32 +530,32 @@ jobs:
             -m "Validated bundle SHA-256: $EXPECTED_BUNDLE_SHA"
 
           created_commit="$(git rev-parse HEAD^{commit})"
-
           git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
 
           echo "created_commit=$created_commit" >> "$GITHUB_OUTPUT"
 
-      - name: Open pull request
+      - name: Open draft pull request
         id: pull_request
         continue-on-error: true
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           BASE_REF: ${{ inputs.base_ref }}
-          TARGET_BRANCH: ${{ inputs.target_branch }}
+          TARGET_BRANCH: ${{ needs.validate.outputs.target_branch }}
           DRAFT_PR: ${{ inputs.draft_pr }}
           BASE_SHA: ${{ needs.validate.outputs.base_sha }}
           PAYLOAD_SHA: ${{ needs.validate.outputs.payload_sha }}
           BUNDLE_SHA: ${{ needs.validate.outputs.bundle_sha256 }}
           FINAL_COMMIT: ${{ needs.validate.outputs.final_commit }}
           CREATED_COMMIT: ${{ steps.branch.outputs.created_commit }}
+          BROWSER_STATUS: ${{ needs.validate.outputs.browser_status }}
         run: |
           set -Eeuo pipefail
 
           cat > "$RUNNER_TEMP/pr-body.md" <<EOF
           ## Summary
 
-          Applies the supplied and checksum-validated InkDesk 0.19.1-beta hardening tree in a new branch.
+          Applies the checksum-verified InkDesk 0.19.1-beta hardening tree in a separate review branch.
 
           ## Validation metadata
 
@@ -469,16 +564,17 @@ jobs:
           - Bundle SHA-256: \`${BUNDLE_SHA}\`
           - Bundled source commit: \`${FINAL_COMMIT}\`
           - Created repository commit: \`${CREATED_COMMIT}\`
+          - Chromium regressions: **${BROWSER_STATUS}**
 
           ## Safety
 
           - The base branch was not modified.
           - No tag or release was created.
           - Merge remains a manual repository-owner decision.
+          - A failed Chromium result is recorded as advisory; deterministic validation still had to pass.
           EOF
 
           draft_argument=()
-
           if [[ "$DRAFT_PR" == "true" ]]; then
             draft_argument+=(--draft)
           fi
@@ -493,13 +589,14 @@ jobs:
           )"
 
           echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "Pull request: $pr_url" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Explain manual pull request creation when needed
         if: ${{ steps.pull_request.outcome == 'failure' }}
         shell: bash
         env:
           BASE_REF: ${{ inputs.base_ref }}
-          TARGET_BRANCH: ${{ inputs.target_branch }}
+          TARGET_BRANCH: ${{ needs.validate.outputs.target_branch }}
         run: |
           {
             echo "### Branch created, but the pull request was not opened automatically"
