@@ -1,0 +1,292 @@
+/* InkDesk 0.16 Stabilization Preview — shared visual shell */
+:root{
+  --office-surface:#ffffff;
+  --office-surface-soft:#f6f8fb;
+  --office-surface-raised:#fbfcfe;
+  --office-edge:rgba(31,41,55,.12);
+  --office-edge-strong:rgba(31,41,55,.18);
+  --office-text:#1f2630;
+  --office-muted:#687180;
+  --office-shadow-1:0 1px 2px rgba(15,23,42,.06),0 5px 15px rgba(15,23,42,.045);
+  --office-shadow-2:0 10px 28px rgba(15,23,42,.10),0 1px 0 rgba(255,255,255,.78) inset;
+  --office-shadow-panel:0 14px 34px rgba(15,23,42,.09),1px 0 0 rgba(255,255,255,.75) inset;
+  --office-radius-sm:8px;
+  --office-radius-md:12px;
+  --office-radius-lg:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --office-surface:#20242a;
+    --office-surface-soft:#181b20;
+    --office-surface-raised:#292d34;
+    --office-edge:rgba(255,255,255,.10);
+    --office-edge-strong:rgba(255,255,255,.17);
+    --office-text:#f4f6f8;
+    --office-muted:#aab1bb;
+    --office-shadow-1:0 1px 2px rgba(0,0,0,.28),0 8px 20px rgba(0,0,0,.20);
+    --office-shadow-2:0 12px 30px rgba(0,0,0,.34),0 1px 0 rgba(255,255,255,.05) inset;
+    --office-shadow-panel:0 16px 38px rgba(0,0,0,.30),1px 0 0 rgba(255,255,255,.04) inset;
+  }
+}
+body.office-product{
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body.office-product button,
+body.office-product select,
+body.office-product input,
+body.office-product textarea{font-family:inherit}
+
+/* Shared top-bar language */
+body.office-product .topbar,
+body.office-product .titlebar{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--office-surface) 95%,white) 0%,var(--office-surface) 100%)!important;
+  border-bottom:1px solid var(--office-edge)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.72) inset,0 2px 8px rgba(15,23,42,.055)!important;
+  position:relative;
+  z-index:30;
+}
+body.office-product .icon-btn,
+body.office-product .top-action,
+body.office-product .save-btn{
+  border:1px solid transparent!important;
+  border-radius:var(--office-radius-sm)!important;
+  transition:background .14s ease,border-color .14s ease,box-shadow .14s ease,transform .08s ease!important;
+}
+body.office-product .icon-btn:hover,
+body.office-product .icon-btn:focus-visible,
+body.office-product .top-action:hover,
+body.office-product .top-action:focus-visible,
+body.office-product .save-btn:hover,
+body.office-product .save-btn:focus-visible{
+  background:var(--office-surface-soft)!important;
+  border-color:var(--office-edge)!important;
+  box-shadow:var(--office-shadow-1)!important;
+  outline:none!important;
+}
+body.office-product .icon-btn:active,
+body.office-product .top-action:active,
+body.office-product .save-btn:active{transform:translateY(1px) scale(.98)}
+.top-divider{width:1px;height:22px;background:var(--office-edge);margin:0 4px;flex:0 0 auto}
+
+body.office-product .save-btn,
+body.office-product .icon-btn.save{
+  background:color-mix(in srgb,var(--accent,#2f6fed) 10%,transparent)!important;
+  color:var(--accent,#2f6fed)!important;
+  border-color:color-mix(in srgb,var(--accent,#2f6fed) 25%,var(--office-edge))!important;
+}
+
+/* Raised tool surfaces */
+body.office-product .formatbar,
+body.office-product .toolbar,
+body.office-product .tools,
+body.office-product .formula-row,
+body.office-product .ruler,
+body.office-product .statusbar,
+body.office-product footer{
+  box-shadow:0 1px 0 rgba(255,255,255,.56) inset;
+}
+body.office-product .sidebar,
+body.office-product .slide-list,
+body.office-product .inspector{
+  background:linear-gradient(180deg,var(--office-surface-raised) 0%,var(--office-surface-soft) 100%)!important;
+  box-shadow:var(--office-shadow-panel)!important;
+  position:relative;
+  z-index:8;
+}
+body.office-product .sidebar{border-right:1px solid var(--office-edge)!important}
+body.office-product .slide-list{border-right:1px solid var(--office-edge)!important}
+body.office-product .inspector{border-left:1px solid var(--office-edge)!important}
+body.office-product .side-panel,
+body.office-product .inspector-section{
+  border-color:var(--office-edge)!important;
+}
+
+/* Consistent controls */
+body.office-product .fmt-btn,
+body.office-product .tools button,
+body.office-product .toolbar button:not(.tab),
+body.office-product .toolbar select,
+body.office-product .tools select{
+  box-shadow:0 1px 0 rgba(255,255,255,.68) inset,0 1px 2px rgba(15,23,42,.04);
+}
+body.office-product .fmt-btn:hover,
+body.office-product .tools button:hover,
+body.office-product .toolbar button:not(.tab):hover{
+  box-shadow:var(--office-shadow-1)!important;
+}
+
+/* Documents */
+body.office-documents{--accent:#2f6fed}
+body.office-documents .left-tools{min-width:210px}
+body.office-documents .sidebar{border-radius:0 12px 12px 0}
+body.office-documents .welcome-card{box-shadow:var(--office-shadow-2)!important;border-color:var(--office-edge)!important}
+
+/* Spreadsheets */
+body.office-spreadsheets{--accent:#267a45}
+body.office-spreadsheets .titlebar{height:44px!important;padding:0 8px!important}
+body.office-spreadsheets .titlebar .left,
+body.office-spreadsheets .titlebar .right{display:flex;align-items:center;gap:2px}
+body.office-spreadsheets .titlebar .left{min-width:190px}
+body.office-spreadsheets .titlebar .right{min-width:42px;justify-content:flex-end}
+body.office-spreadsheets .titlebar .icon-btn{width:34px!important;height:32px!important;padding:0!important;margin:0!important;display:inline-grid;place-items:center}
+body.office-spreadsheets .document-title{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:42%;font-weight:700}
+body.office-spreadsheets .office-badge{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--accent);color:white;font-size:12px;font-weight:800;box-shadow:0 2px 6px rgba(38,122,69,.25)}
+body.office-spreadsheets .toolbar{height:43px!important;background:linear-gradient(180deg,var(--office-surface) 0%,var(--office-surface-soft) 100%)!important}
+body.office-spreadsheets #pageCanvas{box-shadow:var(--office-shadow-2)}
+body.office-spreadsheets .start-card,.save-card{box-shadow:var(--office-shadow-2)!important;border-color:var(--office-edge)!important}
+
+/* Presentations */
+body.office-presentations{--accent:#d64a24}
+body.office-presentations .titlebar{
+  min-height:44px!important;
+  height:44px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(160px,1fr) auto!important;
+  padding:0 7px!important;
+}
+body.office-presentations .titlebar-left{min-width:190px!important}
+body.office-presentations .titlebar-right{min-width:350px!important;gap:5px!important}
+body.office-presentations .doc-title{position:static!important;transform:none!important;max-width:none!important;text-align:center!important;padding:0 12px}
+body.office-presentations .present-top-action{
+  width:auto!important;
+  min-width:0!important;
+  padding:0 10px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  color:var(--accent)!important;
+  background:color-mix(in srgb,var(--accent) 8%,transparent)!important;
+  border-color:color-mix(in srgb,var(--accent) 22%,var(--office-edge))!important;
+  white-space:nowrap;
+}
+body.office-presentations .present-top-action svg{width:17px!important;height:17px!important}
+body.office-presentations .present-top-action.current{background:transparent!important;color:var(--office-text)!important;border-color:var(--office-edge)!important}
+body.office-presentations .toolbar,
+body.office-presentations .tools{background:linear-gradient(180deg,var(--office-surface) 0%,var(--office-surface-soft) 100%)!important}
+body.office-presentations .slide-list{border-radius:0 12px 12px 0;padding-top:12px!important}
+body.office-presentations .inspector{border-radius:12px 0 0 12px;padding-top:16px!important}
+body.office-presentations .thumb-box{box-shadow:0 4px 12px rgba(15,23,42,.12)!important}
+body.office-presentations .stage-wrap{background:linear-gradient(145deg,#d8dce3,#c6cbd3)!important}
+body.office-presentations .slide-canvas{box-shadow:0 20px 52px rgba(15,23,42,.22)!important}
+body.office-presentations .notes-panel{box-shadow:0 -5px 18px rgba(15,23,42,.055),0 1px 0 rgba(255,255,255,.58) inset!important}
+body.office-presentations .view-present-action{display:inline-flex!important;align-items:center!important;gap:7px!important;font-weight:700!important;color:var(--accent)!important}
+body.office-presentations .view-present-action svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.office-presentations .present-controls{top:max(14px,env(safe-area-inset-top))!important;right:max(14px,env(safe-area-inset-right))!important}
+body.office-presentations .present-controls .exit-present-btn{
+  min-width:46px!important;
+  min-height:44px!important;
+  border-radius:13px!important;
+  background:rgba(20,20,20,.76)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+}
+
+@media(max-width:1050px){
+  body.office-presentations .titlebar-right{min-width:160px!important}
+  body.office-presentations .present-top-action span{display:none}
+  body.office-presentations .present-top-action{width:34px!important;padding:0!important;justify-content:center!important}
+}
+@media(max-width:720px){
+  body.office-spreadsheets .titlebar .left{min-width:150px}
+  body.office-spreadsheets .document-title{max-width:34%}
+}
+
+@media(max-width:720px){body.office-documents .left-tools{min-width:170px}.office-documents #sidebarBtn,.office-documents .left-tools .top-divider:last-of-type{display:none}}
+body.office-spreadsheets main{height:calc(100% - 44px - 43px - 38px - 36px)!important}
+
+
+/* deterministic toolbar fixes retained in 0.16 */
+body.office-spreadsheets .titlebar{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+}
+body.office-spreadsheets .titlebar .left{
+  flex:1 1 auto!important;
+  min-width:190px!important;
+  padding-right:52px!important;
+}
+body.office-spreadsheets .document-title{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:2!important;
+  max-width:calc(100% - 320px)!important;
+  pointer-events:none!important;
+}
+body.office-spreadsheets .titlebar .right{
+  position:absolute!important;
+  right:8px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  z-index:4!important;
+  min-width:36px!important;
+  width:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+}
+body.office-spreadsheets #saveBtn{
+  position:static!important;
+  width:34px!important;
+  height:32px!important;
+  min-width:34px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+}
+body.office-spreadsheets #saveBtn svg{
+  width:19px!important;
+  height:19px!important;
+  display:block!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+body.office-presentations #toolsPresent #presentFromStartBtn{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-width:142px!important;
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+  color:#fff!important;
+  font-weight:750!important;
+  opacity:1!important;
+}
+body.office-presentations #toolsPresent #presentFromStartBtn:hover,
+body.office-presentations #toolsPresent #presentFromStartBtn:focus-visible{
+  background:color-mix(in srgb,var(--accent) 88%,#000)!important;
+  border-color:color-mix(in srgb,var(--accent) 88%,#000)!important;
+  color:#fff!important;
+}
+body.office-presentations #toolsPresent #presentFromStartBtn .button-icon{
+  width:17px!important;
+  height:17px!important;
+  display:block!important;
+  color:#fff!important;
+  fill:currentColor!important;
+  stroke:none!important;
+  flex:0 0 auto!important;
+}
+body.office-presentations #toolsPresent #presentFromStartBtn span{
+  display:inline!important;
+  color:#fff!important;
+  white-space:nowrap!important;
+}
+body.office-presentations #toolsPresent #presentFromCurrentBtn{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-width:154px!important;
+}
+@media(max-width:720px){
+  body.office-spreadsheets .document-title{max-width:calc(100% - 250px)!important}
+}
