@@ -1,0 +1,252 @@
+(function(){'use strict';
+const $=id=>document.getElementById(id);const E={file:$('fileInput'),newBook:$('newBtn'),newEmpty:$('newEmptyBtn'),open:$('openBtn'),openEmpty:$('openEmptyBtn'),save:$('saveBtn'),grid:$('grid'),viewport:$('gridViewport'),empty:$('emptyState'),tabs:$('sheetTabs'),formula:$('formulaInput'),name:$('nameBox'),title:$('docTitle'),dirty:$('dirtyDot'),stats:$('selectionStats'),toast:$('toast'),savePanel:$('savePanel'),download:$('downloadBtn'),loading:$('loading'),zoomOut:$('zoomOut'),zoomIn:$('zoomIn'),zoomSlider:$('zoomSlider'),fitWidth:$('fitWidth'),zoomLabel:$('zoomLabel'),gridMode:$('gridMode'),formMode:$('formMode'),pageCanvas:$('pageCanvas'),gridlines:$('gridlinesBtn'),fontFamily:$('fontFamily'),fontSize:$('fontSize'),bold:$('boldBtn'),italic:$('italicBtn'),underline:$('underlineBtn'),alignLeft:$('alignLeftBtn'),alignCenter:$('alignCenterBtn'),alignRight:$('alignRightBtn'),merge:$('mergeBtn'),addRow:$('addRowBtn'),addCol:$('addColBtn'),undo:$('undoBtn'),redo:$('redoBtn'),deleteCells:$('deleteBtn'),deleteRow:$('deleteRowBtn'),deleteCol:$('deleteColBtn'),operations:$('operationSelect'),resizeGuide:$('resizeGuide'),resizeBadge:$('resizeBadge'),saveMessage:$('saveMessage')};
+let book=LocalXLSX.createBlank(),active={r:0,c:0},anchor={r:0,c:0},range={r1:0,c1:0,r2:0,c2:0},dirty=false,pendingBlob=null,zoom=100,viewMode='grid',showGridlines=true,editingCell=null,undoStack=[],redoStack=[],dragSelecting=false;
+function revokeWorkbookObjectUrls(workbook){const urls=new Set();for(const sheet of workbook?.sheets||[])for(const drawing of sheet.drawings||[])if(typeof drawing?.url==='string'&&drawing.url.startsWith('blob:'))urls.add(drawing.url);if(window.InkDeskRuntime)InkDeskRuntime.revokeObjectUrls(urls);else for(const url of urls){try{URL.revokeObjectURL(url)}catch(error){console.warn('Could not revoke workbook object URL',error)}}}
+const sheet=()=>book.sheets[book.active];const ref=(r=active.r,c=active.c)=>LocalXLSX.encodeRef(r,c);
+function toast(s){E.toast.textContent=s;E.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>E.toast.classList.remove('show'),2200)}
+function setLoading(v,label='Opening workbook…'){E.loading.hidden=!v;E.loading.style.display=v?'flex':'none';E.loading.querySelector('span').textContent=label}
+function markDirty(v=true){dirty=v;if(v)pendingBlob=null;E.dirty.hidden=!v}
+function normalizeRange(){range={r1:Math.min(anchor.r,active.r),c1:Math.min(anchor.c,active.c),r2:Math.max(anchor.r,active.r),c2:Math.max(anchor.c,active.c)}}
+function display(cell){
+  if(!cell)return'';
+  const effective=(cell.calculated!==undefined&&cell.calculated!==null)?cell.calculated:cell.v;
+  if(cell.style?.hideZero&&Number(effective)===0)return'';
+  if(cell.calculated!==undefined&&cell.calculated!==null)return cell.calculated;
+  return cell.f?(cell.display!==''?cell.display:'='+cell.f):(cell.display??cell.v??'')
+}
+function mergeMaps(s){const top=new Map(),covered=new Set();for(const m of s.merges){const q=LocalXLSX.decodeRange(m),key=ref(q.r1,q.c1);top.set(key,q);for(let r=q.r1;r<=q.r2;r++)for(let c=q.c1;c<=q.c2;c++)if(r!==q.r1||c!==q.c1)covered.add(ref(r,c))}return{top,covered}}
+function applyZoom(){const target=viewMode==='form'?E.pageCanvas:E.grid;E.grid.style.zoom='';E.pageCanvas.style.zoom='';target.style.zoom=(zoom/100);E.zoomLabel.textContent=zoom+'%';E.zoomSlider.value=String(zoom)}
+function setZoom(v){zoom=Math.max(50,Math.min(200,Math.round(v/10)*10));applyZoom()}
+function fitWidth(){const target=viewMode==='form'?E.pageCanvas:E.grid;const natural=Math.max(target.scrollWidth/(zoom/100),1),available=Math.max(E.viewport.clientWidth-(viewMode==='form'?72:4),1);setZoom(Math.min(200,Math.max(40,available/natural*100)))}
+
+function cleanRangeRef(v){return String(v||'').replace(/\$/g,'').replace(/^'[^']+'!/,'')}
+function printBounds(s){try{if(s.printArea)return LocalXLSX.decodeRange(cleanRangeRef(s.printArea))}catch(error){console.warn('Invalid print area ignored.',error)}return null}
+function usedBounds(s){let r1=Infinity,c1=Infinity,r2=0,c2=0;for(const [key,cell] of s.cells){if(cell?.v==null&&cell?.display===''&&!cell?.style)continue;const p=LocalXLSX.decodeRef(key);r1=Math.min(r1,p.r);c1=Math.min(c1,p.c);r2=Math.max(r2,p.r);c2=Math.max(c2,p.c)}for(const m of s.merges||[]){const q=LocalXLSX.decodeRange(m);r1=Math.min(r1,q.r1);c1=Math.min(c1,q.c1);r2=Math.max(r2,q.r2);c2=Math.max(c2,q.c2)}if(!Number.isFinite(r1))return{r1:0,c1:0,r2:39,c2:15};return{r1:Math.max(0,r1-1),c1:Math.max(0,c1-1),r2:Math.min(s.maxR,r2+2),c2:Math.min(s.maxC,c2+2)}}
+function intrinsicLayout(s,bounds){
+  const m=s.margins||{};
+  const left=Math.max(14,(Number(m.left)||0.18)*96);
+  const right=Math.max(14,(Number(m.right)||0.18)*96);
+  const top=Math.max(14,(Number(m.top)||0.18)*96);
+  const bottom=Math.max(14,(Number(m.bottom)||0.18)*96);
+  let contentW=0,contentH=0;
+  for(let c=bounds.c1;c<=bounds.c2;c++)contentW+=(s.widths[c]||s.defaultColWidth||68);
+  for(let r=bounds.r1;r<=bounds.r2;r++)contentH+=(s.heights[r]||s.defaultRowHeight||20);
+  const orientation=String(s.pageSetup?.orientation||((contentW>=contentH)?'landscape':'portrait')).toLowerCase();
+  return{left,right,top,bottom,contentW,contentH,width:Math.max(360,contentW+left+right),height:Math.max(240,contentH+top+bottom),orientation,source:s.printArea?'print-area':'worksheet-bounds'};
+}
+function analyzeSheet(s){const b=usedBounds(s);const area=Math.max(1,(b.r2-b.r1+1)*(b.c2-b.c1+1));let populated=0,formulae=0,styled=0;for(const [,cell] of s.cells){if(cell?.v!==''&&cell?.v!=null)populated++;if(cell?.f)formulae++;if(cell?.style&&(cell.style.fill||Object.keys(cell.style.border||{}).length))styled++}const mergeCount=(s.merges||[]).length,density=populated/area;const documentScore=(mergeCount>=6?3:mergeCount>=2?1:0)+(formulae===0?2:0)+(density<0.28?2:0)+(styled>8?1:0)+(area<2500?1:0);return{mode:documentScore>=5?'form':'grid',density,mergeCount,formulae,area,score:documentScore}}
+function applyViewClasses(){document.body.classList.toggle('page-view',viewMode==='form');document.body.classList.toggle('sheet-view',viewMode==='grid');document.body.classList.toggle('show-gridlines',showGridlines);document.body.classList.toggle('no-gridlines',!showGridlines);E.gridMode.classList.toggle('active',viewMode==='grid');E.formMode.classList.toggle('active',viewMode==='form');E.gridlines?.classList.toggle('active',showGridlines)}
+function setView(mode,automatic=false){viewMode=mode==='form'?'form':'grid';applyViewClasses();renderGrid();applyZoom();if(viewMode==='form')requestAnimationFrame(fitWidth);if(!automatic)toast(viewMode==='form'?'Page view':'Sheet view')}
+
+
+function parseFormulaRef(token,currentSheet){
+  const raw=String(token||'').trim();
+  const m=/^(?:(?:'((?:[^']|'')+)'|([^'!]+))!)?\$?([A-Z]{1,3})\$?(\d+)$/i.exec(raw);
+  if(!m)return null;
+  const sheetName=(m[1]?m[1].replace(/''/g,"'"):m[2])||currentSheet.name;
+  const target=book.sheets.find(x=>x.name===sheetName)||currentSheet;
+  return{sheet:target,ref:m[3].toUpperCase()+m[4]};
+}
+function parseFormulaRange(token,currentSheet){
+  const raw=String(token||'').trim(),m=/^(?:(?:'((?:[^']|'')+)'|([^'!]+))!)?\$?([A-Z]{1,3})\$?(\d+):\$?([A-Z]{1,3})\$?(\d+)$/i.exec(raw);
+  if(!m)return null;
+  const sheetName=(m[1]?m[1].replace(/''/g,"'"):m[2])||currentSheet.name,target=book.sheets.find(x=>x.name===sheetName)||currentSheet;
+  return{sheet:target,range:LocalXLSX.decodeRange(`${m[3]}${m[4]}:${m[5]}${m[6]}`)};
+}
+function formulaValue(targetSheet,cellRef,stack=new Set(),env={}){
+  const identity=targetSheet.name+'!'+cellRef;if(stack.has(identity))return'#CYCLE!';const cell=targetSheet.cells.get(cellRef);if(!cell)return 0;if(!cell.f)return cell.v??0;
+  stack.add(identity);const value=evaluateFormula(targetSheet,cell.f,stack,env);stack.delete(identity);return value===null?(cell.v??0):value;
+}
+function splitFormulaArgs(text){const out=[];let q='',depth=0,quote=false;for(const ch of String(text)){if(ch==='"')quote=!quote;if(!quote){if(ch==='(')depth++;else if(ch===')')depth--;else if((ch===','||ch===';')&&depth===0){out.push(q);q='';continue}}q+=ch}out.push(q);return out}
+function formulaRangeMatrix(currentSheet,arg,stack,env={}){
+  const rr=parseFormulaRange(arg,currentSheet);if(!rr)return null;const q=rr.range,rows=[];for(let r=q.r1;r<=q.r2;r++){const row=[];for(let c=q.c1;c<=q.c2;c++)row.push(formulaValue(rr.sheet,ref(r,c),stack,env));rows.push(row)}return rows;
+}
+function formulaArgValues(currentSheet,arg,stack,env={}){
+  arg=String(arg||'').trim();if(Object.prototype.hasOwnProperty.call(env,arg))return[env[arg]];
+  const matrix=formulaRangeMatrix(currentSheet,arg,stack,env);if(matrix)return matrix.flat();
+  const rr=parseFormulaRef(arg,currentSheet);if(rr)return[formulaValue(rr.sheet,rr.ref,stack,env)];
+  if(/^".*"$/.test(arg))return[arg.slice(1,-1).replace(/""/g,'"')];
+  if(/^(TRUE|FALSE)$/i.test(arg))return[/^TRUE$/i.test(arg)];
+  const n=Number(arg.replace(',','.'));return Number.isFinite(n)?[n]:[arg];
+}
+function compareFormulaValues(a,op,b){switch(op){case'=':return a==b;case'<>':return a!=b;case'<':return Number(a)<Number(b);case'>':return Number(a)>Number(b);case'<=':return Number(a)<=Number(b);case'>=':return Number(a)>=Number(b);default:return false}}
+function filterMask(currentSheet,expression,stack,env={}){
+  const m=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(String(expression||'').trim());if(!m)return[];const left=formulaArgValues(currentSheet,m[1],stack,env),right=formulaArgValues(currentSheet,m[3],stack,env);return left.map((v,i)=>compareFormulaValues(v,m[2],right.length>1?right[i]:right[0]));
+}
+function formatFormulaResult(v){if(Array.isArray(v)){if(v.length&&Array.isArray(v[0]))return v.map(row=>row.map(x=>x??'').join(' | ')).join('\n');return v.map(x=>x??'').join(', ')}return v}
+function evaluateFormula(currentSheet,formula,stack=new Set(),env={}){
+  let f=String(formula||'').replace(/^=/,'').trim().replace(/^_xlfn\./i,'');
+  if(Object.prototype.hasOwnProperty.call(env,f))return env[f];
+  const direct=parseFormulaRef(f,currentSheet);if(direct)return formulaValue(direct.sheet,direct.ref,stack,env);
+  const call=/^([A-Z.]+)\((.*)\)$/i.exec(f);
+  if(call){
+    const fn=call[1].toUpperCase().replace(/^_XLFN\./,''),args=splitFormulaArgs(call[2]);
+    if(fn==='XLOOKUP'){
+      const lookup=formulaArgValues(currentSheet,args[0],stack,env)[0],lookups=formulaArgValues(currentSheet,args[1],stack,env),returns=formulaArgValues(currentSheet,args[2],stack,env),idx=lookups.findIndex(v=>String(v)===String(lookup));return idx>=0?returns[idx]:(args[3]!==undefined?formulaArgValues(currentSheet,args[3],stack,env)[0]:'#N/A');
+    }
+    if(fn==='FILTER'){
+      const matrix=formulaRangeMatrix(currentSheet,args[0],stack,env);if(!matrix)return null;const mask=filterMask(currentSheet,args[1],stack,env),filtered=matrix.filter((_,i)=>mask[i]);return filtered.length?filtered:(args[2]!==undefined?[[formulaArgValues(currentSheet,args[2],stack,env)[0]]]:[['#CALC!']]);
+    }
+    if(fn==='LET'){
+      if(args.length<3)return null;const local={...env};for(let i=0;i<args.length-1;i+=2){const name=String(args[i]||'').trim();if(!name)continue;local[name]=evaluateFormula(currentSheet,args[i+1],stack,local);if(local[name]===null)local[name]=formulaArgValues(currentSheet,args[i+1],stack,local)[0]}
+      return evaluateFormula(currentSheet,args[args.length-1],stack,local);
+    }
+    const vals=args.flatMap(a=>formulaArgValues(currentSheet,a,stack,env)),nums=vals.map(Number).filter(Number.isFinite);
+    switch(fn){case'SUM':return nums.reduce((a,b)=>a+b,0);case'AVERAGE':return nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:'#DIV/0!';case'MIN':return nums.length?Math.min(...nums):0;case'MAX':return nums.length?Math.max(...nums):0;case'COUNT':return nums.length;case'ROUND':{const n=Number(formulaArgValues(currentSheet,args[0],stack,env)[0]),d=Number(formulaArgValues(currentSheet,args[1]||'0',stack,env)[0]);return Math.round(n*10**d)/10**d}case'IF':{const cond=evaluateFormula(currentSheet,args[0],stack,env);return cond?formulaArgValues(currentSheet,args[1],stack,env)[0]:formulaArgValues(currentSheet,args[2]||'0',stack,env)[0]}default:return null}
+  }
+  const comparison=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(f);if(comparison){const a=formulaArgValues(currentSheet,comparison[1],stack,env)[0],b=formulaArgValues(currentSheet,comparison[3],stack,env)[0];return compareFormulaValues(a,comparison[2],b)}
+  const arithmetic=f.replace(/(?:(?:'[^']+'|[A-Za-z0-9_ .-]+)!)?\$?[A-Z]{1,3}\$?\d+/g,t=>{const rr=parseFormulaRef(t,currentSheet),v=rr?formulaValue(rr.sheet,rr.ref,stack,env):0;return Number.isFinite(Number(v))?String(Number(v)):'0'}).replace(/\b[A-Za-z_][A-Za-z0-9_.]*\b/g,name=>Object.prototype.hasOwnProperty.call(env,name)&&Number.isFinite(Number(env[name]))?String(Number(env[name])):name);
+  if(/^[0-9+\-*/(). %]+$/.test(arithmetic)){try{return Function('"use strict";return ('+arithmetic+')')()}catch(error){console.warn('Arithmetic formula could not be evaluated.',error)}}
+  const n=Number(f.replace(',','.'));return Number.isFinite(n)?n:null;
+}
+function recalculateWorkbook(){
+  for(let pass=0;pass<4;pass++)for(const s of book.sheets)for(const[cellRef,cell]of s.cells){if(!cell?.f)continue;const v=evaluateFormula(s,cell.f,new Set([s.name+'!'+cellRef]),{});if(v!==null&&v!==undefined){cell.calculatedRaw=v;cell.calculated=formatFormulaResult(v);cell.display=String(formatFormulaResult(v))}}
+}
+function renderAll(){const analysis=analyzeSheet(sheet());viewMode=analysis.mode;showGridlines=viewMode==='grid';applyViewClasses();renderTabs();renderGrid();applyZoom();E.empty.hidden=true;E.viewport.hidden=false;E.title.textContent=book.fileName.replace(/\.(xlsx|xls)$/i,'');select(0,0,false);E.save.disabled=!book.loaded;if(viewMode==='form')requestAnimationFrame(fitWidth);toast(viewMode==='form'?(sheet().printArea?'Print area · intrinsic Page view':'Document region · intrinsic Page view'):'Data sheet detected · Sheet view')}
+function renderTabs(){E.tabs.innerHTML='';const visible=book.sheets.map((s,i)=>({s,i})).filter(x=>x.s.state!=='hidden'&&x.s.state!=='veryHidden');for(const {s,i} of (visible.length?visible:book.sheets.map((s,i)=>({s,i})))){const b=document.createElement('button');b.textContent=s.name;b.className=i===book.active?'active':'';b.onclick=()=>{book.active=i;active=anchor={r:0,c:0};normalizeRange();renderAll()};E.tabs.appendChild(b)}}
+function tableCellInfo(s,r,c){for(const t of(s.tables||[])){try{const q=t._range||(t._range=LocalXLSX.decodeRange(t.ref));if(r>=q.r1&&r<=q.r2&&c>=q.c1&&c<=q.c2)return{table:t,range:q,header:r===q.r1,band:(r-q.r1)%2===0}}catch(error){console.warn('Invalid table range ignored.',error)}}return null}
+function borderCss(side){
+  if(!side)return'';
+  const widths={hair:1,thin:1,medium:2,thick:3,double:3,dashed:1,dotted:1,mediumDashed:2,mediumDashDot:2};
+  const styles={dashed:'dashed',dotted:'dotted',double:'double'};
+  const width=widths[side.style]||1,style=styles[side.style]||'solid';
+  return `${width}px ${style} ${side.color||'#70757d'}`
+}
+function applyCellStyle(d,cell,layout={}){
+  const st=cell?.style||{};
+  const rowHeight=Math.max(12,Number(layout.height)||26);
+  const mergedRows=Math.max(1,Number(layout.rowSpan)||1);
+  const effectiveHeight=Math.max(rowHeight,rowHeight*mergedRows);
+  const f=st.font||{};
+  const originalPx=f.size?f.size*1.333:14;
+  // Preserve the workbook font size. Page zoom scales the complete layout,
+  // so typography, columns, rows and borders remain proportional together.
+  d.style.fontSize=Math.max(7,originalPx).toFixed(2)+'px';
+  d.style.lineHeight='1.12';
+  d.style.padding=(effectiveHeight<20?'1px 3px':'2px 4px');
+  if(f.name)d.style.fontFamily=`"${f.name}",Calibri,Arial,sans-serif`;
+  if(f.bold)d.style.fontWeight='700';
+  if(f.italic)d.style.fontStyle='italic';
+  const decorations=[];if(f.underline)decorations.push('underline');if(f.strike)decorations.push('line-through');if(decorations.length)d.style.textDecoration=decorations.join(' ');
+  if(f.color)d.style.color=f.color;
+  if(st.fill)d.style.backgroundColor=st.fill;
+  if(st.align&&st.align!=='general'){d.dataset.halign=st.align;d.style.textAlign=st.align}
+  if(st.vertical)d.dataset.valign=st.vertical;
+  if(st.wrap){d.dataset.wrap='1';d.style.whiteSpace='normal'}
+  if(st.rotation){d.style.transform=`rotate(${st.rotation>90?st.rotation-180:st.rotation}deg)`}
+  const explicit=[];for(const side of ['left','right','top','bottom']){const v=borderCss(st.border?.[side]);if(v){d.style['border'+side[0].toUpperCase()+side.slice(1)]=v;explicit.push(side)}}
+  if(explicit.length)d.dataset.explicitBorders=explicit.join(' ');
+}
+
+function renderDrawings(s,bounds,startR,startC){
+  E.pageCanvas.querySelectorAll('.sheet-image,.sheet-shape,.sheet-line,.sheet-chart').forEach(x=>x.remove());
+  const colW=c=>s.widths[c]||s.defaultColWidth||68,rowH=r=>s.heights[r]||s.defaultRowHeight||20;
+  const axisOffset=(index,start,size)=>{let n=0;if(index>=start){for(let i=start;i<index;i++)n+=size(i)}else{for(let i=index;i<start;i++)n-=size(i)}return n};
+  const xAt=c=>axisOffset(c,startC,colW),yAt=r=>axisOffset(r,startR,rowH),canvasStyle=getComputedStyle(E.pageCanvas),gridLeft=viewMode==='form'?(parseFloat(canvasStyle.paddingLeft)||0):0,gridTop=viewMode==='form'?(parseFloat(canvasStyle.paddingTop)||0):0;
+  const rect=d=>{const f=d.from||{c:startC,r:startR,x:0,y:0},t=d.to||null,left=gridLeft+xAt(f.c)+(f.x||0),top=gridTop+yAt(f.r)+(f.y||0);if(d.size&&!t)return{left,top,width:Math.max(1,d.size.w||1),height:Math.max(1,d.size.h||1)};const tt=t||{c:f.c+1,r:f.r+1,x:0,y:0},right=gridLeft+xAt(tt.c)+(tt.x||0),bottom=gridTop+yAt(tt.r)+(tt.y||0);return{left,top,width:Math.max(1,right-left),height:Math.max(1,bottom-top)}};
+  const svgNode=(name,attrs={})=>{const n=document.createElementNS('http://www.w3.org/2000/svg',name);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,String(v));return n};
+  for(const d of(s.drawings||[])){
+    const q=rect(d);if(q.left+q.width<gridLeft||q.top+q.height<gridTop)continue;
+    if(d.kind==='image'){const el=document.createElement('img');el.src=d.url;el.className='sheet-image';el.alt=d.name||'Embedded workbook image';Object.assign(el.style,{left:q.left+'px',top:q.top+'px',width:q.width+'px',height:q.height+'px'});el.onerror=()=>el.remove();E.pageCanvas.appendChild(el);continue}
+    if(d.kind==='chart'){
+      const wrap=document.createElement('div');wrap.className='sheet-chart';Object.assign(wrap.style,{left:q.left+'px',top:q.top+'px',width:Math.max(180,q.width)+'px',height:Math.max(130,q.height)+'px'});wrap.dataset.chartType=d.chartType||'chart';
+      const title=document.createElement('div');title.className='sheet-chart-title';title.textContent=d.title||d.name||'Chart';wrap.appendChild(title);
+      const svg=svgNode('svg',{viewBox:'0 0 600 300',preserveAspectRatio:'none','aria-label':title.textContent});svg.classList.add('sheet-chart-svg');
+      const series=(d.series||[]).filter(x=>(x.values||[]).length),categories=series[0]?.categories||[],all=series.flatMap(x=>x.values||[]).map(Number).filter(Number.isFinite),max=Math.max(1,...all.map(Math.abs)),plot={x:58,y:30,w:510,h:215};
+      svg.appendChild(svgNode('line',{x1:plot.x,y1:plot.y+plot.h,x2:plot.x+plot.w,y2:plot.y+plot.h,class:'chart-axis'}));svg.appendChild(svgNode('line',{x1:plot.x,y1:plot.y,x2:plot.x,y2:plot.y+plot.h,class:'chart-axis'}));
+      const count=Math.max(1,categories.length||Math.max(0,...series.map(x=>x.values.length))),groupW=plot.w/count,barW=Math.max(4,groupW/Math.max(2,series.length+1));
+      for(let i=0;i<count;i++){
+        series.forEach((ser,si)=>{const v=Number(ser.values[i]||0),h=Math.max(0,Math.abs(v)/max*plot.h),x=plot.x+i*groupW+(si+0.35)*barW,y=plot.y+plot.h-h,bar=svgNode('rect',{x,y,width:barW*.82,height:h,class:`chart-bar series-${si%6}`});bar.appendChild(svgNode('title'));bar.firstChild.textContent=`${ser.name||'Series'} · ${categories[i]??i+1}: ${v}`;svg.appendChild(bar)});
+        const label=svgNode('text',{x:plot.x+i*groupW+groupW/2,y:plot.y+plot.h+20,class:'chart-label','text-anchor':'middle'});label.textContent=String(categories[i]??i+1).slice(0,12);svg.appendChild(label);
+      }
+      wrap.appendChild(svg);const legend=document.createElement('div');legend.className='sheet-chart-legend';legend.textContent=series.map(x=>x.name||'Series').join(' · ');wrap.appendChild(legend);E.pageCanvas.appendChild(wrap);continue
+    }
+    if(d.kind==='shape'){const text=(d.text||'').trim();if(!text)continue;const el=document.createElement('div');el.className='sheet-shape';el.textContent=text;Object.assign(el.style,{left:q.left+'px',top:q.top+'px',width:q.width+'px',height:q.height+'px',background:d.fill||'transparent',border:(d.line&&d.line!=='#00000000')?`${Math.min(3,Math.max(.5,d.lineWidth||1))}px solid ${d.line}`:'0',fontSize:(d.fontSize||10)+'px',fontWeight:d.bold?'700':'400'});E.pageCanvas.appendChild(el)}
+  }
+}
+function renderGrid(){
+ const s=sheet(),used=usedBounds(s),bounds=(viewMode==='form'?(printBounds(s)||used):used);
+ const layout=viewMode==='form'?intrinsicLayout(s,bounds):null;
+ if(layout){
+   E.pageCanvas.style.width=layout.width+'px';
+   E.pageCanvas.style.minHeight=layout.height+'px';
+   E.pageCanvas.style.padding=`${layout.top}px ${layout.right}px ${layout.bottom}px ${layout.left}px`;
+   E.pageCanvas.dataset.pageSetup=`Intrinsic ${layout.orientation} · ${layout.source}`;
+ }else{
+   E.pageCanvas.style.width='';E.pageCanvas.style.minHeight='';E.pageCanvas.style.padding='';delete E.pageCanvas.dataset.pageSetup;
+ }
+ const startR=viewMode==='form'?Math.max(0,bounds.r1):0,startC=viewMode==='form'?Math.max(0,bounds.c1):0;
+ const endR=viewMode==='form'?Math.min(s.maxR,bounds.r2):Math.max(44,Math.min(s.maxR,599));
+ const endC=viewMode==='form'?Math.min(s.maxC,bounds.c2):Math.max(17,Math.min(s.maxC,99));
+ const rows=endR-startR+1,cols=endC-startC+1;
+ const colWidths=Array.from({length:cols},(_,i)=>(s.widths[startC+i]||s.defaultColWidth||68)+'px');
+ const rowHeights=Array.from({length:rows},(_,i)=>(s.heights[startR+i]||s.defaultRowHeight||20)+'px');
+ E.grid.style.gridTemplateColumns=(viewMode==='form'?'':'48px ')+colWidths.join(' ');
+ E.grid.style.gridTemplateRows=(viewMode==='form'?'':'28px ')+rowHeights.join(' ');
+ E.grid.innerHTML='';const frag=document.createDocumentFragment(),mm=mergeMaps(s);
+ if(viewMode!=='form'){const corner=document.createElement('div');corner.className='corner';corner.style.gridColumn='1';corner.style.gridRow='1';frag.appendChild(corner);for(let c=startC;c<=endC;c++){const h=document.createElement('div');h.className='col-header';h.textContent=LocalXLSX.colName(c);h.dataset.c=c;h.style.gridColumn=String(c-startC+2);h.style.gridRow='1';const rz=document.createElement('span');rz.className='resize-handle';rz.addEventListener('pointerdown',e=>startResizeColumn(e,c));h.appendChild(rz);h.addEventListener('pointerdown',e=>{if(e.target===rz)return;selectColumn(c,e.shiftKey)});frag.appendChild(h)}}
+ for(let r=startR;r<=endR;r++){if(viewMode!=='form'){const rh=document.createElement('div');rh.className='row-header';rh.textContent=r+1;rh.dataset.r=r;rh.style.gridColumn='1';rh.style.gridRow=String(r-startR+2);const rz=document.createElement('span');rz.className='resize-handle';rz.addEventListener('pointerdown',e=>startResizeRow(e,r));rh.appendChild(rz);rh.addEventListener('pointerdown',e=>{if(e.target===rz)return;selectRow(r,e.shiftKey)});frag.appendChild(rh)}for(let c=startC;c<=endC;c++){const key=ref(r,c);if(mm.covered.has(key))continue;const d=document.createElement('div');d.className='cell';d.dataset.r=r;d.dataset.c=c;const cell=s.cells.get(key);d.textContent=display(cell);if(!d.textContent)d.dataset.formEmpty='1';const m=mm.top.get(key);const spanRows=m?Math.min(m.r2,endR)-r+1:1;const cellHeight=Array.from({length:spanRows},(_,i)=>(s.heights[r+i]||s.defaultRowHeight||20)).reduce((a,b)=>a+b,0);applyCellStyle(d,cell,{height:cellHeight,rowSpan:spanRows});const ti=tableCellInfo(s,r,c);if(ti){d.classList.add('structured-table-cell');if(ti.header)d.classList.add('structured-table-header');else if(ti.band)d.classList.add('structured-table-band')}if(Array.isArray(cell?.calculatedRaw)){d.classList.add('dynamic-array-preview');d.title='Dynamic array preview calculated locally; the original formula is preserved in the XLSX package.'}if(m){d.dataset.merged='1';const txt=(d.textContent||'').trim();if(txt&&txt===txt.toUpperCase()&&/[A-ZÀ-Ú]/.test(txt)){d.style.fontWeight='700';d.style.justifyContent='center';d.style.textAlign='center'}}if(cell?.style?.fill)d.classList.add('filled-cell');if(d.dataset.explicitBorders)d.classList.add('bordered-cell');const gc=(c-startC)+(viewMode==='form'?1:2),gr=(r-startR)+(viewMode==='form'?1:2);d.style.gridColumn=m?`${gc} / span ${Math.min(m.c2,endC)-c+1}`:String(gc);d.style.gridRow=m?`${gr} / span ${Math.min(m.r2,endR)-r+1}`:String(gr);d.addEventListener('pointerdown',cellDown);d.addEventListener('pointerenter',cellEnter);d.addEventListener('dblclick',()=>beginCellEdit(d));frag.appendChild(d)}}E.grid.appendChild(frag);E.pageCanvas.dataset.printArea=s.printArea||'';renderDrawings(s,bounds,startR,startC);applyZoom()}
+function cellDown(e){const r=+e.currentTarget.dataset.r,c=+e.currentTarget.dataset.c;if(e.shiftKey)active={r,c};else active=anchor={r,c};normalizeRange();refreshSelection();E.viewport.focus();dragSelecting=true;document.body.classList.add('drag-selecting');e.currentTarget.setPointerCapture?.(e.pointerId)}
+function cellEnter(e){if(!dragSelecting)return;active={r:+e.currentTarget.dataset.r,c:+e.currentTarget.dataset.c};normalizeRange();refreshSelection()}
+function endDragSelection(){dragSelecting=false;document.body.classList.remove('drag-selecting')}
+function selectRow(r,extend=false){const s=sheet();if(!extend)anchor={r,c:0};active={r,c:s.maxC};range={r1:extend?Math.min(anchor.r,r):r,c1:0,r2:extend?Math.max(anchor.r,r):r,c2:s.maxC};refreshSelection();E.viewport.focus()}
+function selectColumn(c,extend=false){const s=sheet();if(!extend)anchor={r:0,c};active={r:s.maxR,c};range={r1:0,c1:extend?Math.min(anchor.c,c):c,r2:s.maxR,c2:extend?Math.max(anchor.c,c):c};refreshSelection();E.viewport.focus()}
+function startResizeColumn(e,c){e.preventDefault();e.stopPropagation();const s=sheet(),start=e.clientX,initial=s.widths[c]||s.defaultColWidth||68,header=e.currentTarget.parentElement;document.body.classList.add('resizing-column');header.classList.add('resize-active');E.resizeGuide.hidden=false;E.resizeGuide.className='column';E.resizeBadge.hidden=false;const update=ev=>{const width=Math.max(28,Math.min(600,initial+ev.clientX-start));s.widths[c]=width;E.resizeGuide.style.left=ev.clientX+'px';E.resizeBadge.style.left=Math.min(window.innerWidth-130,ev.clientX+10)+'px';E.resizeBadge.style.top=Math.max(8,e.clientY+10)+'px';E.resizeBadge.textContent=`${LocalXLSX.colName(c)}: ${Math.round(width)} px`;renderGrid();refreshSelection()};const move=ev=>update(ev);const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);document.body.classList.remove('resizing-column');document.querySelectorAll('.resize-active').forEach(x=>x.classList.remove('resize-active'));E.resizeGuide.hidden=true;E.resizeBadge.hidden=true;markDirty(true);toast(`${LocalXLSX.colName(c)} width: ${Math.round(s.widths[c])} px`)};update(e);window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)}
+function startResizeRow(e,r){e.preventDefault();e.stopPropagation();const s=sheet(),start=e.clientY,initial=s.heights[r]||s.defaultRowHeight||20,header=e.currentTarget.parentElement;document.body.classList.add('resizing-row');header.classList.add('resize-active');E.resizeGuide.hidden=false;E.resizeGuide.className='row';E.resizeBadge.hidden=false;const update=ev=>{const height=Math.max(14,Math.min(300,initial+ev.clientY-start));s.heights[r]=height;E.resizeGuide.style.top=ev.clientY+'px';E.resizeBadge.style.left=Math.max(8,e.clientX+10)+'px';E.resizeBadge.style.top=Math.min(window.innerHeight-45,ev.clientY+10)+'px';E.resizeBadge.textContent=`Row ${r+1}: ${Math.round(height)} px`;renderGrid();refreshSelection()};const move=ev=>update(ev);const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);document.body.classList.remove('resizing-row');document.querySelectorAll('.resize-active').forEach(x=>x.classList.remove('resize-active'));E.resizeGuide.hidden=true;E.resizeBadge.hidden=true;markDirty(true);toast(`Row ${r+1} height: ${Math.round(s.heights[r])} px`)};update(e);window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)}
+function refreshSelection(){E.grid.querySelectorAll('.cell.selected,.cell.in-range,.col-header.axis-active,.row-header.axis-active,.col-header.header-selected,.row-header.header-selected').forEach(x=>x.classList.remove('selected','in-range','axis-active','header-selected'));E.grid.querySelectorAll('.cell').forEach(d=>{const r=+d.dataset.r,c=+d.dataset.c;if(r>=range.r1&&r<=range.r2&&c>=range.c1&&c<=range.c2)d.classList.add('in-range');if(r===active.r&&c===active.c)d.classList.add('selected')});E.grid.querySelector(`.col-header[data-c="${active.c}"]`)?.classList.add('axis-active');E.grid.querySelector(`.row-header[data-r="${active.r}"]`)?.classList.add('axis-active');if(range.r1===0&&range.r2===sheet().maxR)for(let c=range.c1;c<=range.c2;c++)E.grid.querySelector(`.col-header[data-c="${c}"]`)?.classList.add('header-selected');if(range.c1===0&&range.c2===sheet().maxC)for(let r=range.r1;r<=range.r2;r++)E.grid.querySelector(`.row-header[data-r="${r}"]`)?.classList.add('header-selected');E.name.value=ref();const cell=sheet().cells.get(ref());E.formula.value=cell?(cell.f?'='+cell.f:cell.v??''):'';updateStats()}
+function select(r,c,scroll=true){active={r:Math.max(0,Math.min(r,sheet().maxR)),c:Math.max(0,Math.min(c,sheet().maxC))};anchor={...active};normalizeRange();refreshSelection();if(scroll)E.grid.querySelector(`.cell[data-r="${active.r}"][data-c="${active.c}"]`)?.scrollIntoView({block:'nearest',inline:'nearest'})}
+function updateStats(){let count=0,sum=0,n=0;for(let r=range.r1;r<=range.r2;r++)for(let c=range.c1;c<=range.c2;c++){const v=sheet().cells.get(ref(r,c))?.v;if(v!==''&&v!=null)count++;if(typeof v==='number'&&Number.isFinite(v)){sum+=v;n++}}const parts=[ref(),`${Math.max(1,count)} cell${count===1?'':'s'}`];if(n){parts.push(`Sum ${sum.toLocaleString()}`,`Average ${(sum/n).toLocaleString(undefined,{maximumFractionDigits:2})}`)}E.stats.textContent=parts.join(' · ')}
+async function openFile(file){if(!file)return;if(dirty&&!confirm('This workbook has unsaved changes. Discard them and open another document?')){E.file.value='';return}if(!/\.xlsx?$/i.test(file.name)){alert('Choose an Excel XLS or XLSX workbook.');return}try{setLoading(true);if(window.InkDeskRuntime)InkDeskRuntime.validateInputSize(file.size,file.name);const buf=await file.arrayBuffer(),legacy=/\.xls$/i.test(file.name)||new Uint8Array(buf,0,Math.min(8,buf.byteLength)).every((v,i)=>v===[0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1][i]);const nextBook=legacy?await LocalXLS.parseWorkbook(buf,file.name):await LocalXLSX.parseWorkbook(buf,file.name);revokeWorkbookObjectUrls(book);book=nextBook;recalculateWorkbook();undoStack=[];redoStack=[];refreshUndoState();active=anchor={r:0,c:0};normalizeRange();renderAll();markDirty(false);if(book.legacy){const d=book.legacyDiagnostics||{};toast(`${book.sheets.length} legacy worksheet${book.sheets.length===1?'':'s'} imported · ${d.imageCount||0} image${d.imageCount===1?'':'s'} · Save creates XLSX`)}else{const n=(book.images||[]).filter(x=>x&&x.valid!==false).length,diag=book.imageDiagnostics||{};toast(`${book.sheets.length} worksheet${book.sheets.length===1?'':'s'} opened · ${n} validated image${n===1?'':'s'}${diag.candidates>n?` · ${diag.candidates-n} unsupported candidate${diag.candidates-n===1?'':'s'}`:''}`)}}catch(err){console.error(err);alert('The spreadsheet editor could not open this workbook.\n\n'+(err?.message||err))}finally{setLoading(false);E.file.value=''}}
+async function prepareSave(){if(!book.loaded)return toast('Create or open a workbook first');try{setLoading(true,'Preparing XLSX copy…');pendingBlob=await LocalXLSX.saveCopy(book);if(!pendingBlob||pendingBlob.size===0)throw new Error('The generated XLSX copy is empty');if(E.saveMessage)E.saveMessage.textContent=book.legacy?`${book.saveWarning||'Legacy workbook imported.'} Ready to save ${Math.max(1,Math.round(pendingBlob.size/1024))} KB as a new XLSX copy.`:`Ready to save ${Math.max(1,Math.round(pendingBlob.size/1024))} KB as a new XLSX copy.`;E.savePanel.hidden=false;E.savePanel.style.display='flex'}catch(err){console.error(err);pendingBlob=null;alert('Save copy failed.\n\n'+(err?.message||err))}finally{setLoading(false)}}
+function download(){if(!pendingBlob)return toast('Prepare the XLSX copy first');const base=(book.fileName||'Workbook').replace(/\.xlsx?$/i,''),stamp=new Date().toISOString().slice(0,19).replace(/[T:]/g,'-'),fileName=`${base} copy ${stamp}.xlsx`;try{if(window.InkDeskRuntime)InkDeskRuntime.requestDownload(pendingBlob,fileName);else{const a=document.createElement('a'),url=URL.createObjectURL(pendingBlob);a.href=url;a.download=fileName;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}E.savePanel.hidden=true;E.savePanel.style.display='none';pendingBlob=null;markDirty(false);toast('Download requested; confirm the XLSX copy in your downloads')}catch(error){console.error(error);alert('The XLSX copy could not be downloaded.\n\n'+(error?.message||error))}}
+function cloneCell(cell){return cell?JSON.parse(JSON.stringify(cell)):null}
+function selectedRefs(){const out=[];for(let r=range.r1;r<=range.r2;r++)for(let c=range.c1;c<=range.c2;c++)out.push(ref(r,c));return out}
+function ensureCell(r=active.r,c=active.c){const k=ref(r,c);let cell=sheet().cells.get(k);if(!cell){cell={v:'',f:'',styleId:0,style:{},t:'s',display:''};sheet().cells.set(k,cell)}cell.style=cell.style||{};cell.style.font=cell.style.font||{};cell.style.border=cell.style.border||{};return cell}
+function pushAction(action){undoStack.push(action);if(undoStack.length>80)undoStack.shift();redoStack.length=0;refreshUndoState();markDirty(true)}
+function refreshUndoState(){if(E.undo)E.undo.disabled=!undoStack.length;if(E.redo)E.redo.disabled=!redoStack.length}
+function restoreCells(entries,useAfter){for(const item of entries){const value=useAfter?item.after:item.before;if(value)sheet().cells.set(item.ref,cloneCell(value));else sheet().cells.delete(item.ref)}renderGrid();refreshSelection()}
+function undo(){const a=undoStack.pop();if(!a)return;if(a.kind==='cells')restoreCells(a.entries,false);else if(a.kind==='merges'){sheet().merges=[...a.before];renderGrid();refreshSelection()}redoStack.push(a);refreshUndoState();markDirty(true)}
+function redo(){const a=redoStack.pop();if(!a)return;if(a.kind==='cells')restoreCells(a.entries,true);else if(a.kind==='merges'){sheet().merges=[...a.after];renderGrid();refreshSelection()}undoStack.push(a);refreshUndoState();markDirty(true)}
+function parseInput(value){value=String(value??'');if(value.startsWith('='))return{v:'',f:value.slice(1),t:'n',display:value};const n=Number(value.replace(',','.'));if(value.trim()!==''&&Number.isFinite(n))return{v:n,f:'',t:'n',display:String(n)};return{v:value,f:'',t:'s',display:value}}
+function commitValue(value,r=active.r,c=active.c){const k=ref(r,c),before=cloneCell(sheet().cells.get(k)),base=ensureCell(r,c),parsed=parseInput(value);Object.assign(base,parsed);delete base.calculated;const after=cloneCell(base);pushAction({kind:'cells',entries:[{ref:k,before,after}]});recalculateWorkbook();renderGrid();select(r,c,false)}
+function beginCellEdit(el){if(!book.loaded||viewMode==='form')return;editingCell=el;el.contentEditable='true';el.classList.add('editing');el.focus();const sel=getSelection(),rg=document.createRange();rg.selectNodeContents(el);rg.collapse(false);sel.removeAllRanges();sel.addRange(rg);const finish=()=>{if(!editingCell)return;const r=+el.dataset.r,c=+el.dataset.c,value=el.innerText;editingCell=null;el.contentEditable='false';el.classList.remove('editing');commitValue(value,r,c)};el.onblur=finish;el.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();finish()}else if(e.key==='Escape'){e.preventDefault();editingCell=null;el.contentEditable='false';el.classList.remove('editing');renderGrid();select(active.r,active.c,false)}}}
+function startTyping(ch){const el=E.grid.querySelector(`.cell[data-r="${active.r}"][data-c="${active.c}"]`);if(!el||viewMode==='form')return;beginCellEdit(el);el.textContent=ch;const sel=getSelection(),rg=document.createRange();rg.selectNodeContents(el);rg.collapse(false);sel.removeAllRanges();sel.addRange(rg)}
+function formatSelection(mutator){const entries=[];for(const k of selectedRefs()){const before=cloneCell(sheet().cells.get(k));const p=LocalXLSX.decodeRef(k),cell=ensureCell(p.r,p.c);mutator(cell);entries.push({ref:k,before,after:cloneCell(cell)})}pushAction({kind:'cells',entries});renderGrid();refreshSelection()}
+function toggleFont(key){formatSelection(cell=>{cell.style.font=cell.style.font||{};cell.style.font[key]=!cell.style.font[key]})}
+function setAlignment(value){formatSelection(cell=>{cell.style.align=value})}
+function toggleMerge(){const s=sheet(),target=`${ref(range.r1,range.c1)}:${ref(range.r2,range.c2)}`,before=[...s.merges];const existing=s.merges.findIndex(m=>{const q=LocalXLSX.decodeRange(m);return !(q.r2<range.r1||q.r1>range.r2||q.c2<range.c1||q.c1>range.c2)});if(existing>=0)s.merges.splice(existing,1);else if(range.r1!==range.r2||range.c1!==range.c2)s.merges.push(target);else return;pushAction({kind:'merges',before,after:[...s.merges]});renderGrid();refreshSelection()}
+function insertRow(){const s=sheet(),at=active.r+1,newCells=new Map();for(const [k,cell] of s.cells){const p=LocalXLSX.decodeRef(k);newCells.set(ref(p.r>=at?p.r+1:p.r,p.c),cell)}s.cells=newCells;const nh={};for(const [k,v] of Object.entries(s.heights||{})){const r=+k;nh[r>=at?r+1:r]=v}s.heights=nh;s.merges=(s.merges||[]).map(m=>{const q=LocalXLSX.decodeRange(m);if(q.r1>=at){q.r1++;q.r2++}else if(q.r2>=at)q.r2++;return `${ref(q.r1,q.c1)}:${ref(q.r2,q.c2)}`});s.maxR++;markDirty(true);renderGrid();select(at,active.c,false);toast('Row inserted')}
+function insertColumn(){const s=sheet(),at=active.c+1,newCells=new Map();for(const [k,cell] of s.cells){const p=LocalXLSX.decodeRef(k);newCells.set(ref(p.r,p.c>=at?p.c+1:p.c),cell)}s.cells=newCells;const nw={};for(const [k,v] of Object.entries(s.widths||{})){const c=+k;nw[c>=at?c+1:c]=v}s.widths=nw;s.merges=(s.merges||[]).map(m=>{const q=LocalXLSX.decodeRange(m);if(q.c1>=at){q.c1++;q.c2++}else if(q.c2>=at)q.c2++;return `${ref(q.r1,q.c1)}:${ref(q.r2,q.c2)}`});s.maxC++;markDirty(true);renderGrid();select(active.r,at,false);toast('Column inserted')}
+function newWorkbook(){if(dirty&&!confirm('Discard unsaved changes and create a new workbook?'))return;revokeWorkbookObjectUrls(book);book=LocalXLSX.createBlank();book.loaded=true;book.fileName='Untitled.xlsx';book.sheets[0].maxR=99;book.sheets[0].maxC=25;active=anchor={r:0,c:0};normalizeRange();undoStack=[];redoStack=[];E.empty.hidden=true;E.viewport.hidden=false;E.save.disabled=false;E.title.textContent='Untitled';markDirty(false);setView('grid',false);renderTabs();renderGrid();select(0,0,false);refreshUndoState();toast('New workbook created')}
+function clearSelection(){const entries=[];for(const k of selectedRefs()){const before=cloneCell(sheet().cells.get(k));if(before){const after=cloneCell(before);after.v='';after.f='';after.display='';delete after.calculated;sheet().cells.set(k,after);entries.push({ref:k,before,after:cloneCell(after)})}}if(!entries.length)return;pushAction({kind:'cells',entries});recalculateWorkbook();renderGrid();refreshSelection();toast('Selected cells cleared')}
+function deleteRows(){const s=sheet(),from=range.r1,count=range.r2-range.r1+1,newCells=new Map();for(const[k,cell]of s.cells){const p=LocalXLSX.decodeRef(k);if(p.r<from)newCells.set(k,cell);else if(p.r>range.r2)newCells.set(ref(p.r-count,p.c),cell)}s.cells=newCells;const nh={};for(const[k,v]of Object.entries(s.heights||{})){const r=+k;if(r<from)nh[r]=v;else if(r>range.r2)nh[r-count]=v}s.heights=nh;s.merges=(s.merges||[]).filter(m=>{const q=LocalXLSX.decodeRange(m);return q.r2<from||q.r1>range.r2}).map(m=>{const q=LocalXLSX.decodeRange(m);if(q.r1>range.r2){q.r1-=count;q.r2-=count}return `${ref(q.r1,q.c1)}:${ref(q.r2,q.c2)}`});s.maxR=Math.max(0,s.maxR-count);markDirty(true);renderGrid();select(Math.min(from,s.maxR),active.c,false);toast(count+' row(s) deleted')}
+function deleteColumns(){const s=sheet(),from=range.c1,count=range.c2-range.c1+1,newCells=new Map();for(const[k,cell]of s.cells){const p=LocalXLSX.decodeRef(k);if(p.c<from)newCells.set(k,cell);else if(p.c>range.c2)newCells.set(ref(p.r,p.c-count),cell)}s.cells=newCells;const nw={};for(const[k,v]of Object.entries(s.widths||{})){const c=+k;if(c<from)nw[c]=v;else if(c>range.c2)nw[c-count]=v}s.widths=nw;s.merges=(s.merges||[]).filter(m=>{const q=LocalXLSX.decodeRange(m);return q.c2<from||q.c1>range.c2}).map(m=>{const q=LocalXLSX.decodeRange(m);if(q.c1>range.c2){q.c1-=count;q.c2-=count}return `${ref(q.r1,q.c1)}:${ref(q.r2,q.c2)}`});s.maxC=Math.max(0,s.maxC-count);markDirty(true);renderGrid();select(active.r,Math.min(from,s.maxC),false);toast(count+' column(s) deleted')}
+function numericCell(cell){const v=cell?.calculated??cell?.v;return typeof v==='number'&&Number.isFinite(v)?v:null}
+function applyNumericOperation(kind){const s=sheet();if(kind==='sum'||kind==='average'){const formula=`${kind==='sum'?'SUM':'AVERAGE'}(${ref(range.r1,range.c1)}:${ref(range.r2,range.c2)})`;let r=range.r2+1,c=range.c1;if(r>s.maxR){s.maxR=r}commitValue('='+formula,r,c);select(r,c);toast(kind==='sum'?'Sum inserted':'Average inserted');return}const label=kind==='multiply'?'Multiply selected cells by:':'Divide selected cells by:';let factor=kind==='percent'?100:Number(prompt(label,'2'));if(!Number.isFinite(factor)||factor===0)return;const entries=[];for(const k of selectedRefs()){const p=LocalXLSX.decodeRef(k),before=cloneCell(s.cells.get(k)),cell=ensureCell(p.r,p.c);if(kind==='percent'){if(cell.f)cell.f=`(${cell.f})/100`;else{const n=numericCell(cell);if(n===null)continue;cell.v=n/100;cell.display=(n).toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';cell.style.numberFormat='0.00%'}}else if(cell.f)cell.f=`(${cell.f})${kind==='multiply'?'*':'/'}${factor}`;else{const n=numericCell(cell);if(n===null)continue;cell.v=kind==='multiply'?n*factor:n/factor;cell.display=String(cell.v)}delete cell.calculated;entries.push({ref:k,before,after:cloneCell(cell)})}if(entries.length){pushAction({kind:'cells',entries});recalculateWorkbook();renderGrid();refreshSelection();toast('Operation applied')}}
+function copySelection(e){if(!book.loaded)return;const rows=[];for(let r=range.r1;r<=range.r2;r++){const row=[];for(let c=range.c1;c<=range.c2;c++)row.push(display(sheet().cells.get(ref(r,c))));rows.push(row.join('\t'))}e.clipboardData?.setData('text/plain',rows.join('\n'));e.preventDefault();toast('Copied')}
+function pasteSelection(e){if(!book.loaded)return;const text=e.clipboardData?.getData('text/plain');if(text==null)return;e.preventDefault();const rows=text.replace(/\r/g,'').split('\n').map(x=>x.split('\t')),entries=[];rows.forEach((row,ri)=>row.forEach((value,ci)=>{const r=active.r+ri,c=active.c+ci,k=ref(r,c),before=cloneCell(sheet().cells.get(k)),cell=ensureCell(r,c);Object.assign(cell,parseInput(value));entries.push({ref:k,before,after:cloneCell(cell)})}));pushAction({kind:'cells',entries});recalculateWorkbook();renderGrid();select(active.r,active.c,false);toast('Pasted')}
+function keydown(e){if(!book.loaded||e.target===E.formula||e.target===E.name||editingCell)return;if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='o'){e.preventDefault();E.file.click();return}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();prepareSave();return}if(!e.metaKey&&!e.ctrlKey&&!e.altKey&&e.key.length===1){e.preventDefault();startTyping(e.key);return}const moves={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1],Tab:[0,e.shiftKey?-1:1],Enter:[e.shiftKey?-1:1,0]};if(moves[e.key]){e.preventDefault();const[dr,dc]=moves[e.key];if(e.shiftKey&&!['Tab','Enter'].includes(e.key)){active={r:Math.max(0,active.r+dr),c:Math.max(0,active.c+dc)};normalizeRange();refreshSelection()}else select(active.r+dr,active.c+dc)}}
+function safeBoot(){
+  // A document operation must never start during application initialization.
+  E.loading.hidden=true;
+  E.loading.style.display='none';
+  E.savePanel.hidden=true;
+  E.savePanel.style.display='none';
+  E.viewport.hidden=true;
+  E.empty.hidden=false;
+  E.save.disabled=true;
+  E.title.textContent='Untitled';
+  E.stats.textContent='Ready';setZoom(100);
+  pendingBlob=null;
+}
+E.newBook.onclick=E.newEmpty.onclick=newWorkbook;E.open.onclick=E.openEmpty.onclick=()=>E.file.click();
+E.file.onchange=()=>openFile(E.file.files[0]);
+E.save.onclick=prepareSave;
+E.download.onclick=download;
+$('closeSaveBtn').onclick=()=>{E.savePanel.hidden=true;E.savePanel.style.display='none';pendingBlob=null};
+E.formula.readOnly=false;E.formula.onfocus=()=>{E.formula.value=sheet().cells.get(ref())?.f?'='+sheet().cells.get(ref()).f:(sheet().cells.get(ref())?.v??'')};E.formula.onkeydown=e=>{if(e.key==='Enter'&&book.loaded){e.preventDefault();commitValue(E.formula.value);E.viewport.focus()}else if(e.key==='Escape'){refreshSelection();E.viewport.focus()}};
+E.name.onkeydown=e=>{if(e.key==='Enter'&&book.loaded){const p=LocalXLSX.decodeRef(E.name.value.toUpperCase());select(p.r,p.c);E.viewport.focus()}};
+refreshUndoState();E.bold.onclick=()=>toggleFont('bold');E.italic.onclick=()=>toggleFont('italic');E.underline.onclick=()=>toggleFont('underline');E.alignLeft.onclick=()=>setAlignment('left');E.alignCenter.onclick=()=>setAlignment('center');E.alignRight.onclick=()=>setAlignment('right');E.fontFamily.onchange=()=>formatSelection(c=>{c.style.font=c.style.font||{};c.style.font.name=E.fontFamily.value});E.fontSize.onchange=()=>formatSelection(c=>{c.style.font=c.style.font||{};c.style.font.size=Number(E.fontSize.value)});E.merge.onclick=toggleMerge;E.addRow.onclick=insertRow;E.addCol.onclick=insertColumn;E.deleteCells.onclick=clearSelection;E.deleteRow.onclick=deleteRows;E.deleteCol.onclick=deleteColumns;E.operations.onchange=()=>{const v=E.operations.value;E.operations.value='';if(v)applyNumericOperation(v)};E.undo.onclick=undo;E.redo.onclick=redo;
+E.gridMode.onclick=()=>setView('grid');E.formMode.onclick=()=>setView('form');E.gridlines.onclick=()=>{showGridlines=!showGridlines;applyViewClasses();toast(showGridlines?'Gridlines shown':'Gridlines hidden')};E.zoomOut.onclick=()=>setZoom(zoom-10);E.zoomIn.onclick=()=>setZoom(zoom+10);E.zoomSlider.oninput=()=>setZoom(+E.zoomSlider.value);E.fitWidth.onclick=fitWidth;window.addEventListener('keydown',keydown);window.addEventListener('beforeunload',e=>{if(!dirty)return;e.preventDefault();e.returnValue=''});window.addEventListener('pagehide',()=>revokeWorkbookObjectUrls(book),{once:true});window.addEventListener('pointerup',endDragSelection);window.addEventListener('copy',copySelection);window.addEventListener('paste',pasteSelection);
+document.body.classList.add('sheet-view');applyViewClasses();safeBoot();
+})();
