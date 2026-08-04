@@ -1,45 +1,52 @@
-name: Apply validated update patch
+name: Apply validated update bundle
 
-run-name: Apply patch to ${{ inputs.target_branch }} from ${{ inputs.base_ref }}
+run-name: Create ${{ inputs.target_branch }} from validated update bundle
 
 on:
   workflow_dispatch:
     inputs:
       base_ref:
-        description: Base branch that will remain unchanged
+        description: Branch that will remain unchanged
         required: true
         default: main
         type: string
+
       payload_ref:
-        description: Branch containing the patch file
+        description: Branch containing the update bundle
         required: true
         default: update/payload-0.19.1-beta
         type: string
-      patch_path:
-        description: Relative path of the patch file in the payload branch
+
+      bundle_path:
+        description: Bundle file located in the payload branch
         required: true
-        default: InkDesk_0.19.1-beta_hardening.patch
+        default: InkDesk_0.19.1-beta_hardening.bundle
         type: string
-      patch_sha256:
-        description: Expected SHA-256 of the patch file
+
+      bundle_sha256:
+        description: Expected SHA-256 of the bundle
         required: true
-        default: 41e922c8a4122de1a68379eaa0b4323b7ba0bb646fdd1bcfc2176c399549a2ad
+        default: 19e60fef1bcc1b596d4ddc933f1e32ba35cbdd5038d865cc245bb8cc6fc56449
         type: string
+
+      bundle_commit:
+        description: Exact final commit contained in the bundle
+        required: true
+        default: cf96539b36c277f1ac4af54147da49f3ac5c4fef
+        type: string
+
       target_branch:
         description: New branch to create; it must not already exist
         required: true
         default: hardening/0.19.1-beta
         type: string
-      expected_base_sha:
-        description: Optional exact base commit; leave empty to use the current base branch head
-        required: false
-        default: "538c99d7c09566644d2095aaf33305b890a4b4c7"
-        type: string
+
       run_browser_tests:
-        description: Run the five isolated Chromium regression groups before creating the branch
+        description: Run Chromium browser regression tests
         required: true
         default: true
         type: boolean
+
       draft_pr:
         description: Open the pull request as a draft
         required: true
@@ -50,32 +57,33 @@ permissions:
   contents: read
 
 concurrency:
-  group: apply-update-${{ inputs.target_branch }}
+  group: apply-update-bundle-${{ inputs.target_branch }}
   cancel-in-progress: false
 
 env:
-  PATCH_MAX_BYTES: "10485760"
+  BUNDLE_MAX_BYTES: "10485760"
   PLAYWRIGHT_VERSION: "1.57.0"
   BEAUTIFULSOUP_VERSION: "4.14.3"
   OPENPYXL_VERSION: "3.1.5"
 
 jobs:
   validate:
-    name: Validate patch and static test suite
+    name: Validate bundle and run tests
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 45
+
     permissions:
       contents: read
+
     outputs:
-      base_sha: ${{ steps.metadata.outputs.base_sha }}
-      main_sha: ${{ steps.metadata.outputs.main_sha }}
-      payload_sha: ${{ steps.metadata.outputs.payload_sha }}
-      patch_sha256: ${{ steps.metadata.outputs.patch_sha256 }}
-      changed_files: ${{ steps.metadata.outputs.changed_files }}
+      base_sha: ${{ steps.prepare.outputs.base_sha }}
+      payload_sha: ${{ steps.prepare.outputs.payload_sha }}
+      bundle_sha256: ${{ steps.prepare.outputs.bundle_sha256 }}
+      final_commit: ${{ steps.prepare.outputs.final_commit }}
 
     steps:
-      - name: Check out the base branch without write credentials
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Check out the current base branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ inputs.base_ref }}
           fetch-depth: 0
@@ -92,15 +100,15 @@ jobs:
           node-version: "22"
           package-manager-cache: false
 
-      - name: Validate inputs and obtain the checksum-pinned patch
-        id: metadata
+      - name: Validate inputs and obtain bundle
+        id: prepare
         shell: bash
         env:
           BASE_REF: ${{ inputs.base_ref }}
-          EXPECTED_BASE_SHA: ${{ inputs.expected_base_sha }}
           PAYLOAD_REF: ${{ inputs.payload_ref }}
-          PATCH_PATH: ${{ inputs.patch_path }}
-          EXPECTED_PATCH_SHA256: ${{ inputs.patch_sha256 }}
+          BUNDLE_PATH: ${{ inputs.bundle_path }}
+          EXPECTED_BUNDLE_SHA256: ${{ inputs.bundle_sha256 }}
+          EXPECTED_BUNDLE_COMMIT: ${{ inputs.bundle_commit }}
           TARGET_BRANCH: ${{ inputs.target_branch }}
         run: |
           set -Eeuo pipefail
@@ -108,6 +116,7 @@ jobs:
           validate_branch() {
             local value="$1"
             local label="$2"
+
             if [[ -z "$value" ]] || ! git check-ref-format --branch "$value" >/dev/null 2>&1; then
               echo "Invalid ${label}: ${value}" >&2
               exit 1
@@ -119,456 +128,477 @@ jobs:
           validate_branch "$TARGET_BRANCH" "target branch"
 
           if [[ "$TARGET_BRANCH" == "$BASE_REF" || "$TARGET_BRANCH" == "$PAYLOAD_REF" ]]; then
-            echo "The target branch must be different from the base and payload branches." >&2
+            echo "The target branch must differ from the base and payload branches." >&2
             exit 1
           fi
 
-          if [[ "$PATCH_PATH" == /* || "$PATCH_PATH" == *".."* || "$PATCH_PATH" == *":"* || "$PATCH_PATH" == *"\\"* || "$PATCH_PATH" != *.patch ]]; then
-            echo "The patch path must be a safe relative path ending in .patch." >&2
+          if [[ "$BUNDLE_PATH" == /* ||
+                "$BUNDLE_PATH" == *".."* ||
+                "$BUNDLE_PATH" == *":"* ||
+                "$BUNDLE_PATH" == *"\\"* ||
+                "$BUNDLE_PATH" != *.bundle ]]; then
+            echo "The bundle path must be a safe relative path ending in .bundle." >&2
             exit 1
           fi
 
-          expected_patch_sha="${EXPECTED_PATCH_SHA256,,}"
-          if [[ ! "$expected_patch_sha" =~ ^[0-9a-f]{64}$ ]]; then
-            echo "patch_sha256 must contain exactly 64 hexadecimal characters." >&2
+          expected_sha="${EXPECTED_BUNDLE_SHA256,,}"
+
+          if [[ ! "$expected_sha" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "bundle_sha256 must contain exactly 64 hexadecimal characters." >&2
             exit 1
           fi
 
-          main_sha="$(git rev-parse HEAD^{commit})"
-          base_sha="$main_sha"
-
-          if [[ -n "$EXPECTED_BASE_SHA" && "$main_sha" != "$EXPECTED_BASE_SHA" ]]; then
-            if ! git cat-file -e "${EXPECTED_BASE_SHA}^{commit}" 2>/dev/null; then
-              echo "The expected patch base commit is not available locally: $EXPECTED_BASE_SHA" >&2
-              exit 1
-            fi
-
-            if ! git merge-base --is-ancestor "$EXPECTED_BASE_SHA" "$main_sha"; then
-              echo "The expected patch base is not an ancestor of the current base branch." >&2
-              echo "Expected patch base: $EXPECTED_BASE_SHA" >&2
-              echo "Current base head:  $main_sha" >&2
-              exit 1
-            fi
-
-            mapfile -t base_changes < <(git diff --name-only "$EXPECTED_BASE_SHA..$main_sha")
-            allowed_installer=".github/workflows/apply-update-patch.yml"
-
-            if (( ${#base_changes[@]} != 1 )) || [[ "${base_changes[0]}" != "$allowed_installer" ]]; then
-              echo "The current base branch contains changes other than the temporary installer workflow." >&2
-              echo "This patch was created for: $EXPECTED_BASE_SHA" >&2
-              echo "Current base head:          $main_sha" >&2
-              echo "Files changed since the expected base:" >&2
-              printf '  - %s\n' "${base_changes[@]}" >&2
-              echo "Generate a patch for the current main or restore the expected base before retrying." >&2
-              exit 1
-            fi
-
-            echo "::notice::The current main differs from the patch base only by the temporary installer workflow."
-            git checkout --detach "$EXPECTED_BASE_SHA"
-            base_sha="$EXPECTED_BASE_SHA"
+          if [[ ! "$EXPECTED_BUNDLE_COMMIT" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "bundle_commit must contain exactly 40 hexadecimal characters." >&2
+            exit 1
           fi
 
           if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
-            echo "Target branch already exists: $TARGET_BRANCH" >&2
+            echo "The target branch already exists: $TARGET_BRANCH" >&2
+            echo "Delete it or choose another target branch before retrying." >&2
             exit 1
           fi
+
+          base_sha="$(git rev-parse HEAD^{commit})"
 
           git fetch --no-tags --prune origin \
             "+refs/heads/${PAYLOAD_REF}:refs/remotes/origin/${PAYLOAD_REF}"
+
           payload_sha="$(git rev-parse "refs/remotes/origin/${PAYLOAD_REF}^{commit}")"
 
-          patch_file="$RUNNER_TEMP/inkdesk-update.patch"
-          git show "refs/remotes/origin/${PAYLOAD_REF}:${PATCH_PATH}" > "$patch_file"
+          bundle_file="$RUNNER_TEMP/inkdesk-update.bundle"
 
-          patch_bytes="$(wc -c < "$patch_file")"
-          if (( patch_bytes == 0 || patch_bytes > PATCH_MAX_BYTES )); then
-            echo "Patch size is outside the permitted range: ${patch_bytes} bytes." >&2
+          git show \
+            "refs/remotes/origin/${PAYLOAD_REF}:${BUNDLE_PATH}" \
+            > "$bundle_file"
+
+          bundle_bytes="$(wc -c < "$bundle_file" | tr -d ' ')"
+
+          if (( bundle_bytes == 0 || bundle_bytes > BUNDLE_MAX_BYTES )); then
+            echo "Bundle size is outside the permitted range: ${bundle_bytes} bytes." >&2
             exit 1
           fi
 
-          actual_patch_sha="$(sha256sum "$patch_file" | awk '{print $1}')"
-          if [[ "$actual_patch_sha" != "$expected_patch_sha" ]]; then
-            echo "Patch checksum mismatch." >&2
-            echo "Expected: $expected_patch_sha" >&2
-            echo "Actual:   $actual_patch_sha" >&2
+          actual_sha="$(sha256sum "$bundle_file" | awk '{print $1}')"
+
+          if [[ "$actual_sha" != "$expected_sha" ]]; then
+            echo "Bundle checksum mismatch." >&2
+            echo "Expected: $expected_sha" >&2
+            echo "Actual:   $actual_sha" >&2
             exit 1
           fi
 
-          PATCH_FILE="$patch_file" python3 - <<'PY'
-          from __future__ import annotations
+          mapfile -t bundle_heads < <(git bundle list-heads "$bundle_file")
 
-          import os
-          import re
-          from pathlib import PurePosixPath
+          expected_line="${EXPECTED_BUNDLE_COMMIT} refs/heads/hardening/0.19.1-beta"
 
-          patch_path = os.environ["PATCH_FILE"]
-          data = open(patch_path, "rb").read()
-          if b"\x00" in data:
-              raise SystemExit("Patch contains a NUL byte.")
-
-          text = data.decode("utf-8", "strict")
-          paths: set[str] = set()
-          header = re.compile(r"^diff --git a/(.+) b/(.+)$")
-
-          for line in text.splitlines():
-              match = header.match(line)
-              if not match:
-                  continue
-              for raw in match.groups():
-                  path = PurePosixPath(raw)
-                  if path.is_absolute() or ".." in path.parts:
-                      raise SystemExit(f"Unsafe path in patch: {raw}")
-                  if not path.parts or path.parts[0] == ".git":
-                      raise SystemExit(f"Forbidden path in patch: {raw}")
-                  if raw == ".gitmodules":
-                      raise SystemExit("The patch may not add or modify .gitmodules.")
-                  if any(ord(char) < 32 for char in raw):
-                      raise SystemExit(f"Control character in patch path: {raw!r}")
-                  paths.add(raw)
-
-          if not paths:
-              raise SystemExit("No file changes were found in the patch.")
-          if len(paths) > 500:
-              raise SystemExit(f"Patch changes too many files: {len(paths)}")
-
-          print(f"Patch path inventory accepted: {len(paths)} files")
-          for path in sorted(paths):
-              print(path)
-          PY
-
-          git apply --check --binary --3way "$patch_file"
-          git apply --binary --3way --index --whitespace=nowarn "$patch_file"
-
-          # This one-use installer is removed from the proposed update tree so
-          # the supplied package and CHECKSUMS.sha256 remain exact.
-          git rm --force --ignore-unmatch .github/workflows/apply-update-patch.yml
-
-          whitespace_report="$(git diff --cached --check 2>&1 || true)"
-          if [[ -n "$whitespace_report" ]]; then
-            unexpected_whitespace="$(printf '%s\n' "$whitespace_report" | grep -vE '^[^:]+:[0-9]+: new blank line at EOF\.$' || true)"
-            if [[ -n "$unexpected_whitespace" ]]; then
-              echo "Unexpected whitespace errors were introduced:" >&2
-              printf '%s\n' "$unexpected_whitespace" >&2
-              exit 1
-            fi
-            echo "::notice::The supplied checksum-pinned patch contains a trailing blank line at EOF; no other whitespace errors were found."
-          fi
-
-          if git diff --cached --quiet; then
-            echo "The patch produced no staged changes." >&2
+          if (( ${#bundle_heads[@]} != 1 )); then
+            echo "The bundle must expose exactly one branch." >&2
+            printf '%s\n' "${bundle_heads[@]}" >&2
             exit 1
           fi
 
-          if git diff --cached --summary | grep -Eq 'mode (120000|160000)'; then
-            echo "Symbolic links and submodules are not permitted in this update." >&2
-            git diff --cached --summary >&2
+          if [[ "${bundle_heads[0]}" != "$expected_line" ]]; then
+            echo "The bundle contains an unexpected branch or commit." >&2
+            echo "Expected: $expected_line" >&2
+            echo "Actual:   ${bundle_heads[0]}" >&2
             exit 1
           fi
 
-          changed_files="$(git diff --cached --name-only | wc -l | tr -d ' ')"
           echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
-          echo "main_sha=$main_sha" >> "$GITHUB_OUTPUT"
           echo "payload_sha=$payload_sha" >> "$GITHUB_OUTPUT"
-          echo "patch_sha256=$actual_patch_sha" >> "$GITHUB_OUTPUT"
-          echo "changed_files=$changed_files" >> "$GITHUB_OUTPUT"
+          echo "bundle_sha256=$actual_sha" >> "$GITHUB_OUTPUT"
+          echo "final_commit=${EXPECTED_BUNDLE_COMMIT,,}" >> "$GITHUB_OUTPUT"
 
           {
-            echo "### Validated update input"
+            echo "### Validated update bundle"
             echo
             echo "- Base branch: \`$BASE_REF\`"
-            echo "- Current base head: \`$main_sha\`"
-            echo "- Patch base commit: \`$base_sha\`"
+            echo "- Base commit: \`$base_sha\`"
             echo "- Payload branch: \`$PAYLOAD_REF\`"
             echo "- Payload commit: \`$payload_sha\`"
-            echo "- Patch: \`$PATCH_PATH\`"
-            echo "- Patch SHA-256: \`$actual_patch_sha\`"
-            echo "- Changed files: \`$changed_files\`"
+            echo "- Bundle: \`$BUNDLE_PATH\`"
+            echo "- Bundle SHA-256: \`$actual_sha\`"
+            echo "- Final bundled commit: \`${EXPECTED_BUNDLE_COMMIT,,}\`"
             echo "- Requested target branch: \`$TARGET_BRANCH\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          git diff --cached --name-status
+      - name: Import the final tree from the bundle
+        shell: bash
+        env:
+          EXPECTED_COMMIT: ${{ inputs.bundle_commit }}
+        run: |
+          set -Eeuo pipefail
 
-      - name: Run repository integrity and static validation
+          bundle_file="$RUNNER_TEMP/inkdesk-update.bundle"
+          final_tree="$RUNNER_TEMP/final-tree"
+
+          rm -rf "$final_tree"
+
+          git clone \
+            --no-checkout \
+            "$bundle_file" \
+            "$final_tree"
+
+          cd "$final_tree"
+
+          actual_commit="$(git rev-parse HEAD^{commit})"
+
+          if [[ "$actual_commit" != "${EXPECTED_COMMIT,,}" ]]; then
+            echo "Imported commit does not match the expected commit." >&2
+            echo "Expected: ${EXPECTED_COMMIT,,}" >&2
+            echo "Actual:   $actual_commit" >&2
+            exit 1
+          fi
+
+          git checkout --detach "$actual_commit"
+
+          if [[ -f .gitmodules ]]; then
+            echo "The final update tree may not contain .gitmodules." >&2
+            exit 1
+          fi
+
+          if find . -type l -print -quit | grep -q .; then
+            echo "The final update tree may not contain symbolic links." >&2
+            exit 1
+          fi
+
+          if [[ -e .github/workflows/apply-update-patch.yml ]]; then
+            echo "The temporary installer workflow unexpectedly exists in the final tree." >&2
+            exit 1
+          fi
+
+          git status --short
+
+      - name: Install test dependencies
+        working-directory: ${{ runner.temp }}/final-tree
         shell: bash
         run: |
           set -Eeuo pipefail
+
+          python3 -m pip install --disable-pip-version-check \
+            "beautifulsoup4==${BEAUTIFULSOUP_VERSION}" \
+            "openpyxl==${OPENPYXL_VERSION}" \
+            "playwright==${PLAYWRIGHT_VERSION}"
+
+          if [[ -f package-lock.json ]]; then
+            npm ci
+          elif [[ -f package.json ]]; then
+            npm install --ignore-scripts
+          fi
+
+      - name: Run repository validation
+        working-directory: ${{ runner.temp }}/final-tree
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
           python3 scripts/verify_checksums.py
           python3 scripts/validate_repository.py
           python3 scripts/audit_source.py
           node tests/js/security-modules.test.js
           python3 -m unittest discover -s tests -p "test_*.py"
           python3 -m unittest tests.test_release_packaging -v
+
+      - name: Check JavaScript syntax
+        working-directory: ${{ runner.temp }}/final-tree
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
           while IFS= read -r -d '' file; do
             node --check "$file"
-          done < <(find apps shared -type f -name '*.js' -print0)
+          done < <(
+            find apps shared \
+              -type f \
+              -name '*.js' \
+              -print0
+          )
 
-      - name: Confirm validation did not alter the proposed update
+      - name: Install Chromium
+        if: ${{ inputs.run_browser_tests }}
+        working-directory: ${{ runner.temp }}/final-tree
         shell: bash
         run: |
           set -Eeuo pipefail
-          git diff --check
-          if [[ -n "$(git diff --name-only)" ]]; then
-            echo "Validation modified tracked files unexpectedly:" >&2
-            git diff --name-status >&2
-            exit 1
-          fi
-
-  browser:
-    name: Chromium / ${{ matrix.group }}
-    if: ${{ inputs.run_browser_tests }}
-    needs: validate
-    runs-on: ubuntu-24.04
-    timeout-minutes: 35
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        group:
-          - package-security
-          - lifecycle
-          - isolation-offline
-          - documents-presentations
-          - spreadsheets
-
-    steps:
-      - name: Check out the exact validated base commit
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          ref: ${{ needs.validate.outputs.base_sha }}
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-
-      - name: Re-obtain and apply the validated patch
-        shell: bash
-        env:
-          PAYLOAD_REF: ${{ inputs.payload_ref }}
-          EXPECTED_PAYLOAD_SHA: ${{ needs.validate.outputs.payload_sha }}
-          PATCH_PATH: ${{ inputs.patch_path }}
-          EXPECTED_PATCH_SHA256: ${{ needs.validate.outputs.patch_sha256 }}
-        run: |
-          set -Eeuo pipefail
-          git fetch --no-tags origin \
-            "+refs/heads/${PAYLOAD_REF}:refs/remotes/origin/${PAYLOAD_REF}"
-          actual_payload_sha="$(git rev-parse "refs/remotes/origin/${PAYLOAD_REF}^{commit}")"
-          test "$actual_payload_sha" = "$EXPECTED_PAYLOAD_SHA"
-
-          patch_file="$RUNNER_TEMP/inkdesk-update.patch"
-          git show "refs/remotes/origin/${PAYLOAD_REF}:${PATCH_PATH}" > "$patch_file"
-          actual_patch_sha="$(sha256sum "$patch_file" | awk '{print $1}')"
-          test "$actual_patch_sha" = "$EXPECTED_PATCH_SHA256"
-          git apply --check --binary --3way "$patch_file"
-          git apply --binary --3way --whitespace=nowarn "$patch_file"
-          rm -f -- .github/workflows/apply-update-patch.yml
-
-      - name: Install pinned browser-test dependencies
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          python3 -m pip install --disable-pip-version-check \
-            "playwright==${PLAYWRIGHT_VERSION}" \
-            "beautifulsoup4==${BEAUTIFULSOUP_VERSION}" \
-            "openpyxl==${OPENPYXL_VERSION}"
           python3 -m playwright install --with-deps chromium
 
-      - name: Run isolated Chromium regression group
+      - name: Run Chromium browser regressions
+        if: ${{ inputs.run_browser_tests }}
+        working-directory: ${{ runner.temp }}/final-tree
+        shell: bash
         env:
           PLAYWRIGHT_BROWSER: chromium
-          CHROMIUM_PATH: ""
-        run: python3 scripts/run_browser_regressions.py --group "${{ matrix.group }}"
+        run: |
+          set -Eeuo pipefail
 
-  publish_branch:
+          python3 scripts/run_browser_regressions.py --group package-security
+          python3 scripts/run_browser_regressions.py --group lifecycle
+          python3 scripts/run_browser_regressions.py --group isolation-offline
+          python3 scripts/run_browser_regressions.py --group documents-presentations
+          python3 scripts/run_browser_regressions.py --group spreadsheets
+
+      - name: Create validated tree artifact
+        shell: bash
+        env:
+          EXPECTED_COMMIT: ${{ inputs.bundle_commit }}
+        run: |
+          set -Eeuo pipefail
+
+          final_tree="$RUNNER_TEMP/final-tree"
+          artifact="$RUNNER_TEMP/inkdesk-validated-tree.tar"
+
+          tar \
+            --exclude='.git' \
+            --format=posix \
+            -C "$final_tree" \
+            -cf "$artifact" \
+            .
+
+          artifact_sha="$(sha256sum "$artifact" | awk '{print $1}')"
+
+          printf '%s\n' "$artifact_sha" \
+            > "$RUNNER_TEMP/inkdesk-validated-tree.tar.sha256"
+
+          printf '%s\n' "${EXPECTED_COMMIT,,}" \
+            > "$RUNNER_TEMP/inkdesk-validated-tree.commit"
+
+          {
+            echo
+            echo "### Validation completed"
+            echo
+            echo "- All selected validation steps passed."
+            echo "- Validated tree artifact SHA-256: \`$artifact_sha\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload validated tree
+        uses: actions/upload-artifact@v4
+        with:
+          name: inkdesk-validated-tree
+          path: |
+            ${{ runner.temp }}/inkdesk-validated-tree.tar
+            ${{ runner.temp }}/inkdesk-validated-tree.tar.sha256
+            ${{ runner.temp }}/inkdesk-validated-tree.commit
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+  publish:
     name: Create branch and draft pull request
-    needs: [validate, browser]
-    if: >-
-      ${{
-        always() &&
-        needs.validate.result == 'success' &&
-        (needs.browser.result == 'success' || needs.browser.result == 'skipped')
-      }}
+    needs: validate
+
+    if: ${{ needs.validate.result == 'success' }}
+
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
+
     permissions:
       contents: write
       pull-requests: write
 
     steps:
       - name: Check out the exact validated base commit
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ needs.validate.outputs.base_sha }}
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Re-verify the immutable inputs and create the new branch
+      - name: Download validated tree
+        uses: actions/download-artifact@v4
+        with:
+          name: inkdesk-validated-tree
+          path: ${{ runner.temp }}/validated-artifact
+
+      - name: Verify artifact and create the new branch
         id: branch
         shell: bash
         env:
-          BASE_REF: ${{ inputs.base_ref }}
-          PAYLOAD_REF: ${{ inputs.payload_ref }}
-          EXPECTED_PAYLOAD_SHA: ${{ needs.validate.outputs.payload_sha }}
-          PATCH_PATH: ${{ inputs.patch_path }}
-          EXPECTED_PATCH_SHA256: ${{ needs.validate.outputs.patch_sha256 }}
           TARGET_BRANCH: ${{ inputs.target_branch }}
-          BASE_SHA: ${{ needs.validate.outputs.base_sha }}
-          MAIN_SHA: ${{ needs.validate.outputs.main_sha }}
+          BASE_REF: ${{ inputs.base_ref }}
+          EXPECTED_BASE_SHA: ${{ needs.validate.outputs.base_sha }}
+          EXPECTED_FINAL_COMMIT: ${{ needs.validate.outputs.final_commit }}
+          EXPECTED_BUNDLE_SHA: ${{ needs.validate.outputs.bundle_sha256 }}
         run: |
           set -Eeuo pipefail
 
-          if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
-            echo "Target branch appeared after validation and will not be overwritten: $TARGET_BRANCH" >&2
+          artifact_dir="$RUNNER_TEMP/validated-artifact"
+          artifact="$artifact_dir/inkdesk-validated-tree.tar"
+
+          expected_artifact_sha="$(
+            tr -d '[:space:]' \
+              < "$artifact_dir/inkdesk-validated-tree.tar.sha256"
+          )"
+
+          actual_artifact_sha="$(
+            sha256sum "$artifact" |
+            awk '{print $1}'
+          )"
+
+          if [[ "$actual_artifact_sha" != "$expected_artifact_sha" ]]; then
+            echo "Validated tree artifact checksum mismatch." >&2
             exit 1
           fi
 
-          test "$(git rev-parse HEAD^{commit})" = "$BASE_SHA"
+          artifact_commit="$(
+            tr -d '[:space:]' \
+              < "$artifact_dir/inkdesk-validated-tree.commit"
+          )"
 
-          git fetch --no-tags origin \
-            "+refs/heads/${PAYLOAD_REF}:refs/remotes/origin/${PAYLOAD_REF}"
-          actual_payload_sha="$(git rev-parse "refs/remotes/origin/${PAYLOAD_REF}^{commit}")"
-          test "$actual_payload_sha" = "$EXPECTED_PAYLOAD_SHA"
+          if [[ "$artifact_commit" != "$EXPECTED_FINAL_COMMIT" ]]; then
+            echo "Validated tree commit metadata mismatch." >&2
+            exit 1
+          fi
 
-          patch_file="$RUNNER_TEMP/inkdesk-update.patch"
-          git show "refs/remotes/origin/${PAYLOAD_REF}:${PATCH_PATH}" > "$patch_file"
-          actual_patch_sha="$(sha256sum "$patch_file" | awk '{print $1}')"
-          test "$actual_patch_sha" = "$EXPECTED_PATCH_SHA256"
+          current_base_sha="$(git rev-parse HEAD^{commit})"
+
+          if [[ "$current_base_sha" != "$EXPECTED_BASE_SHA" ]]; then
+            echo "The checked-out base commit differs from the validated commit." >&2
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
+            echo "The target branch already exists: $TARGET_BRANCH" >&2
+            exit 1
+          fi
 
           git switch --create "$TARGET_BRANCH"
-          git apply --check --binary --3way "$patch_file"
-          git apply --binary --3way --index --whitespace=nowarn "$patch_file"
-          git rm --force --ignore-unmatch .github/workflows/apply-update-patch.yml
-
-          whitespace_report="$(git diff --cached --check 2>&1 || true)"
-          unexpected_whitespace="$(printf '%s\n' "$whitespace_report" | grep -vE '^[^:]+:[0-9]+: new blank line at EOF\.$' || true)"
-          if [[ -n "$unexpected_whitespace" ]]; then
-            echo "Unexpected whitespace errors were introduced:" >&2
-            printf '%s\n' "$unexpected_whitespace" >&2
-            exit 1
-          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Apply InkDesk 0.19.1-beta hardening update"
-          commit_sha="$(git rev-parse HEAD)"
-          git push --set-upstream origin "HEAD:refs/heads/${TARGET_BRANCH}"
 
-          branch_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${TARGET_BRANCH}"
-          echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
-          echo "branch_url=$branch_url" >> "$GITHUB_OUTPUT"
+          git rm -r --ignore-unmatch .
+
+          find . \
+            -mindepth 1 \
+            -maxdepth 1 \
+            ! -name '.git' \
+            -exec rm -rf -- {} +
+
+          tar \
+            -C . \
+            -xf "$artifact"
+
+          if [[ -e .github/workflows/apply-update-patch.yml ]]; then
+            echo "The temporary workflow unexpectedly exists in the final tree." >&2
+            exit 1
+          fi
+
+          git add --all
+
+          if git diff --cached --quiet; then
+            echo "The validated final tree produces no changes." >&2
+            exit 1
+          fi
+
+          git commit \
+            -m "Apply InkDesk 0.19.1-beta hardening update" \
+            -m "Validated bundle commit: $EXPECTED_FINAL_COMMIT" \
+            -m "Validated bundle SHA-256: $EXPECTED_BUNDLE_SHA"
+
+          created_commit="$(git rev-parse HEAD^{commit})"
+
+          git push origin \
+            "HEAD:refs/heads/${TARGET_BRANCH}"
+
+          echo "created_commit=$created_commit" >> "$GITHUB_OUTPUT"
 
           {
             echo "### Update branch created"
             echo
             echo "- Branch: \`$TARGET_BRANCH\`"
-            echo "- Commit: \`$commit_sha\`"
-            echo "- Patch base commit: \`$BASE_SHA\`"
-            echo "- Current main head at validation: \`$MAIN_SHA\`"
-            echo "- Branch URL: $branch_url"
-            echo
-            echo "No tag, release, or merge was created."
+            echo "- Commit: \`$created_commit\`"
+            echo "- Base commit: \`$EXPECTED_BASE_SHA\`"
+            echo "- Bundled source commit: \`$EXPECTED_FINAL_COMMIT\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Open a pull request when repository settings allow it
+      - name: Open pull request
         id: pull_request
+        continue-on-error: true
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           BASE_REF: ${{ inputs.base_ref }}
           TARGET_BRANCH: ${{ inputs.target_branch }}
-          BASE_SHA: ${{ needs.validate.outputs.base_sha }}
-          MAIN_SHA: ${{ needs.validate.outputs.main_sha }}
-          PAYLOAD_REF: ${{ inputs.payload_ref }}
-          PAYLOAD_SHA: ${{ needs.validate.outputs.payload_sha }}
-          PATCH_PATH: ${{ inputs.patch_path }}
-          PATCH_SHA256: ${{ needs.validate.outputs.patch_sha256 }}
-          CHANGED_FILES: ${{ needs.validate.outputs.changed_files }}
           DRAFT_PR: ${{ inputs.draft_pr }}
-          BRANCH_URL: ${{ steps.branch.outputs.branch_url }}
+          BASE_SHA: ${{ needs.validate.outputs.base_sha }}
+          PAYLOAD_SHA: ${{ needs.validate.outputs.payload_sha }}
+          BUNDLE_SHA: ${{ needs.validate.outputs.bundle_sha256 }}
+          FINAL_COMMIT: ${{ needs.validate.outputs.final_commit }}
+          CREATED_COMMIT: ${{ steps.branch.outputs.created_commit }}
         run: |
           set -Eeuo pipefail
 
-          body_file="$RUNNER_TEMP/pull-request-body.md"
-          cat > "$body_file" <<EOF
+          cat > "$RUNNER_TEMP/pr-body.md" <<EOF
           ## Summary
 
-          Applies the checksum-pinned InkDesk 0.19.1-beta hardening patch in a dedicated branch.
+          Applies the supplied and checksum-validated InkDesk 0.19.1-beta hardening tree in a new branch.
 
-          ## Provenance
+          The update was imported from the supplied Git bundle, validated with the repository test suite, and committed on top of the current validated \`${BASE_REF}\` commit.
 
-          - Base branch: \`$BASE_REF\`
-          - Current base head at validation: \`$MAIN_SHA\`
-          - Patch base commit: \`$BASE_SHA\`
-          - Payload branch: \`$PAYLOAD_REF\`
-          - Payload commit: \`$PAYLOAD_SHA\`
-          - Patch path: \`$PATCH_PATH\`
-          - Patch SHA-256: \`$PATCH_SHA256\`
-          - Changed files: \`$CHANGED_FILES\`
+          ## Validation metadata
 
-          ## Automated validation
+          - Base commit: \`${BASE_SHA}\`
+          - Payload commit: \`${PAYLOAD_SHA}\`
+          - Bundle SHA-256: \`${BUNDLE_SHA}\`
+          - Bundled source commit: \`${FINAL_COMMIT}\`
+          - Created repository commit: \`${CREATED_COMMIT}\`
 
-          - Repository checksum verification
-          - Repository structure validation
-          - Source risk audit
-          - Direct JavaScript security assertions
-          - Python unit/package tests
-          - Deterministic release-packaging test
-          - First-party JavaScript syntax checks
-          - Five isolated Chromium regression groups, unless explicitly disabled at dispatch time
+          ## Safety
 
-          ## Safety properties
+          - The base branch was not modified.
+          - No tag or release was created.
+          - The target branch did not exist before this workflow.
+          - The write-enabled job did not execute code from the proposed update.
+          - Merge remains a manual repository-owner decision.
 
-          - The base branch was not modified by this workflow.
-          - The target branch did not exist before publication.
-          - The patch was applied only after its SHA-256 matched.
-          - Tests ran in read-only jobs.
-          - The write-enabled job did not execute modified project code.
-          - The one-use installer workflow is removed from the proposed update tree.
-          - No merge, tag, or release was created.
+          ## Manual validation still required
 
-          ## Manual review
-
-          Review the complete diff and required status checks before merging. Native Safari/iPadOS validation remains separate.
+          - Native Safari and physical iPadOS
+          - Installed PWA behavior
+          - Advanced Microsoft Office compatibility
           EOF
 
-          args=(
-            pr create
-            --base "$BASE_REF"
-            --head "$TARGET_BRANCH"
-            --title "Harden document lifecycle and Office parsing for 0.19.1-beta"
-            --body-file "$body_file"
-          )
+          draft_argument=()
+
           if [[ "$DRAFT_PR" == "true" ]]; then
-            args+=(--draft)
+            draft_argument+=(--draft)
           fi
 
-          set +e
-          output="$(gh "${args[@]}" 2>&1)"
-          status=$?
-          set -e
+          pr_url="$(
+            gh pr create \
+              --base "$BASE_REF" \
+              --head "$TARGET_BRANCH" \
+              --title "Apply InkDesk 0.19.1-beta hardening update" \
+              --body-file "$RUNNER_TEMP/pr-body.md" \
+              "${draft_argument[@]}"
+          )"
 
-          if (( status == 0 )); then
-            pr_url="$(printf '%s\n' "$output" | tail -n 1)"
-            echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
-            {
-              echo
-              echo "### Pull request"
-              echo
-              echo "$pr_url"
-            } >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "::warning::The branch was created, but GitHub did not allow this workflow to open the pull request."
-            printf '%s\n' "$output" >&2
-            {
-              echo
-              echo "### Pull request was not opened automatically"
-              echo
-              echo "The validated branch exists at: $BRANCH_URL"
-              echo
-              echo "Open a pull request manually from \`$TARGET_BRANCH\` into \`$BASE_REF\`."
-              echo "Repository setting to check: Settings → Actions → General → Allow GitHub Actions to create and approve pull requests."
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+
+          {
+            echo
+            echo "### Pull request"
+            echo
+            echo "- URL: $pr_url"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Explain manual pull request creation when needed
+        if: ${{ steps.pull_request.outcome == 'failure' }}
+        shell: bash
+        env:
+          BASE_REF: ${{ inputs.base_ref }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          {
+            echo
+            echo "### Branch created, but the pull request was not opened automatically"
+            echo
+            echo "The update branch was pushed successfully."
+            echo
+            echo "Open the following comparison page and create the pull request manually:"
+            echo
+            echo "https://github.com/${GITHUB_REPOSITORY}/compare/${BASE_REF}...${TARGET_BRANCH}?expand=1"
+            echo
+            echo "The usual cause is that repository settings do not allow GitHub Actions to create pull requests."
+          } >> "$GITHUB_STEP_SUMMARY"
