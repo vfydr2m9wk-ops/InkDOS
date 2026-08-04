@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Documents — InkDesk 0.19.0-beta</title>
+  <link rel="stylesheet" href="styles.css?v=0.19.0-beta">
+  <link rel="stylesheet" href="../../shared/office-shell.css?v=0.19.0-beta">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/office.png">
+</head>
+<body class="office-product office-documents">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="left-tools">
+        <button id="newBtn" class="icon-btn" type="button" title="New document" aria-label="New document">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <label class="icon-btn" for="fileInput" title="Open document" aria-label="Open document">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h6l2 2h9v10.2a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8z"/><path d="M3.5 9h17"/></svg>
+        </label>
+        <input id="fileInput" type="file" accept=".docx" hidden>
+        <span class="top-divider" aria-hidden="true"></span>
+        <button id="undoBtn" class="icon-btn" title="Undo" aria-label="Undo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg>
+        </button>
+        <button id="redoBtn" class="icon-btn" title="Redo" aria-label="Redo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg>
+        </button>
+        <span class="top-divider" aria-hidden="true"></span>
+        <button id="sidebarBtn" class="icon-btn" title="Toggle sidebar" aria-label="Toggle sidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16"/></svg>
+        </button>
+      </div>
+
+      <div class="document-title">
+        <span class="word-badge">W</span>
+        <input id="titleText" class="title-input" type="text" value="Untitled.docx" aria-label="Document name" spellcheck="false" autocomplete="off"><span id="dirtyDot" class="dirty-dot" title="Unsaved changes"></span>
+      </div>
+
+      <div class="right-tools">
+        <button id="zoomOut" class="icon-btn" title="Zoom out" aria-label="Zoom out">−</button>
+        <button id="zoomLabel" class="zoom-label" title="Reset zoom">100%</button>
+        <button id="zoomIn" class="icon-btn" title="Zoom in" aria-label="Zoom in">+</button>
+        <button id="fitWidth" class="icon-btn wide-icon" title="Fit width" aria-label="Fit width">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><path d="M8 12h8M10 10l-2 2 2 2M14 10l2 2-2 2"/></svg>
+        </button>
+        <button id="saveBtn" class="icon-btn" title="Save" aria-label="Save" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="formatbar" class="formatbar">
+      <select id="styleSelect" title="Paragraph style"><option value="p">Normal</option><option value="h1">Title</option><option value="h2">Heading 1</option><option value="h3">Heading 2</option></select>
+      <select id="fontSelect" title="Font"><option>Calibri</option><option>Arial</option><option>Times New Roman</option><option>Georgia</option><option>Verdana</option><option>Courier New</option></select>
+      <select id="sizeSelect" title="Font size"><option value="1">8</option><option value="2">10</option><option value="3" selected>12</option><option value="4">14</option><option value="5">18</option><option value="6">24</option><option value="7">36</option></select><select id="lineSpacing" title="Line spacing"><option value="1">1.0</option><option value="1.15" selected>1.15</option><option value="1.5">1.5</option><option value="2">2.0</option></select>
+      <span class="separator"></span>
+      <button class="fmt-btn" data-cmd="bold" title="Bold"><b>B</b></button><button class="fmt-btn" data-cmd="italic"><i>I</i></button><button class="fmt-btn" data-cmd="underline"><u>U</u></button>
+      <span class="separator"></span>
+      <button class="fmt-btn" data-cmd="justifyLeft">≡</button><button class="fmt-btn" data-cmd="justifyCenter">≣</button><button class="fmt-btn" data-cmd="justifyRight">≡</button><button class="fmt-btn" data-cmd="justifyFull">☰</button>
+      <span class="separator"></span>
+      <button class="fmt-btn" data-cmd="insertUnorderedList">• List</button><button class="fmt-btn" data-cmd="insertOrderedList">1. List</button>
+      <button id="alphaList" class="fmt-btn">A. List</button>
+      <span class="separator"></span>
+      <button id="tableBtn" class="fmt-btn">Table</button><button id="rowBtn" class="fmt-btn" title="Add table row">Row +</button><button id="colBtn" class="fmt-btn" title="Add table column">Col +</button><label class="fmt-btn file-label" for="imageInput">Image</label><input id="imageInput" type="file" accept="image/*" hidden>
+    </div>
+    <div id="ruler" class="ruler" aria-label="Paragraph ruler"><div class="ruler-track">
+      <div id="firstIndent" class="ruler-handle first-line" title="First line indent"></div>
+      <div id="hangingIndent" class="ruler-handle hanging" title="Hanging indent"></div>
+      <div id="leftIndent" class="ruler-handle left-block" title="Left indent (moves both markers)"></div>
+      <div id="rightIndent" class="ruler-handle right-indent" title="Right indent"></div>
+      <div class="ticks"></div></div></div>
+
+    <div class="workspace">
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-tabs" role="tablist">
+          <button class="tab active" data-panel="pagesPanel">Pages</button>
+          <button class="tab" data-panel="outlinePanel">Outline</button>
+          <button class="tab" data-panel="searchPanel">Search</button>
+        </div>
+        <div id="pagesPanel" class="side-panel active"><div id="pageList" class="page-list"><p class="muted">Open a DOCX document.</p></div></div>
+        <div id="outlinePanel" class="side-panel"><div id="outlineList" class="outline-list"><p class="muted">No outline available.</p></div></div>
+        <div id="searchPanel" class="side-panel">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+            <input id="searchInput" type="search" placeholder="Search document" autocomplete="off">
+          </div>
+          <div class="search-meta"><span id="searchCount">0 results</span><span><button id="prevHit" class="mini-btn">↑</button><button id="nextHit" class="mini-btn">↓</button></span></div>
+          <div id="searchResults" class="search-results"><p class="muted">Type a word or phrase.</p></div>
+        </div>
+      </aside>
+
+      <main id="viewport" class="viewport" tabindex="0">
+        <div id="welcome" class="welcome-card">
+          <div class="welcome-icon">W</div>
+          <h1>Documents</h1>
+          <p>A focused DOCX workspace that runs locally in a browser.</p>
+          <div class="welcome-actions">
+            <button id="newWelcomeBtn" class="open-primary new-primary" type="button"><span class="new-plus" aria-hidden="true">+</span><span>New document</span></button>
+            <label class="open-primary open-document-primary" for="fileInput"><span class="open-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3z"/><path d="M3 9h18"/></svg></span><span>Open document</span></label>
+          </div>
+          <p class="support-note">Basic DOCX workflows · best-effort layout · saving exports a new copy</p>
+        </div>
+        <div id="pagesHost" class="pages-host" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <footer class="statusbar">
+      <span id="statusText">Ready</span>
+      <span id="pageStatus">—</span>
+    </footer>
+  </div>
+  <script src="../../shared/vendor/pako_inflate.min.js?v=1.0.11"></script>
+  <script src="../../shared/office-runtime.js?v=0.19.0-beta"></script>
+  <script src="docx-parser.js?v=0.19.0-beta"></script>
+  <script src="../../shared/vendor/jszip.min.js?v=3.10.1"></script>
+  <script src="docx-writer.js?v=0.19.0-beta"></script>
+  <script src="../../shared/office-shell.js?v=0.19.0-beta"></script>
+  <script src="app.js?v=0.19.0-beta"></script>
+  <script src="../../shared/register-service-worker.js?v=0.19.0-beta"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+(function(global){
+'use strict';
+const W_NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+const R_NS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+function u16(a,o){return a[o]|(a[o+1]<<8)}
+function u32(a,o){return (a[o]|(a[o+1]<<8)|(a[o+2]<<16)|(a[o+3]<<24))>>>0}
+function decode(bytes){return new TextDecoder('utf-8').decode(bytes)}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function val(el,name='val'){if(!el)return'';return el.getAttributeNS(W_NS,name)||el.getAttribute('w:'+name)||el.getAttribute(name)||''}
+async function inflateRaw(bytes){
+  if(global.pako&&typeof global.pako.inflateRaw==='function'){
+    try{return new Uint8Array(global.pako.inflateRaw(bytes));}
+    catch(error){throw new Error('The bundled DOCX decompressor could not read this file: '+(error&&error.message?error.message:error));}
+  }
+  if(typeof DecompressionStream!=='undefined'){
+    try{const ds=new DecompressionStream('deflate-raw');return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer());}
+    catch(error){throw new Error('WebKit could not decompress this DOCX: '+(error&&error.message?error.message:error));}
+  }
+  throw new Error('The local DOCX decompression engine did not load. Re-extract the complete application folder and reopen Documents.html.');
+}
+async function unzip(buffer){
+  if(global.InkDeskRuntime)global.InkDeskRuntime.validateZipPackage(buffer,'DOCX file');
+  const a=new Uint8Array(buffer);let eocd=-1;
+  for(let i=a.length-22;i>=Math.max(0,a.length-65557);i--){if(u32(a,i)===0x06054b50){eocd=i;break}}
+  if(eocd<0)throw new Error('Invalid DOCX package: central directory was not found.');
+  const count=u16(a,eocd+10),cd=u32(a,eocd+16);let p=cd;const map=new Map();
+  for(let i=0;i<count;i++){
+    if(u32(a,p)!==0x02014b50)throw new Error('Invalid DOCX central directory.');
+    const method=u16(a,p+10),cs=u32(a,p+20),us=u32(a,p+24),nl=u16(a,p+28),el=u16(a,p+30),cl=u16(a,p+32),lo=u32(a,p+42);
+    const name=decode(a.slice(p+46,p+46+nl));
+    if(u32(a,lo)!==0x04034b50)throw new Error('Invalid DOCX local entry.');
+    const lnl=u16(a,lo+26),lel=u16(a,lo+28),start=lo+30+lnl+lel,packed=a.slice(start,start+cs);
+    let data;if(method===0)data=packed;else if(method===8)data=await inflateRaw(packed);else throw new Error('Unsupported compression method in DOCX: '+method);
+    if(us&&data.length!==us)throw new Error('Invalid DOCX entry size for '+name+'.');
+    map.set(name,data);p+=46+nl+el+cl;
+  }
+  return map;
+}
+function xml(bytes,context='DOCX package part'){const text=decode(bytes);return global.InkDeskRuntime?global.InkDeskRuntime.parseXml(text,context):new DOMParser().parseFromString(text,'application/xml')}
+function all(el,name){return Array.from(el.getElementsByTagNameNS('*',name))}
+function first(el,name){return el?el.getElementsByTagNameNS('*',name)[0]||null:null}
+function attr(el,name){if(!el)return'';return el.getAttributeNS(R_NS,name)||el.getAttribute('r:'+name)||el.getAttribute(name)||''}
+function parseRels(doc){const out={};all(doc,'Relationship').forEach(r=>{out[r.getAttribute('Id')]=r.getAttribute('Target')});return out}
+function normalPath(base,target){if(target.startsWith('/'))return target.slice(1);const bits=(base+'/'+target).split('/'),out=[];for(const b of bits){if(!b||b==='.')continue;if(b==='..')out.pop();else out.push(b)}return out.join('/')}
+function num(v,fallback=0){const n=parseFloat(v);return Number.isFinite(n)?n:fallback}
+function merge(){return Object.assign({},...Array.from(arguments).filter(Boolean))}
+function parseRunProps(rPr){
+  if(!rPr)return{};const out={};
+  if(first(rPr,'b'))out.bold=val(first(rPr,'b'))!=='0'&&val(first(rPr,'b'))!=='false';
+  if(first(rPr,'i'))out.italic=val(first(rPr,'i'))!=='0'&&val(first(rPr,'i'))!=='false';
+  if(first(rPr,'u'))out.underline=val(first(rPr,'u'))!=='none';
+  const color=first(rPr,'color');if(color&&val(color)&&val(color)!=='auto')out.color='#'+val(color);
+  const sz=first(rPr,'sz');if(sz&&num(val(sz)))out.fontSizePt=num(val(sz))/2;
+  const fonts=first(rPr,'rFonts');if(fonts){const f=val(fonts,'ascii')||val(fonts,'hAnsi');const theme=val(fonts,'asciiTheme')||val(fonts,'hAnsiTheme');if(f)out.fontFamily=f;else if(theme)out.fontFamily=/major/i.test(theme)?'Cambria':'Calibri';}
+  return out;
+}
+function parseParagraphProps(pPr){
+  if(!pPr)return{};const out={};
+  const jc=first(pPr,'jc');if(jc)out.alignment=val(jc);
+  const ind=first(pPr,'ind');if(ind){for(const key of ['left','right','firstLine','hanging']){const v=val(ind,key);if(v!=='')out[key]=num(v)}}
+  const spacing=first(pPr,'spacing');if(spacing){for(const key of ['before','after','line']){const v=val(spacing,key);if(v!=='')out[key]=num(v)}const lr=val(spacing,'lineRule');if(lr)out.lineRule=lr;}
+  if(first(pPr,'contextualSpacing'))out.contextualSpacing=true;
+  if(first(pPr,'pageBreakBefore'))out.pageBreakBefore=true;
+  if(first(pPr,'keepNext'))out.keepNext=true;
+  return out;
+}
+function parseNumberingRef(pPr){const numPr=first(pPr,'numPr');if(!numPr)return null;return{numId:val(first(numPr,'numId'))||'0',ilvl:parseInt(val(first(numPr,'ilvl'))||'0',10)||0};}
+function parseStyles(files,root){
+  const bytes=files.get(root+'/styles.xml');
+  const defaults={run:{fontFamily:'Calibri',fontSizePt:11},paragraph:{after:160,line:259,lineRule:'auto'}},styles={};
+  if(!bytes)return{defaults,resolve:()=>({run:{},paragraph:{}})};
+  const doc=xml(bytes),docDefaults=first(doc,'docDefaults');
+  if(docDefaults){defaults.run=merge(defaults.run,parseRunProps(first(first(docDefaults,'rPrDefault'),'rPr')));defaults.paragraph=merge(defaults.paragraph,parseParagraphProps(first(first(docDefaults,'pPrDefault'),'pPr')));}
+  all(doc,'style').forEach(s=>{if(val(s,'type')!=='paragraph')return;const id=val(s,'styleId');if(!id)return;styles[id]={id,name:val(first(s,'name')),basedOn:val(first(s,'basedOn')),run:parseRunProps(first(s,'rPr')),paragraph:parseParagraphProps(first(s,'pPr')),numbering:parseNumberingRef(first(s,'pPr'))};});
+  const cache={};
+  function resolve(id,seen){if(!id||!styles[id])return{run:{},paragraph:{},name:'',numbering:null};if(cache[id])return cache[id];seen=seen||new Set();if(seen.has(id))return{run:{},paragraph:{},name:styles[id].name||'',numbering:styles[id].numbering||null};seen.add(id);const own=styles[id],base=resolve(own.basedOn,seen);return cache[id]={run:merge(base.run,own.run),paragraph:merge(base.paragraph,own.paragraph),name:own.name||base.name||'',numbering:own.numbering||base.numbering||null};}
+  return{defaults,resolve};
+}
+function cssRun(props){let css='';if(props.fontFamily)css+='font-family:'+JSON.stringify(props.fontFamily)+',Arial,sans-serif;';if(props.fontSizePt)css+='font-size:'+props.fontSizePt+'pt;';if(props.bold)css+='font-weight:700;';if(props.italic)css+='font-style:italic;';if(props.underline)css+='text-decoration:underline;';if(props.color)css+='color:'+props.color+';';return css}
+function cssParagraph(props,baseRun){
+  let css=cssRun(baseRun);
+  if(props.alignment==='center')css+='text-align:center;';else if(props.alignment==='right')css+='text-align:right;';else if(props.alignment==='both'||props.alignment==='justify')css+='text-align:justify;';
+  if(Number.isFinite(props.left)&&props.left)css+='margin-left:'+(props.left/20)+'pt;';
+  if(Number.isFinite(props.right)&&props.right)css+='margin-right:'+(props.right/20)+'pt;';
+  if(Number.isFinite(props.firstLine)&&props.firstLine)css+='text-indent:'+(props.firstLine/20)+'pt;';else if(Number.isFinite(props.hanging)&&props.hanging)css+='text-indent:-'+(props.hanging/20)+'pt;';
+  const before=Number.isFinite(props.before)?props.before:0;const after=props.contextualSpacing?0:(Number.isFinite(props.after)?props.after:0);
+  css+='margin-top:'+(before/20)+'pt;margin-bottom:'+(after/20)+'pt;';
+  if(Number.isFinite(props.line)&&props.line>0){if(props.lineRule==='exact'||props.lineRule==='atLeast')css+='line-height:'+(props.line/20)+'pt;';else css+='line-height:'+(props.line/240)+';';}
+  return css;
+}
+function packagePart(files,standardPath,legacyPath){return files.get(standardPath)||files.get(legacyPath)||null}
+function normalizeBullet(text,font){const t=String(text||'');const cp=t.codePointAt(0)||0;if(cp===0xf0b7||t==='')return'•';if(cp===0xf0a7||t==='')return'▪';if(t==='o'&&/courier/i.test(font||''))return'○';return t||'•'}
+function parseNumbering(files,root){
+  const bytes=packagePart(files,root+'/numbering.xml',root==='word'?'documents/numbering.xml':'word/numbering.xml');if(!bytes)return{};const doc=xml(bytes),abstract={},out={};
+  all(doc,'abstractNum').forEach(a=>{const id=val(a,'abstractNumId')||'0';abstract[id]={};all(a,'lvl').forEach(l=>{const ilvl=parseInt(val(l,'ilvl')||'0',10)||0,fmtEl=first(l,'numFmt'),txtEl=first(l,'lvlText'),pPr=first(l,'pPr'),ind=first(pPr,'ind'),rPr=first(l,'rPr'),fonts=first(rPr,'rFonts');const font=fonts?(val(fonts,'ascii')||val(fonts,'hAnsi')):'';const fmt=fmtEl?(val(fmtEl)||'decimal'):'decimal';let text=txtEl?(val(txtEl)||'%1.'):'%1.';if(fmt==='bullet')text=normalizeBullet(text,font);abstract[id][ilvl]={fmt,text,font,left:ind?num(val(ind,'left'),NaN):NaN,hanging:ind?num(val(ind,'hanging'),NaN):NaN,start:num(val(first(l,'start')),1)}})});
+  all(doc,'num').forEach(n=>{const id=val(n,'numId')||'0',a=first(n,'abstractNumId'),aid=a?(val(a)||'0'):'0';out[id]=abstract[aid]||{}});return out;
+}
+function alpha(n,upper){let x=n,s='';while(x>0){x--;s=String.fromCharCode((upper?65:97)+(x%26))+s;x=Math.floor(x/26)}return s}
+function roman(n){const pairs=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];let out='';for(const [v,s] of pairs)while(n>=v){out+=s;n-=v}return out}
+function listLabel(info,counters){const key=info.numId+':'+info.ilvl,c=(counters[key]||((info.start||1)-1))+1;counters[key]=c;Object.keys(counters).forEach(k=>{const parts=k.split(':');if(parts[0]===String(info.numId)&&Number(parts[1])>info.ilvl)delete counters[k]});if(info.fmt==='bullet')return info.text||'•';let value=String(c);if(info.fmt==='upperLetter')value=alpha(c,true);else if(info.fmt==='lowerLetter')value=alpha(c,false);else if(info.fmt==='upperRoman')value=roman(c);else if(info.fmt==='lowerRoman')value=roman(c).toLowerCase();return String(info.text||'%1.').replace(/%\d+/g,value)}
+function mapSymbol(font,hex){const code=parseInt(String(hex||''),16);const f=String(font||'').toLowerCase();if(f.includes('wingdings')){if(code===0xf0e0)return'→';if(code===0xf0df)return'←';if(code===0xf0e1)return'←';if(code===0xf0e2)return'↔';if(code===0xf0a7)return'▪';if(code===0xf0fc)return'✓';}if(f.includes('symbol')&&code===0xf0b7)return'•';return code?String.fromCodePoint(code>=0xf000?0x25a1:code):''}
+function textOf(node){return all(node,'t').map(t=>t.textContent||'').join('')}
+function pageSpecFromSect(sect,styles,files,root,rels){
+  const pgSz=first(sect,'pgSz'),pgMar=first(sect,'pgMar');
+  const w=num(val(pgSz,'w'),12240),h=num(val(pgSz,'h'),15840),top=num(val(pgMar,'top'),1440),right=num(val(pgMar,'right'),1440),bottom=num(val(pgMar,'bottom'),1440),left=num(val(pgMar,'left'),1440);const px=t=>t/15;
+  function relatedText(kind){const ref=all(sect,kind+'Reference').find(x=>(val(x,'type')||'default')==='default')||first(sect,kind+'Reference');const rid=attr(ref,'id'),target=rid&&rels[rid];if(!target)return'';const path=normalPath(root,target),bytes=files.get(path);return bytes?textOf(xml(bytes)).trim():''}
+  return{widthPx:px(w),heightPx:px(h),marginTopPx:px(top),marginRightPx:px(right),marginBottomPx:px(bottom),marginLeftPx:px(left),contentWidthPx:px(Math.max(1440,w-left-right)),contentHeightPx:px(Math.max(1440,h-top-bottom)),fontFamily:styles.defaults.run.fontFamily||'Calibri',fontSizePt:styles.defaults.run.fontSizePt||11,lineHeight:(styles.defaults.paragraph.line||259)/240,orientation:val(pgSz,'orient')||((w>h)?'landscape':'portrait'),headerText:relatedText('header'),footerText:relatedText('footer')};
+}
+function paragraphInfo(p,numbering,styles){
+  const pPr=first(p,'pPr'),styleId=val(first(pPr,'pStyle')),resolved=styles.resolve(styleId),directP=parseParagraphProps(pPr),directR=parseRunProps(first(pPr,'rPr'));let props=merge(styles.defaults.paragraph,resolved.paragraph,directP),baseRun=merge(styles.defaults.run,resolved.run,directR),tag='p',level=0;
+  const styleName=(resolved.name||styleId||'');const hm=styleName.match(/Heading\s*([1-6])/i)||styleId.match(/Heading\s*([1-6])/i),title=/Title/i.test(styleName)||/Title/i.test(styleId);if(hm||title){level=hm?Math.min(6,Math.max(1,Number(hm[1])||1)):1;tag='h'+level}
+  let listInfo=null;const numRef=parseNumberingRef(pPr)||resolved.numbering;if(numRef){const numId=numRef.numId||'0',ilvl=numRef.ilvl||0;listInfo=merge({numId,ilvl,fmt:'decimal',text:'%1.',start:1},numbering[numId]&&numbering[numId][ilvl]);if(Number.isFinite(listInfo.left))props.left=listInfo.left;if(Number.isFinite(listInfo.hanging))props.hanging=listInfo.hanging;}
+  return{tag,level,styleId,props,baseRun,listInfo,style:cssParagraph(props,baseRun),pageBreakBefore:!!props.pageBreakBefore};
+}
+function renderRun(run,info,mediaUrls,state){
+  const drawing=first(run,'drawing')||first(run,'pict');if(drawing){const blip=first(drawing,'blip'),rid=attr(blip,'embed');if(rid&&mediaUrls[rid]){state.visible=true;return'<img src="'+mediaUrls[rid]+'" data-docx-rel-id="'+esc(rid)+'" alt="Embedded image">'}return''}
+  const parts=[];for(const rc of Array.from(run.children)){
+    if(rc.localName==='lastRenderedPageBreak'&&!state.visible&&!parts.length)state.softPageBreakBefore=true;
+    else if(rc.localName==='t'){parts.push(esc(rc.textContent));if(rc.textContent)state.visible=true;}
+    else if(rc.localName==='sym'){const mapped=mapSymbol(val(rc,'font'),val(rc,'char'));parts.push(esc(mapped));if(mapped)state.visible=true;}
+    else if(rc.localName==='tab'){parts.push('&emsp;');state.visible=true;}
+    else if(rc.localName==='br'){if(val(rc,'type')==='page'&&!state.visible&&!parts.length)state.hardPageBreakBefore=true;else parts.push('<br>');}
+  }
+  if(!parts.length)return'';const runProps=merge(info.baseRun,parseRunProps(first(run,'rPr')));return'<span style="'+cssRun(runProps)+'">'+parts.join('')+'</span>';
+}
+function renderInline(node,info,mediaUrls,state){let out='';for(const child of Array.from(node.children||[])){
+  const name=child.localName;
+  if(name==='r')out+=renderRun(child,info,mediaUrls,state);
+  else if(name==='hyperlink')out+='<span class="hyperlink">'+renderInline(child,info,mediaUrls,state)+'</span>';
+  else if(name==='ins')out+='<span class="tracked-insert" data-docx-tracked="insert">'+renderInline(child,info,mediaUrls,state)+'</span>';
+  else if(name==='del')out+='<span class="tracked-delete" data-docx-tracked="delete">'+renderInline(child,info,mediaUrls,state)+'</span>';
+  else if(name==='sdt'||name==='sdtContent')out+='<span class="content-control">'+renderInline(child,info,mediaUrls,state)+'</span>';
+  else if(name!=='pPr')out+=renderInline(child,info,mediaUrls,state);
+ }return out}
+function paragraphBlock(p,numbering,styles,mediaUrls,listCounters,sourceIndex,sourceSubIndex){
+  const info=paragraphInfo(p,numbering,styles),state={visible:false,softPageBreakBefore:false,hardPageBreakBefore:info.pageBreakBefore},parts=renderInline(p,info,mediaUrls,state),html=parts||'&nbsp;';let final;
+  if(info.listInfo){const label=listLabel(info.listInfo,listCounters),hanging=Number.isFinite(info.listInfo.hanging)?info.listInfo.hanging:360;final='<p class="doc-list" data-list-num-id="'+esc(info.listInfo.numId)+'" data-list-level="'+info.listInfo.ilvl+'" data-list-format="'+esc(info.listInfo.fmt)+'" style="'+info.style+'"><span class="list-label" contenteditable="false" style="width:'+(hanging/20)+'pt">'+esc(label)+'</span>'+html+'</p>';}
+  else final='<'+info.tag+' style="'+info.style+'">'+html+'</'+info.tag+'>';
+  return{type:info.tag,html:final,text:textOf(p),outlineLevel:info.level,softPageBreakBefore:state.softPageBreakBefore,hardPageBreakBefore:state.hardPageBreakBefore,keepNext:!!info.props.keepNext,styleId:info.styleId,sourceIndex,sourceSubIndex};
+}
+function tableBlock(tbl,sourceIndex,sourceSubIndex){let h='<table>';for(const tr of all(tbl,'tr')){h+='<tr>';for(const tc of Array.from(tr.children).filter(x=>x.localName==='tc')){const span=num(val(first(first(tc,'tcPr'),'gridSpan')),1);h+='<td'+(span>1?' colspan="'+span+'"':'')+'>'+all(tc,'p').map(p=>esc(textOf(p))).join('<br>')+'</td>'}h+='</tr>'}h+='</table>';return{type:'table',html:h,text:textOf(tbl),outlineLevel:0,softPageBreakBefore:false,hardPageBreakBefore:false,sourceIndex,sourceSubIndex}}
+async function parse(buffer){
+  let mediaUrls={};
+  try{
+    const files=await unzip(buffer),mainPath=files.has('word/document.xml')?'word/document.xml':files.has('documents/document.xml')?'documents/document.xml':'';
+    if(!mainPath)throw new Error('DOCX does not contain word/document.xml.');
+    const root=mainPath.split('/')[0],relsPath=root+'/_rels/document.xml.rels',doc=xml(files.get(mainPath),mainPath),styles=parseStyles(files,root),relsDoc=files.get(relsPath),rels=relsDoc?parseRels(xml(relsDoc,relsPath)):{},numbering=parseNumbering(files,root),listCounters={};
+    for(const [id,target] of Object.entries(rels)){if(/media\//i.test(target)){const path=normalPath(root,target),bytes=files.get(path);if(bytes){const ext=path.split('.').pop().toLowerCase(),mime=ext==='png'?'image/png':ext==='gif'?'image/gif':ext==='svg'?'image/svg+xml':'image/jpeg';mediaUrls[id]=URL.createObjectURL(new Blob([bytes],{type:mime}))}}}
+    const blocks=[],outline=[],body=first(doc,'body'),renderedSourceIndexes=[];if(!body)throw new Error('DOCX body is missing.');let sectionStart=0;
+    const bodyChildren=Array.from(body.children);
+    function addBlock(block){blocks.push(block);if(block.outlineLevel&&block.text.trim())outline.push({level:block.outlineLevel,text:block.text.trim(),blockIndex:blocks.length-1});}
+    for(let sourceIndex=0;sourceIndex<bodyChildren.length;sourceIndex++){
+      const child=bodyChildren[sourceIndex];if(child.localName==='sectPr')continue;let made=0;
+      if(child.localName==='p'){addBlock(paragraphBlock(child,numbering,styles,mediaUrls,listCounters,sourceIndex,0));made=1;}
+      else if(child.localName==='tbl'){addBlock(tableBlock(child,sourceIndex,0));made=1;}
+      else if(child.localName==='sdt'){
+        const content=first(child,'sdtContent')||child;for(const nested of Array.from(content.children)){let block=null;if(nested.localName==='p')block=paragraphBlock(nested,numbering,styles,mediaUrls,listCounters,sourceIndex,made);else if(nested.localName==='tbl')block=tableBlock(nested,sourceIndex,made);if(block){block.html='<div class="content-control content-control-block" data-docx-content-control="true">'+block.html+'</div>';addBlock(block);made++;}}
+      }
+      if(made)renderedSourceIndexes.push(sourceIndex);
+      const localSect=child.localName==='p'?first(first(child,'pPr'),'sectPr'):null;if(localSect){const spec=pageSpecFromSect(localSect,styles,files,root,rels);for(let j=sectionStart;j<blocks.length;j++)blocks[j].pageSpec=spec;if(sectionStart<blocks.length)blocks[sectionStart].sectionStart=true;sectionStart=blocks.length;}
+    }
+    const finalSect=Array.from(body.children).reverse().find(x=>x.localName==='sectPr')||null,finalSpec=pageSpecFromSect(finalSect,styles,files,root,rels);for(let j=sectionStart;j<blocks.length;j++)blocks[j].pageSpec=finalSpec;if(sectionStart<blocks.length)blocks[sectionStart].sectionStart=true;if(blocks.length)blocks[0].sectionStart=false;
+    let inheritedHeader='',inheritedFooter='';for(const block of blocks){const spec=block.pageSpec||finalSpec;if(spec.headerText)inheritedHeader=spec.headerText;else spec.headerText=inheritedHeader;if(spec.footerText)inheritedFooter=spec.footerText;else spec.footerText=inheritedFooter;}
+    return{blocks,outline,mediaUrls,pageSpec:blocks[0]&&blocks[0].pageSpec?blocks[0].pageSpec:finalSpec,sourceContext:{mainPath,root,renderedSourceIndexes:Array.from(new Set(renderedSourceIndexes)),originalBlockCount:bodyChildren.length}};
+  }catch(error){
+    if(global.InkDeskRuntime)global.InkDeskRuntime.revokeObjectUrls(Object.values(mediaUrls));else Object.values(mediaUrls).forEach(url=>URL.revokeObjectURL(url));
+    throw error;
+  }
+}
+global.LocalDocxParser={parse};
+})(window);
