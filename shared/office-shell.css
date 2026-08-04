@@ -290,3 +290,39 @@ body.office-presentations #toolsPresent #presentFromCurrentBtn{
 @media(max-width:720px){
   body.office-spreadsheets .document-title{max-width:calc(100% - 250px)!important}
 }
+
+/* Hub navigation */
+body.office-product .home-link{color:inherit;text-decoration:none;display:inline-grid;place-items:center;flex:0 0 auto}
+body.office-product .home-link svg,body.office-product .start-home-link svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.office-product .start-home-link{position:fixed;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:50;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--office-edge);border-radius:12px;background:var(--office-surface);color:var(--office-text);text-decoration:none;box-shadow:var(--office-shadow-1)}
+body.office-product .start-home-link:hover,body.office-product .start-home-link:focus-visible{background:var(--office-surface-soft);outline:2px solid color-mix(in srgb,var(--accent,#2f6fed) 35%,transparent);outline-offset:2px}
+
+/* Narrow-screen navigation compatibility */
+@media(max-width:560px){
+  body.office-documents .left-tools{min-width:108px!important}
+  body.office-documents #undoBtn,
+  body.office-documents #redoBtn,
+  body.office-documents .left-tools .top-divider,
+  body.office-documents #zoomOut,
+  body.office-documents #zoomIn,
+  body.office-documents #zoomLabel,
+  body.office-documents #fitWidth{display:none!important}
+  body.office-documents .document-title{max-width:calc(100vw - 166px)!important}
+  body.office-documents .title-input{width:min(220px,calc(100vw - 190px));max-width:none!important}
+
+  body.office-spreadsheets .titlebar .left{min-width:108px!important;padding-right:44px!important}
+  body.office-spreadsheets #undoBtn,
+  body.office-spreadsheets #redoBtn,
+  body.office-spreadsheets .titlebar .left .top-divider{display:none!important}
+  body.office-spreadsheets .document-title{max-width:calc(100% - 180px)!important}
+
+  body.office-presentations .titlebar-left{min-width:108px!important}
+  body.office-presentations .titlebar-right{min-width:40px!important}
+  body.office-presentations .history-btn,
+  body.office-presentations .titlebar-left .top-divider,
+  body.office-presentations .present-top-action{display:none!important}
+  body.office-presentations .doc-title{min-width:0!important;padding:0 4px!important;font-size:12px!important}
+}
+body.office-presentations .app{width:100vw;max-width:100vw;min-width:0;overflow:hidden}
+body.office-presentations .titlebar{width:100%;min-width:0}
+body.office-presentations .titlebar{width:100vw!important;max-width:100vw!important;overflow:hidden!important}

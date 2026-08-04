@@ -2,6 +2,8 @@
 from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+
+from browser_support import launch_browser
 from zipfile import ZipFile
 import json
 import os
@@ -32,6 +34,9 @@ def verify_docx(browser):
     page.on("pageerror", lambda error: errors.append(str(error)))
     load_app(page, "documents", (
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "shared/vendor/pako_inflate.min.js",
         "apps/documents/docx-parser.js",
         "shared/vendor/jszip.min.js",
@@ -57,6 +62,8 @@ def verify_docx(browser):
         document_xml = package.read("word/document.xml").decode("utf-8", "ignore")
     if "ERA2-DOCX-MARKER" not in document_xml:
         raise RuntimeError("DOCX save used stale or corrupt state after failed open")
+    page.set_input_files("#fileInput", str(output))
+    page.wait_for_function("document.querySelector('#statusText').textContent.includes('reopened successfully')", timeout=30000)
     page.close()
     return {"workspace": "documents", "preserved": True, "page_errors": errors}
 
@@ -69,6 +76,9 @@ def verify_xlsx(browser):
     page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.accept()))
     load_app(page, "spreadsheets", (
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "shared/vendor/jszip.min.js",
         "apps/spreadsheets/xls-biff8-engine.js",
         "apps/spreadsheets/xlsx-engine.js",
@@ -98,6 +108,9 @@ def verify_pptx(browser):
     page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.accept()))
     load_app(page, "presentations", (
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "shared/vendor/jszip.min.js",
         "apps/presentations/engine/compatibility.js",
         "shared/office-shell.js",
@@ -119,7 +132,7 @@ def verify_pptx(browser):
 
 def main():
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         results = [verify_docx(browser), verify_xlsx(browser), verify_pptx(browser)]
         browser.close()
     page_errors = [error for item in results for error in item["page_errors"]]

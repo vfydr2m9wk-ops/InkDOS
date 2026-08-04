@@ -1,5 +1,7 @@
 # Final Codebase Review — InkDesk 0.19.0-beta
 
+> Historical 0.19.0-beta review. Current 0.19.1-beta evidence is in `docs/VALIDATION_REPORT.md` and `RELEASE_TEST_REPORT.md`.
+
 ## 1. Executive summary
 
 InkDesk has a credible static, local-first foundation with three separate workspace entry points, bundled dependencies, package-preserving OOXML strategies, and a useful regression corpus. The baseline already passed its original tests, but those tests did not expose several high-impact integrity defects.

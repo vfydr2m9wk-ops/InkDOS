@@ -11,6 +11,8 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 from playwright.sync_api import sync_playwright
+
+from browser_support import launch_browser
 import json
 import os
 
@@ -30,6 +32,9 @@ def load_app(page):
         page.add_style_tag(path=str(css))
     for js in (
         ROOT / "shared/office-runtime.js",
+        ROOT / "shared/file-lifecycle.js",
+        ROOT / "shared/formula-engine.js",
+        ROOT / "shared/safe-dom.js",
         ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/spreadsheets/xls-biff8-engine.js",
         ROOT / "apps/spreadsheets/xlsx-engine.js",
@@ -89,7 +94,7 @@ def main():
     output = OUT / "independent_biff8_zero_formula_display.saved.xlsx"
     errors, dialogs = [], []
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         page = browser.new_page(viewport={"width": 1400, "height": 900}, accept_downloads=True)
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.accept()))
@@ -107,15 +112,11 @@ def main():
         with page.expect_download(timeout=30000) as download_info:
             page.click("#downloadBtn")
         download_info.value.save_as(str(output))
+        page.set_input_files("#fileInput", str(output))
+        wait_open(page)
+        page.wait_for_function("document.querySelector('#saveMessage').textContent.includes('reopened successfully')", timeout=30000)
+        reopened_values = assert_reopened_values(page)
         page.close()
-
-        reopened = browser.new_page(viewport={"width": 1400, "height": 900})
-        reopened.on("pageerror", lambda error: errors.append(str(error)))
-        load_app(reopened)
-        reopened.set_input_files("#fileInput", str(output))
-        wait_open(reopened)
-        reopened_values = assert_reopened_values(reopened)
-        reopened.close()
         browser.close()
 
     if errors or dialogs:

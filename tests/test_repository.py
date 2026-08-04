@@ -50,18 +50,34 @@ class RepositoryTests(unittest.TestCase):
         self.assertNotIn("https://cdn.sheetjs.com", html)
 
 
-    def test_github_bootstrap_and_release_tools_are_present(self):
+    def test_github_workflows_and_release_tools_are_present(self):
         workflow_dir = ROOT / ".github" / "workflows"
-        expected = {"bootstrap-inkdesk.yml"}
+        expected = {"browser-regression.yml", "pages.yml", "prerelease.yml", "quality-gate.yml", "sync-source-and-prerelease.yml"}
         observed = {path.name for path in workflow_dir.iterdir() if path.is_file()}
         self.assertEqual(observed, expected)
         self.assertFalse(any(path.is_dir() for path in workflow_dir.iterdir()))
         self.assertTrue((ROOT / "scripts" / "generate_checksums.py").is_file())
         self.assertTrue((ROOT / "scripts" / "verify_checksums.py").is_file())
-        bootstrap = (workflow_dir / "bootstrap-inkdesk.yml").read_text(encoding="utf-8")
-        self.assertIn("InkDesk-source.zip", bootstrap)
-        self.assertIn("Extract source archive safely", bootstrap)
-        self.assertIn("git push origin HEAD:main", bootstrap)
+        quality_gate = (workflow_dir / "quality-gate.yml").read_text(encoding="utf-8")
+        self.assertIn("python3 scripts/verify_checksums.py", quality_gate)
+        self.assertIn("python3 scripts/validate_repository.py", quality_gate)
+        browser = (workflow_dir / "browser-regression.yml").read_text(encoding="utf-8")
+        self.assertIn("matrix:", browser)
+        self.assertIn("browser: [chromium, firefox, webkit]", browser)
+        self.assertIn("group: [package-security, lifecycle, isolation-offline, documents-presentations, spreadsheets]", browser)
+        self.assertIn("permissions:\n  contents: read", browser)
+        prerelease = (workflow_dir / "prerelease.yml").read_text(encoding="utf-8")
+        self.assertIn("scripts/build_release.py", prerelease)
+        self.assertIn("--verify-tag", prerelease)
+        self.assertIn("prerelease", prerelease)
+        self.assertNotIn("git push origin HEAD:main", prerelease)
+        sync = (workflow_dir / "sync-source-and-prerelease.yml").read_text(encoding="utf-8")
+        self.assertIn("Synchronize source and publish prerelease", sync)
+        self.assertIn("INKDESK_RELEASE_PAT", sync)
+        self.assertIn("rsync -a --delete", sync)
+        self.assertIn("scripts/build_release.py", sync)
+        self.assertIn("gh release create", sync)
+        self.assertIn("--verify-tag", sync)
 
     def test_docx_parser_reads_standard_word_package_parts(self):
         parser = (ROOT / "apps/documents/docx-parser.js").read_text(encoding="utf-8")
@@ -83,7 +99,7 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn("pagination-content-measure", app)
         self.assertIn("tolerance=3", app)
         self.assertIn("pagination-measure", css)
-        self.assertIn("docx-parser.js?v=0.19.0-beta", html)
+        self.assertIn("docx-parser.js?v=0.19.1-beta", html)
 
     def test_export_writers_use_standard_ooxml_part_paths(self):
         docx = (ROOT / "apps/documents/docx-writer.js").read_text(encoding="utf-8")

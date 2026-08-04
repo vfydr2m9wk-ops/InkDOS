@@ -1,6 +1,6 @@
 # Project Status
 
-InkDesk 0.19.0-beta is a **public beta** for focused, non-critical local Office workflows.
+InkDesk 0.19.1-beta is a **public beta** for focused, non-critical local Office workflows.
 
 ## Suitable current uses
 

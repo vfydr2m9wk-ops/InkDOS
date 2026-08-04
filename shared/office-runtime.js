@@ -1,83 +1,66 @@
 (function(global){
 'use strict';
-
-const DEFAULT_LIMITS={
-  maxCompressedBytes:100*1024*1024,
-  maxEntries:10000,
-  maxUncompressedBytes:400*1024*1024,
-  maxEntryUncompressedBytes:128*1024*1024,
-  maxCompressionRatio:2000
-};
-
-function asBytes(buffer){
-  if(buffer instanceof Uint8Array)return buffer;
-  if(buffer instanceof ArrayBuffer)return new Uint8Array(buffer);
-  if(ArrayBuffer.isView(buffer))return new Uint8Array(buffer.buffer,buffer.byteOffset,buffer.byteLength);
-  throw new TypeError('Expected an ArrayBuffer or typed array.');
-}
-function u16(bytes,offset){return bytes[offset]|(bytes[offset+1]<<8)}
-function u32(bytes,offset){return (bytes[offset]|(bytes[offset+1]<<8)|(bytes[offset+2]<<16)|(bytes[offset+3]<<24))>>>0}
+const DEFAULT_LIMITS=Object.freeze({
+  maxCompressedBytes:50*1024*1024,maxEntries:3000,maxUncompressedBytes:160*1024*1024,
+  maxEntryUncompressedBytes:32*1024*1024,maxCompressionRatio:200,
+  maxXmlPartBytes:8*1024*1024,maxAggregateXmlBytes:48*1024*1024,maxXmlDepth:128,
+  maxXmlNodes:100000,maxXmlAttributes:100000,maxAttributesPerElement:128,maxXmlAttributeLength:32768
+});
+function asBytes(buffer){if(buffer instanceof Uint8Array)return buffer;if(buffer instanceof ArrayBuffer)return new Uint8Array(buffer);if(ArrayBuffer.isView(buffer))return new Uint8Array(buffer.buffer,buffer.byteOffset,buffer.byteLength);throw new TypeError('Expected an ArrayBuffer or typed array.')}
+function u16(b,o){return b[o]|(b[o+1]<<8)}function u32(b,o){return (b[o]|(b[o+1]<<8)|(b[o+2]<<16)|(b[o+3]<<24))>>>0}
 function safeLabel(label){return String(label||'Office package').replace(/[\r\n]+/g,' ').trim()||'Office package'}
-function validateInputSize(size,label,maxBytes=DEFAULT_LIMITS.maxCompressedBytes){
-  const bytes=Number(size)||0;
-  if(bytes<=0)throw new Error(safeLabel(label)+' is empty.');
-  if(bytes>maxBytes)throw new Error(safeLabel(label)+' is too large for safe in-browser processing ('+Math.ceil(bytes/1024/1024)+' MB).');
-  return bytes;
-}
+function validateInputSize(size,label,maxBytes=DEFAULT_LIMITS.maxCompressedBytes){const bytes=Number(size)||0;if(bytes<=0)throw new Error(safeLabel(label)+' is empty.');if(bytes>maxBytes)throw new Error(safeLabel(label)+' is too large for safe in-browser processing ('+Math.ceil(bytes/1024/1024)+' MB).');return bytes}
+function byteEquals(a,b){if(a.length!==b.length)return false;for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true}
+function decodeName(bytes,utf8){try{return utf8?new TextDecoder('utf-8',{fatal:true}).decode(bytes):Array.from(bytes,x=>String.fromCharCode(x)).join('')}catch(_){throw new Error('Package entry name is not valid UTF-8.')}}
+function hasZip64Extra(extra){for(let o=0;o+4<=extra.length;){const id=u16(extra,o),len=u16(extra,o+2);if(o+4+len>extra.length)throw new Error('Package contains a malformed ZIP extra field.');if(id===0x0001)return true;o+=4+len}return false}
+function normalizedPath(path){return String(path).replace(/\\/g,'/')}
+function validateEntryPath(path,name){const p=normalizedPath(path);if(!p||/[\u0000-\u001f\u007f]/.test(p)||p.startsWith('/')||/^[A-Za-z]:\//.test(p)||p.split('/').includes('..'))throw new Error(name+' contains an unsafe package path: '+JSON.stringify(path)+'.');return p}
 function validateZipPackage(buffer,label,customLimits){
-  const limits=Object.assign({},DEFAULT_LIMITS,customLimits||{}),bytes=asBytes(buffer),name=safeLabel(label);
-  validateInputSize(bytes.byteLength,name,limits.maxCompressedBytes);
-  let eocd=-1;
-  for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){if(u32(bytes,i)===0x06054b50){eocd=i;break}}
-  if(eocd<0)throw new Error(name+' is not a valid ZIP-based Office package.');
-  const entries=u16(bytes,eocd+10),directorySize=u32(bytes,eocd+12),directoryOffset=u32(bytes,eocd+16);
-  if(entries===0xffff||directorySize===0xffffffff||directoryOffset===0xffffffff)throw new Error(name+' uses ZIP64, which is outside the safe browser-processing limit.');
-  if(entries>limits.maxEntries)throw new Error(name+' contains too many package entries ('+entries+').');
-  if(directoryOffset+directorySize>bytes.length)throw new Error(name+' has an invalid central directory.');
-  const decoder=new TextDecoder('utf-8'),unsafePath=/(^|\/)\.\.(\/|$)|^[\\/]|^[A-Za-z]:[\\/]/;
-  let offset=directoryOffset,totalUncompressed=0;
+  const limits=Object.assign({},DEFAULT_LIMITS,customLimits||{}),bytes=asBytes(buffer),name=safeLabel(label);validateInputSize(bytes.byteLength,name,limits.maxCompressedBytes);
+  let eocd=-1;for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){if(u32(bytes,i)===0x06054b50){const comment=u16(bytes,i+20);if(i+22+comment===bytes.length){eocd=i;break}}}if(eocd<0)throw new Error(name+' has a missing or truncated ZIP central directory.');
+  const disk=u16(bytes,eocd+4),directoryDisk=u16(bytes,eocd+6),diskEntries=u16(bytes,eocd+8),entries=u16(bytes,eocd+10),directorySize=u32(bytes,eocd+12),directoryOffset=u32(bytes,eocd+16);
+  if(disk||directoryDisk||diskEntries!==entries)throw new Error(name+' uses a multi-disk ZIP layout, which is unsupported.');if(entries===0xffff||directorySize===0xffffffff||directoryOffset===0xffffffff)throw new Error(name+' uses ZIP64, which is outside the safe browser-processing limit.');if(entries>limits.maxEntries)throw new Error(name+' contains too many package entries ('+entries+').');if(directoryOffset+directorySize!==eocd)throw new Error(name+' has an inconsistent or truncated central directory.');
+  const exact=new Set(),caseFolded=new Map(),unicodeFolded=new Map(),regions=[],inventory=[];let offset=directoryOffset,totalUncompressed=0;
   for(let index=0;index<entries;index++){
-    if(offset+46>bytes.length||u32(bytes,offset)!==0x02014b50)throw new Error(name+' has an invalid central-directory entry.');
-    const flags=u16(bytes,offset+8),compressed=u32(bytes,offset+20),uncompressed=u32(bytes,offset+24),nameLength=u16(bytes,offset+28),extraLength=u16(bytes,offset+30),commentLength=u16(bytes,offset+32);
-    const end=offset+46+nameLength+extraLength+commentLength;
-    if(end>bytes.length)throw new Error(name+' has a truncated central-directory entry.');
-    const entryName=decoder.decode(bytes.subarray(offset+46,offset+46+nameLength));
-    const localOffset=u32(bytes,offset+42);
-    if(flags&1)throw new Error(name+' contains an encrypted entry, which is unsupported.');
-    if(!entryName||/[\u0000-\u001f\u007f]/.test(entryName)||unsafePath.test(entryName.replace(/\\/g,'/')))throw new Error(name+' contains an unsafe package path.');
-    if(localOffset+30>bytes.length||u32(bytes,localOffset)!==0x04034b50)throw new Error(name+' has an invalid local-file entry.');
-    const localNameLength=u16(bytes,localOffset+26),localExtraLength=u16(bytes,localOffset+28),dataOffset=localOffset+30+localNameLength+localExtraLength;
-    if(dataOffset>bytes.length||compressed>bytes.length-dataOffset)throw new Error(name+' contains truncated package data.');
-    if(uncompressed>limits.maxEntryUncompressedBytes)throw new Error(name+' contains an entry that is too large to process safely.');
-    totalUncompressed+=uncompressed;
-    if(totalUncompressed>limits.maxUncompressedBytes)throw new Error(name+' expands beyond the safe in-browser memory limit.');
-    if(uncompressed>1024*1024&&uncompressed/Math.max(1,compressed)>limits.maxCompressionRatio)throw new Error(name+' contains an entry with an unsafe compression ratio.');
-    offset=end;
+    if(offset+46>eocd||u32(bytes,offset)!==0x02014b50)throw new Error(name+' has an invalid central-directory entry.');
+    const flags=u16(bytes,offset+8),method=u16(bytes,offset+10),compressed=u32(bytes,offset+20),uncompressed=u32(bytes,offset+24),nameLength=u16(bytes,offset+28),extraLength=u16(bytes,offset+30),commentLength=u16(bytes,offset+32),diskStart=u16(bytes,offset+34),localOffset=u32(bytes,offset+42),end=offset+46+nameLength+extraLength+commentLength;
+    if(end>eocd)throw new Error(name+' has a truncated central-directory entry.');if(flags&1)throw new Error(name+' contains an encrypted entry, which is unsupported.');if(diskStart!==0)throw new Error(name+' contains a multi-disk entry.');if(![0,8].includes(method))throw new Error(name+' contains an unsupported compression method ('+method+').');if([compressed,uncompressed,localOffset].includes(0xffffffff)||hasZip64Extra(bytes.subarray(offset+46+nameLength,offset+46+nameLength+extraLength)))throw new Error(name+' contains unsupported ZIP64 metadata.');
+    const centralNameBytes=bytes.subarray(offset+46,offset+46+nameLength),entryName=validateEntryPath(decodeName(centralNameBytes,!!(flags&0x800)),name),fold=entryName.toLocaleLowerCase('en-US'),nfcFold=entryName.normalize('NFC').toLocaleLowerCase('en-US');
+    if(exact.has(entryName))throw new Error(name+' contains a duplicate entry name: '+entryName+'.');if(caseFolded.has(fold))throw new Error(name+' contains a case-insensitive path collision: '+caseFolded.get(fold)+' / '+entryName+'.');if(unicodeFolded.has(nfcFold))throw new Error(name+' contains a Unicode-normalization path collision: '+unicodeFolded.get(nfcFold)+' / '+entryName+'.');exact.add(entryName);caseFolded.set(fold,entryName);unicodeFolded.set(nfcFold,entryName);
+    if(/\.zip$/i.test(entryName))throw new Error(name+' contains an unnecessary nested archive: '+entryName+'.');if(localOffset+30>directoryOffset||u32(bytes,localOffset)!==0x04034b50)throw new Error(name+' has an invalid local-file entry for '+entryName+'.');
+    const localFlags=u16(bytes,localOffset+6),localMethod=u16(bytes,localOffset+8),localNameLength=u16(bytes,localOffset+26),localExtraLength=u16(bytes,localOffset+28),localNameBytes=bytes.subarray(localOffset+30,localOffset+30+localNameLength),dataOffset=localOffset+30+localNameLength+localExtraLength,dataEnd=dataOffset+compressed;
+    if(localFlags!==flags||localMethod!==method||!byteEquals(localNameBytes,centralNameBytes))throw new Error(name+' has inconsistent local and central headers for '+entryName+'.');if(dataOffset>directoryOffset||dataEnd>directoryOffset)throw new Error(name+' contains truncated or overlapping package data for '+entryName+'.');
+    if(uncompressed>limits.maxEntryUncompressedBytes)throw new Error(name+' contains an entry that is too large to process safely: '+entryName+'.');totalUncompressed+=uncompressed;if(totalUncompressed>limits.maxUncompressedBytes)throw new Error(name+' expands beyond the safe in-browser memory limit.');if(uncompressed>1024*1024&&uncompressed/Math.max(1,compressed)>limits.maxCompressionRatio)throw new Error(name+' contains an entry with an unsafe compression ratio: '+entryName+'.');
+    regions.push({start:localOffset,end:dataEnd,name:entryName});inventory.push(Object.freeze({name:entryName,method,compressed,uncompressed}));offset=end;
   }
-  if(offset>directoryOffset+directorySize)throw new Error(name+' has inconsistent central-directory sizing.');
-  return{entries,compressedBytes:bytes.byteLength,uncompressedBytes:totalUncompressed};
+  if(offset!==directoryOffset+directorySize)throw new Error(name+' has inconsistent central-directory sizing.');regions.sort((a,b)=>a.start-b.start);for(let i=1;i<regions.length;i++)if(regions[i].start<regions[i-1].end)throw new Error(name+' contains overlapping ZIP data regions: '+regions[i-1].name+' / '+regions[i].name+'.');
+  return Object.freeze({entries,compressedBytes:bytes.byteLength,uncompressedBytes:totalUncompressed,inventory:Object.freeze(inventory)});
 }
-function parseXml(text,context){
-  const doc=new DOMParser().parseFromString(String(text||''),'application/xml');
-  const parserError=doc.querySelector('parsererror');
-  if(parserError)throw new Error('Invalid XML in '+safeLabel(context)+'.');
-  return doc;
+function createXmlBudget(customLimits){const limits=Object.assign({},DEFAULT_LIMITS,customLimits||{});return{limits,aggregateBytes:0,parts:0}}
+function parseXml(text,context,budgetOrLimits){
+  const raw=String(text||''),budget=budgetOrLimits&&budgetOrLimits.limits?budgetOrLimits:createXmlBudget(budgetOrLimits),limits=budget.limits,bytes=new TextEncoder().encode(raw).byteLength,label=safeLabel(context||'XML part');
+  if(bytes>limits.maxXmlPartBytes)throw new Error(label+' exceeds the per-part XML size limit.');budget.aggregateBytes+=bytes;budget.parts++;if(budget.aggregateBytes>limits.maxAggregateXmlBytes)throw new Error('Office package XML exceeds the aggregate safe size limit.');if(/<!\s*(?:DOCTYPE|ENTITY|ELEMENT|ATTLIST|NOTATION)\b/i.test(raw))throw new Error(label+' contains a prohibited DTD or entity declaration.');
+  const doc=new DOMParser().parseFromString(raw,'application/xml'),parserError=doc.querySelector('parsererror');if(parserError)throw new Error('Invalid XML in '+label+'.');let nodes=0,attributes=0;const stack=[{node:doc.documentElement,depth:1}];while(stack.length){const item=stack.pop(),node=item.node;if(!node)continue;if(++nodes>limits.maxXmlNodes)throw new Error(label+' exceeds the XML node limit.');if(item.depth>limits.maxXmlDepth)throw new Error(label+' exceeds the XML nesting-depth limit.');if(node.attributes){if(node.attributes.length>limits.maxAttributesPerElement)throw new Error(label+' contains an element with too many attributes.');attributes+=node.attributes.length;if(attributes>limits.maxXmlAttributes)throw new Error(label+' exceeds the XML attribute limit.');for(const attr of Array.from(node.attributes))if(attr.value.length>limits.maxXmlAttributeLength)throw new Error(label+' contains an attribute that is too long.');}for(let child=node.lastElementChild;child;child=child.previousElementSibling)stack.push({node:child,depth:item.depth+1});}return doc
 }
-function sanitizeFileName(name,fallback='Download'){
-  const cleaned=String(name||'').replace(/[\u0000-\u001f<>:"/\\|?*]+/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');
-  return cleaned||fallback;
-}
-function requestDownload(blob,fileName,options){
-  if(!(blob instanceof Blob)||blob.size<=0)throw new Error('The generated download is empty.');
-  const settings=Object.assign({revokeAfterMs:15000},options||{}),anchor=document.createElement('a'),url=URL.createObjectURL(blob);
-  anchor.href=url;anchor.download=sanitizeFileName(fileName);anchor.rel='noopener';anchor.hidden=true;document.body.appendChild(anchor);
-  try{anchor.click()}finally{anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),Math.max(1000,settings.revokeAfterMs))}
-  return{fileName:anchor.download,bytes:blob.size};
-}
-function revokeObjectUrls(values){
-  const unique=new Set(values||[]);
-  for(const url of unique)if(typeof url==='string'&&url.startsWith('blob:')){try{URL.revokeObjectURL(url)}catch(error){console.warn('Could not revoke object URL',error)}}
-}
+function resolveRelationshipTarget(relsPath,target){const relPath=String(relsPath),normalizedTarget=String(target).replace(/\\/g,'/'),base=(normalizedTarget.startsWith('/')||relPath==='_rels/.rels'?[]:relPath.replace(/_rels\/[^/]+\.rels$/,'').split('/').filter(Boolean)),parts=normalizedTarget.split('/');for(const p of parts){if(!p||p==='.')continue;if(p==='..'){if(!base.length)throw new Error('OOXML relationship target escapes the package root.');base.pop()}else base.push(p)}return base.join('/')}
+async function validateOoxmlRelationships(zip,options={}){const budget=options.xmlBudget||createXmlBudget(options.limits),files=Object.keys(zip.files||{}).filter(x=>/\.rels$/i.test(x));for(const path of files){const file=zip.file(path);if(!file)continue;const doc=parseXml(await file.async('string'),path,budget);for(const rel of Array.from(doc.getElementsByTagNameNS('*','Relationship'))){const target=String(rel.getAttribute('Target')||''),mode=String(rel.getAttribute('TargetMode')||''),type=String(rel.getAttribute('Type')||'');if(!target)throw new Error(path+' contains a relationship without a target.');if(/^external$/i.test(mode)){if(!/\/hyperlink$/i.test(type)||!/^(?:https?:|mailto:)/i.test(target))throw new Error(path+' contains a blocked external relationship.');continue}const resolved=resolveRelationshipTarget(path,target);if(!zip.files[resolved]&&!Object.keys(zip.files).some(name=>name.startsWith(resolved.replace(/\/?$/,'/') )))throw new Error(path+' contains a relationship to a missing or invalid package part: '+target+'.')}}return{relationshipParts:files.length,xmlBudget:budget}}
+function packageInventory(zip){return Object.freeze(Object.keys(zip.files||{}).filter(name=>!zip.files[name].dir).map(name=>normalizedPath(name).normalize('NFC')).sort())}
+function comparePackageInventory(before,after,allowedRemoved=[]){const b=new Set(before),a=new Set(after),allowed=new Set(allowedRemoved);return{removed:[...b].filter(x=>!a.has(x)&&!allowed.has(x)).sort(),added:[...a].filter(x=>!b.has(x)).sort(),duplicates:after.filter((x,i,list)=>list.indexOf(x)!==i)}}
 
-global.InkDeskRuntime=Object.freeze({DEFAULT_LIMITS,parseXml,requestDownload,revokeObjectUrls,sanitizeFileName,validateInputSize,validateZipPackage});
+function sha256Fallback(bytes){
+  const K=new Uint32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+  const length=bytes.length,paddedLength=((length+9+63)>>6)<<6,padded=new Uint8Array(paddedLength);padded.set(bytes);padded[length]=0x80;const view=new DataView(padded.buffer),bits=length*8;view.setUint32(paddedLength-8,Math.floor(bits/0x100000000),false);view.setUint32(paddedLength-4,bits>>>0,false);
+  const h=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]),w=new Uint32Array(64),rotr=(x,n)=>(x>>>n)|(x<<(32-n));
+  for(let offset=0;offset<paddedLength;offset+=64){for(let i=0;i<16;i++)w[i]=view.getUint32(offset+i*4,false);for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2],s0=rotr(a,7)^rotr(a,18)^(a>>>3),s1=rotr(b,17)^rotr(b,19)^(b>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0}let[a,b,c,d,e,f,g,x]=h;for(let i=0;i<64;i++){const s1=rotr(e,6)^rotr(e,11)^rotr(e,25),ch=(e&f)^(~e&g),t1=(x+s1+ch+K[i]+w[i])>>>0,s0=rotr(a,2)^rotr(a,13)^rotr(a,22),maj=(a&b)^(a&c)^(b&c),t2=(s0+maj)>>>0;x=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0}h[0]=(h[0]+a)>>>0;h[1]=(h[1]+b)>>>0;h[2]=(h[2]+c)>>>0;h[3]=(h[3]+d)>>>0;h[4]=(h[4]+e)>>>0;h[5]=(h[5]+f)>>>0;h[6]=(h[6]+g)>>>0;h[7]=(h[7]+x)>>>0}
+  return Array.from(h,n=>n.toString(16).padStart(8,'0')).join('')
+}
+async function sha256Hex(value){
+  const bytes=value instanceof Blob?new Uint8Array(await value.arrayBuffer()):asBytes(value);
+  if(global.crypto&&global.crypto.subtle&&typeof global.crypto.subtle.digest==='function'){const digest=await global.crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('')}
+  return sha256Fallback(bytes)
+}
+function sanitizeFileName(name,fallback='Download'){const cleaned=String(name||'').replace(/[\u0000-\u001f<>:"/\\|?*]+/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');return cleaned||fallback}
+function requestDownload(blob,fileName,options){if(!(blob instanceof Blob)||blob.size<=0)throw new Error('The generated download is empty.');if(!global.document||!global.URL||typeof URL.createObjectURL!=='function')throw new Error('This browser cannot request a local download.');const anchor=document.createElement('a');if(!('download' in anchor)||typeof anchor.click!=='function')throw new Error('The browser download mechanism is unavailable or blocked.');const settings=Object.assign({revokeAfterMs:15000},options||{}),safeName=sanitizeFileName(fileName),url=URL.createObjectURL(blob);anchor.href=url;anchor.download=safeName;anchor.rel='noopener';anchor.hidden=true;document.body.appendChild(anchor);try{anchor.click()}catch(error){throw new Error('The browser blocked the download request: '+error.message)}finally{anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),Math.max(1000,settings.revokeAfterMs))}return Object.freeze({fileName:safeName,bytes:blob.size,requested:true,verified:false})}
+function revokeObjectUrls(values){const unique=new Set(values||[]);for(const url of unique)if(typeof url==='string'&&url.startsWith('blob:')){try{URL.revokeObjectURL(url)}catch(error){console.warn('Could not revoke object URL',error)}}}
+global.InkDeskRuntime=Object.freeze({DEFAULT_LIMITS,asBytes,comparePackageInventory,createXmlBudget,packageInventory,parseXml,requestDownload,revokeObjectUrls,sanitizeFileName,sha256Hex,validateInputSize,validateOoxmlRelationships,validateZipPackage});
 })(window);

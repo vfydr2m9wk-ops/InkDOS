@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME='inkdesk-shell-v0.19.0-beta';
+const CACHE_NAME='inkdesk-shell-v0.19.1-beta-router1';
 const APP_SHELL=[
   './',
   './index.html',
@@ -9,6 +9,11 @@ const APP_SHELL=[
   './shared/office-shell.css',
   './shared/office-shell.js',
   './shared/office-runtime.js',
+  './shared/file-lifecycle.js',
+  './shared/file-router.js',
+  './shared/hub-open.js',
+  './shared/formula-engine.js',
+  './shared/safe-dom.js',
   './shared/register-service-worker.js',
   './shared/vendor/jszip.min.js',
   './shared/vendor/pako_inflate.min.js',

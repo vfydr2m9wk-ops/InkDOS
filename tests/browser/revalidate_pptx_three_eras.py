@@ -12,6 +12,7 @@ import sys
 try:
     from bs4 import BeautifulSoup
     from playwright.sync_api import sync_playwright
+    from browser_support import launch_browser
 except ImportError as exc:
     raise SystemExit("Install beautifulsoup4 and playwright to run this optional test") from exc
 
@@ -30,6 +31,9 @@ def load_app(page) -> None:
         page.add_style_tag(path=str(path))
     for path in (
         ROOT / "shared/office-runtime.js",
+        ROOT / "shared/file-lifecycle.js",
+        ROOT / "shared/formula-engine.js",
+        ROOT / "shared/safe-dom.js",
                 ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/presentations/engine/compatibility.js",
         ROOT / "shared/office-shell.js",
@@ -98,7 +102,7 @@ def main() -> int:
             raise AssertionError(f"{name}: {details}")
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path="/usr/bin/chromium", args=["--no-sandbox"])
+        browser = launch_browser(playwright)
 
         page = browser.new_page()
         dialogs: list[str] = []
@@ -136,6 +140,9 @@ def main() -> int:
             page.click("#redoBtn")
             check(f"{era}: text edit redo", "PPTX-ROUNDTRIP-0185" in str(state(page)), state(page))
             save(page, exported)
+            page.set_input_files("#fileInput", str(exported))
+            page.wait_for_function("document.querySelector('#stateBadge').textContent.includes('reopened successfully')", timeout=30000)
+            check(f"{era}: exported edit reopened", "PPTX-ROUNDTRIP-0185" in str(state(page)), state(page))
             page.close()
 
             original_hashes, exported_hashes = content_hashes(source), content_hashes(exported)

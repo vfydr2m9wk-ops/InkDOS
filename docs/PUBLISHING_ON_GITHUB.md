@@ -1,35 +1,57 @@
 # Publishing on GitHub
 
-InkDesk can be reconstructed from a source ZIP by the repository bootstrap workflow. The bootstrap is intentionally the only workflow included in the source package.
+## Repository source
 
-## Bootstrap files
+Keep extracted source files directly on the `main` branch so visitors can inspect `apps/`, `shared/`, `tests/`, `scripts/`, and `docs/` without downloading an opaque package.
 
-Place these files in the repository:
+The root-level `InkDesk-source.zip` is a deliberate mobile-bootstrap exception. It is the validated source payload used by `.github/workflows/bootstrap-inkdesk.yml` to reconstruct the repository from a minimal two-file seed. Do not add generated test exports, Python bytecode, browser results, or unrelated archives to the source tree.
+
+## Initial bootstrap from a phone or tablet
+
+A blank repository needs only these two files:
 
 - `InkDesk-source.zip` at the repository root.
-- `.github/workflows/bootstrap-inkdesk.yml` in the workflow directory.
+- `.github/workflows/bootstrap-inkdesk.yml` at its exact workflow path.
 
-Run **Bootstrap InkDesk repository** manually from the Actions tab. The workflow validates the archive, installs the application tree, validates the installed tree again, and commits the result to `main`.
+Run **Bootstrap InkDesk repository** manually from the Actions tab on the `main` branch. The workflow performs guarded ZIP extraction, checksum verification, structural validation, source auditing, unit tests, JavaScript syntax checks, installation of the complete tree, a second validation pass, and a commit back to `main`.
 
-## Why additional workflows are not created automatically
+The workflow preserves `InkDesk-source.zip` after extraction so the same validated payload can rebuild the repository again. It is manually triggered and does not run recursively after its own commit.
 
-The standard `GITHUB_TOKEN` used by GitHub Actions can commit normal repository content, but GitHub may reject attempts by that token to create or update additional files in `.github/workflows/`. This restriction prevents a workflow from silently granting itself new automation capabilities.
+## Repository metadata
 
-For that reason, the bootstrap package does not include separate Pages or quality-gate workflows. Add any future workflow manually through the GitHub interface or with an appropriately authorized maintainer credential, then review it before committing.
+**Description**
+
+> Local-first browser editors for focused DOCX, XLS/XLSX, and PPTX workflows.
+
+**Suggested topics**
+
+`ooxml`, `local-first`, `offline`, `docx`, `xlsx`, `pptx`, `javascript`, `html-app`, `pwa`, `office-editor`
 
 ## GitHub Pages
 
-GitHub Pages deployment is optional and is not configured by the bootstrap. A maintainer may create a reviewed Pages workflow later or publish the static tree using another supported GitHub Pages configuration.
+The reconstructed repository includes `.github/workflows/pages.yml`. In **Settings → Pages**, select **GitHub Actions** as the source, then run **Deploy GitHub Pages** manually after the bootstrap commit.
+
+Expected project URL:
+
+`https://vfydr2m9wk-ops.github.io/inkdesk/`
 
 GitHub Pages provides the HTTPS context required for service-worker registration. Verify the deployed manifest, service worker, workspace links, and offline reload in a real browser before describing the hosted build as installable.
 
-## Continuous validation
+## Quality validation
 
-The bootstrap workflow runs checksum verification, structural validation, source auditing, unit tests, and JavaScript syntax checks before committing the application. Future continuous-integration workflows should reuse the same scripts:
+The reconstructed repository includes `.github/workflows/quality-gate.yml`. The bootstrap workflow already executes the repository checks before and after installation. Future source commits are validated by the quality gate according to its configured triggers.
 
-```bash
-python3 scripts/verify_checksums.py
-python3 scripts/validate_repository.py
-python3 scripts/audit_source.py
-python3 -m unittest discover -s tests -p "test_*.py"
-```
+## Release 0.19.1-beta
+
+- Tag: `v0.19.1-beta`
+- Target: `main`
+- Title: `InkDesk 0.19.1-beta — Structural Cleanup and Integrity Review`
+- Attach a separately validated release ZIP when publishing a GitHub Release.
+- Attach or link `docs/FINAL_REVIEW_REPORT.md` and `docs/VALIDATION_REPORT.md`.
+- Publish the release ZIP SHA-256.
+
+Do not describe the project as production ready or fully compatible with Microsoft Office. State that compatibility is partial; native Firefox, Safari/WebKit, iPadOS, embedded hosts, and installed PWA behavior require separate validation.
+
+## Social preview
+
+Upload `docs/images/social-preview.png` in the repository social-preview settings.

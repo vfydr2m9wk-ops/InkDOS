@@ -10,6 +10,8 @@ Run from the repository root:
 from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+
+from browser_support import launch_browser
 from zipfile import ZipFile
 import json
 import os
@@ -31,6 +33,9 @@ def load_app(page):
         page.add_style_tag(path=str(css))
     for js in (
         ROOT / "shared/office-runtime.js",
+        ROOT / "shared/file-lifecycle.js",
+        ROOT / "shared/formula-engine.js",
+        ROOT / "shared/safe-dom.js",
                 ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/spreadsheets/xls-biff8-engine.js",
         ROOT / "apps/spreadsheets/xlsx-engine.js",
@@ -86,7 +91,7 @@ def edit_and_download(page, row, output):
 def main():
     results = []
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         for filename in (
             "era1_office_97_2003_legacy.xls",
             "era2_office_2007_2013_baseline.xlsx",
@@ -113,21 +118,22 @@ def main():
                 "errors": errors,
                 "dialogs": dialogs,
             }
-            page.close()
-
-            reopened = browser.new_page(viewport={"width": 1500, "height": 1100})
-            reopen_errors = []
-            reopened.on("pageerror", lambda error: reopen_errors.append(str(error)))
-            load_app(reopened)
-            reopened.set_input_files("#fileInput", str(saved))
-            wait_open(reopened)
-            marker_text = reopened.locator(f'.cell[data-r="{marker_row}"][data-c="0"]').inner_text()
+            dialogs.clear()
+            page.set_input_files("#fileInput", str(saved))
+            wait_open(page)
+            page.wait_for_function("document.querySelector('#saveMessage').textContent.includes('reopened successfully')", timeout=30000)
+            reopen_dialogs = list(dialogs)
+            if reopen_dialogs and not all("not verified as exported" in message for message in reopen_dialogs):
+                raise RuntimeError(f"Unexpected reopen dialog for {filename}: {reopen_dialogs}")
+            dialogs.clear()
+            marker_text = page.locator(f'.cell[data-r="{marker_row}"][data-c="0"]').inner_text()
+            reopen_errors = list(errors)
             reopen_data = {
                 "marker": marker_text,
-                "images": reopened.locator(".sheet-image").count(),
+                "images": page.locator(".sheet-image").count(),
                 "errors": reopen_errors,
             }
-            reopened.close()
+            page.close()
 
             if marker_text != marker:
                 raise RuntimeError(f"Edited marker was not retained for {filename}: {marker_text!r}")

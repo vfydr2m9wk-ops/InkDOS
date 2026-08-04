@@ -13,7 +13,7 @@
 
 ## Imported PPTX workflow
 
-Version 0.19.0-beta keeps the original OOXML package in memory. Saving a copy reloads that package and patches only supported changes in the existing slide set. Unrecognized parts are retained rather than recreated.
+Version 0.19.1-beta keeps the original OOXML package in memory. Saving a copy reloads that package and patches only supported changes in the existing slide set. Unrecognized parts are retained rather than recreated.
 
 The relationship path for any part is derived as:
 

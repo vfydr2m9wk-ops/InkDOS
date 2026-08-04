@@ -1,9 +1,9 @@
 {
   "project": "InkDesk",
-  "version": "0.19.0-beta",
-  "releaseName": "Structural Cleanup and Integrity Review",
+  "version": "0.19.1-beta",
+  "releaseName": "Export Verification and Parser Hardening",
   "releaseType": "Beta",
-  "releaseDate": "2026-08-03",
+  "releaseDate": "2026-08-04",
   "entryPoints": {
     "InkDesk.html": "index.html",
     "Documents.html": "apps/documents/index.html",
@@ -28,12 +28,32 @@
   "validation": {
     "repositoryValidation": true,
     "sourceAudit": true,
-    "unitTests": 43,
-    "chromiumBrowserRegression": true,
+    "unitAndPackageTests": 49,
+    "browserRegressionScripts": 11,
+    "localPlaywrightChromium": true,
+    "localPlaywrightFirefox": false,
+    "localPlaywrightWebKit": false,
+    "ciPlaywrightMatrixConfigured": true,
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeIPadOS": false,
+    "installedPwaRuntime": false,
     "staticHttpAssets": true,
-    "installedPwaRuntime": false
-  }
+    "browserRegressionGroups": 5
+  },
+  "securityLimits": {
+    "maxCompressedBytes": 52428800,
+    "maxEntries": 3000,
+    "maxUncompressedBytes": 167772160,
+    "maxEntryUncompressedBytes": 33554432,
+    "maxCompressionRatio": 200,
+    "maxXmlPartBytes": 8388608,
+    "maxAggregateXmlBytes": 50331648,
+    "maxXmlDepth": 128,
+    "maxXmlNodes": 100000,
+    "maxXmlAttributes": 100000,
+    "maxAttributesPerElement": 128,
+    "maxXmlAttributeLength": 32768
+  },
+  "exportVerification": "SHA-256 and byte-length match after reopening the generated copy"
 }

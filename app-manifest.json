@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.19.0-beta",
+  "version": "0.19.1-beta",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, and PPTX workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/inkdesk",
@@ -53,7 +53,8 @@
       "docx-basic-open",
       "docx-basic-edit",
       "docx-package-preserving-copy-export",
-      "docx-section-aware-layout"
+      "docx-section-aware-layout",
+      "docx-deny-by-default-dom"
     ],
     "spreadsheets": [
       "xls-biff8-local-import",
@@ -64,7 +65,8 @@
       "xlsx-package-preserving-copy-export",
       "xlsx-drawing-image-and-chart-preview",
       "xlsx-modern-formula-preview",
-      "xlsx-hidden-sheet-respect"
+      "xlsx-hidden-sheet-respect",
+      "bounded-deterministic-formula-evaluation"
     ],
     "presentations": [
       "pptx-basic-open",
@@ -72,7 +74,8 @@
       "pptx-present",
       "pptx-package-preserving-copy-export",
       "pptx-layout-master-image-notes-resolution",
-      "pptx-chart-and-transition-preview"
+      "pptx-chart-and-transition-preview",
+      "fingerprint-verified-export-reopen"
     ]
   },
   "compatibility": {

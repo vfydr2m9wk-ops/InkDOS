@@ -29,6 +29,6 @@ The editor provides focused local previews for `XLOOKUP`, `FILTER` and `LET`, ba
 
 ## Excel 97–2004 import
 
-Version 0.19.0-beta retains the BIFF8 `.xls` import introduced in 0.18.6 and makes cached formula-zero display format-aware. The importer covers worksheet names and visibility, shared strings, numeric and boolean values, cached formula results, cell styles, merged ranges, row heights, column widths, page margins/setup, embedded PNG/JPEG images and text boxes.
+Version 0.19.1-beta retains the BIFF8 `.xls` import introduced in 0.18.6 and makes cached formula-zero display format-aware. The importer covers worksheet names and visibility, shared strings, numeric and boolean values, cached formula results, cell styles, merged ranges, row heights, column widths, page margins/setup, embedded PNG/JPEG images and text boxes.
 
 The original binary file is never overwritten. Save always creates an `.xlsx` copy. Formula token streams, VBA macros, ActiveX controls, legacy charts and unsupported embedded OLE objects are not converted. Formula cells are imported from their cached displayed result so that the workbook remains readable without claiming full formula compatibility. Cached zero results are visible unless the original number format explicitly defines an empty zero section.

@@ -10,6 +10,8 @@ Run from the repository root:
 from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+
+from browser_support import launch_browser
 from zipfile import ZipFile
 import json
 import os
@@ -30,6 +32,9 @@ def load_app(page):
         page.add_style_tag(path=str(css))
     for js in (
         ROOT / "shared/office-runtime.js",
+        ROOT / "shared/file-lifecycle.js",
+        ROOT / "shared/formula-engine.js",
+        ROOT / "shared/safe-dom.js",
         ROOT / "shared/vendor/pako_inflate.min.js",
         ROOT / "apps/documents/docx-parser.js",
         ROOT / "shared/vendor/jszip.min.js",
@@ -61,7 +66,7 @@ def package_features(path):
 def main():
     results = []
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         for filename in (
             "era1_office_97_2003_legacy.doc",
             "era2_office_2007_2013_baseline.docx",
@@ -87,6 +92,10 @@ def main():
                 page.click("#saveCopyDownload")
             saved = OUT / (filename + ".saved.docx")
             download_info.value.save_as(str(saved))
+            page.set_input_files("#fileInput", str(saved))
+            page.wait_for_function("document.querySelector('#statusText').textContent.includes('reopened successfully')", timeout=30000)
+            if "DOCX-ROUNDTRIP-REGRESSION-MARKER" not in page.locator("#pagesHost").inner_text():
+                raise RuntimeError(f"Edited DOCX marker was not retained for {filename}")
             exported = package_features(saved)
             results.append({
                 "file": filename,

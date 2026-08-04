@@ -1,0 +1,51 @@
+name: InkDesk quality gate
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "*.zip"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Verify release checksums
+        run: python3 scripts/verify_checksums.py
+
+      - name: Validate repository
+        run: python3 scripts/validate_repository.py
+
+      - name: Audit source risks
+        run: python3 scripts/audit_source.py
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -p "test_*.py"
+
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find apps shared -type f -name '*.js' -print0)

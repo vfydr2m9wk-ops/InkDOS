@@ -12,7 +12,11 @@ COMMANDS = [
     ("Repository validation", [sys.executable, "scripts/validate_repository.py"]),
     ("Source audit", [sys.executable, "scripts/audit_source.py"]),
     ("Unit and package tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]),
-    ("Browser regressions", [sys.executable, "scripts/run_browser_regressions.py"]),
+    ("Browser package/security regressions", [sys.executable, "scripts/run_browser_regressions.py", "--group", "package-security"]),
+    ("Browser lifecycle regressions", [sys.executable, "scripts/run_browser_regressions.py", "--group", "lifecycle"]),
+    ("Browser isolation/offline regressions", [sys.executable, "scripts/run_browser_regressions.py", "--group", "isolation-offline"]),
+    ("Browser document/presentation regressions", [sys.executable, "scripts/run_browser_regressions.py", "--group", "documents-presentations"]),
+    ("Browser spreadsheet regressions", [sys.executable, "scripts/run_browser_regressions.py", "--group", "spreadsheets"]),
     ("Checksum verification", [sys.executable, "scripts/verify_checksums.py"]),
 ]
 

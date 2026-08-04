@@ -2,6 +2,7 @@
 'use strict';
 const W_NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const R_NS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+let currentXmlBudget=null;
 function u16(a,o){return a[o]|(a[o+1]<<8)}
 function u32(a,o){return (a[o]|(a[o+1]<<8)|(a[o+2]<<16)|(a[o+3]<<24))>>>0}
 function decode(bytes){return new TextDecoder('utf-8').decode(bytes)}
@@ -36,7 +37,7 @@ async function unzip(buffer){
   }
   return map;
 }
-function xml(bytes,context='DOCX package part'){const text=decode(bytes);return global.InkDeskRuntime?global.InkDeskRuntime.parseXml(text,context):new DOMParser().parseFromString(text,'application/xml')}
+function xml(bytes,context='DOCX package part'){const text=decode(bytes);return global.InkDeskRuntime?global.InkDeskRuntime.parseXml(text,context,currentXmlBudget):new DOMParser().parseFromString(text,'application/xml')}
 function all(el,name){return Array.from(el.getElementsByTagNameNS('*',name))}
 function first(el,name){return el?el.getElementsByTagNameNS('*',name)[0]||null:null}
 function attr(el,name){if(!el)return'';return el.getAttributeNS(R_NS,name)||el.getAttribute('r:'+name)||el.getAttribute(name)||''}
@@ -140,12 +141,12 @@ function paragraphBlock(p,numbering,styles,mediaUrls,listCounters,sourceIndex,so
 }
 function tableBlock(tbl,sourceIndex,sourceSubIndex){let h='<table>';for(const tr of all(tbl,'tr')){h+='<tr>';for(const tc of Array.from(tr.children).filter(x=>x.localName==='tc')){const span=num(val(first(first(tc,'tcPr'),'gridSpan')),1);h+='<td'+(span>1?' colspan="'+span+'"':'')+'>'+all(tc,'p').map(p=>esc(textOf(p))).join('<br>')+'</td>'}h+='</tr>'}h+='</table>';return{type:'table',html:h,text:textOf(tbl),outlineLevel:0,softPageBreakBefore:false,hardPageBreakBefore:false,sourceIndex,sourceSubIndex}}
 async function parse(buffer){
-  let mediaUrls={};
+  currentXmlBudget=global.InkDeskRuntime?global.InkDeskRuntime.createXmlBudget():null;let mediaUrls={};
   try{
-    const files=await unzip(buffer),mainPath=files.has('word/document.xml')?'word/document.xml':files.has('documents/document.xml')?'documents/document.xml':'';
+    const files=await unzip(buffer);if(global.InkDeskRuntime&&global.JSZip){const validationZip=await JSZip.loadAsync(buffer);await global.InkDeskRuntime.validateOoxmlRelationships(validationZip,{xmlBudget:currentXmlBudget})}const mainPath=files.has('word/document.xml')?'word/document.xml':files.has('documents/document.xml')?'documents/document.xml':'';
     if(!mainPath)throw new Error('DOCX does not contain word/document.xml.');
     const root=mainPath.split('/')[0],relsPath=root+'/_rels/document.xml.rels',doc=xml(files.get(mainPath),mainPath),styles=parseStyles(files,root),relsDoc=files.get(relsPath),rels=relsDoc?parseRels(xml(relsDoc,relsPath)):{},numbering=parseNumbering(files,root),listCounters={};
-    for(const [id,target] of Object.entries(rels)){if(/media\//i.test(target)){const path=normalPath(root,target),bytes=files.get(path);if(bytes){const ext=path.split('.').pop().toLowerCase(),mime=ext==='png'?'image/png':ext==='gif'?'image/gif':ext==='svg'?'image/svg+xml':'image/jpeg';mediaUrls[id]=URL.createObjectURL(new Blob([bytes],{type:mime}))}}}
+    for(const [id,target] of Object.entries(rels)){if(/media\//i.test(target)){const path=normalPath(root,target),bytes=files.get(path);if(bytes){const ext=path.split('.').pop().toLowerCase();if(!['png','jpg','jpeg','gif','webp'].includes(ext))continue;const mime=ext==='png'?'image/png':ext==='gif'?'image/gif':ext==='webp'?'image/webp':'image/jpeg';mediaUrls[id]=URL.createObjectURL(new Blob([bytes],{type:mime}))}}}
     const blocks=[],outline=[],body=first(doc,'body'),renderedSourceIndexes=[];if(!body)throw new Error('DOCX body is missing.');let sectionStart=0;
     const bodyChildren=Array.from(body.children);
     function addBlock(block){blocks.push(block);if(block.outlineLevel&&block.text.trim())outline.push({level:block.outlineLevel,text:block.text.trim(),blockIndex:blocks.length-1});}

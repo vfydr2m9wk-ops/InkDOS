@@ -1,5 +1,7 @@
 # Structural Audit — InkDesk 0.19.0-beta
 
+> Historical baseline. The dynamic formula construction described below was removed in 0.19.1-beta; see `docs/VALIDATION_REPORT.md` for current evidence.
+
 ## Severity model
 
 - **Critical:** probable data loss, corruption, stale export, or cross-document contamination.
@@ -25,7 +27,7 @@
 | Medium | Test/release package | Generated results, Python bytecode, and historical test exports could enter the release and checksums. | Noisy source package and non-reproducible checksums. | Expanded ignore/exclusion rules and made generated evidence non-distributable. | Low | Validation rejects duplicate vendor/generated release artifacts; final ZIP inspection is part of release validation. |
 | Medium | `beforeunload` and failure reporting | Some paths prompted even when clean or swallowed contextual errors. | Unnecessary prompts and difficult diagnosis. | Prompt only when dirty; replace empty/silent catches with contextual warnings at safe boundaries. | Low | Source audit reports no empty catch blocks; workflow tests pass. |
 | Low | `apps/documents/app.js` | `countDocumentss` and implicit outline indexes reduced clarity. | Maintenance errors and difficult search/refactoring. | Renamed to `countWords` and made indexes explicit. | Low | Syntax/unit/browser checks passed. |
-| Low | `apps/spreadsheets/app.js`, formula preview | Restricted arithmetic preview still uses dynamic function construction. | Requires continued manual security review even with an allowlist. | Retained behavior to avoid a risky rewrite; source audit emits a manual-review note. | Medium if replaced | Allowlist tests and source audit pass; item remains documented. |
+| Resolved in 0.19.1-beta | `apps/spreadsheets/app.js`, `shared/formula-engine.js` | The 0.19.0-beta baseline used restricted dynamic function construction. | Dynamic compilation increased review risk. | Replaced by a deterministic limited parser with resource limits and regression tests. | Medium | Current source audit and formula injection tests pass. |
 | Informational | `apps/presentations/app.js` | The file remains a large multi-responsibility module. | Future changes have a wider review surface and higher merge risk. | No large rewrite performed; incremental extraction is recommended after behavior coverage expands. | High if changed broadly | Current behavior is covered; no modularization claim is made. |
 | Informational | Whole application | No persisted recovery store exists. | A browser/process crash can lose unsaved in-memory edits. | Documented as unsupported; design a privacy-preserving opt-in recovery layer before stable 1.0. | High | Denied IndexedDB/localStorage fallback passed because core workflows do not depend on them. |
 

@@ -12,6 +12,8 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import Error as PlaywrightError, sync_playwright
 
+from browser_support import launch_browser
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
@@ -43,6 +45,11 @@ def validate_static_http_assets(base_url):
         "manifest.webmanifest",
         "service-worker.js",
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/file-router.js",
+        "shared/hub-open.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "shared/register-service-worker.js",
         "apps/documents/index.html",
         "apps/spreadsheets/index.html",
@@ -177,6 +184,9 @@ def validate_restricted_apis(browser, base_url):
         "documents": (
             "shared/vendor/pako_inflate.min.js",
             "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
             "apps/documents/docx-parser.js",
             "shared/vendor/jszip.min.js",
             "apps/documents/docx-writer.js",
@@ -186,6 +196,9 @@ def validate_restricted_apis(browser, base_url):
         ),
         "spreadsheets": (
             "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
             "shared/vendor/jszip.min.js",
             "apps/spreadsheets/xls-biff8-engine.js",
             "apps/spreadsheets/xlsx-engine.js",
@@ -195,6 +208,9 @@ def validate_restricted_apis(browser, base_url):
         ),
         "presentations": (
             "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
             "shared/vendor/jszip.min.js",
             "apps/presentations/engine/compatibility.js",
             "shared/office-shell.js",
@@ -234,7 +250,7 @@ def main():
     base_url = f"http://127.0.0.1:{server.server_port}"
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+            browser = launch_browser(playwright)
             results = [
                 validate_static_http_assets(base_url),
                 validate_file_launches(browser),

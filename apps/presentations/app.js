@@ -3,14 +3,15 @@
 const EMU=914400;
 const NS={p:'http://schemas.openxmlformats.org/presentationml/2006/main',a:'http://schemas.openxmlformats.org/drawingml/2006/main',r:'http://schemas.openxmlformats.org/officeDocument/2006/relationships'};
 const $=id=>document.getElementById(id);
-const xmlParser=new DOMParser();
+const xmlParser=new DOMParser();let currentXmlBudget=null;
 let pres=null,currentSlide=0,selectedId=null,zoom=0.9,dirty=false,drag=null,idSeq=1,editingId=null,textEditBefore=null,templateMode='presentation',undoStack=[],redoStack=[],historyLock=false,historyBeforeDrag=null,activeTheme=null,presentationTextDefaults=null,notesTimer=null,renderZoomOverride=null,presentTouchStart=null,presentHelpTimer=null,sourcePptxBuffer=null;
 const ui={start:$('startScreen'),app:$('app'),file:$('fileInput'),img:$('imageInput'),title:$('docTitle'),list:$('slideList'),canvas:$('slideCanvas'),stageWrap:$('stageWrap'),save:$('saveBtn'),state:$('stateBadge'),status:$('slideStatus'),zoomText:$('zoomText'),present:$('presentOverlay'),presentSlide:$('presentSlide'),exitPresent:$('exitPresentBtn'),fullscreenPresent:$('fullscreenPresentBtn'),fullscreenPresentLabel:$('fullscreenPresentLabel'),presentCounter:$('presentCounter'),presentHelp:$('presentHelp'),template:$('templateDialog'),templateGrid:$('templateGrid'),notes:$('presenterNotes'),notesPanel:$('notesPanel'),notesCount:$('notesCount')};
+const lifecycle=window.InkDeskFileLifecycle.create({onChange(value){dirty=value.shouldWarnBeforeUnload;ui.state.textContent=value.label;}});
 function uid(prefix='o'){return prefix+(idSeq++).toString(36)+Date.now().toString(36).slice(-4)}
-function cloneState(){return pres?JSON.parse(JSON.stringify({pres,currentSlide,selectedId})):null}function restoreState(st){if(!st)return;historyLock=true;pres=st.pres;activeTheme=pres.theme||null;currentSlide=Math.min(st.currentSlide,pres.slides.length-1);selectedId=st.selectedId;editingId=null;historyLock=false;markDirty();renderAll();updateHistoryButtons()}function pushHistory(before){if(historyLock||!before)return;undoStack.push(before);if(undoStack.length>80)undoStack.shift();redoStack=[];updateHistoryButtons()}function action(fn){const before=cloneState();fn();pushHistory(before)}function undo(){if(!undoStack.length)return;redoStack.push(cloneState());restoreState(undoStack.pop())}function redo(){if(!redoStack.length)return;undoStack.push(cloneState());restoreState(redoStack.pop())}function updateHistoryButtons(){const u=$('undoBtn'),r=$('redoBtn');if(u)u.disabled=!undoStack.length;if(r)r.disabled=!redoStack.length}function markDirty(){dirty=true;ui.state.textContent='Unsaved'}
-function markSaved(){dirty=false;ui.state.textContent='Saved'}
+function cloneState(){return pres?JSON.parse(JSON.stringify({pres,currentSlide,selectedId})):null}function restoreState(st){if(!st)return;historyLock=true;pres=st.pres;activeTheme=pres.theme||null;currentSlide=Math.min(st.currentSlide,pres.slides.length-1);selectedId=st.selectedId;editingId=null;historyLock=false;markDirty();renderAll();updateHistoryButtons()}function pushHistory(before){if(historyLock||!before)return;undoStack.push(before);if(undoStack.length>80)undoStack.shift();redoStack=[];updateHistoryButtons()}function action(fn){const before=cloneState();fn();pushHistory(before)}function undo(){if(!undoStack.length)return;redoStack.push(cloneState());restoreState(undoStack.pop())}function redo(){if(!redoStack.length)return;undoStack.push(cloneState());restoreState(redoStack.pop())}function updateHistoryButtons(){const u=$('undoBtn'),r=$('redoBtn');if(u)u.disabled=!undoStack.length;if(r)r.disabled=!redoStack.length}function markDirty(){return lifecycle.markDirty()}
+function markSaved(){return lifecycle.sourceOpened()}
 function setReady(t='Ready'){ui.state.textContent=t}
-window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(lifecycle.shouldWarnBeforeUnload()){e.preventDefault();e.returnValue='';}});
 function confirmIfDirty(){return !dirty || confirm('This presentation has unsaved changes. Continue and discard changes?')}
 function showApp(){ui.start.classList.add('hidden');ui.app.classList.remove('hidden')}
 const LAYOUTS=[
@@ -30,14 +31,14 @@ function makeSlide(layout='title'){
   if(layout==='twoColumn'){common.objects.push({id:uid(),type:'text',x:900000,y:1750000,w:5000000,h:3500000,text:'Left column',font:'Arial',size:22,color:'#4b5563',align:'left',z:2});common.objects.push({id:uid(),type:'text',x:6300000,y:1750000,w:5000000,h:3500000,text:'Right column',font:'Arial',size:22,color:'#4b5563',align:'left',z:3});}
   return common;
 }
-function basePresentation(name='Untitled presentation',layout='title'){activeTheme={fonts:{majorLatin:'Arial',minorLatin:'Arial'},colors:{accent1:'#d64a24',dk1:'#000000',lt1:'#ffffff'}};return {name,width:12192000,height:6858000,source:'new',theme:activeTheme,compatibility:{engine:'0.19.0-beta-generated',presenterNotesEditor:true,presenterNotesExport:false},slides:[makeSlide(layout)]};}
+function basePresentation(name='Untitled presentation',layout='title'){activeTheme={fonts:{majorLatin:'Arial',minorLatin:'Arial'},colors:{accent1:'#d64a24',dk1:'#000000',lt1:'#ffffff'}};return {name,width:12192000,height:6858000,source:'new',theme:activeTheme,compatibility:{engine:'0.19.1-beta-generated',presenterNotesEditor:true,presenterNotesExport:false},slides:[makeSlide(layout)]};}
 function showTemplateDialog(mode='presentation'){templateMode=mode;ui.templateGrid.innerHTML='';LAYOUTS.forEach(l=>{const b=document.createElement('button');b.className='template-option';b.innerHTML='<div class="template-preview '+(l.id==='twoColumn'?'two ':l.id==='blank'?'blank ':'')+'"><span class="pv-title"></span><span class="pv-sub"></span></div><div class="template-name"></div><div class="template-desc"></div>';b.querySelector('.template-name').textContent=l.name;b.querySelector('.template-desc').textContent=l.desc;b.onclick=()=>chooseTemplate(l.id);ui.templateGrid.appendChild(b)});ui.template.classList.remove('hidden');}
 function chooseTemplate(layout){ui.template.classList.add('hidden');if(templateMode==='presentation'){sourcePptxBuffer=null;pres=basePresentation('Untitled presentation',layout);currentSlide=0;selectedId=null;undoStack=[];redoStack=[];showApp();renderAll();markDirty();updateHistoryButtons();}else{action(()=>{const created=makeSlide(layout);created.sourcePath='';created.sourcePresentationRid='';created.sourceSlideId='';pres.slides.splice(currentSlide+1,0,created);currentSlide++;selectedId=null;markDirty();renderAll();});}}
 function newPresentation(){if(!confirmIfDirty())return;showTemplateDialog('presentation');}
 $('closeTemplateBtn').onclick=()=>ui.template.classList.add('hidden');ui.template.onclick=e=>{if(e.target===ui.template)ui.template.classList.add('hidden')};
 function openDialog(){if(!confirmIfDirty())return;ui.file.value='';ui.file.click()}
 function leaveTextEdit(){if(editingId){const ed=ui.canvas.querySelector('[data-id="'+editingId+'"] .editable');if(ed)ed.blur();editingId=null}}$('newBtn').onclick=newPresentation;$('newSmall').onclick=()=>{leaveTextEdit();newPresentation()};$('openBtn').onclick=openDialog;$('openSmall').onclick=()=>{leaveTextEdit();openDialog()};$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;updateHistoryButtons();
-function parseXml(s,context='PPTX package part'){if(window.InkDeskRuntime)return InkDeskRuntime.parseXml(s,context);const doc=xmlParser.parseFromString(s,'application/xml');if(doc.querySelector('parsererror'))throw new Error('Invalid XML in '+context);return doc}
+function parseXml(s,context='PPTX package part'){if(window.InkDeskRuntime)return InkDeskRuntime.parseXml(s,context,currentXmlBudget);const doc=xmlParser.parseFromString(s,'application/xml');if(doc.querySelector('parsererror'))throw new Error('Invalid XML in '+context);return doc}
 function all(el,name){if(!el)return [];return Array.from(el.getElementsByTagName('*')).filter(n=>n.localName===name)}
 function first(el,name){return all(el,name)[0]||null}
 function attr(el,n,d=''){return el?el.getAttribute(n)||d:d}
@@ -53,14 +54,14 @@ function relationshipPartPath(partPath){const slash=String(partPath||'').lastInd
 function serializeXml(doc){return new XMLSerializer().serializeToString(doc)}
 function relMap(xml){const map={};all(xml,'Relationship').forEach(r=>{map[attr(r,'Id')]=attr(r,'Target')});return map}
 async function loadPptx(file){
-  setReady('Opening…');
+  const requestedExport=lifecycle.snapshot().lastExport;currentXmlBudget=window.InkDeskRuntime?InkDeskRuntime.createXmlBudget():null;setReady('Opening…');
   if(!/\.pptx$/i.test(file.name||''))throw new Error('Legacy PPT files are outside the focused offline scope. Please convert the file to PPTX first.');
   const previous={activeTheme,presentationTextDefaults,idSeq};
   try{
     if(window.InkDeskRuntime)InkDeskRuntime.validateInputSize(file.size,file.name);
-    const buffer=await file.arrayBuffer();
+    const buffer=await file.arrayBuffer(),openedSha256=window.InkDeskRuntime?await InkDeskRuntime.sha256Hex(buffer):null;
     if(window.InkDeskRuntime)InkDeskRuntime.validateZipPackage(buffer,file.name);
-    const zip=await JSZip.loadAsync(buffer);
+    const zip=await JSZip.loadAsync(buffer);if(window.InkDeskRuntime)await InkDeskRuntime.validateOoxmlRelationships(zip,{xmlBudget:currentXmlBudget});
     const presentationFile=zip.file('ppt/presentation.xml');
     const presentationRelsFile=zip.file('ppt/_rels/presentation.xml.rels');
     if(!presentationFile||!presentationRelsFile)throw new Error('Invalid PPTX package');
@@ -75,7 +76,7 @@ async function loadPptx(file){
       height:+attr(sldSz,'cy','6858000'),
       source:'pptx',
       theme:activeTheme,
-      compatibility:{engine:'0.19.0-beta-pptx-preservation',themeResolved:true,masterArtwork:true,richTextInheritance:true,presenterNotesEditor:true,presenterNotesExport:true,chartsPreview:true,transitionsPreview:true},
+      compatibility:{engine:'0.19.1-beta-pptx-preservation',themeResolved:true,masterArtwork:true,richTextInheritance:true,presenterNotesEditor:true,presenterNotesExport:true,chartsPreview:true,transitionsPreview:true},
       originalSlideRids:[],
       slides:[]
     };
@@ -94,8 +95,8 @@ async function loadPptx(file){
     }
     if(!out.slides.length)throw new Error('No slides found');
     sourcePptxBuffer=buffer.slice(0);pres=out;activeTheme=out.theme||null;currentSlide=0;selectedId=null;undoStack=[];redoStack=[];
-    showApp();renderAll();markSaved();updateHistoryButtons();setReady('Opened');
-    window.__LocalPresentationsDebug={version:'0.19.0-beta-pptx-preservation',slideCount:out.slides.length,getPresentation:()=>pres,getSourceBuffer:()=>sourcePptxBuffer};
+    showApp();renderAll();if(requestedExport&&requestedExport.sha256&&openedSha256===requestedExport.sha256&&Number(requestedExport.bytes)===Number(file.size)){lifecycle.verifyReopened({fileName:file.name,bytes:file.size,sha256:openedSha256});setReady(lifecycle.label)}else{markSaved();setReady('Opened')}updateHistoryButtons();
+    window.__LocalPresentationsDebug={version:'0.19.1-beta-pptx-preservation',slideCount:out.slides.length,getPresentation:()=>pres,getSourceBuffer:()=>sourcePptxBuffer};
   }catch(error){
     activeTheme=previous.activeTheme;presentationTextDefaults=previous.presentationTextDefaults;idSeq=previous.idSeq;
     setReady(pres?'Open failed; previous presentation preserved':'Open error');
@@ -785,13 +786,13 @@ async function patchImportedSlide(zip,slideData){const path=slideData.sourcePath
   if(slideData.notesPath&&String(slideData.notes||'')!==String(slideData.originalNotes||'')){const noteFile=zip.file(slideData.notesPath);if(noteFile){const noteDoc=parseXml(await noteFile.async('text')),body=notesBodyShape(noteDoc);if(body){replaceTextBody(body,slideData.notes);zip.file(slideData.notesPath,serializeXml(noteDoc));slideData.originalNotes=slideData.notes}}}
   return changed}
 function presentationOrderMatchesSource(){if(!pres||!pres.slides.every(s=>s.sourcePresentationRid&&s.sourcePath))return false;const rids=pres.slides.map(s=>s.sourcePresentationRid),original=pres.originalSlideRids||[];return rids.length===original.length&&new Set(rids).size===rids.length&&rids.every((rid,i)=>rid===original[i])}
-async function saveImportedPptx(){if(!presentationOrderMatchesSource())throw new Error('Slide insertion, deletion, or duplication in imported presentations is not yet available in preservation mode. Save the original slide set or create a new presentation.');setReady('Preparing copy…');const previousPresentation=JSON.stringify(pres),previousSource=sourcePptxBuffer.slice(0);try{const zip=await JSZip.loadAsync(previousSource);for(const s of pres.slides)if(s.sourcePath)await patchImportedSlide(zip,s);const bytes=await zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}}),nextSource=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});downloadBlob(blob,(pres.name||'InkDesk Presentation')+'_copy.pptx');sourcePptxBuffer=nextSource;markSaved();setReady('Download requested')}catch(error){pres=JSON.parse(previousPresentation);activeTheme=pres.theme||null;sourcePptxBuffer=previousSource;renderAll();throw error}}
-async function savePptx(){if(!pres)return;try{if(sourcePptxBuffer&&pres.source==='pptx')return await saveImportedPptx();return await saveNewPptx()}catch(error){console.error(error);alert('Save failed: '+error.message);setReady('Save error')}}
+async function saveImportedPptx(){if(!presentationOrderMatchesSource())throw new Error('Slide insertion, deletion, or duplication in imported presentations is not yet available in preservation mode. Save the original slide set or create a new presentation.');lifecycle.beginExport();setReady(lifecycle.label);const previousPresentation=JSON.stringify(pres),previousSource=sourcePptxBuffer.slice(0);try{const zip=await JSZip.loadAsync(previousSource),before=InkDeskRuntime.packageInventory(zip);for(const s of pres.slides)if(s.sourcePath)await patchImportedSlide(zip,s);const inventoryCheck=InkDeskRuntime.comparePackageInventory(before,InkDeskRuntime.packageInventory(zip));if(inventoryCheck.removed.length||inventoryCheck.duplicates.length)throw new Error('PPTX preservation check failed: '+inventoryCheck.removed.join(', '));const bytes=await zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}}),blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}),fileName=(pres.name||'InkDesk Presentation')+'_copy.pptx',sha256=await InkDeskRuntime.sha256Hex(blob);pres=JSON.parse(previousPresentation);activeTheme=pres.theme||null;renderAll();const receipt=downloadBlob(blob,fileName);lifecycle.downloadRequested(Object.assign({},receipt,{sha256}));setReady(lifecycle.label)}catch(error){pres=JSON.parse(previousPresentation);activeTheme=pres.theme||null;sourcePptxBuffer=previousSource;renderAll();lifecycle.exportFailed(error);throw error}}
+async function savePptx(){if(!pres)return;try{if(sourcePptxBuffer&&pres.source==='pptx')return await saveImportedPptx();return await saveNewPptx()}catch(error){console.error(error);lifecycle.exportFailed(error);alert('Export failed: '+error.message);setReady(lifecycle.label)}}
 async function saveNewPptx(){
   if(!pres)return;
   const hasNotes=pres.slides.some(s=>String(s.notes||'').trim());
   if(hasNotes&&!confirm('Presenter notes are not exported in the current stabilization release. Continue and save the slides without notes?'))return;
-  setReady('Saving…');
+  lifecycle.beginExport();setReady(lifecycle.label);
   try{
     const zip=new JSZip();
     zip.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/></Relationships>');
@@ -824,9 +825,9 @@ async function saveNewPptx(){
     }
     zip.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+contentTypes.join('')+'</Types>');
     const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation',compression:'DEFLATE',compressionOptions:{level:6}});
-    downloadBlob(blob,(pres.name||'InkDesk Presentation')+'_copy.pptx');
-    markSaved();
-    setReady('Download requested');
+    const sha256=await InkDeskRuntime.sha256Hex(blob),receipt=downloadBlob(blob,(pres.name||'InkDesk Presentation')+'_copy.pptx');
+    lifecycle.downloadRequested(Object.assign({},receipt,{sha256}));
+    setReady(lifecycle.label);
   }catch(error){
     console.error('New presentation export failed.',error);
     throw error;
@@ -835,7 +836,9 @@ async function saveNewPptx(){
 function shapeObj(o){const id=Math.floor(Math.random()*100000)+10;const fill=o.fill&&o.fill!=='transparent'?'<a:solidFill><a:srgbClr val="'+o.fill.replace('#','')+'"/></a:solidFill>':'<a:noFill/>';const line=o.line?'<a:ln w="'+Math.round((o.lineWidth||1)*9525)+'"><a:solidFill><a:srgbClr val="'+o.line.replace('#','')+'"/></a:solidFill></a:ln>':'<a:ln><a:noFill/></a:ln>';let tx='';if(o.type==='text'){const paras=String(o.text||'').split('\n').map(line=>'<a:p><a:pPr algn="'+(o.align==='center'?'ctr':o.align==='right'?'r':'l')+'"/><a:r><a:rPr lang="en-US" sz="'+Math.round((o.size||18)*100)+'" '+(o.bold?'b="1" ':'')+(o.italic?'i="1" ':'')+'><a:solidFill><a:srgbClr val="'+(o.color||'#222222').replace('#','')+'"/></a:solidFill><a:latin typeface="'+esc(o.font||'Arial')+'"/></a:rPr><a:t>'+esc(line)+'</a:t></a:r></a:p>').join('');tx='<p:txBody><a:bodyPr wrap="square"/><a:lstStyle/>'+paras+'</p:txBody>';}else if(o.type==='table'){tx='<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>'+esc(o.cells.map(r=>r.join(' | ')).join('\n'))+'</a:t></a:r></a:p></p:txBody>'}
   return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="Shape '+id+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom>'+fill+line+'</p:spPr>'+tx+'</p:sp>';}
 function picObj(o,rid,n){return '<p:pic><p:nvPicPr><p:cNvPr id="'+(500+n)+'" name="Picture '+n+'"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="'+rid+'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom></p:spPr></p:pic>'}
-function downloadBlob(blob,name){if(window.InkDeskRuntime)return InkDeskRuntime.requestDownload(blob,name);if(!(blob instanceof Blob)||!blob.size)throw new Error('The generated presentation copy is empty.');const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}}
+function downloadBlob(blob,name){if(window.InkDeskRuntime)return InkDeskRuntime.requestDownload(blob,name);if(!(blob instanceof Blob)||!blob.size)throw new Error('The generated presentation copy is empty.');const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}return{fileName:name,bytes:blob.size,requested:true,verified:false}}
 ui.save.onclick=savePptx;
+window.InkDeskWorkspaceOpenFile=file=>loadPptx(file).catch(error=>{console.error(error);alert('Presentation could not be opened: '+error.message)});
+if(window.InkDeskFileRouter)InkDeskFileRouter.attachWorkspace({extensions:['pptx'],openFile:window.InkDeskWorkspaceOpenFile});
 // Advanced editor keyboard shortcuts are intentionally disabled in this beta to avoid iPadOS/WebKit conflicts.
 })();

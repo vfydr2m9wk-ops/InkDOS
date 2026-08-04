@@ -1,0 +1,13 @@
+name: Documentation issue
+description: Report inaccurate, missing, or outdated documentation
+title: "[Docs]: "
+labels: [documentation]
+body:
+  - type: input
+    id: file
+    attributes: {label: File or section}
+    validations: {required: true}
+  - type: textarea
+    id: problem
+    attributes: {label: Problem and suggested correction}
+    validations: {required: true}

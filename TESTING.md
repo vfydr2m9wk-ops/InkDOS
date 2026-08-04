@@ -1,36 +1,42 @@
 # Testing Guide
 
-Every meaningful change requires static validation, targeted tests, and broader regression. Data corruption, silent save failure, stale export, and cross-workspace contamination are release-blocking defects.
+Data loss, false save confirmation, active-content injection, dynamic formula compilation, package ambiguity, unexpected OOXML part loss, and cross-workspace state leakage are release-blocking.
 
-## Automated checks
-
-- Repository structure, HTML, CSS references, JSON, web manifest, service-worker paths, version consistency, filename casing, and JavaScript syntax.
-- Source audit for automatic remote requests, insecure URLs, empty catches, prototype pollution markers, wildcard `postMessage`, and risky dynamic-code markers.
-- 43 Python unit and OOXML package-preservation tests.
-- Eight Chromium/Playwright regression scripts covering DOCX, XLS/XLSX, BIFF8 XLS, PPTX, zero-valued formulas, transactional failure recovery, package guards, restricted APIs, and cross-workspace isolation.
-- Release checksum verification.
-
-## Commands
+## Exact commands
 
 ```bash
-npm run validate
-npm run audit
-npm test
-npm run test:browser
-npm run test:release
+python3 scripts/verify_checksums.py
+python3 scripts/validate_repository.py
+python3 scripts/audit_source.py
+python3 -m unittest discover -s tests -p "test_*.py"
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group package-security
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group lifecycle
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group isolation-offline
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group documents-presentations
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group spreadsheets
+python3 scripts/run_release_validation.py
+python3 scripts/build_release.py --output-dir dist
 ```
 
-`npm run audit` reports the intentionally restricted spreadsheet arithmetic evaluator as a manual-review item. The expression is accepted only after a strict character/function allowlist; it is not treated as imported JavaScript.
+For additional Playwright engines:
 
-## Release loop
+```bash
+PLAYWRIGHT_BROWSER=firefox python3 scripts/run_browser_regressions.py --group package-security
+PLAYWRIGHT_BROWSER=webkit python3 scripts/run_browser_regressions.py --group package-security
+```
 
-After each meaningful batch:
+## Automated scope
 
-1. Run targeted tests.
-2. Run repository validation and source audit.
-3. Run the unit/package suite.
-4. Run all browser regressions.
-5. Verify checksums.
-6. Repeat the complete release cycle three consecutive times after the final source and documentation changes.
+- File lifecycle: dirty, preparing, unverified download, failure, repeated exports, before-unload warning, fingerprint-based reopen verification, and workspace isolation.
+- DOCX DOM security: hostile event attributes, protocols, external images/styles, SVG/embedded content, clobbering names, malformed relationships, and no unexpected network request.
+- Formula parser: zero values, precedence, unary operators, parentheses, malformed input, length/token/depth/step limits, unsupported identifiers/functions, division by zero, cycles, and injection strings.
+- ZIP/XML: duplicates, path collisions, traversal, local/central mismatch, overlap, methods, encryption, ZIP64, truncation, entry/size/ratio limits, DTD/entity rejection, malformed XML, aggregate XML budget, depth, nodes, and attributes.
+- OOXML: open-edit-export-reopen for representative DOCX/XLSX/PPTX fixtures, package-inventory preservation, failure paths, and no-network assertions in browser scenarios.
+- Service worker: shell inventory, same-origin behavior, and restricted-API fallback checks.
+- Release: deterministic archive generation, required notices, exact commit metadata, exclusions, and archive checksum.
 
-Record unavailable browsers or devices as **Not performed**. Never infer compatibility from another engine.
+A fixture’s existence, source-code grep, or ZIP listing alone is not a successful round trip. A supported round-trip test must open, edit, export, reopen, verify the edit, compare expected package parts, and assert no unexpected network request.
+
+## Manual validation
+
+Use `docs/MANUAL_DEVICE_CHECKLIST.md`. Every row must be marked Passed, Failed, Partially passed, or Not tested. Never convert “Not tested” into a support claim.

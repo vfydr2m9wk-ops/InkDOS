@@ -4,61 +4,79 @@
 
 # InkDesk
 
-> **The lightweight local-first productivity suite.**
+> **A lightweight local-first productivity suite.**
 
-InkDesk is an open-source, browser-native suite for focused DOCX, XLS/XLSX, and PPTX workflows. It is distributed as static HTML, CSS, and JavaScript, processes documents inside the current browser context, and does not require a project-operated backend.
+InkDesk is an open-source, browser-native suite for focused DOCX, XLS/XLSX, and PPTX workflows. It is distributed as static HTML, CSS, and JavaScript. Documents are parsed and edited in the current browser context; the project does not operate a document-processing backend, account service, telemetry service, or analytics endpoint.
 
-**Project status: Beta (`0.19.0-beta`).** Compatibility with advanced Microsoft Office features is partial. InkDesk does not claim complete Microsoft Office fidelity.
+**Project status: Beta (`0.19.1-beta`).** Compatibility is intentionally partial. InkDesk does not claim complete Microsoft Office fidelity, pixel-identical rendering, or safe support for every Office file.
 
 ## Workspaces
 
-| Workspace | Formats | Current focus |
+| Workspace | Formats | Focused behavior |
 |---|---|---|
-| Documents | DOCX | Basic editing, formatting, images, tables, lists, headers/footers, and package-preserving copy export |
-| Spreadsheets | XLS import; XLSX open/save | BIFF8 import, values, cached formulas, styles, images, worksheet editing, and XLSX copy export |
-| Presentations | PPTX | Basic slide editing, images, layouts, presentation mode, and package-preserving copy export |
+| Documents | DOCX | Common text/layout editing, inert DOCX-derived DOM construction, and package-preserving copy export |
+| Spreadsheets | XLS import; XLSX open/export | BIFF8 import, common cells/styles, deterministic limited formula recalculation, and package-preserving XLSX copy export |
+| Presentations | PPTX | Common slide editing/presentation mode and preservation-oriented PPTX patch export |
+
+## Opening a file
+
+The main `index.html` includes one **Open document** button. Choose a DOCX, XLS, XLSX, or PPTX file and InkDesk detects the extension and opens the matching workspace. Each workspace includes a house-shaped button that returns to the main InkDesk index.
+
+When served over HTTP(S), the selected file is transferred once through short-lived IndexedDB storage and removed when consumed. When `index.html` is opened directly through `file://`, InkDesk keeps the index alive and transfers the selected `File` object to the matching embedded workspace with a token-scoped `postMessage` bridge. The file is not uploaded. Browser and local-file host policies still vary, so direct local opening requires device testing.
+
+## Export status and data safety
+
+InkDesk exports a **new copy**; it does not overwrite the selected source file. Triggering a browser download is not proof that the operating system wrote the file. After a download request, the workspace reports **“Download requested — not verified”** and keeps unsaved-change protection active. A copy becomes **verified** only when it is reopened and its SHA-256 fingerprint matches the generated export.
+
+Keep the original file, work from backup copies, reopen exported files, and verify important content in an independent compatible application before relying on them for legal, medical, financial, academic, or other critical use.
+
+## Security model
+
+Imported OOXML packages are treated as untrusted ZIP/XML input. Before JSZip processing, InkDesk checks normalized package inventory, duplicate and colliding paths, local/central header consistency, encryption, ZIP64, methods, overlaps, size, entry count, and compression ratio. XML parsing rejects DTD/entity declarations and enforces per-part, aggregate, depth, node, and attribute limits. DOCX-derived editable content is rebuilt through a deny-by-default DOM allowlist. Spreadsheet arithmetic is interpreted by a deterministic parser rather than `eval` or `Function`.
+
+These controls reduce attack surface; they do not replace browser sandboxing, fuzzing, native-device testing, or independent file validation.
 
 ## Privacy and offline operation
 
-Core processing is local. InkDesk has no accounts, telemetry, analytics, mandatory cloud synchronization, or remote document-processing API. Runtime libraries are bundled in `shared/vendor/`. The optional service worker caches only same-origin application assets when the project is served over HTTP(S); it is skipped under `file://`.
+Runtime dependencies are bundled under `shared/vendor/`. The optional service worker caches only same-origin application assets when served over HTTP(S); it does not cache user documents. `file://` behavior depends on the host and service workers are unavailable there.
 
 ## Quick start
-
-Serve the repository with any static server:
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Open `http://localhost:8080/`. Compatible local-file or embedded hosts may open `index.html` directly. Saving creates a new downloadable copy and does not silently overwrite the selected source file.
+Open `http://localhost:8080/`. Compatible local-file or embedded hosts may open `index.html` directly, but static HTTP(S) hosting is more predictable.
 
-A standard web manifest and service worker are included for installable/offline-hosted use where the browser supports them. Native installation and offline reload must still be validated on the target browser and device.
-
-## Validation
+## Validation commands
 
 ```bash
 python3 scripts/verify_checksums.py
 python3 scripts/validate_repository.py
 python3 scripts/audit_source.py
 python3 -m unittest discover -s tests -p "test_*.py"
-python3 scripts/run_browser_regressions.py
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group package-security
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group lifecycle
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group isolation-offline
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group documents-presentations
+PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group spreadsheets
 python3 scripts/run_release_validation.py
+python3 scripts/build_release.py --output-dir dist
 ```
 
-The reviewed package contains 43 unit/package tests and eight Chromium/Playwright regression scripts covering OOXML round trips, BIFF8 import, zero-valued formulas, hostile-package guards, transactional open failures, restricted browser APIs, presentation text Undo/Redo, and cross-workspace isolation. Native Firefox, Safari/WebKit, iPadOS, and embedded-host validation remain separate device tests.
+CI is configured to run browser regressions separately in Playwright Chromium, Firefox, and WebKit. A Playwright engine run is not native Safari, native Firefox packaging, or physical iPadOS validation.
 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
-- [Compatibility](docs/COMPATIBILITY.md)
-- [Development](docs/DEVELOPMENT.md)
-- [Testing](docs/TESTING.md)
-- [Validation report](docs/VALIDATION_REPORT.md)
-- [Final codebase review](docs/FINAL_REVIEW_REPORT.md)
-- [Security](SECURITY.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Compatibility and validation matrix](COMPATIBILITY.md)
+- [Security policy](SECURITY.md)
+- [Testing](TESTING.md)
+- [Manual device checklist](docs/MANUAL_DEVICE_CHECKLIST.md)
+- [Known limitations](docs/KNOWN_LIMITATIONS.md)
+- [Release notes](RELEASE_NOTES.md)
 - [Contributing](CONTRIBUTING.md)
 
 ## License
 
-Original InkDesk code is licensed under the MIT License. Bundled third-party components retain their upstream licenses and notices.
+Original InkDesk code is MIT-licensed. Bundled third-party components retain their upstream licenses and notices.

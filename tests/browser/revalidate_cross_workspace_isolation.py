@@ -9,6 +9,8 @@ from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
+from browser_support import launch_browser
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
@@ -26,6 +28,9 @@ SCRIPTS = {
     "documents": (
         "shared/vendor/pako_inflate.min.js",
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "apps/documents/docx-parser.js",
         "shared/vendor/jszip.min.js",
         "apps/documents/docx-writer.js",
@@ -34,6 +39,9 @@ SCRIPTS = {
     ),
     "spreadsheets": (
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "shared/vendor/jszip.min.js",
         "apps/spreadsheets/xls-biff8-engine.js",
         "apps/spreadsheets/xlsx-engine.js",
@@ -42,6 +50,9 @@ SCRIPTS = {
     ),
     "presentations": (
         "shared/office-runtime.js",
+        "shared/file-lifecycle.js",
+        "shared/formula-engine.js",
+        "shared/safe-dom.js",
         "shared/vendor/jszip.min.js",
         "apps/presentations/engine/compatibility.js",
         "shared/office-shell.js",
@@ -127,6 +138,8 @@ def save_document(page, destination):
     with page.expect_download(timeout=30000) as info:
         page.click("#saveCopyDownload")
     info.value.save_as(str(destination))
+    page.set_input_files("#fileInput", str(destination))
+    page.wait_for_function("document.querySelector('#statusText').textContent.includes('reopened successfully')", timeout=30000)
 
 
 def save_spreadsheet(page, destination):
@@ -135,12 +148,16 @@ def save_spreadsheet(page, destination):
     with page.expect_download(timeout=30000) as info:
         page.click("#downloadBtn")
     info.value.save_as(str(destination))
+    page.set_input_files("#fileInput", str(destination))
+    page.wait_for_function("document.querySelector('#saveMessage').textContent.includes('reopened successfully')", timeout=30000)
 
 
 def save_presentation(page, destination):
     with page.expect_download(timeout=30000) as info:
         page.click("#saveBtn")
     info.value.save_as(str(destination))
+    page.set_input_files("#fileInput", str(destination))
+    page.wait_for_function("document.querySelector('#stateBadge').textContent.includes('reopened successfully')", timeout=30000)
 
 
 def package_contains(path: Path, marker: str, prefix: str) -> bool:
@@ -155,7 +172,7 @@ def main():
         "presentations": OUT / "cross_workspace_presentation.pptx",
     }
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         context = browser.new_context(viewport={"width": 1400, "height": 900}, accept_downloads=True)
         pages = {}
         errors = {}

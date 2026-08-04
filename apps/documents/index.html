@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <title>Documents — InkDesk 0.19.0-beta</title>
-  <link rel="stylesheet" href="styles.css?v=0.19.0-beta">
-  <link rel="stylesheet" href="../../shared/office-shell.css?v=0.19.0-beta">
+  <title>Documents — InkDesk 0.19.1-beta</title>
+  <link rel="stylesheet" href="styles.css?v=0.19.1-beta">
+  <link rel="stylesheet" href="../../shared/office-shell.css?v=0.19.1-beta">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
 </head>
@@ -14,6 +14,7 @@
   <div class="app-shell">
     <header class="topbar">
       <div class="left-tools">
+        <a class="icon-btn home-link" href="../../index.html" target="_top" title="InkDesk home" aria-label="Return to InkDesk home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 10.5v9h5v-5h3v5h5v-9"/></svg></a>
         <button id="newBtn" class="icon-btn" type="button" title="New document" aria-label="New document">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         </button>
@@ -113,12 +114,15 @@
     </footer>
   </div>
   <script src="../../shared/vendor/pako_inflate.min.js?v=1.0.11"></script>
-  <script src="../../shared/office-runtime.js?v=0.19.0-beta"></script>
-  <script src="docx-parser.js?v=0.19.0-beta"></script>
+  <script src="../../shared/office-runtime.js?v=0.19.1-beta"></script>
+  <script src="../../shared/file-lifecycle.js?v=0.19.1-beta"></script>
+  <script src="../../shared/file-router.js?v=0.19.1-beta"></script>
+  <script src="../../shared/safe-dom.js?v=0.19.1-beta"></script>
+  <script src="docx-parser.js?v=0.19.1-beta"></script>
   <script src="../../shared/vendor/jszip.min.js?v=3.10.1"></script>
-  <script src="docx-writer.js?v=0.19.0-beta"></script>
-  <script src="../../shared/office-shell.js?v=0.19.0-beta"></script>
-  <script src="app.js?v=0.19.0-beta"></script>
-  <script src="../../shared/register-service-worker.js?v=0.19.0-beta"></script>
+  <script src="docx-writer.js?v=0.19.1-beta"></script>
+  <script src="../../shared/office-shell.js?v=0.19.1-beta"></script>
+  <script src="app.js?v=0.19.1-beta"></script>
+  <script src="../../shared/register-service-worker.js?v=0.19.1-beta"></script>
 </body>
 </html>
