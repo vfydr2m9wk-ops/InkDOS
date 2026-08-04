@@ -269,9 +269,9 @@ jobs:
             "playwright==${PLAYWRIGHT_VERSION}"
 
           if [[ -f package-lock.json ]]; then
-            npm ci
+            npm ci --ignore-scripts
           elif [[ -f package.json ]]; then
-            npm install --ignore-scripts
+            npm install --ignore-scripts --no-package-lock
           fi
 
       - name: Run repository validation
