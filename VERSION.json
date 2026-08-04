@@ -1,0 +1,25 @@
+{
+  "name": "InkDesk",
+  "displayName": "InkDesk",
+  "version": "0.19.0-beta",
+  "releaseChannel": "beta",
+  "releaseName": "Structural Cleanup and Integrity Review",
+  "date": "2026-08-03",
+  "repository": "https://github.com/vfydr2m9wk-ops/inkdesk",
+  "demo": "https://vfydr2m9wk-ops.github.io/inkdesk/",
+  "status": "beta",
+  "components": {
+    "documents": {
+      "path": "apps/documents/index.html",
+      "format": "DOCX"
+    },
+    "spreadsheets": {
+      "path": "apps/spreadsheets/index.html",
+      "format": "XLS / XLSX"
+    },
+    "presentations": {
+      "path": "apps/presentations/index.html",
+      "format": "PPTX"
+    }
+  }
+}

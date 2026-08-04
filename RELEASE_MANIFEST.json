@@ -1,0 +1,39 @@
+{
+  "project": "InkDesk",
+  "version": "0.19.0-beta",
+  "releaseName": "Structural Cleanup and Integrity Review",
+  "releaseType": "Beta",
+  "releaseDate": "2026-08-03",
+  "entryPoints": {
+    "InkDesk.html": "index.html",
+    "Documents.html": "apps/documents/index.html",
+    "Spreadsheets.html": "apps/spreadsheets/index.html",
+    "Presentations.html": "apps/presentations/index.html"
+  },
+  "runtimeDirectories": [
+    "apps/documents",
+    "apps/spreadsheets",
+    "apps/presentations",
+    "shared"
+  ],
+  "supportedFormats": [
+    "DOCX",
+    "XLS (BIFF8 import)",
+    "XLSX",
+    "PPTX"
+  ],
+  "buildRequired": false,
+  "automaticRemoteRuntimeDependencies": false,
+  "license": "MIT for original code; bundled third-party components retain upstream licenses.",
+  "validation": {
+    "repositoryValidation": true,
+    "sourceAudit": true,
+    "unitTests": 43,
+    "chromiumBrowserRegression": true,
+    "nativeSafari": false,
+    "nativeFirefox": false,
+    "nativeIPadOS": false,
+    "staticHttpAssets": true,
+    "installedPwaRuntime": false
+  }
+}

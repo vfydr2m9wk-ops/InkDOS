@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Experimental local-first HTML editors for basic DOCX, XLSX and PPTX workflows.">
+  <meta property="og:title" content="InkDesk">
+  <meta property="og:description" content="Experimental local-first HTML editors for basic OOXML workflows.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://vfydr2m9wk-ops.github.io/inkdesk/docs/images/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>InkDesk 0.19.0-beta</title>
+  <link rel="icon" href="assets/icons/office.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icons/office.png">
+  <link rel="stylesheet" href="shared/hub.css">
+</head>
+<body>
+  <main class="hub-shell">
+    <header class="hub-header">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div><h1>InkDesk</h1><p>Experimental, local-first OOXML editors for focused workflows.</p></div>
+      <span class="version">0.19.0-beta BIFF8 Zero Display Fix</span>
+    </header>
+
+    <aside class="status-callout" aria-label="Project status">
+      <strong>Stabilization phase</strong>
+      <span>The current goal is reliable basic open, edit and export workflows—not full Microsoft Office compatibility.</span>
+      <a href="docs/MVP_SCOPE.md">Read the focused scope</a>
+    </aside>
+
+    <section class="app-grid" aria-label="Office applications">
+      <a class="app-card documents" href="apps/documents/index.html"><span class="app-icon">D</span><span class="open-arrow">›</span><span class="card-copy"><h2>Documents</h2><p>Basic DOCX creation, editing and copy export.</p></span></a>
+      <a class="app-card spreadsheets" href="apps/spreadsheets/index.html"><span class="app-icon">S</span><span class="open-arrow">›</span><span class="card-copy"><h2>Spreadsheets</h2><p>Offline XLSX editing plus focused Excel 97–2004 XLS import and XLSX copy export.</p></span></a>
+      <a class="app-card presentations" href="apps/presentations/index.html"><span class="app-icon">P</span><span class="open-arrow">›</span><span class="card-copy"><h2>Presentations</h2><p>Basic PPTX editing and presentation with best-effort compatibility.</p></span></a>
+    </section>
+
+    <section class="quick-panel">
+      <div><strong>Local by default</strong><span>No account, analytics or project-operated upload server is included.</span></div>
+      <div><strong>Contributions welcome</strong><span>Compatibility samples, regression tests and focused fixes are more valuable than broad new features.</span></div>
+    </section>
+
+    <footer class="hub-footer">
+      <span>Experimental open-source preview · Saving exports a new copy</span>
+      <nav aria-label="Project links">
+        <a href="https://github.com/vfydr2m9wk-ops/inkdesk">Source</a>
+        <a href="docs/PROJECT_STATUS.md">Status</a>
+        <a href="docs/KNOWN_LIMITATIONS.md">Limitations</a>
+        <a href="CONTRIBUTING.md">Contribute</a>
+      </nav>
+    </footer>
+  </main>
+  <script src="shared/register-service-worker.js?v=0.19.0-beta"></script>
+</body>
+</html>
