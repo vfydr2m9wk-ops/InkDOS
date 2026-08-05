@@ -1,0 +1,103 @@
+name: Repair checksums and redeploy Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inkdesk-checksum-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Regenerate checksums and trigger Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      RELEASE_PAT: ${{ secrets.INKDESK_RELEASE_PAT }}
+
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.INKDESK_RELEASE_PAT }}
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Confirm authorization
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -n "$RELEASE_PAT" || {
+            echo "Repository secret INKDESK_RELEASE_PAT is missing." >&2
+            exit 1
+          }
+
+          git rev-parse --is-inside-work-tree >/dev/null
+          test "$(git branch --show-current)" = "main" || {
+            echo "The workflow must operate on the main branch." >&2
+            exit 1
+          }
+
+      - name: Regenerate repository checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 scripts/generate_checksums.py
+          python3 scripts/verify_checksums.py
+
+      - name: Run repository quality checks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 scripts/validate_repository.py
+          python3 scripts/audit_source.py
+          python3 -m unittest discover -s tests -p "test_*.py"
+
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find apps shared -type f -name '*.js' -print0)
+
+      - name: Commit refreshed checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email             "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add CHECKSUMS.sha256
+
+          if git diff --cached --quiet; then
+            echo "CHECKSUMS.sha256 is already current."
+            echo "No commit was required."
+          else
+            git commit -m "chore: refresh checksums and redeploy Pages"
+            git push origin HEAD:main
+          fi
+
+      - name: Explain next step when no commit was needed
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "If a checksum commit was created, the existing Deploy GitHub Pages workflow was triggered automatically."
+          echo "If no commit was created, open Actions > Deploy GitHub Pages and run it manually."
