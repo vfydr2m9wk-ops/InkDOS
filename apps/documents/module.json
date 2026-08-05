@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "documents",
+  "name": "Documents",
+  "description": "Basic DOCX creation, editing and copy export.",
+  "version": "0.19.3-beta.7",
+  "enabled": true,
+  "optional": false,
+  "order": 10,
+  "entryPoint": "apps/documents/index.html",
+  "icon": "assets/icons/documents.png",
+  "badge": "D",
+  "themeClass": "documents",
+  "accent": "#2f6fed",
+  "extensions": [
+    "docx"
+  ],
+  "mimeTypes": [
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ],
+  "capabilities": [
+    "open",
+    "new",
+    "edit-basic",
+    "copy-export",
+    "section-aware-layout",
+    "local-processing"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "registryVersion": "0.19.4.2",
+  "modulePaths": [
+    {
+      "id": "documents",
+      "manifest": "apps/documents/module.json",
+      "required": true
+    },
+    {
+      "id": "spreadsheets",
+      "manifest": "apps/spreadsheets/module.json",
+      "required": true
+    },
+    {
+      "id": "presentations",
+      "manifest": "apps/presentations/module.json",
+      "required": true
+    },
+    {
+      "id": "pdf",
+      "manifest": "apps/pdf/module.json",
+      "required": true
+    }
+  ],
+  "overrides": {}
+}

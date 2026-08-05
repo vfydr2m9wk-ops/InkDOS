@@ -13,6 +13,14 @@
     "macos": "assets/icons/office.png",
     "linux": "assets/icons/office.png"
   },
+  "moduleSystem": {
+    "schemaVersion": 1,
+    "configuration": "modules/module-config.json",
+    "registry": "modules/module-registry.js",
+    "loader": "modules/module-loader.js",
+    "schema": "modules/module-schema.json",
+    "generator": "scripts/generate_module_registry.py"
+  },
   "launchers": [
     {
       "id": "suite",

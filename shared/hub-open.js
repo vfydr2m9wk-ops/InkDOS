@@ -11,8 +11,15 @@ input.addEventListener('change',async()=>{
   button.disabled=true;
   status.textContent='Opening '+file.name+'…';
   try{
+    const module=window.InkDeskModules?window.InkDeskModules.resolveFile(file):null;
     const route=InkDeskFileRouter.routeForFile(file);
-    status.textContent='Opening '+route.extension.toUpperCase()+' in the correct workspace…';
+    if(module){
+      const registered='./'+module.entryPoint.replace(/^\.?\//,'');
+      if(route.path!==registered)throw new Error('The module registry and file router disagree for this file type.');
+      status.textContent='Opening '+module.name+'…';
+    }else{
+      status.textContent='Opening '+route.extension.toUpperCase()+' in the correct workspace…';
+    }
     await InkDeskFileRouter.openFromHub(file);
   }catch(error){
     console.error(error);

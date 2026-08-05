@@ -1,6 +1,5 @@
 'use strict';
-
-const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7';
+const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.2';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -11,6 +10,10 @@ const APP_SHELL=[
   './Spreadsheets.html',
   './Presentations.html',
   './PDF.html',
+  './modules/module-registry.js',
+  './modules/module-loader.js',
+  './modules/module-config.json',
+  './modules/module-schema.json',
   './shared/hub.css',
   './shared/office-shell.css',
   './shared/office-shell.js',
@@ -28,27 +31,30 @@ const APP_SHELL=[
   './assets/icons/spreadsheets.png',
   './assets/icons/presentations.png',
   './assets/icons/pdf.png',
+  './apps/documents/module.json',
   './apps/documents/index.html',
   './apps/documents/styles.css',
   './apps/documents/docx-parser.js',
   './apps/documents/docx-writer.js',
   './apps/documents/app.js',
+  './apps/spreadsheets/module.json',
   './apps/spreadsheets/index.html',
   './apps/spreadsheets/styles.css',
   './apps/spreadsheets/xls-biff8-engine.js',
   './apps/spreadsheets/xlsx-engine.js',
   './apps/spreadsheets/app.js',
+  './apps/presentations/module.json',
   './apps/presentations/index.html',
   './apps/presentations/styles.css',
   './apps/presentations/engine/compatibility.js',
   './apps/presentations/app.js',
+  './apps/pdf/module.json',
   './apps/pdf/index.html',
   './apps/pdf/styles.css',
   './apps/pdf/app.js'
   ,'./shared/vendor/pdfjs/pdf.min.js'
   ,'./shared/vendor/pdfjs/pdf.worker.min.js'
 ];
-
 const APP_SHELL_URLS=new Set(APP_SHELL.map(path=>new URL(path,self.registration.scope).href));
 const NAVIGATION_PATHS=new Set([
   new URL('./index.html',self.registration.scope).pathname,
@@ -57,7 +63,6 @@ const NAVIGATION_PATHS=new Set([
   new URL('./apps/presentations/index.html',self.registration.scope).pathname,
   new URL('./apps/pdf/index.html',self.registration.scope).pathname
 ]);
-
 function canonicalCacheKey(request){
   const url=new URL(request.url);
   if(request.mode==='navigate'&&NAVIGATION_PATHS.has(url.pathname)){
@@ -72,7 +77,6 @@ function isCacheableShellRequest(request){
   const key=canonicalCacheKey(request);
   return APP_SHELL_URLS.has(key.url);
 }
-
 async function installAppShell(){
   await caches.delete(CACHE_NAME);
   const cache=await caches.open(CACHE_NAME);
@@ -84,7 +88,6 @@ async function installAppShell(){
     throw error;
   }
 }
-
 async function removeOldCaches(){
   const keys=await caches.keys();
   await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_NAME).map(key=>caches.delete(key)));
@@ -97,7 +100,6 @@ async function cacheResponse(cache,key,response){
     console.error('InkDesk could not update a cached application asset.',{url:key.url,error});
   }
 }
-
 async function respondWithShell(request){
   const key=canonicalCacheKey(request);
   const cache=await caches.open(CACHE_NAME);
@@ -105,7 +107,6 @@ async function respondWithShell(request){
   if(cached&&!cached.ok){
     await cache.delete(key);
   }
-
   try{
     const response=await fetch(request);
     if(response&&response.ok&&response.type!=='opaque')await cacheResponse(cache,key,response.clone());
@@ -117,7 +118,6 @@ async function respondWithShell(request){
     throw error;
   }
 }
-
 self.addEventListener('install',event=>{
   event.waitUntil(installAppShell().then(()=>self.skipWaiting()));
 });
@@ -125,7 +125,6 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
   event.waitUntil(removeOldCaches().then(()=>self.clients.claim()));
 });
-
 self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET')return;
@@ -134,7 +133,6 @@ self.addEventListener('fetch',event=>{
   if(!isCacheableShellRequest(request))return;
   event.respondWith(respondWithShell(request));
 });
-
 self.addEventListener('message',event=>{
   const data=event.data||{};
   if(data.type!=='inkdesk:clear-app-cache')return;

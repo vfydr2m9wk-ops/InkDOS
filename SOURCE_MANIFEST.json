@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 136,
+  "fileCount": 147,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 408,
-      "sha256": "bf73ccc823f52c2aed48a6a3fb2a542e9034f422c6da8c918978eb06226c5905"
+      "bytes": 699,
+      "sha256": "677fa90c6eea3e13a4d6bcdf92d7bb1d5a25c490f4ed9442d124c2b66c362da7"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "86bf5585d7f6cbc5d614a66dfaa32fac570ed90802119da4a2528269db818cb9"
+      "sha256": "85977d6a38efcd6032184a11e0cdb43b103210be1012f6e43954db58e9708315"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -144,8 +144,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 3335,
-      "sha256": "436c5f2f54c66a2dca8ccfad6790761dc66f13068b3cc7e18d72fa4b806d0c24"
+      "bytes": 3622,
+      "sha256": "18350cb412075fd066671881812fcd32b424d87e0744f4717ac8ccdb962fb52f"
     },
     {
       "path": "apps/documents/app.js",
@@ -168,6 +168,11 @@
       "sha256": "c13ae3bd10bac9d58ed9e093d7f8e1a08d5e8dcd61d7b0979fbf71ebe0eacceb"
     },
     {
+      "path": "apps/documents/module.json",
+      "bytes": 643,
+      "sha256": "3dc608437cd9ef513249cec9040e12d20e8b81c68313aaa640a2e8211f63a9f7"
+    },
+    {
       "path": "apps/documents/styles.css",
       "bytes": 15727,
       "sha256": "739cbfad4ee9750c5d9f474aa8292ba363b4b316aab4f4c2ae8cfd5e4709e5f4"
@@ -181,6 +186,11 @@
       "path": "apps/pdf/index.html",
       "bytes": 11369,
       "sha256": "65a8928fe11aa3a9e7bc6db006225d77f42d0d270122bf7af1dc456c45fb5e3d"
+    },
+    {
+      "path": "apps/pdf/module.json",
+      "bytes": 578,
+      "sha256": "07d4d50df0e48357b7f90e95ff425890af8a6fa6b8a58ab0ff16ac9487c114ef"
     },
     {
       "path": "apps/pdf/styles.css",
@@ -203,6 +213,11 @@
       "sha256": "5c9872e20990d5c233232d7f87167f67d0003c7b20b6a2a14572b6140959b84a"
     },
     {
+      "path": "apps/presentations/module.json",
+      "bytes": 684,
+      "sha256": "e6f375e1ff9542754301994a42caaa20220ffab43f8cb6b0fb66445ef8e266a7"
+    },
+    {
       "path": "apps/presentations/styles.css",
       "bytes": 24183,
       "sha256": "411b7daaf13a622395cd4c9e3eae7882b6759917df95adf9e41c725fb25bf77a"
@@ -216,6 +231,11 @@
       "path": "apps/spreadsheets/index.html",
       "bytes": 7164,
       "sha256": "e852e037fcb887c9d32534df22d8b7ad0931b2c4437a46745862dd5a2dd788fd"
+    },
+    {
+      "path": "apps/spreadsheets/module.json",
+      "bytes": 745,
+      "sha256": "41f556bb22d23502c4d34b1a82f865715ced4a6158d9fe6b844dbcac4fbdce74"
     },
     {
       "path": "apps/spreadsheets/styles.css",
@@ -373,6 +393,11 @@
       "sha256": "9faf9bab4de85bd59d7db935d3faa962e30bb8a1740d1fc66443537daa50a75e"
     },
     {
+      "path": "docs/MODULE_ARCHITECTURE.md",
+      "bytes": 2741,
+      "sha256": "26e17954896e7e73db6744f6a1bc4fe431cdf0f811f11b2d6f747ed115d5920a"
+    },
+    {
       "path": "docs/MVP_SCOPE.md",
       "bytes": 1707,
       "sha256": "eed5991b21208fff249d7873a5ed08d01a28b3a9ed3e2755c746e043245dfa99"
@@ -504,8 +529,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 5565,
-      "sha256": "67d1a73d6e4f69f36d72c9a61a230bf5058abbc71b1e8af559a3199dd4c34bb0"
+      "bytes": 5802,
+      "sha256": "4f0052d3002fd681c1d4ffa45b79cb342079eee84ed40e4a71ab8ea90fb6ad64"
     },
     {
       "path": "manifest.webmanifest",
@@ -513,9 +538,29 @@
       "sha256": "6fd4b7c15d4b5725d062bd237e4412f39f51616d6d767f470318f0323e35aa8b"
     },
     {
+      "path": "modules/module-config.json",
+      "bytes": 538,
+      "sha256": "f529bc58a335349110d95d3dff886fd0dff5a9639e80c13f3042768cc59b1f66"
+    },
+    {
+      "path": "modules/module-loader.js",
+      "bytes": 6928,
+      "sha256": "bf5a885d47c51a61386b131cdb157ecf21e74e0d46b281ea65800a4781c0829e"
+    },
+    {
+      "path": "modules/module-registry.js",
+      "bytes": 3385,
+      "sha256": "2abba93b643acf12f6c3b0ff4dd3cec0ecf932a8ae3cf993a558e87dc66efda6"
+    },
+    {
+      "path": "modules/module-schema.json",
+      "bytes": 1935,
+      "sha256": "7434eec3a2057b4be7a6ca6d65fc515fc0ebe3e8cda1498404c89bfdca571478"
+    },
+    {
       "path": "package.json",
-      "bytes": 889,
-      "sha256": "676e4a48c0ab69a6ce17de8bdff4b756d7e232a0ed01fe7f5aa878d1832d33e8"
+      "bytes": 1098,
+      "sha256": "748669c6c5d40a291be02854bc75cdac13a9199d5977d3c9f28a04a5eda3d34d"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -536,6 +581,11 @@
       "path": "scripts/check_no_legacy_runtime.py",
       "bytes": 3181,
       "sha256": "5b6e4cb44f3a81c28840842a3e35ebbc7daccea78f756de0b9a5129520234e5b"
+    },
+    {
+      "path": "scripts/generate_module_registry.py",
+      "bytes": 10339,
+      "sha256": "f403fa8249f85c33b1d698d69a6f5dfcf714d6f242bb96506d6b2e22416d1000"
     },
     {
       "path": "scripts/generate_release_metadata.py",
@@ -559,8 +609,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 4826,
-      "sha256": "10131d6e9fd45bf445ae02472bea0b8abcb5c265113df61f88c8dc17dd00465a"
+      "bytes": 5104,
+      "sha256": "c3370453c002b66357a4ed0d80db11db4bab3d0c549a920a1910520091314199"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -579,13 +629,13 @@
     },
     {
       "path": "shared/hub-open.js",
-      "bytes": 895,
-      "sha256": "d15000acd7e68e4a7f63a393b443e56722f99b345a28c050534a3a00f558c52e"
+      "bytes": 1256,
+      "sha256": "bbd3f315a1d6981cfc535a4af3d67011d7995575cd6c7e921fb9bb0a26ed9d7c"
     },
     {
       "path": "shared/hub.css",
-      "bytes": 7067,
-      "sha256": "6338fa450852ea8937771936342259a959ba615e6640ba9b52c17d151042a6be"
+      "bytes": 7425,
+      "sha256": "1753759e3300e8bbcc1aaf16bfa4b4392c14242c07a59a10434b3834cba761ae"
     },
     {
       "path": "shared/office-runtime.js",
@@ -681,6 +731,11 @@
       "path": "tests/fixtures/inkdesk-presentation-layout.pptx",
       "bytes": 84225,
       "sha256": "82fe6bac4900a253fe0cbade123aedf91af931f51bafa7476d465236e418cb11"
+    },
+    {
+      "path": "tests/test_modules.py",
+      "bytes": 7016,
+      "sha256": "23360afe46012c46ad73ea03ac16b35706f3038b30f8a34b69a9ede5d958a362"
     },
     {
       "path": "tests/test_repository.py",
