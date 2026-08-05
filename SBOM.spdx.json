@@ -1,0 +1,77 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "InkDesk-0.19.3-beta.7",
+  "documentNamespace": "https://github.com/vfydr2m9wk-ops/InkDesk/releases/tag/v0.19.3-beta.7/sbom",
+  "creationInfo": {
+    "created": "2026-08-05T00:00:00Z",
+    "creators": [
+      "Tool: InkDesk release metadata generator"
+    ]
+  },
+  "packages": [
+    {
+      "name": "InkDesk",
+      "SPDXID": "SPDXRef-Package-InkDesk",
+      "versionInfo": "0.19.3-beta.7",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "JSZip",
+      "SPDXID": "SPDXRef-Package-JSZip",
+      "versionInfo": "3.10.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "pako inflate bundle",
+      "SPDXID": "SPDXRef-Package-Pako",
+      "versionInfo": "1.0.11",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "PDF.js",
+      "SPDXID": "SPDXRef-Package-PDFJS",
+      "versionInfo": "3.11.174",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-InkDesk"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-InkDesk",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-JSZip"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-InkDesk",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-Pako"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-InkDesk",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-PDFJS"
+    }
+  ]
+}

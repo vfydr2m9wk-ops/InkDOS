@@ -1,5 +1,9 @@
 # Presentations Component
 
+## Opening progress in 0.19.3-beta.7
+
+PPTX opening displays a modal, determinate progress indicator. File reading reports transferred bytes through `FileReader`; validation, ZIP opening, relationship checks, themes/layouts, every parsed slide and first-slide rendering update the same progress bar. The indicator is dismissed in a `finally` path on success or failure.
+
 ## Entry point
 
 `apps/presentations/index.html`
@@ -13,7 +17,7 @@
 
 ## Imported PPTX workflow
 
-Version 0.19.2-beta keeps the original OOXML package in memory. Saving a copy reloads that package and patches only supported changes in the existing slide set. Unrecognized parts are retained rather than recreated.
+Version 0.19.3-beta.3 keeps the original OOXML package in memory. Saving a copy reloads that package and patches only supported changes in the existing slide set. Unrecognized parts are retained rather than recreated.
 
 The relationship path for any part is derived as:
 

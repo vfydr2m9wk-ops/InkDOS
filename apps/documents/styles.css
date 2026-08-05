@@ -50,3 +50,7 @@
 /* 0.18.3: section-aware Word rendering and preserved headers/footers. */
 .page-header,.page-footer{position:absolute;left:var(--doc-margin-left,40px);right:var(--doc-margin-right,40px);color:#555;font-size:.82em;line-height:1.2;white-space:pre-wrap;overflow:hidden;pointer-events:none;user-select:none;-webkit-user-select:none}
 .page-header{top:24px}.page-footer{bottom:24px}.tracked-insert{background:rgba(60,170,90,.10);text-decoration:underline;text-decoration-color:rgba(40,140,70,.45)}.tracked-delete{color:#8a3b3b;text-decoration:line-through}.content-control{outline:1px dotted rgba(43,103,177,.35);outline-offset:2px}
+.page-header,.page-footer{position:absolute;left:var(--doc-margin-left);right:var(--doc-margin-right);z-index:2;pointer-events:none;overflow:visible}.page-header p,.page-footer p{margin:0}.page-header img,.page-footer img{max-width:none;margin:0 auto;display:block}.page-header,.page-footer{transform:none}.page-header{top:var(--doc-header-distance,24px)}.page-footer{bottom:var(--doc-footer-distance,24px)}
+
+/* 0.19.3-beta.3 fidelity fixes */
+.page-header,.page-footer{box-sizing:border-box;max-width:calc(100% - var(--doc-margin-left) - var(--doc-margin-right));overflow:visible}.page-header img,.page-footer img{max-width:100%;height:auto}.page-header table,.page-footer table,.page-content .docx-table{border-collapse:collapse;table-layout:fixed}.page-content .docx-table{max-width:100%;margin-top:.15em;margin-bottom:.15em}.docx-table td,.docx-table th{box-sizing:border-box;overflow-wrap:anywhere}.docx-table p{margin-top:0;margin-bottom:0}

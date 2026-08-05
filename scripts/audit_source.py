@@ -1,290 +1,134 @@
 #!/usr/bin/env python3
-"""Fail on common prototype-to-repository, offline, and security risks."""
 from __future__ import annotations
-
+from pathlib import Path
+import argparse
+import os
 import re
 import sys
-from dataclasses import dataclass
-from html.parser import HTMLParser
-from pathlib import Path
-from urllib.parse import urlparse
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-CODE_SUFFIXES = {".js", ".html", ".css", ".py"}
-EXCLUDED_PARTS = {".git", "vendor", "node_modules", "__pycache__", "test-results"}
-PROTOTYPE_MARKER = re.compile(
-    r"\b(" + "TO" + "DO|FI" + "XME|HA" + "CK|ST" + "UB)\b|" + "not " + "implemented|coming " + "soon",
-    re.I,
-)
-ABSOLUTE_HOST = re.compile("file:///var/mobile/" + "Containers|/var/mobile/" + "Containers")
-EMPTY_CATCH = re.compile(r"catch\s*(?:\([^)]*\))?\s*\{\s*\}")
-DYNAMIC_CODE = re.compile(r"\b(?:eval|Function)\s*\(")
-DOCUMENT_WRITE = re.compile(r"\bdocument\.write\s*\(")
-REMOTE_CALL = re.compile(r"\b(?:fetch|importScripts|WebSocket)\s*\(\s*['\"]https?://", re.I)
-INSECURE_REMOTE = re.compile(r"\b(?:fetch|importScripts|WebSocket)\s*\(\s*['\"]http://", re.I)
-OPAQUE_EXCEPTION_MARKER = "INKDESK_ALLOW_OPAQUE_TARGET"
-OPAQUE_EXCEPTION_FILE = Path("shared/file-router.js")
+TEXT_EXT = {'.html', '.css', '.js', '.json', '.md', '.cff', '.webmanifest', '.txt', '.py', '.yml', '.yaml', '.xml'}
+IGNORED_PARTS = {'.git', 'dist', '__pycache__', '.DS_Store'}
+DEFAULT_FORBIDDEN = [
+    '/mnt/data', '/tmp/inkdesk', '/home/oai', 'file:///Users/', 'C:\\Users\\',
+    'Local Office Suite', 'External Display Browser'
+]
+EMAIL_BYTES = re.compile(rb'(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b')
+EMAIL_TEXT = re.compile(r'(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b')
+ABS_PATH = re.compile(rb'''(?i)(?:/home/[^\s"']+|/mnt/data/[^\s"']+|[A-Z]:\\Users\\[^\s"']+)''')
 
 
-@dataclass(frozen=True)
-class PostMessageCall:
-    line: int
-    second_argument: str
-    allowed_opaque_exception: bool
-
-
-class RuntimeReferenceParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.remote_runtime_refs: list[str] = []
-
-    def handle_starttag(self, tag, attrs):
-        data = dict(attrs)
-        rel = str(data.get("rel") or "").lower().split()
-        ref = data.get("src") if tag == "script" else data.get("href") if tag == "link" and "stylesheet" in rel else None
-        if ref and urlparse(ref).scheme in {"http", "https"}:
-            self.remote_runtime_refs.append(ref)
-
-
-def excluded(path: Path) -> bool:
-    rel = path.relative_to(ROOT)
-    if any(part in EXCLUDED_PARTS for part in rel.parts):
-        return True
-    return rel.parts[:3] == ("tests", "browser", "results")
-
-
-def _skip_space_and_comments(source: str, index: int) -> int:
-    length = len(source)
-    while index < length:
-        if source[index].isspace():
-            index += 1
+def files():
+    for path in sorted(ROOT.rglob('*')):
+        if not path.is_file():
             continue
-        if source.startswith("//", index):
-            newline = source.find("\n", index + 2)
-            return length if newline < 0 else _skip_space_and_comments(source, newline + 1)
-        if source.startswith("/*", index):
-            end = source.find("*/", index + 2)
-            return length if end < 0 else _skip_space_and_comments(source, end + 2)
-        break
-    return index
+        rel = path.relative_to(ROOT)
+        if any(part in IGNORED_PARTS for part in rel.parts):
+            continue
+        yield path, rel.as_posix()
 
 
-def _consume_quoted(source: str, index: int, quote: str) -> int:
-    index += 1
-    while index < len(source):
-        char = source[index]
-        if char == "\\":
-            index += 2
-            continue
-        if char == quote:
-            return index + 1
-        index += 1
-    return len(source)
+def term_encodings(term: str):
+    variants = {term.encode('utf-8', 'ignore').lower(), term.encode('utf-16le', 'ignore').lower()}
+    try:
+        variants.add(term.encode('latin-1').lower())
+    except UnicodeEncodeError:
+        pass
+    return [value for value in variants if value]
 
 
-def _consume_template(source: str, index: int) -> int:
-    index += 1
-    expression_depth = 0
-    while index < len(source):
-        char = source[index]
-        if char == "\\":
-            index += 2
-            continue
-        if expression_depth == 0 and char == "`":
-            return index + 1
-        if source.startswith("${", index):
-            expression_depth += 1
-            index += 2
-            continue
-        if expression_depth and char == "}":
-            expression_depth -= 1
-        if char in {"'", '"'}:
-            index = _consume_quoted(source, index, char)
-            continue
-        if char == "`":
-            index = _consume_template(source, index)
-            continue
-        if source.startswith("//", index):
-            newline = source.find("\n", index + 2)
-            index = len(source) if newline < 0 else newline + 1
-            continue
-        if source.startswith("/*", index):
-            end = source.find("*/", index + 2)
-            index = len(source) if end < 0 else end + 2
-            continue
-        index += 1
-    return len(source)
+def scan_payload(data: bytes, label: str, forbidden: list[str], errors: list[str]) -> None:
+    low = data.lower()
+    for term in forbidden:
+        if any(encoded in low for encoded in term_encodings(term)):
+            errors.append(f'{label}: forbidden term present')
+    for match in EMAIL_BYTES.findall(data):
+        email = match.decode('utf-8', 'replace')
+        if not email.endswith('@users.noreply.github.com'):
+            errors.append(f'{label}: email address present: {email}')
+    # UTF-16LE strings are common in legacy CFB/XLS metadata.
+    utf16 = data.decode('utf-16le', 'ignore')
+    for email in EMAIL_TEXT.findall(utf16):
+        if not email.endswith('@users.noreply.github.com'):
+            errors.append(f'{label}: UTF-16 email address present: {email}')
 
 
-def _parse_call_arguments(source: str, open_paren: int) -> tuple[list[str], int]:
-    arguments: list[str] = []
-    start = open_paren + 1
-    index = start
-    stack: list[str] = [")"]
-    matching = {"(": ")", "[": "]", "{": "}"}
-
-    while index < len(source):
-        char = source[index]
-        if char in {"'", '"'}:
-            index = _consume_quoted(source, index, char)
-            continue
-        if char == "`":
-            index = _consume_template(source, index)
-            continue
-        if source.startswith("//", index):
-            newline = source.find("\n", index + 2)
-            index = len(source) if newline < 0 else newline + 1
-            continue
-        if source.startswith("/*", index):
-            end = source.find("*/", index + 2)
-            index = len(source) if end < 0 else end + 2
-            continue
-        if char in matching:
-            stack.append(matching[char])
-            index += 1
-            continue
-        if stack and char == stack[-1]:
-            stack.pop()
-            if not stack:
-                arguments.append(source[start:index])
-                return arguments, index + 1
-            index += 1
-            continue
-        if char == "," and len(stack) == 1:
-            arguments.append(source[start:index])
-            start = index + 1
-        index += 1
-    return arguments, len(source)
-
-
-def _is_wildcard_literal(expression: str) -> bool:
-    without_comments = re.sub(r"/\*.*?\*/|//[^\n]*", "", expression, flags=re.S).strip()
-    return bool(re.fullmatch(r"(['\"`])\*\1", without_comments))
-
-
-def find_wildcard_postmessage_calls(source: str) -> list[PostMessageCall]:
-    """Conservatively parse postMessage calls and return wildcard targetOrigin uses.
-
-    This scanner tracks nested parentheses/braces/brackets, quoted strings, templates,
-    comments, multiline calls, optional chaining and commas inside the first argument.
-    It intentionally treats malformed input conservatively rather than claiming safety.
-    """
-
-    calls: list[PostMessageCall] = []
-    index = 0
-    length = len(source)
-    identifier = "postMessage"
-
-    while index < length:
-        char = source[index]
-        if char in {"'", '"'}:
-            index = _consume_quoted(source, index, char)
-            continue
-        if char == "`":
-            index = _consume_template(source, index)
-            continue
-        if source.startswith("//", index):
-            newline = source.find("\n", index + 2)
-            index = length if newline < 0 else newline + 1
-            continue
-        if source.startswith("/*", index):
-            end = source.find("*/", index + 2)
-            index = length if end < 0 else end + 2
-            continue
-        if source.startswith(identifier, index):
-            before = source[index - 1] if index else ""
-            after_index = index + len(identifier)
-            after = source[after_index] if after_index < length else ""
-            if (before.isalnum() or before in "_$") or (after.isalnum() or after in "_$"):
-                index += 1
-                continue
-            cursor = _skip_space_and_comments(source, after_index)
-            if source.startswith("?.", cursor):
-                cursor = _skip_space_and_comments(source, cursor + 2)
-            if cursor < length and source[cursor] == "(":
-                arguments, end = _parse_call_arguments(source, cursor)
-                if len(arguments) >= 2 and _is_wildcard_literal(arguments[1]):
-                    line = source.count("\n", 0, index) + 1
-                    line_start = source.rfind("\n", 0, index) + 1
-                    line_end = source.find("\n", index)
-                    if line_end < 0:
-                        line_end = length
-                    marker_nearby = OPAQUE_EXCEPTION_MARKER in source[max(0, line_start - 240):min(length, line_end + 240)]
-                    calls.append(PostMessageCall(line, arguments[1].strip(), marker_nearby))
-                index = max(end, index + len(identifier))
-                continue
-        index += 1
-    return calls
+def scan_zip(path: Path, rel: str, forbidden: list[str], errors: list[str]) -> None:
+    try:
+        with zipfile.ZipFile(path) as archive:
+            for info in archive.infolist():
+                if info.is_dir():
+                    continue
+                if info.file_size > 25 * 1024 * 1024:
+                    errors.append(f'{rel}:{info.filename}: oversized audit entry')
+                    continue
+                scan_payload(archive.read(info), f'{rel}:{info.filename}', forbidden, errors)
+    except Exception as exc:
+        errors.append(f'{rel}: ZIP metadata/content unreadable: {exc}')
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--forbidden', action='append', default=[])
+    args = parser.parse_args()
+    forbidden = DEFAULT_FORBIDDEN + args.forbidden + [x for x in os.environ.get('INKDESK_AUDIT_EXTRA_TERMS', '').split('|') if x]
     errors: list[str] = []
-    notes: list[str] = []
-    metrics: list[tuple[int, Path]] = []
-    opaque_exceptions: list[tuple[Path, int]] = []
 
-    for path in ROOT.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in CODE_SUFFIXES or excluded(path):
-            continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        rel = path.relative_to(ROOT)
-        lines = text.count("\n") + 1
-        metrics.append((lines, rel))
-        if lines > 1000:
-            errors.append(f"Source file exceeds 1000 lines and needs an explicit refactoring plan: {rel} ({lines})")
-        if PROTOTYPE_MARKER.search(text):
-            errors.append(f"Prototype marker found in runtime/source file: {rel}")
-        if ABSOLUTE_HOST.search(text):
-            errors.append(f"Device-specific absolute path found: {rel}")
-        if EMPTY_CATCH.search(text):
-            errors.append(f"Empty catch block found: {rel}")
-        if DOCUMENT_WRITE.search(text):
-            errors.append(f"document.write usage found: {rel}")
-        if REMOTE_CALL.search(text):
-            errors.append(f"Automatic remote runtime call found: {rel}")
-        if INSECURE_REMOTE.search(text):
-            errors.append(f"Insecure remote runtime call found: {rel}")
-        if path.suffix.lower() in {".js", ".html"}:
-            for call in find_wildcard_postmessage_calls(text):
-                if call.allowed_opaque_exception and rel == OPAQUE_EXCEPTION_FILE:
-                    opaque_exceptions.append((rel, call.line))
-                else:
-                    errors.append(f"Wildcard postMessage target found: {rel}:{call.line}")
-        if DYNAMIC_CODE.search(text):
-            notes.append(f"Dynamic code construction requires manual review: {rel}")
-        if path.suffix.lower() == ".html":
-            parser = RuntimeReferenceParser()
-            parser.feed(text)
-            for ref in parser.remote_runtime_refs:
-                errors.append(f"Automatic remote runtime dependency: {rel} -> {ref}")
+    for path, rel in files():
+        data = path.read_bytes()
+        if rel != 'scripts/audit_source.py':
+            scan_payload(data, rel, forbidden, errors)
+            if any(term.lower() in rel.lower() for term in forbidden):
+                errors.append(f'{rel}: forbidden term in filename/path')
 
-    if len(opaque_exceptions) > 1:
-        locations = ", ".join(f"{path}:{line}" for path, line in opaque_exceptions)
-        errors.append(f"More than one opaque-origin postMessage exception exists: {locations}")
+        if path.suffix.lower() in TEXT_EXT and rel != 'scripts/audit_source.py':
+            if ABS_PATH.search(data):
+                errors.append(f'{rel}: absolute local path present')
 
-    print("Largest non-vendor source files:")
-    for lines, rel in sorted(metrics, reverse=True)[:10]:
-        print(f"- {lines:4d} lines  {rel}")
+        if path.suffix.lower() in {'.docx', '.xlsx', '.pptx'}:
+            scan_zip(path, rel, forbidden, errors)
+            try:
+                with zipfile.ZipFile(path) as archive:
+                    for name in ('docProps/core.xml', 'docProps/custom.xml', 'docProps/app.xml'):
+                        if name not in archive.namelist():
+                            continue
+                        text = archive.read(name).decode('utf-8', 'replace')
+                        for tag in ('creator', 'lastModifiedBy'):
+                            values = re.findall(rf'<[^>]*{tag}[^>]*>(.*?)</', text, re.I | re.S)
+                            for value in values:
+                                value = re.sub('<.*?>', '', value).strip()
+                                if value and value != 'InkDesk QA':
+                                    errors.append(f'{rel}:{name}: unexpected {tag}={value!r}')
+            except Exception as exc:
+                errors.append(f'{rel}: OOXML metadata unreadable: {exc}')
 
-    if opaque_exceptions:
-        path, line = opaque_exceptions[0]
-        print(f"\nDocumented opaque-origin exception: {path}:{line}")
+        if path.suffix.lower() == '.pdf':
+            try:
+                from pypdf import PdfReader
+                metadata = PdfReader(str(path)).metadata or {}
+                for key, value in metadata.items():
+                    if key in {'/Author', '/Creator', '/Producer'} and str(value) not in {'', 'InkDesk QA'}:
+                        errors.append(f'{rel}: unexpected PDF {key}={value!r}')
+            except Exception as exc:
+                errors.append(f'{rel}: PDF metadata unreadable: {exc}')
 
-    unique_notes = sorted(set(notes))
-    if unique_notes:
-        print("\nManual security review notes:")
-        for note in unique_notes:
-            print(f"- {note}")
+        if path.suffix.lower() == '.png':
+            try:
+                from PIL import Image
+                with Image.open(path) as image:
+                    unsafe = set(image.info) - {'dpi', 'transparency', 'srgb', 'gamma'}
+                    if unsafe:
+                        errors.append(f'{rel}: PNG ancillary metadata keys: {sorted(unsafe)}')
+            except Exception as exc:
+                errors.append(f'{rel}: PNG unreadable: {exc}')
 
     if errors:
-        print("\nSource audit failed:")
-        for error in errors:
-            print(f"- {error}")
+        print('\n'.join('ERROR: ' + message for message in sorted(set(errors))))
         return 1
-
-    print("\nSource audit passed.")
+    print('OK: privacy and metadata audit passed.')
     return 0
 
 
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -12,7 +12,8 @@ const ROUTES={
   docx:'./apps/documents/index.html',
   xls:'./apps/spreadsheets/index.html',
   xlsx:'./apps/spreadsheets/index.html',
-  pptx:'./apps/presentations/index.html'
+  pptx:'./apps/presentations/index.html',
+  pdf:'./apps/pdf/index.html'
 };
 
 let activeEmbeddedCleanup=null;
@@ -25,7 +26,7 @@ function extensionOf(name){
 function routeForFile(file){
   const extension=extensionOf(file&&file.name);
   const path=ROUTES[extension];
-  if(!path)throw new Error('Choose a DOCX, XLS, XLSX or PPTX file.');
+  if(!path)throw new Error('Choose a DOCX, XLS, XLSX, PPTX or PDF file.');
   return {extension,path};
 }
 

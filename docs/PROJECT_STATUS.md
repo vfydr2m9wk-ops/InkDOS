@@ -1,6 +1,6 @@
 # Project Status
 
-InkDesk 0.19.2-beta is a **public beta** for focused, non-critical local Office workflows.
+InkDesk 0.19.3-beta.7 is a **public beta** for focused, non-critical local Office workflows.
 
 ## Suitable current uses
 
@@ -19,7 +19,7 @@ InkDesk 0.19.2-beta is a **public beta** for focused, non-critical local Office 
 
 ## Current engineering priorities
 
-1. native Safari/WebKit, iPadOS, Firefox, and embedded-host validation;
+1. native Safari/WebKit, iPadOS, Firefox, and embedded-host validation, including 600-page and 4,000-page PDF navigation;
 2. privacy-preserving crash/session recovery;
 3. broader hostile-package and fuzz coverage;
 4. incremental Presentation Workspace modularization;

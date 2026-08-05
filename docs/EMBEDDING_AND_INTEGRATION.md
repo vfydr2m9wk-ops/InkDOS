@@ -8,10 +8,11 @@ Copy the complete repository to any static web host or embedded browser containe
 
 The root redirect files provide stable entry points:
 
-- `Office Suite.html`
+- `InkDesk.html`
 - `Documents.html`
 - `Spreadsheets.html`
 - `Presentations.html`
+- `PDF.html`
 
 A host product may register these as menu, desktop, dock or application shortcuts. The component entry points under `apps/` may also be opened directly.
 
@@ -19,10 +20,10 @@ A host product may register these as menu, desktop, dock or application shortcut
 
 Use identifiers controlled by the integrating product, for example:
 
-- `com.example.localoffice`
-- `com.example.localoffice.documents`
-- `com.example.localoffice.spreadsheets`
-- `com.example.localoffice.presentations`
+- `com.example.inkdesk`
+- `com.example.inkdesk.documents`
+- `com.example.inkdesk.spreadsheets`
+- `com.example.inkdesk.presentations`
 
 ## File behavior
 

@@ -1,42 +1,32 @@
 # Compatibility and Validation Matrix
 
-InkDesk provides focused, partial compatibility. “Passed” below means the listed scenario was actually executed; it does not imply complete format or platform support.
+InkDesk provides focused, partial compatibility. “Passed” means the listed scenario was executed; it does not imply complete Microsoft Office, Microsoft Edge or browser support.
 
 ## Format scope
 
 | Format | Status | Important limits |
 |---|---|---|
-| DOCX | Partial | Common paragraphs, headings, lists, tables, images, headers/footers, page breaks, and hyperlinks-as-inert-content; advanced fields, equations, comments, and complex drawings are incomplete |
-| XLSX | Partial | Common sheets, cells, cached formulas, styles, merges, widths, images, dates, percentages, and relationships; formula and chart fidelity are limited |
-| XLS (BIFF8) | Import only | Local import; export creates XLSX; older BIFF, VBA, OLE, and some records are unsupported |
-| PPTX | Partial | Common slides, text, images, shapes, layouts/masters, notes preservation, themes, and relationships; advanced animation, SmartArt, media, and exact layout are incomplete |
-| DOC / PPT binary | Unsupported | Controlled rejection; convert to DOCX/PPTX first |
-| PDF | Out of scope | Use a dedicated PDF tool |
+| DOCX | Partial | A4/section dimensions, margins, paragraphs, lists, images, headers, footers and common tables are rendered; BOM-prefixed XML is normalized; fields, equations, comments, tracked changes and complex DrawingML remain partial |
+| XLSX | Partial | Common cells, styles, formulas with cached values, merges, widths/heights, images and page setup are supported; external data, pivots, macros and advanced charts are not |
+| XLS (BIFF8) | Import only | Local import with styles, merges, images, print geometry and sheet-level zero-display behavior; saving creates an XLSX copy |
+| PPTX | Partial | Common text, images, shapes, slide/layout/master backgrounds, transforms and tables are rendered; SmartArt, media, advanced animation and exact text layout remain partial |
+| PDF | Native preview + local review layer | Bounded file inspection, one viewer instance, windowed page navigation and 50%–400% zoom are provided; page rendering/forms still depend on the browser engine, and review/form values are not written into PDF bytes |
+| DOC / PPT binary | Unsupported | Convert to DOCX/PPTX first |
 
-## Browser/platform evidence for 0.19.2-beta
+## Validation evidence for 0.19.3-beta.7
 
-| Environment | Open/edit/export/reopen | Offline/PWA | Status | Evidence/notes |
-|---|---|---|---|---|
-| Linux system Chromium via Playwright | Executed | Restricted-API and static-asset scenarios executed | Passed in local review | Automated synthetic/fixture scenarios; not native iPadOS |
-| Playwright Firefox | Configured in CI | Configured in CI | Not tested locally | Requires CI or a local Playwright Firefox installation |
-| Playwright WebKit | Configured in CI | Configured in CI | Not tested locally | Playwright WebKit is not native Safari or physical iPadOS |
-| Desktop Safari | Not executed | Not executed | Not tested | Manual device validation required |
-| Native Firefox desktop | Not executed | Not executed | Not tested | Playwright Firefox results must not be relabeled as native packaging validation |
-| iPadOS Safari | Not executed | Not executed | Not tested | Download UI, memory pressure, touch, keyboard, background/return, and PWA require a physical device |
-| Installed PWA | Not executed locally | Not executed locally | Not tested | Service-worker structure is statically checked; actual browser-controlled offline reload remains manual |
-| Direct `file://` | Environment-dependent | Service worker unavailable | Not tested locally | Host/browser policies vary |
-| Embedded/local-file hosts | Not executed | Host-specific | Not tested | No support claim |
+| Environment | Status | Evidence |
+|---|---|---|
+| Edge/Chromium, direct `file://` and local hub iframe | Passed for current automated scope | The extracted release ZIP registered the real PDF file chooser, opened the selectable-text/AcroForm fixture directly and through the hub without a timeout, and opened the synthetic 4,000-page PDF at page 3,500 with five full canvases. Presentation progress and direct `=` formula suggestions were exercised from the extracted ZIP. |
+| Supplied real-world DOCX, XLS and PPTX samples | Passed in local Chromium review | DOCX: A4 page/header/footer; XLS: page-oriented form with borders/images and hidden zero values; PPTX: 43 slides and direct background image |
+| Firefox / Safari / WebKit / physical iPadOS | Not tested | Manual validation is still required, especially worker loading, long-PDF memory behavior and PDF form-value persistence |
+| Installed PWA/offline reload | Not tested end-to-end | App-shell inventory is statically validated; device/browser behavior remains manual |
+| Direct `file://` / embedded hosts | Environment-dependent | Host module/worker policies vary; hosted HTTPS/PWA delivery is preferred when a shell blocks local workers |
 
 ## Unified opening and navigation
 
-The main page detects `.docx`, `.xls`, `.xlsx`, and `.pptx` and selects the corresponding workspace. Hosted HTTP(S)/PWA use a one-time IndexedDB handoff. Direct `file://` uses an embedded same-package workspace and a token-scoped file bridge because local-file storage/origin behavior differs between browsers. Chromium script-level routing and bridge transfer were executed; physical iPadOS/Safari direct-file behavior remains manual validation.
-
-All three workspaces expose a relative `../../index.html` home link with `target="_top"`, allowing the same control to leave a normal page or the local-file embedded workspace. On narrow screens, secondary history/zoom/presentation controls may be hidden from the title bar to protect the primary navigation, filename, and export action.
+The hub selector accepts `.docx`, `.xls`, `.xlsx`, `.pptx` and `.pdf` and opens the matching workspace. All four workspaces expose a home control. Hosted HTTP(S)/PWA mode uses the normal workspace route; direct local-file behavior remains browser-dependent.
 
 ## Export semantics
 
-“Download requested” means only that InkDesk invoked the browser mechanism. The state remains unverified and `beforeunload` protection remains active. Reopening an exported copy can mark it verified only when the SHA-256 fingerprint and byte length match the generated copy.
-
-## Formula scope
-
-The deterministic evaluator supports numeric literals, cell-reference substitution, parentheses, unary `+`/`-`, `+`, `-`, `*`, `/`, `%`, and `^`, plus the explicitly implemented focused functions in the spreadsheet workspace (including `SUM`, `AVERAGE`, `MIN`, `MAX`, `COUNT`, `ROUND`, `IF`, and limited `XLOOKUP`, `FILTER`, and `LET`). Unsupported formulas are preserved with cached values where available and are marked as not recalculated.
+“Download requested” means InkDesk invoked the browser download mechanism. DOCX/XLSX/PPTX copies should be reopened and verified before the originals are discarded. The PDF Workspace downloads the unchanged original PDF and can separately export its anonymized review sidecar.

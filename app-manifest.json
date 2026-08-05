@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.19.2-beta",
-  "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, and PPTX workflows.",
+  "version": "0.19.3-beta.7",
+  "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX and PDF workflows.",
   "entryPoint": "index.html",
-  "source": "https://github.com/vfydr2m9wk-ops/inkdesk",
-  "homepage": "https://vfydr2m9wk-ops.github.io/inkdesk/",
+  "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
+  "homepage": "https://vfydr2m9wk-ops.github.io/InkDesk/",
   "icons": {
     "default": "assets/icons/office.png",
     "windows": "assets/icons/office.ico",
@@ -37,6 +37,12 @@
       "name": "Presentations",
       "entryPoint": "apps/presentations/index.html",
       "icon": "assets/icons/presentations.png"
+    },
+    {
+      "id": "pdf",
+      "name": "PDF Workspace",
+      "entryPoint": "apps/pdf/index.html",
+      "icon": "assets/icons/pdf.png"
     }
   ],
   "permissions": [
@@ -45,7 +51,7 @@
   ],
   "update": {
     "type": "github-release",
-    "repository": "vfydr2m9wk-ops/inkdesk",
+    "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip"
   },
   "capabilities": {
@@ -76,6 +82,29 @@
       "pptx-layout-master-image-notes-resolution",
       "pptx-chart-and-transition-preview",
       "fingerprint-verified-export-reopen"
+    ],
+    "pdf": [
+      "pdf-local-open",
+      "pdf-initial-selector-routing",
+      "pdf-native-browser-preview",
+      "pdf-system-viewer-fallback",
+      "pdf-page-count-and-jump",
+      "pdf-outline-inspection",
+      "pdf-vertical-and-horizontal-view-modes",
+      "pdf-fullscreen-and-immersive-fallback",
+      "pdf-native-acroform-interaction",
+      "pdf-local-review-layer",
+      "pdf-highlight-underline-marker-comment-and-text",
+      "pdf-personal-bookmarks",
+      "pdf-review-sidecar-import-export",
+      "pdf-original-download",
+      "pdf-bounded-slice-inspection",
+      "pdf-single-native-viewer-instance",
+      "pdf-windowed-page-navigation",
+      "pdf-page-hash-reload-navigation",
+      "pdf-zoom-50-to-400",
+      "pdf-fullscreen-exit-recovery",
+      "pdf-object-url-file-lifecycle"
     ]
   },
   "compatibility": {

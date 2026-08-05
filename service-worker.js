@@ -1,11 +1,16 @@
 'use strict';
 
-const CACHE_NAME='inkdesk-shell-v0.19.2-beta-router2';
+const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
   './index.html',
   './manifest.webmanifest',
+  './InkDesk.html',
+  './Documents.html',
+  './Spreadsheets.html',
+  './Presentations.html',
+  './PDF.html',
   './shared/hub.css',
   './shared/office-shell.css',
   './shared/office-shell.js',
@@ -22,6 +27,7 @@ const APP_SHELL=[
   './assets/icons/documents.png',
   './assets/icons/spreadsheets.png',
   './assets/icons/presentations.png',
+  './assets/icons/pdf.png',
   './apps/documents/index.html',
   './apps/documents/styles.css',
   './apps/documents/docx-parser.js',
@@ -35,7 +41,12 @@ const APP_SHELL=[
   './apps/presentations/index.html',
   './apps/presentations/styles.css',
   './apps/presentations/engine/compatibility.js',
-  './apps/presentations/app.js'
+  './apps/presentations/app.js',
+  './apps/pdf/index.html',
+  './apps/pdf/styles.css',
+  './apps/pdf/app.js'
+  ,'./shared/vendor/pdfjs/pdf.min.js'
+  ,'./shared/vendor/pdfjs/pdf.worker.min.js'
 ];
 
 const APP_SHELL_URLS=new Set(APP_SHELL.map(path=>new URL(path,self.registration.scope).href));
@@ -43,7 +54,8 @@ const NAVIGATION_PATHS=new Set([
   new URL('./index.html',self.registration.scope).pathname,
   new URL('./apps/documents/index.html',self.registration.scope).pathname,
   new URL('./apps/spreadsheets/index.html',self.registration.scope).pathname,
-  new URL('./apps/presentations/index.html',self.registration.scope).pathname
+  new URL('./apps/presentations/index.html',self.registration.scope).pathname,
+  new URL('./apps/pdf/index.html',self.registration.scope).pathname
 ]);
 
 function canonicalCacheKey(request){

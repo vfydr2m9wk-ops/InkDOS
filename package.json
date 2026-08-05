@@ -1,15 +1,17 @@
 {
   "name": "inkdesk",
-  "version": "0.19.2-beta",
+  "version": "0.19.3-beta.7",
   "private": true,
-  "description": "A lightweight local-first browser productivity suite for focused DOCX, XLS/XLSX, and PPTX workflows.",
+  "description": "A lightweight local-first browser productivity suite for focused DOCX, XLS/XLSX, PPTX and PDF workflows.",
   "scripts": {
     "validate": "python3 scripts/validate_repository.py",
     "audit": "python3 scripts/audit_source.py",
     "test": "python3 -m unittest discover -s tests -p test_*.py",
-    "test:browser": "python3 scripts/run_browser_regressions.py --group package-security",
+    "test:architecture": "python3 scripts/check_no_legacy_runtime.py",
+    "test:browser": "python3 scripts/run_browser_regressions.py",
     "test:release": "python3 scripts/run_release_validation.py",
-    "release:build": "python3 scripts/build_release.py --output-dir dist"
+    "release:build": "python3 scripts/build_release.py --output-dir dist",
+    "release:metadata": "python3 scripts/generate_release_metadata.py"
   },
   "license": "MIT"
 }

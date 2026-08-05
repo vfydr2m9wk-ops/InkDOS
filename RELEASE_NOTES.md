@@ -1,31 +1,33 @@
-# InkDesk 0.19.2-beta — Release Packaging and Privacy Cleanup
+# InkDesk 0.19.3-beta.7
 
-## Purpose
+This corrective beta addresses three regressions observed in the downloaded beta.6 package when opened directly from the filesystem.
 
-This beta packages the hardened 0.19.1 codebase as a self-consistent source replacement and removes avoidable identifying metadata from synthetic compatibility fixtures. It does not claim version 1.0 readiness.
+## PDF opening
 
-## Packaging and release workflow
+- Replaced the ES-module PDF.js entry point that Edge blocks on `file://` with the official classic PDF.js 3.11.174 distribution and classic local worker.
+- The PDF workspace now initializes before the user clicks **Open PDF**, so the button opens the native file chooser in direct local-file mode.
+- Opening a PDF through the InkDesk hub and its local iframe handoff was verified without the previous 30-second transfer timeout.
+- Selectable text, AcroForm fields, outline navigation, thumbnails, page synchronization and the five-page render window remain active.
+- Direct local-file tests opened the synthetic 4,000-page PDF and jumped to page 3,500 with no JavaScript errors and at most five full page canvases.
 
-- Added a manual full-replacement workflow that does not compare or merge against prior repository files.
-- The workflow safely extracts the selected ZIP, deletes the existing worktree except `.git`, copies the candidate tree in full, commits it, force-updates `main`, force-moves `v0.19.2-beta`, builds the deterministic runtime archive, and replaces release assets.
-- Removed the previous multi-stage synchronization logic and backup-branch behavior.
-- Included `SOURCE_PACKAGE_INFO.json` in `CHECKSUMS.sha256`, fixing the source package's self-verification failure.
+## Presentation loading feedback
 
-## Privacy cleanup
+- PPTX opening now displays a modal progress bar immediately.
+- Reading uses `FileReader` progress events and reports bytes read.
+- Package validation, relationships, theme/layout processing, per-slide parsing and initial rendering have distinct progress stages.
+- The overlay is removed on both success and failure, preserving the previous presentation when an open operation fails.
 
-- Removed default personal-name metadata embedded by document-generation tooling from DOCX/PPTX and converted legacy fixture files.
-- Confirmed that the source archive contains no `.git` directory, OS metadata, editor state, private keys, access tokens, real email addresses, CPF/CNPJ values, phone numbers, absolute user paths, ZIP comments, or EXIF identity fields.
-- The public GitHub handle `vfydr2m9wk-ops` remains in repository URLs and `CODEOWNERS`; it identifies the publishing account but contains no real-world identity in this package.
+## Spreadsheet formula discovery
 
-## Validation
+- Pressing `=` while a cell is selected now moves directly to the formula bar with `=` already entered.
+- Ten filtered function suggestions appear immediately, with function syntax and a short description.
+- Arrow keys choose an item; Enter or Tab inserts it; Escape dismisses the list.
+- Suggestions also remain available when typing directly in the formula bar.
 
-- Repository validation passed.
-- Source audit passed.
-- 53 Python unit/package tests passed.
-- 46 JavaScript security assertions passed.
-- JavaScript syntax checks passed.
-- Source checksum verification passed after regeneration.
+## Packaging
 
-## Release status
-
-InkDesk remains a controlled public beta. Native Safari, physical iPadOS, installed-PWA behavior, Firefox/WebKit engine runs in the release environment, memory-pressure testing, and post-hardening real-corpus regression remain required before a 1.0 designation.
+- Added a dedicated architecture gate that rejects retired PDF embeds, fragment navigation, `.mjs` local runtime files and duplicate PDF.js inventories.
+- Added a simple GitHub Actions workflow for pushes to `main` (or manual execution) that runs architecture, unit and privacy checks, builds the release and uploads the ZIP with its checksum.
+- Added a full-replacement proposal and migration checklist under `docs/GITHUB_FULL_REPLACEMENT_PROPOSAL.md`.
+- Runtime checksums, SPDX inventory, documentation and tests were regenerated.
+- Only synthetic fixtures are included. No private reference document or identifying local path is present.

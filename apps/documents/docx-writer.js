@@ -4,7 +4,7 @@ const W_NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const R_NS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
 const PKG_REL_NS='http://schemas.openxmlformats.org/package/2006/relationships';
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let writerXmlBudget=null;function parseXml(text,context='DOCX export XML'){if(global.InkDeskRuntime)return global.InkDeskRuntime.parseXml(text,context,writerXmlBudget);const doc=new DOMParser().parseFromString(text,'application/xml');if(doc.getElementsByTagName('parsererror').length)throw new Error('The DOCX XML could not be parsed.');return doc}
+let writerXmlBudget=null;function parseXml(text,context='DOCX export XML'){if(global.InkDeskRuntime)return global.InkDeskRuntime.parseXml(text,context,writerXmlBudget);const doc=new DOMParser().parseFromString(String(text||'').replace(/^\uFEFF/,''),'application/xml');if(doc.getElementsByTagName('parsererror').length)throw new Error('The DOCX XML could not be parsed.');return doc}
 function serialize(doc){return new XMLSerializer().serializeToString(doc)}
 function childrenNamed(el,name){return Array.from(el&&el.children||[]).filter(x=>x.localName===name)}
 function descendants(el,name){return Array.from(el?el.getElementsByTagNameNS('*',name):[])}

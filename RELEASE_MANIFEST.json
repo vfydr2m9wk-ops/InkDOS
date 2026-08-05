@@ -1,59 +1,42 @@
 {
-  "project": "InkDesk",
-  "version": "0.19.2-beta",
-  "releaseName": "Release Packaging and Privacy Cleanup",
-  "releaseType": "Beta",
-  "releaseDate": "2026-08-04",
-  "entryPoints": {
-    "InkDesk.html": "index.html",
-    "Documents.html": "apps/documents/index.html",
-    "Spreadsheets.html": "apps/spreadsheets/index.html",
-    "Presentations.html": "apps/presentations/index.html"
-  },
-  "runtimeDirectories": [
-    "apps/documents",
-    "apps/spreadsheets",
-    "apps/presentations",
-    "shared"
+  "schemaVersion": 2,
+  "name": "InkDesk",
+  "version": "0.19.3-beta.7",
+  "channel": "beta",
+  "releaseName": "Local-File PDF Recovery and Visible Loading",
+  "releaseDate": "2026-08-05",
+  "archiveName": "InkDesk_v0.19.3-beta.7.zip",
+  "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
+  "workspaces": [
+    "documents",
+    "spreadsheets",
+    "presentations",
+    "pdf"
   ],
-  "supportedFormats": [
-    "DOCX",
-    "XLS (BIFF8 import)",
-    "XLSX",
-    "PPTX"
+  "syntheticFixtures": [
+    "tests/fixtures/inkdesk-letterhead-a4.docx",
+    "tests/fixtures/inkdesk-letterhead-a4-bom.docx",
+    "tests/fixtures/inkdesk-prescription-a4.xls",
+    "tests/fixtures/inkdesk-prescription-a4.xlsx",
+    "tests/fixtures/inkdesk-presentation-layout.pptx",
+    "tests/fixtures/inkdesk-pdf-sample.pdf",
+    "tests/fixtures/inkdesk-pdf-long-4000-pages.pdf"
   ],
-  "buildRequired": false,
-  "automaticRemoteRuntimeDependencies": false,
-  "license": "MIT for original code; bundled third-party components retain upstream licenses.",
-  "validation": {
-    "repositoryValidation": true,
-    "sourceAudit": true,
-    "unitAndPackageTests": 53,
-    "browserRegressionScripts": 11,
-    "localPlaywrightChromium": true,
-    "localPlaywrightFirefox": false,
-    "localPlaywrightWebKit": false,
-    "ciPlaywrightMatrixConfigured": true,
-    "nativeSafari": false,
-    "nativeFirefox": false,
-    "nativeIPadOS": false,
-    "installedPwaRuntime": false,
-    "staticHttpAssets": true,
-    "browserRegressionGroups": 5
+  "privacy": {
+    "privateReferenceFilesIncluded": false,
+    "fixtureMetadataNormalized": true,
+    "repositoryImagesMetadataStripped": true,
+    "localBuildPathsIncluded": false
   },
-  "securityLimits": {
-    "maxCompressedBytes": 52428800,
-    "maxEntries": 3000,
-    "maxUncompressedBytes": 167772160,
-    "maxEntryUncompressedBytes": 33554432,
-    "maxCompressionRatio": 200,
-    "maxXmlPartBytes": 8388608,
-    "maxAggregateXmlBytes": 50331648,
-    "maxXmlDepth": 128,
-    "maxXmlNodes": 100000,
-    "maxXmlAttributes": 100000,
-    "maxAttributesPerElement": 128,
-    "maxXmlAttributeLength": 32768
-  },
-  "exportVerification": "SHA-256 and byte-length match after reopening the generated copy"
+  "validation": [
+    "python3 scripts/check_no_legacy_runtime.py",
+    "python3 scripts/validate_repository.py",
+    "python3 scripts/audit_source.py",
+    "python3 -m unittest discover -s tests -p test_*.py",
+    "python3 scripts/run_browser_regressions.py"
+  ],
+  "distributableFileCount": 132,
+  "sourceManifest": "SOURCE_MANIFEST.json",
+  "checksumManifest": "RUNTIME_CHECKSUMS.sha256",
+  "sbom": "SBOM.spdx.json"
 }

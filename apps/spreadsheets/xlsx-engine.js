@@ -8,7 +8,7 @@ let currentXmlBudget=null;
 
 function xml(text,context='XLSX package part'){
   if(global.InkDeskRuntime)return global.InkDeskRuntime.parseXml(text,context,currentXmlBudget);
-  const d=new DOMParser().parseFromString(text,'application/xml');
+  const d=new DOMParser().parseFromString(String(text||'').replace(/^\uFEFF/,''),'application/xml');
   if(d.querySelector('parsererror'))throw new Error('Invalid XML in '+context);
   return d;
 }

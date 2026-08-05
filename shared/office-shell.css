@@ -1,4 +1,4 @@
-/* InkDesk 0.16 Stabilization Preview — shared visual shell */
+/* InkDesk shared visual shell */
 :root{
   --office-surface:#ffffff;
   --office-surface-soft:#f6f8fb;
@@ -197,7 +197,7 @@ body.office-presentations .present-controls .exit-present-btn{
 body.office-spreadsheets main{height:calc(100% - 44px - 43px - 38px - 36px)!important}
 
 
-/* deterministic toolbar fixes retained in 0.16 */
+/* deterministic toolbar alignment fixes */
 body.office-spreadsheets .titlebar{
   position:relative!important;
   display:flex!important;

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "project": "InkDesk",
+  "version": "0.19.3-beta.7",
+  "tag": "v0.19.3-beta.7",
+  "buildType": "local-release-candidate",
+  "buildDate": "2026-08-05",
+  "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
+  "provenanceNote": "Prepared as a local release candidate. No Git commit, tag publication or clean-tree state is asserted.",
+  "sourceBasis": "0.19.3-beta.6 package; file-protocol PDF startup repaired with classic local PDF.js 3.11.174; presentation progress and formula discovery added; private reference documents excluded"
+}

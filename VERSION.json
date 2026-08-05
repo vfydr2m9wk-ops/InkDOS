@@ -1,25 +1,17 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.19.2-beta",
+  "version": "0.19.3-beta.7",
   "releaseChannel": "beta",
-  "releaseName": "Release Packaging and Privacy Cleanup",
-  "date": "2026-08-04",
-  "repository": "https://github.com/vfydr2m9wk-ops/inkdesk",
-  "demo": "https://vfydr2m9wk-ops.github.io/inkdesk/",
+  "releaseName": "Local-File PDF Recovery and Visible Loading",
+  "date": "2026-08-05",
+  "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
+  "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",
   "status": "beta",
   "components": {
-    "documents": {
-      "path": "apps/documents/index.html",
-      "format": "DOCX"
-    },
-    "spreadsheets": {
-      "path": "apps/spreadsheets/index.html",
-      "format": "XLS / XLSX"
-    },
-    "presentations": {
-      "path": "apps/presentations/index.html",
-      "format": "PPTX"
-    }
+    "documents": "0.19.3-beta.3",
+    "spreadsheets": "0.19.3-beta.7",
+    "presentations": "0.19.3-beta.7",
+    "pdf": "0.19.3-beta.7"
   }
 }

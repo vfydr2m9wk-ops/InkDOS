@@ -1,83 +1,48 @@
-<p align="center">
-  <img src="docs/images/readme-banner.png" alt="InkDesk — local-first browser productivity suite" width="100%">
-</p>
-
 # InkDesk
 
-> **A lightweight local-first productivity suite.**
+![InkDesk workspace overview](docs/images/readme-banner.png)
 
-InkDesk is an open-source, browser-native suite for focused DOCX, XLS/XLSX, and PPTX workflows. It is distributed as static HTML, CSS, and JavaScript. Documents are parsed and edited in the current browser context; the project does not operate a document-processing backend, account service, telemetry service, or analytics endpoint.
-
-**Project status: Beta (`0.19.2-beta`).** Compatibility is intentionally partial. InkDesk does not claim complete Microsoft Office fidelity, pixel-identical rendering, or safe support for every Office file.
+InkDesk is a local-first browser suite for focused DOCX, XLS/XLSX, PPTX and PDF workflows. It is an experimental compatibility project, not a replacement for Microsoft Office or Microsoft Edge.
 
 ## Workspaces
 
-| Workspace | Formats | Focused behavior |
-|---|---|---|
-| Documents | DOCX | Common text/layout editing, inert DOCX-derived DOM construction, and package-preserving copy export |
-| Spreadsheets | XLS import; XLSX open/export | BIFF8 import, common cells/styles, deterministic limited formula recalculation, and package-preserving XLSX copy export |
-| Presentations | PPTX | Common slide editing/presentation mode and preservation-oriented PPTX patch export |
+- **Documents** — DOCX opening, basic editing and copy export with section-aware A4 layout, headers, footers and tables. XML parts with a UTF-8 BOM are normalized before parsing.
+- **Spreadsheets** — XLS/XLSX opening, basic editing, print-oriented page view and XLSX copy export, with a start screen aligned to the other workspaces.
+- **Presentations** — PPTX opening, basic editing, presentation mode and package-preserving copy export.
+- **PDF Workspace** — bundled local PDF.js rendering, selectable text, AcroForm controls, synchronized navigation, lazy thumbnails, outline destinations, vertical/horizontal layouts, fullscreen, page-bound review annotations, JSON review export and separate supported PDF saving.
 
-## Opening a file
+![InkDesk workspaces](docs/images/workspaces-preview.png)
 
-The main `index.html` includes one **Open document** button. Choose a DOCX, XLS, XLSX, or PPTX file and InkDesk detects the extension and opens the matching workspace. Each workspace includes a house-shaped button that returns to the main InkDesk index.
+## PDF architecture
 
-When served over HTTP(S), the selected file is transferred once through short-lived IndexedDB storage and removed when consumed. When `index.html` is opened directly through `file://`, InkDesk keeps the index alive and transfers the selected `File` object to the matching embedded workspace with a versioned, expiring, one-time `postMessage` bridge. HTTP(S) messaging is bound to the exact same origin; the sole wildcard target is isolated to the documented opaque `file://` fallback. The file is not uploaded. Browser and local-file host policies still vary, so direct local opening requires device testing.
+The PDF Workspace deliberately combines two layers:
 
-## Export status and data safety
+1. the bundled PDF.js worker parses the document and renders canvas, selectable text and supported form layers locally;
+2. InkDesk adds navigation and a document-fingerprint review layer for highlights, underlines, marker regions, comments, inserted text and personal bookmarks.
 
-InkDesk exports a **new copy**; it does not overwrite the selected source file. Triggering a browser download is not proof that the operating system wrote the file. After a download request, the workspace reports **“Download requested — not verified”** and keeps unsaved-change protection active. A copy becomes **verified** only when it is reopened and its SHA-256 fingerprint matches the generated export.
+Review items are not silently written into the original PDF. They are stored locally and can be exported as an anonymized InkDesk review JSON sidecar. See [PDF component](docs/PDF_COMPONENT.md) and [known limitations](docs/KNOWN_LIMITATIONS.md).
 
-Keep the original file, work from backup copies, reopen exported files, and verify important content in an independent compatible application before relying on them for legal, medical, financial, academic, or other critical use.
+## Privacy
 
-## Security model
+Files are processed locally. The source tree contains no uploaded clinical or personal reference document. Test fixtures use synthetic content and normalized metadata. PDF review storage is keyed by a content fingerprint and does not persist the original file name. See [Security and privacy](docs/SECURITY_AND_PRIVACY.md).
 
-Imported OOXML packages are treated as untrusted ZIP/XML input. Before JSZip processing, InkDesk checks normalized package inventory, duplicate and colliding paths, local/central header consistency, encryption, ZIP64, methods, overlaps, size, entry count, and compression ratio. XML parsing rejects DTD/entity declarations and enforces per-part, aggregate, depth, node, and attribute limits. DOCX-derived editable content is rebuilt through a deny-by-default DOM allowlist. Spreadsheet arithmetic is interpreted by a deterministic parser rather than `eval` or `Function`.
+## Run locally
 
-These controls reduce attack surface; they do not replace browser sandboxing, fuzzing, native-device testing, or independent file validation.
+Open `index.html` directly, or serve the folder with a static web server. Some browser features, including service workers and cross-workspace handoff, are more reliable over HTTP or HTTPS.
 
-## Privacy and offline operation
-
-Runtime dependencies are bundled under `shared/vendor/`. The optional service worker caches only same-origin application assets when served over HTTP(S); it does not cache user documents. `file://` behavior depends on the host and service workers are unavailable there.
-
-## Quick start
+## Validate
 
 ```bash
-python3 -m http.server 8080
+npm run validate
+npm run audit
+npm test
+npm run test:release
 ```
 
-Open `http://localhost:8080/`. Compatible local-file or embedded hosts may open `index.html` directly, but static HTTP(S) hosting is more predictable.
+## Release
 
-## Validation commands
-
-```bash
-python3 scripts/verify_checksums.py
-python3 scripts/validate_repository.py
-python3 scripts/audit_source.py
-python3 -m unittest discover -s tests -p "test_*.py"
-PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group package-security
-PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group lifecycle
-PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group isolation-offline
-PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group documents-presentations
-PLAYWRIGHT_BROWSER=chromium python3 scripts/run_browser_regressions.py --group spreadsheets
-python3 scripts/run_release_validation.py
-python3 scripts/build_release.py --output-dir dist
-```
-
-CI is configured to run browser regressions separately in Playwright Chromium, Firefox, and WebKit. A Playwright engine run is not native Safari, native Firefox packaging, or physical iPadOS validation.
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [1.0 hardening stage 1](docs/HARDENING_STAGE1_REPORT.md)
-- [Compatibility and validation matrix](COMPATIBILITY.md)
-- [Security policy](SECURITY.md)
-- [Testing](TESTING.md)
-- [Manual device checklist](docs/MANUAL_DEVICE_CHECKLIST.md)
-- [Known limitations](docs/KNOWN_LIMITATIONS.md)
-- [Release notes](RELEASE_NOTES.md)
-- [Contributing](CONTRIBUTING.md)
+Current package version: **0.19.3-beta.7**. PDF rendering now uses bundled PDF.js with selectable text, synchronized navigation, real page layers, lazy thumbnails and a five-page canvas window. Spreadsheet interaction now includes drag range selection, formula autocomplete, Excel-style shortcuts and additional local formulas. The package is prepared for manual upload; it does not assert that it was pushed or tagged in Git.
 
 ## License
 
-Original InkDesk code is MIT-licensed. Bundled third-party components retain their upstream licenses and notices.
+MIT.

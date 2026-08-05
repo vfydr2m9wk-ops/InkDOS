@@ -21,7 +21,7 @@ The workflow preserves `InkDesk-source.zip` after extraction so the same validat
 
 **Description**
 
-> Local-first browser editors for focused DOCX, XLS/XLSX, and PPTX workflows.
+> Local-first browser workspaces for focused DOCX, XLS/XLSX, PPTX and PDF workflows.
 
 **Suggested topics**
 
@@ -33,7 +33,7 @@ The reconstructed repository includes `.github/workflows/pages.yml`. In **Settin
 
 Expected project URL:
 
-`https://vfydr2m9wk-ops.github.io/inkdesk/`
+`https://vfydr2m9wk-ops.github.io/InkDesk/`
 
 GitHub Pages provides the HTTPS context required for service-worker registration. Verify the deployed manifest, service worker, workspace links, and offline reload in a real browser before describing the hosted build as installable.
 
@@ -41,11 +41,28 @@ GitHub Pages provides the HTTPS context required for service-worker registration
 
 The reconstructed repository includes `.github/workflows/quality-gate.yml`. The bootstrap workflow already executes the repository checks before and after installation. Future source commits are validated by the quality gate according to its configured triggers.
 
-## Release 0.19.2-beta
+## Release 0.19.3-beta.7
 
-- Source package: `InkDesk_v0.19.2-beta_full-source.zip`
-- Tag: `v0.19.2-beta`
-- Release title: `InkDesk 0.19.2-beta — Release Packaging and Privacy Cleanup`
+- Release asset: `InkDesk_v0.19.3-beta.7.zip`
+- Checksum asset: `InkDesk_v0.19.3-beta.7.zip.sha256`
+- Tag: `v0.19.3-beta.7`
+- Release title: `InkDesk 0.19.3-beta.7 — Local-File PDF Recovery and Visible Loading`
+- Keep this release marked as a pre-release until physical Safari/iPadOS validation is complete.
+
+## Release 0.19.3-beta.6
+
+- Release asset: `InkDesk_v0.19.3-beta.6.zip`
+- Checksum asset: `InkDesk_v0.19.3-beta.6.zip.sha256`
+- Tag: `v0.19.3-beta.6`
+- Release title: `InkDesk 0.19.3-beta.6 — PDF WebKit Embedded Preview Recovery`
+- Mark as a prerelease.
+- State explicitly that physical iPadOS/WebKit rendering must be confirmed before promoting the build as a general stable release.
+
+## Release 0.19.3-beta.3
+
+- Source package: `InkDesk_v0.19.3-beta.3_full-source.zip`
+- Tag: `v0.19.3-beta.3`
+- Release title: `InkDesk 0.19.3-beta.3 — Release Packaging and Privacy Cleanup`
 - Workflow: **Replace repository and publish prerelease**
 - Confirmation: `REPLACE_ALL`
 - Replacement model: delete the existing worktree and copy the archive contents in full; no comparison or merge with prior files.

@@ -2,14 +2,17 @@
   "id": "./index.html",
   "name": "InkDesk",
   "short_name": "InkDesk",
-  "description": "A local-first browser productivity suite for focused DOCX, XLS/XLSX, and PPTX workflows.",
+  "description": "Local-first DOCX, XLS/XLSX, PPTX and PDF workspaces.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f6f8",
   "theme_color": "#2f6fed",
   "lang": "en",
-  "categories": ["productivity", "utilities"],
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "assets/icons/office.png",
@@ -23,19 +26,49 @@
       "name": "Documents",
       "short_name": "Documents",
       "url": "apps/documents/index.html",
-      "icons": [{"src": "assets/icons/documents.png", "sizes": "512x512", "type": "image/png"}]
+      "icons": [
+        {
+          "src": "assets/icons/documents.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Spreadsheets",
       "short_name": "Spreadsheets",
       "url": "apps/spreadsheets/index.html",
-      "icons": [{"src": "assets/icons/spreadsheets.png", "sizes": "512x512", "type": "image/png"}]
+      "icons": [
+        {
+          "src": "assets/icons/spreadsheets.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Presentations",
       "short_name": "Presentations",
       "url": "apps/presentations/index.html",
-      "icons": [{"src": "assets/icons/presentations.png", "sizes": "512x512", "type": "image/png"}]
+      "icons": [
+        {
+          "src": "assets/icons/presentations.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "PDF Workspace",
+      "short_name": "PDF",
+      "url": "./apps/pdf/index.html",
+      "icons": [
+        {
+          "src": "./assets/icons/pdf.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

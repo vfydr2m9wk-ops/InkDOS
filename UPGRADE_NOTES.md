@@ -1,9 +1,7 @@
-# Upgrade Notes — 0.19.2-beta
+# Upgrade notes — 0.19.3-beta.7
 
-- Replace the previous repository contents with the complete `InkDesk_v0.19.2-beta_full-source.zip` source package; do not merge it with older files.
-- The manual replacement workflow deletes every repository-root entry except `.git`, copies the package contents as the new source tree, commits the result, force-updates `main`, recreates the version tag, and replaces release assets.
-- Upload `InkDesk_v0.19.2-beta_full-source.zip` to the repository root before running **Replace repository and publish prerelease**.
-- Use `expected_version` = `0.19.2-beta`, tag = `v0.19.2-beta`, and confirmation = `REPLACE_ALL`.
-- The workflow requires the `INKDESK_RELEASE_PAT` repository secret with permission to write repository contents and releases. Branch rules must allow that token to bypass or force-update `main`.
-- Hosted/PWA users should reload after the new service worker activates. The cache name changes to `inkdesk-shell-v0.19.2-beta-router2`.
-- No persisted user-document schema migration is required.
+Delete or replace the complete beta.6 folder before extracting beta.7. A partial copy may retain the old `.mjs` PDF.js files or a beta.6 service-worker cache and reproduce the inactive PDF button.
+
+The beta.7 PDF runtime uses `shared/vendor/pdfjs/pdf.min.js` and `pdf.worker.min.js`. It is intentionally a classic-script build so the downloaded package works when `index.html` is opened directly through `file://` in Edge/Chromium.
+
+If a browser has previously installed InkDesk as a PWA, close all InkDesk tabs and reopen the new package so the `inkdesk-shell-v0.19.3-beta.7` cache can replace the older shell.
