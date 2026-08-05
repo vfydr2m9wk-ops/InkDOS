@@ -71,7 +71,10 @@ class ApplicationShellTests(unittest.TestCase):
         ):
             self.assertIn(repr(asset), worker)
         self.assertIn("0.19.3-beta.7", worker)
-        self.assertIn("0.19.4.3", worker)
+        self.assertRegex(
+            worker,
+            r"const CACHE_NAME=[\'\"]inkdesk-shell-v[^\'\"]+[\'\"];",
+        )
 
     def test_package_and_application_manifest_expose_shell(self):
         package = json.loads(

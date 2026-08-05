@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 3,
-  "currentPackage": "0.19.4.3",
+  "appliedSequence": 4,
+  "currentPackage": "0.19.4.4",
   "status": "in-progress",
   "history": [
     {
@@ -20,6 +20,11 @@
       "sequence": 3,
       "packageLabel": "0.19.4.3",
       "description": "Shared application-shell foundation with central design tokens, component primitives, interface-region discovery, panel controller, command registry, compatibility bootstrap, offline caching, tests, and architecture documentation."
+    },
+    {
+      "sequence": 4,
+      "packageLabel": "0.19.4.4",
+      "description": "Shared visual harmonization for Documents, Spreadsheets, Presentations, and PDF; content-first default panel states; session-only panel preference persistence; and centered PDF open-document empty state."
     }
   ]
 }

@@ -87,10 +87,69 @@
     });
   }
 
+  function loadWorkspaceLayout() {
+    if (
+      global.InkDeskWorkspaceLayout &&
+      global.InkDeskWorkspaceLayout.version === '0.19.4.4'
+    ) {
+      return Promise.resolve(global.InkDeskWorkspaceLayout);
+    }
+
+    return new Promise(function (resolve, reject) {
+      const existing = documentObject.querySelector(
+        'script[data-inkdesk-ui="workspace-layout"]'
+      );
+
+      if (existing) {
+        existing.addEventListener(
+          'load',
+          function () { resolve(global.InkDeskWorkspaceLayout); },
+          { once: true }
+        );
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = documentObject.createElement('script');
+      script.src = new URL('workspace-layout.js', uiBase).href;
+      script.async = false;
+      script.dataset.inkdeskUi = 'workspace-layout';
+
+      script.addEventListener(
+        'load',
+        function () {
+          resolve(global.InkDeskWorkspaceLayout || null);
+        },
+        { once: true }
+      );
+
+      script.addEventListener(
+        'error',
+        function () {
+          reject(
+            new Error(
+              'The shared InkDesk workspace layout could not be loaded.'
+            )
+          );
+        },
+        { once: true }
+      );
+
+      documentObject.head.appendChild(script);
+    });
+  }
+
   addStylesheet('design-tokens.css');
   addStylesheet('components.css');
+  addStylesheet('workspace-layout.css');
 
-  global.InkDeskUIReady = loadApplicationShell().catch(function (error) {
+  global.InkDeskUIReady = loadApplicationShell()
+    .then(function (ui) {
+      return loadWorkspaceLayout().then(function () {
+        return ui;
+      });
+    })
+    .catch(function (error) {
     if (documentObject.body) {
       documentObject.body.dataset.inkdeskShellError = 'true';
     }

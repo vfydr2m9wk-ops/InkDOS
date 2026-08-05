@@ -1,0 +1,637 @@
+/*
+ * InkDesk workspace layout — development sequence 0.19.4.4.
+ *
+ * The attached Word, Excel, and PowerPoint screenshots guide hierarchy and
+ * control placement. InkDesk keeps its own name, colors, icons, and assets.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Shared application chrome                                                  */
+/* -------------------------------------------------------------------------- */
+
+body.office-product {
+  --inkdesk-chrome: var(--inkdesk-surface);
+  --inkdesk-chrome-soft: var(--inkdesk-surface-soft);
+  --inkdesk-workspace-canvas: var(--inkdesk-workspace);
+  --inkdesk-chrome-border: var(--inkdesk-edge);
+  --inkdesk-control-hover:
+    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 9%, transparent);
+  --inkdesk-control-active:
+    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 15%, transparent);
+  font-family: var(--inkdesk-font-ui);
+}
+
+body.office-product .topbar,
+body.office-product .titlebar {
+  min-height: var(--inkdesk-titlebar-height) !important;
+  height: var(--inkdesk-titlebar-height) !important;
+  background: var(--inkdesk-chrome) !important;
+  border-bottom: 1px solid var(--inkdesk-chrome-border) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.office-product .topbar,
+body.office-product .titlebar {
+  grid-template-columns: minmax(170px, 1fr) minmax(150px, auto) minmax(170px, 1fr) !important;
+  padding-inline: var(--inkdesk-space-3) !important;
+}
+
+body.office-product .left-tools,
+body.office-product .right-tools,
+body.office-product .titlebar-left,
+body.office-product .titlebar-right,
+body.office-product .left,
+body.office-product .right {
+  display: flex;
+  align-items: center;
+  gap: var(--inkdesk-space-1) !important;
+  min-width: 0;
+}
+
+body.office-product .right-tools,
+body.office-product .titlebar-right,
+body.office-product .right {
+  justify-content: flex-end;
+}
+
+body.office-product .document-title,
+body.office-product .doc-title {
+  justify-self: center;
+  min-width: 0;
+  max-width: min(48vw, 560px) !important;
+  text-align: center;
+  color: var(--inkdesk-text);
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+
+body.office-product .icon-btn,
+body.office-product .top-action,
+body.office-product .save-btn {
+  width: var(--inkdesk-control-height);
+  min-width: var(--inkdesk-control-height);
+  height: var(--inkdesk-control-height);
+  min-height: var(--inkdesk-control-height);
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--inkdesk-radius-small) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--inkdesk-text) !important;
+  display: inline-grid !important;
+  place-items: center;
+}
+
+body.office-product .icon-btn:hover,
+body.office-product .icon-btn:focus-visible,
+body.office-product .top-action:hover,
+body.office-product .top-action:focus-visible,
+body.office-product .save-btn:hover,
+body.office-product .save-btn:focus-visible {
+  background: var(--inkdesk-control-hover) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--inkdesk-accent, var(--inkdesk-focus)) 24%,
+    var(--inkdesk-edge)
+  ) !important;
+  color: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
+  outline: none;
+}
+
+body.office-product .icon-btn:disabled,
+body.office-product .top-action:disabled,
+body.office-product .save-btn:disabled {
+  opacity: 0.36 !important;
+}
+
+body.office-product .icon-btn svg,
+body.office-product .top-action svg,
+body.office-product .save-btn svg {
+  width: var(--inkdesk-icon-size) !important;
+  height: var(--inkdesk-icon-size) !important;
+}
+
+body.office-product .top-divider,
+body.office-product .separator,
+body.office-product .sep,
+body.office-product .command-separator {
+  width: 1px !important;
+  min-width: 1px;
+  height: 22px !important;
+  margin-inline: var(--inkdesk-space-1) !important;
+  background: var(--inkdesk-edge) !important;
+  border: 0 !important;
+}
+
+body.office-product .formatbar,
+body.office-product .toolbar,
+body.office-product .tools,
+body.office-product .commandbar {
+  background: var(--inkdesk-chrome-soft) !important;
+  border-bottom: 1px solid var(--inkdesk-chrome-border) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.30) inset;
+}
+
+body.office-product .formatbar,
+body.office-product .tools,
+body.office-product .commandbar {
+  min-height: 48px !important;
+  height: 48px !important;
+  padding: 6px var(--inkdesk-space-3) !important;
+  gap: var(--inkdesk-space-1) !important;
+}
+
+body.office-product .formatbar button,
+body.office-product .formatbar select,
+body.office-product .toolbar button,
+body.office-product .toolbar select,
+body.office-product .tools button,
+body.office-product .tools select,
+body.office-product .commandbar button,
+body.office-product .commandbar select {
+  min-height: 32px !important;
+  height: 32px !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--inkdesk-radius-small) !important;
+  background: transparent !important;
+  color: var(--inkdesk-text) !important;
+  box-shadow: none !important;
+}
+
+body.office-product .formatbar select,
+body.office-product .tools select,
+body.office-product .commandbar select {
+  border-color: var(--inkdesk-edge) !important;
+  background: var(--inkdesk-surface) !important;
+}
+
+body.office-product .formatbar button:hover,
+body.office-product .formatbar button:focus-visible,
+body.office-product .toolbar button:hover,
+body.office-product .toolbar button:focus-visible,
+body.office-product .tools button:hover,
+body.office-product .tools button:focus-visible,
+body.office-product .commandbar button:hover,
+body.office-product .commandbar button:focus-visible {
+  background: var(--inkdesk-control-hover) !important;
+  border-color: var(--inkdesk-edge) !important;
+  outline: none;
+}
+
+body.office-product .statusbar,
+body.office-product > footer,
+body.office-product main.app > footer {
+  min-height: var(--inkdesk-statusbar-height) !important;
+  height: var(--inkdesk-statusbar-height) !important;
+  background: var(--inkdesk-chrome) !important;
+  border-top: 1px solid var(--inkdesk-chrome-border) !important;
+  color: var(--inkdesk-muted) !important;
+  box-shadow: none !important;
+}
+
+body.office-product .start-card,
+body.office-documents .welcome-card {
+  width: min(620px, calc(100% - 32px)) !important;
+  max-width: 620px !important;
+  padding: 36px !important;
+  border: 1px solid var(--inkdesk-edge) !important;
+  border-radius: var(--inkdesk-radius-large) !important;
+  background: var(--inkdesk-surface) !important;
+  box-shadow: var(--inkdesk-shadow-panel) !important;
+}
+
+body.office-product .start-actions,
+body.office-documents .welcome-actions {
+  justify-content: center !important;
+  align-items: stretch;
+}
+
+body.office-product .start-btn,
+body.office-documents .open-primary {
+  min-height: 44px;
+  border-radius: var(--inkdesk-radius-medium) !important;
+}
+
+body.office-product button:focus-visible,
+body.office-product select:focus-visible,
+body.office-product input:focus-visible,
+body.office-product a:focus-visible {
+  outline: 2px solid
+    color-mix(
+      in srgb,
+      var(--inkdesk-accent, var(--inkdesk-focus)) 72%,
+      white
+    ) !important;
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Documents                                                                  */
+/* -------------------------------------------------------------------------- */
+
+body.office-documents .app-shell {
+  grid-template-rows:
+    var(--inkdesk-titlebar-height)
+    48px
+    28px
+    minmax(0, 1fr)
+    var(--inkdesk-statusbar-height) !important;
+}
+
+body.office-documents .workspace {
+  grid-template-columns: var(--inkdesk-sidebar-width) minmax(0, 1fr);
+  background: var(--inkdesk-workspace-canvas);
+}
+
+body.office-documents .workspace.sidebar-hidden {
+  grid-template-columns: 0 minmax(0, 1fr) !important;
+}
+
+body.office-documents .sidebar {
+  width: var(--inkdesk-sidebar-width);
+  background: var(--inkdesk-chrome-soft) !important;
+  border-right: 1px solid var(--inkdesk-edge) !important;
+}
+
+body.office-documents .workspace.sidebar-hidden .sidebar {
+  width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  visibility: hidden;
+}
+
+body.office-documents .viewport {
+  background: var(--inkdesk-workspace-canvas) !important;
+  padding: 28px 28px 72px !important;
+}
+
+body.office-documents .pages-host {
+  min-width: 100%;
+  align-items: center;
+}
+
+body.office-documents .page {
+  box-shadow: var(--inkdesk-shadow-document) !important;
+}
+
+body.office-documents .ruler {
+  background: var(--inkdesk-chrome-soft) !important;
+  border-bottom-color: var(--inkdesk-edge) !important;
+}
+
+body.office-documents .welcome-card {
+  margin: max(54px, 9vh) auto !important;
+}
+
+body.office-documents .word-badge,
+body.office-documents .welcome-icon {
+  background: var(--inkdesk-accent) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Spreadsheets                                                               */
+/* -------------------------------------------------------------------------- */
+
+body.office-spreadsheets .titlebar {
+  height: var(--inkdesk-titlebar-height) !important;
+}
+
+body.office-spreadsheets .toolbar {
+  min-height: 48px !important;
+  height: 48px !important;
+  padding: 6px var(--inkdesk-space-3) !important;
+}
+
+body.office-spreadsheets .formula-row {
+  height: 36px !important;
+  min-height: 36px;
+  background: var(--inkdesk-surface) !important;
+  border-bottom: 1px solid var(--inkdesk-edge) !important;
+}
+
+body.office-spreadsheets #nameBox {
+  width: 84px !important;
+  border-right: 1px solid var(--inkdesk-edge) !important;
+  background: var(--inkdesk-surface-soft) !important;
+}
+
+body.office-spreadsheets .fx {
+  width: 38px !important;
+  color: var(--inkdesk-muted) !important;
+}
+
+body.office-spreadsheets #formulaInput {
+  background: var(--inkdesk-surface) !important;
+}
+
+body.office-spreadsheets main {
+  height: calc(
+    100% -
+    var(--inkdesk-titlebar-height) -
+    48px -
+    36px -
+    var(--inkdesk-statusbar-height)
+  ) !important;
+}
+
+body.office-spreadsheets > footer {
+  padding-inline: var(--inkdesk-space-2) !important;
+}
+
+body.office-spreadsheets .status {
+  min-width: 0;
+  align-items: center;
+}
+
+body.office-spreadsheets .zoom-controls {
+  margin-left: auto;
+}
+
+body.office-spreadsheets .zoom-controls button {
+  height: 24px !important;
+  min-height: 24px !important;
+  border-color: var(--inkdesk-edge) !important;
+  background: var(--inkdesk-surface-soft) !important;
+}
+
+body.office-spreadsheets .start-card {
+  text-align: center;
+}
+
+body.office-spreadsheets .start-actions {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: var(--inkdesk-space-3) !important;
+}
+
+body.office-spreadsheets .start-btn {
+  min-width: 190px;
+  flex: 1;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Presentations                                                              */
+/* -------------------------------------------------------------------------- */
+
+body.office-presentations .app {
+  grid-template-rows:
+    var(--inkdesk-titlebar-height)
+    var(--inkdesk-command-tabs-height)
+    48px
+    minmax(0, 1fr)
+    minmax(112px, 20vh)
+    var(--inkdesk-statusbar-height) !important;
+}
+
+body.office-presentations .app.hide-notes {
+  grid-template-rows:
+    var(--inkdesk-titlebar-height)
+    var(--inkdesk-command-tabs-height)
+    48px
+    minmax(0, 1fr)
+    0
+    var(--inkdesk-statusbar-height) !important;
+}
+
+body.office-presentations .titlebar-left,
+body.office-presentations .titlebar-right {
+  min-width: 0 !important;
+}
+
+body.office-presentations .titlebar-right {
+  gap: var(--inkdesk-space-1);
+}
+
+body.office-presentations .present-top-action {
+  width: auto !important;
+  min-width: 34px !important;
+  padding-inline: var(--inkdesk-space-2) !important;
+  display: inline-flex !important;
+  gap: var(--inkdesk-space-1);
+}
+
+body.office-presentations .toolbar {
+  min-height: var(--inkdesk-command-tabs-height) !important;
+  height: var(--inkdesk-command-tabs-height) !important;
+  padding: 0 var(--inkdesk-space-3) !important;
+  gap: var(--inkdesk-space-2) !important;
+  background: var(--inkdesk-surface) !important;
+}
+
+body.office-presentations .toolbar .tab {
+  height: 100% !important;
+  min-height: 100% !important;
+  padding: 0 var(--inkdesk-space-3) !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--inkdesk-muted) !important;
+}
+
+body.office-presentations .toolbar .tab.active {
+  border-bottom-color: var(--inkdesk-accent) !important;
+  background: transparent !important;
+  color: var(--inkdesk-accent) !important;
+}
+
+body.office-presentations .workspace {
+  --slides-w: 184px;
+  --inspector-w: 228px;
+  grid-template-columns:
+    var(--slides-w)
+    minmax(0, 1fr)
+    var(--inspector-w) !important;
+  background: var(--inkdesk-workspace-canvas) !important;
+}
+
+body.office-presentations .workspace.hide-slides {
+  --slides-w: 0px;
+}
+
+body.office-presentations .workspace.hide-inspector {
+  --inspector-w: 0px;
+}
+
+body.office-presentations .workspace.hide-inspector .inspector,
+body.office-presentations .app.hide-notes .notes-panel {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+}
+
+body.office-presentations .slide-list {
+  background: var(--inkdesk-chrome-soft) !important;
+  border-right: 1px solid var(--inkdesk-edge) !important;
+}
+
+body.office-presentations .stage-wrap {
+  background: var(--inkdesk-workspace-canvas) !important;
+}
+
+body.office-presentations .inspector,
+body.office-presentations .notes-panel {
+  background: var(--inkdesk-surface) !important;
+  border-color: var(--inkdesk-edge) !important;
+}
+
+body.office-presentations .bottom-zoom {
+  margin-left: auto;
+}
+
+body.office-presentations .start-card {
+  text-align: center !important;
+}
+
+body.office-presentations .app-badge {
+  margin-inline: auto;
+}
+
+/* -------------------------------------------------------------------------- */
+/* PDF Workspace                                                              */
+/* -------------------------------------------------------------------------- */
+
+body.office-pdf {
+  --title-height: var(--inkdesk-titlebar-height);
+  --toolbar-height: 48px;
+  --status-height: var(--inkdesk-statusbar-height);
+}
+
+body.office-pdf .viewer-app {
+  grid-template-rows:
+    var(--inkdesk-titlebar-height)
+    48px
+    minmax(0, 1fr)
+    var(--inkdesk-statusbar-height) !important;
+}
+
+body.office-pdf .start-screen {
+  display: grid !important;
+  place-items: center !important;
+  padding:
+    max(24px, env(safe-area-inset-top))
+    max(24px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom))
+    max(24px, env(safe-area-inset-left)) !important;
+}
+
+body.office-pdf .start-card {
+  margin: auto !important;
+  text-align: center !important;
+}
+
+body.office-pdf .start-card .app-badge {
+  margin-inline: auto !important;
+}
+
+body.office-pdf .start-actions {
+  width: 100%;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+body.office-pdf .start-btn {
+  min-width: 220px;
+  margin-inline: auto !important;
+}
+
+body.office-pdf .commandbar {
+  min-height: 48px !important;
+  height: 48px !important;
+}
+
+body.office-pdf .workspace-body {
+  background: var(--inkdesk-workspace-canvas);
+}
+
+body.office-pdf .sidebar {
+  background: var(--inkdesk-chrome-soft) !important;
+  border-right-color: var(--inkdesk-edge) !important;
+}
+
+body.office-pdf .viewer-stage {
+  background: var(--inkdesk-workspace-canvas) !important;
+}
+
+body.office-pdf .pdf-pages {
+  background: #70757a !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive behavior                                                        */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  body.office-product .topbar,
+  body.office-product .titlebar {
+    grid-template-columns: minmax(120px, 1fr) minmax(120px, auto) minmax(120px, 1fr) !important;
+  }
+
+  body.office-product .document-title,
+  body.office-product .doc-title {
+    max-width: 36vw !important;
+  }
+
+  body.office-presentations .workspace {
+    --slides-w: 144px;
+    --inspector-w: 0px;
+  }
+
+  body.office-presentations .present-top-action span {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  body.office-product .topbar,
+  body.office-product .titlebar {
+    padding-inline: var(--inkdesk-space-2) !important;
+  }
+
+  body.office-product .document-title,
+  body.office-product .doc-title {
+    max-width: 31vw !important;
+  }
+
+  body.office-product .formatbar,
+  body.office-product .tools,
+  body.office-product .commandbar,
+  body.office-spreadsheets .toolbar {
+    padding-inline: var(--inkdesk-space-2) !important;
+  }
+
+  body.office-documents .viewport {
+    padding: 18px 14px 58px !important;
+  }
+
+  body.office-spreadsheets .viewer-label {
+    display: none !important;
+  }
+
+  body.office-presentations .workspace {
+    --slides-w: 116px;
+  }
+}
+
+@media (pointer: coarse) {
+  body.office-product .icon-btn,
+  body.office-product .top-action,
+  body.office-product .save-btn {
+    min-width: var(--inkdesk-touch-target);
+    width: var(--inkdesk-touch-target);
+    min-height: var(--inkdesk-touch-target);
+    height: var(--inkdesk-touch-target);
+  }
+
+  body.office-product .formatbar button,
+  body.office-product .toolbar button,
+  body.office-product .tools button,
+  body.office-product .commandbar button {
+    min-height: var(--inkdesk-touch-target) !important;
+  }
+}

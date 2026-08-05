@@ -127,6 +127,20 @@
     "tokens": "shared/ui/design-tokens.css",
     "components": "shared/ui/components.css",
     "contract": "shared/ui/shell-contract.json",
-    "documentation": "docs/APPLICATION_SHELL.md"
+    "documentation": "docs/APPLICATION_SHELL.md",
+    "workspaceLayout": {
+      "schemaVersion": 1,
+      "version": "0.19.4.4",
+      "stylesheet": "shared/ui/workspace-layout.css",
+      "runtime": "shared/ui/workspace-layout.js",
+      "documentation": "docs/VISUAL_SYSTEM.md",
+      "defaults": {
+        "documentsSidebar": "closed",
+        "presentationThumbnails": "open",
+        "presentationFormatPanel": "closed",
+        "presentationNotes": "closed",
+        "pdfOpenAction": "centered"
+      }
+    }
   }
 }

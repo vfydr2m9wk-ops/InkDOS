@@ -17,7 +17,8 @@
     "update:apply": "python3 scripts/apply_update_package.py",
     "release:build": "python3 scripts/build_release.py --output-dir dist",
     "release:metadata": "python3 scripts/generate_release_metadata.py",
-    "test:shell": "python3 -m unittest tests.test_application_shell"
+    "test:shell": "python3 -m unittest tests.test_application_shell",
+    "test:layout": "python3 -m unittest tests.test_workspace_layout"
   },
   "license": "MIT"
 }
