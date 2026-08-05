@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vfydr2m9wk-ops.github.io/InkDesk/schemas/update-package-v1.json",
+  "title": "InkDesk incremental update package manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "product",
+    "targetRelease",
+    "packageLabel",
+    "sequence",
+    "requires",
+    "description",
+    "validationProfile"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "product": { "const": "InkDesk" },
+    "targetRelease": { "type": "string", "minLength": 1 },
+    "packageLabel": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "requires": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["previousSequence", "appVersions"],
+      "properties": {
+        "previousSequence": { "type": "integer", "minimum": 0 },
+        "appVersions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "description": { "type": "string", "minLength": 1 },
+    "validationProfile": { "enum": ["none", "standard", "full"] },
+    "allowWorkflowChanges": { "type": "boolean", "default": false }
+  }
+}

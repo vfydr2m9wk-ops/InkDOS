@@ -10,6 +10,8 @@
     "test:architecture": "python3 scripts/check_no_legacy_runtime.py",
     "test:browser": "python3 scripts/run_browser_regressions.py",
     "test:release": "python3 scripts/run_release_validation.py",
+    "test:update": "python3 -m unittest tests.test_update_package",
+    "update:apply": "python3 scripts/apply_update_package.py",
     "release:build": "python3 scripts/build_release.py --output-dir dist",
     "release:metadata": "python3 scripts/generate_release_metadata.py"
   },

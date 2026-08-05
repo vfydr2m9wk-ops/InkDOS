@@ -10,12 +10,12 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 130,
+  "fileCount": 136,
   "files": [
     {
-      "path": ".github/workflows/main.yml",
-      "bytes": 1014,
-      "sha256": "a936041baedcd035dd9d04139a3f08301753214ed08875582a4c1067a53af741"
+      "path": ".github/workflows/apply-inkdesk-update.yml",
+      "bytes": 6310,
+      "sha256": "a34b9a71dcaf1277170e1af28a0090abc99d45a891d47c327934c616fb1df34f"
     },
     {
       "path": ".gitignore",
@@ -26,6 +26,121 @@
       "path": ".nojekyll",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "BUILD_INFO.json",
+      "bytes": 566,
+      "sha256": "639b74eb817e173c5479c32db5aeb6be5746d81720e719e832030be42df6dcb5"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 9417,
+      "sha256": "64904759132a45fc04fabb8b1aaa3bdb47dc02805c3d29f8afa55f8a2cc31555"
+    },
+    {
+      "path": "CITATION.cff",
+      "bytes": 481,
+      "sha256": "a2010344e31108ddc8b26cf493e23491141209b9996045ce5e55f182a8fd1ecb"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "bytes": 465,
+      "sha256": "227716cc74791c02fbb5f1da5f0f0047cba481800d086edc58afbac38d98062a"
+    },
+    {
+      "path": "COMPATIBILITY.md",
+      "bytes": 3244,
+      "sha256": "4b4a93e547c8f2e4ffea1f8fee742441b080660fdca65ace266d3c6e89bc5f6c"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 497,
+      "sha256": "519a02dff3c34836ab89b27ebb5b9a7d8cd52af7a47d0603e91cc837e0f332cc"
+    },
+    {
+      "path": "DEVELOPMENT.md",
+      "bytes": 1539,
+      "sha256": "b142e2a400994e60a1c8a27cc7977dcf0f221c692f9dfac1d6b16123228c4681"
+    },
+    {
+      "path": "DEVELOPMENT_STATE.json",
+      "bytes": 408,
+      "sha256": "bf73ccc823f52c2aed48a6a3fb2a542e9034f422c6da8c918978eb06226c5905"
+    },
+    {
+      "path": "Documents.html",
+      "bytes": 451,
+      "sha256": "736c383a59e2790cf6876f66cb3ba6bc02da10df738810ebe422d43086354b23"
+    },
+    {
+      "path": "InkDesk.html",
+      "bytes": 417,
+      "sha256": "10969e160dd345d01b7a9f62fc0d50bd64a5174363c9e40e768ceae856234e6f"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1077,
+      "sha256": "869743e85a9bea25a1491d183a2ff8bd6caafb7cfc922916784e328103f1a6b9"
+    },
+    {
+      "path": "PDF.html",
+      "bytes": 307,
+      "sha256": "3e3a1645bd39d57a50f25dace0896b58e0329b87cf49d048605fcd0e956f0339"
+    },
+    {
+      "path": "Presentations.html",
+      "bytes": 467,
+      "sha256": "7308532efae0a63558d16d72b1857c7d82a5aea247c23d614c28323d6449a2d0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2758,
+      "sha256": "ab6331451772438db21001ef377daf5dd9d155138d7d72801397339c17443cae"
+    },
+    {
+      "path": "RELEASE_MANIFEST.json",
+      "bytes": 1383,
+      "sha256": "86bf5585d7f6cbc5d614a66dfaa32fac570ed90802119da4a2528269db818cb9"
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "bytes": 2365,
+      "sha256": "660483a736ebeb0ff30884675850dd8eb9534424e0da209a13b95ac2346b4d48"
+    },
+    {
+      "path": "SBOM.spdx.json",
+      "bytes": 2188,
+      "sha256": "44fbc8d7d32a7443b1d4d82755efc3f6cd793c685263406dd56c94ebd72cc33a"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 2804,
+      "sha256": "03d6b028b4df01778eba41b72930a71f429856c46d07d7cb9a447ef7b092ec87"
+    },
+    {
+      "path": "SUPPORT.md",
+      "bytes": 399,
+      "sha256": "c9574fab4f795d232093d309095d0021c5b58851b6234c18b8a3d55051aad345"
+    },
+    {
+      "path": "Spreadsheets.html",
+      "bytes": 463,
+      "sha256": "df904bca26afb82b3e264e5ca69d694fd0e4eaab577672649763ba70530a30d7"
+    },
+    {
+      "path": "TESTING.md",
+      "bytes": 1376,
+      "sha256": "f5d94a49a07137edff0f70af1e774148502fc3982dea74eb1bccde6341b7dd80"
+    },
+    {
+      "path": "UPGRADE_NOTES.md",
+      "bytes": 647,
+      "sha256": "1a6080af026194d1a67993d5eaf41a7af9dd663180ae512727a03187ec3543c5"
+    },
+    {
+      "path": "VERSION.json",
+      "bytes": 493,
+      "sha256": "635f0bd6785ac7ba64db8aca1a273ffb4456dd4764e983ff83e9062e8f7a428a"
     },
     {
       "path": "app-manifest.json",
@@ -168,41 +283,6 @@
       "sha256": "a671c218e7880439a7bc2a3fb17e4beb6201bc3a3b85095eb3398985bf811782"
     },
     {
-      "path": "BUILD_INFO.json",
-      "bytes": 566,
-      "sha256": "639b74eb817e173c5479c32db5aeb6be5746d81720e719e832030be42df6dcb5"
-    },
-    {
-      "path": "CHANGELOG.md",
-      "bytes": 9417,
-      "sha256": "64904759132a45fc04fabb8b1aaa3bdb47dc02805c3d29f8afa55f8a2cc31555"
-    },
-    {
-      "path": "CITATION.cff",
-      "bytes": 481,
-      "sha256": "a2010344e31108ddc8b26cf493e23491141209b9996045ce5e55f182a8fd1ecb"
-    },
-    {
-      "path": "CODE_OF_CONDUCT.md",
-      "bytes": 465,
-      "sha256": "227716cc74791c02fbb5f1da5f0f0047cba481800d086edc58afbac38d98062a"
-    },
-    {
-      "path": "COMPATIBILITY.md",
-      "bytes": 3244,
-      "sha256": "4b4a93e547c8f2e4ffea1f8fee742441b080660fdca65ace266d3c6e89bc5f6c"
-    },
-    {
-      "path": "CONTRIBUTING.md",
-      "bytes": 497,
-      "sha256": "519a02dff3c34836ab89b27ebb5b9a7d8cd52af7a47d0603e91cc837e0f332cc"
-    },
-    {
-      "path": "DEVELOPMENT.md",
-      "bytes": 1539,
-      "sha256": "b142e2a400994e60a1c8a27cc7977dcf0f221c692f9dfac1d6b16123228c4681"
-    },
-    {
       "path": "docs/AI_ASSISTED_DEVELOPMENT.md",
       "bytes": 1113,
       "sha256": "5c814298e36f27a8e68caf31051ed29262cddf057bc4055343a8d95e43ed08b9"
@@ -268,24 +348,9 @@
       "sha256": "fc04fa325f44483f2ba020127aa7c73527061db9fca835d6d680ecca037a72c0"
     },
     {
-      "path": "docs/images/hub-preview.png",
-      "bytes": 38089,
-      "sha256": "f2e4e7b77b40d24e2f035014690c973a94fe55a4fb9cf2412ef93db819f4c7c8"
-    },
-    {
-      "path": "docs/images/readme-banner.png",
-      "bytes": 50977,
-      "sha256": "796e614e7cd2981e07145b332a09d22c73bb86c98d152a112c8a668a0d671786"
-    },
-    {
-      "path": "docs/images/social-preview.png",
-      "bytes": 40705,
-      "sha256": "1d2283b168bef0834a4d3d4d334f18772ea7df63470fde02b8b4e163f7e965ba"
-    },
-    {
-      "path": "docs/images/workspaces-preview.png",
-      "bytes": 54339,
-      "sha256": "e3ffc8fdd16e02c0947c802eeeeb411fc5feef98c5709e553a68c3b458fad7c6"
+      "path": "docs/INCREMENTAL_UPDATES.md",
+      "bytes": 3406,
+      "sha256": "dbf0d759633eaccebb20e31f472700d8b1195df2a597da197018e3057501a47b"
     },
     {
       "path": "docs/KNOWN_LIMITATIONS.md",
@@ -348,6 +413,11 @@
       "sha256": "2b764dc3cc64634d29a65de6aa957ff9b430a8b714e72a0d1801a609fb02df82"
     },
     {
+      "path": "docs/ROADMAP_0.19.4.md",
+      "bytes": 4728,
+      "sha256": "cb2fbe01997fed105b26cb4c0cf305f4ec6299deb958ed1cb0d85fa8036930ac"
+    },
+    {
       "path": "docs/SECURITY_AND_PRIVACY.md",
       "bytes": 865,
       "sha256": "2bda8bb2c829b5b712162afd7def50d1e21f9a68a0b432605e4dab953855ac4f"
@@ -358,11 +428,6 @@
       "sha256": "f58b65a10d05edc6ef50bff6f0116986605464de6e8c24c0561cf4f4a2c4927e"
     },
     {
-      "path": "docs/TEST_CHECKLIST.md",
-      "bytes": 1753,
-      "sha256": "3516113a3f14fd51150f7087bd7449d313d30bd6856139d30faf642ecbb26baa"
-    },
-    {
       "path": "docs/TESTING.md",
       "bytes": 783,
       "sha256": "a02bb77fb098ee2952880a223cab147ef4a8777c3e1a2d92915e72c493bd13c5"
@@ -371,6 +436,11 @@
       "path": "docs/TESTING_STRATEGY.md",
       "bytes": 1245,
       "sha256": "8225bf8de28196e5032142c008a1617e29211f0b2598ffe3686b1e2405124a5c"
+    },
+    {
+      "path": "docs/TEST_CHECKLIST.md",
+      "bytes": 1753,
+      "sha256": "3516113a3f14fd51150f7087bd7449d313d30bd6856139d30faf642ecbb26baa"
     },
     {
       "path": "docs/THIRD_PARTY_NOTICES.md",
@@ -408,24 +478,34 @@
       "sha256": "9f3535bfa1031eadcc764181e2244eacb237965b1657cc6f046ad7a8832da26d"
     },
     {
-      "path": "Documents.html",
-      "bytes": 451,
-      "sha256": "736c383a59e2790cf6876f66cb3ba6bc02da10df738810ebe422d43086354b23"
+      "path": "docs/images/hub-preview.png",
+      "bytes": 38089,
+      "sha256": "f2e4e7b77b40d24e2f035014690c973a94fe55a4fb9cf2412ef93db819f4c7c8"
+    },
+    {
+      "path": "docs/images/readme-banner.png",
+      "bytes": 50977,
+      "sha256": "796e614e7cd2981e07145b332a09d22c73bb86c98d152a112c8a668a0d671786"
+    },
+    {
+      "path": "docs/images/social-preview.png",
+      "bytes": 40705,
+      "sha256": "1d2283b168bef0834a4d3d4d334f18772ea7df63470fde02b8b4e163f7e965ba"
+    },
+    {
+      "path": "docs/images/workspaces-preview.png",
+      "bytes": 54339,
+      "sha256": "e3ffc8fdd16e02c0947c802eeeeb411fc5feef98c5709e553a68c3b458fad7c6"
+    },
+    {
+      "path": "docs/update-package.schema.json",
+      "bytes": 1303,
+      "sha256": "f76a942a92da7861353a797b047a17deb8872bd4a3b318579e5001270dc70a6c"
     },
     {
       "path": "index.html",
       "bytes": 5565,
       "sha256": "67d1a73d6e4f69f36d72c9a61a230bf5058abbc71b1e8af559a3199dd4c34bb0"
-    },
-    {
-      "path": "InkDesk.html",
-      "bytes": 417,
-      "sha256": "10969e160dd345d01b7a9f62fc0d50bd64a5174363c9e40e768ceae856234e6f"
-    },
-    {
-      "path": "LICENSE",
-      "bytes": 1077,
-      "sha256": "869743e85a9bea25a1491d183a2ff8bd6caafb7cfc922916784e328103f1a6b9"
     },
     {
       "path": "manifest.webmanifest",
@@ -434,38 +514,13 @@
     },
     {
       "path": "package.json",
-      "bytes": 758,
-      "sha256": "6527dc73e814dff9f12e7ddcc87ff4ad93abd37c85c08d12a2d03f302b798a41"
+      "bytes": 889,
+      "sha256": "676e4a48c0ab69a6ce17de8bdff4b756d7e232a0ed01fe7f5aa878d1832d33e8"
     },
     {
-      "path": "PDF.html",
-      "bytes": 307,
-      "sha256": "3e3a1645bd39d57a50f25dace0896b58e0329b87cf49d048605fcd0e956f0339"
-    },
-    {
-      "path": "Presentations.html",
-      "bytes": 467,
-      "sha256": "7308532efae0a63558d16d72b1857c7d82a5aea247c23d614c28323d6449a2d0"
-    },
-    {
-      "path": "README.md",
-      "bytes": 2758,
-      "sha256": "ab6331451772438db21001ef377daf5dd9d155138d7d72801397339c17443cae"
-    },
-    {
-      "path": "RELEASE_MANIFEST.json",
-      "bytes": 1425,
-      "sha256": "35cf7b7cfdbde49190fc79fb7bc0c58dea42735d1a3a7e75079732066fa597a7"
-    },
-    {
-      "path": "RELEASE_NOTES.md",
-      "bytes": 2365,
-      "sha256": "660483a736ebeb0ff30884675850dd8eb9534424e0da209a13b95ac2346b4d48"
-    },
-    {
-      "path": "SBOM.spdx.json",
-      "bytes": 2265,
-      "sha256": "497bab165aa6046d1fc7292a75c606c9148d610c767a37ee8fec2f01b32d2daf"
+      "path": "scripts/apply_update_package.py",
+      "bytes": 17863,
+      "sha256": "deee5e36ffef0232616496defbd455637a031998f6bfe2ef8ac56d52c2a90ebe"
     },
     {
       "path": "scripts/audit_source.py",
@@ -501,11 +556,6 @@
       "path": "scripts/validate_repository.py",
       "bytes": 6361,
       "sha256": "207f201d8c79381825e8ffbc209a8898fcc800af71151e5df1be57951f1c04bf"
-    },
-    {
-      "path": "SECURITY.md",
-      "bytes": 2804,
-      "sha256": "03d6b028b4df01778eba41b72930a71f429856c46d07d7cb9a447ef7b092ec87"
     },
     {
       "path": "service-worker.js",
@@ -563,11 +613,6 @@
       "sha256": "6f49be7905ac3ac8ff94d7c4d26e902b9ba1490044765142e3b87dd17b15cfeb"
     },
     {
-      "path": "shared/vendor/jszip.min.js",
-      "bytes": 97630,
-      "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
-    },
-    {
       "path": "shared/vendor/LICENSE-JSZIP.txt",
       "bytes": 33753,
       "sha256": "566c953c6090b1218ca6217dd7359d45dde46581968586dc607d59a78af6a9c4"
@@ -576,6 +621,11 @@
       "path": "shared/vendor/LICENSE-PAKO.txt",
       "bytes": 1104,
       "sha256": "a04665b3b2de56c66730c1f720f528175739e4104f79073614aa611da1e85539"
+    },
+    {
+      "path": "shared/vendor/jszip.min.js",
+      "bytes": 97630,
+      "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
     },
     {
       "path": "shared/vendor/pako_inflate.min.js",
@@ -596,21 +646,6 @@
       "path": "shared/vendor/pdfjs/pdf.worker.min.js",
       "bytes": 1087212,
       "sha256": "feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b"
-    },
-    {
-      "path": "Spreadsheets.html",
-      "bytes": 463,
-      "sha256": "df904bca26afb82b3e264e5ca69d694fd0e4eaab577672649763ba70530a30d7"
-    },
-    {
-      "path": "SUPPORT.md",
-      "bytes": 399,
-      "sha256": "c9574fab4f795d232093d309095d0021c5b58851b6234c18b8a3d55051aad345"
-    },
-    {
-      "path": "TESTING.md",
-      "bytes": 1376,
-      "sha256": "f5d94a49a07137edff0f70af1e774148502fc3982dea74eb1bccde6341b7dd80"
     },
     {
       "path": "tests/fixtures/inkdesk-letterhead-a4-bom.docx",
@@ -653,14 +688,9 @@
       "sha256": "7c9b802e2cf94877bd387f60e920c0182e2bc0aac1bca100471d571f474dc3f6"
     },
     {
-      "path": "UPGRADE_NOTES.md",
-      "bytes": 647,
-      "sha256": "1a6080af026194d1a67993d5eaf41a7af9dd663180ae512727a03187ec3543c5"
-    },
-    {
-      "path": "VERSION.json",
-      "bytes": 493,
-      "sha256": "635f0bd6785ac7ba64db8aca1a273ffb4456dd4764e983ff83e9062e8f7a428a"
+      "path": "tests/test_update_package.py",
+      "bytes": 6960,
+      "sha256": "edc80ee81588db89aa16fc1223f3f5683d493a40be39052cf69b40277ec4b315"
     }
   ]
 }

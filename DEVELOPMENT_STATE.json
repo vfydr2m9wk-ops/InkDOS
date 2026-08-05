@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "targetRelease": "0.19.4",
+  "baseVersion": "0.19.3-beta.7",
+  "appliedSequence": 1,
+  "currentPackage": "0.19.4.1",
+  "status": "in-progress",
+  "history": [
+    {
+      "sequence": 1,
+      "packageLabel": "0.19.4.1",
+      "description": "Incremental update workflow, transactional package engine, strict sequence state, tests, and the authoritative 0.19.4 roadmap."
+    }
+  ]
+}
