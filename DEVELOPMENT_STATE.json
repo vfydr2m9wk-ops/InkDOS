@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 2,
-  "currentPackage": "0.19.4.2",
+  "appliedSequence": 3,
+  "currentPackage": "0.19.4.3",
   "status": "in-progress",
   "history": [
     {
@@ -15,6 +15,11 @@
       "sequence": 2,
       "packageLabel": "0.19.4.2",
       "description": "Module schema, configuration, generated registry, classic-script loader, four existing workspace manifests, registry-driven launcher, offline shell integration, tests, and architecture documentation."
+    },
+    {
+      "sequence": 3,
+      "packageLabel": "0.19.4.3",
+      "description": "Shared application-shell foundation with central design tokens, component primitives, interface-region discovery, panel controller, command registry, compatibility bootstrap, offline caching, tests, and architecture documentation."
     }
   ]
 }

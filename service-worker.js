@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.2';
+const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.3';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -17,6 +17,10 @@ const APP_SHELL=[
   './shared/hub.css',
   './shared/office-shell.css',
   './shared/office-shell.js',
+  './shared/ui/design-tokens.css',
+  './shared/ui/components.css',
+  './shared/ui/application-shell.js',
+  './shared/ui/shell-contract.json',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
   './shared/file-router.js',

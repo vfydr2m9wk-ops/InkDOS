@@ -1,0 +1,140 @@
+/*
+ * Shared shell primitives activated by application-shell.js.
+ * Program-specific styles remain in place during this milestone.
+ */
+html.inkdesk {
+  font-family: var(--inkdesk-font-ui);
+}
+
+body[data-inkdesk-shell="ready"] {
+  --accent: var(--inkdesk-accent, #2f6fed);
+}
+
+[data-inkdesk-shell-region="titlebar"] {
+  min-height: var(--inkdesk-titlebar-height);
+  box-sizing: border-box;
+}
+
+[data-inkdesk-shell-region="command-tabs"] {
+  min-height: var(--inkdesk-command-tabs-height);
+  box-sizing: border-box;
+}
+
+[data-inkdesk-shell-region="commandbar"] {
+  min-height: var(--inkdesk-commandbar-min-height);
+  box-sizing: border-box;
+}
+
+[data-inkdesk-shell-region="statusbar"] {
+  min-height: var(--inkdesk-statusbar-height);
+  box-sizing: border-box;
+}
+
+[data-inkdesk-shell-region="workspace"] {
+  min-width: 0;
+  min-height: 0;
+}
+
+[data-inkdesk-shell-region="titlebar"] button,
+[data-inkdesk-shell-region="titlebar"] .icon-btn,
+[data-inkdesk-shell-region="commandbar"] button,
+[data-inkdesk-shell-region="commandbar"] select,
+[data-inkdesk-shell-region="commandbar"] input {
+  box-sizing: border-box;
+}
+
+[data-inkdesk-shell-region="titlebar"] .icon-btn {
+  min-width: var(--inkdesk-control-height);
+  min-height: var(--inkdesk-control-height);
+}
+
+[data-inkdesk-shell-region="titlebar"] svg,
+[data-inkdesk-shell-region="commandbar"] svg {
+  max-width: var(--inkdesk-icon-size);
+  max-height: var(--inkdesk-icon-size);
+}
+
+.inkdesk-command-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--inkdesk-space-1);
+  min-width: 0;
+}
+
+.inkdesk-command-group + .inkdesk-command-group {
+  border-inline-start: 1px solid var(--inkdesk-edge);
+  padding-inline-start: var(--inkdesk-space-2);
+  margin-inline-start: var(--inkdesk-space-2);
+}
+
+[data-inkdesk-panel] {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+}
+
+[data-inkdesk-panel][data-inkdesk-panel-side="left"],
+[data-inkdesk-panel][data-inkdesk-panel-side="right"] {
+  width: min(var(--inkdesk-sidebar-width), 42vw);
+}
+
+.inkdesk-panel-collapsed {
+  display: none !important;
+}
+
+[data-inkdesk-dirty="true"] [data-inkdesk-file-title]::after {
+  content: " •";
+  color: var(--inkdesk-accent, var(--inkdesk-focus));
+}
+
+.inkdesk-shell-announcer {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+body[data-inkdesk-shell-error="true"]::before {
+  content: "The shared InkDesk interface layer could not be initialized. Core workspace controls remain available.";
+  position: fixed;
+  z-index: 100000;
+  inset: auto 12px 12px 12px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--inkdesk-danger) 48%, var(--inkdesk-edge));
+  border-radius: var(--inkdesk-radius-medium);
+  background: var(--inkdesk-surface);
+  color: var(--inkdesk-text);
+  box-shadow: var(--inkdesk-shadow-panel);
+  font-size: 12px;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --inkdesk-control-height: 34px;
+    --inkdesk-sidebar-width: 224px;
+  }
+
+  [data-inkdesk-shell-region="titlebar"] .icon-btn,
+  [data-inkdesk-shell-region="commandbar"] button {
+    min-height: var(--inkdesk-control-height);
+  }
+}
+
+@media (pointer: coarse) {
+  [data-inkdesk-shell-region="titlebar"] .icon-btn,
+  [data-inkdesk-shell-region="commandbar"] button,
+  [data-inkdesk-shell-region="commandbar"] select {
+    min-height: var(--inkdesk-touch-target);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-inkdesk-shell-region] *,
+  [data-inkdesk-panel] {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}

@@ -118,5 +118,15 @@
   "compatibility": {
     "policy": "docs/COMPATIBILITY_POLICY.md",
     "status": "beta"
+  },
+  "uiSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.3",
+    "bootstrap": "shared/office-shell.js",
+    "runtime": "shared/ui/application-shell.js",
+    "tokens": "shared/ui/design-tokens.css",
+    "components": "shared/ui/components.css",
+    "contract": "shared/ui/shell-contract.json",
+    "documentation": "docs/APPLICATION_SHELL.md"
   }
 }
