@@ -72,12 +72,15 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn("prerelease", prerelease)
         self.assertNotIn("git push origin HEAD:main", prerelease)
         sync = (workflow_dir / "sync-source-and-prerelease.yml").read_text(encoding="utf-8")
-        self.assertIn("Synchronize source and publish prerelease", sync)
+        self.assertIn("Replace repository and publish prerelease", sync)
         self.assertIn("INKDESK_RELEASE_PAT", sync)
+        self.assertIn("find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +", sync)
         self.assertIn("rsync -a --delete", sync)
+        self.assertIn("git push origin HEAD:main --force", sync)
         self.assertIn("scripts/build_release.py", sync)
         self.assertIn("gh release create", sync)
-        self.assertIn("--verify-tag", sync)
+        self.assertNotIn("create_backup_branch", sync)
+        self.assertNotIn("git diff --no-index", sync)
 
     def test_docx_parser_reads_standard_word_package_parts(self):
         parser = (ROOT / "apps/documents/docx-parser.js").read_text(encoding="utf-8")
@@ -99,7 +102,7 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn("pagination-content-measure", app)
         self.assertIn("tolerance=3", app)
         self.assertIn("pagination-measure", css)
-        self.assertIn("docx-parser.js?v=0.19.1-beta", html)
+        self.assertIn("docx-parser.js?v=0.19.2-beta", html)
 
     def test_export_writers_use_standard_ooxml_part_paths(self):
         docx = (ROOT / "apps/documents/docx-writer.js").read_text(encoding="utf-8")

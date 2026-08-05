@@ -6,7 +6,7 @@ on:
       tag:
         description: Existing beta tag to package
         required: true
-        default: v0.19.1-beta
+        default: v0.19.2-beta
         type: string
       publish:
         description: Publish a GitHub prerelease after validation
@@ -102,7 +102,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-list -n 1 '${{ inputs.tag }}')" = "$GITHUB_SHA"
-          python3 scripts/build_release.py --output-dir dist --commit "$GITHUB_SHA" --tag "${{ inputs.tag }}"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          python3 scripts/build_release.py --output-dir dist
           cat > dist/CI_TEST_REPORT.md <<EOF
           # CI prerelease test report
 

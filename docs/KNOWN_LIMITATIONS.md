@@ -1,4 +1,4 @@
-# Known Limitations — 0.19.1-beta
+# Known Limitations — 0.19.2-beta
 
 ## General
 
@@ -6,6 +6,7 @@
 - Browser download completion is not observable. A download remains unverified until the exact bytes are reopened and fingerprinted.
 - Active documents/history are memory-only; crash/session recovery is not implemented.
 - Package/XML validation currently runs on the main thread. Files near configured limits can still create memory or responsiveness pressure, especially on iPad-class devices.
+- Heavy ZIP/XML/BIFF8/model construction has not yet been moved to Web Workers; cancellation and adaptive complexity limits remain future hardening work.
 - Password-protected/encrypted files, ZIP64 packages, nested archives, and packages beyond conservative limits are rejected.
 - Native Safari, physical iPadOS, installed PWA behavior, embedded hosts, and large-file pressure were not tested in the local review environment.
 

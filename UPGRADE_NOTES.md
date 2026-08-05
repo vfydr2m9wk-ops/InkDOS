@@ -1,8 +1,9 @@
-# Upgrade Notes — 0.19.1-beta
+# Upgrade Notes — 0.19.2-beta
 
-- Replace the previous static application folder with the complete 0.19.1-beta runtime package; do not mix old and new `shared/` files.
-- Hosted/PWA users should reload after the new service worker activates. The cache name changed to `inkdesk-shell-v0.19.1-beta`.
-- A requested download no longer clears the dirty warning. Reopen the generated copy to obtain fingerprint verification.
-- Unsupported spreadsheet formulas may now show their cached value with a “not recalculated” indication rather than an unsafe or misleading local result.
-- Packages rejected by the new ZIP/XML limits should be inspected/constrained in a trusted desktop Office application; do not weaken limits merely to open an unknown file.
-- No account, backend, database, or persistent document migration is introduced.
+- Replace the previous repository contents with the complete `InkDesk_v0.19.2-beta_full-source.zip` source package; do not merge it with older files.
+- The manual replacement workflow deletes every repository-root entry except `.git`, copies the package contents as the new source tree, commits the result, force-updates `main`, recreates the version tag, and replaces release assets.
+- Upload `InkDesk_v0.19.2-beta_full-source.zip` to the repository root before running **Replace repository and publish prerelease**.
+- Use `expected_version` = `0.19.2-beta`, tag = `v0.19.2-beta`, and confirmation = `REPLACE_ALL`.
+- The workflow requires the `INKDESK_RELEASE_PAT` repository secret with permission to write repository contents and releases. Branch rules must allow that token to bypass or force-update `main`.
+- Hosted/PWA users should reload after the new service worker activates. The cache name changes to `inkdesk-shell-v0.19.2-beta-router2`.
+- No persisted user-document schema migration is required.

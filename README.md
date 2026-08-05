@@ -8,7 +8,7 @@
 
 InkDesk is an open-source, browser-native suite for focused DOCX, XLS/XLSX, and PPTX workflows. It is distributed as static HTML, CSS, and JavaScript. Documents are parsed and edited in the current browser context; the project does not operate a document-processing backend, account service, telemetry service, or analytics endpoint.
 
-**Project status: Beta (`0.19.1-beta`).** Compatibility is intentionally partial. InkDesk does not claim complete Microsoft Office fidelity, pixel-identical rendering, or safe support for every Office file.
+**Project status: Beta (`0.19.2-beta`).** Compatibility is intentionally partial. InkDesk does not claim complete Microsoft Office fidelity, pixel-identical rendering, or safe support for every Office file.
 
 ## Workspaces
 
@@ -22,7 +22,7 @@ InkDesk is an open-source, browser-native suite for focused DOCX, XLS/XLSX, and 
 
 The main `index.html` includes one **Open document** button. Choose a DOCX, XLS, XLSX, or PPTX file and InkDesk detects the extension and opens the matching workspace. Each workspace includes a house-shaped button that returns to the main InkDesk index.
 
-When served over HTTP(S), the selected file is transferred once through short-lived IndexedDB storage and removed when consumed. When `index.html` is opened directly through `file://`, InkDesk keeps the index alive and transfers the selected `File` object to the matching embedded workspace with a token-scoped `postMessage` bridge. The file is not uploaded. Browser and local-file host policies still vary, so direct local opening requires device testing.
+When served over HTTP(S), the selected file is transferred once through short-lived IndexedDB storage and removed when consumed. When `index.html` is opened directly through `file://`, InkDesk keeps the index alive and transfers the selected `File` object to the matching embedded workspace with a versioned, expiring, one-time `postMessage` bridge. HTTP(S) messaging is bound to the exact same origin; the sole wildcard target is isolated to the documented opaque `file://` fallback. The file is not uploaded. Browser and local-file host policies still vary, so direct local opening requires device testing.
 
 ## Export status and data safety
 
@@ -69,6 +69,7 @@ CI is configured to run browser regressions separately in Playwright Chromium, F
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
+- [1.0 hardening stage 1](docs/HARDENING_STAGE1_REPORT.md)
 - [Compatibility and validation matrix](COMPATIBILITY.md)
 - [Security policy](SECURITY.md)
 - [Testing](TESTING.md)

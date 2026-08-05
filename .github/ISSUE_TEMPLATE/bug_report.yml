@@ -5,7 +5,7 @@ labels: [bug]
 body:
   - type: input
     id: version
-    attributes: {label: InkDesk version, placeholder: "0.19.1-beta"}
+    attributes: {label: InkDesk version, placeholder: "0.19.2-beta"}
     validations: {required: true}
   - type: dropdown
     id: workspace

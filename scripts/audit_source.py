@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import sys
+from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -21,7 +22,15 @@ DYNAMIC_CODE = re.compile(r"\b(?:eval|Function)\s*\(")
 DOCUMENT_WRITE = re.compile(r"\bdocument\.write\s*\(")
 REMOTE_CALL = re.compile(r"\b(?:fetch|importScripts|WebSocket)\s*\(\s*['\"]https?://", re.I)
 INSECURE_REMOTE = re.compile(r"\b(?:fetch|importScripts|WebSocket)\s*\(\s*['\"]http://", re.I)
-UNSAFE_POST_MESSAGE = re.compile(r"\.postMessage\s*\([^,]+,\s*['\"]\*['\"]\)")
+OPAQUE_EXCEPTION_MARKER = "INKDESK_ALLOW_OPAQUE_TARGET"
+OPAQUE_EXCEPTION_FILE = Path("shared/file-router.js")
+
+
+@dataclass(frozen=True)
+class PostMessageCall:
+    line: int
+    second_argument: str
+    allowed_opaque_exception: bool
 
 
 class RuntimeReferenceParser(HTMLParser):
@@ -44,10 +53,175 @@ def excluded(path: Path) -> bool:
     return rel.parts[:3] == ("tests", "browser", "results")
 
 
+def _skip_space_and_comments(source: str, index: int) -> int:
+    length = len(source)
+    while index < length:
+        if source[index].isspace():
+            index += 1
+            continue
+        if source.startswith("//", index):
+            newline = source.find("\n", index + 2)
+            return length if newline < 0 else _skip_space_and_comments(source, newline + 1)
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            return length if end < 0 else _skip_space_and_comments(source, end + 2)
+        break
+    return index
+
+
+def _consume_quoted(source: str, index: int, quote: str) -> int:
+    index += 1
+    while index < len(source):
+        char = source[index]
+        if char == "\\":
+            index += 2
+            continue
+        if char == quote:
+            return index + 1
+        index += 1
+    return len(source)
+
+
+def _consume_template(source: str, index: int) -> int:
+    index += 1
+    expression_depth = 0
+    while index < len(source):
+        char = source[index]
+        if char == "\\":
+            index += 2
+            continue
+        if expression_depth == 0 and char == "`":
+            return index + 1
+        if source.startswith("${", index):
+            expression_depth += 1
+            index += 2
+            continue
+        if expression_depth and char == "}":
+            expression_depth -= 1
+        if char in {"'", '"'}:
+            index = _consume_quoted(source, index, char)
+            continue
+        if char == "`":
+            index = _consume_template(source, index)
+            continue
+        if source.startswith("//", index):
+            newline = source.find("\n", index + 2)
+            index = len(source) if newline < 0 else newline + 1
+            continue
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            index = len(source) if end < 0 else end + 2
+            continue
+        index += 1
+    return len(source)
+
+
+def _parse_call_arguments(source: str, open_paren: int) -> tuple[list[str], int]:
+    arguments: list[str] = []
+    start = open_paren + 1
+    index = start
+    stack: list[str] = [")"]
+    matching = {"(": ")", "[": "]", "{": "}"}
+
+    while index < len(source):
+        char = source[index]
+        if char in {"'", '"'}:
+            index = _consume_quoted(source, index, char)
+            continue
+        if char == "`":
+            index = _consume_template(source, index)
+            continue
+        if source.startswith("//", index):
+            newline = source.find("\n", index + 2)
+            index = len(source) if newline < 0 else newline + 1
+            continue
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            index = len(source) if end < 0 else end + 2
+            continue
+        if char in matching:
+            stack.append(matching[char])
+            index += 1
+            continue
+        if stack and char == stack[-1]:
+            stack.pop()
+            if not stack:
+                arguments.append(source[start:index])
+                return arguments, index + 1
+            index += 1
+            continue
+        if char == "," and len(stack) == 1:
+            arguments.append(source[start:index])
+            start = index + 1
+        index += 1
+    return arguments, len(source)
+
+
+def _is_wildcard_literal(expression: str) -> bool:
+    without_comments = re.sub(r"/\*.*?\*/|//[^\n]*", "", expression, flags=re.S).strip()
+    return bool(re.fullmatch(r"(['\"`])\*\1", without_comments))
+
+
+def find_wildcard_postmessage_calls(source: str) -> list[PostMessageCall]:
+    """Conservatively parse postMessage calls and return wildcard targetOrigin uses.
+
+    This scanner tracks nested parentheses/braces/brackets, quoted strings, templates,
+    comments, multiline calls, optional chaining and commas inside the first argument.
+    It intentionally treats malformed input conservatively rather than claiming safety.
+    """
+
+    calls: list[PostMessageCall] = []
+    index = 0
+    length = len(source)
+    identifier = "postMessage"
+
+    while index < length:
+        char = source[index]
+        if char in {"'", '"'}:
+            index = _consume_quoted(source, index, char)
+            continue
+        if char == "`":
+            index = _consume_template(source, index)
+            continue
+        if source.startswith("//", index):
+            newline = source.find("\n", index + 2)
+            index = length if newline < 0 else newline + 1
+            continue
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            index = length if end < 0 else end + 2
+            continue
+        if source.startswith(identifier, index):
+            before = source[index - 1] if index else ""
+            after_index = index + len(identifier)
+            after = source[after_index] if after_index < length else ""
+            if (before.isalnum() or before in "_$") or (after.isalnum() or after in "_$"):
+                index += 1
+                continue
+            cursor = _skip_space_and_comments(source, after_index)
+            if source.startswith("?.", cursor):
+                cursor = _skip_space_and_comments(source, cursor + 2)
+            if cursor < length and source[cursor] == "(":
+                arguments, end = _parse_call_arguments(source, cursor)
+                if len(arguments) >= 2 and _is_wildcard_literal(arguments[1]):
+                    line = source.count("\n", 0, index) + 1
+                    line_start = source.rfind("\n", 0, index) + 1
+                    line_end = source.find("\n", index)
+                    if line_end < 0:
+                        line_end = length
+                    marker_nearby = OPAQUE_EXCEPTION_MARKER in source[max(0, line_start - 240):min(length, line_end + 240)]
+                    calls.append(PostMessageCall(line, arguments[1].strip(), marker_nearby))
+                index = max(end, index + len(identifier))
+                continue
+        index += 1
+    return calls
+
+
 def main() -> int:
     errors: list[str] = []
     notes: list[str] = []
     metrics: list[tuple[int, Path]] = []
+    opaque_exceptions: list[tuple[Path, int]] = []
 
     for path in ROOT.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in CODE_SUFFIXES or excluded(path):
@@ -70,8 +244,12 @@ def main() -> int:
             errors.append(f"Automatic remote runtime call found: {rel}")
         if INSECURE_REMOTE.search(text):
             errors.append(f"Insecure remote runtime call found: {rel}")
-        if UNSAFE_POST_MESSAGE.search(text) and rel != Path("shared/vendor/jszip.min.js"):
-            errors.append(f"Wildcard postMessage target found: {rel}")
+        if path.suffix.lower() in {".js", ".html"}:
+            for call in find_wildcard_postmessage_calls(text):
+                if call.allowed_opaque_exception and rel == OPAQUE_EXCEPTION_FILE:
+                    opaque_exceptions.append((rel, call.line))
+                else:
+                    errors.append(f"Wildcard postMessage target found: {rel}:{call.line}")
         if DYNAMIC_CODE.search(text):
             notes.append(f"Dynamic code construction requires manual review: {rel}")
         if path.suffix.lower() == ".html":
@@ -80,9 +258,17 @@ def main() -> int:
             for ref in parser.remote_runtime_refs:
                 errors.append(f"Automatic remote runtime dependency: {rel} -> {ref}")
 
+    if len(opaque_exceptions) > 1:
+        locations = ", ".join(f"{path}:{line}" for path, line in opaque_exceptions)
+        errors.append(f"More than one opaque-origin postMessage exception exists: {locations}")
+
     print("Largest non-vendor source files:")
     for lines, rel in sorted(metrics, reverse=True)[:10]:
         print(f"- {lines:4d} lines  {rel}")
+
+    if opaque_exceptions:
+        path, line = opaque_exceptions[0]
+        print(f"\nDocumented opaque-origin exception: {path}:{line}")
 
     unique_notes = sorted(set(notes))
     if unique_notes:

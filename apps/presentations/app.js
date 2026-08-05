@@ -31,7 +31,7 @@ function makeSlide(layout='title'){
   if(layout==='twoColumn'){common.objects.push({id:uid(),type:'text',x:900000,y:1750000,w:5000000,h:3500000,text:'Left column',font:'Arial',size:22,color:'#4b5563',align:'left',z:2});common.objects.push({id:uid(),type:'text',x:6300000,y:1750000,w:5000000,h:3500000,text:'Right column',font:'Arial',size:22,color:'#4b5563',align:'left',z:3});}
   return common;
 }
-function basePresentation(name='Untitled presentation',layout='title'){activeTheme={fonts:{majorLatin:'Arial',minorLatin:'Arial'},colors:{accent1:'#d64a24',dk1:'#000000',lt1:'#ffffff'}};return {name,width:12192000,height:6858000,source:'new',theme:activeTheme,compatibility:{engine:'0.19.1-beta-generated',presenterNotesEditor:true,presenterNotesExport:false},slides:[makeSlide(layout)]};}
+function basePresentation(name='Untitled presentation',layout='title'){activeTheme={fonts:{majorLatin:'Arial',minorLatin:'Arial'},colors:{accent1:'#d64a24',dk1:'#000000',lt1:'#ffffff'}};return {name,width:12192000,height:6858000,source:'new',theme:activeTheme,compatibility:{engine:'0.19.2-beta-generated',presenterNotesEditor:true,presenterNotesExport:false},slides:[makeSlide(layout)]};}
 function showTemplateDialog(mode='presentation'){templateMode=mode;ui.templateGrid.innerHTML='';LAYOUTS.forEach(l=>{const b=document.createElement('button');b.className='template-option';b.innerHTML='<div class="template-preview '+(l.id==='twoColumn'?'two ':l.id==='blank'?'blank ':'')+'"><span class="pv-title"></span><span class="pv-sub"></span></div><div class="template-name"></div><div class="template-desc"></div>';b.querySelector('.template-name').textContent=l.name;b.querySelector('.template-desc').textContent=l.desc;b.onclick=()=>chooseTemplate(l.id);ui.templateGrid.appendChild(b)});ui.template.classList.remove('hidden');}
 function chooseTemplate(layout){ui.template.classList.add('hidden');if(templateMode==='presentation'){sourcePptxBuffer=null;pres=basePresentation('Untitled presentation',layout);currentSlide=0;selectedId=null;undoStack=[];redoStack=[];showApp();renderAll();markDirty();updateHistoryButtons();}else{action(()=>{const created=makeSlide(layout);created.sourcePath='';created.sourcePresentationRid='';created.sourceSlideId='';pres.slides.splice(currentSlide+1,0,created);currentSlide++;selectedId=null;markDirty();renderAll();});}}
 function newPresentation(){if(!confirmIfDirty())return;showTemplateDialog('presentation');}
@@ -76,7 +76,7 @@ async function loadPptx(file){
       height:+attr(sldSz,'cy','6858000'),
       source:'pptx',
       theme:activeTheme,
-      compatibility:{engine:'0.19.1-beta-pptx-preservation',themeResolved:true,masterArtwork:true,richTextInheritance:true,presenterNotesEditor:true,presenterNotesExport:true,chartsPreview:true,transitionsPreview:true},
+      compatibility:{engine:'0.19.2-beta-pptx-preservation',themeResolved:true,masterArtwork:true,richTextInheritance:true,presenterNotesEditor:true,presenterNotesExport:true,chartsPreview:true,transitionsPreview:true},
       originalSlideRids:[],
       slides:[]
     };
@@ -96,7 +96,7 @@ async function loadPptx(file){
     if(!out.slides.length)throw new Error('No slides found');
     sourcePptxBuffer=buffer.slice(0);pres=out;activeTheme=out.theme||null;currentSlide=0;selectedId=null;undoStack=[];redoStack=[];
     showApp();renderAll();if(requestedExport&&requestedExport.sha256&&openedSha256===requestedExport.sha256&&Number(requestedExport.bytes)===Number(file.size)){lifecycle.verifyReopened({fileName:file.name,bytes:file.size,sha256:openedSha256});setReady(lifecycle.label)}else{markSaved();setReady('Opened')}updateHistoryButtons();
-    window.__LocalPresentationsDebug={version:'0.19.1-beta-pptx-preservation',slideCount:out.slides.length,getPresentation:()=>pres,getSourceBuffer:()=>sourcePptxBuffer};
+    window.__LocalPresentationsDebug={version:'0.19.2-beta-pptx-preservation',slideCount:out.slides.length,getPresentation:()=>pres,getSourceBuffer:()=>sourcePptxBuffer};
   }catch(error){
     activeTheme=previous.activeTheme;presentationTextDefaults=previous.presentationTextDefaults;idSeq=previous.idSeq;
     setReady(pres?'Open failed; previous presentation preserved':'Open error');

@@ -41,17 +41,11 @@ GitHub Pages provides the HTTPS context required for service-worker registration
 
 The reconstructed repository includes `.github/workflows/quality-gate.yml`. The bootstrap workflow already executes the repository checks before and after installation. Future source commits are validated by the quality gate according to its configured triggers.
 
-## Release 0.19.1-beta
+## Release 0.19.2-beta
 
-- Tag: `v0.19.1-beta`
-- Target: `main`
-- Title: `InkDesk 0.19.1-beta — Structural Cleanup and Integrity Review`
-- Attach a separately validated release ZIP when publishing a GitHub Release.
-- Attach or link `docs/FINAL_REVIEW_REPORT.md` and `docs/VALIDATION_REPORT.md`.
-- Publish the release ZIP SHA-256.
-
-Do not describe the project as production ready or fully compatible with Microsoft Office. State that compatibility is partial; native Firefox, Safari/WebKit, iPadOS, embedded hosts, and installed PWA behavior require separate validation.
-
-## Social preview
-
-Upload `docs/images/social-preview.png` in the repository social-preview settings.
+- Source package: `InkDesk_v0.19.2-beta_full-source.zip`
+- Tag: `v0.19.2-beta`
+- Release title: `InkDesk 0.19.2-beta — Release Packaging and Privacy Cleanup`
+- Workflow: **Replace repository and publish prerelease**
+- Confirmation: `REPLACE_ALL`
+- Replacement model: delete the existing worktree and copy the archive contents in full; no comparison or merge with prior files.

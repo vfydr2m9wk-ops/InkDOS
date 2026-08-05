@@ -1,7 +1,9 @@
-"""Validate unified file routing, local-file bridge transfer, and home links."""
+"""Validate unified file routing, origin-bound bridge transfer, and home links."""
 from __future__ import annotations
 
 import json
+import time
+from urllib.parse import urlparse
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -32,7 +34,6 @@ def validate_hub_routes(browser):
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.set_content(stripped_html(ROOT / "index.html"), wait_until="domcontentloaded")
     page.add_script_tag(path=str(ROOT / "shared" / "file-router.js"))
-    page.add_script_tag(path=str(ROOT / "shared" / "hub-open.js"))
     if page.locator("#openAnyDocument").count() != 1:
         raise RuntimeError("The unified Open document button is missing.")
     results = []
@@ -49,32 +50,104 @@ def validate_hub_routes(browser):
 
 
 def validate_embedded_bridge(browser):
-    page = browser.new_page()
-    page.set_content('<iframe id="workspace" src="about:blank?embedded=1&bridge=bridge-test"></iframe>')
-    frame = page.frame_locator("#workspace")
+    trusted_base = "https://trusted.inkdesk.test"
+    hostile_base = "https://hostile.inkdesk.test"
+    child_html = """<!doctype html><meta charset=\"utf-8\"><script src=\"/shared/file-router.js\"></script>
+<script>
+window.__openedFile='';
+InkDeskFileRouter.attachWorkspace({extensions:['docx'],openFile:file=>{window.__openedFile=file.name;}});
+</script>"""
+    hostile_html = """<!doctype html><meta charset=\"utf-8\"><script>
+const params=new URLSearchParams(location.search);
+setTimeout(()=>{
+  parent.frames[0].postMessage({type:'inkdesk:open-file',version:1,token:params.get('token'),expiresAt:Number(params.get('expires')),file:new File(['hostile'],'hostile.docx')},params.get('target'));
+},50);
+</script>"""
+    router_source = (ROOT / "shared" / "file-router.js").read_text(encoding="utf-8")
+    context = browser.new_context()
+
+    def fulfill(route):
+        parsed = urlparse(route.request.url)
+        if parsed.hostname == "trusted.inkdesk.test" and parsed.path == "/shared/file-router.js":
+            route.fulfill(status=200, content_type="application/javascript", body=router_source)
+        elif parsed.hostname == "trusted.inkdesk.test" and parsed.path == "/bridge-child.html":
+            route.fulfill(status=200, content_type="text/html", body=child_html)
+        elif parsed.hostname == "hostile.inkdesk.test" and parsed.path == "/bridge-hostile.html":
+            route.fulfill(status=200, content_type="text/html", body=hostile_html)
+        else:
+            route.fulfill(status=200, content_type="text/html", body="<!doctype html><meta charset='utf-8'><title>bridge host</title>")
+
+    context.route("https://trusted.inkdesk.test/**", fulfill)
+    context.route("https://hostile.inkdesk.test/**", fulfill)
+    page = context.new_page()
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    try:
+        page.goto(trusted_base + "/bridge-host.html", wait_until="domcontentloaded")
+    except Exception as error:
+        if "ERR_BLOCKED_BY_ADMINISTRATOR" not in str(error):
+            context.close()
+            raise
+        context.close()
+        fallback = browser.new_page()
+        fallback.set_content("<!doctype html><title>origin policy fallback</title>")
+        fallback.add_script_tag(path=str(ROOT / "shared" / "file-router.js"))
+        result = fallback.evaluate(
+            """()=>{
+            const trusted=InkDeskFileRouter._test.bridgeOriginPolicy('https://trusted.inkdesk.test/workspace');
+            const opaque=InkDeskFileRouter._test.bridgeOriginPolicy('file:///InkDesk/workspace.html');
+            return {
+              trustedTarget:trusted.targetOrigin,
+              trustedAccepted:InkDeskFileRouter._test.eventMatchesPolicy({origin:'https://trusted.inkdesk.test'},trusted),
+              hostileRejected:!InkDeskFileRouter._test.eventMatchesPolicy({origin:'https://hostile.inkdesk.test'},trusted),
+              opaqueAccepted:InkDeskFileRouter._test.eventMatchesPolicy({origin:'null'},opaque)
+            };
+            }"""
+        )
+        fallback.close()
+        if not all((result["trustedAccepted"], result["hostileRejected"], result["opaqueAccepted"])):
+            raise RuntimeError(f"Origin-policy fallback failed: {result}")
+        return {
+            "fullTwoOriginExecuted": False,
+            "limitation": "Browser policy blocked synthetic HTTP(S) navigation; exact trusted/hostile origin policy was executed directly.",
+            **result,
+        }
+    token = "bridge-test-token"
+    expires = int(time.time() * 1000) + 15_000
     page.evaluate(
-        """
-        const iframe=document.getElementById('workspace');
+        """({trustedBase,hostileBase,token,expires})=>{
+        const workspace=document.createElement('iframe');
+        workspace.id='workspace';
+        workspace.name='workspace';
+        workspace.src=trustedBase+'/bridge-child.html?embedded=1&bridge='+encodeURIComponent(token)+'&bridgeVersion=1&bridgeExpires='+expires;
+        document.body.appendChild(workspace);
+        const hostile=document.createElement('iframe');
+        hostile.id='hostile';
+        hostile.src=hostileBase+'/bridge-hostile.html?token='+encodeURIComponent(token)+'&expires='+expires+'&target='+encodeURIComponent(trustedBase);
+        document.body.appendChild(hostile);
+        window.__bridgeReady=false;
         window.addEventListener('message',event=>{
-          if(event.source!==iframe.contentWindow)return;
-          if(event.data&&event.data.type==='inkdesk:workspace-ready'&&event.data.token==='bridge-test'){
-            iframe.contentWindow.postMessage({type:'inkdesk:open-file',token:'bridge-test',file:new File(['test'],'bridge.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})},'*');
+          if(event.source!==workspace.contentWindow||event.origin!==trustedBase)return;
+          if(event.data&&event.data.type==='inkdesk:workspace-ready'&&event.data.token===token){
+            window.__bridgeReady=true;
+            setTimeout(()=>workspace.contentWindow.postMessage({type:'inkdesk:open-file',version:1,token,expiresAt:expires,file:new File(['trusted'],'trusted.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})},trustedBase),500);
           }
         });
-        """
+        }""",
+        {"trustedBase": trusted_base, "hostileBase": hostile_base, "token": token, "expires": expires},
     )
+    page.wait_for_function("window.__bridgeReady === true")
     child = page.frames[1]
-    child.add_script_tag(path=str(ROOT / "shared" / "file-router.js"))
-    child.evaluate(
-        """
-        window.__openedFile='';
-        InkDeskFileRouter.attachWorkspace({extensions:['docx'],openFile:file=>{window.__openedFile=file.name;}});
-        """
-    )
-    child.wait_for_function("window.__openedFile === 'bridge.docx'")
+    page.wait_for_timeout(250)
+    before_trusted = child.evaluate("window.__openedFile")
+    if before_trusted:
+        raise RuntimeError(f"A hostile frame injected a file before the trusted parent: {before_trusted}")
+    child.wait_for_function("window.__openedFile === 'trusted.docx'")
     opened = child.evaluate("window.__openedFile")
-    page.close()
-    return opened
+    if errors:
+        raise RuntimeError("Bridge browser errors: " + " | ".join(errors))
+    context.close()
+    return {"fullTwoOriginExecuted": True, "opened": opened, "hostileInjectionRejected": before_trusted == "", "trustedOrigin": trusted_base, "hostileOrigin": hostile_base}
 
 
 def validate_home_links(browser):
@@ -99,12 +172,12 @@ def main():
         report = {
             "status": "passed",
             "hubRoutes": validate_hub_routes(browser),
-            "embeddedBridgeFile": validate_embedded_bridge(browser),
+            "embeddedBridge": validate_embedded_bridge(browser),
             "homeLinks": validate_home_links(browser),
         }
         browser.close()
     (OUT / "unified_open_router.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print("Unified DOCX/XLSX/PPTX routing, embedded file transfer, and workspace home links passed.")
+    print("Unified routing, origin-bound embedded transfer, hostile-origin rejection, and workspace home links passed.")
     return 0
 
 

@@ -1,4 +1,4 @@
-# Manual Device Checklist — 0.19.1-beta
+# Manual Device Checklist — 0.19.2-beta
 
 Record date, exact browser build, OS/device, host mode, fixture, and result. Preserve screenshots/logs without private documents.
 

@@ -1,6 +1,7 @@
 'use strict';
 
-const CACHE_NAME='inkdesk-shell-v0.19.1-beta-router1';
+const CACHE_NAME='inkdesk-shell-v0.19.2-beta-router2';
+const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
   './index.html',
@@ -37,12 +38,80 @@ const APP_SHELL=[
   './apps/presentations/app.js'
 ];
 
+const APP_SHELL_URLS=new Set(APP_SHELL.map(path=>new URL(path,self.registration.scope).href));
+const NAVIGATION_PATHS=new Set([
+  new URL('./index.html',self.registration.scope).pathname,
+  new URL('./apps/documents/index.html',self.registration.scope).pathname,
+  new URL('./apps/spreadsheets/index.html',self.registration.scope).pathname,
+  new URL('./apps/presentations/index.html',self.registration.scope).pathname
+]);
+
+function canonicalCacheKey(request){
+  const url=new URL(request.url);
+  if(request.mode==='navigate'&&NAVIGATION_PATHS.has(url.pathname)){
+    url.search='';
+    url.hash='';
+    return new Request(url.href,{method:'GET'});
+  }
+  return request;
+}
+
+function isCacheableShellRequest(request){
+  const key=canonicalCacheKey(request);
+  return APP_SHELL_URLS.has(key.url);
+}
+
+async function installAppShell(){
+  await caches.delete(CACHE_NAME);
+  const cache=await caches.open(CACHE_NAME);
+  try{
+    await cache.addAll(APP_SHELL);
+  }catch(error){
+    await caches.delete(CACHE_NAME);
+    console.error('InkDesk app-shell installation failed; the incomplete cache was removed.',error);
+    throw error;
+  }
+}
+
+async function removeOldCaches(){
+  const keys=await caches.keys();
+  await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_NAME).map(key=>caches.delete(key)));
+}
+
+async function cacheResponse(cache,key,response){
+  try{
+    await cache.put(key,response);
+  }catch(error){
+    console.error('InkDesk could not update a cached application asset.',{url:key.url,error});
+  }
+}
+
+async function respondWithShell(request){
+  const key=canonicalCacheKey(request);
+  const cache=await caches.open(CACHE_NAME);
+  const cached=await cache.match(key);
+  if(cached&&!cached.ok){
+    await cache.delete(key);
+  }
+
+  try{
+    const response=await fetch(request);
+    if(response&&response.ok&&response.type!=='opaque')await cacheResponse(cache,key,response.clone());
+    return response;
+  }catch(error){
+    const fallback=await cache.match(key);
+    if(fallback)return fallback;
+    console.error('InkDesk could not load an application asset from the network or cache.',{url:request.url,error});
+    throw error;
+  }
+}
+
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));
+  event.waitUntil(installAppShell().then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('inkdesk-shell-')&&key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+  event.waitUntil(removeOldCaches().then(()=>self.clients.claim()));
 });
 
 self.addEventListener('fetch',event=>{
@@ -50,13 +119,18 @@ self.addEventListener('fetch',event=>{
   if(request.method!=='GET')return;
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
-  event.respondWith(caches.match(request,{ignoreSearch:true}).then(cached=>{
-    if(cached)return cached;
-    return fetch(request).then(response=>{
-      if(!response||!response.ok||response.type==='opaque')return response;
-      const copy=response.clone();
-      caches.open(CACHE_NAME).then(cache=>cache.put(request,copy)).catch(()=>{});
-      return response;
-    });
+  if(!isCacheableShellRequest(request))return;
+  event.respondWith(respondWithShell(request));
+});
+
+self.addEventListener('message',event=>{
+  const data=event.data||{};
+  if(data.type!=='inkdesk:clear-app-cache')return;
+  event.waitUntil(caches.delete(CACHE_NAME).then(async()=>{
+    await installAppShell();
+    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdesk:app-cache-reset',ok:true});
+  }).catch(error=>{
+    console.error('InkDesk app-cache recovery failed.',error);
+    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdesk:app-cache-reset',ok:false});
   }));
 });

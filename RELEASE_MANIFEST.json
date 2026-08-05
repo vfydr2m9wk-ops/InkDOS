@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.19.1-beta",
-  "releaseName": "Export Verification and Parser Hardening",
+  "version": "0.19.2-beta",
+  "releaseName": "Release Packaging and Privacy Cleanup",
   "releaseType": "Beta",
   "releaseDate": "2026-08-04",
   "entryPoints": {
@@ -28,7 +28,7 @@
   "validation": {
     "repositoryValidation": true,
     "sourceAudit": true,
-    "unitAndPackageTests": 49,
+    "unitAndPackageTests": 53,
     "browserRegressionScripts": 11,
     "localPlaywrightChromium": true,
     "localPlaywrightFirefox": false,

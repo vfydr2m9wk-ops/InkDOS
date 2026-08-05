@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.19.2-beta] - 2026-08-04
+
+### Packaging and release
+
+- Added a manual full-replacement workflow that deletes the prior worktree, copies the source archive in full, force-updates `main`, moves the version tag, and replaces release assets without comparing prior files.
+- Fixed source-package checksum coverage so every distributable source file except the checksum manifest itself is verified.
+- Updated version metadata, cache keys, release notes, upgrade notes, and validation documentation.
+
+### Privacy
+
+- Removed tool-generated personal-name metadata from synthetic Office compatibility fixtures.
+- Added a repeatable package privacy/readiness audit report.
+
+### Status
+
+- Retained beta status because native Safari/iPadOS, installed-PWA, Firefox/WebKit, memory-pressure, and post-hardening real-corpus validation remain incomplete.
+
 ## [0.19.1-beta] - 2026-08-04
 
 ### Data integrity
@@ -30,6 +47,15 @@
 - Added adversarial Node/Python/browser tests and split browser CI into isolated Playwright engine/scenario groups.
 - Added deterministic tagged runtime packaging, checksums, exact commit metadata, prerelease preparation, and explicit opt-in publication.
 - Removed the manually committed source ZIP/bootstrap workflow.
+
+### Post-audit hardening refresh
+
+- Bound HTTP(S) frame handoff messages to exact origins and validated both message origin and source.
+- Added bridge protocol versioning, token expiration, one-time consumption, receipt acknowledgement, deterministic cleanup, and a documented isolated `file://` opaque-origin exception.
+- Replaced wildcard-message regex auditing with a nesting-aware JavaScript call scanner and adversarial scanner tests.
+- Corrected service-worker query-key handling, incomplete-cache cleanup, cache failure reporting, shell-only caching, and recovery messaging.
+- Required clean tagged Git checkouts for official builds and added an included-file manifest, SPDX SBOM, and double-build byte comparison.
+- Expanded the Python suite to 53 tests and retained 11 passing Chromium browser regression scripts.
 
 ### Documentation
 

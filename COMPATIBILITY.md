@@ -13,7 +13,7 @@ InkDesk provides focused, partial compatibility. “Passed” below means the li
 | DOC / PPT binary | Unsupported | Controlled rejection; convert to DOCX/PPTX first |
 | PDF | Out of scope | Use a dedicated PDF tool |
 
-## Browser/platform evidence for 0.19.1-beta
+## Browser/platform evidence for 0.19.2-beta
 
 | Environment | Open/edit/export/reopen | Offline/PWA | Status | Evidence/notes |
 |---|---|---|---|---|

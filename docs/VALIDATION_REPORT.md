@@ -1,4 +1,4 @@
-# Validation Report — InkDesk 0.19.1-beta
+# Validation Report — InkDesk 0.19.2-beta
 
 ## Environment
 
@@ -15,9 +15,9 @@
 |---|---:|
 | Repository validation | Passed |
 | Source audit | Passed |
-| Python unit/package suite | 47/47 passed |
+| Python unit/package suite | 53/53 passed |
 | JavaScript security-module assertions | 46/46 passed |
-| Chromium browser scripts | 10/10 passed in five isolated groups |
+| Chromium browser scripts | 11/11 passed in five isolated groups |
 | DOCX round-trip scenarios | Passed |
 | XLS/XLSX round-trip scenarios | Passed |
 | PPTX round-trip scenarios | 20/20 checks passed |
@@ -26,6 +26,8 @@
 | WebKit local launch | Not executable; Playwright engine missing |
 
 The local system Chromium became unreliable after many consecutive browser launches in one aggregate process. Each final Chromium group was therefore run independently, matching the CI matrix design. This is an environment limitation, not evidence of native device support.
+
+The origin-bound bridge regression contains a real two-origin path for normal CI/browser environments. In this local execution environment, navigation to synthetic HTTP(S), localhost, and `file://` URLs was blocked by administrator policy; the test therefore executed its explicit trusted-origin/hostile-origin policy fallback and recorded that limitation rather than claiming the full two-frame path ran locally.
 
 ## What the browser tests prove
 

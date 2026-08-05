@@ -1,37 +1,31 @@
-# InkDesk 0.19.1-beta — Export Verification and Parser Hardening
+# InkDesk 0.19.2-beta — Release Packaging and Privacy Cleanup
 
-This focused beta addresses data-integrity and untrusted-file risks without expanding the editing feature set.
+## Purpose
 
-## Security and reliability changes
+This beta packages the hardened 0.19.1 codebase as a self-consistent source replacement and removes avoidable identifying metadata from synthetic compatibility fixtures. It does not claim version 1.0 readiness.
 
-- Replaced false “saved” semantics with shared states: clean, dirty, export preparing, download requested/unverified, failed, and fingerprint-verified.
-- Kept unload protection active after a browser download request.
-- Added SHA-256 verification when the exact exported copy is reopened.
-- Rebuilt DOCX-derived editable DOM through a deny-by-default allowlist; active attributes/elements, dangerous URLs, external resources, unsafe CSS, and clobbering names are removed.
-- Removed spreadsheet `Function`/dynamic compilation and added a bounded deterministic arithmetic parser.
-- Expanded raw ZIP validation for duplicates/collisions, local/central mismatch, overlap, methods, encryption, ZIP64, truncation, nested archives, and resource limits.
-- Added XML DTD/entity rejection and explicit size/complexity budgets.
-- Added relationship-target validation and package-inventory comparisons.
+## Packaging and release workflow
 
-## Navigation enhancement in the local test package
+- Added a manual full-replacement workflow that does not compare or merge against prior repository files.
+- The workflow safely extracts the selected ZIP, deletes the existing worktree except `.git`, copies the candidate tree in full, commits it, force-updates `main`, force-moves `v0.19.2-beta`, builds the deterministic runtime archive, and replaces release assets.
+- Removed the previous multi-stage synchronization logic and backup-branch behavior.
+- Included `SOURCE_PACKAGE_INFO.json` in `CHECKSUMS.sha256`, fixing the source package's self-verification failure.
 
-- Added one main **Open document** button that routes DOCX, XLS/XLSX, and PPTX to the matching workspace.
-- Added home buttons to Documents, Spreadsheets, and Presentations.
-- Added hosted IndexedDB and direct-local embedded file handoff paths without introducing a server or remote processing.
-- Added mobile title-bar compatibility rules and Chromium checks for route detection, bridge transfer, and home-link targets.
-- Reorganized the home information area into three equal responsive cards, removing the unused gray cell visible on tablet layouts.
+## Privacy cleanup
 
-## Tests and release engineering
+- Removed default personal-name metadata embedded by document-generation tooling from DOCX/PPTX and converted legacy fixture files.
+- Confirmed that the source archive contains no `.git` directory, OS metadata, editor state, private keys, access tokens, real email addresses, CPF/CNPJ values, phone numbers, absolute user paths, ZIP comments, or EXIF identity fields.
+- The public GitHub handle `vfydr2m9wk-ops` remains in repository URLs and `CODEOWNERS`; it identifies the publishing account but contains no real-world identity in this package.
 
-- Added malicious/failure-path module tests and a browser hardening scenario with script/network assertions.
-- Added deterministic release packaging with exact commit metadata and SHA-256.
-- Added Playwright browser-matrix CI for Chromium, Firefox, and WebKit and a manual opt-in prerelease workflow.
-- Removed the committed manually generated source ZIP and its bootstrap workflow.
+## Validation
 
-## Upgrade notes
+- Repository validation passed.
+- Source audit passed.
+- 53 Python unit/package tests passed.
+- 46 JavaScript security assertions passed.
+- JavaScript syntax checks passed.
+- Source checksum verification passed after regeneration.
 
-No persisted user-document schema migration is required. Service-worker cache version changes to `inkdesk-shell-v0.19.1-beta-router1`; hosted users may need one reload after activation. Existing exports remain ordinary Office files. See `UPGRADE_NOTES.md`.
+## Release status
 
-## Known limitations
-
-Browser download completion is still not observable; fingerprint verification requires reopening the exported copy. Native Safari/iPadOS behavior, installed PWA flows, advanced OOXML fidelity, large-file memory pressure, and exhaustive fuzzing remain unverified. This release is not a 1.0 candidate.
+InkDesk remains a controlled public beta. Native Safari, physical iPadOS, installed-PWA behavior, Firefox/WebKit engine runs in the release environment, memory-pressure testing, and post-hardening real-corpus regression remain required before a 1.0 designation.

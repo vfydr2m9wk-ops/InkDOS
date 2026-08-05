@@ -1,4 +1,4 @@
-# Architecture — InkDesk 0.19.1-beta
+# Architecture — InkDesk 0.19.2-beta
 
 ## System boundary
 
