@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.5';
+const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.6';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -57,6 +57,7 @@ const APP_SHELL=[
   './apps/pdf/module.json',
   './apps/pdf/index.html',
   './apps/pdf/styles.css',
+  './apps/pdf/text-selection-review.js',
   './apps/pdf/app.js'
   ,'./shared/vendor/pdfjs/pdf.min.js'
   ,'./shared/vendor/pdfjs/pdf.worker.min.js'

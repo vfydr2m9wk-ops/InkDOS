@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 5,
-  "currentPackage": "0.19.4.5",
+  "appliedSequence": 6,
+  "currentPackage": "0.19.4.6",
   "status": "in-progress",
   "history": [
     {
@@ -30,6 +30,11 @@
       "sequence": 5,
       "packageLabel": "0.19.4.5",
       "description": "PDF shell stabilization: deterministic closed-by-default navigation panel, session-only preference, accessible toggle state, zero-width collapsed layout, unified red PDF identity across launcher and viewer, regression tests, and revised ordered roadmap."
+    },
+    {
+      "sequence": 6,
+      "packageLabel": "0.19.4.6",
+      "description": "PDF selected-text review: highlight, underline, and comment commands derived from PDF.js text-layer selection; multi-line and multi-page page-relative geometry; linked undo groups; free marker/text isolation; persistence compatibility; tests and documentation."
     }
   ]
 }

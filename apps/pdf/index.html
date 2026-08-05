@@ -100,11 +100,11 @@
       <div class="command-separator"></div>
       <div class="command-group annotation-tools" aria-label="Review tools">
         <button class="tool-btn annotation-tool active" data-tool="select" type="button" title="Select PDF text or fill AcroForm fields"><svg viewBox="0 0 24 24"><path d="m5 3 13 8-6 2-3 6z"/></svg></button>
-        <button class="tool-btn annotation-tool" data-tool="highlight" type="button" title="Highlight"><span class="marker-icon highlight-icon">A</span></button>
-        <button class="tool-btn annotation-tool" data-tool="underline" type="button" title="Underline"><span class="marker-icon underline-icon">U</span></button>
-        <button class="tool-btn annotation-tool" data-tool="marker" type="button" title="Marker"><span class="marker-icon marker-fill-icon">M</span></button>
-        <button class="tool-btn annotation-tool" data-tool="comment" type="button" title="Insert comment"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg></button>
-        <button class="tool-btn annotation-tool" data-tool="text" type="button" title="Insert text"><svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg></button>
+        <button class="tool-btn annotation-tool" data-tool="highlight" type="button" title="Highlight selected text" aria-label="Highlight selected text"><span class="marker-icon highlight-icon">A</span></button>
+        <button class="tool-btn annotation-tool" data-tool="underline" type="button" title="Underline selected text" aria-label="Underline selected text"><span class="marker-icon underline-icon">U</span></button>
+        <button class="tool-btn annotation-tool" data-tool="marker" type="button" title="Free marker area" aria-label="Free marker area"><span class="marker-icon marker-fill-icon">M</span></button>
+        <button class="tool-btn annotation-tool" data-tool="comment" type="button" title="Comment on selected text" aria-label="Comment on selected text"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg></button>
+        <button class="tool-btn annotation-tool" data-tool="text" type="button" title="Insert free text" aria-label="Insert free text"><svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg></button>
         <button id="undoReview" class="tool-btn" type="button" title="Undo last review action"><svg viewBox="0 0 24 24"><path d="m9 7-5 5 5 5"/><path d="M4 12h9a6 6 0 0 1 6 6"/></svg></button>
       </div>
       <div class="command-separator"></div>
@@ -161,7 +161,8 @@
   <script src="../../shared/file-router.js?v=0.19.3-beta.7"></script>
   <script src="../../shared/vendor/pdfjs/pdf.min.js?v=3.11.174"></script>
   <script src="../../shared/office-shell.js?v=0.19.4.3"></script>
-  <script src="app.js?v=0.19.3-beta.7"></script>
+  <script src="text-selection-review.js?v=0.19.4.6"></script>
+  <script src="app.js?v=0.19.4.6"></script>
   <script src="../../shared/register-service-worker.js?v=0.19.3-beta.7"></script>
 </body>
 </html>

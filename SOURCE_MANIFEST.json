@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 159,
+  "fileCount": 162,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 1661,
-      "sha256": "77fb42b74e651785c7598a896e73fe49c295db8d294cef50c5ccaba15eb74c8d"
+      "bytes": 2013,
+      "sha256": "53a415f60ae86eb518175282b2067910d0e97fb7da5b2f11622f358d71dce030"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "f23438fee7ea11920c92fc7022677249228705b3d4c27a5279c18dac9dec77f0"
+      "sha256": "90141e18fb2dbf912452478cfbe9f15bf082999f934fad2447f2064e72a854af"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -144,8 +144,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 4509,
-      "sha256": "160f937484c0536b022bb30dd272f9b5a83669ba5995aea15ccf8119199f038f"
+      "bytes": 5158,
+      "sha256": "c388a8aaaf58172c3cd712e43c548d7b3ccfd8b93dc85dd2a4d6be49e63e5da7"
     },
     {
       "path": "apps/documents/app.js",
@@ -179,13 +179,13 @@
     },
     {
       "path": "apps/pdf/app.js",
-      "bytes": 19598,
-      "sha256": "6a9269da50d34d85394f02c715ea831e435d5fd054fe79a7fde01b6c57337a57"
+      "bytes": 34302,
+      "sha256": "634db786a1f3351690874df4b268f9d3588a05d0cd66aa8d3c17062ac7695529"
     },
     {
       "path": "apps/pdf/index.html",
-      "bytes": 11435,
-      "sha256": "37876c878fb953765e04eb1ccf5e3120afb21f987cf5c7b917ba30b13ba5f9a2"
+      "bytes": 11717,
+      "sha256": "dfa819197944a831249630f5250ef253bc04dff3c3bf279be70fa39d2f3b62b6"
     },
     {
       "path": "apps/pdf/module.json",
@@ -196,6 +196,11 @@
       "path": "apps/pdf/styles.css",
       "bytes": 15150,
       "sha256": "10162ef61852ff7c70fffcc8c31e6b5e1282e67fec1cb3598e2d5289606dfae0"
+    },
+    {
+      "path": "apps/pdf/text-selection-review.js",
+      "bytes": 10513,
+      "sha256": "f8d7a21f09796dd45b0909ac2ca9fd362ca87e85ec2608d6f3313dde28b2b988"
     },
     {
       "path": "apps/presentations/app.js",
@@ -418,6 +423,11 @@
       "sha256": "b9323247ef80b12e54ca8f62e6b177dc51b4349f8b59f9af4aaa8bc9303a906d"
     },
     {
+      "path": "docs/PDF_TEXT_SELECTION.md",
+      "bytes": 1819,
+      "sha256": "665dbc0d9d95afacf534d042e28fd0c1b1d19811b91bddd189778b0aab759837"
+    },
+    {
       "path": "docs/PRESENTATIONS_COMPONENT.md",
       "bytes": 2790,
       "sha256": "db9d4a4da3064ab4ee5253895b306c642d91c232b43a674b3f1fd97d05dca438"
@@ -449,8 +459,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 3710,
-      "sha256": "f931e1d5d4d02c60f75cbfaa7abff380980cbbe87ce6da0c27caf3c26ce58732"
+      "bytes": 3724,
+      "sha256": "0ad6599687f8cbd7fde84a3340e52d71edc13fb69dc38dae395059db717bf19e"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -574,8 +584,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1311,
-      "sha256": "e2054eb8a85e9c1d19f924ed46b0564b2405928d1ad7f03ac3eac3011260956d"
+      "bytes": 1385,
+      "sha256": "2f7c999539d78763de3690166d32ffe6fdea0a299631e9d7c01776bdf137e46f"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -624,8 +634,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 5321,
-      "sha256": "d2dd26ef524c83fce74c673b97dfde2414060387838ebd440b4ae81127fa741f"
+      "bytes": 5362,
+      "sha256": "2a07353614aec94e260c913522f571201c6ec81def6fff7d884610e391ce4045"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -699,8 +709,8 @@
     },
     {
       "path": "shared/ui/workspace-layout.css",
-      "bytes": 20531,
-      "sha256": "73e463ef375145ac3c995a7ce67f2962064e8d27725f3e52e5e4ceb5053a564d"
+      "bytes": 22818,
+      "sha256": "8b5eeb0af6a93a0a121c6dbefb4700fdc14b3fa0fe9653507783ae112920258a"
     },
     {
       "path": "shared/ui/workspace-layout.js",
@@ -791,6 +801,11 @@
       "path": "tests/test_pdf_shell_polish.py",
       "bytes": 5688,
       "sha256": "6e4e893820bc41eb2bad2b8779c2a48f25d1949fa1fad1b7a86227cef430316a"
+    },
+    {
+      "path": "tests/test_pdf_text_selection.py",
+      "bytes": 7367,
+      "sha256": "dd8f8c6d24dc8502269b05e1cf0b9cb44c7265bfec3c3a849313037764bfc8b5"
     },
     {
       "path": "tests/test_repository.py",

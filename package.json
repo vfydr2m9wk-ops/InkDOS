@@ -19,7 +19,8 @@
     "release:metadata": "python3 scripts/generate_release_metadata.py",
     "test:shell": "python3 -m unittest tests.test_application_shell",
     "test:layout": "python3 -m unittest tests.test_workspace_layout",
-    "test:pdf-shell": "python3 -m unittest tests.test_pdf_shell_polish"
+    "test:pdf-shell": "python3 -m unittest tests.test_pdf_shell_polish",
+    "test:pdf-text": "python3 -m unittest tests.test_pdf_text_selection"
   },
   "license": "MIT"
 }

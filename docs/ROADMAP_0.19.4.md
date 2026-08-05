@@ -36,7 +36,7 @@ Each package must remain focused and must not silently absorb later milestones.
 - Keep the chosen state while a document opens.
 - Use one red PDF identity in the launcher, start screen, and viewer.
 
-## 0.19.4.6 — PDF selected-text review tools
+## 0.19.4.6 — PDF selected-text review tools (implemented)
 
 - Highlight, underline, and comment only actual selected PDF text.
 - Convert browser selection rectangles into page-relative review segments.

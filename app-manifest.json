@@ -112,7 +112,13 @@
       "pdf-page-hash-reload-navigation",
       "pdf-zoom-50-to-400",
       "pdf-fullscreen-exit-recovery",
-      "pdf-object-url-file-lifecycle"
+      "pdf-object-url-file-lifecycle",
+      "pdf-selected-text-highlight",
+      "pdf-selected-text-underline",
+      "pdf-selected-text-comment",
+      "pdf-multiline-selection-segments",
+      "pdf-multipage-linked-selection",
+      "pdf-free-marker-isolation"
     ]
   },
   "compatibility": {
@@ -144,5 +150,21 @@
         "pdfAccent": "#b42318"
       }
     }
+  },
+  "pdfReviewSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.6",
+    "storageSchema": "inkdesk-pdf-review/2",
+    "selectedTextTools": [
+      "highlight",
+      "underline",
+      "comment"
+    ],
+    "freeAnnotationTools": [
+      "marker",
+      "text"
+    ],
+    "geometry": "normalized page-relative rectangles derived from PDF.js text-layer selection",
+    "documentation": "docs/PDF_TEXT_SELECTION.md"
   }
 }
