@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 157,
+  "fileCount": 159,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 1316,
-      "sha256": "367840c31d7a102d4722f4fcefd59037189d82a3671e68ae5572736587c4d659"
+      "bytes": 1661,
+      "sha256": "77fb42b74e651785c7598a896e73fe49c295db8d294cef50c5ccaba15eb74c8d"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "e584776d1cfba1a281dbb9fcf27015741be4f8798bbf072136a336b33e20a186"
+      "sha256": "f23438fee7ea11920c92fc7022677249228705b3d4c27a5279c18dac9dec77f0"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -144,8 +144,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 4442,
-      "sha256": "b99788329d86606b0b4e233ff227012b24d1863f90368e165e776b2f949dcd58"
+      "bytes": 4509,
+      "sha256": "160f937484c0536b022bb30dd272f9b5a83669ba5995aea15ccf8119199f038f"
     },
     {
       "path": "apps/documents/app.js",
@@ -190,7 +190,7 @@
     {
       "path": "apps/pdf/module.json",
       "bytes": 578,
-      "sha256": "07d4d50df0e48357b7f90e95ff425890af8a6fa6b8a58ab0ff16ac9487c114ef"
+      "sha256": "2ac6abd54a00552891e4c426c14dc3e9cfb7652adca64782d7c738c2c45c258d"
     },
     {
       "path": "apps/pdf/styles.css",
@@ -413,6 +413,11 @@
       "sha256": "be88262902a13e86a1027679a4e3d67da01674d60e9d5c774d1af45965f5daa3"
     },
     {
+      "path": "docs/PDF_SHELL_POLISH.md",
+      "bytes": 1271,
+      "sha256": "b9323247ef80b12e54ca8f62e6b177dc51b4349f8b59f9af4aaa8bc9303a906d"
+    },
+    {
       "path": "docs/PRESENTATIONS_COMPONENT.md",
       "bytes": 2790,
       "sha256": "db9d4a4da3064ab4ee5253895b306c642d91c232b43a674b3f1fd97d05dca438"
@@ -444,8 +449,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 4728,
-      "sha256": "cb2fbe01997fed105b26cb4c0cf305f4ec6299deb958ed1cb0d85fa8036930ac"
+      "bytes": 3710,
+      "sha256": "f931e1d5d4d02c60f75cbfaa7abff380980cbbe87ce6da0c27caf3c26ce58732"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -560,7 +565,7 @@
     {
       "path": "modules/module-registry.js",
       "bytes": 3385,
-      "sha256": "2abba93b643acf12f6c3b0ff4dd3cec0ecf932a8ae3cf993a558e87dc66efda6"
+      "sha256": "97dc2ba7cdd6ae6fd0de754485f5171c7f37cfb44da76cc78f6fb64f51b9eac5"
     },
     {
       "path": "modules/module-schema.json",
@@ -569,8 +574,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1238,
-      "sha256": "fd2ec310454f506b468d45b79f5c1fa72bd608aa7508c99e95994b0ba683ff22"
+      "bytes": 1311,
+      "sha256": "e2054eb8a85e9c1d19f924ed46b0564b2405928d1ad7f03ac3eac3011260956d"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -620,7 +625,7 @@
     {
       "path": "service-worker.js",
       "bytes": 5321,
-      "sha256": "ad09348a8232f403f1df4d98c830c64a195a5c841c46598890cc2fbcc8f51a3f"
+      "sha256": "d2dd26ef524c83fce74c673b97dfde2414060387838ebd440b4ae81127fa741f"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -645,7 +650,7 @@
     {
       "path": "shared/hub.css",
       "bytes": 7425,
-      "sha256": "1753759e3300e8bbcc1aaf16bfa4b4392c14242c07a59a10434b3834cba761ae"
+      "sha256": "026634bcf5f76d6d0ec8bb14b5c51e54631955d9f19942e594337a9ca3079698"
     },
     {
       "path": "shared/office-runtime.js",
@@ -660,7 +665,7 @@
     {
       "path": "shared/office-shell.js",
       "bytes": 4428,
-      "sha256": "4462f64ece11ab1fc0418cd58df3ce6477d5890606d78e89329a6043dbbdb5c5"
+      "sha256": "3eb91fe3efe07476cc174bdc5a6318a1a72d78ed7de048141d3877f11a18dbd7"
     },
     {
       "path": "shared/register-service-worker.js",
@@ -694,13 +699,13 @@
     },
     {
       "path": "shared/ui/workspace-layout.css",
-      "bytes": 17857,
-      "sha256": "46402b7d90e96bd533500ad5bba525f0095682789e36bbc66c43da685b16488b"
+      "bytes": 20531,
+      "sha256": "73e463ef375145ac3c995a7ce67f2962064e8d27725f3e52e5e4ceb5053a564d"
     },
     {
       "path": "shared/ui/workspace-layout.js",
-      "bytes": 9283,
-      "sha256": "6cfc873e87ae26697538c1031ac20323ff0b7a99e78df330f3115f67861f82df"
+      "bytes": 11459,
+      "sha256": "dd4d1f818b33b3bd71f0fb50aead230e3111a6ef96c3193d98c86e4f38b9009a"
     },
     {
       "path": "shared/vendor/LICENSE-JSZIP.txt",
@@ -783,6 +788,11 @@
       "sha256": "23360afe46012c46ad73ea03ac16b35706f3038b30f8a34b69a9ede5d958a362"
     },
     {
+      "path": "tests/test_pdf_shell_polish.py",
+      "bytes": 5688,
+      "sha256": "6e4e893820bc41eb2bad2b8779c2a48f25d1949fa1fad1b7a86227cef430316a"
+    },
+    {
       "path": "tests/test_repository.py",
       "bytes": 9931,
       "sha256": "7c9b802e2cf94877bd387f60e920c0182e2bc0aac1bca100471d571f474dc3f6"
@@ -794,8 +804,8 @@
     },
     {
       "path": "tests/test_workspace_layout.py",
-      "bytes": 4210,
-      "sha256": "08d6d174ecb517a643667795cca59e97bd36d583e98924a72b1603f58615a45b"
+      "bytes": 4527,
+      "sha256": "a7b7c859bc53c374ec65eee9d74eaf788fd1a965c739aa4eabcfd646dd5208da"
     }
   ]
 }

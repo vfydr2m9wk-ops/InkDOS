@@ -130,16 +130,18 @@
     "documentation": "docs/APPLICATION_SHELL.md",
     "workspaceLayout": {
       "schemaVersion": 1,
-      "version": "0.19.4.4",
+      "version": "0.19.4.5",
       "stylesheet": "shared/ui/workspace-layout.css",
       "runtime": "shared/ui/workspace-layout.js",
-      "documentation": "docs/VISUAL_SYSTEM.md",
+      "documentation": "docs/PDF_SHELL_POLISH.md",
       "defaults": {
         "documentsSidebar": "closed",
         "presentationThumbnails": "open",
         "presentationFormatPanel": "closed",
         "presentationNotes": "closed",
-        "pdfOpenAction": "centered"
+        "pdfOpenAction": "centered",
+        "pdfSidebar": "closed",
+        "pdfAccent": "#b42318"
       }
     }
   }

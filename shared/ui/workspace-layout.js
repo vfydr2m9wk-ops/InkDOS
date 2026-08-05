@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.4';
+  const VERSION = '0.19.4.5';
   const STORAGE_PREFIX = 'inkdesk.ui.session.';
 
   const MODULE_DEFAULTS = Object.freeze({
@@ -12,6 +12,9 @@
       thumbnails: true,
       inspector: false,
       notes: false
+    }),
+    pdf: Object.freeze({
+      sidebar: false
     })
   });
 
@@ -231,6 +234,9 @@
   function applyPdf(documentObject) {
     const startScreen = documentObject.getElementById('startScreen');
     const openButton = documentObject.getElementById('openBtn');
+    const workspace = documentObject.getElementById('workspaceBody');
+    const sidebar = documentObject.getElementById('sidebar');
+    const toggle = documentObject.getElementById('sidebarToggle');
 
     if (startScreen) {
       startScreen.dataset.inkdeskEmptyState = 'centered';
@@ -240,7 +246,85 @@
       openButton.dataset.inkdeskPrimaryAction = 'open-document';
     }
 
-    return Boolean(startScreen || openButton);
+    function setSidebarOpen(open, persist) {
+      if (!workspace) return false;
+
+      const shouldOpen = Boolean(open);
+      workspace.classList.toggle('sidebar-collapsed', !shouldOpen);
+      workspace.dataset.inkdeskPdfSidebar = shouldOpen ? 'open' : 'closed';
+
+      if (sidebar) {
+        sidebar.setAttribute(
+          'aria-hidden',
+          shouldOpen ? 'false' : 'true'
+        );
+        if ('inert' in sidebar) sidebar.inert = !shouldOpen;
+      }
+
+      if (toggle) {
+        toggle.classList.toggle('active', shouldOpen);
+        setExpanded(toggle, shouldOpen);
+        toggle.title = shouldOpen
+          ? 'Hide navigation panel'
+          : 'Show navigation panel';
+        toggle.setAttribute(
+          'aria-label',
+          shouldOpen
+            ? 'Hide navigation panel'
+            : 'Show navigation panel'
+        );
+      }
+
+      if (persist) {
+        safeSessionSet('pdf.sidebar', shouldOpen);
+      }
+
+      global.setTimeout(function () {
+        try {
+          global.dispatchEvent(new Event('resize'));
+        } catch (error) {
+          /* Resize dispatch is only a layout hint. */
+        }
+      }, 0);
+
+      return shouldOpen;
+    }
+
+    const initialOpen = resolvedPreference(
+      'pdf.sidebar',
+      MODULE_DEFAULTS.pdf.sidebar
+    );
+    setSidebarOpen(initialOpen, false);
+
+    if (
+      toggle &&
+      toggle.dataset.inkdeskPdfSidebarController !== VERSION
+    ) {
+      toggle.dataset.inkdeskPdfSidebarController = VERSION;
+
+      toggle.addEventListener(
+        'click',
+        function (event) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+
+          const currentlyOpen = workspace
+            ? !workspace.classList.contains('sidebar-collapsed')
+            : false;
+
+          setSidebarOpen(!currentlyOpen, true);
+        },
+        true
+      );
+    }
+
+    return Boolean(
+      startScreen ||
+      openButton ||
+      workspace ||
+      sidebar ||
+      toggle
+    );
   }
 
   function applySpreadsheet(documentObject) {

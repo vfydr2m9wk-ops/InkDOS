@@ -107,7 +107,7 @@ const registry={
       "icon": "assets/icons/pdf.png",
       "badge": "PDF",
       "themeClass": "pdf",
-      "accent": "#6d5bd0",
+      "accent": "#b42318",
       "extensions": [
         "pdf"
       ],

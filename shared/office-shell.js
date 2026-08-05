@@ -90,7 +90,7 @@
   function loadWorkspaceLayout() {
     if (
       global.InkDeskWorkspaceLayout &&
-      global.InkDeskWorkspaceLayout.version === '0.19.4.4'
+      global.InkDeskWorkspaceLayout.version === '0.19.4.5'
     ) {
       return Promise.resolve(global.InkDeskWorkspaceLayout);
     }

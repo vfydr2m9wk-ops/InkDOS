@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 4,
-  "currentPackage": "0.19.4.4",
+  "appliedSequence": 5,
+  "currentPackage": "0.19.4.5",
   "status": "in-progress",
   "history": [
     {
@@ -25,6 +25,11 @@
       "sequence": 4,
       "packageLabel": "0.19.4.4",
       "description": "Shared visual harmonization for Documents, Spreadsheets, Presentations, and PDF; content-first default panel states; session-only panel preference persistence; and centered PDF open-document empty state."
+    },
+    {
+      "sequence": 5,
+      "packageLabel": "0.19.4.5",
+      "description": "PDF shell stabilization: deterministic closed-by-default navigation panel, session-only preference, accessible toggle state, zero-width collapsed layout, unified red PDF identity across launcher and viewer, regression tests, and revised ordered roadmap."
     }
   ]
 }

@@ -24,7 +24,11 @@ class WorkspaceLayoutTests(unittest.TestCase):
         )
         self.assertIn("workspace-layout.css", bootstrap)
         self.assertIn("workspace-layout.js", bootstrap)
-        self.assertIn("0.19.4.4", bootstrap)
+        manifest = json.loads(
+            (ROOT / "app-manifest.json").read_text(encoding="utf-8")
+        )
+        expected = manifest["uiSystem"]["workspaceLayout"]["version"]
+        self.assertIn(expected, bootstrap)
 
     def test_default_panel_contract(self):
         runtime = (ROOT / "shared" / "ui" / "workspace-layout.js").read_text(
@@ -60,7 +64,10 @@ class WorkspaceLayoutTests(unittest.TestCase):
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("'./shared/ui/workspace-layout.css'", worker)
         self.assertIn("'./shared/ui/workspace-layout.js'", worker)
-        self.assertIn("0.19.4.4", worker)
+        self.assertRegex(
+            worker,
+            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+        )
 
     def test_package_and_manifest_expose_visual_system(self):
         package = json.loads(
@@ -75,7 +82,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
             (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
         visual = manifest["uiSystem"]["workspaceLayout"]
-        self.assertEqual(visual["version"], "0.19.4.4")
+        self.assertEqual(visual["version"], "0.19.4.5")
         self.assertEqual(
             visual["stylesheet"],
             "shared/ui/workspace-layout.css",
@@ -94,11 +101,12 @@ class WorkspaceLayoutTests(unittest.TestCase):
 require('./shared/ui/workspace-layout.js');
 const api = globalThis.InkDeskWorkspaceLayout;
 if (!api) process.exit(10);
-if (api.version !== '0.19.4.4') process.exit(11);
+if (api.version !== '0.19.4.5') process.exit(11);
 if (api.defaults.documents.sidebar !== false) process.exit(12);
 if (api.defaults.presentations.thumbnails !== true) process.exit(13);
 if (api.defaults.presentations.inspector !== false) process.exit(14);
 if (api.defaults.presentations.notes !== false) process.exit(15);
+if (api.defaults.pdf.sidebar !== false) process.exit(16);
 """
 
         result = subprocess.run(

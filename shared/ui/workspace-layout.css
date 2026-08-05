@@ -500,6 +500,16 @@ body.office-pdf {
   --title-height: var(--inkdesk-titlebar-height);
   --toolbar-height: 48px;
   --status-height: var(--inkdesk-statusbar-height);
+  --inkdesk-accent: #b42318;
+  --accent: #b42318 !important;
+  --accent-soft: rgba(180, 35, 24, 0.12) !important;
+  --inkdesk-pdf-sidebar-width: 244px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.office-pdf {
+    --accent-soft: rgba(238, 104, 91, 0.18) !important;
+  }
 }
 
 body.office-pdf .viewer-app {
@@ -634,4 +644,94 @@ body.office-pdf .pdf-pages {
   body.office-product .commandbar button {
     min-height: var(--inkdesk-touch-target) !important;
   }
+}
+
+/* PDF navigation is controlled by workspace-layout.js, not by the legacy
+ * inline onclick handler. Closed panels must contribute no grid width. */
+@media (min-width: 651px) {
+  body.office-pdf .workspace-body {
+    grid-template-columns:
+      var(--inkdesk-pdf-sidebar-width)
+      minmax(0, 1fr) !important;
+  }
+
+  body.office-pdf .workspace-body.sidebar-collapsed {
+    grid-template-columns: 0 minmax(0, 1fr) !important;
+  }
+
+  body.office-pdf .workspace-body > .sidebar {
+    width: var(--inkdesk-pdf-sidebar-width) !important;
+    min-width: 0 !important;
+    max-width: var(--inkdesk-pdf-sidebar-width) !important;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.office-pdf .workspace-body.sidebar-collapsed > .sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 650px) {
+  body.office-pdf .workspace-body {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body.office-pdf .workspace-body > .sidebar {
+    width: min(82vw, 300px) !important;
+    max-width: min(82vw, 300px) !important;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  body.office-pdf .workspace-body.sidebar-collapsed > .sidebar {
+    transform: translateX(-105%) !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body.office-pdf .workspace-body:not(.sidebar-collapsed) > .sidebar {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+body.office-pdf .workspace-body.sidebar-collapsed > .viewer-stage {
+  min-width: 0;
+  width: 100%;
+}
+
+body.office-pdf .app-badge,
+body.office-pdf .pdf-badge,
+body.office-pdf .start-btn.primary,
+body.office-pdf .primary-action {
+  background: #b42318 !important;
+  border-color: #b42318 !important;
+}
+
+body.office-pdf .dirty-mark,
+body.office-pdf .sidebar-tab.active,
+body.office-pdf .page-item.active,
+body.office-pdf .icon-btn.active,
+body.office-pdf .tool-btn.active {
+  color: #b42318 !important;
+}
+
+body.office-pdf .page-item.active {
+  border-color: #b42318 !important;
+}
+
+body.office-pdf .annotation-box.text,
+body.office-pdf .review-annotation.text {
+  border-color: #b42318 !important;
 }
