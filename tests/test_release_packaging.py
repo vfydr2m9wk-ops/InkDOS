@@ -42,7 +42,7 @@ class ReleasePackagingTests(unittest.TestCase):
         return output / f"InkDesk_v{version}.zip"
 
     def test_runtime_archive_is_reproducible_scoped_and_traceable(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temporary:
             base = Path(temporary)
             checkout = self.make_tagged_checkout(base)
             archive_a = self.build(checkout, base / "first")
@@ -88,7 +88,7 @@ class ReleasePackagingTests(unittest.TestCase):
                     self.assertEqual(hashlib.sha256(package.read(name)).hexdigest(), checksum)
 
     def test_build_refuses_dirty_or_untagged_checkout(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temporary:
             base = Path(temporary)
             checkout = self.make_tagged_checkout(base)
             (checkout / "README.md").write_text("dirty\n", encoding="utf-8")
