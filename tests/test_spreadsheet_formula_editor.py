@@ -22,8 +22,8 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
 
     def test_entry_page_has_no_visible_formula_help_or_overlay(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        self.assertIn("formula-editor.js?v=0.19.4.10", html)
-        self.assertIn("formula-reference.js?v=0.19.4.10", html)
+        self.assertIn("formula-editor.js?v=0.20.0", html)
+        self.assertIn("formula-reference.js?v=0.20.0", html)
         self.assertIn('id="formulaHint" hidden', html)
         self.assertNotIn('id="cellFormulaEditor"', html)
 
@@ -73,7 +73,7 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
     def test_manifest_exposes_persistent_session(self):
         manifest = json.loads((ROOT / "app-manifest.json").read_text(encoding="utf-8"))
         editor = manifest["spreadsheetFormulaEditorSystem"]
-        self.assertEqual(editor["version"], "0.19.4.10")
+        self.assertEqual(editor["version"], "0.20.0")
         self.assertEqual(editor["mode"], "persistent in-cell draft session")
         self.assertTrue(editor["draftSurvivesCellSwitch"])
         self.assertEqual(editor["minimumSuggestionLetters"], 2)
@@ -87,7 +87,7 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
         script = r"""
 require('./apps/spreadsheets/formula-editor.js');
 const api = globalThis.InkDeskFormulaEditor;
-if (!api || api.version !== '0.19.4.10') process.exit(10);
+if (!api || api.version !== '0.20.0') process.exit(10);
 if (api.suggestionContext('=', 1) !== null) process.exit(11);
 if (api.suggestionContext('=S', 2) !== null) process.exit(12);
 const su = api.suggestionContext('=SU', 3);

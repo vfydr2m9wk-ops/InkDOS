@@ -11,27 +11,16 @@ class HomeSessionRefinementTests(unittest.TestCase):
     def test_home_order_and_quiet_copy(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         positions = [
-            html.index('class="app-grid"'),
+            html.index('class="hub-topbar"'),
+            html.index('class="hub-intro"'),
+            html.index('class="workspace-grid"'),
             html.index('class="open-any-panel"'),
-            html.index('class="quick-panel"'),
-            html.index(
-                'class="status-callout status-callout-compact"'
-            ),
             html.index('class="hub-footer"'),
         ]
         self.assertEqual(positions, sorted(positions))
-        self.assertNotIn(
-            "Choose a DOCX, XLS, XLSX, PPTX or PDF file.",
-            html,
-        )
-        self.assertIn(
-            "The selected file stays on this device.",
-            html,
-        )
-        self.assertIn(
-            "InkDesk 0.19.3-beta.7 · build 0.19.4.15",
-            html,
-        )
+        self.assertIn("The selected file stays on this device.", html)
+        self.assertIn("v0.20.0 beta", html)
+        self.assertNotIn("Choose a DOCX, XLS, XLSX, PPTX or PDF file.", html)
 
     def test_shared_shell_contains_non_invasive_title_adapter(self):
         shell = (
@@ -39,7 +28,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         for marker in (
-            "Document-session title adapter — 0.19.4.13",
+            "Document-session title adapter — 0.20.0",
             "initializeDocumentSessionAdapter",
             "office-documents",
             "office-spreadsheets",
@@ -78,7 +67,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
             "function anyWorkspaceNeedsWarning()",
             "global.addEventListener('beforeunload'",
             "confirmDiscard(",
-            "version:'0.19.4.13'",
+            "version:'0.20.0'",
         ):
             self.assertIn(marker, lifecycle)
 
@@ -104,8 +93,8 @@ class HomeSessionRefinementTests(unittest.TestCase):
             (ROOT / "package.json").read_text(encoding="utf-8")
         )
 
-        self.assertIn("modules-0.19.4.15", worker)
-        self.assertEqual(package["version"], "0.19.3-beta.7")
+        self.assertIn("inkdesk-shell-v0.20.0", worker)
+        self.assertEqual(package["version"], "0.20.0")
 
 
 if __name__ == "__main__":

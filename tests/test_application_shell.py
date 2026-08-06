@@ -29,7 +29,7 @@ class ApplicationShellTests(unittest.TestCase):
             )
         )
         self.assertEqual(contract["schemaVersion"], 1)
-        self.assertEqual(contract["version"], "0.19.4.3")
+        self.assertEqual(contract["version"], "0.20.0")
         self.assertEqual(
             set(contract["regions"]),
             {
@@ -70,7 +70,7 @@ class ApplicationShellTests(unittest.TestCase):
             "./shared/ui/shell-contract.json",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertIn("0.19.3-beta.7", worker)
+        self.assertIn("inkdesk-shell-v0.20.0", worker)
         self.assertRegex(
             worker,
             r"const CACHE_NAME=[\'\"]inkdesk-shell-v[^\'\"]+[\'\"];",
@@ -88,7 +88,7 @@ class ApplicationShellTests(unittest.TestCase):
             (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
         ui = manifest["uiSystem"]
-        self.assertEqual(ui["version"], "0.19.4.3")
+        self.assertEqual(ui["version"], "0.20.0")
         self.assertEqual(ui["bootstrap"], "shared/office-shell.js")
         self.assertEqual(
             ui["runtime"],
@@ -103,7 +103,7 @@ class ApplicationShellTests(unittest.TestCase):
         script = """
 require('./shared/ui/application-shell.js');
 if (!globalThis.InkDeskUI) process.exit(10);
-if (globalThis.InkDeskUI.version !== '0.19.4.3') process.exit(11);
+if (globalThis.InkDeskUI.version !== '0.20.0') process.exit(11);
 
 let value = 0;
 const commands = globalThis.InkDeskUI.createCommandRegistry(null);

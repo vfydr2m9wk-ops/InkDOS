@@ -1,43 +1,45 @@
-# Known Limitations — 0.19.3-beta.7
+# Known Limitations
 
 ## General
 
-- InkDesk is beta software and does not provide complete Microsoft Office or Microsoft Edge fidelity.
-- Large ZIP/XML/BIFF8 files can cause memory pressure. Image-heavy PDFs can still exceed browser canvas or worker limits, especially on tablet-class devices, despite the five-page render window.
-- Password-protected/encrypted Office files, ZIP64 packages, macros and embedded active applications are unsupported.
-- Native Safari, physical iPadOS, Firefox, installed-PWA updates and embedded hosts still require manual validation for this build.
+- InkDesk does not aim for Microsoft Office feature parity or pixel-identical rendering.
+- Saving creates a new download rather than overwriting the selected source file.
+- Browser and host policies control file selection, downloads, fullscreen, service workers, and installation.
+- Fonts can be substituted and change pagination or slide geometry.
+- Active documents and Undo/Redo history are memory-only. Crash/session recovery is not implemented.
+- Compressed Office inputs larger than 100 MiB are rejected. Packages are also rejected when entry count, per-entry expansion, total expansion, path safety, encryption, ZIP64, or compression-ratio limits are exceeded.
+- Password-protected and encrypted Office files are unsupported.
+- Direct `file://`, native Firefox, native Safari/WebKit, iPadOS, and embedded-host behavior was not executed in the current review environment.
 
 ## Documents
 
-- Pagination can vary when fonts are substituted.
-- Fields, comments, equations, tracked changes, text boxes and complex DrawingML are partial.
-- Leading XML BOMs and NFC path differences are normalized, but unusual section inheritance and non-standard package naming still need more fixtures.
+- Fields, comments, equations, embedded Office objects, tracked-change semantics, and complex DrawingML layouts are not fully editable.
+- Content inside controls or revision wrappers may be displayed, but editing can change review semantics.
+- Pagination is approximate.
+- New documents use a compact generated DOCX package rather than a full Word template.
+- Legacy `.doc` is unsupported.
+- Filename editing is available in the Document Workspace; the selected source `File` object itself remains immutable.
 
 ## Spreadsheets
 
-- BIFF8 `.xls` is import-only and exports as XLSX.
-- Unsupported formulas use cached workbook values when available and are not recalculated.
-- External links, data connections, Power Query, pivots, VBA/ActiveX/OLE and advanced chart fidelity are unsupported or partial.
-- Text overflow follows empty-cell rules in page view, but unusual merged/formatted regions may still differ from Excel.
+- BIFF8 `.xls` is import-only and is exported as `.xlsx`.
+- Older BIFF variants, encrypted workbooks, unusual continuation records, VBA, ActiveX, legacy charts, and embedded OLE objects are unsupported or best effort.
+- BIFF formula token streams are not reconstructed; cached displayed results are imported as values where necessary.
+- Formula evaluation is intentionally limited and is not a complete Excel calculation engine. The local arithmetic preview uses a strict allowlist and remains a manual security-review item.
+- External links, data connections, Power Query, pivot features, dynamic arrays beyond the focused implementation, and advanced chart fidelity are incomplete.
+- Spreadsheet rename UI is not currently exposed; exported names derive from the opened workbook or generated default.
 
 ## Presentations
 
-- SmartArt, embedded media/OLE, complex groups, advanced animation/transitions and exact PowerPoint text autofit are partial.
-- Imported direct and inherited backgrounds are resolved, but unusual theme effects can still differ.
-- Package-preserving export cannot safely reproduce every structural slide edit.
+- Imported PPTX export preserves the existing slide set. Insert/delete/duplicate operations that would require rebuilding an imported relationship graph are blocked during preservation-mode save rather than silently discarding parts.
+- New presentations can add, duplicate, reorder, and delete slides using the compact generated writer.
+- SmartArt, embedded media, OLE objects, advanced animations, complex groups, charts, themes, and exact text layout are partial or preview-only.
+- Presenter notes are preserved/editable when the imported package already contains the required notes relationships. Creating a complete notes graph for a new presentation is deferred.
+- Presentation filename editing is not currently exposed.
 
-## PDF Workspace
+## PWA and offline hosting
 
-- PDF rendering is provided by bundled classic PDF.js 3.11.174. Browser canvas, worker and memory limits still vary, especially on tablet-class devices and image-heavy scans.
-- The Pages panel keeps lightweight entries for every page but creates raster thumbnails only near the current page. At most five full page canvases are retained.
-- Scanned image-only PDFs have no selectable text until OCR is performed.
-- Dynamic XFA, digital signatures and uncommon annotation types can be displayed or saved only to the extent supported by PDF.js.
-- Highlight, underline and marker tools create region-based InkDesk review overlays. They are not character-anchored PDF annotations.
-- InkDesk comments, inserted text, marks and personal bookmarks are stored by PDF fingerprint and exported as review JSON. They are not falsely presented as embedded PDF annotations.
-- **Save PDF copy** serializes changes supported by PDF.js annotation storage; unsupported documents must use review JSON. PDF signing, OCR, redaction, page reordering and conversion are not implemented.
-- Automated validation includes a synthetic 4,000-page PDF in Chromium; physical iPadOS/WebKit performance and memory behavior still require manual validation.
-
-## PWA and hosts
-
-- The service worker caches same-origin application assets, not user documents.
-- Direct `file://` behavior varies and has no service worker.
+- The manifest and same-origin service worker are structurally present and validated.
+- Static HTTP delivery of required assets was verified.
+- Actual browser installation, service-worker control, and browser-offline reload were not executed because the available Chromium was administratively blocked from navigating to both `file://` and localhost URLs.
+- The application remains usable without service-worker support when its files are otherwise accessible to the host.

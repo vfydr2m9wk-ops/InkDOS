@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.3';
+  const VERSION = '0.20.0';
 
   const MODULE_CLASSES = Object.freeze({
     'office-documents': 'documents',

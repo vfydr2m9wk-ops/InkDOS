@@ -189,7 +189,7 @@ function attachWorkspace(options){
   }
 }
 global.InkDeskFileRouter=Object.freeze({
-  version:'0.19.4.15',
+  version:'0.20.0',
   extensionOf,
   routeForFile,
   openFromHub,

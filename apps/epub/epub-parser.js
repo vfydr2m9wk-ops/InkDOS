@@ -1,6 +1,6 @@
 (function(global){
 'use strict';
-const VERSION='0.19.4.15';
+const VERSION='0.20.0';
 function decode(value){return String(value||'').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&quot;/gi,'"').replace(/&apos;|&#39;/gi,"'").replace(/&amp;/gi,'&')}
 function normalizePath(value){const parts=[];String(value||'').replace(/\\/g,'/').split('/').forEach(part=>{if(!part||part==='.')return;if(part==='..'){parts.pop();return}parts.push(part)});return parts.join('/')}
 function dirname(value){const path=normalizePath(value),index=path.lastIndexOf('/');return index<0?'':path.slice(0,index)}

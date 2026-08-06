@@ -154,30 +154,3 @@ body.resizing-column .col-header.resize-active,body.resizing-row .row-header.res
 .structured-table-header{font-weight:700;background:color-mix(in srgb,var(--accent,#356fb6) 24%,var(--surface,#fff))!important}
 .structured-table-band{background:color-mix(in srgb,var(--accent,#356fb6) 7%,transparent)!important}
 .dynamic-array-preview{white-space:pre-line!important;align-items:flex-start!important;overflow:auto!important;line-height:1.25!important}
-
-/* 0.19.3-beta.3 unified start screen */
-#emptyState.start-screen{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,var(--bg),var(--panel2));padding:24px;z-index:5}
-#emptyState .start-card{width:min(560px,92vw);background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:44px;text-align:left;backdrop-filter:none;-webkit-backdrop-filter:none}
-#emptyState .app-badge{width:54px;height:54px;border-radius:15px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:25px;font-weight:800;margin-bottom:22px;box-shadow:0 9px 24px color-mix(in srgb,var(--accent) 32%,transparent)}
-#emptyState .start-card h1{font-size:34px;line-height:1.1;margin:0 0 8px!important}
-#emptyState .start-card>p{margin:0 0 28px!important;color:var(--muted);font-size:16px;max-width:none;text-align:left}
-#emptyState .start-card>small{display:block;margin-top:22px;color:var(--muted)}
-#emptyState .start-actions{display:flex;gap:14px;flex-wrap:wrap}
-#emptyState .start-btn{flex:1;min-width:200px;padding:18px 20px;border:1px solid var(--line);border-radius:16px;display:flex;align-items:center;gap:12px;justify-content:center;font:inherit;font-weight:700;font-size:16px;cursor:pointer;min-height:auto!important;box-shadow:none;text-align:center}
-#emptyState .start-btn.primary{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
-#emptyState .start-btn.secondary{background:var(--panel)!important;color:var(--text)!important}
-#emptyState .start-btn .ico{font-size:22px;line-height:1;width:auto;height:auto;background:transparent!important;color:inherit!important;border-radius:0}
-#emptyState .start-btn .folder svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
-@media(max-width:620px){#emptyState .start-card{padding:32px 24px}#emptyState .start-btn{min-width:100%}}
-.page-view .cell:not([data-wrap="1"]){overflow:visible;white-space:nowrap;position:relative;z-index:1}
-.page-view .cell[data-explicit-borders]{overflow:hidden;z-index:2}
-.page-view .cell[data-halign="center"],.page-view .cell[data-halign="right"]{overflow:hidden}
-.page-view .cell{background-clip:padding-box}
-
-/* Excel page-view text overflow follows cell paint order: populated cells sit above
-   empty neighbours, while explicitly bordered/form cells remain clipped. */
-.page-view .cell[data-overflow-text="1"]:not([data-form-empty="1"]):not([data-explicit-borders]){z-index:3}
-.page-view .cell[data-form-empty="1"]:not([data-explicit-borders]){z-index:0}
-.page-view .cell[data-overflow-text="1"]:not([data-form-empty="1"]):not([data-explicit-borders]){contain:layout}
-/* Excel-style formula autocomplete (beta.6). */
-.formula-editor{position:relative;min-width:0;display:flex}.formula-editor>input{width:100%}.formula-suggestions{position:absolute;left:0;right:0;top:100%;z-index:80;max-height:280px;overflow:auto;background:var(--panel,#fff);border:1px solid var(--line,#ccd0d8);box-shadow:0 10px 26px rgba(0,0,0,.18);border-radius:0 0 9px 9px}.formula-suggestion{display:grid;grid-template-columns:110px 1fr;gap:10px;width:100%;padding:8px 10px;border:0;border-bottom:1px solid var(--line,#e3e5e8);background:transparent;color:inherit;text-align:left;cursor:pointer}.formula-suggestion.active,.formula-suggestion:hover{background:rgba(36,112,224,.12)}.formula-suggestion strong{color:#2470e0}.formula-suggestion span{font-size:12px;color:var(--muted,#626875)}

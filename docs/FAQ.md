@@ -13,4 +13,4 @@ InkDesk has no project-operated upload backend. Files are processed in the curre
 No. Macros, embedded scripts, ActiveX, and remote document instructions are not intentionally executed.
 
 ## Which formats are supported?
-DOCX, XLSX, BIFF8 XLS import, PPTX and the local PDF Workspace, with the limitations documented in `COMPATIBILITY.md`.
+DOCX, XLSX, BIFF8 XLS import, and PPTX, with the limitations documented in `COMPATIBILITY.md`.

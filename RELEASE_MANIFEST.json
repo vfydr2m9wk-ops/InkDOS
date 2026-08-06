@@ -1,42 +1,49 @@
 {
-  "schemaVersion": 2,
-  "name": "InkDesk",
-  "version": "0.19.3-beta.7",
-  "channel": "beta",
-  "releaseName": "Local-File PDF Recovery and Visible Loading",
-  "releaseDate": "2026-08-05",
-  "archiveName": "InkDesk_v0.19.3-beta.7.zip",
-  "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
-  "workspaces": [
-    "documents",
-    "spreadsheets",
-    "presentations",
-    "pdf"
-  ],
-  "syntheticFixtures": [
-    "tests/fixtures/inkdesk-letterhead-a4.docx",
-    "tests/fixtures/inkdesk-letterhead-a4-bom.docx",
-    "tests/fixtures/inkdesk-prescription-a4.xls",
-    "tests/fixtures/inkdesk-prescription-a4.xlsx",
-    "tests/fixtures/inkdesk-presentation-layout.pptx",
-    "tests/fixtures/inkdesk-pdf-sample.pdf",
-    "tests/fixtures/inkdesk-pdf-long-4000-pages.pdf"
-  ],
-  "privacy": {
-    "privateReferenceFilesIncluded": false,
-    "fixtureMetadataNormalized": true,
-    "repositoryImagesMetadataStripped": true,
-    "localBuildPathsIncluded": false
+  "project": "InkDesk",
+  "version": "0.20.0",
+  "releaseName": "Consolidated Modular Preview",
+  "releaseType": "Beta",
+  "releaseDate": "2026-08-06",
+  "entryPoints": {
+    "InkDesk.html": "index.html",
+    "Documents.html": "apps/documents/index.html",
+    "Spreadsheets.html": "apps/spreadsheets/index.html",
+    "Presentations.html": "apps/presentations/index.html",
+    "PDF.html": "apps/pdf/index.html",
+    "TXT.html": "apps/txt/index.html",
+    "EPUB.html": "apps/epub/index.html"
   },
-  "validation": [
-    "python3 scripts/check_no_legacy_runtime.py",
-    "python3 scripts/validate_repository.py",
-    "python3 scripts/audit_source.py",
-    "python3 -m unittest discover -s tests -p test_*.py",
-    "python3 scripts/run_browser_regressions.py"
+  "runtimeDirectories": [
+    "apps/documents",
+    "apps/spreadsheets",
+    "apps/presentations",
+    "apps/pdf",
+    "apps/txt",
+    "apps/epub",
+    "shared",
+    "modules"
   ],
-  "distributableFileCount": 212,
-  "sourceManifest": "SOURCE_MANIFEST.json",
-  "checksumManifest": "RUNTIME_CHECKSUMS.sha256",
-  "sbom": "SBOM.spdx.json"
+  "supportedFormats": [
+    "DOCX",
+    "XLS (BIFF8 import)",
+    "XLSX",
+    "PPTX",
+    "PDF",
+    "TXT",
+    "EPUB"
+  ],
+  "buildRequired": false,
+  "automaticRemoteRuntimeDependencies": false,
+  "license": "MIT for original code; bundled third-party components retain upstream licenses.",
+  "validation": {
+    "sourceBootstrapValidation": true,
+    "structuralUnitTests": "170 passed",
+    "strictPublicationValidation": "required in GitHub workflow after vendoring PDF.js",
+    "nativeSafari": false,
+    "nativeFirefox": false,
+    "nativeIPadOS": false,
+    "installedPwaRuntime": false
+  },
+  "publicationVendorBootstrapRequired": true,
+  "vendorLock": "VENDOR_SOURCES.json"
 }

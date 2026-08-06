@@ -86,7 +86,7 @@ class PdfTextSelectionTests(unittest.TestCase):
             )
         )
         review = manifest["pdfReviewSystem"]
-        self.assertEqual(review["version"], "0.19.4.6")
+        self.assertEqual(review["version"], "0.20.0")
         self.assertEqual(
             review["selectedTextTools"],
             ["highlight", "underline", "comment"],
@@ -136,7 +136,7 @@ class PdfTextSelectionTests(unittest.TestCase):
 require('./apps/pdf/text-selection-review.js');
 const api = globalThis.InkDeskPdfTextSelection;
 
-if (!api || api.version !== '0.19.4.6') process.exit(10);
+if (!api || api.version !== '0.20.0') process.exit(10);
 
 const merged = api.mergeRects([
   { x: 10, y: 20, width: 30, height: 12 },

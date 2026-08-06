@@ -34,7 +34,7 @@
   function loadApplicationShell() {
     if (
       global.InkDeskUI &&
-      global.InkDeskUI.version === '0.19.4.3'
+      global.InkDeskUI.version === '0.20.0'
     ) {
       return Promise.resolve(global.InkDeskUI);
     }
@@ -90,7 +90,7 @@
   function loadWorkspaceLayout() {
     if (
       global.InkDeskWorkspaceLayout &&
-      global.InkDeskWorkspaceLayout.version === '0.19.4.7'
+      global.InkDeskWorkspaceLayout.version === '0.20.0'
     ) {
       return Promise.resolve(global.InkDeskWorkspaceLayout);
     }
@@ -165,7 +165,7 @@
 
 
   /*
-   * Document-session title adapter — 0.19.4.13.
+   * Document-session title adapter — 0.20.0.
    *
    * This shared layer deliberately avoids replacing complete application
    * files. It upgrades the title already rendered by each installed
@@ -577,7 +577,7 @@
     lastApplicationTitle = currentName();
 
     return Object.freeze({
-      version: '0.19.4.13',
+      version: '0.20.0',
       currentName,
       commitTitle
     });

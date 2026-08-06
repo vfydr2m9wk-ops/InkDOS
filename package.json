@@ -1,6 +1,6 @@
 {
   "name": "inkdesk",
-  "version": "0.19.3-beta.7",
+  "version": "0.20.0",
   "private": true,
   "description": "A lightweight local-first browser productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "scripts": {
@@ -30,7 +30,8 @@
     "test:pdf-unified-save": "python3 -m unittest tests.test_pdf_unified_save",
     "test:home-session-refinement": "python3 -m unittest tests.test_home_session_refinement",
     "test:txt": "python3 -m unittest tests.test_txt_module",
-    "test:epub": "python3 -m unittest tests.test_epub_module"
+    "test:epub": "python3 -m unittest tests.test_epub_module",
+    "test:consolidated-release": "python3 -m unittest tests.test_v0200_release"
   },
   "license": "MIT"
 }

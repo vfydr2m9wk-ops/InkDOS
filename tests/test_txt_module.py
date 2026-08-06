@@ -59,11 +59,11 @@ class TxtModuleTests(unittest.TestCase):
             self.assertIn(marker, html)
 
         self.assertIn(
-            "../../shared/file-lifecycle.js?v=0.19.4.13",
+            "../../shared/file-lifecycle.js?v=0.20.0",
             html,
         )
         self.assertIn(
-            "../../shared/file-router.js?v=0.19.4.14",
+            "../../shared/file-router.js?v=0.20.0",
             html,
         )
 
@@ -125,7 +125,7 @@ class TxtModuleTests(unittest.TestCase):
             "./apps/txt/app.js",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertIn("modules-0.19.4.15", worker)
+        self.assertIn("inkdesk-shell-v0.20.0", worker)
 
     def test_application_manifest_records_txt_contract(self):
         manifest = json.loads(
@@ -135,7 +135,7 @@ class TxtModuleTests(unittest.TestCase):
         )
         contract = manifest["txtEditorSystem"]
 
-        self.assertEqual(contract["version"], "0.19.4.14")
+        self.assertEqual(contract["version"], "0.20.0")
         self.assertTrue(contract["localProcessing"])
         self.assertTrue(contract["preservesDetectedLineEnding"])
         self.assertIn("txt", manifest["capabilities"])

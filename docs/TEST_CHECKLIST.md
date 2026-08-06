@@ -2,7 +2,7 @@
 
 ## Package and launchers
 
-- [ ] Open `index.html`; all four workspace cards load the correct application.
+- [ ] Open `Office Suite.html`; all three cards load the correct application.
 - [ ] Open each direct launcher from the package root.
 - [ ] Confirm no launcher requires browsing into a versioned internal folder.
 

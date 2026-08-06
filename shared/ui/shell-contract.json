@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.19.4.3",
+  "version": "0.20.0",
   "description": "Stable shared interface regions exposed by the InkDesk application shell.",
   "regions": {
     "titlebar": {

@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.12';
+  const VERSION = '0.20.0';
   const DEFAULT_DPI = 144;
   const DEFAULT_JPEG_QUALITY = 0.91;
   const DEFAULT_MAX_PAGE_PIXELS = 8000000;

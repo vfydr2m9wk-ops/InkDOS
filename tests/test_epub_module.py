@@ -15,7 +15,7 @@ class EpubModuleTests(unittest.TestCase):
     def test_parser(self):
         node=shutil.which('node')
         if not node:self.skipTest('Node unavailable')
-        script=r'''require('./apps/epub/epub-parser.js');const api=globalThis.InkDeskEpubParser;if(!api||api.version!=='0.19.4.15')process.exit(10);if(api.resolvePath('OPS/package.opf','text/ch1.xhtml')!=='OPS/text/ch1.xhtml')process.exit(11);if(api.resolvePath('OPS/text/ch1.xhtml','../images/cover.png')!=='OPS/images/cover.png')process.exit(12);const c='<container><rootfiles><rootfile full-path="OPS/package.opf"/></rootfiles></container>';if(api.parseContainer(c)!=='OPS/package.opf')process.exit(13);const opf='<package><metadata><dc:title>Sample</dc:title><dc:creator>Author</dc:creator><meta name="cover" content="cover"/></metadata><manifest><item id="cover" href="images/c.png" media-type="image/png"/><item id="c1" href="text/1.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="c1"/></spine></package>';const b=api.parsePackage(opf,'OPS/package.opf');if(b.title!=='Sample'||b.creator!=='Author'||b.sections.length!==1||b.sections[0].path!=='OPS/text/1.xhtml'||!b.cover)process.exit(14);'''
+        script=r'''require('./apps/epub/epub-parser.js');const api=globalThis.InkDeskEpubParser;if(!api||api.version!=='0.20.0')process.exit(10);if(api.resolvePath('OPS/package.opf','text/ch1.xhtml')!=='OPS/text/ch1.xhtml')process.exit(11);if(api.resolvePath('OPS/text/ch1.xhtml','../images/cover.png')!=='OPS/images/cover.png')process.exit(12);const c='<container><rootfiles><rootfile full-path="OPS/package.opf"/></rootfiles></container>';if(api.parseContainer(c)!=='OPS/package.opf')process.exit(13);const opf='<package><metadata><dc:title>Sample</dc:title><dc:creator>Author</dc:creator><meta name="cover" content="cover"/></metadata><manifest><item id="cover" href="images/c.png" media-type="image/png"/><item id="c1" href="text/1.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="c1"/></spine></package>';const b=api.parsePackage(opf,'OPS/package.opf');if(b.title!=='Sample'||b.creator!=='Author'||b.sections.length!==1||b.sections[0].path!=='OPS/text/1.xhtml'||!b.cover)process.exit(14);'''
         r=subprocess.run([node,'-e',script],cwd=ROOT,capture_output=True,text=True);self.assertEqual(r.returncode,0,r.stdout+r.stderr)
     def test_runtime(self):
         s=(ROOT/'apps/epub/app.js').read_text()
@@ -25,9 +25,9 @@ class EpubModuleTests(unittest.TestCase):
         router=(ROOT/'shared/file-router.js').read_text();reg=(ROOT/'modules/module-registry.js').read_text();home=(ROOT/'index.html').read_text();sw=(ROOT/'service-worker.js').read_text()
         self.assertIn("epub:'./apps/epub/index.html'",router);self.assertIn('"id": "epub"',reg);self.assertIn('./apps/epub/index.html',home);self.assertIn('.epub',home)
         for asset in ('./EPUB.html','./apps/epub/module.json','./apps/epub/index.html','./apps/epub/styles.css','./apps/epub/epub-parser.js','./apps/epub/app.js'):self.assertIn(repr(asset),sw)
-        self.assertIn('modules-0.19.4.15',sw)
+        self.assertIn('inkdesk-shell-v0.20.0',sw)
     def test_contract(self):
-        m=json.loads((ROOT/'app-manifest.json').read_text());c=m['epubReaderSystem'];self.assertEqual(c['version'],'0.19.4.15');self.assertTrue(c['localProcessing']);self.assertFalse(c['contentEditing']);self.assertEqual(len(c['themes']),4);self.assertEqual(m['documentSessionSystem']['editableTitles']['epub'],'.epub');self.assertNotIn('epub',m['iconSystem']['plannedModuleIcons'])
+        m=json.loads((ROOT/'app-manifest.json').read_text());c=m['epubReaderSystem'];self.assertEqual(c['version'],'0.20.0');self.assertTrue(c['localProcessing']);self.assertFalse(c['contentEditing']);self.assertEqual(len(c['themes']),4);self.assertEqual(m['documentSessionSystem']['editableTitles']['epub'],'.epub');self.assertNotIn('epub',m['iconSystem']['plannedModuleIcons'])
     def test_syntax(self):
         node=shutil.which('node')
         if not node:self.skipTest('Node unavailable')

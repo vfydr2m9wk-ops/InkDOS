@@ -71,7 +71,7 @@ class VisualFoundationTests(unittest.TestCase):
 
     def test_icon_catalog_tracks_active_and_planned_modules(self):
         catalog = json.loads((ROOT / 'assets/icons/icon-catalog.json').read_text(encoding='utf-8'))
-        self.assertEqual(catalog['version'], '0.19.4.15')
+        self.assertEqual(catalog['version'], '0.20.0')
         self.assertEqual(catalog['icons']['epub']['status'], 'active')
         self.assertEqual(catalog['icons']['txt']['status'], 'active')
         self.assertEqual(catalog['icons']['inkdesk']['symbol'], 'quill-and-inkwell')
@@ -88,9 +88,9 @@ class VisualFoundationTests(unittest.TestCase):
     def test_manifest_and_service_worker_expose_foundation(self):
         manifest = json.loads((ROOT / 'app-manifest.json').read_text(encoding='utf-8'))
         foundation = manifest['uiSystem']['visualFoundation']
-        self.assertEqual(foundation['version'], '0.19.4.11')
+        self.assertEqual(foundation['version'], '0.20.0')
         self.assertTrue(foundation['raisedRetractablePanels'])
-        self.assertEqual(manifest['iconSystem']['version'], '0.19.4.11')
+        self.assertEqual(manifest['iconSystem']['version'], '0.20.0')
         self.assertIn('epub', manifest['iconSystem']['activeModuleIcons'])
 
         worker = (ROOT / 'service-worker.js').read_text(encoding='utf-8')

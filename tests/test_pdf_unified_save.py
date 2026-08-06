@@ -60,7 +60,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
 
         self.assertLess(exporter, application)
         self.assertIn(
-            "flatten-export.css?v=0.19.4.12",
+            "flatten-export.css?v=0.20.0",
             html,
         )
 
@@ -99,8 +99,8 @@ class PdfUnifiedSaveTests(unittest.TestCase):
         )
 
         contract = manifest["pdfSaveSystem"]
-        self.assertEqual(contract["version"], "0.19.4.12")
-        self.assertEqual(contract["visualFoundation"], "0.19.4.11")
+        self.assertEqual(contract["version"], "0.20.0")
+        self.assertEqual(contract["visualFoundation"], "0.20.0")
         self.assertFalse(contract["annotatedExportTextSelectable"])
         self.assertEqual(
             contract["visibleActions"],
@@ -145,7 +145,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             "'./apps/pdf/flatten-export.js'",
             worker,
         )
-        self.assertRegex(worker, r"modules-0\.19\.4\.\d+")
+        self.assertIn("inkdesk-shell-v0.20.0", worker)
 
     def test_pure_pdf_builder_and_geometry(self):
         node = shutil.which("node")
@@ -162,7 +162,7 @@ const fs = require('fs');
 require('./apps/pdf/flatten-export.js');
 const api = globalThis.InkDeskPdfFlattenExport;
 
-if (!api || api.version !== '0.19.4.12') process.exit(10);
+if (!api || api.version !== '0.20.0') process.exit(10);
 
 const rectangle = api.rectToPixels(
   { x: 0.1, y: 0.2, w: 0.3, h: 0.04 },

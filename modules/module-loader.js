@@ -111,7 +111,7 @@ function appendTextElement(parent,tag,className,text){
 
 function createCard(module){
   const link=document.createElement('a');
-  link.className='app-card '+module.themeClass;
+  link.className='workspace-card app-card '+module.themeClass;
   link.href='./'+module.entryPoint.replace(/^\.?\//,'');
   link.dataset.moduleId=module.id;
   link.style.setProperty('--accent',module.accent);
@@ -131,7 +131,7 @@ function createCard(module){
   const arrow=appendTextElement(link,'span','open-arrow','›');
   arrow.setAttribute('aria-hidden','true');
   const copy=document.createElement('span');
-  copy.className='card-copy';
+  copy.className='workspace-copy card-copy';
   appendTextElement(copy,'h2','',module.name);
   appendTextElement(copy,'p','',module.description);
   link.appendChild(copy);

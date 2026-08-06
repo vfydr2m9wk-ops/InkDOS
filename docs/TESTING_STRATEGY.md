@@ -14,7 +14,7 @@ Static checks alone cannot validate document fidelity. Testing is split into fou
 
 ## 2. Synthetic fixtures
 
-The repository contains small, redistributable DOCX, XLS/XLSX, PPTX and PDF fixtures generated from public OOXML structure. They verify that package plumbing and expected parts remain intact.
+The repository contains small, redistributable DOCX, XLSX and PPTX fixtures generated from public OOXML structure. They verify that package plumbing and expected parts remain intact.
 
 ## 3. Workflow regression tests
 

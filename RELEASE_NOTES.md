@@ -1,33 +1,27 @@
-# InkDesk 0.19.3-beta.7
+# InkDesk v0.20.0 — Consolidated Modular Preview
 
-This corrective beta addresses three regressions observed in the downloaded beta.6 package when opened directly from the filesystem.
+Released: 2026-08-06
 
-## PDF opening
+## What changed
 
-- Replaced the ES-module PDF.js entry point that Edge blocks on `file://` with the official classic PDF.js 3.11.174 distribution and classic local worker.
-- The PDF workspace now initializes before the user clicks **Open PDF**, so the button opens the native file chooser in direct local-file mode.
-- Opening a PDF through the InkDesk hub and its local iframe handoff was verified without the previous 30-second transfer timeout.
-- Selectable text, AcroForm fields, outline navigation, thumbnails, page synchronization and the five-page render window remain active.
-- Direct local-file tests opened the synthetic 4,000-page PDF and jumped to page 3,500 with no JavaScript errors and at most five full page canvases.
+- Consolidated the 0.19.4 development line into one complete package.
+- Introduced a cleaner six-workspace home page and public Semantic Versioning.
+- Included Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB.
+- Preserved the rounded shared visual system and native system typography.
+- Preserved editable filenames and unsaved-change protection where applicable.
+- Reset future patch development to the 0.20.x line.
 
-## Presentation loading feedback
+## Important limitations
 
-- PPTX opening now displays a modal progress bar immediately.
-- Reading uses `FileReader` progress events and reports bytes read.
-- Package validation, relationships, theme/layout processing, per-slide parsing and initial rendering have distinct progress stages.
-- The overlay is removed on both success and failure, preserving the previous presentation when an open operation fails.
+InkDesk remains experimental. Compatibility is intentionally focused, exported
+copies must be reopened and verified for important work, and saving usually
+creates a new downloaded file. EPUB is read-only apart from saving the original
+book under a renamed filename.
 
-## Spreadsheet formula discovery
 
-- Pressing `=` while a cell is selected now moves directly to the formula bar with `=` already entered.
-- Ten filtered function suggestions appear immediately, with function syntax and a short description.
-- Arrow keys choose an item; Enter or Tab inserts it; Escape dismisses the list.
-- Suggestions also remain available when typing directly in the formula bar.
+### Pinned PDF.js publication step
 
-## Packaging
-
-- Added a dedicated architecture gate that rejects retired PDF embeds, fragment navigation, `.mjs` local runtime files and duplicate PDF.js inventories.
-- Added a simple GitHub Actions workflow for pushes to `main` (or manual execution) that runs architecture, unit and privacy checks, builds the release and uploads the ZIP with its checksum.
-- Added a full-replacement proposal and migration checklist under `docs/GITHUB_FULL_REPLACEMENT_PROPOSAL.md`.
-- Runtime checksums, SPDX inventory, documentation and tests were regenerated.
-- Only synthetic fixtures are included. No private reference document or identifying local path is present.
+The source publication workflow installs the exact `pdfjs-dist@3.11.174`
+classic build before strict validation. InkDesk disables PDF.js eval support
+when opening a document. The committed release remains self-contained and
+offline after publication.

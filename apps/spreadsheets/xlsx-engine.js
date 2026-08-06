@@ -4,11 +4,10 @@
 const NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
 const REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
 const PKG_REL='http://schemas.openxmlformats.org/package/2006/relationships';
-let currentXmlBudget=null;
 
 function xml(text,context='XLSX package part'){
-  if(global.InkDeskRuntime)return global.InkDeskRuntime.parseXml(text,context,currentXmlBudget);
-  const d=new DOMParser().parseFromString(String(text||'').replace(/^\uFEFF/,''),'application/xml');
+  if(global.InkDeskRuntime)return global.InkDeskRuntime.parseXml(text,context);
+  const d=new DOMParser().parseFromString(text,'application/xml');
   if(d.querySelector('parsererror'))throw new Error('Invalid XML in '+context);
   return d;
 }
@@ -146,10 +145,9 @@ async function parseTableParts(read,sheetPath,sheetDoc){
   return result;
 }
 async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
-  currentXmlBudget=global.InkDeskRuntime?global.InkDeskRuntime.createXmlBudget():null;
   if(!global.JSZip)throw new Error('JSZip did not load');
   if(global.InkDeskRuntime)global.InkDeskRuntime.validateZipPackage(buffer,fileName);
-  const zip=await JSZip.loadAsync(buffer);if(global.InkDeskRuntime)await global.InkDeskRuntime.validateOoxmlRelationships(zip,{xmlBudget:currentXmlBudget});const read=async p=>zip.file(p)?zip.file(p).async('text'):'';
+  const zip=await JSZip.loadAsync(buffer),read=async p=>zip.file(p)?zip.file(p).async('text'):'';
   const wbRaw=await read('xl/workbook.xml');if(!wbRaw)throw new Error('This is not a supported XLSX workbook');
   const workbookXml=xml(wbRaw),relsRaw=await read('xl/_rels/workbook.xml.rels');if(!relsRaw)throw new Error('Workbook relationships are missing');
   const relsXml=xml(relsRaw),relMap={};relsXml.querySelectorAll('Relationship').forEach(r=>relMap[r.getAttribute('Id')]=r.getAttribute('Target'));
@@ -285,10 +283,10 @@ async function buildNewPackage(book){
 }
 async function saveCopy(book){
   if(!book.loaded)throw new Error('Create or open a workbook before saving a copy');if(!book.zip)return buildNewPackage(book);
-  const source=await book.zip.generateAsync({type:'uint8array'});if(global.InkDeskRuntime)global.InkDeskRuntime.validateZipPackage(source,'XLSX source package');const zip=await JSZip.loadAsync(source),beforeInventory=global.InkDeskRuntime?global.InkDeskRuntime.packageInventory(zip):[];let changedAny=false;
+  const source=await book.zip.generateAsync({type:'uint8array'}),zip=await JSZip.loadAsync(source);let changedAny=false;
   for(const s of book.sheets){if(!sheetHasChanges(s))continue;const raw=await zip.file(s.path)?.async('text');if(!raw)continue;zip.file(s.path,patchSheetXml(raw,s),{createFolders:false});changedAny=true}
   const wbRaw=changedAny?await zip.file('xl/workbook.xml')?.async('text'):'';if(wbRaw){const d=xml(wbRaw),root=d.documentElement;let calc=localOne(root,'calcPr');if(!calc){calc=create(d,'calcPr');root.appendChild(calc)}calc.setAttribute('calcMode','auto');calc.setAttribute('fullCalcOnLoad','1');calc.setAttribute('forceFullCalc','1');zip.file('xl/workbook.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+serializeXml(d).replace(/^<\?xml[^>]*>\s*/,''),{createFolders:false})}
-  if(global.InkDeskRuntime){const comparison=global.InkDeskRuntime.comparePackageInventory(beforeInventory,global.InkDeskRuntime.packageInventory(zip));if(comparison.removed.length||comparison.duplicates.length)throw new Error('XLSX package preservation check failed: '+comparison.removed.join(', '))}return zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',compression:'DEFLATE',compressionOptions:{level:6}});
+  return zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',compression:'DEFLATE',compressionOptions:{level:6}});
 }
 global.LocalXLSX={parseWorkbook,createBlank,saveCopy,colName,decodeRef,encodeRef,decodeRange};
 })(window);

@@ -152,7 +152,7 @@ class UpdatePackageTests(unittest.TestCase):
 
 
     def test_workflow_avoids_privacy_audit_local_paths(self):
-        workflow_path = ROOT / ".github" / "workflows" / "apply-inkdesk-update.yml"
+        workflow_path = ROOT / ".github" / "workflows" / "publish-inkdesk-v0.20.0.yml"
         text = workflow_path.read_text(encoding="utf-8").lower()
         forbidden_terms = (
             "/mnt/" + "data",

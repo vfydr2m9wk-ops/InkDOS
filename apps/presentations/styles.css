@@ -20,7 +20,6 @@ button{border:1px solid var(--line);background:var(--panel);border-radius:8px;pa
 button:active{transform:translateY(1px)}
 button:disabled{opacity:.45;cursor:not-allowed}
 .hidden{display:none!important}
-.presentation-loading{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;padding:24px;background:rgba(20,25,35,.56);backdrop-filter:blur(4px)}.presentation-loading-card{width:min(480px,92vw);padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 22px 64px rgba(0,0,0,.32);text-align:left}.presentation-loading-icon{display:grid;place-items:center;width:46px;height:40px;border-radius:10px;background:var(--accent);color:#fff;font-weight:800}.presentation-loading-card h2{margin:18px 0 6px;font-size:23px}.presentation-loading-card p{min-height:24px;margin:0 0 18px;color:var(--muted)}.presentation-progress-track{height:12px;overflow:hidden;border-radius:999px;background:var(--panel2);border:1px solid var(--line)}.presentation-progress-track span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#f08b62);transition:width .18s ease}.presentation-loading-card small{display:block;margin-top:9px;color:var(--muted);font-variant-numeric:tabular-nums}
 .start-screen{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,var(--bg),var(--panel-2));padding:24px}
 .start-card{width:min(560px,92vw);background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:44px;text-align:left}
 .app-badge{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#a92e17);color:white;font-weight:800;font-size:24px;margin-bottom:18px}
@@ -322,11 +321,8 @@ body.presentation-active .app{visibility:hidden}
 }
 
 
-/* Presentation workspace stabilization rules */
+/* 0.16 Stabilization Preview */
 .tools .button-icon{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #presentFromCurrentBtn{display:inline-flex;align-items:center;gap:7px;font-weight:700}
 .present-controls{display:flex!important}
 .present-controls .exit-present-btn{position:static!important}
-
-/* 0.19.3-beta.3 table fidelity */
-.obj.table{padding:0!important;background:transparent!important;border:0!important}.ppt-table{border-collapse:collapse;table-layout:fixed;width:100%;height:100%;font-family:Arial,Calibri,sans-serif}.ppt-table td{overflow:hidden;white-space:pre-wrap;line-height:1.15}

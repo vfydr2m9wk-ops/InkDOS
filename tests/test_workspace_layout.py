@@ -82,7 +82,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
             (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
         visual = manifest["uiSystem"]["workspaceLayout"]
-        self.assertEqual(visual["version"], "0.19.4.7")
+        self.assertEqual(visual["version"], "0.20.0")
         self.assertEqual(
             visual["stylesheet"],
             "shared/ui/workspace-layout.css",
@@ -101,7 +101,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
 require('./shared/ui/workspace-layout.js');
 const api = globalThis.InkDeskWorkspaceLayout;
 if (!api) process.exit(10);
-if (api.version !== '0.19.4.7') process.exit(11);
+if (api.version !== '0.20.0') process.exit(11);
 if (api.defaults.documents.sidebar !== false) process.exit(12);
 if (api.defaults.presentations.thumbnails !== true) process.exit(13);
 if (api.defaults.presentations.inspector !== false) process.exit(14);

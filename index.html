@@ -9,69 +9,64 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="Experimental local-first workspaces for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.">
-  <meta property="og:title" content="InkDesk">
-  <meta property="og:description" content="Experimental local-first editors for basic Office, PDF, TXT and EPUB workflows.">
+  <meta name="description" content="InkDesk v0.20.0 local-first workspaces for DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB.">
+  <meta property="og:title" content="InkDesk v0.20.0">
+  <meta property="og:description" content="A consolidated local-first productivity suite.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://vfydr2m9wk-ops.github.io/InkDesk/docs/images/social-preview.png">
   <meta name="twitter:card" content="summary_large_image">
-  <title>InkDesk 0.19.3-beta.7</title>
+  <title>InkDesk v0.20.0</title>
   <link rel="icon" href="./assets/icons/office.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./assets/icons/office.png">
-  <link rel="stylesheet" href="./shared/hub.css?v=0.19.4.13">
+  <link rel="stylesheet" href="./shared/hub.css?v=0.20.0">
 </head>
 <body>
   <main class="hub-shell">
-    <header class="hub-header">
-      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <div><h1>InkDesk</h1><p>Experimental, local-first OOXML editors for focused workflows.</p></div>
+    <header class="hub-topbar">
+      <a class="brand-lockup" href="./index.html" aria-label="InkDesk home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-copy"><strong>InkDesk</strong><small>Local-first workspace</small></span>
+      </a>
+      <span class="release-badge">v0.20.0 beta</span>
     </header>
-    <p id="moduleRegistryStatus" class="module-registry-status" role="status" aria-live="polite" hidden></p>
-    <section class="app-grid" data-module-grid aria-label="Office applications">
-      <a class="app-card documents" href="./apps/documents/index.html"><span class="app-icon">D</span><span class="open-arrow">›</span><span class="card-copy"><h2>Documents</h2><p>Basic DOCX creation, editing and copy export.</p></span></a>
-      <a class="app-card spreadsheets" href="./apps/spreadsheets/index.html"><span class="app-icon">S</span><span class="open-arrow">›</span><span class="card-copy"><h2>Spreadsheets</h2><p>Offline XLSX editing plus focused Excel 97–2004 XLS import and XLSX copy export.</p></span></a>
-      <a class="app-card presentations" href="./apps/presentations/index.html"><span class="app-icon">P</span><span class="open-arrow">›</span><span class="card-copy"><h2>Presentations</h2><p>Basic PPTX editing and presentation with best-effort compatibility.</p></span></a>
-      <a class="app-card pdf" href="./apps/pdf/index.html"><span class="app-icon">PDF</span><span class="open-arrow">›</span><span class="card-copy"><h2>PDF Workspace</h2><p>Local PDF rendering, forms, navigation and a private review layer.</p></span></a>
-      <a class="app-card txt" href="./apps/txt/index.html"><span class="app-icon">TXT</span><span class="open-arrow">›</span><span class="card-copy"><h2>Plain Text</h2><p>A simple local TXT viewer and editor with a yellow notebook identity.</p></span></a>
-      <a class="app-card epub" href="./apps/epub/index.html"><span class="app-icon">EPUB</span><span class="open-arrow">›</span><span class="card-copy"><h2>EPUB Reader</h2><p>Local reading with lateral pages, text sizing, themes and simple images.</p></span></a>
+
+    <section class="hub-intro" aria-labelledby="hubTitle">
+      <p class="eyebrow">Consolidated modular preview</p>
+      <h1 id="hubTitle">Choose a workspace</h1>
+      <p>Open, review and make focused edits without sending the selected file to an InkDesk server.</p>
     </section>
+
+    <p id="moduleRegistryStatus" class="module-registry-status" role="status" aria-live="polite" hidden></p>
+
+    <section class="workspace-grid" data-module-grid aria-label="InkDesk workspaces">
+      <a class="workspace-card documents" href="./apps/documents/index.html"><span class="app-icon">D</span><span class="workspace-copy"><strong>Documents</strong><small>DOCX</small></span><span class="open-arrow">›</span></a>
+      <a class="workspace-card spreadsheets" href="./apps/spreadsheets/index.html"><span class="app-icon">S</span><span class="workspace-copy"><strong>Spreadsheets</strong><small>XLS · XLSX</small></span><span class="open-arrow">›</span></a>
+      <a class="workspace-card presentations" href="./apps/presentations/index.html"><span class="app-icon">P</span><span class="workspace-copy"><strong>Presentations</strong><small>PPTX</small></span><span class="open-arrow">›</span></a>
+      <a class="workspace-card pdf" href="./apps/pdf/index.html"><span class="app-icon">PDF</span><span class="workspace-copy"><strong>PDF Workspace</strong><small>PDF</small></span><span class="open-arrow">›</span></a>
+      <a class="workspace-card txt" href="./apps/txt/index.html"><span class="app-icon">TXT</span><span class="workspace-copy"><strong>Plain Text</strong><small>TXT</small></span><span class="open-arrow">›</span></a>
+      <a class="workspace-card epub" href="./apps/epub/index.html"><span class="app-icon">EPUB</span><span class="workspace-copy"><strong>EPUB Reader</strong><small>EPUB</small></span><span class="open-arrow">›</span></a>
+    </section>
+
     <section class="open-any-panel" aria-labelledby="openAnyTitle">
       <div class="open-any-copy">
         <span class="open-any-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h6l2 2h9v10.2a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8z"/><path d="M3.5 9h17"/></svg></span>
-        <div>
-          <strong id="openAnyTitle">Open any supported document</strong>
-          <span id="openAnyStatus" class="open-any-status" role="status" aria-live="polite">The selected file stays on this device.</span>
-        </div>
+        <div><strong id="openAnyTitle">Open a supported file</strong><span id="openAnyStatus" role="status" aria-live="polite">The selected file stays on this device.</span></div>
       </div>
-      <button id="openAnyDocument" class="open-any-button" type="button">Open document</button>
+      <button id="openAnyDocument" class="open-any-button" type="button">Open file</button>
       <input id="openAnyInput" type="file" accept=".docx,.xls,.xlsx,.pptx,.pdf,.txt,.epub,application/pdf,text/plain,application/epub+zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
     </section>
-    <section class="quick-panel" aria-label="InkDesk principles">
-      <div><strong>Local by default</strong><span>No account, analytics or project-operated upload server is included.</span></div>
-      <div><strong>Export verification</strong><span>A requested download remains unverified until the exported copy is reopened successfully.</span></div>
-      <div><strong>Modular foundation</strong><span>Enabled workspaces are discovered from a validated local registry with direct-entry fallbacks.</span></div>
-    </section>
-    <aside class="status-callout status-callout-compact" aria-label="Project status">
-      <strong>Stabilization phase</strong>
-      <span>Focused on reliable basic open, edit and export workflows.</span>
-      <a href="./docs/MVP_SCOPE.md">Scope</a>
-    </aside>
+
     <footer class="hub-footer">
-      <span class="build-line">InkDesk 0.19.3-beta.7 · build 0.19.4.15</span>
-      <nav aria-label="Project links">
-        <a href="https://github.com/vfydr2m9wk-ops/InkDesk">Source</a>
-        <a href="./docs/PROJECT_STATUS.md">Status</a>
-        <a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a>
-        <a href="./CONTRIBUTING.md">Contribute</a>
-      </nav>
+      <div class="footer-status"><span class="status-dot" aria-hidden="true"></span><span>Beta stabilization · saving creates a new local copy</span></div>
+      <nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDesk">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav>
     </footer>
   </main>
-  <noscript><p class="status-callout">InkDesk requires JavaScript to open and edit Office documents.</p></noscript>
-  <script src="./modules/module-registry.js?v=0.19.4.15"></script>
-  <script src="./modules/module-loader.js?v=0.19.4.11"></script>
-  <script src="./shared/file-router.js?v=0.19.4.15"></script>
-  <script src="./shared/hub-open.js?v=0.19.4.2"></script>
-  <script defer src="./shared/register-service-worker.js?v=0.19.3-beta.7"></script>
+  <noscript><p class="noscript-message">InkDesk requires JavaScript.</p></noscript>
+  <script src="./modules/module-registry.js?v=0.20.0"></script>
+  <script src="./modules/module-loader.js?v=0.20.0"></script>
+  <script src="./shared/file-router.js?v=0.20.0"></script>
+  <script src="./shared/hub-open.js?v=0.20.0"></script>
+  <script defer src="./shared/register-service-worker.js?v=0.20.0"></script>
 </body>
 </html>

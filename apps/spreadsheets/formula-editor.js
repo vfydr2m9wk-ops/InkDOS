@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.10';
+  const VERSION = '0.20.0';
   const MAX_SUGGESTIONS = 4;
   const DRAFT_CLASS = 'formula-draft-editing';
   const SAVED_DRAFT_CLASS = 'has-formula-draft';

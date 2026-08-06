@@ -1,9 +1,5 @@
 # Spreadsheets Component
 
-## Interaction changes in 0.19.3-beta.7
-
-Pressing `=` while a grid cell is selected focuses the formula bar, inserts `=` and immediately opens ten function suggestions. Each suggestion includes Excel-compatible syntax and a description. Arrow keys change the active suggestion, Enter or Tab inserts it, and Escape closes the list. Pointer drag selection is tracked from the element under the pointer rather than pointer capture, allowing a rectangular range to extend across cells reliably.
-
 ## Entry point
 
 `apps/spreadsheets/index.html`
@@ -33,6 +29,6 @@ The editor provides focused local previews for `XLOOKUP`, `FILTER` and `LET`, ba
 
 ## Excel 97–2004 import
 
-Version 0.19.3-beta.3 retains the BIFF8 `.xls` import introduced in 0.18.6 and makes cached formula-zero display format-aware. The importer covers worksheet names and visibility, shared strings, numeric and boolean values, cached formula results, cell styles, merged ranges, row heights, column widths, page margins/setup, embedded PNG/JPEG images and text boxes.
+Version 0.19.0-beta retains the BIFF8 `.xls` import introduced in 0.18.6 and makes cached formula-zero display format-aware. The importer covers worksheet names and visibility, shared strings, numeric and boolean values, cached formula results, cell styles, merged ranges, row heights, column widths, page margins/setup, embedded PNG/JPEG images and text boxes.
 
 The original binary file is never overwritten. Save always creates an `.xlsx` copy. Formula token streams, VBA macros, ActiveX controls, legacy charts and unsupported embedded OLE objects are not converted. Formula cells are imported from their cached displayed result so that the workbook remains readable without claiming full formula compatibility. Cached zero results are visible unless the original number format explicitly defines an empty zero section.

@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.10';
+  const VERSION = '0.20.0';
   const REFERENCE_CLASS = 'formula-reference-range';
   const TARGET_CLASS = 'formula-target-cell';
   const COLOR_COUNT = 6;
@@ -264,7 +264,7 @@
       };
       updateDrag(point);
       if (typeof cell.setPointerCapture === 'function' && event.pointerId !== undefined) {
-        try { cell.setPointerCapture(event.pointerId); } catch (error) {}
+        try { cell.setPointerCapture(event.pointerId); } catch (error) { void error; }
       }
     }
 

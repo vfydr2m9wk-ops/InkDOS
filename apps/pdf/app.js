@@ -1092,7 +1092,8 @@ async function openFile(file) {
     rangeChunkSize: 262144,
     cMapPacked: true,
     enableXfa: true,
-    stopAtErrors: false
+    stopAtErrors: false,
+    isEvalSupported: false
   });
 
   state.doc = await state.task.promise;

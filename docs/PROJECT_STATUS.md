@@ -1,26 +1,32 @@
-# Project Status
+# Project status — InkDesk v0.20.0
 
-InkDesk 0.19.3-beta.7 is a **public beta** for focused, non-critical local Office workflows.
+InkDesk v0.20.0 is a **consolidated public beta**. It replaces the internal
+`0.19.4.x` package chain with one complete source tree and six workspaces:
+Documents, Spreadsheets, Presentations, PDF, Plain Text, and EPUB Reader.
 
-## Suitable current uses
+## Appropriate uses
 
-- OOXML compatibility experiments;
-- local and embedded editor prototypes;
-- focused personal workflows where exported copies can be reopened and verified;
-- community work on parsers, rendering, security limits, and regression fixtures.
+- local compatibility experiments;
+- focused personal document work where exported copies are reopened and
+  verified;
+- community development of parsers, rendering, interface consistency, and
+  regression fixtures;
+- non-critical TXT editing and EPUB reading.
 
 ## Not suitable without independent validation
 
 - regulated, medical, legal, or financial production workflows;
-- unattended conversion;
-- documents requiring exact Microsoft Office formatting;
-- files that depend on macros, SmartArt, advanced charts, embedded applications, proprietary fonts, external links, or exact pagination;
-- deployments that have not been tested in their target browser/host.
+- files requiring exact Microsoft Office fidelity;
+- unattended or bulk conversion;
+- DRM-protected or fixed-layout EPUB workflows;
+- deployments not tested in their target browser, host, and device.
 
 ## Current engineering priorities
 
-1. native Safari/WebKit, iPadOS, Firefox, and embedded-host validation, including 600-page and 4,000-page PDF navigation;
-2. privacy-preserving crash/session recovery;
-3. broader hostile-package and fuzz coverage;
-4. incremental Presentation Workspace modularization;
-5. compatibility improvements backed by redistributable fixtures.
+1. Native Safari/WebKit, iPadOS, Firefox, and embedded-host validation.
+2. PDF.js migration to a current module-based release.
+3. Privacy-preserving crash and session recovery.
+4. Refactoring the large PDF and shared layout controllers.
+5. Compatibility improvements backed by redistributable fixtures.
+
+The project remains beta and is not presented as a stable 1.0 release.

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.19.3-beta.7",
-  "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX and PDF workflows.",
+  "version": "0.20.0",
+  "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "homepage": "https://vfydr2m9wk-ops.github.io/InkDesk/",
@@ -72,7 +72,8 @@
   "update": {
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
-    "assetPattern": "InkDesk_v*.zip"
+    "assetPattern": "InkDesk_v*.zip",
+    "nextPatch": "0.20.1"
   },
   "capabilities": {
     "documents": [
@@ -200,7 +201,7 @@
   },
   "uiSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.3",
+    "version": "0.20.0",
     "bootstrap": "shared/office-shell.js",
     "runtime": "shared/ui/application-shell.js",
     "tokens": "shared/ui/design-tokens.css",
@@ -209,7 +210,7 @@
     "documentation": "docs/APPLICATION_SHELL.md",
     "workspaceLayout": {
       "schemaVersion": 1,
-      "version": "0.19.4.7",
+      "version": "0.20.0",
       "stylesheet": "shared/ui/workspace-layout.css",
       "runtime": "shared/ui/workspace-layout.js",
       "documentation": "docs/PDF_SHELL_POLISH.md",
@@ -224,19 +225,21 @@
       },
       "documentsRuler": {
         "schemaVersion": 1,
-        "version": "0.19.4.7",
+        "version": "0.20.0",
         "mode": "active-page",
         "units": "96-css-pixels-per-inch",
         "tracksZoom": true,
         "tracksHorizontalScroll": true,
         "tracksSectionPageWidth": true,
         "marginZones": true,
-        "documentation": "docs/DOCUMENTS_RULER.md"
-      }
+        "documentation": "docs/DOCUMENTS_RULER.md",
+        "originMilestone": "0.19.4.7"
+      },
+      "originMilestone": "0.19.4.7"
     },
     "visualFoundation": {
       "schemaVersion": 1,
-      "version": "0.19.4.11",
+      "version": "0.20.0",
       "stylesheet": "shared/ui/visual-foundation.css",
       "fontStack": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Segoe UI Variable Text, Segoe UI, system-ui, sans-serif",
       "controlRadius": 11,
@@ -250,12 +253,14 @@
       ],
       "roundedSurfaces": true,
       "raisedRetractablePanels": true,
-      "documentation": "docs/VISUAL_FOUNDATION.md"
-    }
+      "documentation": "docs/VISUAL_FOUNDATION.md",
+      "originMilestone": "0.19.4.11"
+    },
+    "originMilestone": "0.19.4.3"
   },
   "pdfReviewSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.6",
+    "version": "0.20.0",
     "storageSchema": "inkdesk-pdf-review/2",
     "selectedTextTools": [
       "highlight",
@@ -267,11 +272,12 @@
       "text"
     ],
     "geometry": "normalized page-relative rectangles derived from PDF.js text-layer selection",
-    "documentation": "docs/PDF_TEXT_SELECTION.md"
+    "documentation": "docs/PDF_TEXT_SELECTION.md",
+    "originMilestone": "0.19.4.6"
   },
   "spreadsheetFormulaReferenceSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.10",
+    "version": "0.20.0",
     "runtime": "apps/spreadsheets/formula-reference.js",
     "stylesheet": "apps/spreadsheets/formula-reference.css",
     "targetCell": "preserved while selecting references",
@@ -287,11 +293,12 @@
     "autoCloseDuringRangeSelection": false,
     "parenthesesBalancedOnCommit": true,
     "formulaEditorIntegration": "apps/spreadsheets/formula-editor.js",
-    "successiveClicksAppend": true
+    "successiveClicksAppend": true,
+    "originMilestone": "0.19.4.10"
   },
   "spreadsheetFormulaEditorSystem": {
     "schemaVersion": 2,
-    "version": "0.19.4.10",
+    "version": "0.20.0",
     "runtime": "apps/spreadsheets/formula-editor.js",
     "stylesheet": "apps/spreadsheets/formula-editor.css",
     "mode": "persistent in-cell draft session",
@@ -312,20 +319,22 @@
     ],
     "percentageOperator": "postfix percentage",
     "remainderFunction": "MOD",
-    "documentation": "docs/SPREADSHEET_FORMULA_SESSION.md"
+    "documentation": "docs/SPREADSHEET_FORMULA_SESSION.md",
+    "originMilestone": "0.19.4.10"
   },
   "updateWorkflowObservability": {
     "schemaVersion": 1,
-    "version": "0.19.4.10",
+    "version": "0.20.0",
     "failureLogTail": true,
     "rollbackStatus": true,
     "automaticDiagnosis": true,
     "failureReportJson": true,
-    "documentation": "docs/UPDATE_WORKFLOW_OBSERVABILITY.md"
+    "documentation": "docs/UPDATE_WORKFLOW_OBSERVABILITY.md",
+    "originMilestone": "0.19.4.10"
   },
   "iconSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.11",
+    "version": "0.20.0",
     "catalog": "assets/icons/icon-catalog.json",
     "format": [
       "svg",
@@ -341,7 +350,8 @@
       "pdf",
       "txt",
       "epub"
-    ]
+    ],
+    "originMilestone": "0.19.4.11"
   },
   "uiCapabilities": [
     "rounded-tactile-buttons",
@@ -353,7 +363,7 @@
   ],
   "pdfSaveSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.12",
+    "version": "0.20.0",
     "runtime": "apps/pdf/flatten-export.js",
     "stylesheet": "apps/pdf/flatten-export.css",
     "visibleActions": [
@@ -382,18 +392,20 @@
     ],
     "editableReviewPersistence": "local sidecar remains available",
     "annotatedExportTextSelectable": false,
-    "visualFoundation": "0.19.4.11",
-    "documentation": "docs/PDF_UNIFIED_SAVE.md"
+    "visualFoundation": "0.20.0",
+    "documentation": "docs/PDF_UNIFIED_SAVE.md",
+    "originMilestone": "0.19.4.12"
   },
   "homeRefinement": {
-    "version": "0.19.4.13",
+    "version": "0.20.0",
     "moduleCardsBeforeUniversalOpen": true,
     "compactStatusNearFooter": true,
     "buildInFooter": true,
-    "universalOpenCopy": "The selected file stays on this device."
+    "universalOpenCopy": "The selected file stays on this device.",
+    "originMilestone": "0.19.4.13"
   },
   "documentSessionSystem": {
-    "version": "0.19.4.13",
+    "version": "0.20.0",
     "sharedLifecycle": "shared/file-lifecycle.js",
     "automaticBeforeUnloadGuard": true,
     "editableTitles": {
@@ -408,11 +420,12 @@
     "implementation": "shared office-shell document-session adapter",
     "replacesCompleteApplicationFiles": false,
     "downloadNameRewriting": true,
-    "preservesInstalledApplicationRuntime": true
+    "preservesInstalledApplicationRuntime": true,
+    "originMilestone": "0.19.4.13"
   },
   "txtEditorSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.14",
+    "version": "0.20.0",
     "module": "apps/txt/module.json",
     "entryPoint": "apps/txt/index.html",
     "runtime": "apps/txt/app.js",
@@ -438,11 +451,12 @@
       "word-line-character-count"
     ],
     "localProcessing": true,
-    "documentation": "docs/TXT_EDITOR.md"
+    "documentation": "docs/TXT_EDITOR.md",
+    "originMilestone": "0.19.4.14"
   },
   "epubReaderSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.15",
+    "version": "0.20.0",
     "module": "apps/epub/module.json",
     "entryPoint": "apps/epub/index.html",
     "parser": "apps/epub/epub-parser.js",
@@ -465,6 +479,16 @@
     "contentEditing": false,
     "saveMode": "unchanged EPUB copy under edited filename",
     "localProcessing": true,
-    "documentation": "docs/EPUB_READER.md"
+    "documentation": "docs/EPUB_READER.md",
+    "originMilestone": "0.19.4.15"
+  },
+  "release": {
+    "version": "0.20.0",
+    "channel": "beta",
+    "name": "Consolidated Modular Preview",
+    "date": "2026-08-06",
+    "consolidated": true,
+    "sourceDevelopmentLine": "0.19.4",
+    "publicVersioning": "Semantic Versioning"
   }
 }

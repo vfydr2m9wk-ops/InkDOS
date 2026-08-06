@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "vendors": [
+    {
+      "name": "pdfjs-dist",
+      "version": "3.11.174",
+      "source": "npm",
+      "package": "pdfjs-dist@3.11.174",
+      "license": "Apache-2.0",
+      "installedPaths": [
+        "shared/vendor/pdfjs/pdf.min.js",
+        "shared/vendor/pdfjs/pdf.worker.min.js",
+        "shared/vendor/pdfjs/LICENSE-PDFJS.txt"
+      ],
+      "publicationStep": ".github/workflows/publish-inkdesk-v0.20.0.yml",
+      "runtimeNetworkRequired": false,
+      "mitigation": "PDF loading sets isEvalSupported to false."
+    }
+  ]
+}

@@ -71,7 +71,7 @@ function create(options={}){
 }
 installUnloadGuard();
 global.InkDeskFileLifecycle=Object.freeze({
-  version:'0.19.4.13',
+  version:'0.20.0',
   STATES,
   LABELS,
   create,

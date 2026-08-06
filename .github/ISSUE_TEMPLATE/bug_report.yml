@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible InkDesk defect
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes: {label: InkDesk version, placeholder: "0.19.0-beta"}
+    validations: {required: true}
+  - type: dropdown
+    id: workspace
+    attributes: {label: Workspace, options: [Application shell, Documents, Spreadsheets, Presentations, Shared components]}
+    validations: {required: true}
+  - type: textarea
+    id: environment
+    attributes: {label: Environment, description: Browser/version, OS, device, and launch mode}
+    validations: {required: true}
+  - type: textarea
+    id: steps
+    attributes: {label: Steps to reproduce}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: Expected behavior}
+    validations: {required: true}
+  - type: textarea
+    id: actual
+    attributes: {label: Actual behavior and console output}
+    validations: {required: true}

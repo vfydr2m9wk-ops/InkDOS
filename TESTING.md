@@ -1,28 +1,59 @@
-# Testing Guide
+# Testing guide — InkDesk v0.20.0
 
-Repository integrity, privacy leakage, broken local links, malformed fixtures and browser opening regressions are release-blocking.
+Every meaningful change requires static validation, targeted tests, and broader
+regression. Data corruption, silent save failure, stale export, and
+cross-workspace contamination are release-blocking defects.
 
-## Exact commands
+## Source-package checks
+
+```bash
+python3 scripts/generate_module_registry.py --check
+python3 scripts/check_no_legacy_runtime.py
+python3 scripts/validate_repository.py --allow-vendor-bootstrap
+python3 scripts/audit_source.py
+python3 scripts/generate_checksums.py
+python3 scripts/verify_checksums.py
+```
+
+`--allow-vendor-bootstrap` only permits the three pinned PDF.js files to be
+absent when `VENDOR_SOURCES.json` is present. It is for the pre-publication
+source ZIP. It does not weaken normal validation.
+
+## Published-tree checks
+
+After the publication workflow installs PDF.js, run strict validation:
 
 ```bash
 python3 scripts/validate_repository.py
 python3 scripts/audit_source.py
-python3 -m unittest discover -s tests -p "test_*.py"
-python3 scripts/run_browser_regressions.py
-python3 scripts/run_release_validation.py
-python3 scripts/build_release.py --output-dir dist
+python3 -m unittest discover -s tests -p 'test_*.py'
+python3 scripts/verify_checksums.py
 ```
 
-Equivalent npm commands are available as `npm run validate`, `npm run audit`, `npm test`, `npm run test:browser`, `npm run test:release` and `npm run release:build`.
+The GitHub workflow runs these commands both before and after repository
+replacement.
 
-## Automated scope
+## Current evidence
 
-- Every distributable path is checked for missing local references, stale filenames, exact duplicate files and version mismatches.
-- Text, OOXML, PDF and PNG metadata are scanned for personal identifiers, local paths, stale project names and unexpected author fields.
-- Synthetic fixtures validate DOCX A4/header/footer/tables, BIFF8 XLS styles/borders/merges, PPTX direct image backgrounds/tables and PDF object-URL opening.
-- The service-worker application shell and all workspace routes are checked.
-- Release ZIP creation is deterministic and excludes `dist`, `.git`, caches and Python bytecode.
+- 170 Python unit/package tests passed in a structural validation copy.
+- First-party JavaScript syntax passed.
+- The source audit passed with two documented large-file refactoring notes and
+  one manual dynamic-code review note for the allowlisted spreadsheet formula
+  evaluator.
+- Real PDF rendering, native Safari/WebKit, Firefox, iPadOS, and installed-PWA
+  behavior were not performed in the package-construction environment.
 
-## Manual validation
+Record unavailable browsers or devices as **not performed**. Never infer
+compatibility from another engine.
+## Python validation dependencies
 
-Use `docs/MANUAL_DEVICE_CHECKLIST.md`. Record unavailable browsers/devices as **Not tested** rather than inferring support.
+Before running the complete Python suite in a clean environment, install the
+pinned validation dependencies:
+
+```bash
+python3 -m pip install --disable-pip-version-check --no-cache-dir   -r requirements-ci.txt
+```
+
+These packages are test and release-validation dependencies. They are not
+loaded by the browser application at runtime.
+

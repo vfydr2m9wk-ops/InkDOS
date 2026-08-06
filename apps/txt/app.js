@@ -573,7 +573,7 @@
   updateHistoryButtons();
 
   global.InkDeskTxtDebug = Object.freeze({
-    version: '0.19.4.14',
+    version: '0.20.0',
     openFile,
     newDocument,
     saveDocument,

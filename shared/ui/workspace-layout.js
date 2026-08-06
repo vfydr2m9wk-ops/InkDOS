@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.7';
+  const VERSION = '0.20.0';
   const STORAGE_PREFIX = 'inkdesk.ui.session.';
 
   const MODULE_DEFAULTS = Object.freeze({

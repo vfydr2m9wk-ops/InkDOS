@@ -53,8 +53,8 @@ class DocumentsRulerTests(unittest.TestCase):
         layout = manifest["uiSystem"]["workspaceLayout"]
         ruler = layout["documentsRuler"]
 
-        self.assertEqual(layout["version"], "0.19.4.7")
-        self.assertEqual(ruler["version"], "0.19.4.7")
+        self.assertEqual(layout["version"], "0.20.0")
+        self.assertEqual(ruler["version"], "0.20.0")
         self.assertEqual(ruler["mode"], "active-page")
         self.assertTrue(ruler["tracksZoom"])
         self.assertTrue(ruler["tracksHorizontalScroll"])
@@ -81,7 +81,7 @@ class DocumentsRulerTests(unittest.TestCase):
             worker,
             r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
         )
-        self.assertIn("0.19.4.7", bootstrap)
+        self.assertIn("0.20.0", bootstrap)
         self.assertIn("workspace-layout.js", worker)
         self.assertIn("workspace-layout.css", worker)
 
@@ -94,7 +94,7 @@ class DocumentsRulerTests(unittest.TestCase):
 require('./shared/ui/workspace-layout.js');
 const api = globalThis.InkDeskWorkspaceLayout;
 
-if (!api || api.version !== '0.19.4.7') process.exit(10);
+if (!api || api.version !== '0.20.0') process.exit(10);
 
 const ticks = api.rulerTickModel(816, 96);
 if (!Array.isArray(ticks) || ticks.length < 60) process.exit(11);
