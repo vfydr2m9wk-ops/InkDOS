@@ -1,0 +1,269 @@
+name: Apply InkDesk update package
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Root ZIP name. Leave empty when only one InkDesk-update-v*.zip exists.
+        required: false
+        type: string
+      dry_run:
+        description: Validate and show the plan without committing changes.
+        required: true
+        default: false
+        type: boolean
+      validation_profile:
+        description: Validation level. "package" uses the profile declared by the ZIP.
+        required: true
+        default: package
+        type: choice
+        options:
+          - package
+          - standard
+          - full
+          - none
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inkdesk-incremental-update
+  cancel-in-progress: false
+
+jobs:
+  apply-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          if command -v chromium >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v chromium)" >> "$GITHUB_ENV"
+          elif command -v chromium-browser >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v chromium-browser)" >> "$GITHUB_ENV"
+          elif command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            python -m playwright install --with-deps chromium
+            python - <<'PY' >> "$GITHUB_ENV"
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as playwright:
+              print(f"CHROMIUM_PATH={playwright.chromium.executable_path}")
+          PY
+          fi
+
+      - name: Select update package
+        id: package
+        shell: bash
+        env:
+          REQUESTED_PACKAGE: ${{ inputs.package_name }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${REQUESTED_PACKAGE}" ]]; then
+            if [[ "${REQUESTED_PACKAGE}" == */* || "${REQUESTED_PACKAGE}" == *\\* ]]; then
+              echo "package_name must be a root file name, not a path." >&2
+              exit 1
+            fi
+            package="${REQUESTED_PACKAGE}"
+            [[ -f "${package}" ]] || { echo "Package not found: ${package}" >&2; exit 1; }
+          else
+            mapfile -t packages < <(find . -maxdepth 1 -type f -name 'InkDesk-update-v*.zip' -printf '%f\n' | sort)
+            if [[ ${#packages[@]} -ne 1 ]]; then
+              echo "Expected exactly one root InkDesk-update-v*.zip, found ${#packages[@]}." >&2
+              printf '%s\n' "${packages[@]:-}" >&2
+              exit 1
+            fi
+            package="${packages[0]}"
+          fi
+          cp -- "${package}" /tmp/update-package.zip
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          package = Path('/tmp/update-package.zip')
+          with zipfile.ZipFile(package) as archive:
+              Path('/tmp/update-package-manifest.json').write_bytes(
+                  archive.read('patch-manifest.json')
+              )
+          PY
+          rm -- "${package}"
+          echo "original_name=${package}" >> "${GITHUB_OUTPUT}"
+          echo "Selected ${package}; the committed copy will be removed after application."
+
+      - name: Prepare updater
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path, PurePosixPath
+          import shutil
+          import zipfile
+
+          package = Path('/tmp/update-package.zip')
+          member = 'files/scripts/apply_update_package.py'
+          destination = Path('/tmp/apply_update_package.py')
+
+          with zipfile.ZipFile(package) as archive:
+              infos = archive.infolist()
+              names = {item.filename for item in infos}
+
+              for item in infos:
+                  path = PurePosixPath(item.filename)
+                  if path.is_absolute() or '..' in path.parts or '\\' in item.filename:
+                      raise SystemExit(f'Unsafe ZIP member: {item.filename}')
+
+              if member in names:
+                  destination.write_bytes(archive.read(member))
+                  print('Using updater supplied by the selected package.')
+              elif Path('scripts/apply_update_package.py').is_file():
+                  shutil.copy2(
+                      'scripts/apply_update_package.py',
+                      destination,
+                  )
+                  print('Using the repository updater.')
+              else:
+                  raise SystemExit(
+                      'No updater exists in the selected package or repository.'
+                  )
+          PY
+          chmod +x /tmp/apply_update_package.py
+
+      - name: Apply package transaction
+        id: apply
+        shell: bash
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          VALIDATION_PROFILE: ${{ inputs.validation_profile }}
+        run: |
+          set -uo pipefail
+          args=(
+            --package /tmp/update-package.zip
+            --repo "${GITHUB_WORKSPACE}"
+            --allow-workflow-changes
+            --report /tmp/update-report.json
+          )
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            args+=(--dry-run)
+          fi
+          if [[ "${VALIDATION_PROFILE}" != "package" ]]; then
+            args+=(--validation-profile "${VALIDATION_PROFILE}")
+          fi
+          set +e
+          python /tmp/apply_update_package.py "${args[@]}" 2>&1 | tee /tmp/update-transaction.log
+          status=${PIPESTATUS[0]}
+          set -e
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          exit "${status}"
+
+      - name: Write Actions summary
+        if: always()
+        shell: bash
+        env:
+          APPLY_OUTCOME: ${{ steps.apply.outcome }}
+          APPLY_EXIT_CODE: ${{ steps.apply.outputs.exit_code }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          python - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
+          from pathlib import Path
+          import json
+          import re
+
+          def load(path):
+              try:
+                  return json.loads(Path(path).read_text(encoding='utf-8'))
+              except Exception:
+                  return {}
+
+          manifest = load('/tmp/update-package-manifest.json')
+          report = load('/tmp/update-report.json')
+          log_path = Path('/tmp/update-transaction.log')
+          log = log_path.read_text(encoding='utf-8', errors='replace') if log_path.exists() else ''
+          outcome = '${{ steps.apply.outcome }}'
+          dry_run = '${{ inputs.dry_run }}' == 'true'
+          label = report.get('packageLabel') or manifest.get('packageLabel') or 'unknown'
+
+          print(f"## InkDesk update {label}")
+          print()
+          if outcome == 'success':
+              status = 'Validated only' if dry_run else 'Applied successfully'
+          else:
+              status = 'Failed — repository transaction rolled back'
+          print(f"- Status: **{status}**")
+          print(f"- Target release: `{report.get('targetRelease') or manifest.get('targetRelease', 'unknown')}`")
+          print(f"- Sequence: `{report.get('sequence') or manifest.get('sequence', 'unknown')}`")
+          print(f"- Validation: `{report.get('validationProfile') or manifest.get('validationProfile', 'unknown')}`")
+          print(f"- Dry run: `{dry_run}`")
+
+          observation = manifest.get('workflowObservation') or report.get('workflowObservation')
+          if observation:
+              print(f"- Package observation: {observation}")
+
+          if outcome != 'success':
+              print()
+              print('> The updater restored every touched repository file. The applied sequence remains unchanged.')
+              if report.get('repositorySequenceAfterRollback') is not None:
+                  print(
+                      f"- Repository sequence after rollback: "
+                      f"`{report.get('repositorySequenceAfterRollback')}`"
+                  )
+              if report.get('error'):
+                  print(f"- Transaction error: `{report.get('error')}`")
+              diagnoses = []
+              if 'app.js?v=0.19.4.6' in log and ('substring not found' in log or 'ValueError' in log):
+                  diagnoses.append('A test pinned an old PDF asset version. Verify script order with a version-independent selector instead of an exact query string.')
+              if (
+                  'test_only_synthetic_fixtures_are_bundled' in log and
+                  'patch-manifest-0.19.4.10.json' in log
+              ):
+                  diagnoses.append(
+                      'The package copied update metadata into tests/fixtures. '
+                      'That directory is restricted to the seven synthetic '
+                      'Office/PDF documents; keep package observations in the '
+                      'root patch manifest or documentation instead.'
+                  )
+              if "can't open file" in log and 'generate_release_metadata.py' in log:
+                  diagnoses.append('The missing generate_release_metadata.py message can come from the intentional rollback test. The final unittest ERROR below is the load-bearing failure.')
+              if diagnoses:
+                  print()
+                  print('### Automatic diagnosis')
+                  for item in diagnoses:
+                      print(f'- {item}')
+              if log:
+                  lines = log.splitlines()[-80:]
+                  print('\n<details><summary>Last transaction log lines</summary>\n')
+                  print('```text')
+                  print('\n'.join(lines))
+                  print('```')
+                  print('\n</details>')
+          else:
+              print(f"- Files copied or replaced: `{len(report.get('copied', []))}`")
+              print(f"- Paths deleted: `{len(report.get('deleted', []))}`")
+          PY
+
+      - name: Commit applied update
+        if: ${{ inputs.dry_run == false }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No repository changes were produced."
+            exit 0
+          fi
+          label="$(python -c "import json; print(json.load(open('/tmp/update-report.json'))['packageLabel'])")"
+          git commit -m "Apply InkDesk update ${label}"
+          git push origin HEAD:main
