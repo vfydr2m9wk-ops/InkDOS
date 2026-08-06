@@ -77,7 +77,10 @@ class DocumentsRulerTests(unittest.TestCase):
             ROOT / "shared" / "office-shell.js"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("0.19.4.7", worker)
+        self.assertRegex(
+            worker,
+            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+        )
         self.assertIn("0.19.4.7", bootstrap)
         self.assertIn("workspace-layout.js", worker)
         self.assertIn("workspace-layout.css", worker)

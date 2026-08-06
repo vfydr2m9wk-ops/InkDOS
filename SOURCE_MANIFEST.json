@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 164,
+  "fileCount": 168,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 2376,
-      "sha256": "61501526c25879bba7e1485ef3596e17e8e6b1dc1be80f9a17b23b63207e2daa"
+      "bytes": 2756,
+      "sha256": "6d4430fb2b7b36351a5546eb24703998b79780188c7dea238a2a25386d15980a"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "6a0e933d0f97086d578e0ace9e82f1ad9c87c5e1424778067c373452bef3b776"
+      "sha256": "3471046a234a063416a9fc3d1b3a1ed12d097fa5272c98823ef7cce858fad5c5"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -144,8 +144,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 5725,
-      "sha256": "106897e1b324dbb10320dfe67ba2e28201f53267bbecff896dec0ea0b8ea93d6"
+      "bytes": 6538,
+      "sha256": "ba8d875fdee887c37e6b8c87d69cf8eee842e674612f796c91e22971c01e45fa"
     },
     {
       "path": "apps/documents/app.js",
@@ -233,9 +233,19 @@
       "sha256": "5537d4c10133cb34ca974804b34f6fe7237e328210b51447fe56409432a37db0"
     },
     {
+      "path": "apps/spreadsheets/formula-reference.css",
+      "bytes": 3255,
+      "sha256": "263d4c2d9de1f0f04cade4d02183f90cd40313ca7009b0dd7bc08852e7ea9c85"
+    },
+    {
+      "path": "apps/spreadsheets/formula-reference.js",
+      "bytes": 16642,
+      "sha256": "27423cf47645d5dbb591513f7c8c433121177312fad1c3487e7f81a170e3d5e8"
+    },
+    {
       "path": "apps/spreadsheets/index.html",
-      "bytes": 7164,
-      "sha256": "e852e037fcb887c9d32534df22d8b7ad0931b2c4437a46745862dd5a2dd788fd"
+      "bytes": 7595,
+      "sha256": "61f655433563535615206914997eeccdcd2e7df733ac743124da773275615533"
     },
     {
       "path": "apps/spreadsheets/module.json",
@@ -464,8 +474,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 3738,
-      "sha256": "4f5567cdc4d7bfa43d14bb228543b571c0a916720d760c70f2ff859b5ae993f2"
+      "bytes": 3752,
+      "sha256": "919ceeaed8f7843009d1ae0cc0cd320971f1df2cd0affc889067bf8941c3055c"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -476,6 +486,11 @@
       "path": "docs/SPREADSHEETS_COMPONENT.md",
       "bytes": 3080,
       "sha256": "f58b65a10d05edc6ef50bff6f0116986605464de6e8c24c0561cf4f4a2c4927e"
+    },
+    {
+      "path": "docs/SPREADSHEET_FORMULA_REFERENCES.md",
+      "bytes": 2095,
+      "sha256": "f9d41263dd2268123a541621d9dc4d19b3a5d2aae97a216956b3ab830ecea96b"
     },
     {
       "path": "docs/TESTING.md",
@@ -589,8 +604,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1463,
-      "sha256": "50463ef2de892ef4e96ee63d614aae2217b8a6d46bb81601ea76a832e0acc8fe"
+      "bytes": 1571,
+      "sha256": "c7e9df921f90ff3895fec4cd8bc7db97426701b38b2c9829402dfd11df36a440"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -639,8 +654,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 5362,
-      "sha256": "c67fd5a8765ce6af6e17dd454ea1658f07d64f120ad0f8d685f606474e890dd9"
+      "bytes": 5455,
+      "sha256": "9ceb6455e186e36be83306a81626cf0e432dad6112fa907c131a5deba14af034"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -799,8 +814,8 @@
     },
     {
       "path": "tests/test_documents_ruler.py",
-      "bytes": 5481,
-      "sha256": "f861cd363559ae151777c4647ce39e63b0304370ea8a0981c5a6abe48061446c"
+      "bytes": 5562,
+      "sha256": "8acf28f218089679b4455f2cb3b40af3d5fda8902fd0a444712461c70f47f9c7"
     },
     {
       "path": "tests/test_modules.py",
@@ -821,6 +836,11 @@
       "path": "tests/test_repository.py",
       "bytes": 9931,
       "sha256": "7c9b802e2cf94877bd387f60e920c0182e2bc0aac1bca100471d571f474dc3f6"
+    },
+    {
+      "path": "tests/test_spreadsheet_formula_references.py",
+      "bytes": 6518,
+      "sha256": "ee2fddd0a09e53788b8abfc5c24eaddcdd7e4c85dc19e1e0ea7d344d40efd81f"
     },
     {
       "path": "tests/test_update_package.py",

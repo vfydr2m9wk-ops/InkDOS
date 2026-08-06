@@ -86,7 +86,13 @@
       "xlsx-drawing-image-and-chart-preview",
       "xlsx-modern-formula-preview",
       "xlsx-hidden-sheet-respect",
-      "bounded-deterministic-formula-evaluation"
+      "bounded-deterministic-formula-evaluation",
+      "xlsx-formula-mouse-reference-selection",
+      "xlsx-formula-drag-range-selection",
+      "xlsx-formula-discontinuous-reference-selection",
+      "xlsx-formula-target-cell-preservation",
+      "xlsx-formula-touch-add-range",
+      "xlsx-formula-live-reference-preview"
     ],
     "presentations": [
       "pptx-basic-open",
@@ -183,5 +189,21 @@
     ],
     "geometry": "normalized page-relative rectangles derived from PDF.js text-layer selection",
     "documentation": "docs/PDF_TEXT_SELECTION.md"
+  },
+  "spreadsheetFormulaReferenceSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.8",
+    "runtime": "apps/spreadsheets/formula-reference.js",
+    "stylesheet": "apps/spreadsheets/formula-reference.css",
+    "targetCell": "preserved while selecting references",
+    "selectionModes": [
+      "single-cell",
+      "drag-range",
+      "ctrl-or-command-discontinuous",
+      "touch-add-range-button"
+    ],
+    "confirmation": "Enter",
+    "cancellation": "Escape",
+    "documentation": "docs/SPREADSHEET_FORMULA_REFERENCES.md"
   }
 }

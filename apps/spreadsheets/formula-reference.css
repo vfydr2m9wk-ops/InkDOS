@@ -1,0 +1,145 @@
+/* InkDesk spreadsheet formula-reference selection — 0.19.4.8 */
+
+body.office-spreadsheets .formula-row {
+  position: relative;
+}
+
+body.office-spreadsheets .formula-range-add {
+  align-self: center;
+  flex: 0 0 auto;
+  min-width: 76px;
+  height: 28px;
+  margin-right: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--line, var(--inkdesk-edge));
+  border-radius: 6px;
+  background: var(--panel2, var(--inkdesk-surface-soft));
+  color: var(--accent, var(--inkdesk-accent));
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+body.office-spreadsheets .formula-range-add:hover,
+body.office-spreadsheets .formula-range-add:focus-visible {
+  border-color: var(--accent, var(--inkdesk-accent));
+  background:
+    color-mix(
+      in srgb,
+      var(--accent, var(--inkdesk-accent)) 11%,
+      var(--panel2, var(--inkdesk-surface-soft))
+    );
+}
+
+body.office-spreadsheets .formula-reference-status {
+  flex: 0 1 310px;
+  min-width: 0;
+  max-width: 310px;
+  margin-right: 8px;
+  overflow: hidden;
+  color: var(--muted, var(--inkdesk-muted));
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.office-spreadsheets[data-formula-reference-mode="active"]
+  #gridViewport {
+  cursor: crosshair;
+}
+
+body.office-spreadsheets .cell.formula-target-cell {
+  box-shadow:
+    inset 0 0 0 2px
+      var(--select, var(--inkdesk-accent)),
+    inset 0 0 0 4px
+      color-mix(
+        in srgb,
+        var(--cell, white) 82%,
+        transparent
+      );
+  z-index: 6;
+}
+
+body.office-spreadsheets .cell.formula-reference-range {
+  --formula-reference-color: #2f6fed;
+  background:
+    color-mix(
+      in srgb,
+      var(--formula-reference-color) 14%,
+      var(--cell, white)
+    ) !important;
+  box-shadow:
+    inset 0 0 0 2px
+      var(--formula-reference-color) !important;
+  z-index: 5;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-color-1 {
+  --formula-reference-color: #2f6fed;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-color-2 {
+  --formula-reference-color: #a23cc7;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-color-3 {
+  --formula-reference-color: #d97706;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-color-4 {
+  --formula-reference-color: #008f7a;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-color-5 {
+  --formula-reference-color: #c2415d;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-color-6 {
+  --formula-reference-color: #6b7280;
+}
+
+body.office-spreadsheets
+  .cell.formula-reference-range.formula-target-cell {
+  box-shadow:
+    inset 0 0 0 2px
+      var(--formula-reference-color),
+    inset 0 0 0 4px
+      color-mix(
+        in srgb,
+        var(--cell, white) 82%,
+        transparent
+      ) !important;
+}
+
+@media (max-width: 760px) {
+  body.office-spreadsheets .formula-reference-status {
+    display: none;
+  }
+
+  body.office-spreadsheets .formula-range-add {
+    min-width: 62px;
+    padding-inline: 7px;
+    font-size: 12px;
+  }
+}
+
+@media (pointer: coarse) {
+  body.office-spreadsheets .formula-range-add {
+    min-height: 36px;
+    height: 36px;
+  }
+}
+
+@media (forced-colors: active) {
+  body.office-spreadsheets .cell.formula-reference-range,
+  body.office-spreadsheets .cell.formula-target-cell {
+    forced-color-adjust: none;
+    outline: 2px solid Highlight;
+  }
+}

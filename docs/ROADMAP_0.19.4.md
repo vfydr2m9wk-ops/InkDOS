@@ -51,7 +51,7 @@ Each package must remain focused and must not silently absorb later milestones.
 - Recalculate for zoom, orientation, page size, and section changes.
 - Keep margin and indentation controls relative to the active page.
 
-## 0.19.4.8 — Spreadsheet formula-reference selection
+## 0.19.4.8 — Spreadsheet formula-reference selection (implemented)
 
 - Preserve the formula target cell while selecting referenced cells.
 - Support drag-selected ranges and Ctrl/Command discontinuous references.
