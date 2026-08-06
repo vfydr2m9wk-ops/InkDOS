@@ -74,7 +74,10 @@ class PdfTextSelectionTests(unittest.TestCase):
             "'./apps/pdf/text-selection-review.js'",
             worker,
         )
-        self.assertIn("0.19.4.6", worker)
+        self.assertRegex(
+            worker,
+            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+        )
 
     def test_manifest_exposes_selected_text_capabilities(self):
         manifest = json.loads(

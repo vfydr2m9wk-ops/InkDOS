@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 6,
-  "currentPackage": "0.19.4.6",
+  "appliedSequence": 7,
+  "currentPackage": "0.19.4.7",
   "status": "in-progress",
   "history": [
     {
@@ -35,6 +35,11 @@
       "sequence": 6,
       "packageLabel": "0.19.4.6",
       "description": "PDF selected-text review: highlight, underline, and comment commands derived from PDF.js text-layer selection; multi-line and multi-page page-relative geometry; linked undo groups; free marker/text isolation; persistence compatibility; tests and documentation."
+    },
+    {
+      "sequence": 7,
+      "packageLabel": "0.19.4.7",
+      "description": "Documents active-page ruler: rendered page width and position tracking, zoom and horizontal-scroll synchronization, section-aware page dimensions, explicit margin zones, generated ruler ticks and numbers, dynamic paragraph-indent pointer mapping, tests and documentation."
     }
   ]
 }

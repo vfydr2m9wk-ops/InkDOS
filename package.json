@@ -20,7 +20,8 @@
     "test:shell": "python3 -m unittest tests.test_application_shell",
     "test:layout": "python3 -m unittest tests.test_workspace_layout",
     "test:pdf-shell": "python3 -m unittest tests.test_pdf_shell_polish",
-    "test:pdf-text": "python3 -m unittest tests.test_pdf_text_selection"
+    "test:pdf-text": "python3 -m unittest tests.test_pdf_text_selection",
+    "test:documents-ruler": "python3 -m unittest tests.test_documents_ruler"
   },
   "license": "MIT"
 }

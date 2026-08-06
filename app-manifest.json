@@ -68,7 +68,13 @@
       "docx-basic-edit",
       "docx-package-preserving-copy-export",
       "docx-section-aware-layout",
-      "docx-deny-by-default-dom"
+      "docx-deny-by-default-dom",
+      "docx-active-page-ruler",
+      "docx-page-width-linked-ruler",
+      "docx-zoom-aware-ruler",
+      "docx-section-aware-ruler",
+      "docx-ruler-margin-zones",
+      "docx-ruler-dynamic-indent-mapping"
     ],
     "spreadsheets": [
       "xls-biff8-local-import",
@@ -136,7 +142,7 @@
     "documentation": "docs/APPLICATION_SHELL.md",
     "workspaceLayout": {
       "schemaVersion": 1,
-      "version": "0.19.4.5",
+      "version": "0.19.4.7",
       "stylesheet": "shared/ui/workspace-layout.css",
       "runtime": "shared/ui/workspace-layout.js",
       "documentation": "docs/PDF_SHELL_POLISH.md",
@@ -148,6 +154,17 @@
         "pdfOpenAction": "centered",
         "pdfSidebar": "closed",
         "pdfAccent": "#b42318"
+      },
+      "documentsRuler": {
+        "schemaVersion": 1,
+        "version": "0.19.4.7",
+        "mode": "active-page",
+        "units": "96-css-pixels-per-inch",
+        "tracksZoom": true,
+        "tracksHorizontalScroll": true,
+        "tracksSectionPageWidth": true,
+        "marginZones": true,
+        "documentation": "docs/DOCUMENTS_RULER.md"
       }
     }
   },

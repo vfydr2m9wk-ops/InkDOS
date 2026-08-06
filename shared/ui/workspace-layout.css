@@ -816,3 +816,152 @@ body.office-pdf .annotation-tool[data-tool="comment"].active {
     forced-color-adjust: none;
   }
 }
+
+/* Documents active-page ruler — 0.19.4.7 */
+body.office-documents .ruler {
+  position: relative !important;
+  display: block !important;
+  justify-content: initial !important;
+  align-items: initial !important;
+  min-width: 0;
+  overflow: hidden !important;
+  padding: 2px 0 !important;
+  background: var(--inkdesk-surface-soft) !important;
+  border-bottom: 1px solid var(--inkdesk-edge) !important;
+}
+
+body.office-documents .ruler-track {
+  position: relative !important;
+  left: 0 !important;
+  width: 0;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 24px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--inkdesk-edge-strong) !important;
+  border-radius: 2px;
+  background:
+    linear-gradient(
+      to right,
+      var(--inkdesk-surface-soft),
+      var(--inkdesk-surface-soft)
+    ) !important;
+  transform-origin: left center;
+  transition: none !important;
+  will-change: transform, width;
+}
+
+body.office-documents .ruler-track[hidden] {
+  display: none !important;
+}
+
+body.office-documents .ruler-track::after {
+  content: none !important;
+  display: none !important;
+}
+
+body.office-documents .ruler-track > .ticks {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+body.office-documents .inkdesk-ruler-margin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--inkdesk-muted) 12%,
+        transparent
+      ) 0 3px,
+      transparent 3px 6px
+    );
+  border-color: var(--inkdesk-edge);
+  pointer-events: none;
+}
+
+body.office-documents .inkdesk-ruler-margin-left {
+  left: 0;
+  border-right: 1px solid var(--inkdesk-edge);
+}
+
+body.office-documents .inkdesk-ruler-margin-right {
+  right: 0;
+  border-left: 1px solid var(--inkdesk-edge);
+}
+
+body.office-documents .inkdesk-ruler-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 4px;
+  background: var(--inkdesk-muted);
+  opacity: 0.62;
+  transform: translateX(-0.5px);
+}
+
+body.office-documents .inkdesk-ruler-tick-quarter {
+  height: 6px;
+}
+
+body.office-documents .inkdesk-ruler-tick-half {
+  height: 8px;
+}
+
+body.office-documents .inkdesk-ruler-tick-major {
+  height: 11px;
+  opacity: 0.82;
+}
+
+body.office-documents .inkdesk-ruler-tick-edge {
+  height: 100%;
+  opacity: 0.35;
+}
+
+body.office-documents .inkdesk-ruler-number {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  max-width: 24px;
+  overflow: hidden;
+  color: var(--inkdesk-muted);
+  font:
+    9px/1
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+body.office-documents .ruler-handle {
+  z-index: 4 !important;
+}
+
+body.office-documents .ruler-handle.first-line,
+body.office-documents .ruler-handle.hanging,
+body.office-documents .ruler-handle.left-block,
+body.office-documents .ruler-handle.right-indent {
+  color: var(--inkdesk-accent);
+}
+
+@media (max-width: 780px) {
+  body.office-documents .ruler-track {
+    min-width: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.office-documents .ruler-track {
+    transition: none !important;
+  }
+}

@@ -44,7 +44,7 @@ Each package must remain focused and must not silently absorb later milestones.
 - Keep free marker and inserted text separate from selected-text commands.
 - Preserve the local review sidecar model.
 
-## 0.19.4.7 — Documents ruler linked to page width
+## 0.19.4.7 — Documents ruler linked to page width (implemented)
 
 - Match the ruler width and horizontal position to the active page.
 - Keep numbers inside the ruler track.

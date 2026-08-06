@@ -76,7 +76,7 @@ class PdfShellPolishTests(unittest.TestCase):
             (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
         layout = manifest["uiSystem"]["workspaceLayout"]
-        self.assertEqual(layout["version"], "0.19.4.5")
+        self.assertEqual(layout["version"], "0.19.4.7")
         self.assertEqual(layout["defaults"]["pdfSidebar"], "closed")
         self.assertEqual(layout["defaults"]["pdfAccent"], "#b42318")
 
@@ -157,7 +157,7 @@ globalThis.sessionStorage = {
 };
 
 const api = globalThis.InkDeskWorkspaceLayout;
-if (!api || api.version !== '0.19.4.5') process.exit(10);
+if (!api || api.version !== '0.19.4.7') process.exit(10);
 if (!api.apply(documentObject)) process.exit(11);
 if (!workspace.classList.contains('sidebar-collapsed')) process.exit(12);
 if (toggle.classList.contains('active')) process.exit(13);
