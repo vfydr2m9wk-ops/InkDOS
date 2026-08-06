@@ -5,7 +5,6 @@ const $ = id => document.getElementById(id);
 const E = Object.fromEntries(
   [
     'fileInput',
-    'reviewImportInput',
     'openBtn',
     'openSmall',
     'startScreen',
@@ -18,8 +17,6 @@ const E = Object.fromEntries(
     'pdfStatus',
     'pdfPages',
     'systemOpenBtn',
-    'downloadBtn',
-    'printBtn',
     'fullscreenBtn',
     'immersiveExit',
     'prevPage',
@@ -36,8 +33,6 @@ const E = Object.fromEntries(
     'bookmarkList',
     'commentList',
     'bookmarkBtn',
-    'exportReviewBtn',
-    'importReviewBtn',
     'saveModifiedPdfBtn',
     'undoReview',
     'statusText',
@@ -1112,6 +1107,8 @@ async function openFile(file) {
 
   await navigateToPage(1);
 
+  E.saveModifiedPdfBtn.disabled = false;
+
   toast(
     `${state.doc.numPages} pages · PDF.js local`
   );
@@ -1144,8 +1141,14 @@ async function closeDocument() {
     bookmarks: [],
     undo: [],
     textSelection: null,
+    dirty: false,
     renderEpoch: state.renderEpoch + 1
   });
+
+  E.dirtyMark.hidden = true;
+  E.saveModifiedPdfBtn.disabled = true;
+  E.saveModifiedPdfBtn.classList.remove('is-saving');
+  E.saveModifiedPdfBtn.removeAttribute('aria-busy');
 }
 
 function setTool(tool) {
@@ -1258,44 +1261,95 @@ function setDirection(direction) {
 }
 
 async function saveModifiedPdf() {
-  if (!state.doc) return;
+  if (!state.doc || !state.file || E.saveModifiedPdfBtn.disabled) return;
+
+  const exporter = window.InkDeskPdfFlattenExport;
+  const hasInkDeskAnnotations = state.annotations.length > 0;
+
+  E.saveModifiedPdfBtn.disabled = true;
+  E.saveModifiedPdfBtn.classList.add('is-saving');
+  E.saveModifiedPdfBtn.setAttribute('aria-busy', 'true');
 
   try {
-    const bytes = await state.doc.saveDocument();
+    /*
+     * With no InkDesk review marks, PDF.js can preserve supported form state
+     * and the original selectable PDF structure.
+     */
+    if (!hasInkDeskAnnotations) {
+      status('Saving PDF…');
+      const bytes = await state.doc.saveDocument();
+
+      download(
+        bytes,
+        cleanName(state.file.name).replace(
+          /\.pdf$/i,
+          ''
+        ) + '-modified.pdf',
+        'application/pdf'
+      );
+
+      state.dirty = false;
+      E.dirtyMark.hidden = true;
+      toast('PDF saved');
+      return;
+    }
+
+    if (
+      !exporter ||
+      typeof exporter.exportDocument !== 'function'
+    ) {
+      throw new Error(
+        'The local annotated-PDF exporter is unavailable.'
+      );
+    }
+
+    const result = await exporter.exportDocument({
+      pdfDocument: state.doc,
+      pdfjsLib,
+      documentObject: document,
+      annotations: state.annotations,
+      fileName: cleanName(state.file.name),
+      dpi: 144,
+      jpegQuality: 0.91,
+      maxPagePixels: 8000000,
+      onProgress(progress) {
+        const phase =
+          progress.phase === 'encode'
+            ? 'Encoding'
+            : 'Rendering';
+
+        status(
+          `${phase} annotated PDF · page ` +
+          `${progress.page} of ${progress.total}`
+        );
+      }
+    });
 
     download(
-      bytes,
-      cleanName(state.file.name).replace(
-        /\.pdf$/i,
-        ''
-      ) + '-modified.pdf',
+      result.bytes,
+      result.fileName,
       'application/pdf'
     );
 
-    toast('Modified PDF copy saved');
+    state.dirty = false;
+    E.dirtyMark.hidden = true;
+    saveReview();
+
+    toast(
+      `Annotated PDF saved · ${result.pageCount} pages`
+    );
   } catch (error) {
     alert(
-      'This PDF cannot be rewritten by PDF.js. Export the InkDesk review JSON instead.'
+      'InkDesk could not create the PDF copy. ' +
+      'The original file and the local review were not changed.'
     );
-    console.warn(error);
+    console.error(error);
+    status('PDF save failed.');
+  } finally {
+    E.saveModifiedPdfBtn.classList.remove('is-saving');
+    E.saveModifiedPdfBtn.removeAttribute('aria-busy');
+    E.saveModifiedPdfBtn.disabled = !state.doc;
   }
-}
-
-function exportReview() {
-  download(
-    JSON.stringify(
-      {
-        schema: 'inkdesk-pdf-review/2',
-        fingerprint: state.fingerprint,
-        annotations: state.annotations,
-        bookmarks: state.bookmarks
-      },
-      null,
-      2
-    ),
-    'inkdesk-review.json',
-    'application/json'
-  );
 }
 
 function undoLastReviewAction() {
@@ -1441,63 +1495,8 @@ E.bookmarkBtn.onclick = () => {
   renderSideLists();
 };
 
-E.exportReviewBtn.onclick = exportReview;
 E.saveModifiedPdfBtn.onclick = saveModifiedPdf;
-
-E.importReviewBtn.onclick = () =>
-  E.reviewImportInput.click();
-
-E.reviewImportInput.onchange = async () => {
-  try {
-    const file = E.reviewImportInput.files[0];
-    if (!file) return;
-
-    const review = JSON.parse(await file.text());
-
-    if (
-      !/^inkdesk-pdf-review\/[12]$/.test(review.schema) ||
-      review.fingerprint !== state.fingerprint
-    ) {
-      throw new Error(
-        'Review does not match this PDF.'
-      );
-    }
-
-    state.annotations = review.annotations || [];
-    state.bookmarks = review.bookmarks || [];
-
-    markDirty();
-    rerender();
-    renderSideLists();
-  } catch (error) {
-    alert(error.message);
-  }
-};
-
 E.undoReview.onclick = undoLastReviewAction;
-
-E.downloadBtn.onclick = () => {
-  if (state.file) {
-    download(
-      state.file,
-      cleanName(state.file.name),
-      'application/pdf'
-    );
-  }
-};
-
-E.printBtn.onclick = () => {
-  const printWindow = open(
-    state.url,
-    '_blank',
-    'noopener'
-  );
-
-  printWindow?.addEventListener(
-    'load',
-    () => printWindow.print()
-  );
-};
 
 function exitImmersive() {
   document.body.classList.remove('immersive');

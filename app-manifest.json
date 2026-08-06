@@ -127,8 +127,6 @@
       "pdf-local-review-layer",
       "pdf-highlight-underline-marker-comment-and-text",
       "pdf-personal-bookmarks",
-      "pdf-review-sidecar-import-export",
-      "pdf-original-download",
       "pdf-bounded-slice-inspection",
       "pdf-single-native-viewer-instance",
       "pdf-windowed-page-navigation",
@@ -141,7 +139,13 @@
       "pdf-selected-text-comment",
       "pdf-multiline-selection-segments",
       "pdf-multipage-linked-selection",
-      "pdf-free-marker-isolation"
+      "pdf-free-marker-isolation",
+      "pdf-unified-save",
+      "pdf-flatten-review-to-copy",
+      "pdf-rendered-page-export",
+      "pdf-comment-callout-export",
+      "pdf-single-save-command",
+      "pdf-form-state-preserving-save-without-review"
     ]
   },
   "compatibility": {
@@ -295,5 +299,39 @@
     "pressed-control-depth-state",
     "raised-three-dimensional-side-panels",
     "minimal-module-iconography"
-  ]
+  ],
+  "pdfSaveSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.12",
+    "runtime": "apps/pdf/flatten-export.js",
+    "stylesheet": "apps/pdf/flatten-export.css",
+    "visibleActions": [
+      "open",
+      "save",
+      "open-in-system-viewer",
+      "fullscreen"
+    ],
+    "removedVisibleActions": [
+      "export-review-json",
+      "import-review-json",
+      "save-original",
+      "print",
+      "parallel-save-pdf-copy"
+    ],
+    "saveModes": {
+      "withoutInkDeskAnnotations": "PDF.js saveDocument preserves supported form state and selectable source structure",
+      "withInkDeskAnnotations": "flattened rendered-page PDF with portable visible review marks"
+    },
+    "annotationTypes": [
+      "highlight",
+      "underline",
+      "comment",
+      "marker",
+      "text"
+    ],
+    "editableReviewPersistence": "local sidecar remains available",
+    "annotatedExportTextSelectable": false,
+    "visualFoundation": "0.19.4.11",
+    "documentation": "docs/PDF_UNIFIED_SAVE.md"
+  }
 }

@@ -1,0 +1,61 @@
+/* InkDesk unified PDF Save - 0.19.4.12 */
+
+body.office-pdf #saveModifiedPdfBtn {
+  color: var(--inkdesk-accent, #b42318);
+}
+
+body.office-pdf #saveModifiedPdfBtn:not(:disabled) {
+  background:
+    color-mix(
+      in srgb,
+      var(--inkdesk-accent, #b42318) 10%,
+      var(--inkdesk-surface)
+    );
+  border-color:
+    color-mix(
+      in srgb,
+      var(--inkdesk-accent, #b42318) 35%,
+      var(--inkdesk-edge)
+    );
+}
+
+body.office-pdf #saveModifiedPdfBtn:disabled {
+  opacity: 0.46;
+  cursor: not-allowed;
+}
+
+body.office-pdf #saveModifiedPdfBtn.is-saving svg {
+  animation: inkdesk-pdf-save-pulse 0.9s ease-in-out infinite;
+}
+
+body.office-pdf .pdf-save-note {
+  max-width: min(48vw, 620px);
+  overflow: hidden;
+  color: var(--inkdesk-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes inkdesk-pdf-save-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 760px) {
+  body.office-pdf .pdf-save-note {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.office-pdf #saveModifiedPdfBtn.is-saving svg {
+    animation: none;
+  }
+}

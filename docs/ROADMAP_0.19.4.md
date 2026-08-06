@@ -84,7 +84,7 @@ Each package must remain focused and must not silently absorb later milestones.
 - Replace letter-only symbols with a minimal InkDesk and module icon family.
 - Prepare purple EPUB and yellow TXT icons before those modules are added.
 
-## 0.19.4.12 — PDF unified Save
+## 0.19.4.12 — PDF unified Save (implemented)
 
 - Replace parallel PDF export actions with one Save command.
 - Flatten InkDesk review marks into a portable annotated PDF copy.

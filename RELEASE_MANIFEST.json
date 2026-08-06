@@ -35,7 +35,7 @@
     "python3 -m unittest discover -s tests -p test_*.py",
     "python3 scripts/run_browser_regressions.py"
   ],
-  "distributableFileCount": 191,
+  "distributableFileCount": 195,
   "sourceManifest": "SOURCE_MANIFEST.json",
   "checksumManifest": "RUNTIME_CHECKSUMS.sha256",
   "sbom": "SBOM.spdx.json"

@@ -7,12 +7,12 @@
   <title>PDF Workspace — InkDesk 0.19.3-beta.7</title>
   <link rel="stylesheet" href="styles.css?v=0.19.3-beta.7">
   <link rel="stylesheet" href="../../shared/office-shell.css?v=0.19.3-beta.7">
+  <link rel="stylesheet" href="flatten-export.css?v=0.19.4.12">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
 </head>
 <body class="office-product office-pdf">
   <input id="fileInput" type="file" accept=".pdf,application/pdf" hidden>
-  <input id="reviewImportInput" type="file" accept=".json,application/json" hidden>
 
   <section id="startScreen" class="start-screen">
     <a class="start-home-link" href="../../index.html" target="_top" aria-label="Return to InkDesk home">
@@ -21,7 +21,7 @@
     <div class="start-card">
       <div class="app-badge">PDF</div>
       <h1>PDF Workspace</h1>
-      <p>Open PDFs locally, navigate pages, fill supported forms, and keep a private review layer with highlights, comments, text and bookmarks.</p>
+      <p>Open PDFs locally, review them with highlights, comments and text, then save one annotated PDF copy.</p>
       <div class="start-actions">
         <button id="openBtn" class="start-btn primary" type="button">
           <span class="ico folder"><svg viewBox="0 0 24 24"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/></svg></span>
@@ -51,8 +51,8 @@
         <span id="dirtyMark" class="dirty-mark" hidden>●</span>
       </div>
       <div class="right-tools">
-        <button id="printBtn" class="icon-btn" type="button" title="Print using the browser PDF engine" aria-label="Print">
-          <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5"/><path d="M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/></svg>
+        <button id="saveModifiedPdfBtn" class="icon-btn save" type="button" title="Save annotated PDF" aria-label="Save annotated PDF" disabled>
+          <svg viewBox="0 0 24 24"><path d="M5 3.5h11.5L20 7v13.5H4V3.5z"/><path d="M8 3.5V9h8V3.5"/><path d="M8 20.5v-7h8v7"/></svg>
         </button>
         <button id="fullscreenBtn" class="icon-btn" type="button" title="Full screen" aria-label="Full screen">
           <svg viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
@@ -60,9 +60,6 @@
         <a id="systemOpenBtn" class="icon-btn" target="_blank" rel="noopener" title="Open in the system PDF viewer" aria-label="Open in system viewer">
           <svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="m20 4-9 9"/><path d="M18 13v7H4V6h7"/></svg>
         </a>
-        <button id="downloadBtn" class="icon-btn" type="button" title="Save original PDF" aria-label="Save original PDF">
-          <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m8 11 4 4 4-4"/><path d="M4 20h16"/></svg>
-        </button>
       </div>
     </header>
 
@@ -110,9 +107,6 @@
       <div class="command-separator"></div>
       <div class="command-group">
         <button id="bookmarkBtn" class="tool-btn labeled" type="button" title="Add or remove bookmark"><svg viewBox="0 0 24 24"><path d="M7 3h10v18l-5-3-5 3z"/></svg><span>Bookmark</span></button>
-        <button id="exportReviewBtn" class="tool-btn labeled" type="button" title="Export private review data"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M5 21h14"/></svg><span>Export review</span></button>
-        <button id="saveModifiedPdfBtn" class="tool-btn labeled" type="button" title="Save supported form and annotation changes into a PDF copy"><span>Save PDF copy</span></button>
-        <button id="importReviewBtn" class="tool-btn labeled" type="button" title="Import review data"><svg viewBox="0 0 24 24"><path d="M12 21V9"/><path d="m8 13 4-4 4 4"/><path d="M5 3h14"/></svg><span>Import</span></button>
       </div>
       <div class="pdf-form-note" id="formNote" title="AcroForm fields are rendered by local PDF.js">Forms: PDF.js</div>
     </div>
@@ -143,7 +137,7 @@
 
     <footer class="statusbar">
       <span id="statusText">Ready</span>
-      <span id="privacyText">The PDF stays on this device. Review data is stored without the file name.</span>
+      <span id="privacyText" class="pdf-save-note">The PDF stays on this device. Save creates a flattened annotated PDF copy; the editable review remains local.</span>
     </footer>
   </main>
 
@@ -162,7 +156,8 @@
   <script src="../../shared/vendor/pdfjs/pdf.min.js?v=3.11.174"></script>
   <script src="../../shared/office-shell.js?v=0.19.4.3"></script>
   <script src="text-selection-review.js?v=0.19.4.6"></script>
-  <script src="app.js?v=0.19.4.6"></script>
+  <script src="flatten-export.js?v=0.19.4.12"></script>
+  <script src="app.js?v=0.19.4.12"></script>
   <script src="../../shared/register-service-worker.js?v=0.19.3-beta.7"></script>
 </body>
 </html>

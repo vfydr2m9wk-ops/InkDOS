@@ -102,7 +102,10 @@ class VisualFoundationTests(unittest.TestCase):
             './assets/icons/icon-catalog.json',
         ):
             self.assertIn(repr(asset), worker)
-        self.assertIn('0.19.4.11', worker)
+        self.assertRegex(
+            worker,
+            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+        )
 
     def test_module_loader_javascript_syntax(self):
         node = shutil.which('node')

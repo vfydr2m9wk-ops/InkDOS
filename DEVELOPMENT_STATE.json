@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 11,
-  "currentPackage": "0.19.4.11",
+  "appliedSequence": 12,
+  "currentPackage": "0.19.4.12",
   "status": "in-progress",
   "history": [
     {
@@ -60,6 +60,11 @@
       "sequence": 11,
       "packageLabel": "0.19.4.11",
       "description": "InkDesk visual foundation: Apple-like native system typography, uniform rounded controls and start actions, tactile selected/pressed states, raised three-dimensional retractable panels, a minimal quill and inkwell suite identity, redesigned Documents/Spreadsheets/Presentations/PDF icons, and planned EPUB/TXT symbols."
+    },
+    {
+      "sequence": 12,
+      "packageLabel": "0.19.4.12",
+      "description": "PDF unified Save after the visual foundation: one rounded Save command, removal of parallel export/import/original/print actions, PDF.js structure-preserving save when no InkDesk review exists, page-by-page flattened annotated export when review marks exist, offline caching, stable inherited tests, and documentation."
     }
   ]
 }
