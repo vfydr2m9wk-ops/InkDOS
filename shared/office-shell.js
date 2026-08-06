@@ -142,6 +142,7 @@
   addStylesheet('design-tokens.css');
   addStylesheet('components.css');
   addStylesheet('workspace-layout.css');
+  addStylesheet('visual-foundation.css');
 
   global.InkDeskUIReady = loadApplicationShell()
     .then(function (ui) {

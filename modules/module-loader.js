@@ -118,7 +118,16 @@ function createCard(module){
   link.style.setProperty('--tint',module.accent);
   link.setAttribute('aria-label','Open '+module.name);
 
-  appendTextElement(link,'span','app-icon',module.badge);
+  const iconWrap=document.createElement('span');
+  iconWrap.className='app-icon has-image';
+  const iconImage=document.createElement('img');
+  iconImage.src='./'+module.icon.replace(/^\.?\//,'');
+  iconImage.alt='';
+  iconImage.setAttribute('aria-hidden','true');
+  iconImage.loading='eager';
+  iconImage.decoding='async';
+  iconWrap.appendChild(iconImage);
+  link.appendChild(iconWrap);
   const arrow=appendTextElement(link,'span','open-arrow','›');
   arrow.setAttribute('aria-hidden','true');
   const copy=document.createElement('span');

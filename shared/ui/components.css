@@ -1,5 +1,5 @@
 /*
- * Shared shell primitives activated by application-shell.js.
+ * Shared shell primitives, rounded control states, and panel surfaces.
  * Program-specific styles remain in place during this milestone.
  */
 html.inkdesk {
@@ -137,4 +137,22 @@ body[data-inkdesk-shell-error="true"]::before {
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
   }
+}
+
+
+/* Visual foundation hooks — 0.19.4.11 */
+[data-inkdesk-shell-region] button,
+[data-inkdesk-shell-region] select,
+[data-inkdesk-shell-region] input,
+[data-inkdesk-panel] button,
+[data-inkdesk-panel] select,
+[data-inkdesk-panel] input,
+[data-inkdesk-panel] textarea {
+  font-family: var(--inkdesk-font-ui);
+}
+
+[data-inkdesk-panel][data-inkdesk-panel-side="left"],
+[data-inkdesk-panel][data-inkdesk-panel-side="right"] {
+  border-radius: var(--inkdesk-panel-radius);
+  box-shadow: var(--inkdesk-shadow-panel);
 }

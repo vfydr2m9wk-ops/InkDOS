@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "version": "0.19.4.11",
+  "style": "minimal rounded-square symbols with consistent optical weight",
+  "icons": {
+    "inkdesk": {
+      "file": "assets/icons/office.svg",
+      "color": "#293548",
+      "symbol": "quill-and-inkwell",
+      "status": "active"
+    },
+    "documents": {
+      "file": "assets/icons/documents.svg",
+      "color": "#2f6fed",
+      "symbol": "text-document",
+      "status": "active"
+    },
+    "spreadsheets": {
+      "file": "assets/icons/spreadsheets.svg",
+      "color": "#267a45",
+      "symbol": "table-grid",
+      "status": "active"
+    },
+    "presentations": {
+      "file": "assets/icons/presentations.svg",
+      "color": "#d64a24",
+      "symbol": "presentation-board",
+      "status": "active"
+    },
+    "pdf": {
+      "file": "assets/icons/pdf.svg",
+      "color": "#b42318",
+      "symbol": "document-with-pdf-tab",
+      "status": "active"
+    },
+    "epub": {
+      "file": "assets/icons/epub.svg",
+      "color": "#7655c7",
+      "symbol": "open-book",
+      "status": "planned"
+    },
+    "txt": {
+      "file": "assets/icons/txt.svg",
+      "color": "#e0a716",
+      "symbol": "yellow-notebook",
+      "status": "planned"
+    }
+  }
+}

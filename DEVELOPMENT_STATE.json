@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 10,
-  "currentPackage": "0.19.4.10",
+  "appliedSequence": 11,
+  "currentPackage": "0.19.4.11",
   "status": "in-progress",
   "history": [
     {
@@ -55,6 +55,11 @@
       "sequence": 10,
       "packageLabel": "0.19.4.10",
       "description": "Persistent spreadsheet formula sessions in normal-size cells, drafts that survive cell changes, two-letter non-blocking suggestions, successive-click and drag references, postfix percentage semantics, and improved GitHub Actions failure/rollback diagnostics."
+    },
+    {
+      "sequence": 11,
+      "packageLabel": "0.19.4.11",
+      "description": "InkDesk visual foundation: Apple-like native system typography, uniform rounded controls and start actions, tactile selected/pressed states, raised three-dimensional retractable panels, a minimal quill and inkwell suite identity, redesigned Documents/Spreadsheets/Presentations/PDF icons, and planned EPUB/TXT symbols."
     }
   ]
 }

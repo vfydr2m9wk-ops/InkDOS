@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.10';
+const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.11';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -23,6 +23,7 @@ const APP_SHELL=[
   './shared/ui/shell-contract.json',
   './shared/ui/workspace-layout.css',
   './shared/ui/workspace-layout.js',
+  './shared/ui/visual-foundation.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
   './shared/file-router.js',
@@ -37,6 +38,16 @@ const APP_SHELL=[
   './assets/icons/spreadsheets.png',
   './assets/icons/presentations.png',
   './assets/icons/pdf.png',
+  './assets/icons/office.svg',
+  './assets/icons/documents.svg',
+  './assets/icons/spreadsheets.svg',
+  './assets/icons/presentations.svg',
+  './assets/icons/pdf.svg',
+  './assets/icons/epub.svg',
+  './assets/icons/epub.png',
+  './assets/icons/txt.svg',
+  './assets/icons/txt.png',
+  './assets/icons/icon-catalog.json',
   './apps/documents/module.json',
   './apps/documents/index.html',
   './apps/documents/styles.css',

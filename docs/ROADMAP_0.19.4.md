@@ -72,22 +72,36 @@ Each package must remain focused and must not silently absorb later milestones.
 - Treat postfix `%` as percentage and keep remainder in `MOD()`.
 - Record failed update diagnostics and rollback status in Actions summaries.
 
-## 0.19.4.11 — PDF unified Save
+
+## 0.19.4.11 — Visual foundation (implemented)
+
+- Establish an Apple-like native system-font stack without bundling fonts.
+- Standardize rounded button sizes and tactile default, hover, pressed,
+  selected, and disabled states.
+- Standardize New and Open actions across all current workspaces.
+- Round cards, dialogs, fields, dropdowns, tabs, and other visual surfaces.
+- Give retractable side panels raised shadows and three-dimensional edge grips.
+- Replace letter-only symbols with a minimal InkDesk and module icon family.
+- Prepare purple EPUB and yellow TXT icons before those modules are added.
+
+## 0.19.4.12 — PDF unified Save
 
 - Replace parallel PDF export actions with one Save command.
-- Incorporate review marks into the exported PDF.
+- Flatten InkDesk review marks into a portable annotated PDF copy.
+- Keep Open in system PDF viewer and Fullscreen.
 
-## 0.19.4.12 — Plain Text module
+## 0.19.4.13 — Plain Text module
 
-- Add the modular TXT viewer/editor.
+- Add a modular TXT viewer/editor using the visual foundation.
 
-## 0.19.4.13 — EPUB Reader module
+## 0.19.4.14 — EPUB Reader module
 
-- Add local EPUB reading, themes, font sizing, images, and lateral pagination.
+- Add local EPUB reading, lateral pagination, type sizing, themes, and images.
 
-## 0.19.4.14 — Integration and stabilization
+## 0.19.4.15 — Integration and stabilization
 
-- Complete cross-module regression, responsive, accessibility, and release checks.
+- Run cross-module visual, keyboard, responsive, offline, and export checks.
+- Consolidate documentation and release metadata.
 
 ## 0.19.4 — Final consolidated release package
 

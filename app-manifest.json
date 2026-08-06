@@ -183,6 +183,24 @@
         "marginZones": true,
         "documentation": "docs/DOCUMENTS_RULER.md"
       }
+    },
+    "visualFoundation": {
+      "schemaVersion": 1,
+      "version": "0.19.4.11",
+      "stylesheet": "shared/ui/visual-foundation.css",
+      "fontStack": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Segoe UI Variable Text, Segoe UI, system-ui, sans-serif",
+      "controlRadius": 11,
+      "startButtonHeight": 50,
+      "buttonStates": [
+        "default",
+        "hover",
+        "pressed",
+        "selected",
+        "disabled"
+      ],
+      "roundedSurfaces": true,
+      "raisedRetractablePanels": true,
+      "documentation": "docs/VISUAL_FOUNDATION.md"
     }
   },
   "pdfReviewSystem": {
@@ -254,5 +272,28 @@
     "automaticDiagnosis": true,
     "failureReportJson": true,
     "documentation": "docs/UPDATE_WORKFLOW_OBSERVABILITY.md"
-  }
+  },
+  "iconSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.11",
+    "catalog": "assets/icons/icon-catalog.json",
+    "format": [
+      "svg",
+      "png"
+    ],
+    "primary": "quill-and-inkwell",
+    "plannedModuleIcons": [
+      "epub",
+      "txt"
+    ],
+    "documentation": "docs/ICON_SYSTEM.md"
+  },
+  "uiCapabilities": [
+    "rounded-tactile-buttons",
+    "apple-like-system-font-stack",
+    "selected-control-color-state",
+    "pressed-control-depth-state",
+    "raised-three-dimensional-side-panels",
+    "minimal-module-iconography"
+  ]
 }

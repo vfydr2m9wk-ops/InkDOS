@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 175,
+  "fileCount": 189,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 3487,
-      "sha256": "a0dbeea5b6335d94a3bc239e8407cc3c0e9dc3fab5503fa049731f3d1fc4e161"
+      "bytes": 3899,
+      "sha256": "f0ee37ee66b0f0658edbc50626086cf605f49aacafe5ec164acdab6da921b0b6"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "e069421eabb0a31b151ad261b80dfd4bded598b534d5f945a9fa0d1b65e276a0"
+      "sha256": "3a260f8d414ca4b6659bac2a6f5c8382fc1d082055cdd8f92f9be001a9f0c9ec"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -144,8 +144,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 8201,
-      "sha256": "4d191bd21f93998498f53b75f83cad7d4cd4a2b8674417356796fe20d9c1e4c5"
+      "bytes": 9347,
+      "sha256": "ee53c1fe06fbb1b9754d6a871e94e61b7e2c80e28f2c33e9b2527c1e33b94219"
     },
     {
       "path": "apps/documents/app.js",
@@ -284,18 +284,43 @@
     },
     {
       "path": "assets/icons/documents.png",
-      "bytes": 6750,
-      "sha256": "2c15eb79656fe05ecbb580f3da869a2beded3c555589f26743fb09f9e004c463"
+      "bytes": 11986,
+      "sha256": "1f821b67d36250a2a00091aab7ad00bc16b9458316701059a4a83fd8754a30a8"
+    },
+    {
+      "path": "assets/icons/documents.svg",
+      "bytes": 491,
+      "sha256": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f"
+    },
+    {
+      "path": "assets/icons/epub.png",
+      "bytes": 21050,
+      "sha256": "6e69bfaae81a6eb30da0ad0e318e69a6c74995c1d23a567482b1d170b0b36680"
+    },
+    {
+      "path": "assets/icons/epub.svg",
+      "bytes": 693,
+      "sha256": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6"
+    },
+    {
+      "path": "assets/icons/icon-catalog.json",
+      "bytes": 1211,
+      "sha256": "97061546eb36a1e97bfa1696744207c2c0b8d99f3ea2e4d6fbd16f5d3e93918b"
     },
     {
       "path": "assets/icons/office.ico",
-      "bytes": 26173,
-      "sha256": "9a516ada4b77ff2742fb0615ab4bb8a9ac0499631a7f61c5045c861d31798172"
+      "bytes": 39075,
+      "sha256": "e4b033a5c38a903257c6b2a7627c1e4f9fe3b89f74b52f22767d7e289337dcc5"
     },
     {
       "path": "assets/icons/office.png",
-      "bytes": 9443,
-      "sha256": "dc22e66d84d24aef4fb8dedddd1098497b2439e81d0013062f9ec10753488d7e"
+      "bytes": 21577,
+      "sha256": "466071cd4440e367c8838929350f905b39e06a7076f8714491f1ee90c13cb72e"
+    },
+    {
+      "path": "assets/icons/office.svg",
+      "bytes": 928,
+      "sha256": "e285282b6e5adddeb2d759e14e2c2dc187f4d28d9d395c30761f2dcbeeebc4c1"
     },
     {
       "path": "assets/icons/pdf.ico",
@@ -304,8 +329,13 @@
     },
     {
       "path": "assets/icons/pdf.png",
-      "bytes": 4452,
-      "sha256": "a5eb8b0eb2a27c83d6fae01a57c51b23f00c5ae96ca1333454056c430d074822"
+      "bytes": 14021,
+      "sha256": "13f5ec69536e1cbeda3e957f0b2d8f662ab3a0c0d99579c50dfd96d8b091057d"
+    },
+    {
+      "path": "assets/icons/pdf.svg",
+      "bytes": 690,
+      "sha256": "17cf6a015f10b5ad9ea9b280a33c7766cac609f89056e7482d8c6f8876a340b3"
     },
     {
       "path": "assets/icons/presentations.ico",
@@ -314,8 +344,13 @@
     },
     {
       "path": "assets/icons/presentations.png",
-      "bytes": 5649,
-      "sha256": "bd0dc4ee221ffd1f330908db2da03be6c9c6a8178923b9a86caf785b7bfa2851"
+      "bytes": 13834,
+      "sha256": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c"
+    },
+    {
+      "path": "assets/icons/presentations.svg",
+      "bytes": 632,
+      "sha256": "965370a078a9b755754cbbb542a9178d5ef20c9429ce70f5e1b4571310862f7e"
     },
     {
       "path": "assets/icons/spreadsheets.ico",
@@ -324,8 +359,23 @@
     },
     {
       "path": "assets/icons/spreadsheets.png",
-      "bytes": 9084,
-      "sha256": "a671c218e7880439a7bc2a3fb17e4beb6201bc3a3b85095eb3398985bf811782"
+      "bytes": 12912,
+      "sha256": "65836a884b81144de2b2bd57645de0fceedf10e70ec306d7dc05b3eabeb9d15d"
+    },
+    {
+      "path": "assets/icons/spreadsheets.svg",
+      "bytes": 548,
+      "sha256": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2"
+    },
+    {
+      "path": "assets/icons/txt.png",
+      "bytes": 15116,
+      "sha256": "e5a7c5e2d95368cc7916670ec84e5a23e51aa9a014480aad34a8e938cad778da"
+    },
+    {
+      "path": "assets/icons/txt.svg",
+      "bytes": 653,
+      "sha256": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7"
     },
     {
       "path": "docs/AI_ASSISTED_DEVELOPMENT.md",
@@ -401,6 +451,11 @@
       "path": "docs/HOST_INTEGRATION.md",
       "bytes": 893,
       "sha256": "fc04fa325f44483f2ba020127aa7c73527061db9fca835d6d680ecca037a72c0"
+    },
+    {
+      "path": "docs/ICON_SYSTEM.md",
+      "bytes": 683,
+      "sha256": "a288377880ac34af8da6000b74291520ed31c93484af6ee07c0609ea34577a58"
     },
     {
       "path": "docs/INCREMENTAL_UPDATES.md",
@@ -484,8 +539,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 4064,
-      "sha256": "d8b7fba948e582dee6862760e91c108c1aaba0004dbe6bf2393b709857586c46"
+      "bytes": 4806,
+      "sha256": "c5af22619ce2ddcb83622c662dce2114ed413d56bc2257f6e38e35fb55b8ad53"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -568,6 +623,11 @@
       "sha256": "9f3535bfa1031eadcc764181e2244eacb237965b1657cc6f046ad7a8832da26d"
     },
     {
+      "path": "docs/VISUAL_FOUNDATION.md",
+      "bytes": 1685,
+      "sha256": "cba762aa33d9a69f563e130997dd27e60d2ace67a07cc128132cbe72605e3c8a"
+    },
+    {
       "path": "docs/VISUAL_SYSTEM.md",
       "bytes": 2394,
       "sha256": "9deaad973fb4541885e433a2b9e80d86b8bf3f0a12e22676c29072e05e2a7549"
@@ -599,13 +659,13 @@
     },
     {
       "path": "index.html",
-      "bytes": 5802,
-      "sha256": "4f0052d3002fd681c1d4ffa45b79cb342079eee84ed40e4a71ab8ea90fb6ad64"
+      "bytes": 5805,
+      "sha256": "69d28f83437416467374b60f63595977e96bb550ca3167f4704920a0cfc58b29"
     },
     {
       "path": "manifest.webmanifest",
-      "bytes": 1612,
-      "sha256": "6fd4b7c15d4b5725d062bd237e4412f39f51616d6d767f470318f0323e35aa8b"
+      "bytes": 1621,
+      "sha256": "3b7b778d6326be3697ddf93867c2fc75697a959508fd6f7c7f637aecd45238fb"
     },
     {
       "path": "modules/module-config.json",
@@ -614,8 +674,8 @@
     },
     {
       "path": "modules/module-loader.js",
-      "bytes": 6928,
-      "sha256": "bf5a885d47c51a61386b131cdb157ecf21e74e0d46b281ea65800a4781c0829e"
+      "bytes": 7258,
+      "sha256": "5019c9512dd5c756a3efcf2694dd84ea2ef32d169b7cce6340110d79fb76792d"
     },
     {
       "path": "modules/module-registry.js",
@@ -629,8 +689,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1878,
-      "sha256": "354d109576316bf4cfa85d654ae1534f9c4dc7e299ca2b2a0d9e28749b7d263c"
+      "bytes": 1960,
+      "sha256": "19768d9a78b056756079fd187fd130cf81825b75652ba858bd9f7537374bbb7d"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -679,8 +739,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 5543,
-      "sha256": "fe378b4faf6a0e03106423f4ca29e8313280733cdcbfc6d3797a3bcede767bde"
+      "bytes": 5902,
+      "sha256": "54adf33f29817e4d2c0fc5e591f4af5e23a7a72a66d21923cfc586af96335eac"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -704,8 +764,8 @@
     },
     {
       "path": "shared/hub.css",
-      "bytes": 7425,
-      "sha256": "026634bcf5f76d6d0ec8bb14b5c51e54631955d9f19942e594337a9ca3079698"
+      "bytes": 9515,
+      "sha256": "97e40aeb52b90f827ecf3327f8e6885251b857ffb59a0170ad9e4a06d64c6a80"
     },
     {
       "path": "shared/office-runtime.js",
@@ -719,8 +779,8 @@
     },
     {
       "path": "shared/office-shell.js",
-      "bytes": 4428,
-      "sha256": "93b4fd3732b83a833dfa023cb6b613c389ff5f1b391411979d347a965e333019"
+      "bytes": 4470,
+      "sha256": "ef40b6919102d5b24360809d3bb8cec58edd6beda17214ff84fd14cff1510508"
     },
     {
       "path": "shared/register-service-worker.js",
@@ -739,18 +799,23 @@
     },
     {
       "path": "shared/ui/components.css",
-      "bytes": 3601,
-      "sha256": "15ee7f5484fd83f1e621649f047da4f447071a6d028600dc5826099deae5cca7"
+      "bytes": 4125,
+      "sha256": "3f688e6e2a92c7277633ab62f7352f89b462c63050ebb1a466673609fb2ef816"
     },
     {
       "path": "shared/ui/design-tokens.css",
-      "bytes": 2775,
-      "sha256": "b38f0cfc2c5ee1c6b0cffa8e2cc1cb427b56c3a4fa5dd762498cb5f2cb9d4353"
+      "bytes": 3108,
+      "sha256": "d396ddd05078e5287a1b37357ffd1fbb1a7d170174f5ffe165ddf65d34e1f9d0"
     },
     {
       "path": "shared/ui/shell-contract.json",
       "bytes": 1306,
       "sha256": "8a804a7c39ab3634a15e5c557c626166de6a49ee1bc3f7c2b36e7e471b147694"
+    },
+    {
+      "path": "shared/ui/visual-foundation.css",
+      "bytes": 9401,
+      "sha256": "3ca33203b7e99f8f99d07bbec28b0910d28e902fd5138e9c99396425035cc629"
     },
     {
       "path": "shared/ui/workspace-layout.css",
@@ -881,6 +946,11 @@
       "path": "tests/test_update_workflow_observability.py",
       "bytes": 2916,
       "sha256": "882145c1309dc8cacfb98bccddd2881caf3d10f1aeccf16b93ab996f5bb11528"
+    },
+    {
+      "path": "tests/test_visual_foundation.py",
+      "bytes": 5489,
+      "sha256": "132959ba74fd6d0bd13c9ca2679f9dff31261b0cfb8ddc4b2f431d01ed5b1242"
     },
     {
       "path": "tests/test_workspace_layout.py",

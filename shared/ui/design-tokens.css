@@ -1,11 +1,11 @@
 /*
- * InkDesk shared design tokens — development sequence 0.19.4.3.
+ * InkDesk shared design tokens — visual foundation 0.19.4.11.
  * Existing workspace layouts remain authoritative until 0.19.4.4.
  */
 :root {
   color-scheme: light dark;
 
-  --inkdesk-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --inkdesk-font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
   --inkdesk-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
 
   --inkdesk-titlebar-height: 44px;
@@ -13,8 +13,8 @@
   --inkdesk-commandbar-min-height: 42px;
   --inkdesk-statusbar-height: 30px;
 
-  --inkdesk-control-height: 32px;
-  --inkdesk-touch-target: 40px;
+  --inkdesk-control-height: 36px;
+  --inkdesk-touch-target: 44px;
   --inkdesk-icon-size: 18px;
   --inkdesk-sidebar-width: 248px;
 
@@ -25,9 +25,9 @@
   --inkdesk-space-5: 20px;
   --inkdesk-space-6: 24px;
 
-  --inkdesk-radius-small: 6px;
-  --inkdesk-radius-medium: 10px;
-  --inkdesk-radius-large: 16px;
+  --inkdesk-radius-small: 10px;
+  --inkdesk-radius-medium: 14px;
+  --inkdesk-radius-large: 22px;
 
   --inkdesk-surface: #ffffff;
   --inkdesk-surface-soft: #f6f8fb;
@@ -39,10 +39,16 @@
   --inkdesk-edge-strong: rgba(31, 41, 55, 0.18);
   --inkdesk-focus: #2f6fed;
   --inkdesk-danger: #b42318;
+  --inkdesk-control-radius: 11px;
+  --inkdesk-card-radius: 22px;
+  --inkdesk-panel-radius: 18px;
+  --inkdesk-press-offset: 1px;
+  --inkdesk-motion-fast: 120ms;
+  --inkdesk-motion-medium: 180ms;
 
-  --inkdesk-shadow-control: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --inkdesk-shadow-panel: 0 12px 32px rgba(15, 23, 42, 0.10);
-  --inkdesk-shadow-document: 0 18px 48px rgba(15, 23, 42, 0.16);
+  --inkdesk-shadow-control: 0 1px 2px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.055);
+  --inkdesk-shadow-panel: 0 18px 42px rgba(15, 23, 42, 0.13), 0 1px 0 rgba(255, 255, 255, 0.82) inset;
+  --inkdesk-shadow-document: 0 22px 56px rgba(15, 23, 42, 0.18);
 
   /* Compatibility aliases retained for existing shared styles. */
   --office-surface: var(--inkdesk-surface);

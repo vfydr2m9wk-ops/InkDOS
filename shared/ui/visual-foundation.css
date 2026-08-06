@@ -1,0 +1,267 @@
+/*
+ * InkDesk visual foundation — 0.19.4.11.
+ * Rounded controls, Apple-like system typography, tactile states, and
+ * raised/retractable side panels shared by every current workspace.
+ */
+
+html.inkdesk,
+body.office-product,
+body.office-product button,
+body.office-product input,
+body.office-product select,
+body.office-product textarea {
+  font-family: var(--inkdesk-font-ui) !important;
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.office-product {
+  --inkdesk-button-bg: color-mix(in srgb, var(--inkdesk-surface) 92%, var(--inkdesk-surface-soft));
+  --inkdesk-button-hover: color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 9%, var(--inkdesk-surface));
+  --inkdesk-button-selected: color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 15%, var(--inkdesk-surface));
+  --inkdesk-button-border: color-mix(in srgb, var(--inkdesk-edge-strong) 72%, transparent);
+}
+
+body.office-product button,
+body.office-product .icon-btn,
+body.office-product .top-action,
+body.office-product .save-btn,
+body.office-product label.icon-btn,
+body.office-product a.icon-btn,
+body.office-product .fmt-btn,
+body.office-product .tool-btn,
+body.office-product .start-btn,
+body.office-product .open-primary,
+body.office-product .primary-action,
+body.office-product .secondary-action {
+  border-radius: var(--inkdesk-control-radius) !important;
+  transition:
+    transform var(--inkdesk-motion-fast) ease,
+    background-color var(--inkdesk-motion-fast) ease,
+    border-color var(--inkdesk-motion-fast) ease,
+    box-shadow var(--inkdesk-motion-fast) ease,
+    color var(--inkdesk-motion-fast) ease !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.office-product button:not(:disabled):hover,
+body.office-product .icon-btn:not([aria-disabled="true"]):hover,
+body.office-product label.icon-btn:hover,
+body.office-product a.icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+body.office-product button:not(:disabled):active,
+body.office-product .icon-btn:not([aria-disabled="true"]):active,
+body.office-product label.icon-btn:active,
+body.office-product a.icon-btn:active {
+  transform: translateY(var(--inkdesk-press-offset)) scale(.975) !important;
+  box-shadow:
+    0 1px 1px rgba(15, 23, 42, .10) inset,
+    0 1px 2px rgba(15, 23, 42, .06) !important;
+}
+
+body.office-product button.active,
+body.office-product button.selected,
+body.office-product button[aria-pressed="true"],
+body.office-product button[aria-selected="true"],
+body.office-product .icon-btn.active,
+body.office-product .tab.active,
+body.office-product .sidebar-tab.active,
+body.office-product .gridlines-toggle.active,
+body.office-product .view-switch button.active {
+  color: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
+  background: var(--inkdesk-button-selected) !important;
+  border-color: color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 34%, var(--inkdesk-edge)) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.72) inset,
+    0 1px 2px rgba(15,23,42,.10),
+    0 0 0 1px color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 8%, transparent) !important;
+}
+
+body.office-product select,
+body.office-product input:not([type="range"]):not([type="color"]),
+body.office-product textarea {
+  border-radius: 10px !important;
+  border-color: var(--inkdesk-edge) !important;
+  background-color: var(--inkdesk-surface) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.55) inset !important;
+}
+
+body.office-product .start-card,
+body.office-product .welcome-card,
+body.office-product .save-card,
+body.office-product .modal-card,
+body.office-product .dialog-card,
+body.office-product .presentation-loading-card {
+  border-radius: 24px !important;
+  border: 1px solid var(--inkdesk-edge) !important;
+  box-shadow: var(--inkdesk-shadow-panel) !important;
+}
+
+body.office-product .start-actions,
+body.office-documents .welcome-actions {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  flex-wrap: wrap;
+  gap: 12px !important;
+}
+
+body.office-product .start-btn,
+body.office-documents .open-primary,
+body.office-documents .welcome-actions button {
+  min-width: 210px !important;
+  min-height: 50px !important;
+  height: 50px !important;
+  padding: 0 20px !important;
+  border-radius: 15px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.01em;
+  box-shadow: var(--inkdesk-shadow-control) !important;
+}
+
+body.office-product .start-btn.primary,
+body.office-documents .open-primary,
+body.office-product .primary-action {
+  color: #fff !important;
+  background: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
+  border-color: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
+}
+
+body.office-product .start-btn.secondary,
+body.office-product .secondary-action {
+  color: var(--inkdesk-text) !important;
+  background: var(--inkdesk-surface-raised) !important;
+  border-color: var(--inkdesk-edge-strong) !important;
+}
+
+body.office-product .start-btn .ico,
+body.office-product .open-primary .ico {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+}
+
+body.office-product .toolbar .tab,
+body.office-product .sidebar-tab,
+body.office-product .view-switch button {
+  border-radius: 10px !important;
+}
+
+body.office-product .sidebar-tabs {
+  gap: 4px !important;
+  padding: 6px !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--inkdesk-surface-soft) 86%, transparent) !important;
+}
+
+/* Raised, tab-like retractable panels. */
+body.office-product .sidebar,
+body.office-product .slide-list,
+body.office-product .inspector {
+  isolation: isolate;
+  border-radius: 0 var(--inkdesk-panel-radius) var(--inkdesk-panel-radius) 0 !important;
+  box-shadow:
+    8px 0 24px -16px rgba(15,23,42,.42),
+    0 1px 0 rgba(255,255,255,.72) inset,
+    var(--inkdesk-shadow-panel) !important;
+  transition:
+    width var(--inkdesk-motion-medium) ease,
+    transform var(--inkdesk-motion-medium) ease,
+    opacity var(--inkdesk-motion-medium) ease !important;
+}
+
+body.office-product .inspector {
+  border-radius: var(--inkdesk-panel-radius) 0 0 var(--inkdesk-panel-radius) !important;
+  box-shadow:
+    -8px 0 24px -16px rgba(15,23,42,.42),
+    0 1px 0 rgba(255,255,255,.72) inset,
+    var(--inkdesk-shadow-panel) !important;
+}
+
+body.office-product .sidebar::after,
+body.office-product .slide-list::after,
+body.office-product .inspector::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  width: 5px;
+  height: 58px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 24%, var(--inkdesk-surface-raised)),
+    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 10%, var(--inkdesk-edge-strong))
+  );
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.7) inset,
+    0 2px 8px rgba(15,23,42,.18);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+body.office-product .sidebar::after,
+body.office-product .slide-list::after { right: 4px; }
+body.office-product .inspector::before { left: 4px; }
+
+body.office-presentations .notes-panel {
+  border-radius: var(--inkdesk-panel-radius) var(--inkdesk-panel-radius) 0 0 !important;
+  box-shadow: 0 -10px 26px -18px rgba(15,23,42,.48), 0 1px 0 rgba(255,255,255,.7) inset !important;
+}
+
+/* Consistent module symbols inside workspace chrome and start screens. */
+body.office-documents .word-badge,
+body.office-documents .welcome-icon,
+body.office-documents .app-badge,
+body.office-spreadsheets .office-badge,
+body.office-spreadsheets .app-badge,
+body.office-presentations .app-badge,
+body.office-presentations .presentation-loading-icon,
+body.office-pdf .pdf-badge,
+body.office-pdf .app-badge {
+  color: transparent !important;
+  font-size: 0 !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  border-radius: 9px !important;
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 30%, transparent) !important;
+}
+body.office-documents .word-badge,
+body.office-documents .welcome-icon,
+body.office-documents .app-badge { background-image: url("../../assets/icons/documents.svg") !important; }
+body.office-spreadsheets .office-badge,
+body.office-spreadsheets .app-badge { background-image: url("../../assets/icons/spreadsheets.svg") !important; }
+body.office-presentations .app-badge,
+body.office-presentations .presentation-loading-icon { background-image: url("../../assets/icons/presentations.svg") !important; }
+body.office-pdf .pdf-badge,
+body.office-pdf .app-badge { background-image: url("../../assets/icons/pdf.svg") !important; }
+
+@media (pointer: coarse) {
+  body.office-product button,
+  body.office-product .icon-btn,
+  body.office-product label.icon-btn,
+  body.office-product a.icon-btn {
+    min-height: var(--inkdesk-touch-target) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.office-product button,
+  body.office-product .icon-btn,
+  body.office-product .sidebar,
+  body.office-product .slide-list,
+  body.office-product .inspector {
+    transition-duration: .001ms !important;
+  }
+}
