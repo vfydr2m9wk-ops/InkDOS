@@ -325,6 +325,9 @@ def apply_transaction(
         "deleted": sorted(delete_set),
         "validationProfile": manifest["validationProfile"],
         "dryRun": dry_run,
+        "status": "dry-run" if dry_run else "pending",
+        "rollback": False,
+        "workflowObservation": manifest.get("workflowObservation", ""),
     }
     if dry_run:
         print(json.dumps(plan, indent=2, ensure_ascii=False))
@@ -383,7 +386,44 @@ def apply_transaction(
                         shutil.copy2(backup_target, target)
             raise
 
+    plan["status"] = "applied"
     return plan
+
+
+def package_manifest_summary(package: Path) -> dict:
+    try:
+        with zipfile.ZipFile(package) as archive:
+            value = json.loads(archive.read("patch-manifest.json").decode("utf-8"))
+            return value if isinstance(value, dict) else {}
+    except Exception:
+        return {}
+
+
+def write_failure_report(path: Path, package: Path, repo: Path, error: Exception) -> None:
+    manifest = package_manifest_summary(package)
+    prior_state = {}
+    try:
+        state_path = repo / STATE_FILE
+        if state_path.exists():
+            prior_state = load_json(state_path)
+    except Exception:
+        prior_state = {}
+    report = {
+        "status": "failed",
+        "rollback": True,
+        "error": str(error),
+        "packageLabel": manifest.get("packageLabel", package.name),
+        "targetRelease": manifest.get("targetRelease", ""),
+        "sequence": manifest.get("sequence"),
+        "validationProfile": manifest.get("validationProfile", ""),
+        "dryRun": False,
+        "copied": [],
+        "deleted": [],
+        "workflowObservation": manifest.get("workflowObservation", ""),
+        "repositorySequenceAfterRollback": prior_state.get("appliedSequence", 0),
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def apply_package(
@@ -447,6 +487,11 @@ def main(argv: list[str] | None = None) -> int:
             validation_override=args.validation_profile,
         )
     except (UpdateError, subprocess.CalledProcessError, OSError) as exc:
+        if args.report:
+            try:
+                write_failure_report(args.report, args.package.resolve(), args.repo.resolve(), exc)
+            except Exception as report_error:
+                print(f"WARNING: could not write failure report: {report_error}", file=sys.stderr)
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     if args.report:

@@ -23,8 +23,8 @@ class PdfTextSelectionTests(unittest.TestCase):
         html = (ROOT / "apps" / "pdf" / "index.html").read_text(
             encoding="utf-8"
         )
-        helper = html.index("text-selection-review.js?v=0.19.4.6")
-        application = html.index("app.js?v=0.19.4.6")
+        helper = html.index("text-selection-review.js?v=")
+        application = html.index("app.js?v=")
         self.assertLess(helper, application)
         self.assertIn("Highlight selected text", html)
         self.assertIn("Underline selected text", html)

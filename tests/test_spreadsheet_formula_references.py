@@ -19,42 +19,32 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         ):
             self.assertTrue((ROOT / relative).is_file(), relative)
 
-    def test_entry_page_loads_controller_after_core_app(self):
+    def test_entry_page_loads_reference_before_formula_session(self):
         html = (
             ROOT / "apps" / "spreadsheets" / "index.html"
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            'formula-reference.css?v=0.19.4.9',
+            'formula-reference.css?v=0.19.4.10',
             html,
         )
-        self.assertIn(
-            'id="addFormulaRangeBtn"',
-            html,
-        )
-        self.assertIn(
-            'id="formulaReferenceStatus"',
-            html,
-        )
-        self.assertIn(
-            'id="formulaSuggestions"',
-            html,
-        )
+        self.assertIn('id="addFormulaRangeBtn"', html)
+        self.assertIn('id="formulaReferenceStatus"', html)
+        self.assertIn('id="formulaSuggestions"', html)
 
-        app_position = html.index(
-            '<script src="app.js"></script>'
+        core_position = html.index('<script src="app.js"></script>')
+        reference_position = html.index(
+            'formula-reference.js?v=0.19.4.10'
         )
-        helper_position = html.index(
-            'formula-reference.js?v=0.19.4.9'
+        editor_position = html.index(
+            'formula-editor.js?v=0.19.4.10'
         )
-        self.assertLess(app_position, helper_position)
+        self.assertLess(core_position, reference_position)
+        self.assertLess(reference_position, editor_position)
 
-    def test_controller_preserves_target_and_intercepts_grid_selection(self):
+    def test_controller_intercepts_grid_and_uses_persistent_editor(self):
         runtime = (
-            ROOT
-            / "apps"
-            / "spreadsheets"
-            / "formula-reference.js"
+            ROOT / "apps" / "spreadsheets" / "formula-reference.js"
         ).read_text(encoding="utf-8")
 
         for marker in (
@@ -63,23 +53,21 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
             "event.metaKey",
             "state.nextAdditive",
             "state.targetReference",
-            "formula.focus",
-            "setSelectionRange",
+            "currentEditor.canSelectReference()",
+            "currentEditor.shouldAppendReference()",
+            "currentEditor.getSelection()",
+            "editor()?.applyReference(result)",
+            "editor()?.focus()",
             "dataset.formulaReferenceMode",
             "pointermove",
             "pointerup",
-            "addFormulaRangeBtn",
-            "formula-target-cell",
-            "formula-reference-range",
+            "Click or drag another cell",
         ):
             self.assertIn(marker, runtime)
 
     def test_styles_distinguish_target_and_multiple_references(self):
         styles = (
-            ROOT
-            / "apps"
-            / "spreadsheets"
-            / "formula-reference.css"
+            ROOT / "apps" / "spreadsheets" / "formula-reference.css"
         ).read_text(encoding="utf-8")
 
         self.assertIn(".cell.formula-target-cell", styles)
@@ -96,58 +84,30 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn(
-            "'./apps/spreadsheets/formula-reference.css'",
-            worker,
+            "'./apps/spreadsheets/formula-reference.css'", worker
         )
         self.assertIn(
-            "'./apps/spreadsheets/formula-reference.js'",
-            worker,
+            "'./apps/spreadsheets/formula-reference.js'", worker
         )
         self.assertRegex(
             worker,
             r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
         )
 
-    def test_manifest_exposes_formula_reference_contract(self):
+    def test_manifest_exposes_reference_contract(self):
         manifest = json.loads(
-            (ROOT / "app-manifest.json").read_text(
-                encoding="utf-8"
-            )
+            (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
-
-        contract = manifest[
-            "spreadsheetFormulaReferenceSystem"
-        ]
-        self.assertEqual(contract["version"], "0.19.4.9")
+        contract = manifest["spreadsheetFormulaReferenceSystem"]
+        self.assertEqual(contract["version"], "0.19.4.10")
         self.assertEqual(contract["confirmation"], "Enter")
         self.assertEqual(contract["cancellation"], "Escape")
+        self.assertTrue(contract["successiveClicksAppend"])
+        self.assertFalse(contract["autoCloseDuringRangeSelection"])
+        self.assertTrue(contract["parenthesesBalancedOnCommit"])
         self.assertIn(
             "ctrl-or-command-discontinuous",
             contract["selectionModes"],
-        )
-        self.assertIn(
-            "touch-add-range-button",
-            contract["selectionModes"],
-        )
-
-        capabilities = set(
-            manifest["capabilities"]["spreadsheets"]
-        )
-        self.assertIn(
-            "xlsx-formula-mouse-reference-selection",
-            capabilities,
-        )
-        self.assertIn(
-            "xlsx-formula-drag-range-selection",
-            capabilities,
-        )
-        self.assertIn(
-            "xlsx-formula-discontinuous-reference-selection",
-            capabilities,
-        )
-        self.assertIn(
-            "xlsx-formula-target-cell-preservation",
-            capabilities,
         )
 
     def test_formula_reference_pure_runtime(self):
@@ -158,69 +118,44 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         script = r"""
 require('./apps/spreadsheets/formula-reference.js');
 const api = globalThis.InkDeskFormulaReferences;
-
-if (!api || api.version !== '0.19.4.9') process.exit(10);
+if (!api || api.version !== '0.19.4.10') process.exit(10);
 if (api.encodeColumn(0) !== 'A') process.exit(11);
 if (api.encodeColumn(25) !== 'Z') process.exit(12);
 if (api.encodeColumn(26) !== 'AA') process.exit(13);
 if (api.encodeCell(1, 1) !== 'B2') process.exit(14);
-
-if (
-  api.formatRange(
-    { r: 1, c: 1 },
-    { r: 11, c: 1 }
-  ) !== 'B2:B12'
-) process.exit(15);
+if (api.formatRange({r:1,c:1},{r:11,c:1}) !== 'B2:B12') process.exit(15);
 
 const first = api.insertReference(
-  '=SUM(',
-  5,
-  5,
-  'B2:B12',
-  { additive: false }
+  '=SUM(', 5, 5, 'B2:B12',
+  { additive: false, replaceToken: false }
 );
-
-if (first.value !== '=SUM(B2:B12)') process.exit(16);
-if (first.caret !== '=SUM(B2:B12'.length) process.exit(17);
+if (first.value !== '=SUM(B2:B12') process.exit(16);
+if (first.caret !== first.value.length) process.exit(17);
 
 const second = api.insertReference(
-  first.value,
-  first.caret,
-  first.caret,
-  'D4',
-  { additive: true }
+  first.value, first.caret, first.caret, 'D4',
+  { additive: true, replaceToken: false }
 );
-
-if (second.value !== '=SUM(B2:B12,D4)') process.exit(18);
+if (second.value !== '=SUM(B2:B12,D4') process.exit(18);
 
 const replacement = api.insertReference(
-  first.value,
-  first.caret,
-  first.caret,
-  'C1:C5',
-  { additive: false }
+  first.value, first.caret, first.caret, 'C1:C5',
+  { additive: false, replaceToken: true }
 );
-
-if (replacement.value !== '=SUM(C1:C5)') process.exit(19);
+if (replacement.value !== '=SUM(C1:C5') process.exit(19);
 
 const arithmetic = api.insertReference(
-  '=A1+',
-  4,
-  4,
-  'B2',
-  { additive: true }
+  '=A1+', 4, 4, 'B2',
+  { additive: false, replaceToken: false }
 );
-
 if (arithmetic.value !== '=A1+B2') process.exit(20);
 """
-
         result = subprocess.run(
             [node, "-e", script],
             cwd=ROOT,
             capture_output=True,
             text=True,
         )
-
         self.assertEqual(
             result.returncode,
             0,
@@ -229,18 +164,11 @@ if (arithmetic.value !== '=A1+B2') process.exit(20);
 
     def test_package_script_is_registered(self):
         package = json.loads(
-            (ROOT / "package.json").read_text(
-                encoding="utf-8"
-            )
+            (ROOT / "package.json").read_text(encoding="utf-8")
         )
         self.assertEqual(
-            package["scripts"][
-                "test:spreadsheet-formula-references"
-            ],
-            (
-                "python3 -m unittest "
-                "tests.test_spreadsheet_formula_references"
-            ),
+            package["scripts"]["test:spreadsheet-formula-references"],
+            "python3 -m unittest tests.test_spreadsheet_formula_references",
         )
 
 

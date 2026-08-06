@@ -98,7 +98,12 @@
       "xlsx-tab-accepts-function-suggestion",
       "xlsx-cell-reference-aware-suggestions",
       "xlsx-balance-parentheses-on-commit",
-      "xlsx-expanded-formula-bar"
+      "xlsx-expanded-formula-bar",
+      "xlsx-persistent-formula-draft",
+      "xlsx-formula-draft-survives-cell-switch",
+      "xlsx-normal-size-in-cell-formula-editing",
+      "xlsx-successive-click-references",
+      "xlsx-postfix-percentage"
     ],
     "presentations": [
       "pptx-basic-open",
@@ -198,7 +203,7 @@
   },
   "spreadsheetFormulaReferenceSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.9",
+    "version": "0.19.4.10",
     "runtime": "apps/spreadsheets/formula-reference.js",
     "stylesheet": "apps/spreadsheets/formula-reference.css",
     "targetCell": "preserved while selecting references",
@@ -213,25 +218,41 @@
     "documentation": "docs/SPREADSHEET_FORMULA_REFERENCES.md",
     "autoCloseDuringRangeSelection": false,
     "parenthesesBalancedOnCommit": true,
-    "formulaEditorIntegration": "apps/spreadsheets/formula-editor.js"
+    "formulaEditorIntegration": "apps/spreadsheets/formula-editor.js",
+    "successiveClicksAppend": true
   },
   "spreadsheetFormulaEditorSystem": {
-    "schemaVersion": 1,
-    "version": "0.19.4.9",
+    "schemaVersion": 2,
+    "version": "0.19.4.10",
     "runtime": "apps/spreadsheets/formula-editor.js",
     "stylesheet": "apps/spreadsheets/formula-editor.css",
-    "directCellStart": [
-      "=",
-      "F2",
-      "double-click"
-    ],
+    "mode": "persistent in-cell draft session",
+    "draftSurvivesCellSwitch": true,
+    "minimumSuggestionLetters": 2,
     "suggestionAccept": [
       "Tab",
       "pointer"
     ],
     "formulaConfirm": "Enter",
     "formulaCancel": "Escape",
-    "cellReferenceProtection": "single-letter tokens inside function arguments do not open function suggestions",
-    "documentation": "docs/SPREADSHEET_FORMULA_EDITOR.md"
+    "referenceSelection": [
+      "single-cell",
+      "drag-range",
+      "successive-clicks",
+      "ctrl-command",
+      "touch-add-range"
+    ],
+    "percentageOperator": "postfix percentage",
+    "remainderFunction": "MOD",
+    "documentation": "docs/SPREADSHEET_FORMULA_SESSION.md"
+  },
+  "updateWorkflowObservability": {
+    "schemaVersion": 1,
+    "version": "0.19.4.10",
+    "failureLogTail": true,
+    "rollbackStatus": true,
+    "automaticDiagnosis": true,
+    "failureReportJson": true,
+    "documentation": "docs/UPDATE_WORKFLOW_OBSERVABILITY.md"
   }
 }

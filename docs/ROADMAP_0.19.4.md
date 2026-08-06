@@ -59,43 +59,35 @@ Each package must remain focused and must not silently absorb later milestones.
 - Confirm with Enter, cancel with Escape, and provide a touch fallback.
 
 
-## 0.19.4.9 — Spreadsheet in-cell formula editing (implemented)
+## 0.19.4.9 — Initial in-cell formula editing (implemented, superseded)
 
-- Start formulas directly from the selected cell with `=`.
-- Add an in-cell editor synchronized with the formula bar.
-- Reserve Enter for confirmation and Tab/pointer for suggestions.
-- Prevent one-letter cell references inside arguments from becoming functions.
-- Balance missing parentheses only when the formula is confirmed.
-- Enlarge and simplify the formula row.
+- Added direct formula start, but the wide floating input obstructed range selection.
 
-## 0.19.4.10 — PDF unified Save
+## 0.19.4.10 — Persistent formula sessions and workflow diagnostics (implemented)
 
-- Replace parallel export, import, original-download, print, and PDF-copy
-  actions with one Save command.
-- Incorporate InkDesk highlights, underlines, comments, marker regions, and
-  inserted text into the exported PDF.
-- Keep Open in system PDF viewer and Fullscreen.
-- Preserve a local editable review state while exporting flattened annotations.
+- Keep formula drafts in normal-size cells.
+- Preserve incomplete drafts while other cells are edited.
+- Add successive-click and drag references without mandatory Ctrl.
+- Require two function letters before suggestions.
+- Treat postfix `%` as percentage and keep remainder in `MOD()`.
+- Record failed update diagnostics and rollback status in Actions summaries.
 
-## 0.19.4.11 — Plain Text module
+## 0.19.4.11 — PDF unified Save
+
+- Replace parallel PDF export actions with one Save command.
+- Incorporate review marks into the exported PDF.
+
+## 0.19.4.12 — Plain Text module
 
 - Add the modular TXT viewer/editor.
-- Support new, open, edit, export, undo/redo, find/replace, word wrap,
-  line/column status, UTF-8 BOM handling, and unsaved-change protection.
 
-## 0.19.4.12 — EPUB Reader module
+## 0.19.4.13 — EPUB Reader module
 
-- Add local EPUB package parsing, spine order, sanitized readable HTML,
-  basic images, lateral pagination, font sizing, reading themes, table of
-  contents, and local reading position.
-- Do not add DRM bypass, editing, cloud synchronization, AI, or text-to-speech.
+- Add local EPUB reading, themes, font sizing, images, and lateral pagination.
 
-## 0.19.4.13 — Integration and stabilization
+## 0.19.4.14 — Integration and stabilization
 
-- Run cross-module browser and direct-file regression work.
-- Complete responsive, keyboard, accessibility, service-worker, and export
-  checks.
-- Update release documentation and generated metadata.
+- Complete cross-module regression, responsive, accessibility, and release checks.
 
 ## 0.19.4 — Final consolidated release package
 

@@ -23,7 +23,9 @@
     "test:pdf-text": "python3 -m unittest tests.test_pdf_text_selection",
     "test:documents-ruler": "python3 -m unittest tests.test_documents_ruler",
     "test:spreadsheet-formula-references": "python3 -m unittest tests.test_spreadsheet_formula_references",
-    "test:spreadsheet-formula-editor": "python3 -m unittest tests.test_spreadsheet_formula_editor"
+    "test:spreadsheet-formula-editor": "python3 -m unittest tests.test_spreadsheet_formula_editor",
+    "test:spreadsheet-formula-session": "python3 -m unittest tests.test_spreadsheet_formula_editor",
+    "test:update-workflow-observability": "python3 -m unittest tests.test_update_workflow_observability"
   },
   "license": "MIT"
 }

@@ -16,10 +16,11 @@ function evaluateArithmetic(source,options={}){
   function finite(value){if(typeof value==='string'&&value.startsWith('#'))return value;if(!Number.isFinite(value))throw new FormulaError('INVALID_RESULT','Formula produced a non-finite value.');return value}
   function primary(depth){if(depth>limits.maxDepth)throw new FormulaError('DEPTH_LIMIT','Formula nesting exceeds the safe limit.');step();if(current.type==='number'){const v=current.value;next();return v}if(current.type==='identifier'){const name=current.value;next();if(!options.resolveIdentifier)throw new FormulaError('UNSUPPORTED_IDENTIFIER','Unsupported identifier: '+name);const v=Number(options.resolveIdentifier(name));if(!Number.isFinite(v))throw new FormulaError('INVALID_REFERENCE','Reference did not resolve to a finite number: '+name);return v}if(current.type==='('){next();const v=expression(depth+1);if(current.type!==')')throw new FormulaError('MALFORMED','Missing closing parenthesis.');next();return v}throw new FormulaError('MALFORMED','Expected a number or parenthesized expression.')}
   function unary(depth){if(current.type==='+'||current.type==='-'){const op=current.type;next();const v=unary(depth+1);return op==='-'?-v:v}return primary(depth)}
-  function power(depth){let left=unary(depth);if(current.type==='^'){next();left=finite(left**power(depth+1))}return left}
-  function product(depth){let left=power(depth);while(['*','/','%'].includes(current.type)){const op=current.type;next();const right=power(depth);if((op==='/'||op==='%')&&right===0)return'#DIV/0!';left=finite(op==='*'?left*right:op==='/'?left/right:left%right)}return left}
+  function percentage(depth){let value=unary(depth);while(current.type==='%'){next();value=finite(value/100)}return value}
+  function power(depth){let left=percentage(depth);if(current.type==='^'){next();left=finite(left**power(depth+1))}return left}
+  function product(depth){let left=power(depth);while(['*','/'].includes(current.type)){const op=current.type;next();const right=power(depth);if(op==='/'&&right===0)return'#DIV/0!';left=finite(op==='*'?left*right:left/right)}return left}
   function expression(depth){let left=product(depth);while(current.type==='+'||current.type==='-'){const op=current.type;next();const right=product(depth);left=finite(op==='+'?left+right:left-right)}return left}
   next();if(current.type==='eof')throw new FormulaError('EMPTY','Formula is empty.');const result=expression(0);if(current.type!=='eof')throw new FormulaError('MALFORMED','Unexpected trailing formula input.');return result;
 }
 global.InkDeskFormula=Object.freeze({DEFAULT_LIMITS,FormulaError,evaluateArithmetic});
-})(window);
+})(typeof window!=='undefined'?window:globalThis);

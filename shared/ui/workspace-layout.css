@@ -305,8 +305,8 @@ body.office-spreadsheets .toolbar {
 }
 
 body.office-spreadsheets .formula-row {
-  height: 46px !important;
-  min-height: 46px !important;
+  height: 42px !important;
+  min-height: 42px !important;
   background: var(--inkdesk-surface) !important;
   border-bottom: 1px solid var(--inkdesk-edge) !important;
 }
@@ -331,7 +331,7 @@ body.office-spreadsheets main {
     100% -
     var(--inkdesk-titlebar-height) -
     48px -
-    46px -
+    42px -
     var(--inkdesk-statusbar-height)
   ) !important;
 }

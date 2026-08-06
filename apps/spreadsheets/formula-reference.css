@@ -1,4 +1,4 @@
-/* InkDesk spreadsheet formula-reference selection — 0.19.4.8 */
+/* InkDesk spreadsheet formula-reference selection — 0.19.4.10 */
 
 body.office-spreadsheets .formula-row {
   position: relative;
@@ -145,7 +145,7 @@ body.office-spreadsheets
 }
 
 
-/* 0.19.4.9: guidance now belongs to the status bar, not the formula row. */
+/* 0.19.4.10: guidance now belongs to the status bar, not the formula row. */
 body.office-spreadsheets .formula-row > .formula-reference-status {
   display: none !important;
 }

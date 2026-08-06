@@ -1,8 +1,10 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.9';
-  const MAX_SUGGESTIONS = 6;
+  const VERSION = '0.19.4.10';
+  const MAX_SUGGESTIONS = 4;
+  const DRAFT_CLASS = 'formula-draft-editing';
+  const SAVED_DRAFT_CLASS = 'has-formula-draft';
 
   const FUNCTIONS = Object.freeze([
     ['SUM', 'SUM(number1, [number2], …)', 'Adds numbers and ranges'],
@@ -41,15 +43,6 @@
     ['YEAR', 'YEAR(date)', 'Year number']
   ]);
 
-  const DEFAULT_FUNCTIONS = Object.freeze([
-    'SUM',
-    'AVERAGE',
-    'COUNT',
-    'IF',
-    'XLOOKUP',
-    'TODAY'
-  ]);
-
   function clamp(value, minimum, maximum) {
     return Math.max(
       Number(minimum) || 0,
@@ -57,35 +50,46 @@
     );
   }
 
+  function encodeColumn(index) {
+    let value = Math.max(0, Number(index) || 0) + 1;
+    let result = '';
+    while (value > 0) {
+      const remainder = (value - 1) % 26;
+      result = String.fromCharCode(65 + remainder) + result;
+      value = Math.floor((value - 1) / 26);
+    }
+    return result;
+  }
+
+  function cellReference(cell) {
+    if (!cell || !cell.dataset) return '';
+    const row = Number(cell.dataset.r);
+    const column = Number(cell.dataset.c);
+    if (!Number.isFinite(row) || !Number.isFinite(column)) return '';
+    return encodeColumn(column) + (row + 1);
+  }
+
   function parenthesisDepth(value) {
     let depth = 0;
     let quoted = false;
     const source = String(value || '');
-
     for (let index = 0; index < source.length; index += 1) {
       const character = source[index];
-
       if (character === '"') {
-        if (quoted && source[index + 1] === '"') {
-          index += 1;
-        } else {
-          quoted = !quoted;
-        }
+        if (quoted && source[index + 1] === '"') index += 1;
+        else quoted = !quoted;
         continue;
       }
-
       if (quoted) continue;
       if (character === '(') depth += 1;
       if (character === ')') depth = Math.max(0, depth - 1);
     }
-
     return depth;
   }
 
   function balanceFormula(value) {
     const source = String(value || '');
     if (!source.startsWith('=')) return source;
-
     const missing = parenthesisDepth(source);
     return missing > 0 ? source + ')'.repeat(missing) : source;
   }
@@ -93,130 +97,132 @@
   function suggestionContext(value, cursor) {
     const source = String(value || '');
     if (!source.startsWith('=')) return null;
-
     const position = clamp(
       Number.isFinite(Number(cursor)) ? Number(cursor) : source.length,
       1,
       source.length
     );
-
     const before = source.slice(0, position);
-
-    if (before === '=') {
-      return Object.freeze({
-        query: '',
-        start: 1,
-        end: 1,
-        depth: 0,
-        root: true
-      });
-    }
-
     const match = before.match(/([A-Z][A-Z0-9.]*)$/i);
-    if (!match) return null;
-
+    if (!match || match[1].length < 2) return null;
     const query = match[1].toUpperCase();
     const start = position - match[1].length;
     const previous = source[start - 1] || '';
-    const depth = parenthesisDepth(source.slice(0, start));
-    const validBoundary =
-      start === 1 ||
-      /[=,+\-*/^&<>]/.test(previous) ||
-      previous === '(';
-
+    const validBoundary = start === 1 || /[=,+\-*/^&<>]/.test(previous) || previous === '(';
     if (!validBoundary) return null;
-
-    /*
-     * Inside a function argument, one letter is overwhelmingly more likely
-     * to be the beginning of A1/B2/etc. than a nested function. Requiring
-     * two letters here prevents A from immediately becoming AVERAGE.
-     */
-    if (depth > 0 && query.length < 2) return null;
-
     return Object.freeze({
       query,
       start,
       end: position,
-      depth,
+      depth: parenthesisDepth(source.slice(0, start)),
       root: start === 1
-    });
-  }
-
-  function applyFunctionSuggestion(
-    value,
-    start,
-    end,
-    functionName
-  ) {
-    const source = String(value || '');
-    const from = clamp(start, 0, source.length);
-    const to = clamp(end, from, source.length);
-    const insertion = String(functionName || '').toUpperCase() + '(';
-    const result =
-      source.slice(0, from) +
-      insertion +
-      source.slice(to);
-
-    return Object.freeze({
-      value: result,
-      caret: from + insertion.length
     });
   }
 
   function matchingFunctions(context) {
     if (!context) return [];
-
-    if (!context.query) {
-      return DEFAULT_FUNCTIONS
-        .map(function (name) {
-          return FUNCTIONS.find(function (item) {
-            return item[0] === name;
-          });
-        })
-        .filter(Boolean);
-    }
-
     return FUNCTIONS.filter(function (item) {
       return item[0].startsWith(context.query);
     }).slice(0, MAX_SUGGESTIONS);
   }
 
-  function selectedCell(documentObject, grid, nameBox) {
-    const selected = grid.querySelector('.cell.selected');
-    if (selected) return selected;
+  function applyFunctionSuggestion(value, start, end, functionName) {
+    const source = String(value || '');
+    const from = clamp(start, 0, source.length);
+    const to = clamp(end, from, source.length);
+    const insertion = String(functionName || '').toUpperCase() + '(';
+    return Object.freeze({
+      value: source.slice(0, from) + insertion + source.slice(to),
+      caret: from + insertion.length
+    });
+  }
 
-    const match = /^\$?([A-Z]{1,3})\$?(\d+)$/i.exec(
-      String(nameBox.value || '').trim()
+  function formulaCanSelectReference(value, cursor) {
+    const source = String(value || '');
+    if (!source.startsWith('=')) return false;
+    const position = clamp(cursor, 1, source.length);
+    if (suggestionContext(source, position)) return false;
+    const before = source.slice(0, position).trimEnd();
+    if (!before || before === '=') return false;
+    if (/[=(,+\-*/^%]$/.test(before)) return true;
+    return (
+      parenthesisDepth(before) > 0 &&
+      /(?:\$?[A-Z]{1,3}\$?\d+|\d+(?:\.\d+)?|\)|%)$/i.test(before)
     );
+  }
 
-    if (!match) return null;
+  function shouldAppendReference(value, cursor) {
+    const source = String(value || '');
+    const position = clamp(cursor, 0, source.length);
+    const before = source.slice(0, position).trimEnd();
+    return (
+      parenthesisDepth(before) > 0 &&
+      /(?:\$?[A-Z]{1,3}\$?\d+|\d+(?:\.\d+)?|\)|%)$/i.test(before)
+    );
+  }
 
-    let column = 0;
-    for (const character of match[1].toUpperCase()) {
-      column = column * 26 + character.charCodeAt(0) - 64;
+  function formulaIsComplete(value) {
+    const source = String(value || '').trim();
+    return (
+      source.startsWith('=') &&
+      source.length > 1 &&
+      parenthesisDepth(source) === 0 &&
+      !/[=(,+\-*/^]$/.test(source)
+    );
+  }
+
+  function caretOffset(element) {
+    const selection = global.getSelection && global.getSelection();
+    if (!selection || !selection.rangeCount || !element.contains(selection.anchorNode)) {
+      return String(element.textContent || '').length;
     }
+    const range = selection.getRangeAt(0).cloneRange();
+    range.selectNodeContents(element);
+    range.setEnd(selection.anchorNode, selection.anchorOffset);
+    return range.toString().length;
+  }
 
-    return grid.querySelector(
-      `.cell[data-r="${Number(match[2]) - 1}"]` +
-      `[data-c="${column - 1}"]`
+  function setCaret(element, offset) {
+    const selection = global.getSelection && global.getSelection();
+    if (!selection || !global.document.createRange) return;
+    const target = clamp(offset, 0, String(element.textContent || '').length);
+    const walker = global.document.createTreeWalker(
+      element,
+      global.NodeFilter ? global.NodeFilter.SHOW_TEXT : 4
     );
+    let remaining = target;
+    let node = walker.nextNode();
+    while (node) {
+      const length = node.nodeValue.length;
+      if (remaining <= length) {
+        const range = global.document.createRange();
+        range.setStart(node, remaining);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        return;
+      }
+      remaining -= length;
+      node = walker.nextNode();
+    }
+    const range = global.document.createRange();
+    range.selectNodeContents(element);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   function createController(documentObject) {
     const doc = documentObject || global.document;
     if (!doc || !doc.getElementById) return null;
-
     const formula = doc.getElementById('formulaInput');
     const suggestions = doc.getElementById('formulaSuggestions');
     const grid = doc.getElementById('grid');
     const viewport = doc.getElementById('gridViewport');
     const nameBox = doc.getElementById('nameBox');
     const status = doc.getElementById('formulaReferenceStatus');
-
-    if (!formula || !suggestions || !grid || !viewport || !nameBox) {
-      return null;
-    }
-
+    const tabs = doc.getElementById('sheetTabs');
+    if (!formula || !suggestions || !grid || !viewport || !nameBox) return null;
     if (formula.__inkdeskFormulaEditorController) {
       return formula.__inkdeskFormulaEditorController;
     }
@@ -227,25 +233,36 @@
       keydown: formula.onkeydown
     };
 
-    const overlay = doc.createElement('input');
-    overlay.id = 'cellFormulaEditor';
-    overlay.className = 'cell-formula-editor';
-    overlay.type = 'text';
-    overlay.autocomplete = 'off';
-    overlay.spellcheck = false;
-    overlay.setAttribute('aria-label', 'Edit formula in selected cell');
-    overlay.hidden = true;
-    doc.body.appendChild(overlay);
-
+    const drafts = new Map();
     const state = {
       active: false,
       cell: null,
-      suggestionIndex: 0,
+      targetReference: '',
+      targetKey: '',
+      value: '',
+      caret: 0,
+      originalDisplay: '',
+      originalFormulaValue: '',
       suggestionItems: [],
+      suggestionIndex: 0,
       suggestionContext: null,
       syncing: false,
-      positionFrame: 0
+      resumeTimer: 0
     };
+
+    function activeSheetName() {
+      return (
+        tabs && tabs.querySelector('button.active')?.textContent?.trim()
+      ) || 'Sheet';
+    }
+
+    function keyFor(reference) {
+      return activeSheetName() + '!' + String(reference || '').toUpperCase();
+    }
+
+    function selectedCell() {
+      return grid.querySelector('.cell.selected');
+    }
 
     function setStatus(message) {
       if (!status) return;
@@ -253,599 +270,456 @@
       status.textContent = String(message || '');
     }
 
-    function currentInput() {
-      return state.active ? overlay : formula;
-    }
-
-    function currentValue() {
-      return String(currentInput().value || '');
-    }
-
-    function currentSelection() {
-      const input = currentInput();
-      const fallback = String(input.value || '').length;
-
-      return Object.freeze({
-        start: Number.isFinite(input.selectionStart)
-          ? input.selectionStart
-          : fallback,
-        end: Number.isFinite(input.selectionEnd)
-          ? input.selectionEnd
-          : fallback
-      });
-    }
-
     function closeSuggestions() {
       suggestions.hidden = true;
       suggestions.replaceChildren();
-      suggestions.classList.remove(
-        'formula-suggestions-cell',
-        'formula-suggestions-bar'
-      );
       state.suggestionItems = [];
-      state.suggestionContext = null;
       state.suggestionIndex = 0;
+      state.suggestionContext = null;
     }
 
     function positionSuggestions() {
       if (suggestions.hidden) return;
-
-      const input = currentInput();
-      const rect = input.getBoundingClientRect();
-      const viewportWidth =
-        doc.documentElement.clientWidth ||
-        global.innerWidth ||
-        1024;
-
-      const width = Math.min(
-        Math.max(rect.width, 340),
-        Math.max(260, viewportWidth - 24)
-      );
-
-      const left = clamp(
-        rect.left,
-        8,
-        Math.max(8, viewportWidth - width - 8)
-      );
-
-      suggestions.style.left = left + 'px';
-      suggestions.style.top = (rect.bottom + 4) + 'px';
+      const rect = formula.getBoundingClientRect();
+      const viewportWidth = doc.documentElement.clientWidth || global.innerWidth || 1024;
+      const width = Math.min(Math.max(rect.width, 320), Math.max(260, viewportWidth - 24), 520);
+      suggestions.style.position = 'fixed';
+      suggestions.style.left = clamp(rect.left, 8, Math.max(8, viewportWidth - width - 8)) + 'px';
+      suggestions.style.top = rect.bottom + 3 + 'px';
       suggestions.style.width = width + 'px';
     }
 
     function renderSuggestions() {
-      const input = currentInput();
-      const selection = currentSelection();
-      const context = suggestionContext(
-        input.value,
-        selection.start
-      );
-
+      const context = suggestionContext(state.value, state.caret);
       const items = matchingFunctions(context);
-
       if (!context || !items.length) {
         closeSuggestions();
         return;
       }
-
       state.suggestionContext = context;
       state.suggestionItems = items;
-      state.suggestionIndex = clamp(
-        state.suggestionIndex,
-        0,
-        items.length - 1
-      );
-
+      state.suggestionIndex = clamp(state.suggestionIndex, 0, items.length - 1);
       suggestions.replaceChildren();
-      suggestions.classList.toggle(
-        'formula-suggestions-cell',
-        state.active
-      );
-      suggestions.classList.toggle(
-        'formula-suggestions-bar',
-        !state.active
-      );
-
       items.forEach(function (item, index) {
         const button = doc.createElement('button');
         button.type = 'button';
-        button.className =
-          'formula-suggestion' +
-          (index === state.suggestionIndex ? ' active' : '');
+        button.className = 'formula-suggestion' + (index === state.suggestionIndex ? ' active' : '');
         button.setAttribute('role', 'option');
-        button.setAttribute(
-          'aria-selected',
-          index === state.suggestionIndex ? 'true' : 'false'
-        );
-
+        button.setAttribute('aria-selected', index === state.suggestionIndex ? 'true' : 'false');
         const name = doc.createElement('strong');
         name.textContent = item[0];
-
-        const details = doc.createElement('span');
-        details.textContent = item[1] + ' · ' + item[2];
-
-        button.append(name, details);
-
-        button.addEventListener(
-          'pointerdown',
-          function (event) {
-            event.preventDefault();
-          }
-        );
-
-        button.addEventListener(
-          'click',
-          function () {
-            acceptSuggestion(index);
-          }
-        );
-
+        const detail = doc.createElement('span');
+        detail.textContent = item[1] + ' · ' + item[2];
+        button.append(name, detail);
+        button.addEventListener('pointerdown', function (event) {
+          event.preventDefault();
+        });
+        button.addEventListener('click', function () {
+          acceptSuggestion(index);
+        });
         suggestions.appendChild(button);
       });
-
       suggestions.hidden = false;
       positionSuggestions();
     }
 
-    function dispatchFormulaInput() {
-      formula.dispatchEvent(
-        new global.Event('input', {
-          bubbles: true,
-          cancelable: false
-        })
-      );
+    function rememberDraft() {
+      if (!state.targetKey) return;
+      drafts.set(state.targetKey, {
+        value: state.value,
+        caret: state.caret,
+        reference: state.targetReference
+      });
     }
 
-    function setValue(value, caret, options) {
-      const settings = options || {};
-      const source = String(value || '');
-      const position = clamp(
-        Number.isFinite(Number(caret)) ? Number(caret) : source.length,
-        0,
-        source.length
-      );
+    function updateCellText(value, caret) {
+      if (!state.cell) return;
+      state.cell.textContent = value;
+      state.cell.dataset.formulaDraft = value;
+      state.cell.classList.add(SAVED_DRAFT_CLASS);
+      if (state.active && doc.activeElement === state.cell) setCaret(state.cell, caret);
+    }
 
+    function mirrorFormula(value, caret, dispatch) {
       state.syncing = true;
-      formula.value = source;
-      formula.setSelectionRange(position, position);
-
-      if (state.active) {
-        overlay.value = source;
-        overlay.setSelectionRange(position, position);
+      formula.value = value;
+      formula.setSelectionRange(caret, caret);
+      if (dispatch) {
+        formula.dispatchEvent(new global.Event('input', { bubbles: true, cancelable: false }));
       }
-
-      if (settings.dispatch !== false) {
-        dispatchFormulaInput();
-      }
-
       state.syncing = false;
-      state.suggestionIndex = 0;
+    }
 
-      if (settings.suggestions !== false) {
-        renderSuggestions();
-      } else {
-        closeSuggestions();
+    function setDraftValue(value, caret, options) {
+      const settings = options || {};
+      state.value = String(value || '').replace(/[\r\n]+/g, '');
+      state.caret = clamp(caret, 0, state.value.length);
+      updateCellText(state.value, state.caret);
+      mirrorFormula(state.value, state.caret, settings.dispatch === true);
+      rememberDraft();
+      state.suggestionIndex = 0;
+      if (settings.suggestions === false) closeSuggestions();
+      else renderSuggestions();
+      doc.dispatchEvent(new global.CustomEvent('inkdesk:formula-session-change', {
+        detail: {
+          value: state.value,
+          caret: state.caret,
+          targetReference: state.targetReference
+        }
+      }));
+    }
+
+    function referenceController() {
+      return global.InkDeskSpreadsheetFormulaReferences || null;
+    }
+
+    function beginReferenceMode() {
+      const controller = referenceController();
+      if (controller && typeof controller.begin === 'function') {
+        controller.begin(state.targetReference);
       }
+    }
+
+    function start(cell, value, caret) {
+      if (!cell) return false;
+      if (state.active && state.cell !== cell) suspend();
+      const reference = cellReference(cell) || String(nameBox.value || '').toUpperCase();
+      const key = keyFor(reference);
+      const saved = drafts.get(key);
+      const initial = saved ? saved.value : String(value ?? '');
+      const position = saved ? saved.caret : clamp(caret ?? initial.length, 0, initial.length);
+      state.active = true;
+      state.cell = cell;
+      state.targetReference = reference;
+      state.targetKey = key;
+      state.value = initial;
+      state.caret = position;
+      state.originalDisplay = String(cell.textContent || '');
+      state.originalFormulaValue = String(formula.value || '');
+      doc.body.dataset.formulaEditorMode = 'cell-session';
+      cell.contentEditable = 'true';
+      cell.spellcheck = false;
+      cell.classList.add(DRAFT_CLASS, SAVED_DRAFT_CLASS);
+      cell.dataset.formulaDraft = initial;
+      cell.textContent = initial;
+      mirrorFormula(initial, position, false);
+      cell.focus({ preventScroll: true });
+      setCaret(cell, position);
+      rememberDraft();
+      renderSuggestions();
+      beginReferenceMode();
+      setStatus('Draft ' + reference + ' is preserved. Type in the cell; Tab accepts a function and Enter confirms.');
+      return true;
+    }
+
+    function suspend() {
+      if (!state.active) return;
+      rememberDraft();
+      closeSuggestions();
+      if (state.cell) {
+        state.cell.contentEditable = 'false';
+        state.cell.classList.remove(DRAFT_CLASS);
+        state.cell.classList.add(SAVED_DRAFT_CLASS);
+        state.cell.dataset.formulaDraft = state.value;
+        state.cell.textContent = state.value;
+      }
+      state.active = false;
+      state.cell = null;
+      state.targetReference = '';
+      state.targetKey = '';
+      delete doc.body.dataset.formulaEditorMode;
+      const controller = referenceController();
+      if (controller && typeof controller.pause === 'function') controller.pause();
+      setStatus('Formula draft preserved. Return to its cell to continue.');
+    }
+
+    function clearActiveState() {
+      closeSuggestions();
+      if (state.cell) {
+        state.cell.contentEditable = 'false';
+        state.cell.classList.remove(DRAFT_CLASS, SAVED_DRAFT_CLASS);
+        delete state.cell.dataset.formulaDraft;
+      }
+      state.active = false;
+      state.cell = null;
+      state.targetReference = '';
+      state.targetKey = '';
+      delete doc.body.dataset.formulaEditorMode;
+    }
+
+    function callCoreKeydown(key) {
+      if (typeof coreHandlers.keydown !== 'function') return;
+      coreHandlers.keydown.call(formula, {
+        key,
+        shiftKey: false,
+        preventDefault: function () {},
+        stopPropagation: function () {},
+        stopImmediatePropagation: function () {}
+      });
+    }
+
+    function commit() {
+      if (!state.active) return false;
+      const targetKey = state.targetKey;
+      const balanced = balanceFormula(state.value);
+      state.value = balanced;
+      state.caret = balanced.length;
+      mirrorFormula(balanced, balanced.length, false);
+      if (state.cell) {
+        state.cell.contentEditable = 'false';
+        state.cell.classList.remove(DRAFT_CLASS);
+      }
+      callCoreKeydown('Enter');
+      drafts.delete(targetKey);
+      const controller = referenceController();
+      if (controller && typeof controller.end === 'function') controller.end('Formula confirmed.');
+      clearActiveState();
+      setStatus('Formula confirmed.');
+      return true;
+    }
+
+    function cancel() {
+      if (!state.active) return;
+      const targetKey = state.targetKey;
+      const original = state.originalDisplay;
+      drafts.delete(targetKey);
+      if (state.cell) state.cell.textContent = original;
+      callCoreKeydown('Escape');
+      const controller = referenceController();
+      if (controller && typeof controller.end === 'function') controller.end('');
+      clearActiveState();
+      setStatus('');
     }
 
     function acceptSuggestion(index) {
       const context = state.suggestionContext;
       const item = state.suggestionItems[index];
-
-      if (!context || !item) return false;
-
+      if (!context || !item || !state.active) return false;
       const result = applyFunctionSuggestion(
-        currentValue(),
+        state.value,
         context.start,
         context.end,
         item[0]
       );
-
-      setValue(
-        result.value,
-        result.caret,
-        {
-          dispatch: true,
-          suggestions: true
-        }
-      );
-
-      currentInput().focus({ preventScroll: true });
-      closeSuggestions();
-
-      setStatus(
-        item[0] +
-        ' inserted. Select cells or type arguments; Enter confirms.'
-      );
-
+      setDraftValue(result.value, result.caret, { dispatch: false, suggestions: false });
+      state.cell.focus({ preventScroll: true });
+      setCaret(state.cell, result.caret);
+      beginReferenceMode();
+      setStatus(item[0] + ' inserted. Click or drag cells, type arguments, or press Enter to confirm.');
       return true;
-    }
-
-    function positionOverlay() {
-      if (!state.active || !state.cell) return;
-
-      const rect = state.cell.getBoundingClientRect();
-      const viewportWidth =
-        doc.documentElement.clientWidth ||
-        global.innerWidth ||
-        1024;
-
-      const width = Math.min(
-        Math.max(rect.width, 220),
-        Math.max(220, viewportWidth - rect.left - 12),
-        520
-      );
-
-      overlay.style.left = rect.left + 'px';
-      overlay.style.top = rect.top + 'px';
-      overlay.style.width = width + 'px';
-      overlay.style.height = Math.max(rect.height, 28) + 'px';
-
-      positionSuggestions();
-    }
-
-    function schedulePosition() {
-      if (!state.active || state.positionFrame) return;
-
-      const render = function () {
-        state.positionFrame = 0;
-        positionOverlay();
-      };
-
-      state.positionFrame = global.requestAnimationFrame
-        ? global.requestAnimationFrame(render)
-        : global.setTimeout(render, 0);
-    }
-
-    function openCellEditor(cell, initialValue, caret) {
-      if (!cell) return false;
-
-      state.active = true;
-      state.cell = cell;
-      doc.body.dataset.formulaEditorMode = 'cell';
-
-      overlay.hidden = false;
-      overlay.value = String(initialValue || '');
-      positionOverlay();
-
-      const position = clamp(
-        Number.isFinite(Number(caret))
-          ? Number(caret)
-          : overlay.value.length,
-        0,
-        overlay.value.length
-      );
-
-      setValue(
-        overlay.value,
-        position,
-        {
-          dispatch: true,
-          suggestions: false
-        }
-      );
-
-      overlay.focus({ preventScroll: true });
-      overlay.setSelectionRange(position, position);
-      renderSuggestions();
-
-      setStatus(
-        'Editing ' +
-        String(nameBox.value || '') +
-        ' in the cell. Tab accepts a function; Enter confirms.'
-      );
-
-      return true;
-    }
-
-    function closeOverlay() {
-      state.active = false;
-      state.cell = null;
-      overlay.hidden = true;
-      delete doc.body.dataset.formulaEditorMode;
-      closeSuggestions();
-    }
-
-    function callCoreKeydown(key) {
-      if (typeof coreHandlers.keydown !== 'function') return false;
-
-      let prevented = false;
-
-      coreHandlers.keydown.call(formula, {
-        key,
-        shiftKey: false,
-        preventDefault: function () {
-          prevented = true;
-        },
-        stopPropagation: function () {},
-        stopImmediatePropagation: function () {}
-      });
-
-      return prevented;
-    }
-
-    function commit() {
-      const balanced = balanceFormula(currentValue());
-
-      setValue(
-        balanced,
-        balanced.length,
-        {
-          dispatch: true,
-          suggestions: false
-        }
-      );
-
-      closeSuggestions();
-      callCoreKeydown('Enter');
-
-      const references =
-        global.InkDeskSpreadsheetFormulaReferences;
-
-      if (references && typeof references.end === 'function') {
-        references.end('Formula confirmed.');
-      }
-
-      closeOverlay();
-      setStatus('Formula confirmed.');
-      return balanced;
-    }
-
-    function cancel() {
-      closeSuggestions();
-      callCoreKeydown('Escape');
-
-      const references =
-        global.InkDeskSpreadsheetFormulaReferences;
-
-      if (references && typeof references.end === 'function') {
-        references.end('');
-      }
-
-      closeOverlay();
-      setStatus('');
     }
 
     function handleEditingKeydown(event) {
-      if (
-        !suggestions.hidden &&
-        (event.key === 'ArrowDown' || event.key === 'ArrowUp')
-      ) {
+      if (!state.active) return;
+      if (!suggestions.hidden && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
         event.preventDefault();
         event.stopImmediatePropagation();
-
         const direction = event.key === 'ArrowDown' ? 1 : -1;
-        state.suggestionIndex =
-          (
-            state.suggestionIndex +
-            direction +
-            state.suggestionItems.length
-          ) % state.suggestionItems.length;
-
+        state.suggestionIndex = (
+          state.suggestionIndex + direction + state.suggestionItems.length
+        ) % state.suggestionItems.length;
         renderSuggestions();
         return;
       }
-
-      if (
-        event.key === 'Tab' &&
-        !suggestions.hidden &&
-        state.suggestionItems.length
-      ) {
+      if (event.key === 'Tab' && !suggestions.hidden && state.suggestionItems.length) {
         event.preventDefault();
         event.stopImmediatePropagation();
         acceptSuggestion(state.suggestionIndex);
         return;
       }
-
-      /*
-       * Enter never accepts a suggestion. It always confirms the formula,
-       * which prevents A in A1 from turning into AVERAGE on confirmation.
-       */
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         event.stopImmediatePropagation();
         commit();
         return;
       }
-
       if (event.key === 'Escape') {
         event.preventDefault();
         event.stopImmediatePropagation();
-
         if (!suggestions.hidden) {
           closeSuggestions();
-          setStatus(
-            'Suggestions closed. Press Escape again to cancel editing.'
-          );
+          setStatus('Suggestions closed. Press Escape again to cancel the draft.');
         } else {
           cancel();
         }
       }
     }
 
-    overlay.addEventListener('input', function () {
-      if (state.syncing) return;
+    function applyReference(result) {
+      if (!state.active || !result) return;
+      setDraftValue(result.value, result.caret, { dispatch: false, suggestions: false });
+      state.cell.focus({ preventScroll: true });
+      setCaret(state.cell, result.caret);
+    }
 
-      const caret = Number.isFinite(overlay.selectionStart)
-        ? overlay.selectionStart
-        : overlay.value.length;
+    function resumeDraftAfterCoreSelection(cell) {
+      clearTimeout(state.resumeTimer);
+      state.resumeTimer = global.setTimeout(function () {
+        const reference = cellReference(cell);
+        const saved = drafts.get(keyFor(reference));
+        if (saved) start(cell, saved.value, saved.caret);
+      }, 0);
+    }
 
-      setValue(
-        overlay.value,
-        caret,
-        {
-          dispatch: true,
-          suggestions: true
+    function reapplyDrafts() {
+      grid.querySelectorAll('.cell').forEach(function (cell) {
+        if (state.active && cell === state.cell) return;
+        const reference = cellReference(cell);
+        const saved = drafts.get(keyFor(reference));
+        if (saved) {
+          cell.textContent = saved.value;
+          cell.dataset.formulaDraft = saved.value;
+          cell.classList.add(SAVED_DRAFT_CLASS);
+        } else {
+          cell.classList.remove(SAVED_DRAFT_CLASS);
+          delete cell.dataset.formulaDraft;
         }
-      );
-    });
+      });
+    }
 
-    overlay.addEventListener(
-      'keydown',
-      handleEditingKeydown,
-      true
-    );
-
-    formula.onfocus = function (event) {
-      if (typeof coreHandlers.focus === 'function') {
-        coreHandlers.focus.call(formula, event);
-      }
-
-      if (state.active) return;
-
-      closeSuggestions();
+    grid.addEventListener('input', function (event) {
+      if (!state.active || event.target !== state.cell) return;
+      const value = String(state.cell.innerText || '').replace(/[\r\n]+/g, '');
+      const caret = caretOffset(state.cell);
+      state.value = value;
+      state.caret = caret;
+      mirrorFormula(value, caret, false);
+      rememberDraft();
       state.suggestionIndex = 0;
       renderSuggestions();
+      beginReferenceMode();
+    }, true);
 
-      setStatus(
-        'Formula bar ready. Tab accepts a function; Enter confirms the formula.'
-      );
+    grid.addEventListener('keydown', function (event) {
+      if (state.active && event.target === state.cell) handleEditingKeydown(event);
+    }, true);
+
+    grid.addEventListener('pointerdown', function (event) {
+      const cell = event.target?.closest?.('.cell');
+      if (!cell) return;
+      const reference = cellReference(cell);
+      const saved = drafts.get(keyFor(reference));
+      if (state.active && cell !== state.cell) {
+        if (formulaCanSelectReference(state.value, state.caret)) return;
+        if (formulaIsComplete(state.value)) commit();
+        else suspend();
+      }
+      if (!state.active && saved) resumeDraftAfterCoreSelection(cell);
+    }, true);
+
+    formula.onfocus = function (event) {
+      if (!state.active && typeof coreHandlers.focus === 'function') {
+        coreHandlers.focus.call(formula, event);
+      }
+      if (!state.active && String(formula.value || '').startsWith('=')) {
+        const cell = selectedCell();
+        if (cell) start(cell, formula.value, formula.selectionStart ?? formula.value.length);
+      } else if (state.active) {
+        mirrorFormula(state.value, state.caret, false);
+        renderSuggestions();
+      }
     };
 
     formula.oninput = function () {
       if (state.syncing) return;
-
-      if (state.active) {
-        overlay.value = formula.value;
-        const caret = Number.isFinite(formula.selectionStart)
-          ? formula.selectionStart
-          : formula.value.length;
-        overlay.setSelectionRange(caret, caret);
+      if (!state.active) {
+        if (String(formula.value || '').startsWith('=')) {
+          const cell = selectedCell();
+          if (cell) start(cell, formula.value, formula.selectionStart ?? formula.value.length);
+        } else if (typeof coreHandlers.input === 'function') {
+          coreHandlers.input.call(formula);
+        }
+        return;
       }
-
+      const caret = formula.selectionStart ?? formula.value.length;
+      state.value = formula.value;
+      state.caret = caret;
+      updateCellText(state.value, state.caret);
+      rememberDraft();
       state.suggestionIndex = 0;
       renderSuggestions();
+      beginReferenceMode();
     };
 
-    formula.onkeydown = handleEditingKeydown;
+    formula.onkeydown = function (event) {
+      if (state.active) handleEditingKeydown(event);
+      else if (typeof coreHandlers.keydown === 'function') coreHandlers.keydown.call(formula, event);
+    };
 
-    formula.addEventListener(
-      'pointerdown',
-      function () {
-        if (!state.active) return;
-
-        const value = overlay.value;
-        const caret = Number.isFinite(overlay.selectionStart)
-          ? overlay.selectionStart
-          : value.length;
-
-        closeOverlay();
-        formula.value = value;
-        formula.setSelectionRange(caret, caret);
-      },
-      true
-    );
-
-    global.addEventListener(
-      'keydown',
-      function (event) {
-        const target = event.target;
-
-        if (
-          target === formula ||
-          target === overlay ||
-          target?.matches?.(
-            'input,textarea,select,button,[contenteditable="true"]'
-          )
-        ) {
-          return;
-        }
-
-        const cell = selectedCell(doc, grid, nameBox);
-        if (!cell) return;
-
-        if (
-          event.key === '=' &&
-          !event.ctrlKey &&
-          !event.metaKey &&
-          !event.altKey
-        ) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          openCellEditor(cell, '=', 1);
-          return;
-        }
-
-        if (event.key === 'F2') {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-
-          const value = String(formula.value || cell.textContent || '');
-          openCellEditor(cell, value, value.length);
-        }
-      },
-      true
-    );
-
-    global.addEventListener(
-      'dblclick',
-      function (event) {
-        const cell =
-          event.target &&
-          typeof event.target.closest === 'function' &&
-          event.target.closest('.cell');
-
-        if (!cell || !grid.contains(cell)) return;
-
+    global.addEventListener('keydown', function (event) {
+      const target = event.target;
+      if (
+        target === formula ||
+        target?.matches?.('input,textarea,select,button,[contenteditable="true"]')
+      ) return;
+      const cell = selectedCell();
+      if (!cell) return;
+      if (event.key === '=' && !event.ctrlKey && !event.metaKey && !event.altKey) {
         event.preventDefault();
         event.stopImmediatePropagation();
+        start(cell, '=', 1);
+        return;
+      }
+      if (event.key === 'F2') {
+        const reference = cellReference(cell);
+        const saved = drafts.get(keyFor(reference));
+        const value = saved?.value || String(formula.value || '');
+        if (saved || value.startsWith('=')) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          start(cell, value, saved?.caret ?? value.length);
+        }
+      }
+    }, true);
 
-        const value = String(formula.value || cell.textContent || '');
-        openCellEditor(cell, value, value.length);
-      },
-      true
-    );
+    global.addEventListener('dblclick', function (event) {
+      const cell = event.target?.closest?.('.cell');
+      if (!cell || !grid.contains(cell)) return;
+      const reference = cellReference(cell);
+      const saved = drafts.get(keyFor(reference));
+      const value = saved?.value || (cell.classList.contains('selected') ? String(formula.value || '') : '');
+      if (!saved && !value.startsWith('=')) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      start(cell, value, saved?.caret ?? value.length);
+    }, true);
 
-    viewport.addEventListener(
-      'scroll',
-      schedulePosition,
-      { passive: true }
-    );
+    global.addEventListener('resize', positionSuggestions);
+    viewport.addEventListener('scroll', positionSuggestions, { passive: true });
 
-    global.addEventListener('resize', schedulePosition);
+    if (typeof global.MutationObserver === 'function') {
+      new global.MutationObserver(function () {
+        global.setTimeout(reapplyDrafts, 0);
+      }).observe(grid, { childList: true });
+    }
 
     const controller = Object.freeze({
       version: VERSION,
-      isActive: function () {
-        return state.active;
-      },
-      hasSuggestions: function () {
-        return !suggestions.hidden;
-      },
-      getValue: currentValue,
-      getSelection: currentSelection,
-      open: openCellEditor,
-      close: closeOverlay,
+      drafts,
+      isActive: function () { return state.active; },
+      getValue: function () { return state.value; },
+      getSelection: function () { return { start: state.caret, end: state.caret }; },
+      getTargetReference: function () { return state.targetReference; },
+      canSelectReference: function () { return state.active && formulaCanSelectReference(state.value, state.caret); },
+      shouldAppendReference: function () { return state.active && shouldAppendReference(state.value, state.caret); },
+      applyReference,
       focus: function () {
-        currentInput().focus({ preventScroll: true });
+        if (state.cell) {
+          state.cell.focus({ preventScroll: true });
+          setCaret(state.cell, state.caret);
+        }
       },
-      setValueFromReference: function (result) {
-        if (!result) return;
-
-        setValue(
-          result.value,
-          result.caret,
-          {
-            dispatch: true,
-            suggestions: false
-          }
-        );
-
-        currentInput().focus({ preventScroll: true });
-      },
+      start,
+      suspend,
       commit,
-      cancel
+      cancel,
+      formulaIsComplete: function () { return formulaIsComplete(state.value); }
     });
 
-    Object.defineProperty(
-      formula,
-      '__inkdeskFormulaEditorController',
-      {
-        value: controller,
-        configurable: true
-      }
-    );
-
+    Object.defineProperty(formula, '__inkdeskFormulaEditorController', {
+      value: controller,
+      configurable: true
+    });
     global.InkDeskSpreadsheetFormulaEditor = controller;
     return controller;
   }
@@ -853,29 +727,30 @@
   const api = Object.freeze({
     version: VERSION,
     functions: FUNCTIONS,
+    encodeColumn,
+    cellReference,
     parenthesisDepth,
     balanceFormula,
     suggestionContext,
-    applyFunctionSuggestion,
     matchingFunctions,
+    applyFunctionSuggestion,
+    formulaCanSelectReference,
+    shouldAppendReference,
+    formulaIsComplete,
     createController
   });
 
   global.InkDeskFormulaEditor = api;
 
-  function autoInitialize() {
+  function initialize() {
     createController(global.document);
   }
 
   if (global.document) {
     if (global.document.readyState === 'loading') {
-      global.document.addEventListener(
-        'DOMContentLoaded',
-        autoInitialize,
-        { once: true }
-      );
+      global.document.addEventListener('DOMContentLoaded', initialize, { once: true });
     } else {
-      autoInitialize();
+      initialize();
     }
   }
 })(typeof window !== 'undefined' ? window : globalThis);

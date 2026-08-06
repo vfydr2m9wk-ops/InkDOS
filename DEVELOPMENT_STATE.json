@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 9,
-  "currentPackage": "0.19.4.9",
+  "appliedSequence": 10,
+  "currentPackage": "0.19.4.10",
   "status": "in-progress",
   "history": [
     {
@@ -50,6 +50,11 @@
       "sequence": 9,
       "packageLabel": "0.19.4.9",
       "description": "Spreadsheet formula-authoring polish: in-cell formula editor, larger uncluttered formula bar, cell-reference-aware suggestions, Tab/pointer suggestion acceptance, Enter-only confirmation, parenthesis balancing on commit, and integration with drag and discontinuous reference selection."
+    },
+    {
+      "sequence": 10,
+      "packageLabel": "0.19.4.10",
+      "description": "Persistent spreadsheet formula sessions in normal-size cells, drafts that survive cell changes, two-letter non-blocking suggestions, successive-click and drag references, postfix percentage semantics, and improved GitHub Actions failure/rollback diagnostics."
     }
   ]
 }

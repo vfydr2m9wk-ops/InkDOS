@@ -1,6 +1,6 @@
 # Spreadsheet formula-reference selection
 
-Development sequence `0.19.4.8` adds mouse, pointer, and touch-assisted cell
+Development sequence `0.19.4.10` adds mouse, pointer, and touch-assisted cell
 reference selection while a formula is being edited.
 
 ## Target cell preservation
@@ -72,3 +72,12 @@ requiring a hardware keyboard.
 
 This milestone does not add cross-workbook references, named-range creation,
 structured-table formula authoring, or automatic formula translation.
+
+
+## 0.19.4.10 persistent formula session
+
+Reference selection now cooperates with the real in-cell draft session. A
+single click, dragged range, successive click, Ctrl/Command selection, or the
+touch Add Range control updates the formula draft without expanding the cell or
+closing the editing session. Parentheses are balanced only when Enter confirms
+the formula.
