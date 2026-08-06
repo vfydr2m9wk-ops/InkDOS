@@ -58,20 +58,39 @@ Each package must remain focused and must not silently absorb later milestones.
 - Update the formula bar live.
 - Confirm with Enter, cancel with Escape, and provide a touch fallback.
 
-## 0.19.4.9 — Plain Text module
+
+## 0.19.4.9 — Spreadsheet in-cell formula editing (implemented)
+
+- Start formulas directly from the selected cell with `=`.
+- Add an in-cell editor synchronized with the formula bar.
+- Reserve Enter for confirmation and Tab/pointer for suggestions.
+- Prevent one-letter cell references inside arguments from becoming functions.
+- Balance missing parentheses only when the formula is confirmed.
+- Enlarge and simplify the formula row.
+
+## 0.19.4.10 — PDF unified Save
+
+- Replace parallel export, import, original-download, print, and PDF-copy
+  actions with one Save command.
+- Incorporate InkDesk highlights, underlines, comments, marker regions, and
+  inserted text into the exported PDF.
+- Keep Open in system PDF viewer and Fullscreen.
+- Preserve a local editable review state while exporting flattened annotations.
+
+## 0.19.4.11 — Plain Text module
 
 - Add the modular TXT viewer/editor.
 - Support new, open, edit, export, undo/redo, find/replace, word wrap,
   line/column status, UTF-8 BOM handling, and unsaved-change protection.
 
-## 0.19.4.10 — EPUB Reader module
+## 0.19.4.12 — EPUB Reader module
 
 - Add local EPUB package parsing, spine order, sanitized readable HTML,
   basic images, lateral pagination, font sizing, reading themes, table of
   contents, and local reading position.
 - Do not add DRM bypass, editing, cloud synchronization, AI, or text-to-speech.
 
-## 0.19.4.11 — Integration and stabilization
+## 0.19.4.13 — Integration and stabilization
 
 - Run cross-module browser and direct-file regression work.
 - Complete responsive, keyboard, accessibility, service-worker, and export

@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 168,
+  "fileCount": 172,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 2756,
-      "sha256": "6d4430fb2b7b36351a5546eb24703998b79780188c7dea238a2a25386d15980a"
+      "bytes": 3133,
+      "sha256": "1914d5c8ead0072be950636264cd1be3dfbacc1d3e45b646d0961a0c406761cb"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "3471046a234a063416a9fc3d1b3a1ed12d097fa5272c98823ef7cce858fad5c5"
+      "sha256": "6bbd0870e4611305f5a4526982b16fe16fa03750db66fddaca226c023de2cf68"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -144,8 +144,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 6538,
-      "sha256": "ba8d875fdee887c37e6b8c87d69cf8eee842e674612f796c91e22971c01e45fa"
+      "bytes": 7518,
+      "sha256": "bcb049f3408d5e5162671df8fe2f1d668a9b01fd6540957261d19ccf0c9e7623"
     },
     {
       "path": "apps/documents/app.js",
@@ -233,19 +233,29 @@
       "sha256": "5537d4c10133cb34ca974804b34f6fe7237e328210b51447fe56409432a37db0"
     },
     {
+      "path": "apps/spreadsheets/formula-editor.css",
+      "bytes": 2658,
+      "sha256": "8d48a61cb92018fd0a862cd1806037c4076777d2dd2af7fd43f2d4b035c93f4b"
+    },
+    {
+      "path": "apps/spreadsheets/formula-editor.js",
+      "bytes": 22469,
+      "sha256": "8194d4bfd967bc6f0f43a236636bbcdb226a65262732d06993ee2eb89a8b553e"
+    },
+    {
       "path": "apps/spreadsheets/formula-reference.css",
-      "bytes": 3255,
-      "sha256": "263d4c2d9de1f0f04cade4d02183f90cd40313ca7009b0dd7bc08852e7ea9c85"
+      "bytes": 3432,
+      "sha256": "631e7dbe6ff8e57e0cb9cacb9d0dab4711afdcc75c84d6ce7fafdbaee10f3981"
     },
     {
       "path": "apps/spreadsheets/formula-reference.js",
-      "bytes": 16642,
-      "sha256": "27423cf47645d5dbb591513f7c8c433121177312fad1c3487e7f81a170e3d5e8"
+      "bytes": 17680,
+      "sha256": "77ee1ddbfa9d26fa1b9e673f74a46743acd724cdaf88620e698345f90c410e42"
     },
     {
       "path": "apps/spreadsheets/index.html",
-      "bytes": 7595,
-      "sha256": "61f655433563535615206914997eeccdcd2e7df733ac743124da773275615533"
+      "bytes": 7739,
+      "sha256": "a2a0cf6a815dae9a8422fbac7b0d4723a689a356cc46591148648c7726a0d2b6"
     },
     {
       "path": "apps/spreadsheets/module.json",
@@ -474,8 +484,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 3752,
-      "sha256": "919ceeaed8f7843009d1ae0cc0cd320971f1df2cd0affc889067bf8941c3055c"
+      "bytes": 4578,
+      "sha256": "f0c18dd7199596c066d2d39053851faf0c68ace710beb73af9711ac8685ec76a"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -486,6 +496,11 @@
       "path": "docs/SPREADSHEETS_COMPONENT.md",
       "bytes": 3080,
       "sha256": "f58b65a10d05edc6ef50bff6f0116986605464de6e8c24c0561cf4f4a2c4927e"
+    },
+    {
+      "path": "docs/SPREADSHEET_FORMULA_EDITOR.md",
+      "bytes": 1906,
+      "sha256": "4f3e5be2d986816b4231ed33db1ba79749760d02a5085d1ce5d9f6e8a3b62e75"
     },
     {
       "path": "docs/SPREADSHEET_FORMULA_REFERENCES.md",
@@ -604,8 +619,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1571,
-      "sha256": "c7e9df921f90ff3895fec4cd8bc7db97426701b38b2c9829402dfd11df36a440"
+      "bytes": 1671,
+      "sha256": "e1a0fc6567281c6cae051ece27eb99b73dc58b072d79d4d2b9f05373f3c7d537"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -654,8 +669,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 5455,
-      "sha256": "9ceb6455e186e36be83306a81626cf0e432dad6112fa907c131a5deba14af034"
+      "bytes": 5542,
+      "sha256": "4eb62fc41fd411fe98305594d621e67bd2fad4dc0a0d4c3d6ecf606b430aa262"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -729,8 +744,8 @@
     },
     {
       "path": "shared/ui/workspace-layout.css",
-      "bytes": 26030,
-      "sha256": "556e1d68cc3e79e7ca38ae2443ae87df7af91bd978439832c019967613df0d7c"
+      "bytes": 26332,
+      "sha256": "af625ecf6bf240689b858c47a826bd8d3411cad4b7eb75bc279119abd4c3b459"
     },
     {
       "path": "shared/ui/workspace-layout.js",
@@ -838,9 +853,14 @@
       "sha256": "7c9b802e2cf94877bd387f60e920c0182e2bc0aac1bca100471d571f474dc3f6"
     },
     {
+      "path": "tests/test_spreadsheet_formula_editor.py",
+      "bytes": 6904,
+      "sha256": "1f9d0e1b4c12bd67de152e6a7c468ac170ee7c572e7e1d005572ca895e885d71"
+    },
+    {
       "path": "tests/test_spreadsheet_formula_references.py",
-      "bytes": 6518,
-      "sha256": "ee2fddd0a09e53788b8abfc5c24eaddcdd7e4c85dc19e1e0ea7d344d40efd81f"
+      "bytes": 6599,
+      "sha256": "a13ba5685b1358b1770b03f36934e19fc1153b4c41a2d8d6886b7bc3e0678b12"
     },
     {
       "path": "tests/test_update_package.py",

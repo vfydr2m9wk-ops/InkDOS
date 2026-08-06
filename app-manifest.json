@@ -92,7 +92,13 @@
       "xlsx-formula-discontinuous-reference-selection",
       "xlsx-formula-target-cell-preservation",
       "xlsx-formula-touch-add-range",
-      "xlsx-formula-live-reference-preview"
+      "xlsx-formula-live-reference-preview",
+      "xlsx-in-cell-formula-editor",
+      "xlsx-enter-confirms-formula",
+      "xlsx-tab-accepts-function-suggestion",
+      "xlsx-cell-reference-aware-suggestions",
+      "xlsx-balance-parentheses-on-commit",
+      "xlsx-expanded-formula-bar"
     ],
     "presentations": [
       "pptx-basic-open",
@@ -192,7 +198,7 @@
   },
   "spreadsheetFormulaReferenceSystem": {
     "schemaVersion": 1,
-    "version": "0.19.4.8",
+    "version": "0.19.4.9",
     "runtime": "apps/spreadsheets/formula-reference.js",
     "stylesheet": "apps/spreadsheets/formula-reference.css",
     "targetCell": "preserved while selecting references",
@@ -204,6 +210,28 @@
     ],
     "confirmation": "Enter",
     "cancellation": "Escape",
-    "documentation": "docs/SPREADSHEET_FORMULA_REFERENCES.md"
+    "documentation": "docs/SPREADSHEET_FORMULA_REFERENCES.md",
+    "autoCloseDuringRangeSelection": false,
+    "parenthesesBalancedOnCommit": true,
+    "formulaEditorIntegration": "apps/spreadsheets/formula-editor.js"
+  },
+  "spreadsheetFormulaEditorSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.9",
+    "runtime": "apps/spreadsheets/formula-editor.js",
+    "stylesheet": "apps/spreadsheets/formula-editor.css",
+    "directCellStart": [
+      "=",
+      "F2",
+      "double-click"
+    ],
+    "suggestionAccept": [
+      "Tab",
+      "pointer"
+    ],
+    "formulaConfirm": "Enter",
+    "formulaCancel": "Escape",
+    "cellReferenceProtection": "single-letter tokens inside function arguments do not open function suggestions",
+    "documentation": "docs/SPREADSHEET_FORMULA_EDITOR.md"
   }
 }

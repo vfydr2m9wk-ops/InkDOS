@@ -305,8 +305,8 @@ body.office-spreadsheets .toolbar {
 }
 
 body.office-spreadsheets .formula-row {
-  height: 36px !important;
-  min-height: 36px;
+  height: 46px !important;
+  min-height: 46px !important;
   background: var(--inkdesk-surface) !important;
   border-bottom: 1px solid var(--inkdesk-edge) !important;
 }
@@ -331,7 +331,7 @@ body.office-spreadsheets main {
     100% -
     var(--inkdesk-titlebar-height) -
     48px -
-    36px -
+    46px -
     var(--inkdesk-statusbar-height)
   ) !important;
 }
@@ -964,4 +964,19 @@ body.office-documents .ruler-handle.right-indent {
   body.office-documents .ruler-track {
     transition: none !important;
   }
+}
+
+
+/* Spreadsheet formula-bar polish — 0.19.4.9 */
+body.office-spreadsheets .formula-row {
+  padding-block: 5px !important;
+}
+
+body.office-spreadsheets #formulaInput {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+body.office-spreadsheets .formula-editor {
+  min-width: 0;
 }

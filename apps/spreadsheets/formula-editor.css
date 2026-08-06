@@ -1,0 +1,125 @@
+/* InkDesk in-cell formula editor — 0.19.4.9 */
+
+body.office-spreadsheets .formula-row {
+  gap: 0 !important;
+  padding-right: 8px;
+}
+
+body.office-spreadsheets .formula-editor {
+  min-width: 180px;
+  flex: 1 1 auto;
+}
+
+body.office-spreadsheets #formulaInput {
+  min-width: 0;
+  height: 100%;
+  padding-inline: 10px;
+  font-size: 13px;
+}
+
+body.office-spreadsheets .formula-range-add {
+  min-width: 62px;
+  height: 30px;
+  margin: 0 0 0 6px;
+  padding-inline: 8px;
+  font-size: 12px;
+}
+
+body.office-spreadsheets > footer .formula-reference-status {
+  display: inline-block;
+  min-width: 0;
+  max-width: min(42vw, 560px);
+  margin-left: 12px;
+  overflow: hidden;
+  color: var(--muted, var(--inkdesk-muted));
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.office-spreadsheets .cell-formula-editor {
+  position: fixed;
+  z-index: 1400;
+  min-width: 220px;
+  box-sizing: border-box;
+  padding: 3px 8px;
+  border: 2px solid var(--select, #258447);
+  border-radius: 2px;
+  outline: none;
+  background: var(--cell, #fff);
+  color: var(--text, #1b1b1b);
+  font:
+    13px/1.25
+    Calibri,
+    Arial,
+    sans-serif;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+}
+
+body.office-spreadsheets .cell-formula-editor[hidden] {
+  display: none !important;
+}
+
+body.office-spreadsheets
+  .formula-suggestions.formula-suggestions-cell,
+body.office-spreadsheets
+  .formula-suggestions.formula-suggestions-bar {
+  position: fixed !important;
+  z-index: 1450 !important;
+  max-height: 248px;
+  overflow: auto;
+  border: 1px solid var(--line, var(--inkdesk-edge));
+  border-radius: 7px;
+  background: var(--panel, var(--inkdesk-surface));
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+body.office-spreadsheets
+  .formula-suggestions
+  .formula-suggestion {
+  min-height: 38px;
+  padding: 5px 10px;
+}
+
+body.office-spreadsheets
+  .formula-suggestions
+  .formula-suggestion
+  strong {
+  flex: 0 0 92px;
+}
+
+body.office-spreadsheets
+  .formula-suggestions
+  .formula-suggestion
+  span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.office-spreadsheets[data-formula-editor-mode="cell"]
+  .cell.selected {
+  box-shadow:
+    inset 0 0 0 2px var(--select, #258447),
+    inset 0 0 0 4px
+      color-mix(in srgb, var(--cell, white) 84%, transparent);
+}
+
+@media (max-width: 760px) {
+  body.office-spreadsheets > footer .formula-reference-status {
+    display: none;
+  }
+
+  body.office-spreadsheets .cell-formula-editor {
+    min-width: 180px;
+    font-size: 16px;
+  }
+}
+
+@media (pointer: coarse) {
+  body.office-spreadsheets .cell-formula-editor {
+    min-height: 38px;
+  }
+}

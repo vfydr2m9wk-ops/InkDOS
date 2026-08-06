@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 8,
-  "currentPackage": "0.19.4.8",
+  "appliedSequence": 9,
+  "currentPackage": "0.19.4.9",
   "status": "in-progress",
   "history": [
     {
@@ -45,6 +45,11 @@
       "sequence": 8,
       "packageLabel": "0.19.4.8",
       "description": "Spreadsheet formula-reference selection module: preserve the formula target cell while selecting source cells, drag ranges, Ctrl/Command discontinuous references, touch Add Range fallback, live formula-bar insertion and visual reference outlines, without rewriting the spreadsheet editor."
+    },
+    {
+      "sequence": 9,
+      "packageLabel": "0.19.4.9",
+      "description": "Spreadsheet formula-authoring polish: in-cell formula editor, larger uncluttered formula bar, cell-reference-aware suggestions, Tab/pointer suggestion acceptance, Enter-only confirmation, parenthesis balancing on commit, and integration with drag and discontinuous reference selection."
     }
   ]
 }

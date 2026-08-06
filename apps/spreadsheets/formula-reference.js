@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.19.4.8';
+  const VERSION = '0.19.4.9';
   const REFERENCE_CLASS = 'formula-reference-range';
   const TARGET_CLASS = 'formula-target-cell';
   const COLOR_COUNT = 6;
@@ -194,6 +194,10 @@
       pendingPointer: null
     };
 
+    function formulaEditor() {
+      return global.InkDeskSpreadsheetFormulaEditor || null;
+    }
+
     function setStatus(message) {
       if (!status) return;
 
@@ -296,11 +300,14 @@
     }
 
     function formulaIsEditing() {
+      const editor = formulaEditor();
+
       return (
         String(formula.value || '').startsWith('=') &&
         (
           state.active ||
-          doc.activeElement === formula
+          doc.activeElement === formula ||
+          Boolean(editor && editor.isActive())
         )
       );
     }
@@ -340,6 +347,17 @@
     }
 
     function setFormulaResult(result) {
+      const editor = formulaEditor();
+
+      if (
+        editor &&
+        editor.isActive() &&
+        typeof editor.setValueFromReference === 'function'
+      ) {
+        editor.setValueFromReference(result);
+        return;
+      }
+
       formula.value = result.value;
       formula.focus({ preventScroll: true });
       formula.setSelectionRange(
@@ -375,7 +393,7 @@
         reference,
         {
           additive: state.drag.additive,
-          autoClose: true
+          autoClose: false
         }
       );
 
@@ -422,8 +440,21 @@
 
       state.nextAdditive = false;
 
-      let start = formula.selectionStart;
-      let end = formula.selectionEnd;
+      const editor = formulaEditor();
+      const editorSelection =
+        editor &&
+        editor.isActive() &&
+        typeof editor.getSelection === 'function'
+          ? editor.getSelection()
+          : null;
+
+      let start = editorSelection
+        ? editorSelection.start
+        : formula.selectionStart;
+
+      let end = editorSelection
+        ? editorSelection.end
+        : formula.selectionEnd;
 
       if (
         !Number.isFinite(start) ||
@@ -540,7 +571,13 @@
         (finished.colorIndex + 1) % COLOR_COUNT;
 
       renderReferences();
-      formula.focus({ preventScroll: true });
+
+      const editor = formulaEditor();
+      if (editor && editor.isActive()) {
+        editor.focus();
+      } else {
+        formula.focus({ preventScroll: true });
+      }
 
       const reference = formatRange(
         { r: finished.range.r1, c: finished.range.c1 },
@@ -616,7 +653,14 @@
         function () {
           if (!beginMode()) return;
           state.nextAdditive = true;
-          formula.focus({ preventScroll: true });
+
+          const editor = formulaEditor();
+          if (editor && editor.isActive()) {
+            editor.focus();
+          } else {
+            formula.focus({ preventScroll: true });
+          }
+
           setStatus(
             'Add-range mode: select another cell or drag another range.'
           );

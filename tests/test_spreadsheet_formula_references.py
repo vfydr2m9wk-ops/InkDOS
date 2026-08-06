@@ -25,7 +25,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            'formula-reference.css?v=0.19.4.8',
+            'formula-reference.css?v=0.19.4.9',
             html,
         )
         self.assertIn(
@@ -45,7 +45,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
             '<script src="app.js"></script>'
         )
         helper_position = html.index(
-            'formula-reference.js?v=0.19.4.8'
+            'formula-reference.js?v=0.19.4.9'
         )
         self.assertLess(app_position, helper_position)
 
@@ -103,7 +103,10 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
             "'./apps/spreadsheets/formula-reference.js'",
             worker,
         )
-        self.assertIn("0.19.4.8", worker)
+        self.assertRegex(
+            worker,
+            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+        )
 
     def test_manifest_exposes_formula_reference_contract(self):
         manifest = json.loads(
@@ -115,7 +118,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         contract = manifest[
             "spreadsheetFormulaReferenceSystem"
         ]
-        self.assertEqual(contract["version"], "0.19.4.8")
+        self.assertEqual(contract["version"], "0.19.4.9")
         self.assertEqual(contract["confirmation"], "Enter")
         self.assertEqual(contract["cancellation"], "Escape")
         self.assertIn(
@@ -156,7 +159,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
 require('./apps/spreadsheets/formula-reference.js');
 const api = globalThis.InkDeskFormulaReferences;
 
-if (!api || api.version !== '0.19.4.8') process.exit(10);
+if (!api || api.version !== '0.19.4.9') process.exit(10);
 if (api.encodeColumn(0) !== 'A') process.exit(11);
 if (api.encodeColumn(25) !== 'Z') process.exit(12);
 if (api.encodeColumn(26) !== 'AA') process.exit(13);

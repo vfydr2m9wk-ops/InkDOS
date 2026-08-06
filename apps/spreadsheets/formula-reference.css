@@ -143,3 +143,9 @@ body.office-spreadsheets
     outline: 2px solid Highlight;
   }
 }
+
+
+/* 0.19.4.9: guidance now belongs to the status bar, not the formula row. */
+body.office-spreadsheets .formula-row > .formula-reference-status {
+  display: none !important;
+}
