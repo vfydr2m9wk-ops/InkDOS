@@ -19,29 +19,14 @@
   <link rel="icon" href="./assets/icons/office.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./assets/icons/office.png">
-  <link rel="stylesheet" href="./shared/hub.css?v=0.19.4.11">
+  <link rel="stylesheet" href="./shared/hub.css?v=0.19.4.13">
 </head>
 <body>
   <main class="hub-shell">
     <header class="hub-header">
       <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div><h1>InkDesk</h1><p>Experimental, local-first OOXML editors for focused workflows.</p></div>
-      <span class="version">0.19.3-beta.7 · visual foundation 0.19.4.11</span>
     </header>
-    <aside class="status-callout" aria-label="Project status">
-      <strong>Stabilization phase</strong>
-      <span>The current goal is reliable basic open, edit and export workflows—not full Microsoft Office compatibility.</span>
-      <a href="./docs/MVP_SCOPE.md">Read the focused scope</a>
-    </aside>
-    <section class="open-any-panel" aria-labelledby="openAnyTitle">
-      <div class="open-any-copy">
-        <span class="open-any-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h6l2 2h9v10.2a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8z"/><path d="M3.5 9h17"/></svg></span>
-        <div><strong id="openAnyTitle">Open any supported document</strong><span>Choose a DOCX, XLS, XLSX, PPTX or PDF file. InkDesk sends it to the matching enabled workspace.</span></div>
-      </div>
-      <button id="openAnyDocument" class="open-any-button" type="button">Open document</button>
-      <input id="openAnyInput" type="file" accept=".docx,.xls,.xlsx,.pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
-      <span id="openAnyStatus" class="open-any-status" role="status" aria-live="polite">The selected file stays on this device.</span>
-    </section>
     <p id="moduleRegistryStatus" class="module-registry-status" role="status" aria-live="polite" hidden></p>
     <section class="app-grid" data-module-grid aria-label="Office applications">
       <a class="app-card documents" href="./apps/documents/index.html"><span class="app-icon">D</span><span class="open-arrow">›</span><span class="card-copy"><h2>Documents</h2><p>Basic DOCX creation, editing and copy export.</p></span></a>
@@ -49,13 +34,29 @@
       <a class="app-card presentations" href="./apps/presentations/index.html"><span class="app-icon">P</span><span class="open-arrow">›</span><span class="card-copy"><h2>Presentations</h2><p>Basic PPTX editing and presentation with best-effort compatibility.</p></span></a>
       <a class="app-card pdf" href="./apps/pdf/index.html"><span class="app-icon">PDF</span><span class="open-arrow">›</span><span class="card-copy"><h2>PDF Workspace</h2><p>Local PDF rendering, forms, navigation and a private review layer.</p></span></a>
     </section>
+    <section class="open-any-panel" aria-labelledby="openAnyTitle">
+      <div class="open-any-copy">
+        <span class="open-any-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h6l2 2h9v10.2a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8z"/><path d="M3.5 9h17"/></svg></span>
+        <div>
+          <strong id="openAnyTitle">Open any supported document</strong>
+          <span id="openAnyStatus" class="open-any-status" role="status" aria-live="polite">The selected file stays on this device.</span>
+        </div>
+      </div>
+      <button id="openAnyDocument" class="open-any-button" type="button">Open document</button>
+      <input id="openAnyInput" type="file" accept=".docx,.xls,.xlsx,.pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
+    </section>
     <section class="quick-panel" aria-label="InkDesk principles">
       <div><strong>Local by default</strong><span>No account, analytics or project-operated upload server is included.</span></div>
       <div><strong>Export verification</strong><span>A requested download remains unverified until the exported copy is reopened successfully.</span></div>
       <div><strong>Modular foundation</strong><span>Enabled workspaces are discovered from a validated local registry with direct-entry fallbacks.</span></div>
     </section>
+    <aside class="status-callout status-callout-compact" aria-label="Project status">
+      <strong>Stabilization phase</strong>
+      <span>Focused on reliable basic open, edit and export workflows.</span>
+      <a href="./docs/MVP_SCOPE.md">Scope</a>
+    </aside>
     <footer class="hub-footer">
-      <span>Experimental open-source preview · Saving exports a new copy</span>
+      <span class="build-line">InkDesk 0.19.3-beta.7 · build 0.19.4.13</span>
       <nav aria-label="Project links">
         <a href="https://github.com/vfydr2m9wk-ops/InkDesk">Source</a>
         <a href="./docs/PROJECT_STATUS.md">Status</a>

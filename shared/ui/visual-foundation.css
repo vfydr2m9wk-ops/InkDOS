@@ -265,3 +265,116 @@ body.office-pdf .app-badge { background-image: url("../../assets/icons/pdf.svg")
     transition-duration: .001ms !important;
   }
 }
+
+/* File-title and start-action refinements — 0.19.4.13 */
+body.office-product .file-title-input{
+  width:clamp(150px,28vw,360px);
+  min-width:0;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:transparent;
+  color:inherit;
+  padding:5px 9px;
+  font:inherit;
+  font-weight:700;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.office-product .file-title-input:hover{
+  background:var(--inkdesk-button-hover);
+}
+body.office-product .file-title-input:focus{
+  outline:none;
+  text-align:left;
+  background:var(--inkdesk-surface);
+  border-color:color-mix(in srgb,var(--inkdesk-accent,var(--inkdesk-focus)) 58%,transparent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--inkdesk-accent,var(--inkdesk-focus)) 14%,transparent);
+}
+body.office-documents .welcome-actions .new-primary{
+  background:#fff!important;
+  color:#1f2630!important;
+  border-color:rgba(31,41,55,.18)!important;
+  box-shadow:0 5px 14px rgba(15,23,42,.08)!important;
+}
+body.office-documents .welcome-actions .new-primary:hover{
+  background:#f6f8fb!important;
+  border-color:rgba(31,41,55,.28)!important;
+}
+body.office-documents .welcome-actions .open-document-primary{
+  background:var(--inkdesk-accent,#2f6fed)!important;
+  color:#fff!important;
+  border-color:var(--inkdesk-accent,#2f6fed)!important;
+}
+
+/* Sequence 0.19.4.13 corrective integration.
+ * Keep workspace-specific styles from the installed repository and carry
+ * only the new layout/title refinements in the shared visual foundation.
+ */
+body.office-spreadsheets #emptyState .start-actions{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+body.office-spreadsheets #emptyState .start-btn{
+  width:100%!important;
+  min-width:0!important;
+}
+body.office-presentations .titlebar .doc-title.file-title-input{
+  justify-self:center;
+  max-width:42vw;
+  margin:0;
+  line-height:1.2;
+}
+body.office-pdf #docTitle.file-title-input{
+  max-width:46vw;
+  width:clamp(150px,30vw,390px);
+}
+@media(max-width:620px){
+  body.office-spreadsheets #emptyState .start-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* Shared editable title surface — corrected sequence 0.19.4.13. */
+body.office-product .file-title-editable{
+  min-width:120px;
+  max-width:min(46vw,390px);
+  padding:5px 9px;
+  overflow:hidden;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-weight:700;
+  line-height:1.25;
+  text-align:center;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  transition:
+    background-color var(--inkdesk-motion-fast) ease,
+    border-color var(--inkdesk-motion-fast) ease,
+    box-shadow var(--inkdesk-motion-fast) ease;
+}
+body.office-product .file-title-editable:hover{
+  background:var(--inkdesk-button-hover);
+}
+body.office-product .file-title-editable:focus{
+  outline:none;
+  overflow:auto;
+  border-color:color-mix(
+    in srgb,
+    var(--inkdesk-accent,var(--inkdesk-focus)) 58%,
+    transparent
+  );
+  background:var(--inkdesk-surface);
+  box-shadow:0 0 0 3px color-mix(
+    in srgb,
+    var(--inkdesk-accent,var(--inkdesk-focus)) 14%,
+    transparent
+  );
+  text-align:left;
+  text-overflow:clip;
+}

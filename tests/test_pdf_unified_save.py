@@ -55,12 +55,8 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        exporter = html.index(
-            "flatten-export.js?v=0.19.4.12"
-        )
-        application = html.index(
-            "app.js?v=0.19.4.12"
-        )
+        exporter = html.index('src="flatten-export.js')
+        application = html.index('src="app.js')
 
         self.assertLess(exporter, application)
         self.assertIn(
@@ -149,7 +145,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             "'./apps/pdf/flatten-export.js'",
             worker,
         )
-        self.assertIn("0.19.4.12", worker)
+        self.assertRegex(worker, r"modules-0\.19\.4\.\d+")
 
     def test_pure_pdf_builder_and_geometry(self):
         node = shutil.which("node")

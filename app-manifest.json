@@ -74,7 +74,9 @@
       "docx-zoom-aware-ruler",
       "docx-section-aware-ruler",
       "docx-ruler-margin-zones",
-      "docx-ruler-dynamic-indent-mapping"
+      "docx-ruler-dynamic-indent-mapping",
+      "editable-file-title",
+      "unsaved-change-navigation-warning"
     ],
     "spreadsheets": [
       "xls-biff8-local-import",
@@ -103,7 +105,9 @@
       "xlsx-formula-draft-survives-cell-switch",
       "xlsx-normal-size-in-cell-formula-editing",
       "xlsx-successive-click-references",
-      "xlsx-postfix-percentage"
+      "xlsx-postfix-percentage",
+      "editable-file-title",
+      "unsaved-change-navigation-warning"
     ],
     "presentations": [
       "pptx-basic-open",
@@ -112,7 +116,9 @@
       "pptx-package-preserving-copy-export",
       "pptx-layout-master-image-notes-resolution",
       "pptx-chart-and-transition-preview",
-      "fingerprint-verified-export-reopen"
+      "fingerprint-verified-export-reopen",
+      "editable-file-title",
+      "unsaved-change-navigation-warning"
     ],
     "pdf": [
       "pdf-local-open",
@@ -145,7 +151,9 @@
       "pdf-rendered-page-export",
       "pdf-comment-callout-export",
       "pdf-single-save-command",
-      "pdf-form-state-preserving-save-without-review"
+      "pdf-form-state-preserving-save-without-review",
+      "editable-file-title",
+      "unsaved-change-navigation-warning"
     ]
   },
   "compatibility": {
@@ -333,5 +341,31 @@
     "annotatedExportTextSelectable": false,
     "visualFoundation": "0.19.4.11",
     "documentation": "docs/PDF_UNIFIED_SAVE.md"
+  },
+  "homeRefinement": {
+    "version": "0.19.4.13",
+    "moduleCardsBeforeUniversalOpen": true,
+    "compactStatusNearFooter": true,
+    "buildInFooter": true,
+    "universalOpenCopy": "The selected file stays on this device."
+  },
+  "documentSessionSystem": {
+    "version": "0.19.4.13",
+    "sharedLifecycle": "shared/file-lifecycle.js",
+    "automaticBeforeUnloadGuard": true,
+    "editableTitles": {
+      "documents": ".docx",
+      "spreadsheets": ".xlsx",
+      "presentations": ".pptx",
+      "pdf": ".pdf"
+    },
+    "plannedModules": {
+      "txt": "must adopt shared lifecycle when editing",
+      "epub": "must adopt shared lifecycle when editing"
+    },
+    "implementation": "shared office-shell document-session adapter",
+    "replacesCompleteApplicationFiles": false,
+    "downloadNameRewriting": true,
+    "preservesInstalledApplicationRuntime": true
   }
 }

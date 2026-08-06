@@ -43,3 +43,36 @@ body,button,input,select,textarea{font-family:var(--inkdesk-font-ui)}
 .open-any-button:active{transform:translateY(1px) scale(.98);box-shadow:0 2px 7px rgba(47,111,237,.20) inset}
 .open-any-panel,.status-callout,.quick-panel,.module-registry-status{border-radius:20px}
 .version{font-family:var(--inkdesk-font-ui);border-radius:999px}
+
+/* InkDesk home refinement — 0.19.4.13 */
+.hub-header{
+  grid-template-columns:62px minmax(0,1fr);
+  margin-bottom:24px;
+}
+.app-grid{margin-bottom:20px}
+.open-any-panel{margin:0 0 20px}
+.open-any-status{
+  grid-column:auto;
+  padding-left:0;
+  display:block;
+}
+.status-callout-compact{
+  margin:16px 0 0;
+  padding:9px 13px;
+  border-radius:14px;
+  background:color-mix(in srgb,#f59e0b 4%,var(--surface));
+  border-color:color-mix(in srgb,#d97706 20%,var(--edge));
+  box-shadow:none;
+  opacity:.88;
+}
+.status-callout-compact strong{font-size:11px}
+.status-callout-compact span,
+.status-callout-compact a{font-size:11px}
+.build-line{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.01em;
+}
+@media(max-width:760px){
+  .hub-header{grid-template-columns:54px minmax(0,1fr)}
+  .status-callout-compact{grid-template-columns:1fr;gap:3px}
+}

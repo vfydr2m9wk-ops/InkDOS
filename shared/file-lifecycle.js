@@ -13,13 +13,38 @@ const LABELS=Object.freeze({
   [STATES.EXPORT_FAILED]:'Export failed',
   [STATES.EXPORT_VERIFIED]:'Exported copy reopened successfully'
 });
+const activeControllers=new Set();
+let unloadGuardInstalled=false;
+
+function anyWorkspaceNeedsWarning(){
+  for(const controller of activeControllers){
+    try{
+      if(controller.shouldWarnBeforeUnload())return true;
+    }catch(error){
+      console.error('File lifecycle guard failed.',error);
+    }
+  }
+  return false;
+}
+
+function installUnloadGuard(){
+  if(unloadGuardInstalled||!global.addEventListener)return;
+  unloadGuardInstalled=true;
+  global.addEventListener('beforeunload',event=>{
+    if(!anyWorkspaceNeedsWarning())return;
+    event.preventDefault();
+    event.returnValue='';
+  });
+}
+
 function create(options={}){
   let state=STATES.CLEAN,revision=0,verifiedRevision=0,lastError=null,lastExport=null;
-  const listeners=new Set();if(typeof options.onChange==='function')listeners.add(options.onChange);
+  const listeners=new Set();
+  if(typeof options.onChange==='function')listeners.add(options.onChange);
   function snapshot(){return Object.freeze({state,label:LABELS[state],revision,verifiedRevision,lastError,lastExport,hasUnverifiedChanges:revision!==verifiedRevision,shouldWarnBeforeUnload:revision!==verifiedRevision});}
   function emit(){const value=snapshot();for(const fn of listeners){try{fn(value)}catch(error){console.error('File lifecycle listener failed.',error)}}return value}
   function transition(next,details={}){state=next;if(Object.prototype.hasOwnProperty.call(details,'error'))lastError=details.error||null;if(Object.prototype.hasOwnProperty.call(details,'export'))lastExport=details.export||null;return emit()}
-  return Object.freeze({
+  const controller={
     get state(){return state},get label(){return LABELS[state]},snapshot,
     subscribe(fn){if(typeof fn!=='function')throw new TypeError('Lifecycle listener must be a function.');listeners.add(fn);return()=>listeners.delete(fn)},
     sourceOpened(){revision=0;verifiedRevision=0;lastError=null;lastExport=null;return transition(STATES.CLEAN)},
@@ -33,8 +58,23 @@ function create(options={}){
       verifiedRevision=revision;return transition(STATES.EXPORT_VERIFIED,{error:null,export:Object.freeze(Object.assign({},expected,metadata,{verified:true}))})
     },
     resetClean(){verifiedRevision=revision;return transition(STATES.CLEAN,{error:null,export:null})},
-    shouldWarnBeforeUnload(){return revision!==verifiedRevision}
-  });
+    shouldWarnBeforeUnload(){return revision!==verifiedRevision},
+    confirmDiscard(message='You have unsaved changes. Continue and discard them?'){
+      return revision===verifiedRevision||global.confirm(message);
+    },
+    destroy(){activeControllers.delete(controller);listeners.clear()}
+  };
+  activeControllers.add(controller);
+  installUnloadGuard();
+  emit();
+  return Object.freeze(controller);
 }
-global.InkDeskFileLifecycle=Object.freeze({STATES,LABELS,create});
+installUnloadGuard();
+global.InkDeskFileLifecycle=Object.freeze({
+  version:'0.19.4.13',
+  STATES,
+  LABELS,
+  create,
+  anyWorkspaceNeedsWarning
+});
 })(window);

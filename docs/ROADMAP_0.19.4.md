@@ -116,3 +116,17 @@ Each package must remain focused and must not silently absorb later milestones.
 A milestone may include a small prerequisite correction required for its own
 implementation. Larger unrelated work must remain in its assigned package.
 When the order changes, update this roadmap explicitly.
+
+
+## 0.19.4.13 — Home and document-session refinement (implemented)
+
+- Home presents workspace cards before the universal Open action.
+- Stabilization status is compact and placed near the footer.
+- Build information moves to the normal footer line.
+- Documents, Spreadsheets, Presentations, and PDF expose editable filenames in
+  their title bars.
+- The shared file lifecycle installs an automatic unload guard for current and
+  future editable modules.
+- PDF review changes participate in the same warning contract.
+- Documents use clearly distinct blue and white start actions.
+- Spreadsheet start actions remain side by side on desktop.

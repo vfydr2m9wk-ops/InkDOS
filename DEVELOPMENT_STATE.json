@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 12,
-  "currentPackage": "0.19.4.12",
+  "appliedSequence": 13,
+  "currentPackage": "0.19.4.13",
   "status": "in-progress",
   "history": [
     {
@@ -65,6 +65,11 @@
       "sequence": 12,
       "packageLabel": "0.19.4.12",
       "description": "PDF unified Save after the visual foundation: one rounded Save command, removal of parallel export/import/original/print actions, PDF.js structure-preserving save when no InkDesk review exists, page-by-page flattened annotated export when review marks exist, offline caching, stable inherited tests, and documentation."
+    },
+    {
+      "sequence": 13,
+      "packageLabel": "0.19.4.13",
+      "description": "Quieter launcher, visual action alignment, shared unsaved-change protection, and non-invasive editable filenames. Complete application files are preserved; title editing and download-name rewriting are implemented by the shared document-session adapter."
     }
   ]
 }
