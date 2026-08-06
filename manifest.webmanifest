@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "InkDesk",
   "short_name": "InkDesk",
-  "description": "Local-first DOCX, XLS/XLSX, PPTX, PDF and TXT workspaces.",
+  "description": "Local-first DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workspaces.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -77,6 +77,18 @@
       "icons": [
         {
           "src": "assets/icons/txt.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "EPUB Reader",
+      "short_name": "EPUB",
+      "url": "apps/epub/index.html",
+      "icons": [
+        {
+          "src": "assets/icons/epub.png",
           "sizes": "512x512",
           "type": "image/png"
         }

@@ -142,3 +142,15 @@ When the order changes, update this roadmap explicitly.
   undo/redo, and live text counts.
 - Route TXT files from the universal Open action.
 - Cache the module for offline use.
+
+
+## 0.19.4.15 — EPUB Reader module (implemented)
+
+- Add an optional enabled EPUB module and purple launcher card.
+- Parse container and package metadata locally from the EPUB archive.
+- Render sanitized simple text with supported local images.
+- Generate lateral pages with buttons, keyboard navigation, and swipe.
+- Add adjustable text size and Paper, Sepia, Sage, and Night themes.
+- Keep the three-dimensional table-of-contents panel closed by default.
+- Support editable filenames and unchanged renamed EPUB copy export.
+- Route EPUB files from the universal Open action and cache the reader offline.

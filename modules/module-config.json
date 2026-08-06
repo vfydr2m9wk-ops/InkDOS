@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "registryVersion": "0.19.4.14",
+  "registryVersion": "0.19.4.15",
   "modulePaths": [
     {
       "id": "documents",
@@ -25,6 +25,11 @@
     {
       "id": "txt",
       "manifest": "apps/txt/module.json",
+      "required": false
+    },
+    {
+      "id": "epub",
+      "manifest": "apps/epub/module.json",
       "required": false
     }
   ],

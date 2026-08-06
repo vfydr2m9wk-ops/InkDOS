@@ -9,9 +9,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="Experimental local-first workspaces for focused DOCX, XLS/XLSX, PPTX, PDF and TXT workflows.">
+  <meta name="description" content="Experimental local-first workspaces for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.">
   <meta property="og:title" content="InkDesk">
-  <meta property="og:description" content="Experimental local-first editors for basic Office, PDF and TXT workflows.">
+  <meta property="og:description" content="Experimental local-first editors for basic Office, PDF, TXT and EPUB workflows.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://vfydr2m9wk-ops.github.io/InkDesk/docs/images/social-preview.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -34,6 +34,7 @@
       <a class="app-card presentations" href="./apps/presentations/index.html"><span class="app-icon">P</span><span class="open-arrow">›</span><span class="card-copy"><h2>Presentations</h2><p>Basic PPTX editing and presentation with best-effort compatibility.</p></span></a>
       <a class="app-card pdf" href="./apps/pdf/index.html"><span class="app-icon">PDF</span><span class="open-arrow">›</span><span class="card-copy"><h2>PDF Workspace</h2><p>Local PDF rendering, forms, navigation and a private review layer.</p></span></a>
       <a class="app-card txt" href="./apps/txt/index.html"><span class="app-icon">TXT</span><span class="open-arrow">›</span><span class="card-copy"><h2>Plain Text</h2><p>A simple local TXT viewer and editor with a yellow notebook identity.</p></span></a>
+      <a class="app-card epub" href="./apps/epub/index.html"><span class="app-icon">EPUB</span><span class="open-arrow">›</span><span class="card-copy"><h2>EPUB Reader</h2><p>Local reading with lateral pages, text sizing, themes and simple images.</p></span></a>
     </section>
     <section class="open-any-panel" aria-labelledby="openAnyTitle">
       <div class="open-any-copy">
@@ -44,7 +45,7 @@
         </div>
       </div>
       <button id="openAnyDocument" class="open-any-button" type="button">Open document</button>
-      <input id="openAnyInput" type="file" accept=".docx,.xls,.xlsx,.pptx,.pdf,.txt,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
+      <input id="openAnyInput" type="file" accept=".docx,.xls,.xlsx,.pptx,.pdf,.txt,.epub,application/pdf,text/plain,application/epub+zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
     </section>
     <section class="quick-panel" aria-label="InkDesk principles">
       <div><strong>Local by default</strong><span>No account, analytics or project-operated upload server is included.</span></div>
@@ -57,7 +58,7 @@
       <a href="./docs/MVP_SCOPE.md">Scope</a>
     </aside>
     <footer class="hub-footer">
-      <span class="build-line">InkDesk 0.19.3-beta.7 · build 0.19.4.14</span>
+      <span class="build-line">InkDesk 0.19.3-beta.7 · build 0.19.4.15</span>
       <nav aria-label="Project links">
         <a href="https://github.com/vfydr2m9wk-ops/InkDesk">Source</a>
         <a href="./docs/PROJECT_STATUS.md">Status</a>
@@ -67,9 +68,9 @@
     </footer>
   </main>
   <noscript><p class="status-callout">InkDesk requires JavaScript to open and edit Office documents.</p></noscript>
-  <script src="./modules/module-registry.js?v=0.19.4.14"></script>
+  <script src="./modules/module-registry.js?v=0.19.4.15"></script>
   <script src="./modules/module-loader.js?v=0.19.4.11"></script>
-  <script src="./shared/file-router.js?v=0.19.4.14"></script>
+  <script src="./shared/file-router.js?v=0.19.4.15"></script>
   <script src="./shared/hub-open.js?v=0.19.4.2"></script>
   <script defer src="./shared/register-service-worker.js?v=0.19.3-beta.7"></script>
 </body>

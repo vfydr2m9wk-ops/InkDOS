@@ -2,7 +2,7 @@
 'use strict';
 const registry={
   "schemaVersion": 1,
-  "registryVersion": "0.19.4.14",
+  "registryVersion": "0.19.4.15",
   "modules": [
     {
       "schemaVersion": 1,
@@ -151,6 +151,40 @@ const registry={
         "find",
         "word-wrap",
         "font-size",
+        "editable-file-title",
+        "unsaved-change-navigation-warning",
+        "local-processing"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "epub",
+      "name": "EPUB Reader",
+      "description": "A local purple-book reader with lateral pages, text sizing, themes, contents and simple images.",
+      "version": "0.19.4.15",
+      "enabled": true,
+      "optional": true,
+      "order": 60,
+      "entryPoint": "apps/epub/index.html",
+      "icon": "assets/icons/epub.png",
+      "badge": "EPUB",
+      "themeClass": "epub",
+      "accent": "#7655c7",
+      "extensions": [
+        "epub"
+      ],
+      "mimeTypes": [
+        "application/epub+zip"
+      ],
+      "capabilities": [
+        "open",
+        "read-only",
+        "copy-export",
+        "lateral-pagination",
+        "font-size",
+        "reading-themes",
+        "table-of-contents",
+        "simple-images",
         "editable-file-title",
         "unsaved-change-navigation-warning",
         "local-processing"

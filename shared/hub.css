@@ -89,3 +89,6 @@ body,button,input,select,textarea{font-family:var(--inkdesk-font-ui)}
 .app-card.txt .app-icon:not(.has-image){
   background-image:url("../assets/icons/txt.svg")!important;
 }
+
+/* EPUB Reader launcher integration — 0.19.4.15 */
+.app-card.epub{--accent:#7655c7;--tint:#7655c7}.app-card.epub .app-icon:not(.has-image){background-image:url("../assets/icons/epub.svg")!important}

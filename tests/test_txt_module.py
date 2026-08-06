@@ -103,13 +103,11 @@ class TxtModuleTests(unittest.TestCase):
             router,
         )
         self.assertIn('"id": "txt"', registry)
-        self.assertEqual(
-            config["modulePaths"][-1]["id"],
-            "txt",
+        txt_entry = next(
+            item for item in config["modulePaths"]
+            if item["id"] == "txt"
         )
-        self.assertFalse(
-            config["modulePaths"][-1]["required"],
-        )
+        self.assertFalse(txt_entry["required"])
 
     def test_home_and_offline_shell_include_txt(self):
         home = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -127,7 +125,7 @@ class TxtModuleTests(unittest.TestCase):
             "./apps/txt/app.js",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertIn("modules-0.19.4.14", worker)
+        self.assertIn("modules-0.19.4.15", worker)
 
     def test_application_manifest_records_txt_contract(self):
         manifest = json.loads(

@@ -11,7 +11,8 @@ const ROUTES={
   xlsx:'./apps/spreadsheets/index.html',
   pptx:'./apps/presentations/index.html',
   pdf:'./apps/pdf/index.html',
-  txt:'./apps/txt/index.html'
+  txt:'./apps/txt/index.html',
+  epub:'./apps/epub/index.html'
 };
 
 function extensionOf(name){
@@ -22,7 +23,7 @@ function routeForFile(file){
   const extension=extensionOf(file&&file.name);
   const path=ROUTES[extension];
   if(!path)throw new Error(
-    'Choose a DOCX, XLS, XLSX, PPTX, PDF or TXT file.'
+    'Choose a DOCX, XLS, XLSX, PPTX, PDF, TXT or EPUB file.'
   );
   return {extension,path};
 }
@@ -188,7 +189,7 @@ function attachWorkspace(options){
   }
 }
 global.InkDeskFileRouter=Object.freeze({
-  version:'0.19.4.14',
+  version:'0.19.4.15',
   extensionOf,
   routeForFile,
   openFromHub,

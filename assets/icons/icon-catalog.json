@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.19.4.14",
+  "version": "0.19.4.15",
   "style": "minimal rounded-square symbols with consistent optical weight",
   "icons": {
     "inkdesk": {
@@ -37,7 +37,7 @@
       "file": "assets/icons/epub.svg",
       "color": "#7655c7",
       "symbol": "open-book",
-      "status": "planned"
+      "status": "active"
     },
     "txt": {
       "file": "assets/icons/txt.svg",

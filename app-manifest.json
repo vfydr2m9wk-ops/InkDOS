@@ -57,6 +57,12 @@
       "name": "Plain Text",
       "entryPoint": "apps/txt/index.html",
       "icon": "assets/icons/txt.png"
+    },
+    {
+      "id": "epub",
+      "name": "EPUB Reader",
+      "entryPoint": "apps/epub/index.html",
+      "icon": "assets/icons/epub.png"
     }
   ],
   "permissions": [
@@ -172,6 +178,18 @@
       "txt-word-wrap",
       "txt-font-size",
       "txt-word-line-character-count",
+      "editable-file-title",
+      "unsaved-change-navigation-warning"
+    ],
+    "epub": [
+      "epub-local-open",
+      "epub-read-only",
+      "epub-lateral-pagination",
+      "epub-font-size",
+      "epub-reading-themes",
+      "epub-table-of-contents",
+      "epub-simple-images",
+      "epub-save-renamed-copy",
       "editable-file-title",
       "unsaved-change-navigation-warning"
     ]
@@ -314,16 +332,15 @@
       "png"
     ],
     "primary": "quill-and-inkwell",
-    "plannedModuleIcons": [
-      "epub"
-    ],
+    "plannedModuleIcons": [],
     "documentation": "docs/ICON_SYSTEM.md",
     "activeModuleIcons": [
       "documents",
       "spreadsheets",
       "presentations",
       "pdf",
-      "txt"
+      "txt",
+      "epub"
     ]
   },
   "uiCapabilities": [
@@ -384,11 +401,10 @@
       "spreadsheets": ".xlsx",
       "presentations": ".pptx",
       "pdf": ".pdf",
-      "txt": ".txt"
+      "txt": ".txt",
+      "epub": ".epub"
     },
-    "plannedModules": {
-      "epub": "must adopt shared lifecycle when editing"
-    },
+    "plannedModules": {},
     "implementation": "shared office-shell document-session adapter",
     "replacesCompleteApplicationFiles": false,
     "downloadNameRewriting": true,
@@ -423,5 +439,32 @@
     ],
     "localProcessing": true,
     "documentation": "docs/TXT_EDITOR.md"
+  },
+  "epubReaderSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.15",
+    "module": "apps/epub/module.json",
+    "entryPoint": "apps/epub/index.html",
+    "parser": "apps/epub/epub-parser.js",
+    "runtime": "apps/epub/app.js",
+    "stylesheet": "apps/epub/styles.css",
+    "archiveRuntime": "shared/vendor/jszip.min.js",
+    "maximumFileBytes": 104857600,
+    "readingMode": "sanitized simple text with local images",
+    "pagination": "lateral generated pages",
+    "themes": [
+      "paper",
+      "sepia",
+      "sage",
+      "night"
+    ],
+    "fontSizeRange": [
+      13,
+      30
+    ],
+    "contentEditing": false,
+    "saveMode": "unchanged EPUB copy under edited filename",
+    "localProcessing": true,
+    "documentation": "docs/EPUB_READER.md"
   }
 }

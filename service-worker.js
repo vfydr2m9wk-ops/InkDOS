@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.14';
+const CACHE_NAME='inkdesk-shell-v0.19.3-beta.7-modules-0.19.4.15';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -11,6 +11,7 @@ const APP_SHELL=[
   './Presentations.html',
   './PDF.html',
   './TXT.html',
+  './EPUB.html',
   './modules/module-registry.js',
   './modules/module-loader.js',
   './modules/module-config.json',
@@ -80,7 +81,12 @@ const APP_SHELL=[
   './apps/txt/module.json',
   './apps/txt/index.html',
   './apps/txt/styles.css',
-  './apps/txt/app.js'
+  './apps/txt/app.js',
+  './apps/epub/module.json',
+  './apps/epub/index.html',
+  './apps/epub/styles.css',
+  './apps/epub/epub-parser.js',
+  './apps/epub/app.js'
   ,'./shared/vendor/pdfjs/pdf.min.js'
   ,'./shared/vendor/pdfjs/pdf.worker.min.js'
 ];
@@ -91,7 +97,8 @@ const NAVIGATION_PATHS=new Set([
   new URL('./apps/spreadsheets/index.html',self.registration.scope).pathname,
   new URL('./apps/presentations/index.html',self.registration.scope).pathname,
   new URL('./apps/pdf/index.html',self.registration.scope).pathname,
-  new URL('./apps/txt/index.html',self.registration.scope).pathname
+  new URL('./apps/txt/index.html',self.registration.scope).pathname,
+  new URL('./apps/epub/index.html',self.registration.scope).pathname
 ]);
 function canonicalCacheKey(request){
   const url=new URL(request.url);

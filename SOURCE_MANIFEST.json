@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 202,
+  "fileCount": 210,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,13 +64,18 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 5044,
-      "sha256": "78a4e68d5f58836ddda977d9c2244ab71d6bfd8a32bf558b8cfe72abe88d5a68"
+      "bytes": 5422,
+      "sha256": "bac9a31215bca7878305be5dda4a5f67593aeded7e680af11e141de830be4985"
     },
     {
       "path": "Documents.html",
       "bytes": 451,
       "sha256": "736c383a59e2790cf6876f66cb3ba6bc02da10df738810ebe422d43086354b23"
+    },
+    {
+      "path": "EPUB.html",
+      "bytes": 429,
+      "sha256": "a8b82c9aed490d4123663828a6a1721a7b346b8d5f9b6775e0e4607106e3fdb6"
     },
     {
       "path": "InkDesk.html",
@@ -100,7 +105,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "bbe1fd19770d9f963f23f405722333a41eb5d8d93e6b8c8a757896a93a2d4eac"
+      "sha256": "ba6fe862cab1a2189319c6f3db34723d6ce07bb95f876c643ced338ed2d20345"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -149,8 +154,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 12931,
-      "sha256": "1ce5a15ac523b0330352e9d1a660d72a9546eeab807b69b3ebf7b84828883e64"
+      "bytes": 14118,
+      "sha256": "c7bc66d766b7f4179fe2afbb85b8700feafaed6cc18d6857c9b111243a2bb972"
     },
     {
       "path": "apps/documents/app.js",
@@ -181,6 +186,31 @@
       "path": "apps/documents/styles.css",
       "bytes": 15727,
       "sha256": "739cbfad4ee9750c5d9f474aa8292ba363b4b316aab4f4c2ae8cfd5e4709e5f4"
+    },
+    {
+      "path": "apps/epub/app.js",
+      "bytes": 14814,
+      "sha256": "63e24062ac57a08a37e54b99d7dbcc0b5cd679b029d5721a1860c5413eef5fa3"
+    },
+    {
+      "path": "apps/epub/epub-parser.js",
+      "bytes": 3548,
+      "sha256": "11a48dcca7117fa550112dad787f8319b3156939113d45153b107d81a85816dd"
+    },
+    {
+      "path": "apps/epub/index.html",
+      "bytes": 5269,
+      "sha256": "404ca47fa5642c9c26c55133514a10b831fa9be14f11c502154bf6372d583676"
+    },
+    {
+      "path": "apps/epub/module.json",
+      "bytes": 745,
+      "sha256": "c97c62c8fef6e542162fda50793994d4e81cb53e74287449c6f0c7d7acc51624"
+    },
+    {
+      "path": "apps/epub/styles.css",
+      "bytes": 10167,
+      "sha256": "47399def392eec951acb7cfdace487871be9332ea068e44863e4220e3065b4be"
     },
     {
       "path": "apps/pdf/app.js",
@@ -339,8 +369,8 @@
     },
     {
       "path": "assets/icons/icon-catalog.json",
-      "bytes": 1210,
-      "sha256": "6ed651c8f48f8ab7eee17dad6dc7d8168f80291f407b7a47a2444c2727a5f7ce"
+      "bytes": 1209,
+      "sha256": "12f80be63a086838d4c6e6de9412e5cbf4617c8481989a7b82656420fa10a9c9"
     },
     {
       "path": "assets/icons/office.ico",
@@ -461,6 +491,11 @@
       "path": "docs/EMBEDDING_AND_INTEGRATION.md",
       "bytes": 1107,
       "sha256": "22ea5890affce69af6338664cd97eb391f5fc358d526caac644f8394729aadd7"
+    },
+    {
+      "path": "docs/EPUB_READER.md",
+      "bytes": 1150,
+      "sha256": "414e4944af4eac5c24c59b126620c51a0b5388bd878fda19aca8400e1cf14f28"
     },
     {
       "path": "docs/FAQ.md",
@@ -584,8 +619,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 5952,
-      "sha256": "75ab8b47df3a2db5a04dca11954c010eb24cb60a0cad24197185cfb64d707ad8"
+      "bytes": 6560,
+      "sha256": "1d8aa3c7fc3deb067be69196a62644e47d5778090f887248d40db0d223fb5f3d"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -709,18 +744,18 @@
     },
     {
       "path": "index.html",
-      "bytes": 5879,
-      "sha256": "19a93903c10d0b975eb07d54c39d8e2e1373178715e479f4cd7e40939ebca2f2"
+      "bytes": 6183,
+      "sha256": "05afe71c3d4066d518098d182719a511500e25377cecc85fba1bf0b4fe48daf5"
     },
     {
       "path": "manifest.webmanifest",
-      "bytes": 1876,
-      "sha256": "0e6cbc48936ad759837fc3f7491850dbe6ee510b0e5224f9ab9062a547ba6f8b"
+      "bytes": 2136,
+      "sha256": "f26c6aa28b55d5e841fce341aaf0a0560aa4a2a356aa4677c9dcbdb851adbca9"
     },
     {
       "path": "modules/module-config.json",
-      "bytes": 637,
-      "sha256": "e5a78f58297c2c476408b796c223f1cb70cb30d04e2e195c6ba4dd6fc87b0c16"
+      "bytes": 737,
+      "sha256": "86afca90ca1a888518ec8ca749eed7d9e70f9fe3fa79025163674e6b57cd3e8e"
     },
     {
       "path": "modules/module-loader.js",
@@ -729,8 +764,8 @@
     },
     {
       "path": "modules/module-registry.js",
-      "bytes": 4184,
-      "sha256": "ed2f6aaa1c9ccb10c07538ef00728f13f1cdce12ded0454a37962da51ddf72c0"
+      "bytes": 5082,
+      "sha256": "32c35bea1b8994ca969a9626a2ed8c5eb1120f424d95bc2df70c622bdbefee7d"
     },
     {
       "path": "modules/module-schema.json",
@@ -739,8 +774,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 2200,
-      "sha256": "1e91cfbcc16067dd0a7a9ce8eea30ca85203046c5914dd3918896a9ee5e2acc6"
+      "bytes": 2269,
+      "sha256": "15fae7a2facec7f233360d596445f014a4c7ba71a0a221e1fcba3c6ee4a277bd"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -789,8 +824,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 6161,
-      "sha256": "0827f84b0cc3996648aa59f3055d9fd269a35ce19385b4bee374f1fd577b6a09"
+      "bytes": 6389,
+      "sha256": "80f8cd2a3390356c6166f96e23f25fbc9b986f66e1afddba4a141a502f47a504"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -799,8 +834,8 @@
     },
     {
       "path": "shared/file-router.js",
-      "bytes": 8404,
-      "sha256": "539dcdce58746e115c185b4b4fcfa43f854a6e77b03e363b920203740064a914"
+      "bytes": 8443,
+      "sha256": "3d362187c6aac7522ffc613e1a46e603c68e83946d45c13cacbd7366bbc91fc1"
     },
     {
       "path": "shared/formula-engine.js",
@@ -814,8 +849,8 @@
     },
     {
       "path": "shared/hub.css",
-      "bytes": 10644,
-      "sha256": "0e49cd42139f49d7ed453f517188461564cc8a57f8bed963a92a80b74732d62d"
+      "bytes": 10846,
+      "sha256": "b3bfa16eb27cbcc51c8c0a04ae51539373360339cf4d378ed6639befd4ed2d51"
     },
     {
       "path": "shared/office-runtime.js",
@@ -958,14 +993,19 @@
       "sha256": "8acf28f218089679b4455f2cb3b40af3d5fda8902fd0a444712461c70f47f9c7"
     },
     {
+      "path": "tests/test_epub_module.py",
+      "bytes": 4485,
+      "sha256": "c2b968d04f7662be4fe13c58001f35c37f5e9b63062dd80befe5e208fb631f23"
+    },
+    {
       "path": "tests/test_home_session_refinement.py",
       "bytes": 3603,
-      "sha256": "a6aa6dcda8cba466dc85cab3a47693c8c00f18c8cd727ac61357c1bf947ff45a"
+      "sha256": "06dd2926a8903e1153ce9c5db8892c9468f4fcb16073d815ba769dafa9d42ed9"
     },
     {
       "path": "tests/test_modules.py",
-      "bytes": 7105,
-      "sha256": "8e63886d9ce760d5ebb80ed11aceea988c088f179c198420c55b8b795610f4b6"
+      "bytes": 7198,
+      "sha256": "7589fca40c4460df2427e8b600c328abb15e640de314362755e1930003544b64"
     },
     {
       "path": "tests/test_pdf_shell_polish.py",
@@ -999,8 +1039,8 @@
     },
     {
       "path": "tests/test_txt_module.py",
-      "bytes": 5719,
-      "sha256": "d9b9570950506f29dfeae362b7f127865d1bd1fe22e22b2d0a4b0db104cfc9ad"
+      "bytes": 5702,
+      "sha256": "57c63e906238683c6706555649e7582fe99ad11b47199014e0e1f7e626e8c89e"
     },
     {
       "path": "tests/test_update_package.py",
@@ -1014,8 +1054,8 @@
     },
     {
       "path": "tests/test_visual_foundation.py",
-      "bytes": 5570,
-      "sha256": "02525ddd1bf551ba83a392821cc6283e90e289cd0f682f8f7bf516ba87461bb5"
+      "bytes": 5568,
+      "sha256": "44728de0d9c5f30bb7d8fe4e99e8b19b8f11b9d5554650703673e85f233a1296"
     },
     {
       "path": "tests/test_workspace_layout.py",

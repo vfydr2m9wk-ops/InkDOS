@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#7655c7">
+  <meta name="description" content="InkDesk local EPUB reader.">
+  <title>Untitled.epub — EPUB Reader</title>
+  <link rel="icon" href="../../assets/icons/epub.png">
+  <link rel="stylesheet" href="../../shared/office-shell.css">
+  <link rel="stylesheet" href="styles.css?v=0.19.4.15">
+</head>
+<body class="office-product office-epub" data-reader-theme="paper">
+  <header class="epub-titlebar" data-inkdesk-shell-region="titlebar" aria-label="EPUB Reader title bar">
+    <div class="title-actions">
+      <a class="icon-btn" href="../../index.html" aria-label="InkDesk home" title="InkDesk home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"/><path d="M9 20v-6h6v6"/></svg></a>
+      <button id="openBtn" class="icon-btn" type="button" aria-label="Open EPUB" title="Open"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></button>
+      <button id="tocBtn" class="icon-btn" type="button" aria-label="Table of contents" aria-pressed="false" title="Contents" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg></button>
+    </div>
+    <div class="title-center">
+      <img class="epub-app-icon" src="../../assets/icons/epub.svg" alt="" aria-hidden="true">
+      <input id="docTitle" class="file-title-input" type="text" value="Untitled.epub" aria-label="EPUB file name" spellcheck="false" autocomplete="off">
+      <span id="dirtyMark" class="dirty-mark" hidden aria-hidden="true">•</span>
+    </div>
+    <div class="title-actions title-actions-right">
+      <button id="saveBtn" class="icon-btn save-btn" type="button" aria-label="Save renamed EPUB copy" title="Save copy" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg></button>
+    </div>
+  </header>
+
+  <div class="reader-toolbar" data-inkdesk-shell-region="toolbar" aria-label="Reading controls">
+    <div class="size-controls" aria-label="Text size">
+      <button id="fontDecrease" class="tool-btn" type="button" aria-label="Decrease text size">A−</button>
+      <span id="fontSizeLabel">18 px</span>
+      <button id="fontIncrease" class="tool-btn" type="button" aria-label="Increase text size">A+</button>
+    </div>
+    <div class="theme-controls" aria-label="Page background">
+      <button class="theme-dot active" data-theme="paper" type="button" aria-label="Paper theme" title="Paper"></button>
+      <button class="theme-dot" data-theme="sepia" type="button" aria-label="Sepia theme" title="Sepia"></button>
+      <button class="theme-dot" data-theme="sage" type="button" aria-label="Sage theme" title="Sage"></button>
+      <button class="theme-dot" data-theme="night" type="button" aria-label="Night theme" title="Night"></button>
+    </div>
+    <span class="toolbar-spacer"></span>
+    <span id="bookMeta" class="book-meta">Open an EPUB to begin</span>
+  </div>
+
+  <main class="reader-main">
+    <aside id="tocPanel" class="toc-panel" hidden aria-label="Table of contents">
+      <div class="toc-header"><strong>Contents</strong><button id="tocClose" class="icon-btn compact" type="button" aria-label="Close contents">×</button></div>
+      <nav id="tocList" class="toc-list"></nav>
+    </aside>
+
+    <section id="startScreen" class="epub-start-card">
+      <img src="../../assets/icons/epub.svg" class="start-icon" alt="" aria-hidden="true">
+      <h1>EPUB Reader</h1>
+      <p>Read local EPUB books with lateral pages, adjustable text and calm page themes.</p>
+      <button id="openStartBtn" class="start-btn" type="button">Open EPUB</button>
+    </section>
+
+    <section id="readerShell" class="reader-shell" hidden>
+      <button id="previousPage" class="page-arrow" type="button" aria-label="Previous page">‹</button>
+      <article id="pageSurface" class="page-surface" tabindex="0" aria-live="polite"><div id="pageContent" class="page-content"></div></article>
+      <button id="nextPage" class="page-arrow" type="button" aria-label="Next page">›</button>
+    </section>
+  </main>
+
+  <footer class="reader-statusbar">
+    <span id="statusText" role="status" aria-live="polite">Ready</span>
+    <span class="status-spacer"></span>
+    <span id="chapterLabel">No book</span>
+    <span id="pageCounter">0 / 0</span>
+  </footer>
+
+  <input id="fileInput" type="file" accept=".epub,application/epub+zip" hidden>
+  <script src="../../shared/vendor/jszip.min.js"></script>
+  <script src="../../shared/office-runtime.js?v=0.19.3-beta.7"></script>
+  <script src="../../shared/file-lifecycle.js?v=0.19.4.13"></script>
+  <script src="../../shared/file-router.js?v=0.19.4.15"></script>
+  <script src="../../shared/office-shell.js?v=0.19.4.13"></script>
+  <script src="epub-parser.js?v=0.19.4.15"></script>
+  <script src="app.js?v=0.19.4.15"></script>
+</body>
+</html>
