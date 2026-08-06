@@ -12,7 +12,7 @@
         "shared/vendor/pdfjs/pdf.worker.min.js",
         "shared/vendor/pdfjs/LICENSE-PDFJS.txt"
       ],
-      "publicationStep": ".github/workflows/publish-inkdesk-v0.20.0.yml",
+      "publicationStep": "scripts/run_release_validation.py",
       "runtimeNetworkRequired": false,
       "mitigation": "PDF loading sets isEvalSupported to false."
     }

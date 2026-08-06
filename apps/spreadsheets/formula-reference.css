@@ -1,4 +1,4 @@
-/* InkDesk spreadsheet formula-reference selection — 0.19.4.10 */
+/* InkDesk spreadsheet formula-reference selection — 0.20.1 */
 
 body.office-spreadsheets .formula-row {
   position: relative;
@@ -42,7 +42,7 @@ body.office-spreadsheets .formula-reference-status {
   white-space: nowrap;
 }
 
-body.office-spreadsheets[data-formula-reference-mode="active"]
+body.office-spreadsheets[data-formula-reference-mode="armed"]
   #gridViewport {
   cursor: crosshair;
 }

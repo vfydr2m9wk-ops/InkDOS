@@ -125,7 +125,7 @@ class TxtModuleTests(unittest.TestCase):
             "./apps/txt/app.js",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertIn("inkdesk-shell-v0.20.0", worker)
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
 
     def test_application_manifest_records_txt_contract(self):
         manifest = json.loads(

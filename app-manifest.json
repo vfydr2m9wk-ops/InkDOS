@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.1"
+    "nextPatch": "0.20.2"
   },
   "capabilities": {
     "documents": [
@@ -277,7 +277,7 @@
   },
   "spreadsheetFormulaReferenceSystem": {
     "schemaVersion": 1,
-    "version": "0.20.0",
+    "version": "0.20.1",
     "runtime": "apps/spreadsheets/formula-reference.js",
     "stylesheet": "apps/spreadsheets/formula-reference.css",
     "targetCell": "preserved while selecting references",
@@ -294,7 +294,10 @@
     "parenthesesBalancedOnCommit": true,
     "formulaEditorIntegration": "apps/spreadsheets/formula-editor.js",
     "successiveClicksAppend": true,
-    "originMilestone": "0.19.4.10"
+    "originMilestone": "0.19.4.10",
+    "normalGridSelectionIsolation": true,
+    "referenceCaptureMode": "armed-only",
+    "normalRangeDrag": "global-pointer-hit-testing"
   },
   "spreadsheetFormulaEditorSystem": {
     "schemaVersion": 2,
@@ -483,12 +486,30 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.0",
+    "version": "0.20.1",
     "channel": "beta",
-    "name": "Consolidated Modular Preview",
+    "name": "Consistency Refinement 1",
     "date": "2026-08-06",
     "consolidated": true,
     "sourceDevelopmentLine": "0.19.4",
     "publicVersioning": "Semantic Versioning"
+  },
+  "consistencyRefinement": {
+    "schemaVersion": 1,
+    "version": "0.20.1",
+    "phase": "refinement-and-stabilization",
+    "releaseBlockers": [
+      "lost-existing-function",
+      "cross-workspace-visual-inconsistency",
+      "stale-cache-or-version",
+      "failed-regression-test"
+    ],
+    "restored": [
+      "documents-home-navigation",
+      "presentations-home-navigation",
+      "spreadsheet-normal-drag-range-selection"
+    ],
+    "regressionSuite": "tests/test_v0201_consistency.py",
+    "browserRegression": "tests/browser/revalidate_v0201_consistency.py"
   }
 }

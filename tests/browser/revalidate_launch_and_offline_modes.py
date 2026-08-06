@@ -65,12 +65,22 @@ def validate_static_http_assets(base_url):
 def collect_page_errors(page):
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.on(
-        "console",
-        lambda message: errors.append(f"console.{message.type}: {message.text}")
-        if message.type == "error"
-        else None,
-    )
+
+    def record_console(message):
+        if message.type != "error":
+            return
+        # Chromium emits a generic duplicate for failed HTTP resources. The
+        # response listener below records the exact status and URL instead.
+        if "Failed to load resource" in message.text:
+            return
+        errors.append(f"console.{message.type}: {message.text}")
+
+    def record_response(response):
+        if response.status >= 400:
+            errors.append(f"http.{response.status}: {response.url}")
+
+    page.on("console", record_console)
+    page.on("response", record_response)
     return errors
 
 
@@ -145,19 +155,22 @@ def validate_hosted_offline(browser, base_url):
     }
 
 
-def load_injected_app(page, workspace, scripts):
+def load_injected_app(page, workspace, scripts, base_url):
     source = ROOT / ("index.html" if workspace == "hub" else f"apps/{workspace}/index.html")
     soup = BeautifulSoup(source.read_text(encoding="utf-8"), "html.parser")
     for node in soup.find_all(["script", "link"]):
         node.decompose()
+    base = soup.new_tag("base", href=base_url + "/")
+    if soup.head:
+        soup.head.insert(0, base)
     page.set_content(str(soup), wait_until="domcontentloaded")
     if workspace == "hub":
-        page.add_style_tag(path=str(ROOT / "shared/hub.css"))
+        page.add_style_tag(url=base_url + "/shared/hub.css")
     else:
-        page.add_style_tag(path=str(ROOT / f"apps/{workspace}/styles.css"))
-        page.add_style_tag(path=str(ROOT / "shared/office-shell.css"))
+        page.add_style_tag(url=base_url + f"/apps/{workspace}/styles.css")
+        page.add_style_tag(url=base_url + "/shared/office-shell.css")
     for script in scripts:
-        page.add_script_tag(path=str(ROOT / script))
+        page.add_script_tag(url=base_url + "/" + script)
 
 
 def validate_restricted_apis(browser, base_url):
@@ -207,7 +220,7 @@ def validate_restricted_apis(browser, base_url):
     for workspace, scripts in configurations.items():
         page = context.new_page()
         errors = collect_page_errors(page)
-        load_injected_app(page, workspace, scripts)
+        load_injected_app(page, workspace, scripts, base_url)
         page.wait_for_selector("body")
         fallback = None
         if workspace == "presentations":

@@ -240,20 +240,22 @@ def iter_payload_files(payload_root: Path) -> list[tuple[Path, PurePosixPath]]:
 def validate_workflow_changes(
     payload: list[tuple[Path, PurePosixPath]],
     deletions: list[PurePosixPath],
-    manifest: dict,
-    allow_workflow_changes: bool,
 ) -> None:
     workflow_paths = [
         rel.as_posix()
         for _, rel in payload
         if rel.as_posix().startswith(WORKFLOW_PREFIX)
-    ] + [rel.as_posix() for rel in deletions if rel.as_posix().startswith(WORKFLOW_PREFIX)]
-    if not workflow_paths:
-        return
-    if not manifest.get("allowWorkflowChanges", False) or not allow_workflow_changes:
+    ] + [
+        rel.as_posix()
+        for rel in deletions
+        if rel.as_posix().startswith(WORKFLOW_PREFIX)
+    ]
+    if workflow_paths:
         raise UpdateError(
-            "Package modifies GitHub workflows, but both the manifest flag and "
-            "--allow-workflow-changes are required"
+            "Stable update packages cannot create, modify, or delete GitHub "
+            "workflow files. Install workflow changes manually as a one-time "
+            "bootstrap, then keep update ZIPs workflow-free. Offending paths: "
+            + ", ".join(sorted(workflow_paths))
         )
 
 
@@ -431,7 +433,6 @@ def apply_package(
     repo: Path,
     *,
     dry_run: bool = False,
-    allow_workflow_changes: bool = False,
     validation_override: str | None = None,
 ) -> dict:
     package = package.resolve()
@@ -453,7 +454,7 @@ def apply_package(
         validate_sequence(repo, manifest)
         payload = iter_payload_files(stage / "files")
         deletions = parse_delete_list(stage / "DELETE.txt")
-        validate_workflow_changes(payload, deletions, manifest, allow_workflow_changes)
+        validate_workflow_changes(payload, deletions)
         return apply_transaction(repo, payload, deletions, manifest, dry_run=dry_run)
 
 
@@ -462,11 +463,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--package", required=True, type=Path, help="Update ZIP package")
     parser.add_argument("--repo", type=Path, default=Path.cwd(), help="Repository root")
     parser.add_argument("--dry-run", action="store_true", help="Validate and print the plan only")
-    parser.add_argument(
-        "--allow-workflow-changes",
-        action="store_true",
-        help="Allow a manifest-approved package to change .github/workflows",
-    )
     parser.add_argument(
         "--validation-profile",
         choices=sorted(VALIDATION_PROFILES),
@@ -483,7 +479,6 @@ def main(argv: list[str] | None = None) -> int:
             args.package,
             args.repo,
             dry_run=args.dry_run,
-            allow_workflow_changes=args.allow_workflow_changes,
             validation_override=args.validation_profile,
         )
     except (UpdateError, subprocess.CalledProcessError, OSError) as exc:

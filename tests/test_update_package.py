@@ -35,7 +35,6 @@ class UpdatePackageTests(unittest.TestCase):
         validation: str = "none",
         files: dict[str, bytes | str] | None = None,
         deletes: list[str] | None = None,
-        workflow_changes: bool = False,
         archive_name: str = "update.zip",
     ) -> Path:
         package = root / archive_name
@@ -51,7 +50,6 @@ class UpdatePackageTests(unittest.TestCase):
             },
             "description": "Synthetic updater test",
             "validationProfile": validation,
-            "allowWorkflowChanges": workflow_changes,
         }
         with zipfile.ZipFile(package, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             archive.writestr("patch-manifest.json", json.dumps(manifest))
@@ -97,19 +95,35 @@ class UpdatePackageTests(unittest.TestCase):
                 updater.apply_package(package, repo)
             self.assertFalse((root / "escaped.txt").exists())
 
-    def test_workflow_change_requires_two_explicit_permissions(self):
+    def test_workflow_file_changes_are_always_rejected(self):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             repo = self.make_repo(root)
             package = self.make_package(
                 root,
                 files={".github/workflows/new.yml": "name: test\n"},
-                workflow_changes=True,
             )
-            with self.assertRaises(updater.UpdateError):
-                updater.apply_package(package, repo, allow_workflow_changes=False)
-            updater.apply_package(package, repo, allow_workflow_changes=True)
-            self.assertTrue((repo / ".github/workflows/new.yml").exists())
+            with self.assertRaisesRegex(
+                updater.UpdateError,
+                "cannot create, modify, or delete GitHub workflow files",
+            ):
+                updater.apply_package(package, repo)
+            self.assertFalse((repo / ".github/workflows/new.yml").exists())
+
+    def test_workflow_file_deletions_are_always_rejected(self):
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            repo = self.make_repo(root)
+            package = self.make_package(
+                root,
+                files={"regular.txt": "ok\n"},
+                deletes=[".github/workflows/existing.yml"],
+            )
+            with self.assertRaisesRegex(
+                updater.UpdateError,
+                "cannot create, modify, or delete GitHub workflow files",
+            ):
+                updater.apply_package(package, repo)
 
     def test_validation_failure_restores_original_files(self):
         with tempfile.TemporaryDirectory() as name:
@@ -150,9 +164,8 @@ class UpdatePackageTests(unittest.TestCase):
             self.assertFalse((repo / "remove.txt").exists())
             self.assertTrue((repo / "keep.txt").exists())
 
-
     def test_workflow_avoids_privacy_audit_local_paths(self):
-        workflow_path = ROOT / ".github" / "workflows" / "publish-inkdesk-v0.20.0.yml"
+        workflow_path = ROOT / ".github/workflows/apply-inkdesk-update.yml"
         text = workflow_path.read_text(encoding="utf-8").lower()
         forbidden_terms = (
             "/mnt/" + "data",
@@ -164,7 +177,6 @@ class UpdatePackageTests(unittest.TestCase):
         )
         for forbidden in forbidden_terms:
             self.assertNotIn(forbidden, text)
-
 
 
 if __name__ == "__main__":

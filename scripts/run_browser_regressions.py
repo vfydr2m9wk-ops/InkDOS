@@ -21,6 +21,7 @@ SCRIPTS = [
     "revalidate_transactional_open_failures.py",
     "revalidate_cross_workspace_isolation.py",
     "revalidate_launch_and_offline_modes.py",
+    "revalidate_v0201_consistency.py",
 ]
 
 

@@ -16,28 +16,27 @@ class V0200VendorBootstrapTests(unittest.TestCase):
         self.assertEqual(pdf["name"], "pdfjs-dist")
         self.assertEqual(pdf["version"], "3.11.174")
         self.assertFalse(pdf["runtimeNetworkRequired"])
+        self.assertEqual(
+            pdf["publicationStep"],
+            "scripts/run_release_validation.py",
+        )
 
     def test_pdf_eval_is_disabled(self):
         script = (ROOT / "apps/pdf/app.js").read_text(encoding="utf-8")
         self.assertIn("isEvalSupported: false", script)
 
-    def test_publication_workflow_vendors_before_validation(self):
-        workflow = (
-            ROOT / ".github/workflows/publish-inkdesk-v0.20.0.yml"
+    def test_release_gate_validates_vendor_and_checksums(self):
+        script = (
+            ROOT / "scripts/run_release_validation.py"
         ).read_text(encoding="utf-8")
-        dependencies = workflow.index(
-            "Install Python validation dependencies"
-        )
-        vendor = workflow.index("Vendor pinned PDF.js runtime")
-        validate = workflow.index("Validate staged source")
-        self.assertLess(dependencies, vendor)
-        self.assertLess(vendor, validate)
-        self.assertIn(
-            "-r .release-stage/requirements-ci.txt",
-            workflow,
-        )
-        self.assertIn("npm pack pdfjs-dist@3.11.174", workflow)
-        self.assertIn("python3 scripts/generate_checksums.py", workflow)
+        for marker in (
+            "Repository validation",
+            "Source audit",
+            "Unit and package tests",
+            "Browser regressions",
+            "Checksum verification",
+        ):
+            self.assertIn(marker, script)
 
     def test_ci_requirements_cover_unconditional_test_imports(self):
         requirements = (

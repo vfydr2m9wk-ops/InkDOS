@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.20.0';
+  const VERSION = '0.20.1';
   const REFERENCE_CLASS = 'formula-reference-range';
   const TARGET_CLASS = 'formula-target-cell';
   const COLOR_COUNT = 6;
@@ -184,10 +184,16 @@
       }
       state.targetReference = nextTarget;
       state.active = true;
-      doc.body.dataset.formulaReferenceMode = 'active';
-      if (addRange) addRange.hidden = false;
+      const currentEditor = editor();
+      const armed = Boolean(
+        currentEditor &&
+        currentEditor.isActive() &&
+        currentEditor.canSelectReference()
+      );
+      doc.body.dataset.formulaReferenceMode = armed ? 'armed' : 'standby';
+      if (addRange) addRange.hidden = !armed;
       render();
-      return true;
+      return armed;
     }
 
     function pause() {
@@ -240,7 +246,7 @@
     function beginReference(event) {
       const currentEditor = editor();
       const cell = event.target?.closest?.('.cell');
-      if (!cell || !currentEditor || !currentEditor.isActive() || !currentEditor.canSelectReference()) return;
+      if (doc.body.dataset.formulaReferenceMode !== 'armed' || !state.active || !cell || !currentEditor || !currentEditor.isActive() || !currentEditor.canSelectReference()) return;
       const point = cellCoordinates(cell);
       if (!point) return;
       event.preventDefault();
@@ -324,7 +330,7 @@
       addRange.addEventListener('pointerdown', function (event) { event.preventDefault(); });
       addRange.addEventListener('click', function () {
         const currentEditor = editor();
-        if (!currentEditor || !currentEditor.isActive()) return;
+        if (!currentEditor || !currentEditor.isActive() || !currentEditor.canSelectReference() || doc.body.dataset.formulaReferenceMode !== 'armed') return;
         state.nextAdditive = true;
         currentEditor.focus();
         setStatus('Add-range mode: click a cell or drag another range.');

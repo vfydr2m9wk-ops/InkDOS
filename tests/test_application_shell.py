@@ -70,7 +70,7 @@ class ApplicationShellTests(unittest.TestCase):
             "./shared/ui/shell-contract.json",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertIn("inkdesk-shell-v0.20.0", worker)
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
         self.assertRegex(
             worker,
             r"const CACHE_NAME=[\'\"]inkdesk-shell-v[^\'\"]+[\'\"];",

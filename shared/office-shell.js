@@ -508,7 +508,11 @@
 
       requestDownload.__inkdeskDocumentSessionWrapped = true;
       requestDownload.__inkdeskOriginal = originalRequestDownload;
-      global.InkDeskRuntime.requestDownload = requestDownload;
+      global.InkDeskRuntime = Object.freeze(Object.assign(
+        {},
+        global.InkDeskRuntime,
+        { requestDownload }
+      ));
     }
 
     const replacementActionIds = new Set([

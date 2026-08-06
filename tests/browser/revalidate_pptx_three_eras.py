@@ -25,6 +25,9 @@ def load_app(page) -> None:
     soup = BeautifulSoup((ROOT / "apps/presentations/index.html").read_text(encoding="utf-8"), "html.parser")
     for item in soup.find_all(["script", "link"]):
         item.decompose()
+    base = soup.new_tag("base", href=ROOT.as_uri() + "/")
+    if soup.head:
+        soup.head.insert(0, base)
     page.set_content(str(soup), wait_until="domcontentloaded")
     for path in (ROOT / "apps/presentations/styles.css", ROOT / "shared/office-shell.css"):
         page.add_style_tag(path=str(path))

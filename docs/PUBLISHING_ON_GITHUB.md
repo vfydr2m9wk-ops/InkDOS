@@ -1,64 +1,37 @@
-# Publishing InkDesk v0.20.0 on GitHub
+# Publishing and incremental updates on GitHub
 
-v0.20.0 is a complete repository replacement, not another incremental
-`0.19.4.x` package. It can be published even when the current repository has
-not applied every previous development package.
-
-## Files to upload
-
-1. Place `publish-inkdesk-v0.20.0.yml` at:
-   `.github/workflows/publish-inkdesk-v0.20.0.yml`.
-2. Place `InkDesk_v0.20.0.zip` in the repository root without extracting it.
-3. Remove older complete v0.20 ZIPs from the root so automatic selection is
-   unambiguous.
-
-## Recommended first run
-
-Open **Actions → Publish InkDesk v0.20.0 → Run workflow** and use:
+InkDesk uses one stable workflow:
 
 ```text
-package_name: InkDesk_v0.20.0.zip
-create_backup_branch: true
-create_tag: false
-dry_run: true
+.github/workflows/apply-inkdesk-update.yml
 ```
 
-A successful dry run safely extracts the source, verifies the release identity,
-installs the pinned PDF.js files from npm into the staged tree, regenerates
-checksums, and runs repository validation, source audit, and all unit/package
-tests without changing the repository.
+## One-time bootstrap
 
-## Publication run
+Workflow files are security-sensitive and the default `GITHUB_TOKEN` cannot
+create or update them through an ordinary workflow push. Install or replace the
+stable workflow manually in the GitHub web interface. This is a one-time
+bootstrap operation.
 
-Run the workflow again with:
+After bootstrap, update packages must never contain files below
+`.github/workflows/` and must never delete workflow files.
 
-```text
-package_name: InkDesk_v0.20.0.zip
-create_backup_branch: true
-create_tag: true
-dry_run: false
-```
+## Normal update path
 
-The workflow creates a backup branch, replaces the repository with the staged
-v0.20.0 tree, validates the installed tree again, commits it, pushes it, and
-creates tag `v0.20.0`.
+1. Place exactly one `InkDesk-update-v*.zip` in the repository root.
+2. Run **InkDesk integrity and update** from the Actions tab.
+3. Leave `package_name` empty, use `dry_run: false`, and use
+   `validation_profile: package`.
+4. The workflow validates the ZIP and repository transactionally.
+5. Only after validation succeeds does it remove the root ZIP, create the
+   update commit, push to `main`, and request a Pages rebuild.
 
-## PDF.js vendor step
+If validation fails, changed files are restored. If the final push fails, the
+remote repository and its root ZIP remain unchanged.
 
-The source ZIP pins `pdfjs-dist@3.11.174` in `VENDOR_SOURCES.json`. The workflow
-retrieves that exact npm package during staging and commits its display script,
-worker, and Apache-2.0 license. No PDF.js CDN is contacted by the published
-runtime. The PDF workspace explicitly disables PDF.js eval support.
+## Continuous integration
 
-If npm is unavailable, the workflow fails before repository replacement.
-
-## Recovery
-
-When backup creation is enabled, the previous repository state is pushed to:
-
-```text
-backup/pre-v0.20.0-<workflow run id>
-```
-
-The complete package is only deleted from the root after staged validation has
-passed and the replacement step begins.
+The same workflow runs a read-only integrity gate on ordinary pushes and pull
+requests. Updates committed by the workflow are already validated before push;
+GitHub intentionally does not recursively trigger another run for commits made
+with `GITHUB_TOKEN`.

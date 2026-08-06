@@ -326,3 +326,10 @@ body.presentation-active .app{visibility:hidden}
 #presentFromCurrentBtn{display:inline-flex;align-items:center;gap:7px;font-weight:700}
 .present-controls{display:flex!important}
 .present-controls .exit-present-btn{position:static!important}
+
+/* v0.20.1 consistency: permanent Home controls */
+.start-home-link{position:absolute;left:max(18px,env(safe-area-inset-left));top:max(18px,env(safe-area-inset-top));width:40px;height:40px;border:1px solid var(--line);border-radius:11px;background:var(--panel);display:grid;place-items:center;color:var(--text);box-shadow:0 7px 18px rgba(15,23,42,.12);text-decoration:none}
+.start-home-link:hover,.start-home-link:focus-visible{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel));outline:none}
+.start-home-link:active{transform:translateY(1px) scale(.98)}
+.start-home-link svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.titlebar-left>.home-link{display:inline-grid!important;place-items:center;flex:0 0 38px}

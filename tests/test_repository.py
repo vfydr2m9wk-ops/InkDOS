@@ -50,29 +50,29 @@ class RepositoryTests(unittest.TestCase):
         self.assertNotIn("https://cdn.sheetjs.com", html)
 
 
-    def test_github_publication_workflow_is_present(self):
+    def test_stable_incremental_workflow_is_present(self):
         workflow_dir = ROOT / ".github" / "workflows"
-        expected = {"publish-inkdesk-v0.20.0.yml"}
-        observed = {
-            path.name for path in workflow_dir.iterdir() if path.is_file()
-        }
-        self.assertEqual(observed, expected)
+        apply_path = workflow_dir / "apply-inkdesk-update.yml"
+        self.assertTrue(apply_path.is_file())
         self.assertFalse(
-            any(path.is_dir() for path in workflow_dir.iterdir())
+            (workflow_dir / "publish-inkdesk-v0.20.0.yml").exists()
         )
-        self.assertTrue(
-            (ROOT / "scripts/generate_checksums.py").is_file()
+        workflow = apply_path.read_text(encoding="utf-8")
+        for marker in (
+            "InkDesk integrity and update",
+            "Select and inspect update package",
+            "Apply package transaction",
+            "Commit and push applied update",
+            "Write final Actions summary",
+            "actions/checkout@v6",
+            "actions/setup-python@v6",
+        ):
+            self.assertIn(marker, workflow)
+        self.assertNotIn("--allow-workflow-changes", workflow)
+        self.assertIn(
+            "Update packages cannot create or modify GitHub workflow files",
+            workflow,
         )
-        self.assertTrue(
-            (ROOT / "scripts/verify_checksums.py").is_file()
-        )
-        workflow = (
-            workflow_dir / "publish-inkdesk-v0.20.0.yml"
-        ).read_text(encoding="utf-8")
-        self.assertIn("Inspect and extract package safely", workflow)
-        self.assertIn("Vendor pinned PDF.js runtime", workflow)
-        self.assertIn("rsync -a --delete", workflow)
-        self.assertIn("git push origin HEAD:${GITHUB_REF_NAME}", workflow)
 
     def test_docx_parser_reads_standard_word_package_parts(self):
         parser = (ROOT / "apps/documents/docx-parser.js").read_text(encoding="utf-8")

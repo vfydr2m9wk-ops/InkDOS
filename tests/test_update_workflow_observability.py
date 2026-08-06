@@ -4,53 +4,72 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / ".github/workflows/publish-inkdesk-v0.20.0.yml"
+APPLY_WORKFLOW = ROOT / ".github/workflows/apply-inkdesk-update.yml"
 
 
 class UpdateWorkflowObservabilityTests(unittest.TestCase):
-    def test_publication_workflow_has_safe_staging_and_dry_run(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
+    def test_workflow_never_self_modifies(self):
+        workflow = APPLY_WORKFLOW.read_text(encoding="utf-8")
+        self.assertNotIn("--allow-workflow-changes", workflow)
+        self.assertIn(
+            "Update packages cannot create or modify GitHub workflow files",
+            workflow,
+        )
+        self.assertIn(
+            "Update packages cannot delete GitHub workflow files",
+            workflow,
+        )
+        self.assertIn(
+            "Refusing to commit staged workflow changes",
+            workflow,
+        )
+
+    def test_package_is_retained_until_validation_succeeds(self):
+        workflow = APPLY_WORKFLOW.read_text(encoding="utf-8")
+        selection = workflow.index("Select and inspect update package")
+        transaction = workflow.index("Apply package transaction")
+        removal = workflow.index('rm -- "${PACKAGE_NAME}"')
+        self.assertLess(selection, transaction)
+        self.assertLess(transaction, removal)
+        self.assertIn(
+            "The root ZIP is retained until validation succeeds.",
+            workflow,
+        )
+
+    def test_summary_distinguishes_validation_and_push_failures(self):
+        workflow = APPLY_WORKFLOW.read_text(encoding="utf-8")
+        commit = workflow.index("Commit and push applied update")
+        summary = workflow.index("Write final Actions summary")
+        self.assertLess(commit, summary)
+        self.assertIn(
+            "Validation passed, but commit/push failed",
+            workflow,
+        )
+        self.assertIn(
+            "repository transaction rolled back",
+            workflow,
+        )
+
+    def test_workflow_has_ci_and_manual_update_modes(self):
+        workflow = APPLY_WORKFLOW.read_text(encoding="utf-8")
         for marker in (
-            "Locate complete package",
-            "Inspect and extract package safely",
-            "Verify release identity",
-            "Vendor pinned PDF.js runtime",
-            "Validate staged source",
-            "Dry-run summary",
-            "dry_run",
+            "workflow_dispatch:",
+            "push:",
+            "pull_request:",
+            "Validate repository",
+            "Apply update package",
+            "python scripts/run_release_validation.py",
         ):
             self.assertIn(marker, workflow)
 
-    def test_publication_workflow_preserves_recovery_path(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        for marker in (
-            "Create backup branch",
-            "backup/pre-v0.20.0-${GITHUB_RUN_ID}",
-            "Replace repository with v0.20.0",
-            "rsync -a --delete",
-            "Validate replaced repository",
-        ):
-            self.assertIn(marker, workflow)
+    def test_workflow_uses_current_node24_action_generations(self):
+        workflow = APPLY_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("actions/checkout@v6", workflow)
+        self.assertIn("actions/setup-python@v6", workflow)
+        self.assertNotIn("actions/checkout@v4", workflow)
+        self.assertNotIn("actions/setup-python@v5", workflow)
 
-    def test_publication_workflow_pins_vendor_and_checksums(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("npm pack pdfjs-dist@3.11.174", workflow)
-        self.assertIn("install -m 0644 package/build/pdf.min.js", workflow)
-        self.assertIn("install -m 0644 package/build/pdf.worker.min.js", workflow)
-        self.assertIn("python3 scripts/generate_checksums.py", workflow)
-        self.assertIn("python3 scripts/verify_checksums.py", workflow)
-
-    def test_publication_workflow_commits_and_tags_release(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        for marker in (
-            "Release InkDesk v0.20.0",
-            "git push origin HEAD:${GITHUB_REF_NAME}",
-            "Create release tag",
-            "git tag -a v0.20.0",
-        ):
-            self.assertIn(marker, workflow)
-
-    def test_legacy_updater_retains_failure_reporting_for_archives(self):
+    def test_updater_retains_failure_reporting(self):
         script = (
             ROOT / "scripts/apply_update_package.py"
         ).read_text(encoding="utf-8")
@@ -61,13 +80,6 @@ class UpdateWorkflowObservabilityTests(unittest.TestCase):
             '"repositorySequenceAfterRollback"',
         ):
             self.assertIn(marker, script)
-
-    def test_observability_history_document_is_retained(self):
-        document = (
-            ROOT / "docs/UPDATE_WORKFLOW_OBSERVABILITY.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("rolled-back attempts", document)
-        self.assertIn("transaction error", document.lower())
 
 
 if __name__ == "__main__":

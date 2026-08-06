@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "CHECKSUMS.sha256"
 LINE_PATTERN = re.compile(r"^([0-9a-fA-F]{64})  (.+)$")
 EXCLUDED_PARTS = {".git", ".mobile-import", "__pycache__", "_site", "test-results"}
-EXCLUDED_NAMES = {"CHECKSUMS.sha256", ".DS_Store", "Thumbs.db"}
+EXCLUDED_NAMES = {"CHECKSUMS.sha256", "DEVELOPMENT_STATE.json", ".DS_Store", "Thumbs.db"}
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip"}
 
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "registryVersion": "0.20.0",
+  "registryVersion": "0.20.1",
   "modulePaths": [
     {
       "id": "documents",

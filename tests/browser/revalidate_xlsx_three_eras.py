@@ -26,6 +26,9 @@ def load_app(page):
     soup = BeautifulSoup((ROOT / "apps/spreadsheets/index.html").read_text(), "html.parser")
     for node in soup.find_all(["script", "link"]):
         node.decompose()
+    base = soup.new_tag("base", href=ROOT.as_uri() + "/")
+    if soup.head:
+        soup.head.insert(0, base)
     page.set_content(str(soup), wait_until="domcontentloaded")
     for css in (ROOT / "apps/spreadsheets/styles.css", ROOT / "shared/office-shell.css"):
         page.add_style_tag(path=str(css))

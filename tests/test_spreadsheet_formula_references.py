@@ -25,16 +25,16 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            'formula-reference.css?v=0.20.0',
+            'formula-reference.css?v=0.20.1',
             html,
         )
         self.assertIn('id="addFormulaRangeBtn"', html)
         self.assertIn('id="formulaReferenceStatus"', html)
         self.assertIn('id="formulaSuggestions"', html)
 
-        core_position = html.index('<script src="app.js"></script>')
+        core_position = html.index('<script src="app.js?v=0.20.1"></script>')
         reference_position = html.index(
-            'formula-reference.js?v=0.20.0'
+            'formula-reference.js?v=0.20.1'
         )
         editor_position = html.index(
             'formula-editor.js?v=0.20.0'
@@ -99,7 +99,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
             (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
         contract = manifest["spreadsheetFormulaReferenceSystem"]
-        self.assertEqual(contract["version"], "0.20.0")
+        self.assertEqual(contract["version"], "0.20.1")
         self.assertEqual(contract["confirmation"], "Enter")
         self.assertEqual(contract["cancellation"], "Escape")
         self.assertTrue(contract["successiveClicksAppend"])
@@ -118,7 +118,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         script = r"""
 require('./apps/spreadsheets/formula-reference.js');
 const api = globalThis.InkDeskFormulaReferences;
-if (!api || api.version !== '0.20.0') process.exit(10);
+if (!api || api.version !== '0.20.1') process.exit(10);
 if (api.encodeColumn(0) !== 'A') process.exit(11);
 if (api.encodeColumn(25) !== 'Z') process.exit(12);
 if (api.encodeColumn(26) !== 'AA') process.exit(13);

@@ -19,7 +19,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
         ]
         self.assertEqual(positions, sorted(positions))
         self.assertIn("The selected file stays on this device.", html)
-        self.assertIn("v0.20.0 beta", html)
+        self.assertIn("v0.20.1 beta", html)
         self.assertNotIn("Choose a DOCX, XLS, XLSX, PPTX or PDF file.", html)
 
     def test_shared_shell_contains_non_invasive_title_adapter(self):
@@ -93,8 +93,8 @@ class HomeSessionRefinementTests(unittest.TestCase):
             (ROOT / "package.json").read_text(encoding="utf-8")
         )
 
-        self.assertIn("inkdesk-shell-v0.20.0", worker)
-        self.assertEqual(package["version"], "0.20.0")
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
+        self.assertEqual(package["version"], json.loads((ROOT / "VERSION.json").read_text())["version"])
 
 
 if __name__ == "__main__":

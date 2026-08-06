@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.20.1 — Consistency Refinement 1 (2026-08-06)
+
+- Corrected v0.20.1 package: explicit favicons for all workspaces and URL-aware HTTP failure diagnostics.
+
+
+- Restored the permanent Home control in Documents and Presentations.
+- Restored normal spreadsheet range selection by click-and-drag.
+- Isolated formula-reference capture from ordinary grid selection.
+- Added static and Chromium regression gates for these functions.
+- Synchronized the public version and service-worker cache.
+
+
 ## 0.20.0 — 2026-08-06
 
 - Consolidated the 0.19.4 modular development sequence.
@@ -44,3 +56,5 @@
 - Existing user-facing layout and workflows.
 - Local-first/offline-capable operation without a backend.
 - Focused DOCX, XLS/BIFF8, XLSX, and PPTX behavior and package-preserving export strategies.
+
+- Fixed release checksum verification after the incremental updater changes `DEVELOPMENT_STATE.json`.

@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
   "product": "InkDesk",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "distribution": "complete source tree",
   "entryPoint": "index.html",
   "requiresBuild": false,
   "generatedAt": "2026-08-06",
-  "publicationBootstrapRequired": true,
-  "publicationWorkflow": ".github/workflows/publish-inkdesk-v0.20.0.yml",
-  "vendorLock": "VENDOR_SOURCES.json"
+  "publicationBootstrapRequired": false,
+  "vendorLock": "VENDOR_SOURCES.json",
+  "updateWorkflow": ".github/workflows/apply-inkdesk-update.yml",
+  "workflowPolicy": "manual bootstrap; update ZIPs cannot modify .github/workflows"
 }

@@ -1,8 +1,8 @@
 {
   "project": "InkDesk",
-  "version": "0.20.0",
-  "releaseName": "Consolidated Modular Preview",
-  "releaseType": "Beta",
+  "version": "0.20.1",
+  "releaseName": "Consistency Refinement 1",
+  "releaseType": "Beta Patch",
   "releaseDate": "2026-08-06",
   "entryPoints": {
     "InkDesk.html": "index.html",
@@ -37,13 +37,15 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "170 passed",
-    "strictPublicationValidation": "required in GitHub workflow after vendoring PDF.js",
+    "structuralUnitTests": "178 passed",
+    "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeIPadOS": false,
-    "installedPwaRuntime": false
+    "installedPwaRuntime": false,
+    "browserRegressionScripts": "9 passed",
+    "dedicatedV0201BrowserRegression": "passed"
   },
-  "publicationVendorBootstrapRequired": true,
+  "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"
 }

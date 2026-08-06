@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Presentations — InkDesk 0.20.0</title>
+  <link rel="icon" href="../../assets/icons/presentations.png">
+  <title>Presentations — InkDesk 0.20.1</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="../../shared/office-shell.css" />
   <link rel="manifest" href="../../manifest.webmanifest">
@@ -14,6 +15,7 @@
   <input id="imageInput" type="file" accept="image/*" hidden />
 
   <section id="startScreen" class="start-screen">
+    <a class="start-home-link" href="../../index.html" target="_top" title="InkDesk home" aria-label="Return to InkDesk home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 10.5v9h5v-5h3v5h5v-9"/></svg></a>
     <div class="start-card">
       <div class="app-badge">P</div>
       <h1>Presentations</h1>
@@ -22,13 +24,14 @@
         <button id="newBtn" class="start-btn primary"><span class="ico">+</span><span>New Presentation</span></button>
         <button id="openBtn" class="start-btn secondary"><span class="ico folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/></svg></span><span>Open Presentation</span></button>
       </div>
-      <small>0.20.0 beta · Package-preserving PPTX copy export · Experimental compatibility</small>
+      <small>0.20.1 beta · Package-preserving PPTX copy export · Experimental compatibility</small>
     </div>
   </section>
 
   <main id="app" class="app hidden">
     <header class="titlebar">
       <div class="titlebar-left">
+        <a class="icon-btn top-action home-link" href="../../index.html" target="_top" title="InkDesk home" aria-label="Return to InkDesk home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 10.5v9h5v-5h3v5h5v-9"/></svg></a>
         <button id="newSmall" class="icon-btn top-action new-small" title="New Presentation" aria-label="New Presentation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
         <button id="openSmall" class="icon-btn top-action" title="Open Presentation" aria-label="Open Presentation"><svg viewBox="0 0 24 24"><path d="M3 7.25A2.25 2.25 0 0 1 5.25 5H10l2 2h6.75A2.25 2.25 0 0 1 21 9.25v7.5A2.25 2.25 0 0 1 18.75 19H5.25A2.25 2.25 0 0 1 3 16.75z"/></svg></button>
         <span class="top-divider" aria-hidden="true"></span>
@@ -161,7 +164,7 @@
   <script src="../../shared/office-runtime.js?v=0.20.0 beta"></script>
   <script src="../../shared/vendor/jszip.min.js?v=3.10.1"></script>
   <script src="engine/compatibility.js"></script>
-  <script src="../../shared/office-shell.js"></script>
+  <script src="../../shared/office-shell.js?v=0.20.1"></script>
   <script src="app.js"></script>
   <script src="../../shared/register-service-worker.js?v=0.20.0 beta"></script>
 </body>

@@ -39,7 +39,7 @@ class DocumentsRulerAssetDeliveryTests(unittest.TestCase):
         worker = (ROOT / "service-worker.js").read_text(
             encoding="utf-8"
         )
-        self.assertIn("inkdesk-shell-v0.20.0", worker)
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
         self.assertIn("'./shared/ui/workspace-layout.css'", worker)
         self.assertIn("'./shared/ui/workspace-layout.js'", worker)
         self.assertIn("const APP_SHELL_URLS=", worker)

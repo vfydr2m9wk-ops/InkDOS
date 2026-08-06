@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 0,
-  "currentPackage": "0.20.0",
-  "status": "released-beta",
-  "history": [],
-  "consolidatedFrom": {
-    "base": "0.19.3-beta.7",
-    "developmentLine": "0.19.4",
-    "milestones": 15
-  },
-  "nextSuggestedRelease": "0.20.1"
+  "appliedSequence": 1,
+  "currentPackage": "0.20.1",
+  "status": "in-progress",
+  "history": [
+    {
+      "sequence": 1,
+      "packageLabel": "0.20.1",
+      "description": "Release Integrity v0.20.1 correction revision 4: preserve all prior functional fixes while making the incremental update path stable. Workflow files are manually bootstrapped once and are permanently forbidden inside update ZIPs; the root ZIP remains until validation passes; final status is reported only after commit/push."
+    }
+  ]
 }

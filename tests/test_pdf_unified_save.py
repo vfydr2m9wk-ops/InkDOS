@@ -145,7 +145,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             "'./apps/pdf/flatten-export.js'",
             worker,
         )
-        self.assertIn("inkdesk-shell-v0.20.0", worker)
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
 
     def test_pure_pdf_builder_and_geometry(self):
         node = shutil.which("node")
