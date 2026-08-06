@@ -51,6 +51,12 @@
       "name": "PDF Workspace",
       "entryPoint": "apps/pdf/index.html",
       "icon": "assets/icons/pdf.png"
+    },
+    {
+      "id": "txt",
+      "name": "Plain Text",
+      "entryPoint": "apps/txt/index.html",
+      "icon": "assets/icons/txt.png"
     }
   ],
   "permissions": [
@@ -152,6 +158,20 @@
       "pdf-comment-callout-export",
       "pdf-single-save-command",
       "pdf-form-state-preserving-save-without-review",
+      "editable-file-title",
+      "unsaved-change-navigation-warning"
+    ],
+    "txt": [
+      "txt-local-open",
+      "txt-new",
+      "txt-basic-edit",
+      "txt-utf8-save-copy",
+      "txt-utf16-open",
+      "txt-line-ending-preservation",
+      "txt-find",
+      "txt-word-wrap",
+      "txt-font-size",
+      "txt-word-line-character-count",
       "editable-file-title",
       "unsaved-change-navigation-warning"
     ]
@@ -295,10 +315,16 @@
     ],
     "primary": "quill-and-inkwell",
     "plannedModuleIcons": [
-      "epub",
-      "txt"
+      "epub"
     ],
-    "documentation": "docs/ICON_SYSTEM.md"
+    "documentation": "docs/ICON_SYSTEM.md",
+    "activeModuleIcons": [
+      "documents",
+      "spreadsheets",
+      "presentations",
+      "pdf",
+      "txt"
+    ]
   },
   "uiCapabilities": [
     "rounded-tactile-buttons",
@@ -357,15 +383,45 @@
       "documents": ".docx",
       "spreadsheets": ".xlsx",
       "presentations": ".pptx",
-      "pdf": ".pdf"
+      "pdf": ".pdf",
+      "txt": ".txt"
     },
     "plannedModules": {
-      "txt": "must adopt shared lifecycle when editing",
       "epub": "must adopt shared lifecycle when editing"
     },
     "implementation": "shared office-shell document-session adapter",
     "replacesCompleteApplicationFiles": false,
     "downloadNameRewriting": true,
     "preservesInstalledApplicationRuntime": true
+  },
+  "txtEditorSystem": {
+    "schemaVersion": 1,
+    "version": "0.19.4.14",
+    "module": "apps/txt/module.json",
+    "entryPoint": "apps/txt/index.html",
+    "runtime": "apps/txt/app.js",
+    "stylesheet": "apps/txt/styles.css",
+    "maximumFileBytes": 20971520,
+    "openEncodings": [
+      "UTF-8",
+      "UTF-8 BOM",
+      "UTF-16 LE",
+      "UTF-16 BE"
+    ],
+    "saveEncoding": "UTF-8",
+    "preservesDetectedLineEnding": true,
+    "features": [
+      "new",
+      "open",
+      "edit",
+      "save-copy",
+      "find-next-previous",
+      "word-wrap",
+      "font-size",
+      "undo-redo",
+      "word-line-character-count"
+    ],
+    "localProcessing": true,
+    "documentation": "docs/TXT_EDITOR.md"
   }
 }

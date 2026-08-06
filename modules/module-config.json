@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "registryVersion": "0.19.4.2",
+  "registryVersion": "0.19.4.14",
   "modulePaths": [
     {
       "id": "documents",
@@ -21,6 +21,11 @@
       "id": "pdf",
       "manifest": "apps/pdf/module.json",
       "required": true
+    },
+    {
+      "id": "txt",
+      "manifest": "apps/txt/module.json",
+      "required": false
     }
   ],
   "overrides": {}

@@ -76,3 +76,16 @@ body,button,input,select,textarea{font-family:var(--inkdesk-font-ui)}
   .hub-header{grid-template-columns:54px minmax(0,1fr)}
   .status-callout-compact{grid-template-columns:1fr;gap:3px}
 }
+
+
+/* Plain Text launcher integration — 0.19.4.14 */
+.app-grid{
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+}
+.app-card.txt{
+  --accent:#d9a514;
+  --tint:#d9a514;
+}
+.app-card.txt .app-icon:not(.has-image){
+  background-image:url("../assets/icons/txt.svg")!important;
+}

@@ -2,7 +2,7 @@
 'use strict';
 const registry={
   "schemaVersion": 1,
-  "registryVersion": "0.19.4.2",
+  "registryVersion": "0.19.4.14",
   "modules": [
     {
       "schemaVersion": 1,
@@ -120,6 +120,39 @@ const registry={
         "forms",
         "navigation",
         "review-sidecar",
+        "local-processing"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "txt",
+      "name": "Plain Text",
+      "description": "A simple local TXT viewer and editor with a yellow notebook identity.",
+      "version": "0.19.4.14",
+      "enabled": true,
+      "optional": true,
+      "order": 50,
+      "entryPoint": "apps/txt/index.html",
+      "icon": "assets/icons/txt.png",
+      "badge": "TXT",
+      "themeClass": "txt",
+      "accent": "#d9a514",
+      "extensions": [
+        "txt"
+      ],
+      "mimeTypes": [
+        "text/plain"
+      ],
+      "capabilities": [
+        "open",
+        "new",
+        "edit-basic",
+        "copy-export",
+        "find",
+        "word-wrap",
+        "font-size",
+        "editable-file-title",
+        "unsaved-change-navigation-warning",
         "local-processing"
       ]
     }

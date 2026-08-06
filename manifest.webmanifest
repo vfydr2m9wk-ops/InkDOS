@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "InkDesk",
   "short_name": "InkDesk",
-  "description": "Local-first DOCX, XLS/XLSX, PPTX and PDF workspaces.",
+  "description": "Local-first DOCX, XLS/XLSX, PPTX, PDF and TXT workspaces.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -65,6 +65,18 @@
       "icons": [
         {
           "src": "./assets/icons/pdf.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Plain Text",
+      "short_name": "TXT",
+      "url": "apps/txt/index.html",
+      "icons": [
+        {
+          "src": "assets/icons/txt.png",
           "sizes": "512x512",
           "type": "image/png"
         }

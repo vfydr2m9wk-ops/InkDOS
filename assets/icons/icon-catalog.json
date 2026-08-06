@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.19.4.11",
+  "version": "0.19.4.14",
   "style": "minimal rounded-square symbols with consistent optical weight",
   "icons": {
     "inkdesk": {
@@ -43,7 +43,7 @@
       "file": "assets/icons/txt.svg",
       "color": "#e0a716",
       "symbol": "yellow-notebook",
-      "status": "planned"
+      "status": "active"
     }
   }
 }

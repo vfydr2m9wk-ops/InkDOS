@@ -10,7 +10,7 @@
     ".git/",
     "__pycache__/"
   ],
-  "fileCount": 195,
+  "fileCount": 202,
   "files": [
     {
       "path": ".github/workflows/apply-inkdesk-update.yml",
@@ -64,8 +64,8 @@
     },
     {
       "path": "DEVELOPMENT_STATE.json",
-      "bytes": 4658,
-      "sha256": "bdfe77def560e16bafe5812a5fe271dfef5f9c31070bdbce41744166cf964675"
+      "bytes": 5044,
+      "sha256": "78a4e68d5f58836ddda977d9c2244ab71d6bfd8a32bf558b8cfe72abe88d5a68"
     },
     {
       "path": "Documents.html",
@@ -100,7 +100,7 @@
     {
       "path": "RELEASE_MANIFEST.json",
       "bytes": 1383,
-      "sha256": "859c864f20d755fb706f05fbdcf1834a4a90fa0f1e6998a64bc6a0f0d23be8b0"
+      "sha256": "bbe1fd19770d9f963f23f405722333a41eb5d8d93e6b8c8a757896a93a2d4eac"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -133,6 +133,11 @@
       "sha256": "f5d94a49a07137edff0f70af1e774148502fc3982dea74eb1bccde6341b7dd80"
     },
     {
+      "path": "TXT.html",
+      "bytes": 458,
+      "sha256": "99eba924370a9a8715648cbb29690a650a0768d32d9d209c803f32bdd103524c"
+    },
+    {
       "path": "UPGRADE_NOTES.md",
       "bytes": 647,
       "sha256": "1a6080af026194d1a67993d5eaf41a7af9dd663180ae512727a03187ec3543c5"
@@ -144,8 +149,8 @@
     },
     {
       "path": "app-manifest.json",
-      "bytes": 11654,
-      "sha256": "bb90d5cd6a14b0fb139abe821152a9b77b142f113383ee1ca0021ec4cfdd802a"
+      "bytes": 12931,
+      "sha256": "1ce5a15ac523b0330352e9d1a660d72a9546eeab807b69b3ebf7b84828883e64"
     },
     {
       "path": "apps/documents/app.js",
@@ -288,6 +293,26 @@
       "sha256": "dd7d7667ae2def857be38f851460b6485341aaebf0da1834d2803901051133ae"
     },
     {
+      "path": "apps/txt/app.js",
+      "bytes": 15208,
+      "sha256": "aa2059c3f04b729964c13048ce302ace4d4c8025e05b621480509f8b903f1efc"
+    },
+    {
+      "path": "apps/txt/index.html",
+      "bytes": 6345,
+      "sha256": "f5a40068917f2e9becfdb52c0cae22a84068244dcb8e25ab89470dfb41598c2b"
+    },
+    {
+      "path": "apps/txt/module.json",
+      "bytes": 665,
+      "sha256": "69a14dab501ab18aa8dcf8bc2ee0d8d0506c42c8c36ec4fa3d439b8cc8a9e742"
+    },
+    {
+      "path": "apps/txt/styles.css",
+      "bytes": 7989,
+      "sha256": "fe358157f2d98b0f763758b4d510b1a35b268ac6d92e57f5df46ecfda5f997ca"
+    },
+    {
       "path": "assets/icons/documents.ico",
       "bytes": 22553,
       "sha256": "e556012579d6a5b4d23a64d10ce2df7cedbde13a9b3641cc6817de55a2e1dec1"
@@ -314,8 +339,8 @@
     },
     {
       "path": "assets/icons/icon-catalog.json",
-      "bytes": 1211,
-      "sha256": "97061546eb36a1e97bfa1696744207c2c0b8d99f3ea2e4d6fbd16f5d3e93918b"
+      "bytes": 1210,
+      "sha256": "6ed651c8f48f8ab7eee17dad6dc7d8168f80291f407b7a47a2444c2727a5f7ce"
     },
     {
       "path": "assets/icons/office.ico",
@@ -559,8 +584,8 @@
     },
     {
       "path": "docs/ROADMAP_0.19.4.md",
-      "bytes": 5463,
-      "sha256": "a721572185aa8424755e4831a9982e3782de3a46f5f1dea0db47f07339bd3c09"
+      "bytes": 5952,
+      "sha256": "75ab8b47df3a2db5a04dca11954c010eb24cb60a0cad24197185cfb64d707ad8"
     },
     {
       "path": "docs/SECURITY_AND_PRIVACY.md",
@@ -606,6 +631,11 @@
       "path": "docs/THIRD_PARTY_NOTICES.md",
       "bytes": 1453,
       "sha256": "bc5289b604251aa6b098e4c2a3e34cf23ea202f38d3635de180bb89123605946"
+    },
+    {
+      "path": "docs/TXT_EDITOR.md",
+      "bytes": 1265,
+      "sha256": "78c568fa18b6935bf560a48f596230e717ef8bf060d7e6f749ecdb429e9c1729"
     },
     {
       "path": "docs/UI_DESIGN_SYSTEM.md",
@@ -679,18 +709,18 @@
     },
     {
       "path": "index.html",
-      "bytes": 5594,
-      "sha256": "da81c66ab8d20d9cceb19303faa2229fba47e2f507379975191c74ee4a1802eb"
+      "bytes": 5879,
+      "sha256": "19a93903c10d0b975eb07d54c39d8e2e1373178715e479f4cd7e40939ebca2f2"
     },
     {
       "path": "manifest.webmanifest",
-      "bytes": 1621,
-      "sha256": "3b7b778d6326be3697ddf93867c2fc75697a959508fd6f7c7f637aecd45238fb"
+      "bytes": 1876,
+      "sha256": "0e6cbc48936ad759837fc3f7491850dbe6ee510b0e5224f9ab9062a547ba6f8b"
     },
     {
       "path": "modules/module-config.json",
-      "bytes": 538,
-      "sha256": "f529bc58a335349110d95d3dff886fd0dff5a9639e80c13f3042768cc59b1f66"
+      "bytes": 637,
+      "sha256": "e5a78f58297c2c476408b796c223f1cb70cb30d04e2e195c6ba4dd6fc87b0c16"
     },
     {
       "path": "modules/module-loader.js",
@@ -699,8 +729,8 @@
     },
     {
       "path": "modules/module-registry.js",
-      "bytes": 3385,
-      "sha256": "97dc2ba7cdd6ae6fd0de754485f5171c7f37cfb44da76cc78f6fb64f51b9eac5"
+      "bytes": 4184,
+      "sha256": "ed2f6aaa1c9ccb10c07538ef00728f13f1cdce12ded0454a37962da51ddf72c0"
     },
     {
       "path": "modules/module-schema.json",
@@ -709,8 +739,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 2134,
-      "sha256": "86d4c7fcc48df227ccbffa91c9e9319667ccd2100cb992f52b009038745257fa"
+      "bytes": 2200,
+      "sha256": "1e91cfbcc16067dd0a7a9ce8eea30ca85203046c5914dd3918896a9ee5e2acc6"
     },
     {
       "path": "scripts/apply_update_package.py",
@@ -759,8 +789,8 @@
     },
     {
       "path": "service-worker.js",
-      "bytes": 5971,
-      "sha256": "81ecf2d1ad7f2b57946b1e2eaafdf587a25e5bc1cd449936db5d3f87c064712e"
+      "bytes": 6161,
+      "sha256": "0827f84b0cc3996648aa59f3055d9fd269a35ce19385b4bee374f1fd577b6a09"
     },
     {
       "path": "shared/file-lifecycle.js",
@@ -769,8 +799,8 @@
     },
     {
       "path": "shared/file-router.js",
-      "bytes": 15066,
-      "sha256": "34e96bd13c6dbd76175f5a795cc4138aa05e259850f0481cf620f9b8d81ef2b8"
+      "bytes": 8404,
+      "sha256": "539dcdce58746e115c185b4b4fcfa43f854a6e77b03e363b920203740064a914"
     },
     {
       "path": "shared/formula-engine.js",
@@ -784,8 +814,8 @@
     },
     {
       "path": "shared/hub.css",
-      "bytes": 10358,
-      "sha256": "f23f77e1e1d390dcf583f3876d7682d303f6c98779615c841bbb23ebadd8e5cf"
+      "bytes": 10644,
+      "sha256": "0e49cd42139f49d7ed453f517188461564cc8a57f8bed963a92a80b74732d62d"
     },
     {
       "path": "shared/office-runtime.js",
@@ -930,12 +960,12 @@
     {
       "path": "tests/test_home_session_refinement.py",
       "bytes": 3603,
-      "sha256": "9201a97f05c3da5db8de14339d174258c542df438a87a989bfaf2f77f556d90d"
+      "sha256": "a6aa6dcda8cba466dc85cab3a47693c8c00f18c8cd727ac61357c1bf947ff45a"
     },
     {
       "path": "tests/test_modules.py",
-      "bytes": 7016,
-      "sha256": "23360afe46012c46ad73ea03ac16b35706f3038b30f8a34b69a9ede5d958a362"
+      "bytes": 7105,
+      "sha256": "8e63886d9ce760d5ebb80ed11aceea988c088f179c198420c55b8b795610f4b6"
     },
     {
       "path": "tests/test_pdf_shell_polish.py",
@@ -968,6 +998,11 @@
       "sha256": "e97dc8954210982900adf50cd5caa30401763bedef3f4f0af3346b9df9deadb6"
     },
     {
+      "path": "tests/test_txt_module.py",
+      "bytes": 5719,
+      "sha256": "d9b9570950506f29dfeae362b7f127865d1bd1fe22e22b2d0a4b0db104cfc9ad"
+    },
+    {
       "path": "tests/test_update_package.py",
       "bytes": 6960,
       "sha256": "edc80ee81588db89aa16fc1223f3f5683d493a40be39052cf69b40277ec4b315"
@@ -979,8 +1014,8 @@
     },
     {
       "path": "tests/test_visual_foundation.py",
-      "bytes": 5569,
-      "sha256": "325c69f37adfe6af15881b1e70abb9b9291ee18ad304cded72a9ed81f81dd27c"
+      "bytes": 5570,
+      "sha256": "02525ddd1bf551ba83a392821cc6283e90e289cd0f682f8f7bf516ba87461bb5"
     },
     {
       "path": "tests/test_workspace_layout.py",

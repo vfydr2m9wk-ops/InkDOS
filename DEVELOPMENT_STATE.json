@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.19.4",
   "baseVersion": "0.19.3-beta.7",
-  "appliedSequence": 13,
-  "currentPackage": "0.19.4.13",
+  "appliedSequence": 14,
+  "currentPackage": "0.19.4.14",
   "status": "in-progress",
   "history": [
     {
@@ -70,6 +70,11 @@
       "sequence": 13,
       "packageLabel": "0.19.4.13",
       "description": "Quieter launcher, visual action alignment, shared unsaved-change protection, and non-invasive editable filenames. Complete application files are preserved; title editing and download-name rewriting are implemented by the shared document-session adapter."
+    },
+    {
+      "sequence": 14,
+      "packageLabel": "0.19.4.14",
+      "description": "Modular local Plain Text workspace with New, Open, Save, editable filename, UTF-8 and UTF-16 opening, preserved line endings, Find, word wrap, text size, undo/redo, live counts, unsaved-change protection, universal TXT routing, launcher integration, tests, documentation, and offline caching."
     }
   ]
 }

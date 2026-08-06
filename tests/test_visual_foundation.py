@@ -69,11 +69,11 @@ class VisualFoundationTests(unittest.TestCase):
                 self.assertFalse(set(image.info) - {'dpi', 'transparency', 'srgb', 'gamma'})
         self.assertTrue((ROOT / 'assets/icons/office.ico').is_file())
 
-    def test_icon_catalog_marks_future_modules_as_planned(self):
+    def test_icon_catalog_tracks_active_and_planned_modules(self):
         catalog = json.loads((ROOT / 'assets/icons/icon-catalog.json').read_text(encoding='utf-8'))
-        self.assertEqual(catalog['version'], '0.19.4.11')
+        self.assertEqual(catalog['version'], '0.19.4.14')
         self.assertEqual(catalog['icons']['epub']['status'], 'planned')
-        self.assertEqual(catalog['icons']['txt']['status'], 'planned')
+        self.assertEqual(catalog['icons']['txt']['status'], 'active')
         self.assertEqual(catalog['icons']['inkdesk']['symbol'], 'quill-and-inkwell')
 
     def test_launcher_uses_real_module_icon_files(self):

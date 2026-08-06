@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  >
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#d9a514">
+  <meta
+    name="description"
+    content="InkDesk local plain-text viewer and editor."
+  >
+  <title>Untitled.txt — Plain Text</title>
+  <link rel="icon" href="../../assets/icons/txt.png">
+  <link rel="stylesheet" href="../../shared/office-shell.css">
+  <link rel="stylesheet" href="styles.css?v=0.19.4.14">
+</head>
+<body class="office-product office-txt">
+  <header
+    class="txt-titlebar"
+    data-inkdesk-shell-region="titlebar"
+    aria-label="Plain Text title bar"
+  >
+    <div class="title-actions title-actions-left">
+      <a
+        class="icon-btn home-btn"
+        href="../../index.html"
+        aria-label="InkDesk home"
+        title="InkDesk home"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"/>
+          <path d="M9 20v-6h6v6"/>
+        </svg>
+      </a>
+      <button
+        id="newBtn"
+        class="icon-btn"
+        type="button"
+        aria-label="New text file"
+        title="New"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+      </button>
+      <button
+        id="openBtn"
+        class="icon-btn"
+        type="button"
+        aria-label="Open text file"
+        title="Open"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/>
+          <path d="M3.5 10h17"/>
+        </svg>
+      </button>
+      <span class="toolbar-separator" aria-hidden="true"></span>
+      <button
+        id="undoBtn"
+        class="icon-btn"
+        type="button"
+        aria-label="Undo"
+        title="Undo"
+        disabled
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m9 7-4 4 4 4"/>
+          <path d="M5 11h8a6 6 0 0 1 6 6"/>
+        </svg>
+      </button>
+      <button
+        id="redoBtn"
+        class="icon-btn"
+        type="button"
+        aria-label="Redo"
+        title="Redo"
+        disabled
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 7 4 4-4 4"/>
+          <path d="M19 11h-8a6 6 0 0 0-6 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="title-center">
+      <img
+        class="txt-app-icon"
+        src="../../assets/icons/txt.svg"
+        alt=""
+        aria-hidden="true"
+      >
+      <input
+        id="docTitle"
+        class="file-title-input"
+        type="text"
+        value="Untitled.txt"
+        aria-label="Text file name"
+        spellcheck="false"
+        autocomplete="off"
+      >
+      <span id="dirtyMark" class="dirty-mark" hidden aria-hidden="true">•</span>
+    </div>
+
+    <div class="title-actions title-actions-right">
+      <button
+        id="saveBtn"
+        class="icon-btn save-btn"
+        type="button"
+        aria-label="Save text file"
+        title="Save"
+        disabled
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4h12l2 2v14H5z"/>
+          <path d="M8 4v6h8V4M8 20v-6h8v6"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div
+    class="txt-toolbar"
+    data-inkdesk-shell-region="toolbar"
+    aria-label="Text display controls"
+  >
+    <button
+      id="wrapBtn"
+      class="tool-btn active"
+      type="button"
+      aria-pressed="true"
+    >
+      Wrap
+    </button>
+    <label class="font-size-control">
+      <span>Text size</span>
+      <select id="fontSize" aria-label="Text size">
+        <option value="14">14</option>
+        <option value="16" selected>16</option>
+        <option value="18">18</option>
+        <option value="20">20</option>
+        <option value="24">24</option>
+      </select>
+    </label>
+    <button id="findBtn" class="tool-btn" type="button">
+      Find
+    </button>
+    <div id="findBar" class="find-bar" hidden>
+      <input
+        id="findInput"
+        type="search"
+        placeholder="Find text"
+        aria-label="Find text"
+        autocomplete="off"
+      >
+      <button id="findPrevious" class="icon-btn compact" type="button" aria-label="Previous result">↑</button>
+      <button id="findNext" class="icon-btn compact" type="button" aria-label="Next result">↓</button>
+      <button id="findClose" class="icon-btn compact" type="button" aria-label="Close find">×</button>
+      <span id="findStatus" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <main class="txt-main">
+    <section id="startScreen" class="txt-start-card">
+      <img
+        src="../../assets/icons/txt.svg"
+        class="start-icon"
+        alt=""
+        aria-hidden="true"
+      >
+      <h1>Plain Text</h1>
+      <p>
+        Create or open a local TXT file. Text stays on this device.
+      </p>
+      <div class="start-actions">
+        <button id="newStartBtn" class="start-btn secondary" type="button">
+          New text file
+        </button>
+        <button id="openStartBtn" class="start-btn primary" type="button">
+          Open text file
+        </button>
+      </div>
+    </section>
+
+    <section id="editorShell" class="editor-shell" hidden>
+      <textarea
+        id="editor"
+        aria-label="Plain text editor"
+        spellcheck="true"
+        autocapitalize="sentences"
+        autocomplete="off"
+        placeholder="Start typing…"
+      ></textarea>
+    </section>
+  </main>
+
+  <footer class="txt-statusbar">
+    <span id="statusText" role="status" aria-live="polite">Ready</span>
+    <span class="status-spacer"></span>
+    <span id="lineCount">1 line</span>
+    <span id="wordCount">0 words</span>
+    <span id="characterCount">0 characters</span>
+    <span id="encodingLabel">UTF-8</span>
+  </footer>
+
+  <input
+    id="fileInput"
+    type="file"
+    accept=".txt,text/plain"
+    hidden
+  >
+
+  <script src="../../shared/office-runtime.js?v=0.19.3-beta.7"></script>
+  <script src="../../shared/file-lifecycle.js?v=0.19.4.13"></script>
+  <script src="../../shared/file-router.js?v=0.19.4.14"></script>
+  <script src="../../shared/office-shell.js?v=0.19.4.13"></script>
+  <script src="app.js?v=0.19.4.14"></script>
+</body>
+</html>

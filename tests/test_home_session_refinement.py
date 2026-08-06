@@ -29,7 +29,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
             html,
         )
         self.assertIn(
-            "InkDesk 0.19.3-beta.7 · build 0.19.4.13",
+            "InkDesk 0.19.3-beta.7 · build 0.19.4.14",
             html,
         )
 
@@ -104,7 +104,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
             (ROOT / "package.json").read_text(encoding="utf-8")
         )
 
-        self.assertIn("modules-0.19.4.13", worker)
+        self.assertIn("modules-0.19.4.14", worker)
         self.assertEqual(package["version"], "0.19.3-beta.7")
 
 

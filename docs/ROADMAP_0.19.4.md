@@ -130,3 +130,15 @@ When the order changes, update this roadmap explicitly.
 - PDF review changes participate in the same warning contract.
 - Documents use clearly distinct blue and white start actions.
 - Spreadsheet start actions remain side by side on desktop.
+
+
+## 0.19.4.14 — Plain Text module (implemented)
+
+- Add an optional enabled TXT module to the generated module registry.
+- Add a local notebook-style viewer and editor.
+- Support UTF-8 and UTF-16 opening with UTF-8 copy export.
+- Preserve the detected source line-ending style on Save.
+- Include title editing, unsaved-change protection, Find, word wrap, text size,
+  undo/redo, and live text counts.
+- Route TXT files from the universal Open action.
+- Cache the module for offline use.

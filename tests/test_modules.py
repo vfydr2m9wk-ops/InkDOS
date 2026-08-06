@@ -33,7 +33,7 @@ class ModuleRegistryTests(unittest.TestCase):
         self.assertEqual(config["schemaVersion"], 1)
         self.assertEqual(
             [item["id"] for item in config["modulePaths"]],
-            ["documents", "spreadsheets", "presentations", "pdf"],
+            ["documents", "spreadsheets", "presentations", "pdf", "txt"],
         )
         extensions = set()
         for item in config["modulePaths"]:
@@ -47,7 +47,7 @@ class ModuleRegistryTests(unittest.TestCase):
             for extension in manifest["extensions"]:
                 self.assertNotIn(extension, extensions)
                 extensions.add(extension)
-        self.assertEqual(extensions, {"docx", "xls", "xlsx", "pptx", "pdf"})
+        self.assertEqual(extensions, {"docx", "xls", "xlsx", "pptx", "pdf", "txt"})
 
     def test_launcher_uses_registry_with_static_fallbacks(self):
         html = (ROOT / "index.html").read_text()
@@ -62,6 +62,7 @@ class ModuleRegistryTests(unittest.TestCase):
             "./apps/spreadsheets/index.html",
             "./apps/presentations/index.html",
             "./apps/pdf/index.html",
+            "./apps/txt/index.html",
         ):
             self.assertIn(route, html)
 
@@ -129,7 +130,7 @@ class ModuleRegistryTests(unittest.TestCase):
         script = """
 require('./modules/module-registry.js');
 require('./modules/module-loader.js');
-if(globalThis.InkDeskModules.listEnabled().length!==4)process.exit(10);
+if(globalThis.InkDeskModules.listEnabled().length!==5)process.exit(10);
 const create=globalThis.InkDeskCreateModuleRuntime;
 const runtime=create({registryVersion:'test',modules:[{
   schemaVersion:1,id:'sample',name:'Sample',description:'Sample module',
@@ -161,6 +162,7 @@ if(runtime.errors.length!==0)process.exit(13);
             "./apps/spreadsheets/module.json",
             "./apps/presentations/module.json",
             "./apps/pdf/module.json",
+            "./apps/txt/module.json",
         ):
             self.assertIn(repr(path), worker)
 
