@@ -1,0 +1,400 @@
+name: InkDesk integrity and update
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Root ZIP name. Leave empty when only one InkDesk-update-v*.zip exists.
+        required: false
+        type: string
+      dry_run:
+        description: Validate without committing or removing the ZIP.
+        required: true
+        default: false
+        type: boolean
+      validation_profile:
+        description: Validation level. "package" uses the level declared by the ZIP.
+        required: true
+        default: package
+        type: choice
+        options:
+          - package
+          - standard
+          - full
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'InkDesk-update-v*.zip'
+      - 'InkDesk-update-v*.zip.sha256'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdesk-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+jobs:
+  validate:
+    name: Validate repository
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install validation dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          if command -v chromium >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v chromium)" >> "$GITHUB_ENV"
+          elif command -v chromium-browser >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v chromium-browser)" >> "$GITHUB_ENV"
+          elif command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            python -m playwright install --with-deps chromium
+            python - <<'PY' >> "$GITHUB_ENV"
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as playwright:
+              print(f"CHROMIUM_PATH={playwright.chromium.executable_path}")
+          PY
+          fi
+
+      - name: Verify generated metadata is current
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/generate_release_metadata.py
+          git diff --exit-code -- BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json
+
+      - name: Run complete integrity gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/check_no_legacy_runtime.py
+          python scripts/run_release_validation.py
+
+  apply-update:
+    name: Apply update package
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install validation dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          if command -v chromium >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v chromium)" >> "$GITHUB_ENV"
+          elif command -v chromium-browser >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v chromium-browser)" >> "$GITHUB_ENV"
+          elif command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROMIUM_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            python -m playwright install --with-deps chromium
+            python - <<'PY' >> "$GITHUB_ENV"
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as playwright:
+              print(f"CHROMIUM_PATH={playwright.chromium.executable_path}")
+          PY
+          fi
+
+      - name: Select and inspect update package
+        id: package
+        shell: bash
+        env:
+          REQUESTED_PACKAGE: ${{ inputs.package_name }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${REQUESTED_PACKAGE}" ]]; then
+            if [[ "${REQUESTED_PACKAGE}" == */* || "${REQUESTED_PACKAGE}" == *\\* ]]; then
+              echo "package_name must be a root file name, not a path." >&2
+              exit 1
+            fi
+            package="${REQUESTED_PACKAGE}"
+            [[ -f "${package}" ]] || { echo "Package not found: ${package}" >&2; exit 1; }
+          else
+            mapfile -t packages < <(find . -maxdepth 1 -type f -name 'InkDesk-update-v*.zip' -printf '%f\n' | sort)
+            if [[ ${#packages[@]} -ne 1 ]]; then
+              echo "Expected exactly one root InkDesk-update-v*.zip, found ${#packages[@]}." >&2
+              printf '%s\n' "${packages[@]:-}" >&2
+              exit 1
+            fi
+            package="${packages[0]}"
+          fi
+
+          cp -- "${package}" /tmp/update-package.zip
+          PACKAGE_NAME="${package}" python - <<'PY'
+          from pathlib import Path, PurePosixPath
+          import json
+          import os
+          import stat
+          import zipfile
+
+          package = Path('/tmp/update-package.zip')
+          seen = set()
+          total = 0
+          with zipfile.ZipFile(package) as archive:
+              infos = archive.infolist()
+              if len(infos) > 10_000:
+                  raise SystemExit('Update ZIP has too many entries.')
+              names = {item.filename for item in infos}
+              if 'patch-manifest.json' not in names:
+                  raise SystemExit('Update ZIP is missing patch-manifest.json.')
+              if 'files/scripts/apply_update_package.py' not in names:
+                  raise SystemExit('Update ZIP must supply files/scripts/apply_update_package.py.')
+              for item in infos:
+                  raw = item.filename.rstrip('/')
+                  if not raw:
+                      continue
+                  path = PurePosixPath(raw)
+                  if path.is_absolute() or any(part in {'', '.', '..'} for part in path.parts) or '\\' in raw:
+                      raise SystemExit(f'Unsafe ZIP path: {item.filename}')
+                  folded = raw.casefold()
+                  if folded in seen:
+                      raise SystemExit(f'Duplicate or case-colliding ZIP path: {item.filename}')
+                  seen.add(folded)
+                  total += item.file_size
+                  if item.file_size > 128 * 1024 * 1024 or total > 512 * 1024 * 1024:
+                      raise SystemExit('ZIP size limits exceeded.')
+                  mode = (item.external_attr >> 16) & 0o170000
+                  if mode == stat.S_IFLNK:
+                      raise SystemExit(f'Symbolic links are not allowed: {item.filename}')
+                  if raw.startswith('files/.github/workflows/'):
+                      raise SystemExit(
+                          'Update packages cannot create or modify GitHub workflow files. '
+                          'Install workflow changes manually as a one-time bootstrap.'
+                      )
+              manifest = json.loads(archive.read('patch-manifest.json').decode('utf-8'))
+              if manifest.get('product') != 'InkDesk':
+                  raise SystemExit('The selected ZIP is not an InkDesk update package.')
+              if manifest.get('allowWorkflowChanges'):
+                  raise SystemExit('allowWorkflowChanges is forbidden in stable update packages.')
+              if 'DELETE.txt' in names:
+                  for line in archive.read('DELETE.txt').decode('utf-8').splitlines():
+                      value = line.strip()
+                      if value and not value.startswith('#') and value.startswith('.github/workflows/'):
+                          raise SystemExit('Update packages cannot delete GitHub workflow files.')
+              Path('/tmp/update-package-manifest.json').write_text(
+                  json.dumps(manifest, indent=2, ensure_ascii=False) + '\n',
+                  encoding='utf-8',
+              )
+          print(f"Selected {os.environ['PACKAGE_NAME']} for transactional validation.")
+          PY
+
+          sha="$(sha256sum /tmp/update-package.zip | awk '{print $1}')"
+          label="$(python -c "import json; print(json.load(open('/tmp/update-package-manifest.json'))['packageLabel'])")"
+          echo "original_name=${package}" >> "$GITHUB_OUTPUT"
+          echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
+          echo "label=${label}" >> "$GITHUB_OUTPUT"
+          echo "SHA-256: ${sha}"
+          echo "The root ZIP is retained until validation succeeds."
+
+      - name: Prepare package updater
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          with zipfile.ZipFile('/tmp/update-package.zip') as archive:
+              Path('/tmp/apply_update_package.py').write_bytes(
+                  archive.read('files/scripts/apply_update_package.py')
+              )
+          PY
+          chmod +x /tmp/apply_update_package.py
+
+      - name: Apply package transaction
+        id: apply
+        shell: bash
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          VALIDATION_PROFILE: ${{ inputs.validation_profile }}
+        run: |
+          set -uo pipefail
+          args=(
+            --package /tmp/update-package.zip
+            --repo "${GITHUB_WORKSPACE}"
+            --report /tmp/update-report.json
+          )
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            args+=(--dry-run)
+          fi
+          if [[ "${VALIDATION_PROFILE}" != "package" ]]; then
+            args+=(--validation-profile "${VALIDATION_PROFILE}")
+          fi
+          set +e
+          python /tmp/apply_update_package.py "${args[@]}" 2>&1 | tee /tmp/update-transaction.log
+          status=${PIPESTATUS[0]}
+          set -e
+          echo "exit_code=${status}" >> "$GITHUB_OUTPUT"
+          exit "${status}"
+
+      - name: Commit and push applied update
+        id: commit
+        if: ${{ !inputs.dry_run && steps.apply.outcome == 'success' }}
+        shell: bash
+        env:
+          PACKAGE_NAME: ${{ steps.package.outputs.original_name }}
+          PACKAGE_LABEL: ${{ steps.package.outputs.label }}
+        run: |
+          set -euo pipefail
+          exec > >(tee /tmp/commit-push.log) 2>&1
+
+          if [[ -n "$(git diff --name-only -- .github/workflows)" ]]; then
+            echo "Refusing to commit: the transaction changed GitHub workflow files." >&2
+            exit 1
+          fi
+
+          git fetch --no-tags origin main
+          local_base="$(git rev-parse HEAD)"
+          remote_base="$(git rev-parse origin/main)"
+          if [[ "${local_base}" != "${remote_base}" ]]; then
+            echo "main changed while the update was running. Start a new run against the latest main." >&2
+            exit 1
+          fi
+
+          rm -- "${PACKAGE_NAME}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --name-only | grep -q '^.github/workflows/'; then
+            echo "Refusing to commit staged workflow changes." >&2
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "No repository changes were produced." >&2
+            exit 1
+          fi
+
+          git commit -m "Apply InkDesk update ${PACKAGE_LABEL}"
+          git push origin HEAD:main
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Request GitHub Pages rebuild
+        id: pages
+        if: ${{ steps.commit.outcome == 'success' }}
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
+
+      - name: Write final Actions summary
+        if: always()
+        shell: bash
+        env:
+          APPLY_OUTCOME: ${{ steps.apply.outcome }}
+          COMMIT_OUTCOME: ${{ steps.commit.outcome }}
+          PAGES_OUTCOME: ${{ steps.pages.outcome }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          PACKAGE_SHA: ${{ steps.package.outputs.sha256 }}
+          COMMIT_SHA: ${{ steps.commit.outputs.commit_sha }}
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          from pathlib import Path
+          import json
+
+          def load(path):
+              try:
+                  return json.loads(Path(path).read_text(encoding='utf-8'))
+              except Exception:
+                  return {}
+
+          manifest = load('/tmp/update-package-manifest.json')
+          report = load('/tmp/update-report.json')
+          transaction_log = Path('/tmp/update-transaction.log')
+          commit_log = Path('/tmp/commit-push.log')
+          apply_outcome = '${{ steps.apply.outcome }}'
+          commit_outcome = '${{ steps.commit.outcome }}'
+          pages_outcome = '${{ steps.pages.outcome }}'
+          dry_run = '${{ inputs.dry_run }}' == 'true'
+          label = report.get('packageLabel') or manifest.get('packageLabel') or 'unknown'
+
+          if apply_outcome != 'success':
+              status = 'Failed during validation — repository transaction rolled back'
+          elif dry_run:
+              status = 'Validated only — repository unchanged'
+          elif commit_outcome != 'success':
+              status = 'Validation passed, but commit/push failed — remote repository unchanged'
+          else:
+              status = 'Applied, committed, and pushed successfully'
+
+          print(f'## InkDesk update {label}')
+          print()
+          print(f'- Status: **{status}**')
+          print(f"- Target: `{report.get('targetRelease') or manifest.get('targetRelease', 'unknown')}`")
+          print(f"- Sequence: `{report.get('sequence') or manifest.get('sequence', 'unknown')}`")
+          print(f"- Validation: `{report.get('validationProfile') or manifest.get('validationProfile', 'unknown')}`")
+          print(f"- Package SHA-256: `${{ steps.package.outputs.sha256 }}`")
+          if '${{ steps.commit.outputs.commit_sha }}':
+              print(f"- Commit: `${{ steps.commit.outputs.commit_sha }}`")
+          if commit_outcome == 'success':
+              pages_text = 'requested' if pages_outcome == 'success' else 'not requested successfully; code update remains valid'
+              print(f'- GitHub Pages rebuild: **{pages_text}**')
+          print(f"- Files copied or replaced: `{len(report.get('copied', []))}`")
+          print(f"- Paths deleted: `{len(report.get('deleted', []))}`")
+
+          if apply_outcome != 'success':
+              print()
+              print('> The updater restored all touched repository files. The applied sequence remains unchanged.')
+              if report.get('error'):
+                  print(f"- Transaction error: `{report['error']}`")
+          elif not dry_run and commit_outcome != 'success':
+              print()
+              print('> Validation completed locally, but nothing was pushed. The root ZIP remains in the remote repository and can be retried after correcting the push problem.')
+
+          logs = []
+          if apply_outcome != 'success' and transaction_log.exists():
+              logs.append(('Transaction log tail', transaction_log.read_text(encoding='utf-8', errors='replace').splitlines()[-100:]))
+          if not dry_run and commit_outcome == 'failure' and commit_log.exists():
+              logs.append(('Commit/push log', commit_log.read_text(encoding='utf-8', errors='replace').splitlines()[-100:]))
+          for title, lines in logs:
+              print(f'\n<details><summary>{title}</summary>\n')
+              print('```text')
+              print('\n'.join(lines))
+              print('```')
+              print('\n</details>')
+          PY
