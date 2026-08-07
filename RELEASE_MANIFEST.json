@@ -1,8 +1,8 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.2",
-  "releaseName": "Refactoring Guardrails",
-  "releaseType": "Beta Architecture Patch",
+  "version": "0.20.2.3",
+  "releaseName": "Presentations Inspector Decomposition",
+  "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
     "InkDesk.html": "index.html",
@@ -37,22 +37,23 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "226 passed locally for v0.20.2.2",
+    "structuralUnitTests": "234 configured; 233 pass in local reconstruction, with checksum integrity deferred to hosted tree because three pinned PDF.js publication files are absent locally",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "12 configured; hosted Chromium is the transaction gate",
+    "browserRegressionScripts": "12 configured; hosted Chromium remains the transaction gate",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
     "browserMatrixRunner": "chromium, firefox, webkit",
-    "presentationsControlRegression": "correction revision 6: one canonical open/closed class state across desktop/compact widths; resize is CSS-only; cold-start and open-close-escape behavioral coverage",
-    "functionalAcceptanceInventory": "212 visible controls retained from v0.20.2.1; no behavior claims added by this architecture-only patch",
+    "presentationsControlRegression": "retained: closed-by-default/open-hide-reopen, property mutation, compact drawer, Escape and resize behavior",
+    "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: source-debt ratchet, workspace dependency boundaries, relative import cycles"
+    "architectureGuardrails": "required: Presentations app ratchet reduced after Inspector extraction; source-debt, workspace boundaries and relative import-cycle checks remain active",
+    "presentationsModularization": "Inspector state and format-property handlers extracted to apps/presentations/ui/inspector-controller.js; app.js remains orchestration entry point"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

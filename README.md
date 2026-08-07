@@ -4,17 +4,28 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.2
+## InkDesk v0.20.2.3
 
-Version 0.20.2.2 is a behavior-neutral **Refactoring Guardrails** beta patch.
-It adds repository rules and automated architecture checks so the large runtime
-files can be decomposed incrementally without changing established editing,
-file-safety or visual behavior. The runtime remains native HTML/CSS/JavaScript,
+Version 0.20.2.3 is the first behavior-neutral **Presentations decomposition**
+patch. The existing Format/Inspector feature has been moved out of the large
+`apps/presentations/app.js` controller into the focused
+`apps/presentations/ui/inspector-controller.js` component.
+
+The extracted controller owns Format-panel open/closed state, accessibility
+state, compact Escape behavior, object geometry/opacity/fill/rotation controls,
+image crop controls and the fill palette. `app.js` now composes that component
+through a small dependency interface instead of owning those handlers directly.
+
+No Presentations command, visual layout, file format or save behavior is
+intentionally changed. The runtime remains native HTML/CSS/JavaScript,
 local-first and build-free.
 
-The refactoring order is Presentations → PDF → shared UI →
-Documents/Spreadsheets cleanup. Each extraction must keep the existing
-behavioral tests green and may not carry a regression into the next step.
+## Refactoring policy
+
+The 0.20.x decomposition remains incremental: Presentations → PDF → shared UI →
+Documents/Spreadsheets cleanup. Every extraction must preserve existing
+behavioral tests, stay inside the architecture guardrails and stop immediately
+if a regression appears.
 
 ## Privacy
 
@@ -39,13 +50,13 @@ npm run test:browser:matrix
 ```
 
 The normal incremental-update workflow remains Chromium-only for predictable
-runtime, and the complete release gate runs once without duplicate unit/audit passes. `test:browser:matrix` explicitly checks every installed Chromium,
-Firefox and WebKit engine and reports unavailable engines as not performed
-unless strict matrix mode is requested.
+runtime. `test:browser:matrix` explicitly checks installed Chromium, Firefox and
+WebKit engines; unavailable engines are reported as not performed unless strict
+matrix mode is requested.
 
 ## Status
 
-v0.20.2.2 remains a beta. Real-device validation is still required for critical
+v0.20.2.3 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

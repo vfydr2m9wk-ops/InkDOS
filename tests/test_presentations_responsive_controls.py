@@ -11,8 +11,13 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
     def setUpClass(cls):
         cls.css = (ROOT / "apps/presentations/styles.css").read_text(encoding="utf-8")
         cls.app = (ROOT / "apps/presentations/app.js").read_text(encoding="utf-8")
+        cls.inspector = (
+            ROOT / "apps/presentations/ui/inspector-controller.js"
+        ).read_text(encoding="utf-8")
         cls.html = (ROOT / "apps/presentations/index.html").read_text(encoding="utf-8")
-        cls.recovery_test = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        cls.recovery_test = (
+            ROOT / "tests/browser/revalidate_v0202_local_recovery.py"
+        ).read_text(encoding="utf-8")
         cls.shell_css = (ROOT / "shared/office-shell.css").read_text(encoding="utf-8")
 
     def test_compact_layout_overrides_legacy_hidden_inspector(self):
@@ -22,7 +27,6 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
         self.assertIn("display:block!important", tail)
         self.assertIn(".workspace.inspector-open .inspector", tail)
         self.assertIn("visibility:visible!important", tail)
-
 
     def test_legacy_compact_display_none_rule_is_removed(self):
         self.assertNotIn(".inspector{display:none}", self.css)
@@ -45,25 +49,27 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
         self.assertIn("presentations format-panel cascade guard", self.shell_css)
 
     def test_format_panel_uses_one_boolean_source_of_truth_at_all_widths(self):
-        self.assertIn("matchMedia('(max-width:1000px)')", self.app)
-        self.assertIn("let inspectorOpen=false", self.app)
-        self.assertIn("function applyInspectorState()", self.app)
-        self.assertIn("function setInspectorOpen(open,options={})", self.app)
-        self.assertIn("presentationWorkspace.classList.toggle('inspector-open',inspectorOpen)", self.app)
-        self.assertIn("presentationWorkspace.classList.toggle('hide-inspector',!inspectorOpen)", self.app)
-        self.assertIn("presentationWorkspace.dataset.inspectorOpen=String(inspectorOpen)", self.app)
-        self.assertNotIn("lastInspectorCompactMode", self.app)
-        self.assertNotIn("inspectorResizeFrame", self.app)
+        self.assertIn("matchMedia('(max-width:1000px)')", self.inspector)
+        self.assertIn("this.open = false", self.inspector)
+        self.assertIn("applyOpenState()", self.inspector)
+        self.assertIn("setOpen(open, options = {})", self.inspector)
+        self.assertIn("classList.toggle('inspector-open', this.open)", self.inspector)
+        self.assertIn("classList.toggle('hide-inspector', !this.open)", self.inspector)
+        self.assertIn("dataset.inspectorOpen = String(this.open)", self.inspector)
+        self.assertNotIn("lastInspectorCompactMode", self.inspector)
+        self.assertNotIn("inspectorResizeFrame", self.inspector)
+        self.assertIn("InkDeskPresentationsInspector.create", self.app)
 
     def test_format_toggle_exposes_accessibility_state_from_same_source(self):
         self.assertIn('aria-controls="inspector"', self.html)
-        self.assertIn("button.setAttribute('aria-expanded',String(inspectorOpen))", self.app)
-        self.assertIn("button.textContent=inspectorOpen?'Hide format panel':'Show format panel'", self.app)
+        self.assertIn("setAttribute('aria-expanded', String(this.open))", self.inspector)
+        self.assertIn("'Hide format panel'", self.inspector)
+        self.assertIn("'Show format panel'", self.inspector)
 
     def test_escape_closes_compact_format_panel_through_state_api(self):
-        self.assertIn("event.key==='Escape'", self.app)
-        self.assertIn("compactInspectorMode()&&inspectorOpen", self.app)
-        self.assertIn("setInspectorOpen(false)", self.app)
+        self.assertIn("event.key === 'Escape'", self.inspector)
+        self.assertIn("this.isCompact() && this.open", self.inspector)
+        self.assertIn("this.setOpen(false)", self.inspector)
 
     def test_recovery_test_does_not_depend_on_notes_visibility(self):
         self.assertIn("node.value=value", self.recovery_test)
@@ -84,23 +90,30 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
         self.assertIn("resetOptionalPanelsForOpen()", self.app)
 
     def test_compact_cold_start_starts_closed_then_uses_canonical_open_class(self):
-        browser = (ROOT / "tests/browser/revalidate_presentations_controls.py").read_text(encoding="utf-8")
+        browser = (
+            ROOT / "tests/browser/revalidate_presentations_controls.py"
+        ).read_text(encoding="utf-8")
         self.assertIn("Real iPad/mobile cold start", browser)
         self.assertIn("Compact cold start retained the desktop hide class", browser)
-        self.assertIn("presentationWorkspace.classList.toggle('hide-inspector',!inspectorOpen)", self.app)
+        self.assertIn("classList.toggle('hide-inspector', !this.open)", self.inspector)
 
     def test_breakpoint_change_is_css_only_and_cannot_race_js_state(self):
-        self.assertNotIn("reconcileInspectorViewport", self.app)
-        self.assertNotIn("scheduleInspectorViewportSync", self.app)
-        self.assertNotIn("lastInspectorCompactMode", self.app)
-        self.assertNotIn("inspectorResizeFrame", self.app)
-        browser = (ROOT / "tests/browser/revalidate_presentations_controls.py").read_text(encoding="utf-8")
+        combined = self.app + self.inspector
+        self.assertNotIn("reconcileInspectorViewport", combined)
+        self.assertNotIn("scheduleInspectorViewportSync", combined)
+        self.assertNotIn("lastInspectorCompactMode", combined)
+        self.assertNotIn("inspectorResizeFrame", combined)
+        browser = (
+            ROOT / "tests/browser/revalidate_presentations_controls.py"
+        ).read_text(encoding="utf-8")
         self.assertIn("did not remain open as a compact drawer", browser)
         self.assertIn("did not close the drawer", browser)
         self.assertIn("did not reopen the drawer", browser)
 
     def test_behavioral_format_test_starts_from_collapsed_product_state(self):
-        browser = (ROOT / "tests/browser/revalidate_presentations_controls.py").read_text(encoding="utf-8")
+        browser = (
+            ROOT / "tests/browser/revalidate_presentations_controls.py"
+        ).read_text(encoding="utf-8")
         self.assertIn("Format panel should start collapsed in the desktop layout", browser)
         self.assertIn("Show format panel did not open the desktop inspector", browser)
         self.assertIn('wait_toggle_state(page, False', browser)

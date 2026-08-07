@@ -1,27 +1,23 @@
-# InkDesk v0.20.0 — Consolidated Modular Preview
+# InkDesk v0.20.2.3 — Presentations Inspector Decomposition
 
-Released: 2026-08-06
+Released: 2026-08-07
 
 ## What changed
 
-- Consolidated the 0.19.4 development line into one complete package.
-- Introduced a cleaner six-workspace home page and public Semantic Versioning.
-- Included Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB.
-- Preserved the rounded shared visual system and native system typography.
-- Preserved editable filenames and unsaved-change protection where applicable.
-- Reset future patch development to the 0.20.x line.
+- Started the behavior-neutral Presentations decomposition.
+- Moved Format/Inspector state and property handlers from the large
+  `apps/presentations/app.js` controller into a focused UI component.
+- Preserved the existing panel behavior and object-formatting controls.
+- Added component-specific architecture and DOM-contract regression checks.
+- Added the component to offline precaching and manual browser harnesses.
 
-## Important limitations
+## What did not change
 
-InkDesk remains experimental. Compatibility is intentionally focused, exported
-copies must be reopened and verified for important work, and saving usually
-creates a new downloaded file. EPUB is read-only apart from saving the original
-book under a renamed filename.
+- No new editing feature or supported format.
+- No visual redesign or control relocation.
+- No backend, framework migration or runtime build requirement.
+- No intentional change to PPTX open/save/export behavior.
 
-
-### Pinned PDF.js publication step
-
-The source publication workflow installs the exact `pdfjs-dist@3.11.174`
-classic build before strict validation. InkDesk disables PDF.js eval support
-when opening a document. The committed release remains self-contained and
-offline after publication.
+InkDesk remains beta software. Important exported files should still be reopened
+and verified, and native Safari/iPadOS/Firefox coverage remains an explicit
+manual/browser-matrix responsibility.

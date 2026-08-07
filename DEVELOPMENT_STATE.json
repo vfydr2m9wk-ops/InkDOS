@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 4,
-  "currentPackage": "0.20.2.2",
+  "appliedSequence": 5,
+  "currentPackage": "0.20.2.3",
   "status": "in-progress",
   "history": [
     {
@@ -25,6 +25,11 @@
       "sequence": 4,
       "packageLabel": "0.20.2.2",
       "description": "Refactoring Guardrails v0.20.2.2 correction 2: remove the stale checksum entry for shared/vendor/pdfjs/README.md, which the hosted v0.20.2.1 tree proves is absent, and add a fail-fast checksum-manifest regression to the unit suite. No application runtime or workflow file is changed."
+    },
+    {
+      "sequence": 5,
+      "packageLabel": "0.20.2.3",
+      "description": "Presentations decomposition v0.20.2.3: behavior-neutral extraction of the Format/Inspector state and property-control handlers from apps/presentations/app.js into apps/presentations/ui/inspector-controller.js. The existing visual contract, editing behavior, offline shell, recovery semantics and stable workflow remain unchanged."
     }
   ]
 }

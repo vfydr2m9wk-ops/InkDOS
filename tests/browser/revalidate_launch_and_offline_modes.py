@@ -217,7 +217,8 @@ def validate_restricted_apis(browser, base_url):
             "shared/vendor/jszip.min.js",
             "apps/presentations/engine/compatibility.js",
             "shared/office-shell.js",
-            "apps/presentations/app.js",
+            "apps/presentations/ui/inspector-controller.js",
+        "apps/presentations/app.js",
             "shared/register-service-worker.js",
         ),
     }

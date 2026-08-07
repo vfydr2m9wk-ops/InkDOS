@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.2",
+  "version": "0.20.2.3",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -489,7 +489,7 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.2",
+    "version": "0.20.2.3",
     "channel": "beta",
     "name": "Functional Corrections",
     "date": "2026-08-07",

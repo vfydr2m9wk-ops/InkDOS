@@ -6,7 +6,7 @@ next large source file is decomposed.
 | Release | Scope | Runtime behavior change |
 | --- | --- | --- |
 | 0.20.2.2 | Guardrails, policy, architecture checks and AI instructions | None |
-| 0.20.2.3 | Presentations decomposition | None intended |
+| 0.20.2.3 | Presentations decomposition: Format/Inspector extraction | None intended |
 | 0.20.2.4 | PDF decomposition | None intended |
 | 0.20.2.5 | Shared UI decomposition | None intended |
 | 0.20.2.6 | Documents/Spreadsheets cleanup | None intended |
@@ -27,7 +27,7 @@ apps/presentations/
     selection.js
   ui/
     toolbar.js
-    inspector.js
+    inspector-controller.js
     thumbnails.js
     presenter-notes.js
     dialogs.js
@@ -48,6 +48,10 @@ apps/presentations/
 
 This is a target map, not permission to create empty files. A module is created
 only when real behavior is extracted into it.
+
+v0.20.2.3 implements the first boundary: `ui/inspector-controller.js` owns the
+Format-panel state and property controls while `app.js` supplies explicit
+dependencies for selection, dirty state, rendering, relayout and history.
 
 ## Second target: PDF
 

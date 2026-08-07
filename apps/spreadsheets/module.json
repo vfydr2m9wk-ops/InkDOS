@@ -3,7 +3,7 @@
   "id": "spreadsheets",
   "name": "Spreadsheets",
   "description": "Offline XLSX editing plus focused Excel 97–2004 XLS import and XLSX copy export.",
-  "version": "0.20.2.2",
+  "version": "0.20.2.3",
   "enabled": true,
   "optional": false,
   "order": 20,

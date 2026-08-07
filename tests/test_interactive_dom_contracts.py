@@ -38,11 +38,25 @@ class InteractiveDomContractTests(unittest.TestCase):
             self.assertEqual(unresolved, [], f"{module}: unresolved direct DOM references {unresolved}")
 
     def test_presentations_inspector_state_is_not_split_between_click_paths(self):
-        source = (ROOT / "apps/presentations/app.js").read_text(encoding="utf-8")
-        self.assertIn("let inspectorOpen=false", source)
-        self.assertIn("setInspectorOpen(!inspectorOpen)", source)
-        self.assertNotIn("classList.toggle('inspector-open');", source)
-        self.assertNotIn("classList.toggle('hide-inspector');", source)
+        app = (ROOT / "apps/presentations/app.js").read_text(encoding="utf-8")
+        component = (
+            ROOT / "apps/presentations/ui/inspector-controller.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("InkDeskPresentationsInspector.create", app)
+        self.assertIn("this.open = false", component)
+        self.assertIn("this.setOpen(!this.open)", component)
+        self.assertNotIn("classList.toggle('inspector-open');", app + component)
+        self.assertNotIn("classList.toggle('hide-inspector');", app + component)
+
+    def test_presentations_inspector_component_ids_exist_in_workspace_html(self):
+        html_path = ROOT / "apps/presentations/index.html"
+        component_path = ROOT / "apps/presentations/ui/inspector-controller.js"
+        soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
+        html_ids = {node["id"] for node in soup.find_all(attrs={"id": True})}
+        component = component_path.read_text(encoding="utf-8")
+        references = set(re.findall(r"byId\('([^']+)'\)", component))
+        unresolved = sorted(references - html_ids)
+        self.assertEqual(unresolved, [], f"presentations inspector: unresolved ids {unresolved}")
 
 
 if __name__ == "__main__":

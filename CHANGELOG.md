@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2.3 — Presentations Inspector Decomposition (2026-08-07)
+
+- Extracted the Presentations Format/Inspector behavior into `apps/presentations/ui/inspector-controller.js`.
+- Preserved the existing closed-by-default desktop/compact panel contract, accessibility state, Escape handling and format-property behavior.
+- Updated manual browser harnesses and offline precaching so the new component is exercised in the same regression paths as `app.js`.
+- Lowered the Presentations `app.js` architecture ratchet after the extraction and added permanent modularization tests.
+- No editing command, visual redesign or file-format behavior is intentionally changed.
+
 ## 0.20.2.2 — Refactoring Guardrails (2026-08-07)
 
 - Added repository-level AI/human guardrails and a behavior-neutral refactoring contract.

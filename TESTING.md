@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.2
+# Testing guide — InkDesk v0.20.2.3
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,21 +35,14 @@ replacement.
 
 ## Current evidence
 
-- 210 Python unit/package tests pass in the correction-5 reconstruction/audit tree (including new DOM-control contract tests).
-- First-party JavaScript syntax passes.
-- Eleven browser-regression entry points are configured. Ten previously reached the hosted runner; the new Presentations control regression is the correction-2 behavioral gate.
-- The dedicated stable-origin recovery case is configured but is recorded as
-  **not performed** when the construction environment blocks local HTTP origins.
-- Firefox, native WebKit/Safari, iPadOS, Edge and installed-PWA behavior remain
-  explicit matrix/manual checks; unavailable engines are never inferred from
-  Chromium results.
-- The launch/offline HTTP fixtures use daemon request threads so completed tests
-  no longer wait on lingering server connections.
-- Full incremental-package validation invokes the complete release gate once; it
-  does not repeat repository, audit or unit-test stages before that gate.
-
-Record unavailable browsers or devices as **not performed**. Never infer
-compatibility from another engine.
+- Architecture guardrails pass with 45 runtime JS/CSS files and the Presentations `app.js` ratchet reduced from 886/97 to 883/93 physical/long lines.
+- The Python suite contains 234 tests. In the local reconstruction, 233 pass; the checksum-manifest test is the only local hold because the three pinned PDF.js publication files are not available in this environment. The hosted repository contains those files and remains the authoritative checksum gate.
+- `revalidate_v0201_consistency.py` passes with the extracted Inspector component loaded before `app.js`.
+- `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
+- Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
+- Launch/offline validation passes static-asset and restricted-API/touch-emulation checks; local HTTP/file navigation can be reported as not performed when blocked by the execution environment.
+- The dedicated `revalidate_presentations_controls.py` remains the hosted behavior gate for Format-panel open/hide/reopen, formatting changes, compact drawer state and Escape handling.
+- Firefox, native WebKit/Safari, iPadOS, Edge and installed-PWA behavior remain explicit matrix/manual checks; unavailable engines are never inferred from Chromium results.
 
 ## Python validation dependencies
 
@@ -99,3 +92,11 @@ Run `python3 scripts/check_architecture_guardrails.py`. The release runner now
 executes this gate after the source audit and before unit/package tests. The
 gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
+
+## v0.20.2.3 Presentations decomposition
+
+- `tests/test_presentations_modularization.py` verifies that the Inspector is a real focused component, is loaded before `app.js`, stays within new-source limits, is precached offline and lowers the Presentations architecture ratchet.
+- `tests/test_presentations_responsive_controls.py` now reads Inspector state from the extracted component while preserving the existing behavioral contract.
+- `tests/test_interactive_dom_contracts.py` verifies that Inspector DOM references resolve against the Presentations workspace.
+- Browser harnesses that strip HTML script tags explicitly load `ui/inspector-controller.js` before `app.js`.
+- `tests/browser/revalidate_presentations_controls.py` remains the user-visible behavior gate; a modularization patch is not accepted if its open/hide/reopen, formatting, compact drawer or Escape checks change.

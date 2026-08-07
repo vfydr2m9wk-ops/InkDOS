@@ -4,7 +4,13 @@ const EMU=914400;
 const NS={p:'http://schemas.openxmlformats.org/presentationml/2006/main',a:'http://schemas.openxmlformats.org/drawingml/2006/main',r:'http://schemas.openxmlformats.org/officeDocument/2006/relationships'};
 const $=id=>document.getElementById(id);
 const xmlParser=new DOMParser();
-let pres=null,currentSlide=0,selectedId=null,zoom=0.9,dirty=false,drag=null,idSeq=1,editingId=null,textEditBefore=null,templateMode='presentation',undoStack=[],redoStack=[],historyLock=false,historyBeforeDrag=null,activeTheme=null,presentationTextDefaults=null,notesTimer=null,renderZoomOverride=null,presentTouchStart=null,presentHelpTimer=null,sourcePptxBuffer=null,recovery=null,restoringRecovery=false;
+let pres=null,currentSlide=0,selectedId=null,zoom=0.9,dirty=false,drag=null,idSeq=1;
+let editingId=null,textEditBefore=null,templateMode='presentation';
+let undoStack=[],redoStack=[],historyLock=false,historyBeforeDrag=null;
+let activeTheme=null,presentationTextDefaults=null,notesTimer=null;
+let renderZoomOverride=null,presentTouchStart=null,presentHelpTimer=null;
+let sourcePptxBuffer=null,recovery=null,restoringRecovery=false;
+let inspectorController=null;
 const ui={start:$('startScreen'),app:$('app'),file:$('fileInput'),img:$('imageInput'),title:$('docTitle'),list:$('slideList'),canvas:$('slideCanvas'),stageWrap:$('stageWrap'),save:$('saveBtn'),state:$('stateBadge'),status:$('slideStatus'),zoomText:$('zoomText'),present:$('presentOverlay'),presentSlide:$('presentSlide'),exitPresent:$('exitPresentBtn'),fullscreenPresent:$('fullscreenPresentBtn'),fullscreenPresentLabel:$('fullscreenPresentLabel'),presentCounter:$('presentCounter'),presentHelp:$('presentHelp'),template:$('templateDialog'),templateGrid:$('templateGrid'),notes:$('presenterNotes'),notesPanel:$('notesPanel'),notesCount:$('notesCount')};
 function uid(prefix='o'){return prefix+(idSeq++).toString(36)+Date.now().toString(36).slice(-4)}
 function cloneState(){return pres?JSON.parse(JSON.stringify({pres,currentSlide,selectedId})):null}function restoreState(st){if(!st)return;historyLock=true;pres=st.pres;activeTheme=pres.theme||null;currentSlide=Math.min(st.currentSlide,pres.slides.length-1);selectedId=st.selectedId;editingId=null;historyLock=false;markDirty();renderAll();updateHistoryButtons()}function pushHistory(before){if(historyLock||!before)return;undoStack.push(before);if(undoStack.length>80)undoStack.shift();redoStack=[];updateHistoryButtons()}function action(fn){const before=cloneState();fn();pushHistory(before)}function undo(){if(!undoStack.length)return;redoStack.push(cloneState());restoreState(undoStack.pop())}function redo(){if(!redoStack.length)return;undoStack.push(cloneState());restoreState(redoStack.pop())}function updateHistoryButtons(){const u=$('undoBtn'),r=$('redoBtn');if(u)u.disabled=!undoStack.length;if(r)r.disabled=!redoStack.length}function markDirty(){dirty=true;ui.state.textContent='Unsaved';if(recovery)recovery.markDirty();setPresentationTitleValue()}
@@ -636,9 +642,9 @@ window.addEventListener('pointermove',ev=>{if(!drag)return;const o=slide().objec
 window.addEventListener('pointerup',()=>{drag=null;clearGuides()});
 function clearGuides(){document.querySelectorAll('.guide').forEach(x=>x.remove())}
 function showGuides(o){clearGuides();const cx=o.x+o.w/2,cy=o.y+o.h/2;if(Math.abs(cx-pres.width/2)<130000){const g=document.createElement('div');g.className='guide v';g.style.left=pxX(pres.width/2)+'px';ui.canvas.appendChild(g)}if(Math.abs(cy-pres.height/2)<130000){const g=document.createElement('div');g.className='guide h';g.style.top=pxY(pres.height/2)+'px';ui.canvas.appendChild(g)}}
-function updateInspector(){const o=obj();['propX','propY','propW','propH','propOpacity','propFill','propRotation'].forEach(id=>$(id).disabled=!o);$('imageTools').classList.toggle('hidden',!o||o.type!=='image');if(!o)return;$('propX').value=Math.round(o.x/EMU*100)/100;$('propY').value=Math.round(o.y/EMU*100)/100;$('propW').value=Math.round(o.w/EMU*100)/100;$('propH').value=Math.round(o.h/EMU*100)/100;$('propOpacity').value=o.opacity==null?1:o.opacity;$('propFill').value=(o.fill&&o.fill!=='transparent')?o.fill:'#ffffff';$('propRotation').value=Math.round(o.rot||0);if(o.type==='image'){$('cropZoom').value=o.cropZoom||1;$('cropX').value=o.cropX==null?50:o.cropX;$('cropY').value=o.cropY==null?50:o.cropY;}}
-['propX','propY','propW','propH'].forEach(id=>$(id).onchange=()=>{const o=obj();if(!o)return;const v=+$(''+id).value*EMU;if(id==='propX')o.x=v;if(id==='propY')o.y=v;if(id==='propW')o.w=v;if(id==='propH')o.h=v;markDirty();renderSlide();});$('propOpacity').oninput=()=>{const o=obj();if(!o)return;o.opacity=+$('propOpacity').value;markDirty();renderSlide()};$('propFill').oninput=()=>{const o=obj();if(!o)return;o.fill=$('propFill').value;markDirty();renderSlide()};let rotTimer=null;$('propRotation').addEventListener('pointerdown',e=>e.stopPropagation());$('propRotation').addEventListener('keydown',e=>e.stopPropagation());$('propRotation').oninput=()=>{const o=obj();if(!o)return;const before=cloneState();o.rot=Number($('propRotation').value)||0;markDirty();clearTimeout(rotTimer);rotTimer=setTimeout(()=>pushHistory(before),350);const el=ui.canvas.querySelector('[data-id="'+o.id+'"]');if(el)el.style.transform='rotate('+o.rot+'deg)'};$('propRotation').onchange=()=>{const o=obj();if(!o)return;o.rot=Number($('propRotation').value)||0;markDirty();renderSlide()};['cropZoom','cropX','cropY'].forEach(id=>$(id).oninput=()=>{const o=obj();if(!o||o.type!=='image')return;o[id]=$(''+id).valueAsNumber;markDirty();renderSlide()});$('resetCropBtn').onclick=()=>{const o=obj();if(!o||o.type!=='image')return;o.cropZoom=1;o.cropX=50;o.cropY=50;markDirty();renderSlide()};
-const COLORS=['#d64a24','#f07a4c','#241f1c','#ffffff','#111827','#2563eb','#16a34a','#7c3aed','#db2777','#f59e0b'];COLORS.forEach(c=>{const b=document.createElement('button');b.className='swatch';b.style.background=c;b.title=c;b.onclick=()=>{const o=obj();if(!o)return;o.fill=c;markDirty();renderSlide()};$('palette').appendChild(b)});
+function updateInspector(){
+  if(inspectorController)inspectorController.update();
+}
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');['Home','Insert','Arrange','View','Present'].forEach(n=>$('tools'+n).classList.add('hidden'));$('tools'+t.dataset.tab[0].toUpperCase()+t.dataset.tab.slice(1)).classList.remove('hidden')});
 $('addSlideBtn').onclick=()=>showTemplateDialog('slide');
 $('dupSlideBtn').onclick=()=>{const c=JSON.parse(JSON.stringify(slide()));c.id=uid('s');c.objects.forEach(o=>o.id=uid());pres.slides.splice(currentSlide+1,0,c);currentSlide++;markDirty();renderAll()};
@@ -668,33 +674,24 @@ $('togglePresentationsBtn').onclick=()=>{
 };
 $('toggleNotesBtn').onclick=()=>{ui.app.classList.toggle('hide-notes');$('toggleNotesBtn').textContent=ui.app.classList.contains('hide-notes')?'Show presenter notes':'Hide presenter notes';relayoutWorkspace();};
 const presentationWorkspace=document.querySelector('.workspace');
-const compactInspectorQuery=window.matchMedia?window.matchMedia('(max-width:1000px)'):null;
-let inspectorOpen=false;
-function compactInspectorMode(){return compactInspectorQuery?compactInspectorQuery.matches:window.innerWidth<=1000}
-function applyInspectorState(){
-  const button=$('toggleInspectorBtn');
-  if(!button||!presentationWorkspace)return;
-  // One state, one pair of derived classes at every viewport width. Keeping
-  // desktop and compact mode on different class conventions caused the panel,
-  // the button label and aria-expanded to disagree after rotations/resizes.
-  presentationWorkspace.classList.toggle('inspector-open',inspectorOpen);
-  presentationWorkspace.classList.toggle('hide-inspector',!inspectorOpen);
-  presentationWorkspace.dataset.inspectorOpen=String(inspectorOpen);
-  button.textContent=inspectorOpen?'Hide format panel':'Show format panel';
-  button.setAttribute('aria-expanded',String(inspectorOpen));
-  button.setAttribute('aria-controls','inspector');
-}
 function setInspectorOpen(open,options={}){
-  inspectorOpen=Boolean(open);
-  applyInspectorState();
-  if(options.relayout!==false)relayoutWorkspace();
+  if(inspectorController)inspectorController.setOpen(open,options);
 }
-$('toggleInspectorBtn').onclick=()=>setInspectorOpen(!inspectorOpen);
-// Viewport changes are purely CSS layout changes. Because open/closed state is
-// represented by the same classes at every width, no resize listener is needed
-// and there is no asynchronous breakpoint race to reconcile.
-window.addEventListener('keydown',event=>{if(event.key==='Escape'&&compactInspectorMode()&&inspectorOpen)setInspectorOpen(false);});
-applyInspectorState();
+if(!window.InkDeskPresentationsInspector){
+  throw new Error('Presentations inspector controller is unavailable.');
+}
+inspectorController=InkDeskPresentationsInspector.create({
+  workspace:presentationWorkspace,
+  button:$('toggleInspectorBtn'),
+  canvas:ui.canvas,
+  getSelectedObject:obj,
+  emu:EMU,
+  markDirty,
+  renderSlide,
+  relayout:relayoutWorkspace,
+  cloneState,
+  pushHistory,
+});
 function fullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement||null;}
 function updateFullscreenControl(){
   const active=fullscreenElement()===ui.present;
@@ -879,7 +876,7 @@ function shapeObj(o){const id=Math.floor(Math.random()*100000)+10;const fill=o.f
   return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="Shape '+id+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom>'+fill+line+'</p:spPr>'+tx+'</p:sp>';}
 function picObj(o,rid,n){return '<p:pic><p:nvPicPr><p:cNvPr id="'+(500+n)+'" name="Picture '+n+'"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="'+rid+'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom></p:spPr></p:pic>'}
 function downloadBlob(blob,name){if(window.InkDeskRuntime)return InkDeskRuntime.requestDownload(blob,name);if(!(blob instanceof Blob)||!blob.size)throw new Error('The generated presentation copy is empty.');const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}}
-recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'presentations',appVersion:'0.20.2.2',defaultFileName:'Untitled presentation.pptx',serialize:capturePresentationRecovery,restore:restorePresentationRecovery,status:message=>{if(message&&/failed/i.test(message))setReady(message)}}):null;
+recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'presentations',appVersion:'0.20.2.3',defaultFileName:'Untitled presentation.pptx',serialize:capturePresentationRecovery,restore:restorePresentationRecovery,status:message=>{if(message&&/failed/i.test(message))setReady(message)}}):null;
 if(recovery){window.__InkDeskPresentationsRecovery={manager:recovery,capture:capturePresentationRecovery,restore:restorePresentationRecovery};recovery.promptLatest()}
 ui.save.onclick=savePptx;
 // Advanced editor keyboard shortcuts are intentionally disabled in this beta to avoid iPadOS/WebKit conflicts.
