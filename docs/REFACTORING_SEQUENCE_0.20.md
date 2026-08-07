@@ -10,6 +10,7 @@ pass the full release gate before the next ownership boundary is moved.
 | 0.20.2.4 | Presentations: thumbnails and presenter-notes extraction | None intended |
 | 0.20.2.5 | Presentations: state/history/selection extraction | None intended |
 | 0.20.2.6 | Presentations: slideshow/presentation-mode extraction | None intended |
+| 0.20.2.7 | Update-flow hardening: real dry-run, incremental checksums, isolated slideshow regression | None intended |
 | next 0.20.2.x | Presentations: I/O/save/recovery extraction in bounded steps | None intended |
 | later 0.20.2.x | PDF decomposition | None intended |
 | later 0.20.2.x | Shared UI decomposition | None intended |
@@ -76,6 +77,8 @@ from-start/from-current actions, keyboard and pointer navigation, presentation
 counter/help state, slide fitting, transition animation and Fullscreen API
 fallback handling. Transition editing and the presentation document remain in
 `app.js`; the slideshow controller receives them through explicit dependencies.
+
+v0.20.2.7 hardens the update path before the next runtime extraction. Dry-run now validates a disposable candidate tree, incremental checksum tooling preserves authoritative hosted-only hashes, and slideshow browser behavior runs in an isolated process/context. No editor runtime responsibility moves in this step.
 
 ## Later target: PDF
 

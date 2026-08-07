@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.6",
-  "releaseName": "Presentations Slideshow Decomposition",
+  "version": "0.20.2.7",
+  "releaseName": "Update Flow Hardening",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {

@@ -15,6 +15,7 @@ files are backed up and restored when validation fails.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -291,6 +292,71 @@ def build_state(manifest: dict, prior_state: dict | None) -> dict:
     }
 
 
+def sha256_file(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            hasher.update(block)
+    return hasher.hexdigest()
+
+
+def copy_validation_candidate(repo: Path, destination: Path) -> None:
+    """Copy the repository into a disposable validation tree.
+
+    Git internals and generated Python/browser-test artifacts are intentionally
+    excluded. The candidate otherwise mirrors the working tree so validation
+    sees the same files a real transaction would see.
+    """
+
+    repo_resolved = repo.resolve()
+
+    def ignore(directory: str, names: list[str]) -> set[str]:
+        current = Path(directory).resolve()
+        try:
+            relative = current.relative_to(repo_resolved)
+        except ValueError:
+            relative = Path()
+        ignored: set[str] = set()
+        for name in names:
+            if name in {".git", "__pycache__", ".mobile-import", "_site", "test-results"}:
+                ignored.add(name)
+            elif name.endswith((".pyc", ".pyo")):
+                ignored.add(name)
+        if relative.parts[:2] == ("tests", "browser") and "results" in names:
+            ignored.add("results")
+        return ignored
+
+    shutil.copytree(repo, destination, ignore=ignore)
+
+
+def apply_payload_to_tree(
+    repo: Path,
+    payload: list[tuple[Path, PurePosixPath]],
+    deletions: list[PurePosixPath],
+    state: dict,
+) -> None:
+    """Apply an already-inspected payload to a repository-shaped tree."""
+
+    for rel in deletions:
+        target = ensure_within_repo(repo, rel)
+        if target.is_dir():
+            shutil.rmtree(target)
+        elif target.exists():
+            target.unlink()
+
+    for source, rel in payload:
+        target = ensure_within_repo(repo, rel)
+        if target.exists() and target.is_dir():
+            shutil.rmtree(target)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+
+    (repo / STATE_FILE).write_text(
+        json.dumps(state, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
 def run_validation(repo: Path, profile: str) -> None:
     for command in VALIDATION_PROFILES[profile]:
         printable = " ".join(command)
@@ -333,6 +399,17 @@ def apply_transaction(
         "workflowObservation": manifest.get("workflowObservation", ""),
     }
     if dry_run:
+        # A dry run is a real validation run against a disposable candidate
+        # tree. The source repository is never modified. This keeps dry-run
+        # semantics aligned with the transaction that would actually be
+        # committed instead of merely printing a copy/delete plan.
+        with tempfile.TemporaryDirectory(prefix="inkdesk-update-dry-run-") as candidate_name:
+            candidate = Path(candidate_name) / "repository"
+            copy_validation_candidate(repo, candidate)
+            apply_payload_to_tree(candidate, payload, deletions, state)
+            run_validation(candidate, manifest["validationProfile"])
+        plan["status"] = "validated"
+        plan["validatedCandidate"] = True
         print(json.dumps(plan, indent=2, ensure_ascii=False))
         return plan
 
@@ -354,25 +431,7 @@ def apply_transaction(
                 else:
                     touched.append((target, None))
 
-            # Deletions are intentionally processed before copies.
-            for rel in deletions:
-                target = ensure_within_repo(repo, rel)
-                if target.is_dir():
-                    shutil.rmtree(target)
-                elif target.exists():
-                    target.unlink()
-
-            for source, rel in payload:
-                target = ensure_within_repo(repo, rel)
-                if target.exists() and target.is_dir():
-                    shutil.rmtree(target)
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(source, target)
-
-            (repo / STATE_FILE).write_text(
-                json.dumps(state, indent=2, ensure_ascii=False) + "\n",
-                encoding="utf-8",
-            )
+            apply_payload_to_tree(repo, payload, deletions, state)
             run_validation(repo, manifest["validationProfile"])
         except Exception:
             print("Update failed; restoring repository files.", file=sys.stderr)
@@ -402,7 +461,14 @@ def package_manifest_summary(package: Path) -> dict:
         return {}
 
 
-def write_failure_report(path: Path, package: Path, repo: Path, error: Exception) -> None:
+def write_failure_report(
+    path: Path,
+    package: Path,
+    repo: Path,
+    error: Exception,
+    *,
+    dry_run: bool = False,
+) -> None:
     manifest = package_manifest_summary(package)
     prior_state = {}
     try:
@@ -413,13 +479,13 @@ def write_failure_report(path: Path, package: Path, repo: Path, error: Exception
         prior_state = {}
     report = {
         "status": "failed",
-        "rollback": True,
+        "rollback": not dry_run,
         "error": str(error),
         "packageLabel": manifest.get("packageLabel", package.name),
         "targetRelease": manifest.get("targetRelease", ""),
         "sequence": manifest.get("sequence"),
         "validationProfile": manifest.get("validationProfile", ""),
-        "dryRun": False,
+        "dryRun": dry_run,
         "copied": [],
         "deleted": [],
         "workflowObservation": manifest.get("workflowObservation", ""),
@@ -456,14 +522,20 @@ def apply_package(
         payload = iter_payload_files(stage / "files")
         deletions = parse_delete_list(stage / "DELETE.txt")
         validate_workflow_changes(payload, deletions)
-        return apply_transaction(repo, payload, deletions, manifest, dry_run=dry_run)
+        plan = apply_transaction(repo, payload, deletions, manifest, dry_run=dry_run)
+        plan["packageSha256"] = sha256_file(package)
+        return plan
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package", required=True, type=Path, help="Update ZIP package")
     parser.add_argument("--repo", type=Path, default=Path.cwd(), help="Repository root")
-    parser.add_argument("--dry-run", action="store_true", help="Validate and print the plan only")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Apply to a disposable candidate tree, run validation, and leave the repository unchanged",
+    )
     parser.add_argument(
         "--validation-profile",
         choices=sorted(VALIDATION_PROFILES),
@@ -485,7 +557,13 @@ def main(argv: list[str] | None = None) -> int:
     except (UpdateError, subprocess.CalledProcessError, OSError) as exc:
         if args.report:
             try:
-                write_failure_report(args.report, args.package.resolve(), args.repo.resolve(), exc)
+                write_failure_report(
+                    args.report,
+                    args.package.resolve(),
+                    args.repo.resolve(),
+                    exc,
+                    dry_run=args.dry_run,
+                )
             except Exception as report_error:
                 print(f"WARNING: could not write failure report: {report_error}", file=sys.stderr)
         print(f"ERROR: {exc}", file=sys.stderr)
@@ -493,7 +571,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"OK: applied InkDesk update package {plan['packageLabel']}.")
+    verb = "validated" if plan.get("dryRun") else "applied"
+    print(f"OK: {verb} InkDesk update package {plan['packageLabel']}.")
     return 0
 
 

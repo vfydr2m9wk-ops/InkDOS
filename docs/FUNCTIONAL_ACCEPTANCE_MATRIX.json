@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.6",
+  "release": "0.20.2.7",
   "policy": {
     "rule": "A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.",
     "newControlGate": "Every new visible control must appear in this inventory before release.",
@@ -1021,7 +1021,7 @@
       "element": "button",
       "coverage": "automated",
       "evidence": [
-        "tests/browser/revalidate_presentations_controls.py"
+        "tests/browser/revalidate_presentations_slideshow.py"
       ]
     },
     {
@@ -1033,7 +1033,7 @@
       "element": "button",
       "coverage": "automated",
       "evidence": [
-        "tests/browser/revalidate_presentations_controls.py"
+        "tests/browser/revalidate_presentations_slideshow.py"
       ]
     },
     {
@@ -1361,7 +1361,7 @@
       "element": "button",
       "coverage": "automated",
       "evidence": [
-        "tests/browser/revalidate_presentations_controls.py"
+        "tests/browser/revalidate_presentations_slideshow.py"
       ]
     },
     {
@@ -1649,7 +1649,7 @@
       "element": "button",
       "coverage": "automated",
       "evidence": [
-        "tests/browser/revalidate_presentations_controls.py"
+        "tests/browser/revalidate_presentations_slideshow.py"
       ]
     },
     {

@@ -76,7 +76,7 @@ class UpdateWorkflowObservabilityTests(unittest.TestCase):
         for marker in (
             "def write_failure_report",
             '"status": "failed"',
-            '"rollback": True',
+            '"rollback": not dry_run',
             '"repositorySequenceAfterRollback"',
         ):
             self.assertIn(marker, script)

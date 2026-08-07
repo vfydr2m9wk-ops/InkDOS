@@ -79,6 +79,21 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
         runner = (ROOT / "scripts/run_browser_regressions.py").read_text(encoding="utf-8")
         self.assertIn('"revalidate_presentations_controls.py"', runner)
 
+    def test_slideshow_regression_is_isolated_in_its_own_browser_process(self):
+        runner = (ROOT / "scripts/run_browser_regressions.py").read_text(encoding="utf-8")
+        controls = (
+            ROOT / "tests/browser/revalidate_presentations_controls.py"
+        ).read_text(encoding="utf-8")
+        slideshow = (
+            ROOT / "tests/browser/revalidate_presentations_slideshow.py"
+        ).read_text(encoding="utf-8")
+        self.assertIn('"revalidate_presentations_slideshow.py"', runner)
+        self.assertNotIn('page.click("#presentFromCurrentBtn")', controls)
+        self.assertIn('page.click("#presentFromCurrentBtn")', slideshow)
+        self.assertIn('page.click("#presentFromStartTop")', slideshow)
+        self.assertIn('page.click("#presentViewBtn")', slideshow)
+        self.assertIn("page.click('[data-tab=\"home\"]')", slideshow)
+
     def test_optional_presentation_panels_start_closed_and_reset_on_open(self):
         self.assertIn('class="app hidden hide-notes"', self.html)
         self.assertIn('class="workspace hide-inspector"', self.html)

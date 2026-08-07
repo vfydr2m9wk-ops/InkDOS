@@ -1,4 +1,4 @@
-# Functional acceptance checklist — InkDesk 0.20.2.6
+# Functional acceptance checklist — InkDesk 0.20.2.7
 
 A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.
 
@@ -108,8 +108,8 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ✅ `#undoBtn` — Undo — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#redoBtn` — Redo — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#docTitle` — Presentation name — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
-- ✅ `#presentFromStartTop` — Present from first slide — **automated** — tests/browser/revalidate_presentations_controls.py
-- ✅ `#presentFromCurrentTop` — Present from current slide — **automated** — tests/browser/revalidate_presentations_controls.py
+- ✅ `#presentFromStartTop` — Present from first slide — **automated** — tests/browser/revalidate_presentations_slideshow.py
+- ✅ `#presentFromCurrentTop` — Present from current slide — **automated** — tests/browser/revalidate_presentations_slideshow.py
 - ✅ `#saveBtn` — Save PPTX copy — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `[data-tab="home"]` — Home — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `[data-tab="insert"]` — Insert — **automated** — tests/browser/revalidate_presentations_controls.py
@@ -136,7 +136,7 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ✅ `#togglePresentationsBtn` — Hide thumbnails — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#toggleInspectorBtn` — Show format panel — **automated** — tests/browser/revalidate_presentations_controls.py; tests/test_presentations_responsive_controls.py
 - ✅ `#toggleNotesBtn` — Show presenter notes — **automated** — tests/browser/revalidate_presentations_controls.py; tests/test_presentations_responsive_controls.py
-- ✅ `#presentViewBtn` — Present current — **automated** — tests/browser/revalidate_presentations_controls.py
+- ✅ `#presentViewBtn` — Present current — **automated** — tests/browser/revalidate_presentations_slideshow.py
 - ✅ `#zoomOutBtn` — − — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#zoomRange` — + Fit — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#zoomInBtn` — + — **automated** — tests/browser/revalidate_presentations_controls.py
@@ -160,7 +160,7 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ✅ `#bottomZoomRange` — Zoom level — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#bottomZoomInBtn` — Zoom in — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#bottomFitBtn` — Fit slide — **automated** — tests/browser/revalidate_presentations_controls.py
-- ✅ `#exitPresentBtn` — Exit presentation — **automated** — tests/browser/revalidate_presentations_controls.py
+- ✅ `#exitPresentBtn` — Exit presentation — **automated** — tests/browser/revalidate_presentations_slideshow.py
 - ✅ `#closeTemplateBtn` — Close — **automated** — tests/browser/revalidate_presentations_controls.py
 ### Pdf
 

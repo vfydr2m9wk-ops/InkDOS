@@ -186,7 +186,7 @@ def main():
                 assert_true(background in {"rgb(37, 99, 235)", "rgba(37, 99, 235, 1)"}, "Format panel fill did not update the selected object")
                 report["checks"].append("format panel modifies selected object")
 
-                # Selection and history are separate state components in v0.20.2.6.
+                # Selection and history are separate state components in v0.20.2.7.
                 # Verify that clearing/reselecting still drives the visible handles
                 # and that Undo/Redo restores the same selected object state.
                 page.locator("#slideCanvas").evaluate("node => node.click()")
@@ -224,53 +224,9 @@ def main():
                 assert_true("hide-slides" not in (page.locator(".workspace").get_attribute("class") or ""), "Show thumbnails did not restore workspace state")
                 report["checks"].append("thumbnail panel hide/show")
 
-                # Slideshow/presentation mode is a dedicated component in v0.20.2.6.
-                # Exercise entry points, counter/navigation keys and both exit paths
-                # without depending on the host Fullscreen API in headless Chromium.
-                # The prior checks intentionally leave the View tab active. New slide
-                # belongs to Home, so restore that tab before exercising the control.
-                page.click('[data-tab="home"]')
-                page.click("#addSlideBtn")
-                page.wait_for_selector("#templateDialog:not(.hidden)", state="visible")
-                page.locator("#templateGrid .template-option").last.click()
-                page.wait_for_function("document.querySelectorAll('#slideList .thumb').length === 2")
-                assert_true("Slide 2 of 2" in page.locator("#slideStatus").inner_text(), "Second slide was not created before slideshow validation")
-                page.locator("#presentOverlay").evaluate(
-                    """node => {
-                        try { Object.defineProperty(node, 'requestFullscreen', {value: undefined, configurable: true}); } catch (error) { void error; }
-                        try { Object.defineProperty(node, 'webkitRequestFullscreen', {value: undefined, configurable: true}); } catch (error) { void error; }
-                    }"""
-                )
-                page.click('[data-tab="present"]')
-                page.click("#presentFromCurrentBtn")
-                page.wait_for_selector("#presentOverlay:not(.hidden)", state="visible")
-                assert_true(page.locator("#presentCounter").inner_text().strip() == "2 / 2", "Present-current did not start from the selected second slide")
-
-                def dispatch_present_key(key):
-                    page.locator("#presentOverlay").evaluate(
-                        "(node, key) => node.dispatchEvent(new KeyboardEvent('keydown', {key, bubbles:true, cancelable:true}))",
-                        key,
-                    )
-                    page.wait_for_timeout(80)
-
-                dispatch_present_key("Home")
-                assert_true(page.locator("#presentCounter").inner_text().strip() == "1 / 2", "Home did not move slideshow to the first slide")
-                dispatch_present_key("End")
-                assert_true(page.locator("#presentCounter").inner_text().strip() == "2 / 2", "End did not move slideshow to the last slide")
-                dispatch_present_key("ArrowLeft")
-                assert_true(page.locator("#presentCounter").inner_text().strip() == "1 / 2", "ArrowLeft did not move slideshow backward")
-                dispatch_present_key("ArrowRight")
-                assert_true(page.locator("#presentCounter").inner_text().strip() == "2 / 2", "ArrowRight did not move slideshow forward")
-                dispatch_present_key("Escape")
-                page.wait_for_selector("#presentOverlay.hidden", state="attached")
-                assert_true("presentation-active" not in (page.locator("body").get_attribute("class") or ""), "Escape did not clear presentation-active body state")
-
-                page.click("#presentFromStartTop")
-                page.wait_for_selector("#presentOverlay:not(.hidden)", state="visible")
-                assert_true(page.locator("#presentCounter").inner_text().strip() == "1 / 2", "Present-from-start did not reset to slide one")
-                page.click("#exitPresentBtn")
-                page.wait_for_selector("#presentOverlay.hidden", state="attached")
-                report["checks"].append("slideshow current/start entry, keyboard navigation and exit")
+                # Slideshow is intentionally exercised in a fresh browser process by
+                # revalidate_presentations_slideshow.py. Keep this control suite focused
+                # on inspector, notes, thumbnails, selection/history and responsive state.
 
                 # Desktop -> compact must preserve one logical open/closed state.
                 # The layout changes from sidebar to drawer, but resizing must not

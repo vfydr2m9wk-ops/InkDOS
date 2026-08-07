@@ -4,23 +4,22 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.6
+## InkDesk v0.20.2.7
 
-Version 0.20.2.6 continues the behavior-neutral **Presentations decomposition**.
-The slideshow/presentation-mode lifecycle now lives in
-`apps/presentations/presentation/slideshow-controller.js`: from-start/current
-entry, keyboard and pointer navigation, counter/help state, slide fitting,
-transition animation and Fullscreen API fallback behavior are no longer owned by
-the monolithic entry point.
+Version 0.20.2.7 hardens the **incremental update and validation flow** before
+the next Presentations decomposition. Runtime editor behavior is intentionally
+unchanged.
 
-The previously extracted selection/history, Inspector, thumbnail and presenter-
-notes controllers remain separate. `app.js` composes these focused components
-through explicit dependencies and continues to own the presentation document
-and format I/O orchestration.
+Dry-run updates now apply the candidate package to a disposable repository copy
+and execute the declared validation profile there, instead of only printing a
+copy/delete plan. The source checkout remains untouched whether validation
+passes or fails.
 
-No Presentations command, visual layout, default panel visibility, file format,
-save behavior or recovery format is intentionally changed. The runtime remains
-native HTML/CSS/JavaScript, local-first and build-free.
+Patch authors also get an incremental checksum helper that changes only
+explicitly declared paths while preserving authoritative hashes for hosted-only
+files. The Presentations slideshow browser regression now runs as a separate
+script/process, so it establishes its own tab/document state instead of inheriting
+state from the broader controls test.
 
 ## Refactoring policy
 
@@ -58,7 +57,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.6 remains a beta. Real-device validation is still required for critical
+v0.20.2.7 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

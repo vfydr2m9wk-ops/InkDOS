@@ -146,17 +146,66 @@ class UpdatePackageTests(unittest.TestCase):
             self.assertFalse((repo / "new.txt").exists())
             self.assertFalse((repo / "DEVELOPMENT_STATE.json").exists())
 
-    def test_dry_run_does_not_change_repository(self):
+    def test_dry_run_validates_disposable_candidate_without_changing_repository(self):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             repo = self.make_repo(root)
-            package = self.make_package(root, files={"keep.txt": "changed\n"})
+            package = self.make_package(
+                root,
+                validation="standard",
+                files={"keep.txt": "changed\n", "new.txt": "candidate only\n"},
+            )
+            observed = {}
+
+            def inspect_candidate(candidate, profile):
+                observed["candidate"] = candidate
+                observed["profile"] = profile
+                observed["keep"] = (candidate / "keep.txt").read_text()
+                observed["new"] = (candidate / "new.txt").read_text()
+                observed["state"] = json.loads(
+                    (candidate / "DEVELOPMENT_STATE.json").read_text()
+                )
+                self.assertNotEqual(candidate.resolve(), repo.resolve())
+                self.assertEqual((repo / "keep.txt").read_text(), "original\n")
+                self.assertFalse((repo / "new.txt").exists())
+
             captured = io.StringIO()
-            with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
-                report = updater.apply_package(package, repo, dry_run=True)
+            with mock.patch.object(updater, "run_validation", side_effect=inspect_candidate):
+                with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
+                    report = updater.apply_package(package, repo, dry_run=True)
+
+            self.assertEqual(observed["profile"], "standard")
+            self.assertEqual(observed["keep"], "changed\n")
+            self.assertEqual(observed["new"], "candidate only\n")
+            self.assertEqual(observed["state"]["appliedSequence"], 1)
+            self.assertFalse(observed["candidate"].exists())
             self.assertEqual((repo / "keep.txt").read_text(), "original\n")
+            self.assertFalse((repo / "new.txt").exists())
             self.assertFalse((repo / "DEVELOPMENT_STATE.json").exists())
             self.assertTrue(report["dryRun"])
+            self.assertTrue(report["validatedCandidate"])
+            self.assertEqual(report["status"], "validated")
+            self.assertEqual(report["packageSha256"], updater.sha256_file(package))
+
+    def test_dry_run_validation_failure_leaves_source_repository_untouched(self):
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            repo = self.make_repo(root)
+            package = self.make_package(
+                root,
+                validation="standard",
+                files={"keep.txt": "candidate failure\n", "new.txt": "temporary\n"},
+            )
+            with mock.patch.object(
+                updater,
+                "run_validation",
+                side_effect=RuntimeError("synthetic dry-run validation failure"),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "synthetic dry-run"):
+                    updater.apply_package(package, repo, dry_run=True)
+            self.assertEqual((repo / "keep.txt").read_text(), "original\n")
+            self.assertFalse((repo / "new.txt").exists())
+            self.assertFalse((repo / "DEVELOPMENT_STATE.json").exists())
 
     def test_delete_list_removes_only_declared_path(self):
         with tempfile.TemporaryDirectory() as name:

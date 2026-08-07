@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.20.2.7 — Update Flow Hardening (2026-08-07)
+
+- Changed updater dry-run semantics from plan-only to full validation against a disposable candidate repository while leaving the source checkout untouched.
+- Added package SHA-256 to updater reports and documented artifact-identity checks for correction attempts.
+- Added incremental checksum tooling that preserves undeclared hosted-tree hashes instead of regenerating the entire manifest from an incomplete local reconstruction.
+- Isolated Presentations slideshow behavior in its own browser regression process/context with explicit tab state.
+- Added permanent regressions for dry-run safety, incremental checksum preservation and slideshow-harness isolation.
+- No editor runtime, visual, file-format, save or recovery behavior change is intended.
+
 ## 0.20.2.6 — Presentations Slideshow Decomposition (2026-08-07)
 
 - Extracted slideshow/presentation-mode lifecycle into `apps/presentations/presentation/slideshow-controller.js`.
