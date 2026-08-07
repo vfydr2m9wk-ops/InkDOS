@@ -6,6 +6,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "compatibility-fixtures" / "presentations"
 APP = ROOT / "apps" / "presentations" / "app.js"
+FILE_IO = ROOT / "apps" / "presentations" / "io" / "file-controller.js"
 
 
 def hashes(path: Path) -> dict[str, str]:
@@ -27,12 +28,13 @@ class PptxPreservationTests(unittest.TestCase):
         self.assertNotIn("replace('presentations/'", source)
 
     def test_imported_export_uses_original_package(self):
-        source = APP.read_text(encoding="utf-8")
-        self.assertIn("sourcePptxBuffer", source)
-        self.assertIn("saveImportedPptx", source)
+        app = APP.read_text(encoding="utf-8")
+        source = FILE_IO.read_text(encoding="utf-8")
+        self.assertIn("this.sourceBuffer = null", source)
+        self.assertIn("async saveImportedPptx()", source)
         self.assertIn("JSZip.loadAsync(previousSource)", source)
-        self.assertIn("patchImportedSlide", source)
-        self.assertIn("originalSlideRids", source)
+        self.assertIn("this.patchImportedSlide", source)
+        self.assertIn("originalSlideRids", app)
 
     def test_modern_rendering_hooks_exist(self):
         source = APP.read_text(encoding="utf-8")

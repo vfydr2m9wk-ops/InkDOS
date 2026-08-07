@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.7
+# Testing guide — InkDesk v0.20.2.8
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -92,7 +92,7 @@ The Format panel and Presenter Notes now have an explicit closed-at-open contrac
 and physical-line debt, workspace dependency direction and relative import
 cycles. It is part of `scripts/run_release_validation.py`.
 
-## v0.20.2.7 update-flow hardening
+## v0.20.2.8 update-flow hardening
 
 - `--dry-run` now validates a disposable candidate repository instead of only printing a plan; tests prove both success and validation failure leave the source checkout untouched.
 - `scripts/update_checksums_incrementally.py` preserves all undeclared checksum entries and updates/removes only explicitly named patch paths.

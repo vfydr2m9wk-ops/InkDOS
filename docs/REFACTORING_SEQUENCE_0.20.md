@@ -11,7 +11,7 @@ pass the full release gate before the next ownership boundary is moved.
 | 0.20.2.5 | Presentations: state/history/selection extraction | None intended |
 | 0.20.2.6 | Presentations: slideshow/presentation-mode extraction | None intended |
 | 0.20.2.7 | Update-flow hardening: real dry-run, incremental checksums, isolated slideshow regression | None intended |
-| next 0.20.2.x | Presentations: I/O/save/recovery extraction in bounded steps | None intended |
+| 0.20.2.8 | Presentations: I/O/save/recovery extraction | None intended |
 | later 0.20.2.x | PDF decomposition | None intended |
 | later 0.20.2.x | Shared UI decomposition | None intended |
 | later 0.20.2.x | Documents/Spreadsheets cleanup | None intended |
@@ -79,6 +79,8 @@ fallback handling. Transition editing and the presentation document remain in
 `app.js`; the slideshow controller receives them through explicit dependencies.
 
 v0.20.2.7 hardens the update path before the next runtime extraction. Dry-run now validates a disposable candidate tree, incremental checksum tooling preserves authoritative hosted-only hashes, and slideshow browser behavior runs in an isolated process/context. No editor runtime responsibility moves in this step.
+
+v0.20.2.8 implements the fifth Presentations ownership boundary. `io/file-controller.js` owns PPTX open/save orchestration and imported-source buffers; `io/recovery-controller.js` owns recovery capture/restore and recovery-manager lifecycle. The entry point continues to own the active presentation model plus editing/format parsing helpers and composes both controllers through explicit callbacks.
 
 ## Later target: PDF
 

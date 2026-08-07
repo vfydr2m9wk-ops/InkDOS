@@ -4,22 +4,22 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.7
+## InkDesk v0.20.2.8
 
-Version 0.20.2.7 hardens the **incremental update and validation flow** before
-the next Presentations decomposition. Runtime editor behavior is intentionally
+Version 0.20.2.8 continues the behavior-neutral **Presentations decomposition**.
+PPTX open/save orchestration and local recovery ownership are now isolated from
+the main editor entry point.
+
+`apps/presentations/io/file-controller.js` owns imported-source buffers, PPTX
+open validation, preservation-mode copy export, new-presentation PPTX export and
+download lifecycle. `apps/presentations/io/recovery-controller.js` owns
+IndexedDB recovery capture/restore, document recovery keys and recovery manager
+state. The visible UI, supported formats and save semantics are intentionally
 unchanged.
 
-Dry-run updates now apply the candidate package to a disposable repository copy
-and execute the declared validation profile there, instead of only printing a
-copy/delete plan. The source checkout remains untouched whether validation
-passes or fails.
-
-Patch authors also get an incremental checksum helper that changes only
-explicitly declared paths while preserving authoritative hashes for hosted-only
-files. The Presentations slideshow browser regression now runs as a separate
-script/process, so it establishes its own tab/document state instead of inheriting
-state from the broader controls test.
+The stable updater hardening from v0.20.2.7 remains in place: real dry-run,
+package SHA identity and incremental checksum handling continue to guard each
+refactoring package.
 
 ## Refactoring policy
 
@@ -57,7 +57,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.7 remains a beta. Real-device validation is still required for critical
+v0.20.2.8 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

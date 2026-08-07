@@ -94,12 +94,12 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn("pagination-content-measure", app)
         self.assertIn("tolerance=3", app)
         self.assertIn("pagination-measure", css)
-        self.assertIn("docx-parser.js?v=0.20.2.7", html)
+        self.assertIn("docx-parser.js?v=0.20.2.8", html)
 
     def test_export_writers_use_standard_ooxml_part_paths(self):
         docx = (ROOT / "apps/documents/docx-writer.js").read_text(encoding="utf-8")
         xlsx = (ROOT / "apps/spreadsheets/xlsx-engine.js").read_text(encoding="utf-8")
-        pptx = (ROOT / "apps/presentations/app.js").read_text(encoding="utf-8")
+        pptx = (ROOT / "apps/presentations/io/file-controller.js").read_text(encoding="utf-8")
         self.assertIn("/word/document.xml", docx)
         self.assertNotIn("/documents/document.xml", docx)
         self.assertIn("xl/worksheets/", xlsx)
@@ -143,7 +143,7 @@ class RepositoryTests(unittest.TestCase):
         for source_path in (
             ROOT / "apps/documents/docx-parser.js",
             ROOT / "apps/spreadsheets/xlsx-engine.js",
-            ROOT / "apps/presentations/app.js",
+            ROOT / "apps/presentations/io/file-controller.js",
         ):
             self.assertIn("validateZipPackage", source_path.read_text(encoding="utf-8"))
 

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 9,
-  "currentPackage": "0.20.2.7",
+  "appliedSequence": 10,
+  "currentPackage": "0.20.2.8",
   "status": "in-progress",
   "history": [
     {
@@ -50,6 +50,11 @@
       "sequence": 9,
       "packageLabel": "0.20.2.7",
       "description": "Update-flow hardening v0.20.2.7 correction 1. Runtime and updater behavior are unchanged. The hosted run passed repository validation, source audit, architecture guardrails and all 242 unit/package tests; 12/13 Chromium scripts passed. The sole failure was an isolated slideshow harness assumption: after 'From first', the legacy editor state is slide one, so a later 'From current' scenario must explicitly re-select slide two. The browser harness now establishes editor slide state before every current-slide entry. No editor runtime, UI, save/recovery, workflow, release version or sequence change is intended."
+    },
+    {
+      "sequence": 10,
+      "packageLabel": "0.20.2.8",
+      "description": "Presentations I/O and recovery decomposition: PPTX open/save orchestration, imported source-buffer ownership, copy download lifecycle and IndexedDB recovery adapter move from app.js into focused io controllers. No visual redesign or intentional format behavior change."
     }
   ]
 }

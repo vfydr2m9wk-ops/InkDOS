@@ -223,6 +223,8 @@ def validate_restricted_apis(browser, base_url):
             "apps/presentations/ui/thumbnails-controller.js",
             "apps/presentations/ui/presenter-notes-controller.js",
             "apps/presentations/presentation/slideshow-controller.js",
+        "apps/presentations/io/file-controller.js",
+        "apps/presentations/io/recovery-controller.js",
             "apps/presentations/app.js",
             "shared/register-service-worker.js",
         ),

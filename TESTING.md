@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.7
+# Testing guide — InkDesk v0.20.2.8
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,8 +35,8 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails pass with 50 runtime JS/CSS files and the Presentations `app.js` ratchet reduced again to 783 physical lines / 82 long lines after slideshow extraction.
-- The Python suite contains 242 tests. In the local reconstruction, 241 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
+- Architecture guardrails target 52 runtime JS/CSS files and the Presentations `app.js` ratchet reduced to 714 physical lines / 70 long lines after I/O/save/recovery extraction.
+- The Python suite contains 243 tests. In the local reconstruction, 242 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
@@ -92,6 +92,15 @@ Run `python3 scripts/check_architecture_guardrails.py`. The release runner now
 executes this gate after the source audit and before unit/package tests. The
 gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
+
+
+## v0.20.2.8 Presentations I/O and recovery decomposition
+
+- `tests/test_presentations_modularization.py` requires the file and recovery controllers to load before `app.js`, stay within new-source limits and be precached offline.
+- PPTX preservation tests now verify source-buffer and imported-copy behavior in `io/file-controller.js` rather than requiring that implementation to remain in `app.js`.
+- Local-recovery tests verify the Presentations recovery contract in `io/recovery-controller.js` while preserving the public `window.__InkDeskPresentationsRecovery` browser harness.
+- Browser harnesses that manually inject Presentations scripts load both I/O controllers before the editor entry point.
+- Existing three-era PPTX, cross-workspace, transactional-open, recovery, controls and slideshow regressions remain release-blocking.
 
 ## v0.20.2.7 update-flow hardening
 

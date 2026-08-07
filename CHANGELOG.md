@@ -1,3 +1,11 @@
+## 0.20.2.8 — Presentations I/O and Recovery Decomposition (2026-08-07)
+
+- Extracted PPTX open/save orchestration and imported source-buffer ownership to `apps/presentations/io/file-controller.js`.
+- Extracted local recovery capture/restore and recovery-manager lifecycle to `apps/presentations/io/recovery-controller.js`.
+- Lowered the Presentations `app.js` architecture ratchet to 714 physical lines / 70 long lines.
+- Updated offline precache, browser harnesses and structural tests for the new ownership boundary.
+- No visual or intentional file-format behavior change.
+
 # Changelog
 
 ## 0.20.2.7 — Update Flow Hardening (2026-08-07)

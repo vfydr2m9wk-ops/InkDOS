@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.7",
+  "release": "0.20.2.8",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -49,9 +49,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/presentations/app.js": {
-      "maxLines": 783,
-      "maxLongLines": 82,
-      "reason": "Fourth Presentations decomposition ratchet: slideshow/presentation-mode lifecycle, navigation and fullscreen handling moved to a dedicated presentation controller in v0.20.2.6."
+      "maxLines": 714,
+      "maxLongLines": 70,
+      "reason": "Fifth Presentations decomposition ratchet: PPTX open/save orchestration, imported source-buffer ownership and recovery lifecycle moved to focused io controllers in v0.20.2.8."
     },
     "apps/documents/styles.css": {
       "maxLines": 65,

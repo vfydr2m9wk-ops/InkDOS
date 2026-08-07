@@ -3,7 +3,7 @@
   "id": "presentations",
   "name": "Presentations",
   "description": "Basic PPTX editing and presentation with best-effort compatibility.",
-  "version": "0.20.2.7",
+  "version": "0.20.2.8",
   "enabled": true,
   "optional": false,
   "order": 30,
