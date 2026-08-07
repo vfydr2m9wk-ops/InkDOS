@@ -1,5 +1,13 @@
 ## 0.20.2.8 — Presentations I/O and Recovery Decomposition (2026-08-07)
 
+## 0.20.2.9 — Presentations Architecture Consolidation
+
+- Extracted package-preserving PPTX write/patch logic from the Presentations entry point into `apps/presentations/io/pptx-write-adapter.js`.
+- Kept imported PPTX slide patching, notes patching, new shape/image serialization and source-order checks behaviorally unchanged behind the new adapter.
+- Tightened the Presentations `app.js` architecture ratchet and added permanent modular-boundary tests.
+- No visual redesign, new editor feature or deliberate PPTX behavior change.
+
+
 - Extracted PPTX open/save orchestration and imported source-buffer ownership to `apps/presentations/io/file-controller.js`.
 - Extracted local recovery capture/restore and recovery-manager lifecycle to `apps/presentations/io/recovery-controller.js`.
 - Lowered the Presentations `app.js` architecture ratchet to 714 physical lines / 70 long lines.

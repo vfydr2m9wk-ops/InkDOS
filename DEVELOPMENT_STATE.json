@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 10,
-  "currentPackage": "0.20.2.8",
+  "appliedSequence": 11,
+  "currentPackage": "0.20.2.9",
   "status": "in-progress",
   "history": [
     {
@@ -55,6 +55,11 @@
       "sequence": 10,
       "packageLabel": "0.20.2.8",
       "description": "Presentations I/O and recovery decomposition: PPTX open/save orchestration, imported source-buffer ownership, copy download lifecycle and IndexedDB recovery adapter move from app.js into focused io controllers. No visual redesign or intentional format behavior change."
+    },
+    {
+      "sequence": 11,
+      "packageLabel": "0.20.2.9",
+      "description": "Presentations architecture consolidation: move package-preserving PPTX write/patch helpers into a dedicated I/O adapter, tighten the app.js ratchet, and preserve the established UI/file behavior."
     }
   ]
 }

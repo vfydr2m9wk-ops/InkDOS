@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.8
+# Testing guide — InkDesk v0.20.2.9
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,8 +35,8 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails pass with 50 runtime JS/CSS files and the Presentations `app.js` ratchet reduced again to 783 physical lines / 82 long lines after slideshow extraction.
-- The Python suite contains 242 tests. In the local reconstruction, 241 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
+- Architecture guardrails target 53 runtime JS/CSS files and the Presentations `app.js` ratchet is reduced to 698 physical lines / 56 long lines after the PPTX writer extraction.
+- The Python suite contains 244 tests. In the local reconstruction, 243 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
@@ -88,11 +88,21 @@ The Format panel and Presenter Notes now have an explicit closed-at-open contrac
 
 ## v0.20.2.2 architecture guardrails
 
-`python3 scripts/check_architecture_guardrails.py` validates runtime file-size
-and physical-line debt, workspace dependency direction and relative import
-cycles. It is part of `scripts/run_release_validation.py`.
+Run `python3 scripts/check_architecture_guardrails.py`. The release runner now
+executes this gate after the source audit and before unit/package tests. The
+gate is intentionally ratcheted: inherited debt can shrink, but new debt or
+cross-workspace coupling fails validation.
 
-## v0.20.2.8 update-flow hardening
+
+## v0.20.2.9 Presentations architecture consolidation
+
+- `tests/test_presentations_modularization.py` requires the PPTX write adapter plus file/recovery controllers to load before `app.js`, remain within new-source limits and be precached offline.
+- Package-preserving imported-slide mutation, notes patching, transition patching and new object XML generation now live in `io/pptx-write-adapter.js`.
+- `tests/test_pptx_roundtrip_preservation.py` verifies that source-order preservation follows the writer boundary rather than requiring the implementation to remain in `app.js`.
+- Manual-script browser harnesses load the writer before `file-controller.js` and before the editor entry point.
+- Existing three-era PPTX, cross-workspace, transactional-open, recovery, controls and slideshow regressions remain release-blocking.
+
+## v0.20.2.7 update-flow hardening
 
 - `--dry-run` now validates a disposable candidate repository instead of only printing a plan; tests prove both success and validation failure leave the source checkout untouched.
 - `scripts/update_checksums_incrementally.py` preserves all undeclared checksum entries and updates/removes only explicitly named patch paths.

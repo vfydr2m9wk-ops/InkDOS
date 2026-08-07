@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDesk",
-  "version": "0.20.2.8",
+  "version": "0.20.2.9",
   "distribution": "complete source tree",
   "entryPoint": "index.html",
   "requiresBuild": false,

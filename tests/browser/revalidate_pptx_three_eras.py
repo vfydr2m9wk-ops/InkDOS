@@ -44,8 +44,9 @@ def load_app(page) -> None:
         ROOT / "apps/presentations/ui/thumbnails-controller.js",
         ROOT / "apps/presentations/ui/presenter-notes-controller.js",
         ROOT / "apps/presentations/presentation/slideshow-controller.js",
-        "apps/presentations/io/file-controller.js",
-        "apps/presentations/io/recovery-controller.js",
+        ROOT / "apps/presentations/io/pptx-write-adapter.js",
+        ROOT / "apps/presentations/io/file-controller.js",
+        ROOT / "apps/presentations/io/recovery-controller.js",
         ROOT / "apps/presentations/app.js",
     ):
         page.add_script_tag(path=str(path))

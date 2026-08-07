@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.8",
-  "releaseName": "Presentations I/O and Recovery Decomposition",
+  "version": "0.20.2.9",
+  "releaseName": "Presentations Architecture Consolidation",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,7 +37,7 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "243 configured; 242 pass in the local reconstruction, with only checksum-integrity deferred because the hosted repository remains authoritative for five baseline files not reproduced byte-for-byte locally",
+    "structuralUnitTests": "244 configured; 243 pass in the local reconstruction, with only checksum-integrity deferred because the hosted repository remains authoritative for five baseline files not reproduced byte-for-byte locally",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
@@ -52,8 +52,8 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: 52 runtime JS/CSS files checked; Presentations app ratchet reduced to 714 physical lines / 70 long lines after I/O/save/recovery extraction",
-    "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX file I/O and recovery lifecycle are isolated in focused controllers; app.js remains the presentation/document orchestration entry point"
+    "architectureGuardrails": "required: 53 runtime JS/CSS files checked; Presentations app ratchet reduced to 698 physical lines / 56 long lines after PPTX write-adapter extraction",
+    "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

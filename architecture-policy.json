@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.8",
+  "release": "0.20.2.9",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -49,9 +49,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/presentations/app.js": {
-      "maxLines": 714,
-      "maxLongLines": 70,
-      "reason": "Fifth Presentations decomposition ratchet: PPTX open/save orchestration, imported source-buffer ownership and recovery lifecycle moved to focused io controllers in v0.20.2.8."
+      "maxLines": 698,
+      "maxLongLines": 56,
+      "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.9."
     },
     "apps/documents/styles.css": {
       "maxLines": 65,

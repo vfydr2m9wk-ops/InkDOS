@@ -16,6 +16,7 @@ NOTES = UI / "presenter-notes-controller.js"
 SLIDESHOW = ROOT / "apps/presentations/presentation/slideshow-controller.js"
 FILE_IO = ROOT / "apps/presentations/io/file-controller.js"
 RECOVERY_IO = ROOT / "apps/presentations/io/recovery-controller.js"
+PPTX_WRITER = ROOT / "apps/presentations/io/pptx-write-adapter.js"
 HTML = ROOT / "apps/presentations/index.html"
 WORKER = ROOT / "service-worker.js"
 
@@ -24,23 +25,24 @@ class PresentationsModularizationTests(unittest.TestCase):
     def test_feature_components_load_before_app(self):
         html = HTML.read_text(encoding="utf-8")
         components = (
-            "state/selection-controller.js?v=0.20.2.8",
-            "state/history-controller.js?v=0.20.2.8",
-            "ui/inspector-controller.js?v=0.20.2.8",
-            "ui/thumbnails-controller.js?v=0.20.2.8",
-            "ui/presenter-notes-controller.js?v=0.20.2.8",
-            "presentation/slideshow-controller.js?v=0.20.2.8",
-            "io/file-controller.js?v=0.20.2.8",
-            "io/recovery-controller.js?v=0.20.2.8",
+            "state/selection-controller.js?v=0.20.2.9",
+            "state/history-controller.js?v=0.20.2.9",
+            "ui/inspector-controller.js?v=0.20.2.9",
+            "ui/thumbnails-controller.js?v=0.20.2.9",
+            "ui/presenter-notes-controller.js?v=0.20.2.9",
+            "presentation/slideshow-controller.js?v=0.20.2.9",
+            "io/pptx-write-adapter.js?v=0.20.2.9",
+            "io/file-controller.js?v=0.20.2.9",
+            "io/recovery-controller.js?v=0.20.2.9",
         )
-        app = "app.js?v=0.20.2.8"
+        app = "app.js?v=0.20.2.9"
         for component in components:
             self.assertIn(component, html)
             self.assertLess(html.index(component), html.index(app))
 
     def test_extracted_components_are_readable_and_within_new_source_limits(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
-        for path in (SELECTION, HISTORY, INSPECTOR, THUMBNAILS, NOTES, SLIDESHOW, FILE_IO, RECOVERY_IO):
+        for path in (SELECTION, HISTORY, INSPECTOR, THUMBNAILS, NOTES, SLIDESHOW, PPTX_WRITER, FILE_IO, RECOVERY_IO):
             self.assertTrue(path.is_file(), path)
             source = path.read_text(encoding="utf-8").splitlines()
             self.assertLessEqual(len(source), policy["extensions"][".js"]["newFileMaxLines"], path)
@@ -61,6 +63,7 @@ class PresentationsModularizationTests(unittest.TestCase):
         slideshow = SLIDESHOW.read_text(encoding="utf-8")
         file_io = FILE_IO.read_text(encoding="utf-8")
         recovery_io = RECOVERY_IO.read_text(encoding="utf-8")
+        writer = PPTX_WRITER.read_text(encoding="utf-8")
 
         self.assertIn("InkDeskPresentationsSelection.create", app)
         self.assertIn("InkDeskPresentationsHistory.create", app)
@@ -68,6 +71,7 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertIn("InkDeskPresentationsThumbnails.create", app)
         self.assertIn("InkDeskPresentationsNotes.create", app)
         self.assertIn("InkDeskPresentationsSlideshow.create", app)
+        self.assertIn("InkDeskPresentationsPptxWriter.create", app)
         self.assertIn("InkDeskPresentationsFileIO.create", app)
         self.assertIn("InkDeskPresentationsRecovery.create", app)
         self.assertIn("class PresentationSelectionController", selection)
@@ -76,6 +80,7 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertIn("class PresentationThumbnailsController", thumbnails)
         self.assertIn("class PresentationNotesController", notes)
         self.assertIn("class PresentationSlideshowController", slideshow)
+        self.assertIn("class PresentationPptxWriteAdapter", writer)
         self.assertIn("class PresentationFileController", file_io)
         self.assertIn("class PresentationRecoveryController", recovery_io)
 
@@ -103,6 +108,10 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertNotIn("async function saveImportedPptx", app)
         self.assertNotIn("async function saveNewPptx", app)
         self.assertNotIn("function presentationRecoveryKey", app)
+        self.assertNotIn("function patchImportedSlide(", app)
+        self.assertNotIn("function shapeObj(", app)
+        self.assertNotIn("function picObj(", app)
+        self.assertNotIn("function patchSlideTransition(", app)
 
     def test_state_controllers_own_selection_interactions_and_history_stacks(self):
         selection = SELECTION.read_text(encoding="utf-8")
@@ -156,6 +165,19 @@ class PresentationsModularizationTests(unittest.TestCase):
         ):
             self.assertIn(marker, recovery_io)
 
+    def test_pptx_writer_owns_package_preserving_mutation_helpers(self):
+        writer = PPTX_WRITER.read_text(encoding="utf-8")
+        for marker in (
+            "class PresentationPptxWriteAdapter",
+            "async patchImportedSlide(zip,slideData)",
+            "async appendNewObjectsToSlide(zip,slideDoc,slidePath,slideData)",
+            "patchSlideTransition(doc,transition)",
+            "shapeObjectXml(object)",
+            "pictureObjectXml(object,rid,index)",
+            "orderMatchesSource()",
+        ):
+            self.assertIn(marker, writer)
+
     def test_presentations_app_ratchet_moves_down_after_io_extraction(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
         debt = policy["grandfatheredDebt"]["apps/presentations/app.js"]
@@ -167,8 +189,8 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertEqual(debt["maxLines"], len(lines))
         self.assertEqual(debt["maxLongLines"], long_lines)
         self.assertLess(debt["maxLines"], 783)
-        self.assertLess(debt["maxLines"], 720)
-        self.assertLessEqual(debt["maxLongLines"], 70)
+        self.assertLess(debt["maxLines"], 700)
+        self.assertLessEqual(debt["maxLongLines"], 56)
 
     def test_offline_shell_precaches_every_extracted_component(self):
         worker = WORKER.read_text(encoding="utf-8")
@@ -179,6 +201,7 @@ class PresentationsModularizationTests(unittest.TestCase):
             "./apps/presentations/ui/thumbnails-controller.js",
             "./apps/presentations/ui/presenter-notes-controller.js",
             "./apps/presentations/presentation/slideshow-controller.js",
+            "./apps/presentations/io/pptx-write-adapter.js",
             "./apps/presentations/io/file-controller.js",
             "./apps/presentations/io/recovery-controller.js",
         ):
@@ -199,6 +222,7 @@ class PresentationsModularizationTests(unittest.TestCase):
             "apps/presentations/ui/thumbnails-controller.js",
             "apps/presentations/ui/presenter-notes-controller.js",
             "apps/presentations/presentation/slideshow-controller.js",
+            "apps/presentations/io/pptx-write-adapter.js",
             "apps/presentations/io/file-controller.js",
             "apps/presentations/io/recovery-controller.js",
         )

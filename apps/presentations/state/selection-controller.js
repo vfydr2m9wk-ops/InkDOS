@@ -239,7 +239,7 @@
   }
 
   global.InkDeskPresentationsSelection = Object.freeze({
-    version: '0.20.2.8',
+    version: '0.20.2.9',
     create(options) {
       return new PresentationSelectionController(options);
     },

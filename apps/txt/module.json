@@ -3,7 +3,7 @@
   "id": "txt",
   "name": "Plain Text",
   "description": "A simple local TXT viewer and editor with a yellow notebook identity.",
-  "version": "0.20.2.8",
+  "version": "0.20.2.9",
   "enabled": true,
   "optional": true,
   "order": 50,

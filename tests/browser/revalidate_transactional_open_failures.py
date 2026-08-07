@@ -111,6 +111,7 @@ def verify_pptx(browser):
         "apps/presentations/ui/thumbnails-controller.js",
         "apps/presentations/ui/presenter-notes-controller.js",
         "apps/presentations/presentation/slideshow-controller.js",
+        "apps/presentations/io/pptx-write-adapter.js",
         "apps/presentations/io/file-controller.js",
         "apps/presentations/io/recovery-controller.js",
         "apps/presentations/app.js",

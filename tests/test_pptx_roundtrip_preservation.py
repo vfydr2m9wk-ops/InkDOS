@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "compatibility-fixtures" / "presentations"
 APP = ROOT / "apps" / "presentations" / "app.js"
 FILE_IO = ROOT / "apps" / "presentations" / "io" / "file-controller.js"
+PPTX_WRITER = ROOT / "apps" / "presentations" / "io" / "pptx-write-adapter.js"
 
 
 def hashes(path: Path) -> dict[str, str]:
@@ -30,11 +31,12 @@ class PptxPreservationTests(unittest.TestCase):
     def test_imported_export_uses_original_package(self):
         app = APP.read_text(encoding="utf-8")
         source = FILE_IO.read_text(encoding="utf-8")
+        writer = PPTX_WRITER.read_text(encoding="utf-8")
         self.assertIn("this.sourceBuffer = null", source)
         self.assertIn("async saveImportedPptx()", source)
         self.assertIn("JSZip.loadAsync(previousSource)", source)
         self.assertIn("this.patchImportedSlide", source)
-        self.assertIn("originalSlideRids", app)
+        self.assertIn("originalSlideRids", writer)
 
     def test_modern_rendering_hooks_exist(self):
         source = APP.read_text(encoding="utf-8")

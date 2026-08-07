@@ -8,7 +8,7 @@ let pres=null,currentSlide=0,zoom=0.9,dirty=false,idSeq=1;
 let editingId=null,textEditBefore=null,templateMode='presentation';
 let activeTheme=null,presentationTextDefaults=null;
 let renderZoomOverride=null;
-let fileController=null,recoveryController=null;
+let fileController=null,recoveryController=null,pptxWriteAdapter=null;
 let thumbnailsController=null,presenterNotesController=null,inspectorController=null;
 let selectionController=null,historyController=null,slideshowController=null;
 const ui={start:$('startScreen'),app:$('app'),file:$('fileInput'),img:$('imageInput'),title:$('docTitle'),list:$('slideList'),canvas:$('slideCanvas'),stageWrap:$('stageWrap'),save:$('saveBtn'),state:$('stateBadge'),status:$('slideStatus'),zoomText:$('zoomText'),present:$('presentOverlay'),presentSlide:$('presentSlide'),exitPresent:$('exitPresentBtn'),fullscreenPresent:$('fullscreenPresentBtn'),fullscreenPresentLabel:$('fullscreenPresentLabel'),presentCounter:$('presentCounter'),presentHelp:$('presentHelp'),template:$('templateDialog'),templateGrid:$('templateGrid'),notes:$('presenterNotes'),notesPanel:$('notesPanel'),notesCount:$('notesCount')};
@@ -641,31 +641,13 @@ slideshowController=InkDeskPresentationsSlideshow.create({
   renderSlide,
   renderAll,
 });
-function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]))}
-function emu(n){return Math.round(n)}
-function sourceElementById(doc,id){if(!id)return null;const cNv=all(doc,'cNvPr').find(n=>attr(n,'id')===String(id));if(!cNv)return null;let n=cNv;while(n&&n!==doc){if(['sp','pic','graphicFrame','cxnSp'].includes(n.localName))return n;n=n.parentNode}return null}
-function presentationFragment(doc,xml){const wrapper=parseXml('<root xmlns:p="'+NS.p+'" xmlns:a="'+NS.a+'" xmlns:r="'+NS.r+'">'+xml+'</root>');return doc.importNode(wrapper.documentElement.firstElementChild,true)}
-function replaceTextBody(node,text){const txBody=first(node,'txBody');if(!txBody)return false;const existing=Array.from(txBody.children||[]).filter(n=>n.localName==='p'),template=(existing[0]||null);existing.forEach(n=>n.remove());const lines=String(text==null?'':text).replace(/\r/g,'').split('\n');for(const line of (lines.length?lines:[''])){let p;if(template){p=template.cloneNode(true);const ts=all(p,'t');if(ts.length){ts[0].textContent=line;for(let i=1;i<ts.length;i++)ts[i].textContent=''}else{const r=p.ownerDocument.createElementNS(NS.a,'a:r'),t=p.ownerDocument.createElementNS(NS.a,'a:t');t.textContent=line;r.appendChild(t);p.appendChild(r)}}else{p=txBody.ownerDocument.createElementNS(NS.a,'a:p');const r=txBody.ownerDocument.createElementNS(NS.a,'a:r'),t=txBody.ownerDocument.createElementNS(NS.a,'a:t');t.textContent=line;r.appendChild(t);p.appendChild(r)}txBody.appendChild(p)}return true}
-function sameRect(a,b){if(!a||!b)return false;return ['x','y','w','h','rot'].every(k=>Math.abs(Number(a[k]||0)-Number(b[k]||0))<1)}
-function patchObjectTransform(node,o){if(o.sourceGrouped||sameRect(o.originalRect,o))return false;const x=first(node,'xfrm');if(!x)return false;let off=first(x,'off'),ext=first(x,'ext');if(!off){off=x.ownerDocument.createElementNS(NS.a,'a:off');x.insertBefore(off,x.firstChild)}if(!ext){ext=x.ownerDocument.createElementNS(NS.a,'a:ext');x.appendChild(ext)}off.setAttribute('x',String(Math.round(o.x||0)));off.setAttribute('y',String(Math.round(o.y||0)));ext.setAttribute('cx',String(Math.round(o.w||0)));ext.setAttribute('cy',String(Math.round(o.h||0)));if(o.rot)x.setAttribute('rot',String(Math.round(o.rot*60000)));else x.removeAttribute('rot');return true}
-function patchSlideTransition(doc,transition){const root=doc.documentElement,old=Array.from(root.children||[]).find(n=>n.localName==='transition');if(old)old.remove();const type=(transition&&transition.type)||'none';if(type==='none')return;const tr=doc.createElementNS(NS.p,'p:transition');const raw=(transition&&transition.rawType)||({slide:'push',fade:'fade',zoom:'zoom'}[type]||'fade');const effect=doc.createElementNS(NS.p,'p:'+raw);tr.appendChild(effect);if(transition&&transition.advanceAfter!=null)tr.setAttribute('advTm',String(transition.advanceAfter));const after=Array.from(root.children||[]).find(n=>['timing','extLst'].includes(n.localName));root.insertBefore(tr,after||null)}
-function dataUrlPayload(src){const m=String(src||'').match(/^data:([^;,]+)?(;base64)?,(.*)$/s);if(!m)return null;const mime=m[1]||'image/png',raw=m[2]?atob(m[3]):decodeURIComponent(m[3]),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return{mime,bytes}}
-function maxRelationshipId(doc){return Math.max(0,...all(doc,'Relationship').map(r=>{const m=attr(r,'Id').match(/^rId(\d+)$/i);return m?+m[1]:0}))}
-function maxMediaIndex(zip){return Math.max(0,...Object.keys(zip.files).map(n=>{const m=n.match(/^ppt\/media\/image(\d+)\./i);return m?+m[1]:0}))}
-function ensurePresentationContentType(doc,partName,contentType){const root=doc.documentElement;if(all(root,'Override').some(n=>attr(n,'PartName')===partName))return;const o=doc.createElementNS(root.namespaceURI,'Override');o.setAttribute('PartName',partName);o.setAttribute('ContentType',contentType);root.appendChild(o)}
-async function appendNewObjectsToSlide(zip,slideDoc,slidePath,slideData){const tree=first(slideDoc,'spTree');if(!tree)return;const relPath=relationshipPartPath(slidePath),relFile=zip.file(relPath),relDoc=relFile?parseXml(await relFile.async('text')):parseXml('<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>');let relNumber=maxRelationshipId(relDoc),mediaNumber=maxMediaIndex(zip),shapeId=Math.max(1,...all(slideDoc,'cNvPr').map(n=>+attr(n,'id','0')||0)),changedRels=false;for(const o of slideData.objects||[]){if(o.templateObject||o.syntheticPlaceholder||o.sourceNvId)continue;if(o.type==='image'){const payload=dataUrlPayload(o.src);if(!payload)continue;const ext=(o.ext||(/jpeg/i.test(payload.mime)?'jpg':/gif/i.test(payload.mime)?'gif':'png')).replace('jpeg','jpg'),name='image'+(++mediaNumber)+'.'+ext,rid='rId'+(++relNumber);zip.file('ppt/media/'+name,payload.bytes);const rel=relDoc.createElementNS(relDoc.documentElement.namespaceURI,'Relationship');rel.setAttribute('Id',rid);rel.setAttribute('Type','http://schemas.openxmlformats.org/officeDocument/2006/relationships/image');rel.setAttribute('Target','../media/'+name);relDoc.documentElement.appendChild(rel);const fragment=presentationFragment(slideDoc,picObj(o,rid,mediaNumber)),nv=first(fragment,'cNvPr');if(nv)nv.setAttribute('id',String(++shapeId));tree.appendChild(fragment);changedRels=true;o.sourceNvId=String(shapeId);o.sourceLayer='slide';o.sourcePartPath=slidePath;o.originalRect={x:o.x,y:o.y,w:o.w,h:o.h,rot:o.rot||0};continue}if(['text','shape','table'].includes(o.type)){const fragment=presentationFragment(slideDoc,shapeObj(o)),nv=first(fragment,'cNvPr');if(nv)nv.setAttribute('id',String(++shapeId));tree.appendChild(fragment);o.sourceNvId=String(shapeId);o.sourceLayer='slide';o.sourcePartPath=slidePath;o.originalText=typeof o.text==='string'?o.text:null;o.originalRect={x:o.x,y:o.y,w:o.w,h:o.h,rot:o.rot||0}}}if(changedRels)zip.file(relPath,serializeXml(relDoc))}
-function notesBodyShape(doc){return all(doc,'sp').find(sp=>{const ph=first(sp,'ph');return ph&&attr(ph,'type')==='body'})||all(doc,'sp').find(sp=>first(sp,'txBody'))||null}
-async function patchImportedSlide(zip,slideData){const path=slideData.sourcePath,file=path&&zip.file(path);if(!file)return false;const doc=parseXml(await file.async('text'));let changed=false;for(const o of slideData.objects||[]){if(o.sourceLayer!=='slide'||!o.sourceNvId)continue;const node=sourceElementById(doc,o.sourceNvId);if(!node)continue;if(o.type==='text'&&o.originalText!==null&&String(o.text||'')!==String(o.originalText||'')){changed=replaceTextBody(node,o.text)||changed;o.originalText=o.text}if(patchObjectTransform(node,o)){changed=true;o.originalRect={x:o.x,y:o.y,w:o.w,h:o.h,rot:o.rot||0}}}
-  const transitionChanged=JSON.stringify(slideData.transition||null)!==JSON.stringify(slideData.originalTransition||null);if(transitionChanged){patchSlideTransition(doc,slideData.transition);slideData.originalTransition=slideData.transition?JSON.parse(JSON.stringify(slideData.transition)):null;changed=true}
-  const beforeCount=(slideData.objects||[]).filter(o=>!o.sourceNvId&&!o.templateObject&&!o.syntheticPlaceholder).length;if(beforeCount){await appendNewObjectsToSlide(zip,doc,path,slideData);changed=true}
-  if(changed)zip.file(path,serializeXml(doc));
-  if(slideData.notesPath&&String(slideData.notes||'')!==String(slideData.originalNotes||'')){const noteFile=zip.file(slideData.notesPath);if(noteFile){const noteDoc=parseXml(await noteFile.async('text')),body=notesBodyShape(noteDoc);if(body){replaceTextBody(body,slideData.notes);zip.file(slideData.notesPath,serializeXml(noteDoc));slideData.originalNotes=slideData.notes}}}
-  return changed}
-function presentationOrderMatchesSource(){if(!pres||!pres.slides.every(s=>s.sourcePresentationRid&&s.sourcePath))return false;const rids=pres.slides.map(s=>s.sourcePresentationRid),original=pres.originalSlideRids||[];return rids.length===original.length&&new Set(rids).size===rids.length&&rids.every((rid,i)=>rid===original[i])}
 async function savePptx(){return fileController.save()}
-function shapeObj(o){const id=Math.floor(Math.random()*100000)+10;const fill=o.fill&&o.fill!=='transparent'?'<a:solidFill><a:srgbClr val="'+o.fill.replace('#','')+'"/></a:solidFill>':'<a:noFill/>';const line=o.line?'<a:ln w="'+Math.round((o.lineWidth||1)*9525)+'"><a:solidFill><a:srgbClr val="'+o.line.replace('#','')+'"/></a:solidFill></a:ln>':'<a:ln><a:noFill/></a:ln>';let tx='';if(o.type==='text'){const paras=String(o.text||'').split('\n').map(line=>'<a:p><a:pPr algn="'+(o.align==='center'?'ctr':o.align==='right'?'r':'l')+'"/><a:r><a:rPr lang="en-US" sz="'+Math.round((o.size||18)*100)+'" '+(o.bold?'b="1" ':'')+(o.italic?'i="1" ':'')+'><a:solidFill><a:srgbClr val="'+(o.color||'#222222').replace('#','')+'"/></a:solidFill><a:latin typeface="'+esc(o.font||'Arial')+'"/></a:rPr><a:t>'+esc(line)+'</a:t></a:r></a:p>').join('');tx='<p:txBody><a:bodyPr wrap="square"/><a:lstStyle/>'+paras+'</p:txBody>';}else if(o.type==='table'){tx='<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>'+esc(o.cells.map(r=>r.join(' | ')).join('\n'))+'</a:t></a:r></a:p></p:txBody>'}
-  return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="Shape '+id+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom>'+fill+line+'</p:spPr>'+tx+'</p:sp>';}
-function picObj(o,rid,n){return '<p:pic><p:nvPicPr><p:cNvPr id="'+(500+n)+'" name="Picture '+n+'"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="'+rid+'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom></p:spPr></p:pic>'}
+if(!window.InkDeskPresentationsPptxWriter)throw new Error('Presentations PPTX write adapter is unavailable.');
+pptxWriteAdapter=InkDeskPresentationsPptxWriter.create({
+  ns:NS,
+  getPresentation:()=>pres,
+  parseXml,all,first,attr,relationshipPartPath,serializeXml,
+});
 if(!window.InkDeskPresentationsFileIO)throw new Error('Presentations file controller is unavailable.');
 fileController=InkDeskPresentationsFileIO.create({
   ns:NS,
@@ -682,15 +664,17 @@ fileController=InkDeskPresentationsFileIO.create({
   resetHistory:()=>historyController.reset(),
   showApp,renderAll,markSaved,setReady,parseXml,relMap,normalizePath,first,all,attr,
   loadTheme,parseDefaultTextStyle,parseSlide,
-  orderMatchesSource:presentationOrderMatchesSource,
-  patchImportedSlide,shapeObjectXml:shapeObj,pictureObjectXml:picObj,
+  orderMatchesSource:()=>pptxWriteAdapter.orderMatchesSource(),
+  patchImportedSlide:(zip,slideData)=>pptxWriteAdapter.patchImportedSlide(zip,slideData),
+  shapeObjectXml:object=>pptxWriteAdapter.shapeObjectXml(object),
+  pictureObjectXml:(object,rid,index)=>pptxWriteAdapter.pictureObjectXml(object,rid,index),
   onOpenedSource:(file,buffer)=>recoveryController?recoveryController.startOpenedFile(file,buffer):Promise.resolve(),
   isRecoveryRestore:()=>Boolean(recoveryController&&recoveryController.isRestoring()),
   markRecoveryClean:()=>{if(recoveryController)recoveryController.markClean()},
 });
 if(!window.InkDeskPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
 recoveryController=InkDeskPresentationsRecovery.create({
-  appVersion:'0.20.2.8',
+  appVersion:'0.20.2.9',
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},
   getCurrentSlide:()=>currentSlide,
