@@ -8,6 +8,7 @@ from zipfile import ZipFile
 
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+from browser_support import launch_browser, requested_browser_name
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
@@ -158,7 +159,7 @@ def main():
         "presentations": OUT / "cross_workspace_presentation.pptx",
     }
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         context = browser.new_context(viewport={"width": 1400, "height": 900}, accept_downloads=True)
         pages = {}
         errors = {}

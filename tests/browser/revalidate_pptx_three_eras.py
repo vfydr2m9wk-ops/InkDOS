@@ -2,6 +2,8 @@
 """Optional browser round-trip validation for the three PPT/PPTX eras."""
 from __future__ import annotations
 
+from browser_support import launch_browser, requested_browser_name
+
 from pathlib import Path
 from zipfile import ZipFile
 import hashlib
@@ -101,7 +103,7 @@ def main() -> int:
             raise AssertionError(f"{name}: {details}")
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path="/usr/bin/chromium", args=["--no-sandbox"])
+        browser = launch_browser(playwright)
 
         page = browser.new_page()
         dialogs: list[str] = []

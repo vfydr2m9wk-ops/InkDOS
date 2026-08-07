@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.20.1';
+const CACHE_NAME='inkdesk-shell-v0.20.2';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -28,6 +28,7 @@ const APP_SHELL=[
   './shared/ui/visual-foundation.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
+  './shared/local-recovery.js',
   './shared/file-router.js',
   './shared/hub-open.js',
   './shared/formula-engine.js',
@@ -102,10 +103,11 @@ const NAVIGATION_PATHS=new Set([
 ]);
 function canonicalCacheKey(request){
   const url=new URL(request.url);
-  if(request.mode==='navigate'&&NAVIGATION_PATHS.has(url.pathname)){
-    url.search='';
-    url.hash='';
-    return new Request(url.href,{method:'GET'});
+  const canonical=new URL(url.href);
+  canonical.search='';
+  canonical.hash='';
+  if(APP_SHELL_URLS.has(canonical.href)||(request.mode==='navigate'&&NAVIGATION_PATHS.has(canonical.pathname))){
+    return new Request(canonical.href,{method:'GET'});
   }
   return request;
 }

@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const fileInput=$('fileInput'),viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome');
 let currentFile=null,currentFileName='Untitled.docx',currentBuffer=null,sourceContext=null,zoom=1,pages=[],hits=[],activeHit=-1,observer=null,mediaUrls={},currentPageSpec=null;
-let dirty=false,documentActive=false,history=[],historyIndex=-1,historyTimer=null,restoring=false,savedRange=null,currentPage=1,saveReadyUrl='';
+let dirty=false,documentActive=false,history=[],historyIndex=-1,historyTimer=null,restoring=false,savedRange=null,currentPage=1,saveReadyUrl='',recovery=null;
 function status(t){$('statusText').textContent=t}
 function rangeInsideEditor(r){return !!(r&&pagesHost.contains(r.commonAncestorContainer))}
 function rememberSelection(){const sel=getSelection();if(sel&&sel.rangeCount){const r=sel.getRangeAt(0);if(rangeInsideEditor(r))savedRange=r.cloneRange()}}
@@ -15,7 +15,7 @@ function updateStats(){const text=Array.from(pagesHost.querySelectorAll('.page-c
 function displayedFileName(){return currentFileName||'Untitled.docx'}
 function setTitleValue(name){$('titleText').value=name||'Untitled.docx';document.title=(name||'Untitled.docx')+(dirty?' •':'')+' — Documents'}
 function normalizeDocxName(name){name=String(name||'').trim()||'Untitled.docx';return /\.docx$/i.test(name)?name:name+'.docx'}
-function setDirty(v=true){dirty=v;$('dirtyDot').classList.toggle('visible',v);document.title=displayedFileName()+(v?' •':'')+' — Documents'}
+function setDirty(v=true){dirty=v;$('dirtyDot').classList.toggle('visible',v);document.title=displayedFileName()+(v?' •':'')+' — Documents';if(v&&recovery)recovery.markDirty()}
 function setLoading(text){let x=$('loadingOverlay');if(!x){x=document.createElement('div');x.id='loadingOverlay';x.className='loading';x.innerHTML='<div class="loading-card"></div>';document.body.appendChild(x)}x.querySelector('.loading-card').textContent=text;x.classList.remove('hidden')}
 function clearLoading(){const x=$('loadingOverlay');if(x)x.classList.add('hidden')}
 function revokeMediaUrls(urls){if(window.InkDeskRuntime)InkDeskRuntime.revokeObjectUrls(Object.values(urls||{}));else Object.values(urls||{}).forEach(u=>URL.revokeObjectURL(u))}
@@ -35,7 +35,7 @@ async function openFile(file){
   if(window.InkDeskRuntime)InkDeskRuntime.validateInputSize(file.size,file.name);
   const nextBuffer=await file.arrayBuffer();parsed=await LocalDocxParser.parse(nextBuffer);
   currentFile=file;currentFileName=file.name;documentActive=true;currentBuffer=nextBuffer;sourceContext=parsed.sourceContext||null;currentPageSpec=parsed.pageSpec||null;mediaUrls=parsed.mediaUrls||{};
-  setTitleValue(file.name);welcome.classList.add('hidden');pagesHost.innerHTML='';await paginate(parsed.blocks,currentPageSpec);buildOutline(parsed.outline);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);revokeMediaUrls(previous.mediaUrls);status(file.name+' opened');parsed=null;
+  setTitleValue(file.name);welcome.classList.add('hidden');pagesHost.innerHTML='';await paginate(parsed.blocks,currentPageSpec);buildOutline(parsed.outline);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);if(recovery)await recovery.startDocument({documentKey:fileRecoveryKey(file),fileName:file.name,sourceData:nextBuffer,sourceMeta:{kind:'docx'},resetSnapshots:true});revokeMediaUrls(previous.mediaUrls);status(file.name+' opened');parsed=null;
  }catch(e){
   console.error(e);if(parsed&&parsed.mediaUrls)revokeMediaUrls(parsed.mediaUrls);
   currentFile=previous.currentFile;currentFileName=previous.currentFileName;currentBuffer=previous.currentBuffer;sourceContext=previous.sourceContext;zoom=previous.zoom;pages=previous.pages;currentPage=previous.currentPage;currentPageSpec=previous.currentPageSpec;dirty=previous.dirty;documentActive=previous.documentActive;history=previous.history;historyIndex=previous.historyIndex;mediaUrls=previous.mediaUrls;pagesHost.innerHTML=previous.content;Array.from(pagesHost.querySelectorAll('.page')).forEach((page,index)=>{page._pageSpec=previous.pages[index]?.spec||previous.currentPageSpec});buildOutline(previous.outlineItems);buildPageList();$('titleText').value=previous.title;welcome.classList.toggle('hidden',previous.welcomeHidden);setDirty(previous.dirty);if(previous.documentActive){bindPageObserver();applyZoom()}else $('saveBtn').disabled=true;showOpenError(e,file);status('Open failed; previous document preserved');
@@ -49,7 +49,7 @@ function createBlankDocument(){
  const pc=document.createElement('div');pc.className='page-content';applyContentSpec(pc,currentPageSpec);pc.contentEditable='true';pc.spellcheck=true;
  const p=document.createElement('p');p.innerHTML='<br>';pc.appendChild(p);page.appendChild(pc);pagesHost.appendChild(page);
  pages=[[{index:0,html:'<p><br></p>',text:''}]];currentPage=1;
- buildOutline([]);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);updateStats();status('New document created');
+ buildOutline([]);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);if(recovery)recovery.startDocument({fileName:currentFileName,resetSnapshots:true});updateStats();status('New document created');
  requestAnimationFrame(()=>{pc.focus();const r=document.createRange();r.selectNodeContents(p);r.collapse(true);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);rememberSelection()});
 }
 function closeNewDocumentDialog(){const panel=$('newDocumentPanel');if(panel)panel.remove()}
@@ -70,9 +70,39 @@ function commitTitleRename(){
  const name=normalizeDocxName($('titleText').value);
  currentFileName=name;
  setTitleValue(name);
+ if(recovery){recovery.updateFileName(name);recovery.markDirty()}
  status('File renamed to '+name);
 }
 
+
+function fileRecoveryKey(file){return 'file:'+[file.name,file.size,file.lastModified||0].join(':')}
+async function recoveryImageSource(src){
+ if(!src||!String(src).startsWith('blob:'))return src;
+ try{const response=await fetch(src);if(!response.ok)throw new Error('Image response '+response.status);const blob=await response.blob();return await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(reader.error||new Error('Image conversion failed'));reader.readAsDataURL(blob)})}catch(error){console.warn('A document image could not be embedded in the recovery snapshot.',error);return ''}
+}
+async function captureDocumentRecovery(){
+ if(!documentActive||!pagesHost.querySelector('.page-content'))return null;
+ const clone=pagesHost.cloneNode(true),sourceImages=Array.from(pagesHost.querySelectorAll('img')),cloneImages=Array.from(clone.querySelectorAll('img'));
+ for(let index=0;index<cloneImages.length;index++){
+  const original=sourceImages[index],copy=cloneImages[index],src=(original&&original.dataset.docxData)||copy.getAttribute('src')||'';
+  const stable=await recoveryImageSource(src);if(stable){copy.setAttribute('src',stable);copy.dataset.docxData=stable}else copy.removeAttribute('src');
+ }
+ return{kind:'documents',schemaVersion:1,fileName:displayedFileName(),html:clone.innerHTML,pageSpecs:Array.from(pagesHost.querySelectorAll('.page')).map(page=>page._pageSpec||currentPageSpec||defaultPageSpec()),currentPageSpec:currentPageSpec||defaultPageSpec(),currentPage,zoom};
+}
+function recoveredOutline(){
+ const out=[];pagesHost.querySelectorAll('.page-content h1,.page-content h2,.page-content h3').forEach((node,index)=>{if(!node.dataset.blockIndex)node.dataset.blockIndex='recovery-'+index;out.push({level:Number(node.tagName.slice(1))||1,text:(node.innerText||node.textContent||'').trim(),blockIndex:node.dataset.blockIndex})});return out.filter(item=>item.text)
+}
+async function restoreDocumentRecovery(context){
+ const payload=context&&context.snapshot&&context.snapshot.payload;if(!payload||payload.kind!=='documents')throw new Error('Unsupported document recovery snapshot.');
+ revokeMedia();currentFile=null;currentBuffer=null;sourceContext=null;mediaUrls={};
+ if(context.source&&context.source.data){
+  const sourceData=context.source.data;const parsed=await LocalDocxParser.parse(sourceData);currentBuffer=sourceData;sourceContext=parsed.sourceContext||null;if(parsed.mediaUrls)revokeMediaUrls(parsed.mediaUrls)
+ }
+ currentFileName=normalizeDocxName(payload.fileName||'Recovered.docx');documentActive=true;currentPageSpec=normalizedPageSpec(payload.currentPageSpec);currentPage=Math.max(1,Number(payload.currentPage)||1);zoom=Math.max(.35,Math.min(1.8,Number(payload.zoom)||1));
+ setTitleValue(currentFileName);welcome.classList.add('hidden');pagesHost.innerHTML=String(payload.html||'');
+ const pageElements=Array.from(pagesHost.querySelectorAll('.page'));pageElements.forEach((page,index)=>{page._pageSpec=normalizedPageSpec((payload.pageSpecs||[])[index]||currentPageSpec);page.dataset.page=String(index+1);page.dataset.pageLabel=(index+1)+' / '+Math.max(1,pageElements.length)});pages=pageElements.map(page=>[{index:0,html:page.querySelector('.page-content')?.innerHTML||'',text:page.innerText||'',spec:page._pageSpec}]);
+ buildOutline(recoveredOutline());buildPageList();bindPageObserver();$('saveBtn').disabled=false;applyZoom();resetHistory();setDirty(true);updateStats();status('Unsaved document restored from this browser');
+}
 function defaultPageSpec(){return{widthPx:816,heightPx:1056,marginTopPx:82,marginRightPx:86,marginBottomPx:88,marginLeftPx:86,contentWidthPx:644,contentHeightPx:886,fontFamily:'Calibri',fontSizePt:11,lineHeight:1.15}}
 function normalizedPageSpec(spec){const d=defaultPageSpec(),x=Object.assign({},d,spec||{});for(const k of ['widthPx','heightPx','marginTopPx','marginRightPx','marginBottomPx','marginLeftPx','contentWidthPx','contentHeightPx','fontSizePt','lineHeight'])if(!Number.isFinite(Number(x[k]))||Number(x[k])<=0)x[k]=d[k];return x}
 function applyPageSpec(page,spec){spec=normalizedPageSpec(spec);page.style.width=spec.widthPx+'px';page.style.height=spec.heightPx+'px';page.style.minHeight=spec.heightPx+'px';page.style.padding=spec.marginTopPx+'px '+spec.marginRightPx+'px '+spec.marginBottomPx+'px '+spec.marginLeftPx+'px';page.style.fontFamily=JSON.stringify(spec.fontFamily||'Calibri')+',Arial,sans-serif';page.style.fontSize=spec.fontSizePt+'pt';page.style.lineHeight=String(spec.lineHeight||1.15);page.style.setProperty('--doc-margin-left',spec.marginLeftPx+'px');page.style.setProperty('--doc-margin-right',spec.marginRightPx+'px')}
@@ -114,7 +144,7 @@ function offerSaveCopy(result){
  const panel=document.createElement('div');panel.id='saveReadyPanel';panel.className='error-overlay';saveReadyUrl=URL.createObjectURL(result.blob);
  panel.innerHTML='<div class="error-card"><div class="word-badge" style="margin:0 auto 14px;width:38px;height:38px">W</div><h2>Save a copy</h2><p>The original file will not be changed.</p><p class="save-copy-note">The original OOXML package is preserved whenever possible. Use the button below and choose where the browser should store the new DOCX copy.</p><div class="error-actions"><button id="closeSaveReady">Cancel</button><a id="saveCopyDownload" class="save-copy-link">Save copy</a></div></div>';
  document.body.appendChild(panel);const a=panel.querySelector('#saveCopyDownload');a.href=saveReadyUrl;a.download=window.InkDeskRuntime?InkDeskRuntime.sanitizeFileName(result.fileName,'Document copy.docx'):result.fileName;
- panel.querySelector('#closeSaveReady').onclick=closeSaveCopyPanel;a.onclick=()=>{setDirty(false);status('Download requested; confirm the DOCX copy in your downloads');setTimeout(closeSaveCopyPanel,15000)}
+ panel.querySelector('#closeSaveReady').onclick=closeSaveCopyPanel;a.onclick=()=>{setDirty(false);if(recovery)recovery.markClean();status('Download requested; confirm the DOCX copy in your downloads');setTimeout(closeSaveCopyPanel,15000)}
 }
 async function save(){if(!pagesHost.querySelector('.page-content'))return;try{status('Preparing copy…');const result=await LocalDocxWriter.save(pagesHost,currentFileName,currentBuffer,sourceContext);offerSaveCopy(result);status('Copy ready')}catch(e){console.error(e);alert('Could not create a copy: '+e.message);status('Save copy failed')}}
 function selectionBlock(){restoreSelection();const s=getSelection();if(!s.rangeCount)return null;let n=s.anchorNode;n=n&&n.nodeType===3?n.parentElement:n;return n&&n.closest('.page-content p,.page-content h1,.page-content h2,.page-content h3,.page-content li,.page-content td')}
@@ -149,6 +179,8 @@ function updateRulerVisual(){
 }
 function applyRulerToSelection(rect){const b=selectionBlock();if(!b)return;const left=rulerPixelsToDocument(rulerState.left,rect),first=rulerPixelsToDocument(rulerState.first,rect),right=rulerPixelsToDocument(rulerState.right,rect);b.style.marginLeft=left+'px';b.style.textIndent=(first-left)+'px';b.style.marginRight=right+'px';setDirty(true);queueHistory()}
 function bindRuler(id,kind){const h=$(id),track=$('ruler').querySelector('.ruler-track');let down=false,startX=0,startLeft=0,startFirst=0;h.onpointerdown=e=>{down=true;startX=e.clientX;startLeft=rulerState.left;startFirst=rulerState.first;h.setPointerCapture(e.pointerId);e.preventDefault()};h.onpointermove=e=>{if(!down)return;const rect=track.getBoundingClientRect(),max=Math.max(0,rect.width),local=Math.max(0,Math.min(max,e.clientX-rect.left));if(kind==='first')rulerState.first=local;else if(kind==='hanging')rulerState.left=local;else if(kind==='left'){const delta=e.clientX-startX;rulerState.left=Math.max(0,Math.min(max,startLeft+delta));rulerState.first=Math.max(0,Math.min(max,startFirst+delta))}else if(kind==='right')rulerState.right=Math.max(0,Math.min(max,rect.right-e.clientX));updateRulerVisual();applyRulerToSelection(rect)};h.onpointerup=h.onpointercancel=()=>down=false}
+recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'documents',appVersion:'0.20.2',defaultFileName:'Untitled.docx',serialize:captureDocumentRecovery,restore:restoreDocumentRecovery,status:message=>{if(message&&/restored|failed/i.test(message))status(message)}}):null;
+if(recovery){window.__InkDeskDocumentsRecovery={manager:recovery,capture:captureDocumentRecovery,restore:restoreDocumentRecovery};recovery.promptLatest()}
 updateRulerVisual()
 fileInput.addEventListener('change',e=>openFile(e.target.files[0]));$('newBtn').addEventListener('click',newDocument);$('newWelcomeBtn').addEventListener('click',newDocument);$('sidebarBtn').onclick=()=>document.querySelector('.workspace').classList.toggle('sidebar-hidden');$('zoomIn').onclick=()=>{zoom=Math.min(1.8,zoom+.1);applyZoom()};$('zoomOut').onclick=()=>{zoom=Math.max(.45,zoom-.1);applyZoom()};$('zoomLabel').onclick=()=>{zoom=1;applyZoom()};$('fitWidth').onclick=fitWidth;$('saveBtn').onclick=save;
 $('titleText').addEventListener('focus',e=>e.target.select());$('titleText').addEventListener('blur',commitTitleRename);$('titleText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}if(e.key==='Escape'){e.preventDefault();e.target.value=displayedFileName();e.target.blur()}});

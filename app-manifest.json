@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.1",
+  "version": "0.20.2",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2"
+    "nextPatch": "0.20.3"
   },
   "capabilities": {
     "documents": [
@@ -89,7 +89,8 @@
       "docx-ruler-margin-zones",
       "docx-ruler-dynamic-indent-mapping",
       "editable-file-title",
-      "unsaved-change-navigation-warning"
+      "unsaved-change-navigation-warning",
+      "private-indexeddb-recovery-snapshots"
     ],
     "spreadsheets": [
       "xls-biff8-local-import",
@@ -120,7 +121,8 @@
       "xlsx-successive-click-references",
       "xlsx-postfix-percentage",
       "editable-file-title",
-      "unsaved-change-navigation-warning"
+      "unsaved-change-navigation-warning",
+      "private-indexeddb-recovery-snapshots"
     ],
     "presentations": [
       "pptx-basic-open",
@@ -131,7 +133,8 @@
       "pptx-chart-and-transition-preview",
       "fingerprint-verified-export-reopen",
       "editable-file-title",
-      "unsaved-change-navigation-warning"
+      "unsaved-change-navigation-warning",
+      "private-indexeddb-recovery-snapshots"
     ],
     "pdf": [
       "pdf-local-open",
@@ -486,10 +489,10 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.1",
+    "version": "0.20.2",
     "channel": "beta",
-    "name": "Consistency Refinement 1",
-    "date": "2026-08-06",
+    "name": "Data Safety and Browser Matrix",
+    "date": "2026-08-07",
     "consolidated": true,
     "sourceDevelopmentLine": "0.19.4",
     "publicVersioning": "Semantic Versioning"
@@ -511,5 +514,41 @@
     ],
     "regressionSuite": "tests/test_v0201_consistency.py",
     "browserRegression": "tests/browser/revalidate_v0201_consistency.py"
+  },
+  "localRecoverySystem": {
+    "schemaVersion": 1,
+    "version": "0.20.2",
+    "runtime": "shared/local-recovery.js",
+    "storage": "IndexedDB",
+    "workspaces": [
+      "documents",
+      "spreadsheets",
+      "presentations"
+    ],
+    "maximumSnapshotsPerDocument": 3,
+    "maximumSnapshotsPerWorkspace": 12,
+    "maximumAgeDays": 30,
+    "restoreChoices": [
+      "restore",
+      "open-normally",
+      "discard"
+    ],
+    "overwritesOriginalFile": false,
+    "clearedAfterConfirmedCopyDownload": true,
+    "localProcessing": true,
+    "documentation": "docs/DATA_SAFETY_AND_BROWSER_MATRIX.md"
+  },
+  "browserMatrix": {
+    "schemaVersion": 1,
+    "version": "0.20.2",
+    "engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "defaultUpdateValidation": "chromium",
+    "explicitMatrixCommand": "python3 scripts/run_browser_matrix.py",
+    "strictEnvironmentVariable": "INKDESK_BROWSER_MATRIX_STRICT=1",
+    "documentation": "docs/DATA_SAFETY_AND_BROWSER_MATRIX.md"
   }
 }

@@ -1,10 +1,10 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.1",
+  "version": "0.20.2",
   "releaseChannel": "beta",
-  "releaseName": "Consistency Refinement 1",
-  "date": "2026-08-06",
+  "releaseName": "Data Safety and Browser Matrix",
+  "date": "2026-08-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",
   "status": "beta",

@@ -11,6 +11,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 from playwright.sync_api import sync_playwright
+from browser_support import launch_browser, requested_browser_name
 import json
 import os
 
@@ -92,7 +93,7 @@ def main():
     output = OUT / "independent_biff8_zero_formula_display.saved.xlsx"
     errors, dialogs = [], []
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         page = browser.new_page(viewport={"width": 1400, "height": 900}, accept_downloads=True)
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.accept()))

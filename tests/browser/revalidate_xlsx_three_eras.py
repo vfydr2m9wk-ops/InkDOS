@@ -10,6 +10,7 @@ Run from the repository root:
 from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+from browser_support import launch_browser, requested_browser_name
 from zipfile import ZipFile
 import json
 import os
@@ -89,7 +90,7 @@ def edit_and_download(page, row, output):
 def main():
     results = []
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         for filename in (
             "era1_office_97_2003_legacy.xls",
             "era2_office_2007_2013_baseline.xlsx",

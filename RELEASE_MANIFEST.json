@@ -1,9 +1,9 @@
 {
   "project": "InkDesk",
-  "version": "0.20.1",
-  "releaseName": "Consistency Refinement 1",
+  "version": "0.20.2",
+  "releaseName": "Data Safety and Browser Matrix",
   "releaseType": "Beta Patch",
-  "releaseDate": "2026-08-06",
+  "releaseDate": "2026-08-07",
   "entryPoints": {
     "InkDesk.html": "index.html",
     "Documents.html": "apps/documents/index.html",
@@ -37,14 +37,20 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "178 passed",
+    "structuralUnitTests": "210 passed in correction-6 local reconstruction/audit",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
+    "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "9 passed",
-    "dedicatedV0201BrowserRegression": "passed"
+    "browserRegressionScripts": "11 configured; hosted Chromium is the transaction gate",
+    "dedicatedV0201BrowserRegression": "passed",
+    "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
+    "browserMatrixRunner": "chromium, firefox, webkit",
+    "presentationsControlRegression": "correction revision 6: one canonical open/closed class state across desktop/compact widths; resize is CSS-only; cold-start and open-close-escape behavioral coverage",
+    "functionalAcceptanceInventory": "210 visible controls inventoried; unproven controls explicitly scheduled",
+    "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

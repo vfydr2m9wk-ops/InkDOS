@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run all Chromium/Playwright regression scripts in a stable order."""
+"""Run all Playwright regression scripts for the selected browser engine."""
 from __future__ import annotations
 
 import json
@@ -22,16 +22,19 @@ SCRIPTS = [
     "revalidate_cross_workspace_isolation.py",
     "revalidate_launch_and_offline_modes.py",
     "revalidate_v0201_consistency.py",
+    "revalidate_v0202_local_recovery.py",
+    "revalidate_presentations_controls.py",
 ]
 
 
 def main() -> int:
+    browser_name = os.environ.get("INKDESK_BROWSER", "chromium").strip().lower()
     RESULTS.mkdir(parents=True, exist_ok=True)
     records = []
     failed = False
     for name in SCRIPTS:
         path = ROOT / "tests" / "browser" / name
-        print(f"[RUN ] {name}", flush=True)
+        print(f"[RUN ] {browser_name}: {name}", flush=True)
         started = time.monotonic()
         log_base = RESULTS / f".{Path(name).stem}"
         stdout_path = log_base.with_suffix(".stdout.log")
@@ -65,6 +68,7 @@ def main() -> int:
             stderr = (stderr + "\nTimed out after 90 seconds.").strip()
         duration = round(time.monotonic() - started, 3)
         record = {
+            "browser": browser_name,
             "script": name,
             "passed": returncode == 0,
             "timed_out": timed_out,
@@ -81,8 +85,8 @@ def main() -> int:
                 print(stdout)
             if stderr:
                 print(stderr, file=sys.stderr)
-    summary = {"passed": sum(item["passed"] for item in records), "total": len(records), "records": records}
-    (RESULTS / "browser_regression_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    summary = {"browser": browser_name, "passed": sum(item["passed"] for item in records), "total": len(records), "records": records}
+    (RESULTS / f"browser_regression_summary_{browser_name}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(f"Browser regression summary: {summary['passed']}/{summary['total']} scripts passed.")
     return 1 if failed else 0
 

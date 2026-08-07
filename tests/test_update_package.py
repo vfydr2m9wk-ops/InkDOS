@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -134,8 +137,11 @@ class UpdatePackageTests(unittest.TestCase):
                 validation="standard",
                 files={"keep.txt": "must be rolled back\n", "new.txt": "temporary\n"},
             )
-            with self.assertRaises(Exception):
-                updater.apply_package(package, repo)
+            captured = io.StringIO()
+            with mock.patch.object(updater, "run_validation", side_effect=RuntimeError("synthetic validation failure")):
+                with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
+                    with self.assertRaises(Exception):
+                        updater.apply_package(package, repo)
             self.assertEqual((repo / "keep.txt").read_text(), "original\n")
             self.assertFalse((repo / "new.txt").exists())
             self.assertFalse((repo / "DEVELOPMENT_STATE.json").exists())
@@ -145,7 +151,9 @@ class UpdatePackageTests(unittest.TestCase):
             root = Path(name)
             repo = self.make_repo(root)
             package = self.make_package(root, files={"keep.txt": "changed\n"})
-            report = updater.apply_package(package, repo, dry_run=True)
+            captured = io.StringIO()
+            with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
+                report = updater.apply_package(package, repo, dry_run=True)
             self.assertEqual((repo / "keep.txt").read_text(), "original\n")
             self.assertFalse((repo / "DEVELOPMENT_STATE.json").exists())
             self.assertTrue(report["dryRun"])
@@ -163,6 +171,13 @@ class UpdatePackageTests(unittest.TestCase):
             updater.apply_package(package, repo)
             self.assertFalse((repo / "remove.txt").exists())
             self.assertTrue((repo / "keep.txt").exists())
+
+    def test_full_validation_profile_is_single_pass(self):
+        commands = [" ".join(command) for command in updater.VALIDATION_PROFILES["full"]]
+        self.assertEqual(sum("scripts/run_release_validation.py" in command for command in commands), 1)
+        self.assertFalse(any("unittest" in command for command in commands))
+        self.assertFalse(any("scripts/validate_repository.py" in command for command in commands))
+        self.assertFalse(any("scripts/audit_source.py" in command for command in commands))
 
     def test_workflow_avoids_privacy_audit_local_paths(self):
         workflow_path = ROOT / ".github/workflows/apply-inkdesk-update.yml"

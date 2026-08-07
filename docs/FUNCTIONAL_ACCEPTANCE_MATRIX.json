@@ -1,0 +1,2437 @@
+{
+  "schemaVersion": 1,
+  "release": "0.20.2",
+  "policy": {
+    "rule": "A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.",
+    "newControlGate": "Every new visible control must appear in this inventory before release.",
+    "changedControlGate": "Changed controls should gain targeted behavioral coverage in the same release when practical.",
+    "manualPolicy": "Platform-specific behavior that cannot be automated is marked manual/not-performed, never inferred from Chromium."
+  },
+  "summary": {
+    "visibleControls": 210,
+    "coverageCounts": {
+      "scheduled": 124,
+      "automated": 86
+    },
+    "capabilities": 12
+  },
+  "controls": [
+    {
+      "key": "home.inkdesk-home",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./index.html\"]#1",
+      "label": "InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "home.d-documents-docx",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./apps/documents/index.html\"]#1",
+      "label": "D Documents DOCX ›",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.s-spreadsheets-xls-xlsx",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./apps/spreadsheets/index.html\"]#1",
+      "label": "S Spreadsheets XLS · XLSX ›",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.p-presentations-pptx",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./apps/presentations/index.html\"]#1",
+      "label": "P Presentations PPTX ›",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.pdf-pdf-workspace-pdf",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./apps/pdf/index.html\"]#1",
+      "label": "PDF PDF Workspace PDF ›",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.txt-plain-text-txt",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./apps/txt/index.html\"]#1",
+      "label": "TXT Plain Text TXT ›",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.epub-epub-reader-epub",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./apps/epub/index.html\"]#1",
+      "label": "EPUB EPUB Reader EPUB ›",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.openanydocument",
+      "module": "home",
+      "source": "index.html",
+      "selector": "#openAnyDocument",
+      "label": "Open file",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "home.source",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"https://github.com/vfydr2m9wk-ops/InkDesk\"]#1",
+      "label": "Source",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "home.status",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./docs/PROJECT_STATUS.md\"]#1",
+      "label": "Status",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "home.limitations",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./docs/KNOWN_LIMITATIONS.md\"]#1",
+      "label": "Limitations",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "home.contribute",
+      "module": "home",
+      "source": "index.html",
+      "selector": "a[href=\"./CONTRIBUTING.md\"]#1",
+      "label": "Contribute",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.return-to-inkdesk-home",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "a[href=\"../../index.html\"]#1",
+      "label": "Return to InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.newbtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#newBtn",
+      "label": "New document",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_docx_three_eras.py",
+        "tests/browser/revalidate_v0202_local_recovery.py"
+      ]
+    },
+    {
+      "key": "documents.open-document",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "label[for=\"fileInput\"]",
+      "label": "Open document",
+      "element": "label",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.undobtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#undoBtn",
+      "label": "Undo",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.redobtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#redoBtn",
+      "label": "Redo",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.sidebarbtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#sidebarBtn",
+      "label": "Toggle sidebar",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.titletext",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#titleText",
+      "label": "Document name",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomout",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomOut",
+      "label": "Zoom out",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomlabel",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomLabel",
+      "label": "Reset zoom",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomin",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomIn",
+      "label": "Zoom in",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.fitwidth",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#fitWidth",
+      "label": "Fit width",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.savebtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#saveBtn",
+      "label": "Save",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_docx_three_eras.py",
+        "tests/browser/revalidate_v0202_local_recovery.py"
+      ]
+    },
+    {
+      "key": "documents.styleselect",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#styleSelect",
+      "label": "Paragraph style",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.fontselect",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#fontSelect",
+      "label": "Font",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.sizeselect",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#sizeSelect",
+      "label": "Font size",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.linespacing",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#lineSpacing",
+      "label": "Line spacing",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.bold",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"bold\"]",
+      "label": "Bold",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.italic",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"italic\"]",
+      "label": "I",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.underline",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"underline\"]",
+      "label": "U",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.justifyleft",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"justifyLeft\"]",
+      "label": "≡",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.justifycenter",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"justifyCenter\"]",
+      "label": "≣",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.justifyright",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"justifyRight\"]",
+      "label": "≡",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.justifyfull",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"justifyFull\"]",
+      "label": "☰",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.insertunorderedlist",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"insertUnorderedList\"]",
+      "label": "• List",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.insertorderedlist",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-cmd=\"insertOrderedList\"]",
+      "label": "1. List",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.alphalist",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#alphaList",
+      "label": "A. List",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.tablebtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#tableBtn",
+      "label": "Table",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.rowbtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#rowBtn",
+      "label": "Add table row",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.colbtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#colBtn",
+      "label": "Add table column",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.image",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "label[for=\"imageInput\"]",
+      "label": "Image",
+      "element": "label",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.pagespanel",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-panel=\"pagesPanel\"]",
+      "label": "Pages",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.outlinepanel",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-panel=\"outlinePanel\"]",
+      "label": "Outline",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.searchpanel",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "[data-panel=\"searchPanel\"]",
+      "label": "Search",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.searchinput",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#searchInput",
+      "label": "searchInput",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.prevhit",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#prevHit",
+      "label": "↑",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.nexthit",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#nextHit",
+      "label": "↓",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.newwelcomebtn",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#newWelcomeBtn",
+      "label": "+ New document",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_docx_three_eras.py",
+        "tests/browser/revalidate_v0202_local_recovery.py"
+      ]
+    },
+    {
+      "key": "documents.open-document-2",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "label[for=\"fileInput\"]",
+      "label": "Open document",
+      "element": "label",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.return-to-inkdesk-home",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "a[href=\"../../index.html\"]#1",
+      "label": "Return to InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.newbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#newBtn",
+      "label": "New workbook",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.openbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#openBtn",
+      "label": "Open workbook",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.undobtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#undoBtn",
+      "label": "Undo",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.redobtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#redoBtn",
+      "label": "Redo",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.savebtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#saveBtn",
+      "label": "Save XLSX copy",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.fontfamily",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#fontFamily",
+      "label": "Font",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.fontsize",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#fontSize",
+      "label": "Font size",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.boldbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#boldBtn",
+      "label": "Bold",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.italicbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#italicBtn",
+      "label": "Italic",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.underlinebtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#underlineBtn",
+      "label": "Underline",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.alignleftbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#alignLeftBtn",
+      "label": "Align left",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.aligncenterbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#alignCenterBtn",
+      "label": "Align center",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.alignrightbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#alignRightBtn",
+      "label": "Align right",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.mergebtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#mergeBtn",
+      "label": "Merge or unmerge selected cells",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.addrowbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#addRowBtn",
+      "label": "Insert row below",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.addcolbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#addColBtn",
+      "label": "Insert column right",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.deletebtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#deleteBtn",
+      "label": "Clear selected cells",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.deleterowbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#deleteRowBtn",
+      "label": "Delete selected rows",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.deletecolbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#deleteColBtn",
+      "label": "Delete selected columns",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.operationselect",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#operationSelect",
+      "label": "Operations",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.gridmode",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#gridMode",
+      "label": "Sheet",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.formmode",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#formMode",
+      "label": "Page",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.gridlinesbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#gridlinesBtn",
+      "label": "Show or hide gridlines",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.namebox",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#nameBox",
+      "label": "Cell reference",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.formulainput",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#formulaInput",
+      "label": "Formula bar",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_spreadsheet_formula_editor.py",
+        "tests/test_spreadsheet_formula_references.py",
+        "tests/browser/revalidate_v0201_consistency.py"
+      ]
+    },
+    {
+      "key": "spreadsheets.newemptybtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#newEmptyBtn",
+      "label": "+ New Spreadsheet",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.openemptybtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#openEmptyBtn",
+      "label": "Open Spreadsheet",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.zoomout",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#zoomOut",
+      "label": "Zoom out",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.zoomslider",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#zoomSlider",
+      "label": "Zoom",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.zoomin",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#zoomIn",
+      "label": "Zoom in",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.fitwidth",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#fitWidth",
+      "label": "Fit width",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.downloadbtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#downloadBtn",
+      "label": "Save XLSX copy",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "spreadsheets.closesavebtn",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#closeSaveBtn",
+      "label": "Cancel",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "presentations.return-to-inkdesk-home",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "a[href=\"../../index.html\"]#1",
+      "label": "Return to InkDesk home",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.newbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#newBtn",
+      "label": "+ New Presentation",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.openbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#openBtn",
+      "label": "Open Presentation",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.return-to-inkdesk-home-2",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "a[href=\"../../index.html\"]#2",
+      "label": "Return to InkDesk home",
+      "element": "a",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.newsmall",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#newSmall",
+      "label": "New Presentation",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.opensmall",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#openSmall",
+      "label": "Open Presentation",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.undobtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#undoBtn",
+      "label": "Undo",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.redobtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#redoBtn",
+      "label": "Redo",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.presentfromstarttop",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#presentFromStartTop",
+      "label": "Present from first slide",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.presentfromcurrenttop",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#presentFromCurrentTop",
+      "label": "Present from current slide",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.savebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#saveBtn",
+      "label": "Save PPTX copy",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.home",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "[data-tab=\"home\"]",
+      "label": "Home",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.insert",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "[data-tab=\"insert\"]",
+      "label": "Insert",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.arrange",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "[data-tab=\"arrange\"]",
+      "label": "Arrange",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.view",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "[data-tab=\"view\"]",
+      "label": "View",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.present",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "[data-tab=\"present\"]",
+      "label": "Present",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.addslidebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#addSlideBtn",
+      "label": "New slide ▾",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.dupslidebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#dupSlideBtn",
+      "label": "Duplicate",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.delslidebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#delSlideBtn",
+      "label": "Delete",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.fontfamily",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#fontFamily",
+      "label": "Arial Aptos Calibri Georgia Helvetica Times New Roman",
+      "element": "select",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.fontsize",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#fontSize",
+      "label": "12 16 20 24 32 44 60",
+      "element": "select",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.boldbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#boldBtn",
+      "label": "B",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.italicbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#italicBtn",
+      "label": "I",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.alignleft",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#alignLeft",
+      "label": "⇤",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.aligncenter",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#alignCenter",
+      "label": "≡",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.alignright",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#alignRight",
+      "label": "⇥",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.inserttextbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#insertTextBtn",
+      "label": "Text",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.insertimagebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#insertImageBtn",
+      "label": "Image",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.shapetype",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#shapeType",
+      "label": "Shape type",
+      "element": "select",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.insertshapebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#insertShapeBtn",
+      "label": "Insert shape",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.frontbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#frontBtn",
+      "label": "Bring front",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.backbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#backBtn",
+      "label": "Send back",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.deleteobjbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#deleteObjBtn",
+      "label": "Delete object",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.togglepresentationsbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#togglePresentationsBtn",
+      "label": "Hide thumbnails",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.toggleinspectorbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#toggleInspectorBtn",
+      "label": "Show format panel",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py",
+        "tests/test_presentations_responsive_controls.py"
+      ],
+      "confirmation": "Starts collapsed; click opens usable inspector; state survives desktop/compact layout changes; button closes/reopens; Escape closes compact drawer."
+    },
+    {
+      "key": "presentations.togglenotesbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#toggleNotesBtn",
+      "label": "Show presenter notes",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py",
+        "tests/test_presentations_responsive_controls.py"
+      ],
+      "confirmation": "Starts collapsed; View control shows and hides presenter notes reversibly."
+    },
+    {
+      "key": "presentations.presentviewbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#presentViewBtn",
+      "label": "Present current",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.zoomoutbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#zoomOutBtn",
+      "label": "−",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.zoomrange",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#zoomRange",
+      "label": "zoomRange",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.zoominbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#zoomInBtn",
+      "label": "+",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.fitbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#fitBtn",
+      "label": "Fit",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.transitiontype",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#transitionType",
+      "label": "None Fade Slide Zoom",
+      "element": "select",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.presentfromstartbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#presentFromStartBtn",
+      "label": "From first slide",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.presentfromcurrentbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#presentFromCurrentBtn",
+      "label": "From current slide",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.propx",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propX",
+      "label": "propX",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.propy",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propY",
+      "label": "propY",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.propw",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propW",
+      "label": "propW",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.proph",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propH",
+      "label": "propH",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.propopacity",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propOpacity",
+      "label": "propOpacity",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.propfill",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propFill",
+      "label": "propFill",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.proprotation",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#propRotation",
+      "label": "propRotation",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.cropzoom",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#cropZoom",
+      "label": "cropZoom",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.cropx",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#cropX",
+      "label": "cropX",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.cropy",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#cropY",
+      "label": "cropY",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.resetcropbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#resetCropBtn",
+      "label": "Reset crop",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.presenternotes",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#presenterNotes",
+      "label": "presenterNotes",
+      "element": "textarea",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.bottomzoomoutbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#bottomZoomOutBtn",
+      "label": "Zoom out",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.bottomzoomrange",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#bottomZoomRange",
+      "label": "Zoom level",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.bottomzoominbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#bottomZoomInBtn",
+      "label": "Zoom in",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.bottomfitbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#bottomFitBtn",
+      "label": "Fit slide",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.exitpresentbtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#exitPresentBtn",
+      "label": "Exit presentation",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "presentations.closetemplatebtn",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#closeTemplateBtn",
+      "label": "Close",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "pdf.return-to-inkdesk-home",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "a[href=\"../../index.html\"]#1",
+      "label": "Return to InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.openbtn",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#openBtn",
+      "label": "Open PDF",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.inkdesk-home",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "a[href=\"../../index.html\"]#2",
+      "label": "InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.opensmall",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#openSmall",
+      "label": "Open PDF",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.sidebartoggle",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#sidebarToggle",
+      "label": "Toggle navigation panel",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.savemodifiedpdfbtn",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#saveModifiedPdfBtn",
+      "label": "Save annotated PDF",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.fullscreenbtn",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#fullscreenBtn",
+      "label": "Full screen",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.systemopenbtn",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#systemOpenBtn",
+      "label": "Open in system viewer",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.prevpage",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#prevPage",
+      "label": "Previous page",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.pagenumber",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#pageNumber",
+      "label": "Page number",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.nextpage",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#nextPage",
+      "label": "Next page",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.zoomout",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#zoomOut",
+      "label": "Zoom out",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.zoomselect",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#zoomSelect",
+      "label": "Zoom",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.zoomin",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#zoomIn",
+      "label": "Zoom in",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.verticalscroll",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#verticalScroll",
+      "label": "Continuous vertical scrolling",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.horizontalscroll",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#horizontalScroll",
+      "label": "Horizontal document scrolling",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.select",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tool=\"select\"]",
+      "label": "Select PDF text or fill AcroForm fields",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.highlight",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tool=\"highlight\"]",
+      "label": "Highlight selected text",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.underline",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tool=\"underline\"]",
+      "label": "Underline selected text",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.marker",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tool=\"marker\"]",
+      "label": "Free marker area",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.comment",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tool=\"comment\"]",
+      "label": "Comment on selected text",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.text",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tool=\"text\"]",
+      "label": "Insert free text",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.undoreview",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#undoReview",
+      "label": "Undo last review action",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.bookmarkbtn",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#bookmarkBtn",
+      "label": "Add or remove bookmark",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.pages",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tab=\"pages\"]",
+      "label": "Pages",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.outline",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tab=\"outline\"]",
+      "label": "Index",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.bookmarks",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tab=\"bookmarks\"]",
+      "label": "Bookmarks",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.comments",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "[data-tab=\"comments\"]",
+      "label": "Comments",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.immersiveexit",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#immersiveExit",
+      "label": "Exit full screen",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.textdialogvalue",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#textDialogValue",
+      "label": "textDialogValue",
+      "element": "textarea",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.dialogcancel",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#dialogCancel",
+      "label": "Cancel",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.insert",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "button:insert#1",
+      "label": "Insert",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.inkdesk-home",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "a[href=\"../../index.html\"]#1",
+      "label": "InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.newbtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#newBtn",
+      "label": "New text file",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.openbtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#openBtn",
+      "label": "Open text file",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.undobtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#undoBtn",
+      "label": "Undo",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.redobtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#redoBtn",
+      "label": "Redo",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.doctitle",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#docTitle",
+      "label": "Text file name",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.savebtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#saveBtn",
+      "label": "Save text file",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.wrapbtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#wrapBtn",
+      "label": "Wrap",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.fontsize",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#fontSize",
+      "label": "Text size",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.findbtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#findBtn",
+      "label": "Find",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.findinput",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#findInput",
+      "label": "Find text",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.findprevious",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#findPrevious",
+      "label": "Previous result",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.findnext",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#findNext",
+      "label": "Next result",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_txt_module.py",
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "txt.findclose",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#findClose",
+      "label": "Close find",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.newstartbtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#newStartBtn",
+      "label": "New text file",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.openstartbtn",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#openStartBtn",
+      "label": "Open text file",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "txt.editor",
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#editor",
+      "label": "Plain text editor",
+      "element": "textarea",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.inkdesk-home",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "a[href=\"../../index.html\"]#1",
+      "label": "InkDesk home",
+      "element": "a",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.openbtn",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#openBtn",
+      "label": "Open EPUB",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "epub.tocbtn",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#tocBtn",
+      "label": "Table of contents",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "epub.doctitle",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#docTitle",
+      "label": "EPUB file name",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.savebtn",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#saveBtn",
+      "label": "Save renamed EPUB copy",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.fontdecrease",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#fontDecrease",
+      "label": "Decrease text size",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "epub.fontincrease",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#fontIncrease",
+      "label": "Increase text size",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "epub.paper",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "[data-theme=\"paper\"]",
+      "label": "Paper theme",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.sepia",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "[data-theme=\"sepia\"]",
+      "label": "Sepia theme",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.sage",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "[data-theme=\"sage\"]",
+      "label": "Sage theme",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.night",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "[data-theme=\"night\"]",
+      "label": "Night theme",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.tocclose",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#tocClose",
+      "label": "Close contents",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.openstartbtn",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#openStartBtn",
+      "label": "Open EPUB",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "epub.previouspage",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#previousPage",
+      "label": "Previous page",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "epub.nextpage",
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#nextPage",
+      "label": "Next page",
+      "element": "button",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py",
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "key": "global.version-integrity",
+      "module": "global",
+      "label": "Version/cache/release metadata are synchronized",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v0201_consistency.py",
+        "tests/browser/revalidate_v0201_consistency.py",
+        "scripts/verify_checksums.py"
+      ]
+    },
+    {
+      "key": "global.offline-launch",
+      "module": "global",
+      "label": "Application shell launches from service-worker cache with versioned URLs",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_launch_and_offline_modes.py"
+      ]
+    },
+    {
+      "key": "global.cross-workspace-isolation",
+      "module": "global",
+      "label": "Workspace state and file handoff do not leak across modules",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_cross_workspace_isolation.py"
+      ]
+    },
+    {
+      "key": "global.interactive-dom-contracts",
+      "module": "global",
+      "label": "Workspace DOM ids and direct app control references resolve without duplicates or orphan targets",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_interactive_dom_contracts.py"
+      ]
+    },
+    {
+      "key": "documents.recovery",
+      "module": "documents",
+      "label": "IndexedDB recovery: Restore / Open normally / Discard",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_local_recovery.py",
+        "tests/browser/revalidate_v0202_local_recovery.py"
+      ]
+    },
+    {
+      "key": "spreadsheets.recovery",
+      "module": "spreadsheets",
+      "label": "IndexedDB recovery: Restore / Open normally / Discard",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_local_recovery.py",
+        "tests/browser/revalidate_v0202_local_recovery.py"
+      ]
+    },
+    {
+      "key": "presentations.recovery",
+      "module": "presentations",
+      "label": "IndexedDB recovery: Restore / Open normally / Discard",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_local_recovery.py",
+        "tests/browser/revalidate_v0202_local_recovery.py"
+      ]
+    },
+    {
+      "key": "presentations.format-panel-responsive",
+      "module": "presentations",
+      "label": "Format panel has one open/closed state across desktop and compact/iPad-width layouts and edits selected objects",
+      "coverage": "automated",
+      "evidence": [
+        "tests/browser/revalidate_presentations_controls.py"
+      ]
+    },
+    {
+      "key": "spreadsheets.multi-cell-selection",
+      "module": "spreadsheets",
+      "label": "Multi-cell selection remains separate from formula reference mode",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_spreadsheet_formula_references.py",
+        "tests/browser/revalidate_v0201_consistency.py"
+      ]
+    },
+    {
+      "key": "pdf.unified-save",
+      "module": "pdf",
+      "label": "Single PDF Save action preserves supported annotations/forms",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_pdf_unified_save.py"
+      ]
+    },
+    {
+      "key": "manual.safari-ipad",
+      "module": "global",
+      "label": "Native Safari/iPadOS touch, file picker, download and installed-PWA behavior",
+      "coverage": "manual",
+      "evidence": [
+        "manual device matrix"
+      ]
+    },
+    {
+      "key": "manual.edge-windows",
+      "module": "global",
+      "label": "Native Edge/Windows file picker, download and clipboard behavior",
+      "coverage": "manual",
+      "evidence": [
+        "manual device matrix"
+      ]
+    }
+  ]
+}

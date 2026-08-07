@@ -2,6 +2,7 @@
 from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+from browser_support import launch_browser, requested_browser_name
 from zipfile import ZipFile
 import json
 import os
@@ -122,7 +123,7 @@ def verify_pptx(browser):
 
 def main():
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+        browser = launch_browser(playwright)
         results = [verify_docx(browser), verify_xlsx(browser), verify_pptx(browser)]
         browser.close()
     page_errors = [error for item in results for error in item["page_errors"]]

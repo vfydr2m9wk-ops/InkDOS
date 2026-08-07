@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.20.2 — Data Safety and Browser Matrix (2026-08-07)
+
+- Added bounded, private IndexedDB recovery snapshots to Documents, Spreadsheets and Presentations.
+- Added explicit Restore, Open normally and Discard recovery choices without overwriting the original file.
+- Recovery keeps at most three snapshots per document, twelve per workspace, and removes snapshots older than thirty days.
+- Successful copy download clears the active recovery history.
+- Added a Playwright browser-selection layer and an explicit Chromium/Firefox/WebKit matrix command while keeping normal update validation Chromium-only for predictable runtime.
+- Added behavioral and structural regression coverage for data safety.
+- Removed duplicate full-validation passes from the incremental updater; the complete release gate now runs once.
+- Canonicalized cache-busted application-shell requests in the service worker so versioned assets remain available offline.
+- Corrected the Playwright local-recovery regression to pass `wait_for_function` arguments using the current keyword-only API.
+
 ## 0.20.1 — Consistency Refinement 1 (2026-08-06)
 
 - Corrected v0.20.1 package: explicit favicons for all workspaces and URL-aware HTTP failure diagnostics.
@@ -58,3 +70,10 @@
 - Focused DOCX, XLS/BIFF8, XLSX, and PPTX behavior and package-preserving export strategies.
 
 - Fixed release checksum verification after the incremental updater changes `DEVELOPMENT_STATE.json`.
+### v0.20.2 correction 2
+
+- Restored the Presentations format panel as a responsive compact-width drawer.
+- Separated local-recovery validation from presenter-notes visibility.
+- Added dedicated Presentations control behavior regression.
+- Added a persistent functional acceptance inventory/checklist for all visible controls.
+

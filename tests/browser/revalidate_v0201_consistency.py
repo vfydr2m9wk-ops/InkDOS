@@ -2,6 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+from browser_support import launch_browser, requested_browser_name
 import json, os
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -28,7 +29,7 @@ def inject(page,workspace):
 def main():
     result={}
     with sync_playwright() as pw:
-        browser=pw.chromium.launch(headless=True,executable_path=CHROMIUM,args=['--no-sandbox'])
+        browser=launch_browser(pw)
         page=browser.new_page(viewport={'width':1400,'height':900})
         inject(page,'documents')
         home=page.locator('.left-tools > .home-link')

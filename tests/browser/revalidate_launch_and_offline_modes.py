@@ -11,6 +11,7 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 from playwright.sync_api import Error as PlaywrightError, sync_playwright
+from browser_support import launch_browser, requested_browser_name
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
@@ -24,6 +25,11 @@ PAGES = (
 )
 
 
+class FastThreadingHTTPServer(ThreadingHTTPServer):
+    daemon_threads = True
+    block_on_close = False
+
+
 class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         return
@@ -31,7 +37,7 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 def start_server():
     handler = partial(QuietHandler, directory=str(ROOT))
-    server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    server = FastThreadingHTTPServer(("127.0.0.1", 0), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     return server, thread
@@ -247,7 +253,7 @@ def main():
     base_url = f"http://127.0.0.1:{server.server_port}"
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True, executable_path=CHROMIUM, args=["--no-sandbox"])
+            browser = launch_browser(playwright)
             results = [
                 validate_static_http_assets(base_url),
                 validate_file_launches(browser),

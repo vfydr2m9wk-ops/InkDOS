@@ -44,12 +44,12 @@ VALIDATION_PROFILES: dict[str, list[list[str]]] = {
         [sys.executable, "scripts/validate_repository.py"],
         [sys.executable, "scripts/audit_source.py"],
     ],
+    # The release runner already performs repository validation, source audit,
+    # unit tests, browser regressions, and checksum verification. Keep the full
+    # profile single-pass so a manual update does not run the same gates twice.
     "full": [
         [sys.executable, "scripts/generate_release_metadata.py"],
         [sys.executable, "scripts/check_no_legacy_runtime.py"],
-        [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"],
-        [sys.executable, "scripts/validate_repository.py"],
-        [sys.executable, "scripts/audit_source.py"],
         [sys.executable, "scripts/run_release_validation.py"],
     ],
 }
