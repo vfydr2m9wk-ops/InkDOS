@@ -4,17 +4,19 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.5
+## InkDesk v0.20.2.6
 
-Version 0.20.2.5 continues the behavior-neutral **Presentations decomposition**.
-The workspace now separates state responsibilities from its orchestration entry
-point: object selection and pointer interactions live in
-`apps/presentations/state/selection-controller.js`, while bounded Undo/Redo
-snapshot history lives in `apps/presentations/state/history-controller.js`.
+Version 0.20.2.6 continues the behavior-neutral **Presentations decomposition**.
+The slideshow/presentation-mode lifecycle now lives in
+`apps/presentations/presentation/slideshow-controller.js`: from-start/current
+entry, keyboard and pointer navigation, counter/help state, slide fitting,
+transition animation and Fullscreen API fallback behavior are no longer owned by
+the monolithic entry point.
 
-The previously extracted Inspector, thumbnail and presenter-notes controllers
-remain under `apps/presentations/ui/`. `app.js` composes these focused components
-through explicit dependencies instead of owning their state and handlers.
+The previously extracted selection/history, Inspector, thumbnail and presenter-
+notes controllers remain separate. `app.js` composes these focused components
+through explicit dependencies and continues to own the presentation document
+and format I/O orchestration.
 
 No Presentations command, visual layout, default panel visibility, file format,
 save behavior or recovery format is intentionally changed. The runtime remains
@@ -56,7 +58,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.5 remains a beta. Real-device validation is still required for critical
+v0.20.2.6 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

@@ -7,10 +7,10 @@ const xmlParser=new DOMParser();
 let pres=null,currentSlide=0,zoom=0.9,dirty=false,idSeq=1;
 let editingId=null,textEditBefore=null,templateMode='presentation';
 let activeTheme=null,presentationTextDefaults=null;
-let renderZoomOverride=null,presentTouchStart=null,presentHelpTimer=null;
+let renderZoomOverride=null;
 let sourcePptxBuffer=null,recovery=null,restoringRecovery=false;
 let thumbnailsController=null,presenterNotesController=null,inspectorController=null;
-let selectionController=null,historyController=null;
+let selectionController=null,historyController=null,slideshowController=null;
 const ui={start:$('startScreen'),app:$('app'),file:$('fileInput'),img:$('imageInput'),title:$('docTitle'),list:$('slideList'),canvas:$('slideCanvas'),stageWrap:$('stageWrap'),save:$('saveBtn'),state:$('stateBadge'),status:$('slideStatus'),zoomText:$('zoomText'),present:$('presentOverlay'),presentSlide:$('presentSlide'),exitPresent:$('exitPresentBtn'),fullscreenPresent:$('fullscreenPresentBtn'),fullscreenPresentLabel:$('fullscreenPresentLabel'),presentCounter:$('presentCounter'),presentHelp:$('presentHelp'),template:$('templateDialog'),templateGrid:$('templateGrid'),notes:$('presenterNotes'),notesPanel:$('notesPanel'),notesCount:$('notesCount')};
 function uid(prefix='o'){return prefix+(idSeq++).toString(36)+Date.now().toString(36).slice(-4)}
 function markDirty(){dirty=true;ui.state.textContent='Unsaved';if(recovery)recovery.markDirty();setPresentationTitleValue()}
@@ -677,117 +677,32 @@ inspectorController=InkDeskPresentationsInspector.create({
   cloneState:()=>historyController.capture(),
   pushHistory:before=>historyController.push(before),
 });
-function fullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement||null;}
-function updateFullscreenControl(){
-  const active=fullscreenElement()===ui.present;
-  ui.present.classList.toggle('is-fullscreen',active);
-  if(ui.fullscreenPresentLabel)ui.fullscreenPresentLabel.textContent=active?'Exit full screen':'Full screen';
-  if(ui.fullscreenPresent)ui.fullscreenPresent.setAttribute('aria-label',active?'Exit full screen':'Enter full screen');
-}
-async function togglePresentFullscreen(){
-  try{
-    if(fullscreenElement()){
-      if(document.exitFullscreen)await document.exitFullscreen();
-      else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
-    }else if(ui.present.requestFullscreen){
-      await ui.present.requestFullscreen({navigationUI:'hide'});
-    }else if(ui.present.webkitRequestFullscreen){
-      ui.present.webkitRequestFullscreen();
-    }else{
-      if(ui.fullscreenPresentLabel)ui.fullscreenPresentLabel.textContent='Full screen unavailable';
-      if(ui.fullscreenPresent)ui.fullscreenPresent.title='This browser or embedded web view does not expose the Fullscreen API. Presentation mode still fills the available window.';
-      return false;
-    }
-    updateFullscreenControl();
-    requestAnimationFrame(fitPresent);
-    return true;
-  }catch(err){
-    console.warn('Fullscreen request was blocked',err);
-    if(ui.fullscreenPresentLabel)ui.fullscreenPresentLabel.textContent='Full screen unavailable';
-    if(ui.fullscreenPresent)ui.fullscreenPresent.title='The browser blocked full screen. Presentation mode still fills the available window.';
-    return false;
-  }
-}
-function showPresentHelp(){
-  if(!ui.presentHelp)return;
-  ui.presentHelp.classList.remove('fade-out');
-  clearTimeout(presentHelpTimer);
-  presentHelpTimer=setTimeout(()=>ui.presentHelp.classList.add('fade-out'),3200);
-}
-function presentMode(fromFirst=false){
-  if(!pres)return;
-  leaveTextEdit();
-  selectionController.clear({render:false});
-  if(fromFirst)currentSlide=0;
-  document.body.classList.add('presentation-active');
-  ui.present.classList.remove('hidden');
-  updateFullscreenControl();
-  fitPresent();
-  showPresentHelp();
-  try{ui.present.focus({preventScroll:true})}catch(e){ui.present.focus()}
-  togglePresentFullscreen();
-}
 function syncTransitionControl(){const control=$('transitionType');if(!control||!pres)return;const type=(slide().transition&&slide().transition.type)||'none';control.value=['none','fade','slide','zoom'].includes(type)?type:'fade'}
 $('transitionType').onchange=()=>{if(!pres)return;const value=$('transitionType').value;historyController.action(()=>{slide().transition={type:value,rawType:value==='slide'?'push':value,duration:500,advanceAfter:null};markDirty()})};
-function animatePresent(){
-  const type=(slide().transition&&slide().transition.type)||$('transitionType').value;
-  ui.presentSlide.classList.remove('fx-fade','fx-slide','fx-zoom');
-  void ui.presentSlide.offsetWidth;
-  if(type!=='none')ui.presentSlide.classList.add('fx-'+type);
+if(!window.InkDeskPresentationsSlideshow){
+  throw new Error('Presentations slideshow controller is unavailable.');
 }
-function fitPresent(){
-  if(!pres||ui.present.classList.contains('hidden'))return;
-  const rect=ui.present.getBoundingClientRect(),w=Math.max(1,rect.width||window.innerWidth),h=Math.max(1,rect.height||window.innerHeight),vp=slideViewport();
-  const scale=Math.max(.05,Math.min((w-2)/vp.w,(h-2)/vp.h));
-  renderSlide(ui.presentSlide,slide(),true,scale);
-  if(ui.presentCounter)ui.presentCounter.textContent=(currentSlide+1)+' / '+pres.slides.length;
-  animatePresent();
-}
-function movePresent(delta){
-  const next=Math.max(0,Math.min(pres.slides.length-1,currentSlide+delta));
-  if(next===currentSlide){showPresentHelp();return;}
-  currentSlide=next;
-  fitPresent();
-}
-async function exitPresentMode(){
-  clearTimeout(presentHelpTimer);
-  if(fullscreenElement()===ui.present){
-    try{if(document.exitFullscreen)await document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen()}catch(e){console.warn(e)}
-  }
-  ui.present.classList.add('hidden');
-  ui.present.classList.remove('is-fullscreen');
-  document.body.classList.remove('presentation-active');
-  presentTouchStart=null;
-  renderAll();
-}
-const presentFromStart=()=>presentMode(true),presentFromCurrent=()=>presentMode(false);
-['presentFromStartTop','presentFromStartBtn'].forEach(id=>{const b=$(id);if(b)b.onclick=presentFromStart});
-['presentFromCurrentTop','presentFromCurrentBtn','presentViewBtn'].forEach(id=>{const b=$(id);if(b)b.onclick=presentFromCurrent});
-ui.exitPresent.onclick=e=>{e.stopPropagation();exitPresentMode()};
-if(ui.fullscreenPresent)ui.fullscreenPresent.onclick=e=>{e.stopPropagation();togglePresentFullscreen()};
-ui.present.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){e.preventDefault();exitPresentMode()}
-  else if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown'||e.key===' '||e.key==='Enter'){e.preventDefault();movePresent(1)}
-  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'||e.key==='Backspace'){e.preventDefault();movePresent(-1)}
-  else if(e.key==='Home'){e.preventDefault();currentSlide=0;fitPresent()}
-  else if(e.key==='End'){e.preventDefault();currentSlide=pres.slides.length-1;fitPresent()}
-  showPresentHelp();
+slideshowController=InkDeskPresentationsSlideshow.create({
+  overlay:ui.present,
+  slideTarget:ui.presentSlide,
+  exitButton:ui.exitPresent,
+  fullscreenButton:ui.fullscreenPresent,
+  fullscreenLabel:ui.fullscreenPresentLabel,
+  counter:ui.presentCounter,
+  help:ui.presentHelp,
+  startButtons:['presentFromStartTop','presentFromStartBtn'].map($),
+  currentButtons:['presentFromCurrentTop','presentFromCurrentBtn','presentViewBtn'].map($),
+  getPresentation:()=>pres,
+  getCurrentSlide:()=>currentSlide,
+  setCurrentSlide:index=>{currentSlide=index;},
+  getSlideData:()=>pres&&pres.slides.length?slide():null,
+  getTransitionType:()=>((slide().transition&&slide().transition.type)||$('transitionType').value),
+  leaveTextEdit,
+  clearSelection:()=>selectionController.clear({render:false}),
+  slideViewport,
+  renderSlide,
+  renderAll,
 });
-ui.present.addEventListener('pointerdown',e=>{
-  if(e.target.closest('.present-controls'))return;
-  presentTouchStart={x:e.clientX,y:e.clientY,id:e.pointerId};
-});
-ui.present.addEventListener('pointerup',e=>{
-  if(!presentTouchStart||presentTouchStart.id!==e.pointerId||e.target.closest('.present-controls'))return;
-  const dx=e.clientX-presentTouchStart.x,dy=e.clientY-presentTouchStart.y;
-  presentTouchStart=null;
-  if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy))movePresent(dx<0?1:-1);else movePresent(1);
-  showPresentHelp();
-});
-ui.present.addEventListener('pointercancel',()=>{presentTouchStart=null});
-['fullscreenchange','webkitfullscreenchange'].forEach(name=>document.addEventListener(name,()=>{updateFullscreenControl();requestAnimationFrame(fitPresent)}));
-window.addEventListener('resize',()=>{if(!ui.present.classList.contains('hidden'))requestAnimationFrame(fitPresent)});
-if(window.ResizeObserver){const presentResizeObserver=new ResizeObserver(()=>{if(!ui.present.classList.contains('hidden'))requestAnimationFrame(fitPresent)});presentResizeObserver.observe(ui.present);}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]))}
 function emu(n){return Math.round(n)}
 function sourceElementById(doc,id){if(!id)return null;const cNv=all(doc,'cNvPr').find(n=>attr(n,'id')===String(id));if(!cNv)return null;let n=cNv;while(n&&n!==doc){if(['sp','pic','graphicFrame','cxnSp'].includes(n.localName))return n;n=n.parentNode}return null}
@@ -861,7 +776,7 @@ function shapeObj(o){const id=Math.floor(Math.random()*100000)+10;const fill=o.f
   return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="Shape '+id+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom>'+fill+line+'</p:spPr>'+tx+'</p:sp>';}
 function picObj(o,rid,n){return '<p:pic><p:nvPicPr><p:cNvPr id="'+(500+n)+'" name="Picture '+n+'"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="'+rid+'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom></p:spPr></p:pic>'}
 function downloadBlob(blob,name){if(window.InkDeskRuntime)return InkDeskRuntime.requestDownload(blob,name);if(!(blob instanceof Blob)||!blob.size)throw new Error('The generated presentation copy is empty.');const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}}
-recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'presentations',appVersion:'0.20.2.5',defaultFileName:'Untitled presentation.pptx',serialize:capturePresentationRecovery,restore:restorePresentationRecovery,status:message=>{if(message&&/failed/i.test(message))setReady(message)}}):null;
+recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'presentations',appVersion:'0.20.2.6',defaultFileName:'Untitled presentation.pptx',serialize:capturePresentationRecovery,restore:restorePresentationRecovery,status:message=>{if(message&&/failed/i.test(message))setReady(message)}}):null;
 if(recovery){window.__InkDeskPresentationsRecovery={manager:recovery,capture:capturePresentationRecovery,restore:restorePresentationRecovery};recovery.promptLatest()}
 ui.save.onclick=savePptx;
 // Advanced editor keyboard shortcuts are intentionally disabled in this beta to avoid iPadOS/WebKit conflicts.

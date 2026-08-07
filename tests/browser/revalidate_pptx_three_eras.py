@@ -43,6 +43,7 @@ def load_app(page) -> None:
         ROOT / "apps/presentations/ui/inspector-controller.js",
         ROOT / "apps/presentations/ui/thumbnails-controller.js",
         ROOT / "apps/presentations/ui/presenter-notes-controller.js",
+        ROOT / "apps/presentations/presentation/slideshow-controller.js",
         ROOT / "apps/presentations/app.js",
     ):
         page.add_script_tag(path=str(path))

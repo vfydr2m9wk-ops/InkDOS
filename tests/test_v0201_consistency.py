@@ -39,25 +39,28 @@ class V0201ConsistencyTests(unittest.TestCase):
 
     def test_public_version_and_cache_are_synchronized(self):
         version=json.loads((ROOT/'VERSION.json').read_text())['version']
-        self.assertEqual(version,'0.20.2.5')
+        self.assertEqual(version,'0.20.2.6')
         self.assertEqual(json.loads((ROOT/'package.json').read_text())['version'],version)
         self.assertEqual(json.loads((ROOT/'app-manifest.json').read_text())['version'],version)
         self.assertIn(f"inkdesk-shell-v{version}",(ROOT/'service-worker.js').read_text())
-        self.assertIn('InkDesk v0.20.2.5',(ROOT/'index.html').read_text())
+        self.assertIn('InkDesk v0.20.2.6',(ROOT/'index.html').read_text())
 
     def test_critical_existing_functions_remain_present(self):
         documents=(ROOT/'apps/documents/app.js').read_text()
         sheets=(ROOT/'apps/spreadsheets/app.js').read_text()
         formulas=(ROOT/'apps/spreadsheets/formula-editor.js').read_text()
         presentations=(ROOT/'apps/presentations/app.js').read_text()
+        slideshow=(ROOT/'apps/presentations/presentation/slideshow-controller.js').read_text()
         for marker in ('openFile','LocalDocxWriter.save','beforeunload'):
             self.assertIn(marker,documents)
         for marker in ('newWorkbook','prepareSave','selectedRefs','copySelection','pasteSelection'):
             self.assertIn(marker,sheets)
         for marker in ('formulaCanSelectReference','balanceFormula','drafts'):
             self.assertIn(marker,formulas)
-        for marker in ('loadPptx','savePptx','presentMode','beforeunload'):
+        for marker in ('loadPptx','savePptx','beforeunload','InkDeskPresentationsSlideshow.create'):
             self.assertIn(marker,presentations)
+        for marker in ('enter(fromFirst = false)','move(delta)','async exit()'):
+            self.assertIn(marker,slideshow)
         shell=(ROOT/'shared/office-shell.js').read_text()
         self.assertIn('Object.freeze(Object.assign(',shell)
         self.assertNotIn('InkDeskRuntime.requestDownload = requestDownload',shell)

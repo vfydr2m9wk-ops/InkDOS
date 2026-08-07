@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class ArchitectureGuardrailsTests(unittest.TestCase):
     def test_policy_has_refactoring_ratchet(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
-        self.assertEqual(policy["release"], "0.20.2.5")
+        self.assertEqual(policy["release"], "0.20.2.6")
         self.assertTrue(policy["rules"]["grandfatheredFilesMayShrinkButNotGrow"])
         self.assertIn("apps/presentations/app.js", policy["grandfatheredDebt"])
         self.assertIn("apps/pdf/app.js", policy["grandfatheredDebt"])

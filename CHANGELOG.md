@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2.6 — Presentations Slideshow Decomposition (2026-08-07)
+
+- Extracted slideshow/presentation-mode lifecycle into `apps/presentations/presentation/slideshow-controller.js`.
+- Moved from-start/from-current entry, keyboard and pointer navigation, counter/help state, slide fitting, transition animation and Fullscreen API fallback handling out of `app.js`.
+- Extended the Presentations behavioral regression to prove slideshow start/current entry, Home/End/Arrow navigation, Escape and visible Exit behavior.
+- Updated offline precaching and manual browser harnesses so the slideshow component loads before `app.js`.
+- Lowered the Presentations `app.js` architecture ratchet again with no intended visual, PPTX, save or recovery behavior change.
+
 ## 0.20.2.5 — Presentations State and Selection Decomposition (2026-08-07)
 
 - Extracted object-selection ownership and pointer drag/resize/rotate interactions into `apps/presentations/state/selection-controller.js`.

@@ -9,7 +9,8 @@ pass the full release gate before the next ownership boundary is moved.
 | 0.20.2.3 | Presentations: Format/Inspector extraction | None intended |
 | 0.20.2.4 | Presentations: thumbnails and presenter-notes extraction | None intended |
 | 0.20.2.5 | Presentations: state/history/selection extraction | None intended |
-| next 0.20.2.x | Presentations: slideshow/presentation mode, then I/O in bounded steps | None intended |
+| 0.20.2.6 | Presentations: slideshow/presentation-mode extraction | None intended |
+| next 0.20.2.x | Presentations: I/O/save/recovery extraction in bounded steps | None intended |
 | later 0.20.2.x | PDF decomposition | None intended |
 | later 0.20.2.x | Shared UI decomposition | None intended |
 | later 0.20.2.x | Documents/Spreadsheets cleanup | None intended |
@@ -41,7 +42,7 @@ apps/presentations/
     images.js
     arrange.js
   presentation/
-    slideshow.js
+    slideshow-controller.js
     transitions.js
   io/
     open-pptx.js
@@ -68,6 +69,13 @@ interactions, selection handles and alignment guides.
 action wrapping, restoration and toolbar disabled-state synchronization. The
 entry point still owns the presentation document itself and composes these state
 controllers with the previously extracted UI controllers.
+
+v0.20.2.6 implements the fourth boundary.
+`presentation/slideshow-controller.js` owns presentation-mode entry/exit,
+from-start/from-current actions, keyboard and pointer navigation, presentation
+counter/help state, slide fitting, transition animation and Fullscreen API
+fallback handling. Transition editing and the presentation document remain in
+`app.js`; the slideshow controller receives them through explicit dependencies.
 
 ## Later target: PDF
 

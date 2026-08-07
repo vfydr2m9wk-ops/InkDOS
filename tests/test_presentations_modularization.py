@@ -13,6 +13,7 @@ HISTORY = STATE / "history-controller.js"
 INSPECTOR = UI / "inspector-controller.js"
 THUMBNAILS = UI / "thumbnails-controller.js"
 NOTES = UI / "presenter-notes-controller.js"
+SLIDESHOW = ROOT / "apps/presentations/presentation/slideshow-controller.js"
 HTML = ROOT / "apps/presentations/index.html"
 WORKER = ROOT / "service-worker.js"
 
@@ -21,20 +22,21 @@ class PresentationsModularizationTests(unittest.TestCase):
     def test_feature_components_load_before_app(self):
         html = HTML.read_text(encoding="utf-8")
         components = (
-            "state/selection-controller.js?v=0.20.2.5",
-            "state/history-controller.js?v=0.20.2.5",
-            "ui/inspector-controller.js?v=0.20.2.5",
-            "ui/thumbnails-controller.js?v=0.20.2.5",
-            "ui/presenter-notes-controller.js?v=0.20.2.5",
+            "state/selection-controller.js?v=0.20.2.6",
+            "state/history-controller.js?v=0.20.2.6",
+            "ui/inspector-controller.js?v=0.20.2.6",
+            "ui/thumbnails-controller.js?v=0.20.2.6",
+            "ui/presenter-notes-controller.js?v=0.20.2.6",
+            "presentation/slideshow-controller.js?v=0.20.2.6",
         )
-        app = "app.js?v=0.20.2.5"
+        app = "app.js?v=0.20.2.6"
         for component in components:
             self.assertIn(component, html)
             self.assertLess(html.index(component), html.index(app))
 
     def test_extracted_components_are_readable_and_within_new_source_limits(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
-        for path in (SELECTION, HISTORY, INSPECTOR, THUMBNAILS, NOTES):
+        for path in (SELECTION, HISTORY, INSPECTOR, THUMBNAILS, NOTES, SLIDESHOW):
             self.assertTrue(path.is_file(), path)
             source = path.read_text(encoding="utf-8").splitlines()
             self.assertLessEqual(len(source), policy["extensions"][".js"]["newFileMaxLines"], path)
@@ -52,17 +54,20 @@ class PresentationsModularizationTests(unittest.TestCase):
         inspector = INSPECTOR.read_text(encoding="utf-8")
         thumbnails = THUMBNAILS.read_text(encoding="utf-8")
         notes = NOTES.read_text(encoding="utf-8")
+        slideshow = SLIDESHOW.read_text(encoding="utf-8")
 
         self.assertIn("InkDeskPresentationsSelection.create", app)
         self.assertIn("InkDeskPresentationsHistory.create", app)
         self.assertIn("InkDeskPresentationsInspector.create", app)
         self.assertIn("InkDeskPresentationsThumbnails.create", app)
         self.assertIn("InkDeskPresentationsNotes.create", app)
+        self.assertIn("InkDeskPresentationsSlideshow.create", app)
         self.assertIn("class PresentationSelectionController", selection)
         self.assertIn("class PresentationHistoryController", history)
         self.assertIn("class PresentationInspectorController", inspector)
         self.assertIn("class PresentationThumbnailsController", thumbnails)
         self.assertIn("class PresentationNotesController", notes)
+        self.assertIn("class PresentationSlideshowController", slideshow)
 
         self.assertNotIn("let undoStack", app)
         self.assertNotIn("let redoStack", app)
@@ -78,6 +83,12 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertNotIn("ui.notes.addEventListener('input'", app)
         self.assertNotIn("$('togglePresentationsBtn').onclick", app)
         self.assertNotIn("$('toggleNotesBtn').onclick", app)
+        self.assertNotIn("function presentMode(", app)
+        self.assertNotIn("function fitPresent(", app)
+        self.assertNotIn("function movePresent(", app)
+        self.assertNotIn("function exitPresentMode(", app)
+        self.assertNotIn("presentTouchStart", app)
+        self.assertNotIn("presentHelpTimer", app)
 
     def test_state_controllers_own_selection_interactions_and_history_stacks(self):
         selection = SELECTION.read_text(encoding="utf-8")
@@ -94,7 +105,18 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertIn("undo()", history)
         self.assertIn("redo()", history)
 
-    def test_presentations_app_ratchet_moves_down_after_state_extraction(self):
+    def test_slideshow_controller_owns_presentation_mode_lifecycle(self):
+        slideshow = SLIDESHOW.read_text(encoding="utf-8")
+        self.assertIn("enter(fromFirst = false)", slideshow)
+        self.assertIn("move(delta)", slideshow)
+        self.assertIn("async exit()", slideshow)
+        self.assertIn("async toggleFullscreen()", slideshow)
+        self.assertIn("handleKeydown(event)", slideshow)
+        self.assertIn("this.touchStart = null", slideshow)
+        self.assertIn("this.helpTimer = null", slideshow)
+        self.assertIn("new global.ResizeObserver", slideshow)
+
+    def test_presentations_app_ratchet_moves_down_after_slideshow_extraction(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
         debt = policy["grandfatheredDebt"]["apps/presentations/app.js"]
         lines = APP.read_text(encoding="utf-8").splitlines()
@@ -104,8 +126,8 @@ class PresentationsModularizationTests(unittest.TestCase):
         )
         self.assertEqual(debt["maxLines"], len(lines))
         self.assertEqual(debt["maxLongLines"], long_lines)
-        self.assertLess(debt["maxLines"], 870)
-        self.assertLess(debt["maxLongLines"], 88)
+        self.assertLess(debt["maxLines"], 868)
+        self.assertLessEqual(debt["maxLongLines"], 82)
 
     def test_offline_shell_precaches_every_extracted_component(self):
         worker = WORKER.read_text(encoding="utf-8")
@@ -115,6 +137,7 @@ class PresentationsModularizationTests(unittest.TestCase):
             "./apps/presentations/ui/inspector-controller.js",
             "./apps/presentations/ui/thumbnails-controller.js",
             "./apps/presentations/ui/presenter-notes-controller.js",
+            "./apps/presentations/presentation/slideshow-controller.js",
         ):
             self.assertIn(component, worker)
 
@@ -132,6 +155,7 @@ class PresentationsModularizationTests(unittest.TestCase):
             "apps/presentations/ui/inspector-controller.js",
             "apps/presentations/ui/thumbnails-controller.js",
             "apps/presentations/ui/presenter-notes-controller.js",
+            "apps/presentations/presentation/slideshow-controller.js",
         )
         app = "apps/presentations/app.js"
         for relative in paths:

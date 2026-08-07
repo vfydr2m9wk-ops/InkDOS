@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.5
+# Testing guide — InkDesk v0.20.2.6
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,7 +35,7 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails pass with 49 runtime JS/CSS files and the Presentations `app.js` ratchet reduced again from 870/88 to 868/82 physical/long lines.
+- Architecture guardrails pass with 50 runtime JS/CSS files and the Presentations `app.js` ratchet reduced again to 783 physical lines / 82 long lines after slideshow extraction.
 - The Python suite contains 235 tests. In the local reconstruction, 234 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
@@ -93,10 +93,11 @@ executes this gate after the source audit and before unit/package tests. The
 gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
 
-## v0.20.2.5 Presentations decomposition
+## v0.20.2.6 Presentations decomposition
 
-- `tests/test_presentations_modularization.py` verifies the selection/history state controllers plus Inspector, thumbnail and presenter-notes UI controllers as focused components loaded before `app.js`, within new-source limits and precached offline.
-- The Presentations `app.js` ratchet is 868 physical lines / 82 long lines; selection/drag and history stacks may not be reimplemented in the entry point.
-- Browser harnesses that strip HTML script tags explicitly load both Presentations state controllers and all three UI controllers before `app.js`.
-- `tests/browser/revalidate_presentations_controls.py` remains the user-visible behavior gate for Format, notes and thumbnail visibility, compact-width behavior, selection clear/reselect, and Undo/Redo snapshot restoration.
+- `tests/test_presentations_modularization.py` verifies selection/history, Inspector, thumbnails, presenter notes and slideshow as focused components loaded before `app.js`, within new-source limits and precached offline.
+- The Presentations `app.js` ratchet is 783 physical lines / 82 long lines; presentation-mode lifecycle and Fullscreen handling may not be reimplemented in the entry point.
+- Browser harnesses that strip HTML script tags explicitly load the slideshow controller after the state/UI controllers and before `app.js`.
+- `tests/browser/revalidate_presentations_controls.py` additionally proves current/start slideshow entry, slide counter navigation, Home/End/Arrow keys, Escape and the visible Exit control while remaining independent of headless Fullscreen API policy.
 - Existing PPTX, recovery, cross-workspace and transactional-open browser regressions must remain unchanged.
+

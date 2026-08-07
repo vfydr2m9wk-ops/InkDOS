@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 7,
-  "currentPackage": "0.20.2.5",
+  "appliedSequence": 8,
+  "currentPackage": "0.20.2.6",
   "status": "in-progress",
   "history": [
     {
@@ -40,6 +40,11 @@
       "sequence": 7,
       "packageLabel": "0.20.2.5",
       "description": "Presentations decomposition v0.20.2.5: behavior-neutral extraction of selected-object state, drag/resize/rotate interactions, and Undo/Redo history into focused state controllers. No visual redesign, editing feature, PPTX behavior, save/recovery behavior or workflow change is intended."
+    },
+    {
+      "sequence": 8,
+      "packageLabel": "0.20.2.6",
+      "description": "Presentations decomposition v0.20.2.6, correction 2: runtime and slideshow extraction are unchanged. The hosted correction-1 run passed repository validation, source audit, architecture guardrails, all 236 unit/package tests, and 11/12 Chromium scripts. The sole failure was in the Presentations browser harness: previous View-tab checks left Home tools hidden before the new slideshow scenario clicked New slide. This correction restores the Home tab in the test before clicking #addSlideBtn. No application runtime, UI, behavior, workflow, release version, or sequence change is intended."
     }
   ]
 }
