@@ -31,7 +31,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
         self.assertIn(expected, bootstrap)
 
     def test_default_panel_contract(self):
-        runtime = (ROOT / "shared" / "ui" / "workspace-layout.js").read_text(
+        runtime = (ROOT / "shared" / "ui" / "workspace-panel-controller.js").read_text(
             encoding="utf-8"
         )
         self.assertIn("documents: Object.freeze", runtime)
@@ -64,6 +64,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("'./shared/ui/workspace-layout.css'", worker)
         self.assertIn("'./shared/ui/workspace-layout.js'", worker)
+        self.assertIn("'./shared/ui/workspace-panel-controller.js'", worker)
         self.assertRegex(
             worker,
             r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",

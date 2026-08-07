@@ -122,3 +122,9 @@ Review persistence, selected-text annotations, free marker/text overlays, commen
 The first shared-UI boundary moves filename normalization, editable-title state, dirty-state bridging, discard protection and download-name rewriting from `shared/office-shell.js` into `shared/ui/document-session-controller.js`. The Office shell remains responsible for loading/composition and preserves `InkDeskDocumentSessionReady`. No visible control or workspace behavior changes.
 
 Next shared-UI cuts should remain similarly bounded; `shared/ui/workspace-layout.js` is still grandfathered and is the primary remaining shared UI debt target.
+### v0.20.2.15 — Shared workspace panel decomposition
+
+Documents navigation-panel state, Presentations thumbnails/Format/notes panel state, PDF navigation-sidebar state and Spreadsheet layout markers move into `shared/ui/workspace-panel-controller.js`. `workspace-layout.js` remains the Documents ruler owner and delegates panel state to the new controller. No visible default or interaction is intentionally changed.
+
+The next shared-UI cut should stay bounded and should not mix Documents ruler extraction with unrelated workspace behavior.
+

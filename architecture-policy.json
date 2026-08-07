@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.14",
+  "release": "0.20.2.15",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -134,9 +134,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "shared/ui/workspace-layout.js": {
-      "maxLines": 1270,
+      "maxLines": 1009,
       "maxLongLines": 0,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Shared workspace panel visibility/persistence moved to a focused controller in v0.20.2.15; the remaining grandfathered debt is the Documents ruler/layout runtime."
     },
     "shared/ui/workspace-layout.css": {
       "maxLines": 982,

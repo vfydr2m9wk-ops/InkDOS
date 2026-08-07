@@ -4,13 +4,13 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.14
+## InkDesk v0.20.2.15
 
-Version 0.20.2.14 begins the **shared UI decomposition** without changing the visible workflow. The existing cross-workspace document-session behavior now lives in `shared/ui/document-session-controller.js` instead of being implemented inside the Office bootstrap.
+Version 0.20.2.15 continues the **shared UI decomposition** without changing the visible workflow. Cross-workspace panel visibility and persistence now live in `shared/ui/workspace-panel-controller.js`, while the Documents ruler remains in `shared/ui/workspace-layout.js`.
 
-The extracted controller owns the existing editable filename normalization, title/content dirty-state bridge, discard warning, and download-name rewriting for Documents, Spreadsheets, Presentations, PDF, TXT and EPUB. `shared/office-shell.js` now only loads and composes the controller with the existing file-lifecycle service, dropping from 617 to 315 physical lines and leaving the inherited-debt list.
+The new panel controller owns only the existing panel/layout-state behavior: Documents navigation, Presentations thumbnails/Format/notes, PDF navigation sidebar and Spreadsheet layout markers. The Documents ruler remains in `shared/ui/workspace-layout.js`, whose architecture ratchet drops from 1,270 to 1,009 physical lines.
 
-The PDF decomposition completed in v0.20.2.13 remains unchanged. The hardened updater flow, package SHA identity, incremental checksums and the same 17 isolated Chromium scenarios continue to protect the behavior-neutral refactoring sequence.
+The document-session extraction completed in v0.20.2.14 and the PDF decomposition completed in v0.20.2.13 remain unchanged. The hardened updater flow, package SHA identity, incremental checksums and the same 17 isolated Chromium scenarios continue to protect the behavior-neutral refactoring sequence.
 
 ## Refactoring policy
 
@@ -48,7 +48,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.14 remains a beta. Real-device validation is still required for critical
+v0.20.2.15 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

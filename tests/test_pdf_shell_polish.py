@@ -41,7 +41,7 @@ class PdfShellPolishTests(unittest.TestCase):
 
     def test_pdf_sidebar_defaults_closed_and_owns_toggle(self):
         runtime = (
-            ROOT / "shared" / "ui" / "workspace-layout.js"
+            ROOT / "shared" / "ui" / "workspace-panel-controller.js"
         ).read_text(encoding="utf-8")
 
         for expected in (
@@ -86,6 +86,7 @@ class PdfShellPolishTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
 
         script = r"""
+require('./shared/ui/workspace-panel-controller.js');
 require('./shared/ui/workspace-layout.js');
 
 function classList(initial) {

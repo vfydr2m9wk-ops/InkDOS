@@ -87,7 +87,63 @@
     });
   }
 
-  function loadWorkspaceLayout() {
+  function loadWorkspacePanelController() {
+    if (
+      global.InkDeskWorkspacePanelController &&
+      global.InkDeskWorkspacePanelController.version === '0.20.2.15'
+    ) {
+      return Promise.resolve(global.InkDeskWorkspacePanelController);
+    }
+
+    return new Promise(function (resolve, reject) {
+      const existing = documentObject.querySelector(
+        'script[data-inkdesk-ui="workspace-panel-controller"]'
+      );
+
+      if (existing) {
+        existing.addEventListener(
+          'load',
+          function () { resolve(global.InkDeskWorkspacePanelController); },
+          { once: true }
+        );
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = documentObject.createElement('script');
+      script.src = new URL('workspace-panel-controller.js', uiBase).href;
+      script.async = false;
+      script.dataset.inkdeskUi = 'workspace-panel-controller';
+
+      script.addEventListener(
+        'load',
+        function () {
+          if (!global.InkDeskWorkspacePanelController) {
+            reject(new Error(
+              'InkDesk workspace panel controller did not initialize.'
+            ));
+            return;
+          }
+          resolve(global.InkDeskWorkspacePanelController);
+        },
+        { once: true }
+      );
+
+      script.addEventListener(
+        'error',
+        function () {
+          reject(new Error(
+            'The shared InkDesk workspace panel controller could not be loaded.'
+          ));
+        },
+        { once: true }
+      );
+
+      documentObject.head.appendChild(script);
+    });
+  }
+
+  function loadWorkspaceLayoutRuntime() {
     if (
       global.InkDeskWorkspaceLayout &&
       global.InkDeskWorkspaceLayout.version === '0.20.0'
@@ -136,6 +192,12 @@
       );
 
       documentObject.head.appendChild(script);
+    });
+  }
+
+  function loadWorkspaceLayout() {
+    return loadWorkspacePanelController().then(function () {
+      return loadWorkspaceLayoutRuntime();
     });
   }
 
@@ -226,7 +288,7 @@
   function loadDocumentSessionController() {
     if (
       global.InkDeskDocumentSessionController &&
-      global.InkDeskDocumentSessionController.version === '0.20.2.14'
+      global.InkDeskDocumentSessionController.version === '0.20.2.15'
     ) {
       return Promise.resolve(global.InkDeskDocumentSessionController);
     }

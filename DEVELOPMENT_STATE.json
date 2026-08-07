@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 16,
-  "currentPackage": "0.20.2.14",
+  "appliedSequence": 17,
+  "currentPackage": "0.20.2.15",
   "status": "in-progress",
   "history": [
     {
@@ -85,6 +85,11 @@
       "sequence": 16,
       "packageLabel": "0.20.2.14",
       "description": "Shared Document Session Decomposition v0.20.2.14 correction 1. The application runtime and the architectural extraction are unchanged. The first hosted attempt stopped in the workflow package-selection bootstrap before any transaction because the ZIP omitted files/scripts/apply_update_package.py. Correction 1 restores the mandatory updater bootstrap (and the unchanged browser-regression runner) to the package payload. No runtime, UI, file-format, save-path or workflow behavior change is introduced."
+    },
+    {
+      "sequence": 17,
+      "packageLabel": "0.20.2.15",
+      "description": "Shared workspace-panel decomposition: move existing Documents navigation-panel state, Presentations thumbnails/Format/notes panel state, PDF navigation-sidebar state and Spreadsheet layout markers behind shared/ui/workspace-panel-controller.js. The Documents ruler remains in workspace-layout.js. No visible control, panel default, editing behavior, file-format behavior, save path or workflow behavior is intentionally changed."
     }
   ]
 }

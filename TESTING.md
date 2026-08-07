@@ -1,3 +1,7 @@
+## v0.20.2.15 shared workspace-panel decomposition
+
+The hosted package gate must preserve the complete existing behavior suite and additionally verify that panel-state ownership is isolated in `shared/ui/workspace-panel-controller.js`, loaded before `workspace-layout.js`, precached for offline use and bounded by the architecture ratchet. Expected unit/package count: 257. Expected Chromium regression count: 17/17.
+
 ## v0.20.2.14 shared document-session decomposition
 
 - `tests/test_document_session_modularization.py` enforces the new shared UI ownership boundary, offline precache registration and Office-shell debt retirement.

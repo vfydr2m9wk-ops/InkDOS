@@ -1,3 +1,11 @@
+## 0.20.2.15 — 2026-08-07
+
+### Shared Workspace Panel Decomposition
+
+- Moved Documents, Presentations, PDF and Spreadsheet shared panel/layout-state behavior into `shared/ui/workspace-panel-controller.js`.
+- Kept Documents ruler geometry and interaction in `shared/ui/workspace-layout.js`, reducing that grandfathered file from 1,270 to 1,009 physical lines.
+- Added deterministic controller loading, offline precache and architecture ownership tests without changing visible panel defaults or controls.
+
 ## 0.20.2.14 — 2026-08-07
 
 - Extracted the shared document-session implementation into `shared/ui/document-session-controller.js`.

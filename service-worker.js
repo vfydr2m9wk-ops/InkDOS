@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.20.2.14';
+const CACHE_NAME='inkdesk-shell-v0.20.2.15';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -25,6 +25,7 @@ const APP_SHELL=[
   './shared/ui/shell-contract.json',
   './shared/ui/workspace-layout.css',
   './shared/ui/workspace-layout.js',
+  './shared/ui/workspace-panel-controller.js',
   './shared/ui/document-session-controller.js',
   './shared/ui/visual-foundation.css',
   './shared/office-runtime.js',

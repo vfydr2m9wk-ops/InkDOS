@@ -1,3 +1,3 @@
-# InkDesk v0.20.2.14 — Shared Document Session Decomposition
+# InkDesk v0.20.2.15 — Shared Workspace Panel Decomposition
 
-The existing cross-workspace document-session adapter now lives in `shared/ui/document-session-controller.js`. Filename normalization, dirty-state bridging, discard protection and download-name rewriting are unchanged; `shared/office-shell.js` is reduced to bootstrap/composition and no longer needs an inherited architecture-debt exemption. See `RELEASE_NOTES_0.20.2.14.md`.
+Shared panel visibility/persistence now lives in `shared/ui/workspace-panel-controller.js`; `shared/ui/workspace-layout.js` keeps the Documents ruler and delegates panel state. No visible control, default panel state or workspace behavior is intentionally changed. See `RELEASE_NOTES_0.20.2.15.md`.

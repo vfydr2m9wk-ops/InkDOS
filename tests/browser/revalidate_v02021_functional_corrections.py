@@ -1,4 +1,4 @@
-"""Behavioral regression for InkDesk v0.20.2.14 functional corrections."""
+"""Behavioral regression for InkDesk v0.20.2.15 functional corrections."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.2.14"
+VERSION = "0.20.2.15"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):

@@ -34,7 +34,7 @@ class LocalRecoveryTests(unittest.TestCase):
         disabled = ("pdf", "txt", "epub")
         for module in enabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
-            self.assertIn("../../shared/local-recovery.js?v=0.20.2.14", html)
+            self.assertIn("../../shared/local-recovery.js?v=0.20.2.15", html)
             self.assertLess(html.index("local-recovery.js"), html.index("app.js"))
         for module in disabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
@@ -79,7 +79,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_service_worker_caches_recovery_runtime(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("./shared/local-recovery.js", text)
-        self.assertIn("inkdesk-shell-v0.20.2.14", text)
+        self.assertIn("inkdesk-shell-v0.20.2.15", text)
 
     def test_service_worker_canonicalizes_versioned_shell_assets(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -87,7 +87,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("canonical.hash=''", text)
         self.assertIn("APP_SHELL_URLS.has(canonical.href)", text)
         hub = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("module-registry.js?v=0.20.2.14", hub)
+        self.assertIn("module-registry.js?v=0.20.2.15", hub)
 
     def test_local_recovery_browser_waits_use_playwright_keyword_arg(self):
         text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
@@ -108,10 +108,10 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_release_identity_is_v0202(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(version["version"], "0.20.2.14")
-        self.assertEqual(version["releaseName"], "Shared Document Session Decomposition")
-        self.assertEqual(state["appliedSequence"], 16)
-        self.assertEqual(state["currentPackage"], "0.20.2.14")
+        self.assertEqual(version["version"], "0.20.2.15")
+        self.assertEqual(version["releaseName"], "Shared Workspace Panel Decomposition")
+        self.assertEqual(state["appliedSequence"], 17)
+        self.assertEqual(state["currentPackage"], "0.20.2.15")
 
 
 if __name__ == "__main__":

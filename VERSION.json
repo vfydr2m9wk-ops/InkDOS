@@ -1,9 +1,9 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.2.14",
+  "version": "0.20.2.15",
   "releaseChannel": "beta",
-  "releaseName": "Shared Document Session Decomposition",
+  "releaseName": "Shared Workspace Panel Decomposition",
   "date": "2026-08-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",

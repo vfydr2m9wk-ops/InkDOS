@@ -118,7 +118,7 @@ def main():
                         raise
 
                     version = page.evaluate("() => window.InkDeskPdfSaveController?.version")
-                    assert_true(version == "0.20.2.14", f"Unexpected save-controller version: {version}")
+                    assert_true(version == "0.20.2.15", f"Unexpected save-controller version: {version}")
                     assert_true(page.locator("#saveModifiedPdfBtn").is_disabled(), "Save must start disabled without a document")
                     report["checks"].append("save controller loaded and starts unavailable")
 

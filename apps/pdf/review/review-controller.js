@@ -410,7 +410,7 @@
   }
 
   global.InkDeskPdfReviewController = Object.freeze({
-    version: '0.20.2.14',
+    version: '0.20.2.15',
     createReviewController
   });
 })(globalThis);
