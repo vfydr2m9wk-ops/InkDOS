@@ -154,3 +154,9 @@ body.resizing-column .col-header.resize-active,body.resizing-row .row-header.res
 .structured-table-header{font-weight:700;background:color-mix(in srgb,var(--accent,#356fb6) 24%,var(--surface,#fff))!important}
 .structured-table-band{background:color-mix(in srgb,var(--accent,#356fb6) 7%,transparent)!important}
 .dynamic-array-preview{white-space:pre-line!important;align-items:flex-start!important;overflow:auto!important;line-height:1.25!important}
+
+/* 0.20.2.1 editable workbook title */
+.document-title .title-input{width:min(280px,34vw);min-width:92px;padding:4px 7px;border:1px solid transparent;border-radius:7px;background:transparent;color:inherit;font:inherit;font-weight:650;text-align:center;outline:none;text-overflow:ellipsis}
+.document-title .title-input:hover{background:color-mix(in srgb,var(--text) 6%,transparent)}
+.document-title .title-input:focus{border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:var(--panel);text-align:left}
+@media(max-width:700px){.document-title .title-input{width:min(150px,30vw);min-width:72px}}

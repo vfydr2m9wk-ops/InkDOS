@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <link rel="icon" href="../../assets/icons/presentations.png">
-  <title>Presentations — InkDesk 0.20.2</title>
+  <title>Presentations — InkDesk 0.20.2.1</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="../../shared/office-shell.css" />
   <link rel="manifest" href="../../manifest.webmanifest">
@@ -24,7 +24,7 @@
         <button id="newBtn" class="start-btn primary"><span class="ico">+</span><span>New Presentation</span></button>
         <button id="openBtn" class="start-btn secondary"><span class="ico folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/></svg></span><span>Open Presentation</span></button>
       </div>
-      <small>0.20.2 beta · Package-preserving PPTX copy export · Experimental compatibility</small>
+      <small>0.20.2.1 beta · Package-preserving PPTX copy export · Experimental compatibility</small>
     </div>
   </section>
 
@@ -38,7 +38,7 @@
         <button id="undoBtn" class="icon-btn top-action history-btn" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg></button>
         <button id="redoBtn" class="icon-btn top-action history-btn" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
       </div>
-      <div id="docTitle" class="doc-title">Untitled presentation</div>
+      <input id="docTitle" class="doc-title presentation-title-input" type="text" value="Untitled presentation.pptx" aria-label="Presentation name" spellcheck="false" autocomplete="off">
       <div class="titlebar-right">
         <button id="presentFromStartTop" class="top-action present-top-action" title="Present from first slide" aria-label="Present from first slide"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="12" rx="1.5"/><path d="M9.5 7.5 15 10l-5.5 2.5z"/><path d="M12 16v4M8.5 20h7"/></svg><span>From start</span></button>
         <button id="presentFromCurrentTop" class="top-action present-top-action current" title="Present from current slide" aria-label="Present from current slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5 18 12 8 18.5z"/></svg><span>Current</span></button>
@@ -161,12 +161,12 @@
       <div id="templateGrid" class="template-grid"></div>
     </div>
   </section>
-  <script src="../../shared/office-runtime.js?v=0.20.2"></script>
+  <script src="../../shared/office-runtime.js?v=0.20.2.1"></script>
   <script src="../../shared/vendor/jszip.min.js?v=3.10.1"></script>
   <script src="engine/compatibility.js"></script>
-  <script src="../../shared/office-shell.js?v=0.20.2"></script>
-  <script src="../../shared/local-recovery.js?v=0.20.2"></script>
-  <script src="app.js?v=0.20.2"></script>
-  <script src="../../shared/register-service-worker.js?v=0.20.2"></script>
+  <script src="../../shared/office-shell.js?v=0.20.2.1"></script>
+  <script src="../../shared/local-recovery.js?v=0.20.2.1"></script>
+  <script src="app.js?v=0.20.2.1"></script>
+  <script src="../../shared/register-service-worker.js?v=0.20.2.1"></script>
 </body>
 </html>

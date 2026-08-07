@@ -29,7 +29,7 @@ class RepositoryTests(unittest.TestCase):
         release_manifest = json.loads((ROOT / "RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
 
         expected = version_info["version"]
-        self.assertRegex(expected, r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
+        self.assertRegex(expected, r"^\d+\.\d+\.\d+(?:\.\d+)*(?:-[0-9A-Za-z.-]+)?$")
         self.assertEqual(manifest["version"], expected)
         self.assertEqual(package["version"], expected)
         self.assertEqual(release_manifest["version"], expected)
@@ -94,7 +94,7 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn("pagination-content-measure", app)
         self.assertIn("tolerance=3", app)
         self.assertIn("pagination-measure", css)
-        self.assertIn("docx-parser.js?v=0.20.2", html)
+        self.assertIn("docx-parser.js?v=0.20.2.1", html)
 
     def test_export_writers_use_standard_ooxml_part_paths(self):
         docx = (ROOT / "apps/documents/docx-writer.js").read_text(encoding="utf-8")

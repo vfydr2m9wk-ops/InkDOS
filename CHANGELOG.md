@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2.1 — Functional Corrections (2026-08-07)
+
+- Removed stale Home preview/status copy and synchronized the visible beta version.
+- Added top-title rename behavior to Spreadsheets and Presentations.
+- Removed the obsolete visible PDF.js forms note while preserving form support.
+- Normalized TXT/EPUB primary title bars to the 44 px Office reference.
+- Added permanent functional-correction regressions.
+
 ## 0.20.2 — Data Safety and Browser Matrix (2026-08-07)
 
 - Added bounded, private IndexedDB recovery snapshots to Documents, Spreadsheets and Presentations.

@@ -216,7 +216,7 @@ body.office-spreadsheets .document-title{
   transform:translate(-50%,-50%)!important;
   z-index:2!important;
   max-width:calc(100% - 320px)!important;
-  pointer-events:none!important;
+  pointer-events:auto!important;
 }
 body.office-spreadsheets .titlebar .right{
   position:absolute!important;

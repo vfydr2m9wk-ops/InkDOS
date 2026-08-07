@@ -100,7 +100,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
   transform:translateX(-50%);
   max-width:46%;
   text-align:center;
-  pointer-events:none;
+  pointer-events:auto;
 }
 .top-divider{width:1px;height:22px;background:var(--line);margin:0 4px}
 .top-action{
@@ -386,3 +386,9 @@ body.presentation-active .app{visibility:hidden}
     padding-bottom:max(18px,env(safe-area-inset-bottom))!important;
   }
 }
+
+/* 0.20.2.1 editable presentation title */
+.presentation-title-input{width:min(330px,38vw);min-width:120px;padding:4px 8px;border:1px solid transparent;border-radius:7px;background:transparent;color:inherit;font:inherit;font-weight:700;text-align:center;outline:none;text-overflow:ellipsis}
+.presentation-title-input:hover{background:color-mix(in srgb,var(--text) 6%,transparent)}
+.presentation-title-input:focus{border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:var(--panel);text-align:left}
+@media(max-width:760px){.presentation-title-input{width:min(180px,34vw);min-width:84px}}

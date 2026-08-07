@@ -197,9 +197,9 @@ def main():
 
         if pages["documents"].locator("#titleText").input_value() != "Cross Workspace Document.docx":
             raise RuntimeError("Document rename did not remain isolated")
-        if pages["spreadsheets"].locator("#docTitle").inner_text() != XLSX.stem:
+        if pages["spreadsheets"].locator("#docTitle").input_value() != XLSX.name:
             raise RuntimeError("Spreadsheet filename changed during another workspace rename")
-        if pages["presentations"].locator("#docTitle").inner_text() != PPTX.stem:
+        if pages["presentations"].locator("#docTitle").input_value() != PPTX.name:
             raise RuntimeError("Presentation filename changed during another workspace rename")
 
         save_document(pages["documents"], outputs["documents"])

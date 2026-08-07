@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2
+# Testing guide — InkDesk v0.20.2.1
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,9 +35,9 @@ replacement.
 
 ## Current evidence
 
-- 210 Python unit/package tests pass in the correction-5 reconstruction/audit tree (including new DOM-control contract tests).
+- 219 Python unit/package tests pass in the v0.20.2.1 correction-2 audit tree, including DOM-control contracts and regressions for the latest hosted failures.
 - First-party JavaScript syntax passes.
-- Eleven browser-regression entry points are configured. Ten previously reached the hosted runner; the new Presentations control regression is the correction-2 behavioral gate.
+- Twelve Chromium browser-regression entry points are configured. The latest hosted v0.20.2.1 run passed 10/12; the two failures were isolated to a legacy title assertion in cross-workspace isolation and a real blank-PDF resize race, both covered by correction 2.
 - The dedicated stable-origin recovery case is configured but is recorded as
   **not performed** when the construction environment blocks local HTTP origins.
 - Firefox, native WebKit/Safari, iPadOS, Edge and installed-PWA behavior remain
@@ -62,11 +62,12 @@ python3 -m pip install --disable-pip-version-check --no-cache-dir   -r requireme
 
 These packages are test and release-validation dependencies. They are not
 loaded by the browser application at runtime.
-## v0.20.2 data-safety validation
+## v0.20.2.1 functional-correction validation
 
 - `python3 -m unittest tests.test_local_recovery` validates the IndexedDB recovery contract and workspace wiring.
 - `python3 tests/browser/revalidate_v0202_local_recovery.py` behaviorally restores unsaved work when the browser environment permits a stable origin.
 - `python3 scripts/run_browser_matrix.py` runs the full suite across installed Chromium, Firefox and WebKit engines.
+- `python3 tests/browser/revalidate_v02021_functional_corrections.py` verifies Home cleanup, editable Spreadsheet/Presentation filenames, PDF badge removal, and compact TXT/EPUB title-bar height.
 
 
 ## Functional acceptance checklist
@@ -87,7 +88,9 @@ The Format panel and Presenter Notes now have an explicit closed-at-open contrac
 
 #### Correction 5 deep audit
 
-- Latest hosted correction-4 run: 205 unit tests passed and 10/11 Chromium browser scripts passed. The remaining failure was a compact breakpoint mismatch between the panel's visual state and `aria-expanded`.
+- The accepted v0.20.2 baseline reached 210 unit tests and 11/11 Chromium browser scripts. The first full v0.20.2.1 validation reached 217 unit tests and 10/12 browser scripts before correction 2 addressed the two new failures.
 - Presentations now uses a single `inspectorOpen` state; desktop `hide-inspector` and compact `inspector-open` are derived classes, not independent state.
 - The behavioral regression includes a fresh compact/iPad-width cold start, desktop-to-compact breakpoint reconciliation, button accessibility state, Escape closing, and real object-format mutation.
 - `tests/test_interactive_dom_contracts.py` checks duplicate ids and direct app `$()` references across Documents, Spreadsheets, Presentations, PDF, TXT and EPUB.
+
+- v0.20.2.1 correction 2 permanently covers blank-PDF resize/pagehide safety and editable-title cross-workspace isolation.

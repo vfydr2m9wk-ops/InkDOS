@@ -4,26 +4,24 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2
+## InkDesk v0.20.2.1
 
-Version 0.20.2 is the **Data Safety and Browser Matrix** patch. It keeps the six
-modular workspaces introduced in v0.20.0 and adds private crash-recovery support
-for the three editable Office workspaces without adding new editing tools:
+Version 0.20.2.1 is a narrow **Functional Corrections** beta patch on top of
+v0.20.2. It adds no new formats or broad editing features. The patch fixes
+visible and workflow inconsistencies found during the functional audit:
 
-- **Documents** — basic DOCX opening, editing, local recovery and copy export.
-- **Spreadsheets** — XLS import, XLSX opening/editing, formulas, local recovery and copy export.
-- **Presentations** — basic PPTX editing, presentation mode, local recovery and copy export.
-- **PDF Workspace** — local PDF.js rendering, forms, review marks and PDF copy saving.
-- **Plain Text** — local TXT viewing/editing with encoding-aware opening.
-- **EPUB Reader** — local reflowed reading with themes, text sizing and images.
+- simplifies the Home copy and synchronizes the visible beta version;
+- makes Spreadsheet and Presentation filenames editable from the top bar;
+- removes the obsolete visible `Forms: PDF.js` note while retaining AcroForm support;
+- normalizes the TXT and EPUB primary title bars to the 44 px Office reference;
+- adds permanent static and browser regression coverage for these corrections.
 
-Recovery snapshots are stored only in the browser's IndexedDB. InkDesk offers
-**Restore**, **Open normally**, and **Discard recovery**; it never silently
-replaces the selected source file. Snapshot retention is bounded, and confirmed
-copy saves clear the recovery record for that document.
+The v0.20.2 private recovery system remains unchanged: Documents, Spreadsheets
+and Presentations keep bounded IndexedDB snapshots with Restore, Open normally
+and Discard recovery choices.
 
-
-InkDesk also maintains a functional acceptance matrix for the Home screen and all six workspaces. Visible controls that do not yet have dedicated behavioral evidence are explicitly tracked as scheduled rather than assumed to work.
+The functional acceptance matrix remains the release policy: a visible control
+is not considered verified merely because it exists or has an event handler.
 
 ## Privacy
 
@@ -54,7 +52,7 @@ unless strict matrix mode is requested.
 
 ## Status
 
-v0.20.2 remains a beta. Real-device validation is still required for critical
+v0.20.2.1 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

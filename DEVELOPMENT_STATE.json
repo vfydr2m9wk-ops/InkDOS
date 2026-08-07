@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 2,
-  "currentPackage": "0.20.2",
+  "appliedSequence": 3,
+  "currentPackage": "0.20.2.1",
   "status": "in-progress",
   "history": [
     {
@@ -15,6 +15,11 @@
       "sequence": 2,
       "packageLabel": "0.20.2",
       "description": "Data Safety and Browser Matrix v0.20.2 correction revision 7: preserve the validated recovery, offline, Presentations control-state and functional-acceptance fixes. This revision changes no application runtime code; it removes one stale CHECKSUMS.sha256 entry for shared/vendor/pdfjs/README.md, which is absent from the real v0.20.1 repository tree. Hosted validation already passed 210/210 unit tests and 11/11 Chromium browser regressions before stopping only at this checksum-tree mismatch."
+    },
+    {
+      "sequence": 3,
+      "packageLabel": "0.20.2.1",
+      "description": "Functional Corrections v0.20.2.1 correction revision 2: fixes the two hosted browser-validation failures without changing the release target or workflow. Cross-workspace isolation now reads the editable Spreadsheet/Presentation title inputs correctly, and the PDF viewer safely ignores delayed resize work when no PDF document is active."
     }
   ]
 }

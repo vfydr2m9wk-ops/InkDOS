@@ -792,6 +792,11 @@ function scheduleSelectionCapture(applyActiveTool) {
 }
 
 function rerender() {
+  // Resize events may fire while the start screen is visible or after pagehide
+  // has already released the active PDF. In both cases there is nothing to
+  // render and state.doc is intentionally null.
+  if (!state.doc) return;
+
   state.renderEpoch += 1;
 
   for (const [pageNumber, record] of [...state.rendered]) {
@@ -1117,6 +1122,8 @@ async function openFile(file) {
 
 async function closeDocument() {
   state.observer?.disconnect();
+  clearTimeout(window.__pdfResize);
+  window.__pdfResize = null;
 
   for (const [pageNumber, record] of [...state.rendered]) {
     destroyRendered(pageNumber, record);

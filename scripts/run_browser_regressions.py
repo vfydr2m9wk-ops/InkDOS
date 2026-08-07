@@ -24,6 +24,7 @@ SCRIPTS = [
     "revalidate_v0201_consistency.py",
     "revalidate_v0202_local_recovery.py",
     "revalidate_presentations_controls.py",
+    "revalidate_v02021_functional_corrections.py",
 ]
 
 

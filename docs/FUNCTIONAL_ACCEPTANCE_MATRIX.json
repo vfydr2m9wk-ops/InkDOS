@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2",
+  "release": "0.20.2.1",
   "policy": {
     "rule": "A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.",
     "newControlGate": "Every new visible control must appear in this inventory before release.",
@@ -8,12 +8,12 @@
     "manualPolicy": "Platform-specific behavior that cannot be automated is marked manual/not-performed, never inferred from Chromium."
   },
   "summary": {
-    "visibleControls": 210,
+    "visibleControls": 212,
     "coverageCounts": {
       "scheduled": 124,
-      "automated": 86
+      "automated": 88
     },
-    "capabilities": 12
+    "capabilities": 17
   },
   "controls": [
     {
@@ -181,7 +181,7 @@
       ]
     },
     {
-      "key": "documents.open-document",
+      "key": "documents.open-document-2",
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "label[for=\"fileInput\"]",
@@ -537,7 +537,7 @@
       ]
     },
     {
-      "key": "documents.open-document-2",
+      "key": "documents.open-document-2-2",
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "label[for=\"fileInput\"]",
@@ -595,6 +595,19 @@
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
+    },
+    {
+      "key": "spreadsheets.editable-workbook-title",
+      "module": "spreadsheets",
+      "source": "apps/spreadsheets/index.html",
+      "selector": "#docTitle",
+      "label": "Workbook name",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
+      ]
     },
     {
       "key": "spreadsheets.savebtn",
@@ -987,6 +1000,19 @@
       ]
     },
     {
+      "key": "presentations.editable-presentation-title",
+      "module": "presentations",
+      "source": "apps/presentations/index.html",
+      "selector": "#docTitle",
+      "label": "Presentation name",
+      "element": "input",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
+      ]
+    },
+    {
       "key": "presentations.presentfromstarttop",
       "module": "presentations",
       "source": "apps/presentations/index.html",
@@ -1355,7 +1381,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#zoomRange",
-      "label": "zoomRange",
+      "label": "+ Fit",
       "element": "input",
       "coverage": "automated",
       "evidence": [
@@ -2431,6 +2457,51 @@
       "coverage": "manual",
       "evidence": [
         "manual device matrix"
+      ]
+    },
+    {
+      "key": "home.compact-release-copy",
+      "module": "home",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
+      ]
+    },
+    {
+      "key": "spreadsheets.editable-title",
+      "module": "spreadsheets",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
+      ]
+    },
+    {
+      "key": "presentations.editable-title",
+      "module": "presentations",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
+      ]
+    },
+    {
+      "key": "pdf.obsolete-forms-note-removed",
+      "module": "pdf",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
+      ]
+    },
+    {
+      "key": "txt-epub.primary-titlebar-44px",
+      "module": "global",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_v02021_functional_corrections.py",
+        "tests/browser/revalidate_v02021_functional_corrections.py"
       ]
     }
   ]

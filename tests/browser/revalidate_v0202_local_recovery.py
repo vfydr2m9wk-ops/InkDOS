@@ -1,4 +1,4 @@
-"""Behavioral regression for v0.20.2 private IndexedDB recovery snapshots."""
+"""Behavioral regression for v0.20.2.1 private IndexedDB recovery snapshots."""
 from __future__ import annotations
 
 import json

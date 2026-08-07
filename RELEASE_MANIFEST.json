@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2",
-  "releaseName": "Data Safety and Browser Matrix",
+  "version": "0.20.2.1",
+  "releaseName": "Functional Corrections",
   "releaseType": "Beta Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,20 +37,22 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "210 passed in correction-6 local reconstruction/audit",
+    "structuralUnitTests": "219 passed locally for v0.20.2.1 correction 2",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "11 configured; hosted Chromium is the transaction gate",
+    "browserRegressionScripts": "12 configured; hosted Chromium is the transaction gate",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
     "browserMatrixRunner": "chromium, firefox, webkit",
     "presentationsControlRegression": "correction revision 6: one canonical open/closed class state across desktop/compact widths; resize is CSS-only; cold-start and open-close-escape behavioral coverage",
-    "functionalAcceptanceInventory": "210 visible controls inventoried; unproven controls explicitly scheduled",
-    "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces"
+    "functionalAcceptanceInventory": "212 visible controls inventoried; 88 automated, 124 explicitly scheduled; 17 capabilities tracked",
+    "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
+    "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal plus blank-start resize safety, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
+    "crossWorkspaceIsolationRegression": "editable Spreadsheet/Presentation title inputs read by value; five switch rounds and independent package exports remain covered"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"
