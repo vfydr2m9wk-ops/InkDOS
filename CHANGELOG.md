@@ -1,3 +1,9 @@
+## 0.20.2.11 — 2026-08-07
+
+- Extract PDF navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state into `apps/pdf/viewer/navigation-controller.js`.
+- Add an isolated PDF navigation browser regression and permanent architecture-boundary test.
+- Tighten the PDF `app.js` ratchet again without changing visible behavior.
+
 ## 0.20.2.10 — 2026-08-07
 
 - Extract PDF page rendering/virtualization into `apps/pdf/viewer/page-renderer.js`.

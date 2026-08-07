@@ -108,7 +108,7 @@ def main():
                         raise
 
                     version = page.evaluate("() => window.InkDeskPdfPageRenderer?.version")
-                    assert_true(version == "0.20.2.10", f"Unexpected page renderer version: {version}")
+                    assert_true(version == "0.20.2.11", f"Unexpected page renderer version: {version}")
                     report["checks"].append("page renderer component loaded")
 
                     page.set_input_files("#fileInput", str(pdf_path))

@@ -23,10 +23,10 @@ class PdfRenderingModularizationTests(unittest.TestCase):
         self.assertNotIn("function pageScale(base)", app)
         self.assertNotIn("async function renderPage(pageNumber)", app)
         self.assertNotIn("function observePages()", app)
-        self.assertIn("viewer/page-renderer.js?v=0.20.2.10", html)
+        self.assertIn("viewer/page-renderer.js?v=0.20.2.11", html)
         self.assertLess(
-            html.index("viewer/page-renderer.js?v=0.20.2.10"),
-            html.index("app.js?v=0.20.2.10"),
+            html.index("viewer/page-renderer.js?v=0.20.2.11"),
+            html.index("app.js?v=0.20.2.11"),
         )
         self.assertIn("'./apps/pdf/viewer/page-renderer.js'", worker)
         debt = policy["grandfatheredDebt"]["apps/pdf/app.js"]

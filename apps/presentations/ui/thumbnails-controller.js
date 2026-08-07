@@ -184,7 +184,7 @@
   }
 
   global.InkDeskPresentationsThumbnails = Object.freeze({
-    version: '0.20.2.10',
+    version: '0.20.2.11',
     create(options) {
       return new PresentationThumbnailsController(options);
     },

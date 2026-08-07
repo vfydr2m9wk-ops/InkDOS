@@ -22,8 +22,8 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
 
     def test_entry_page_has_no_visible_formula_help_or_overlay(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        self.assertIn("formula-editor.js?v=0.20.2.10", html)
-        self.assertIn("formula-reference.js?v=0.20.2.10", html)
+        self.assertIn("formula-editor.js?v=0.20.2.11", html)
+        self.assertIn("formula-reference.js?v=0.20.2.11", html)
         self.assertIn('id="formulaHint" hidden', html)
         self.assertNotIn('id="cellFormulaEditor"', html)
 

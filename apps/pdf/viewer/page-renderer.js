@@ -338,7 +338,7 @@
   }
 
   global.InkDeskPdfPageRenderer = Object.freeze({
-    version: '0.20.2.10',
+    version: '0.20.2.11',
     createPageRenderer
   });
 })(globalThis);

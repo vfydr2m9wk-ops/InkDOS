@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.10",
+  "version": "0.20.2.11",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.10"
+    "nextPatch": "0.20.2.11"
   },
   "capabilities": {
     "documents": [
@@ -489,7 +489,7 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.10",
+    "version": "0.20.2.11",
     "channel": "beta",
     "name": "Presentations Slideshow Decomposition",
     "date": "2026-08-07",

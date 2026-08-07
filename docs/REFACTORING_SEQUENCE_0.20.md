@@ -106,3 +106,8 @@ from one extraction is not carried into the next module.
 ## v0.20.2.10 — Presentations architecture consolidation
 
 Final Presentations consolidation before beginning PDF decomposition. Package-preserving PPTX write/patch helpers move behind a dedicated I/O adapter; the visible editor and file-format contract remain frozen. After this gate is accepted, the next architectural target is PDF.
+
+
+### v0.20.2.11 — PDF navigation decomposition
+
+Page navigation, thumbnails, outline destinations, bookmark navigation and sidebar tab state move out of the PDF entry point. Review annotations and Save remain separate future cuts.

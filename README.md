@@ -4,21 +4,20 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.10
+## InkDesk v0.20.2.11
 
-Version 0.20.2.10 completes the current behavior-neutral **Presentations architecture consolidation**.
-Package-preserving PPTX write/patch logic is now isolated behind a dedicated I/O adapter,
-leaving the main editor entry point focused on composition and remaining editor orchestration.
+Version 0.20.2.11 continues the behavior-neutral **PDF architecture decomposition**.
+The page renderer from v0.20.2.10 remains responsible for canvas/text/AcroForm
+rendering and page virtualization, while a new navigation controller now owns
+page changes, page-list thumbnails, outline destinations, bookmark navigation
+and sidebar-tab state.
 
-`apps/presentations/io/file-controller.js` owns imported-source buffers, PPTX
-open validation, preservation-mode copy export, new-presentation PPTX export and
-download lifecycle. `apps/presentations/io/recovery-controller.js` owns
-IndexedDB recovery capture/restore, document recovery keys and recovery manager
-state. The visible UI, supported formats and save semantics are intentionally
-unchanged.
+`apps/pdf/app.js` remains the PDF composition entry point and still owns review
+annotations, unified Save and document lifecycle. No visible PDF control or file
+format behavior is intentionally changed in this release.
 
-The stable updater hardening from v0.20.2.7 remains in place: real dry-run,
-package SHA identity and incremental checksum handling continue to guard each
+The hardened updater flow remains in place: real dry-run, package SHA identity,
+incremental checksums and isolated browser scenarios continue to protect each
 refactoring package.
 
 ## Refactoring policy
@@ -57,7 +56,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.10 remains a beta. Real-device validation is still required for critical
+v0.20.2.11 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

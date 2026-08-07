@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.10",
+  "release": "0.20.2.11",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -29,9 +29,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/pdf/app.js": {
-      "maxLines": 1322,
+      "maxLines": 1090,
       "maxLongLines": 0,
-      "reason": "PDF rendering decomposition ratchet: page virtualization, canvas/text/AcroForm rendering and resize rerender moved behind apps/pdf/viewer/page-renderer.js in v0.20.2.10."
+      "reason": "PDF navigation decomposition ratchet: page navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state moved behind apps/pdf/viewer/navigation-controller.js in v0.20.2.11."
     },
     "apps/txt/styles.css": {
       "maxLines": 417,
@@ -51,7 +51,7 @@
     "apps/presentations/app.js": {
       "maxLines": 698,
       "maxLongLines": 56,
-      "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.10."
+      "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.11."
     },
     "apps/documents/styles.css": {
       "maxLines": 65,
