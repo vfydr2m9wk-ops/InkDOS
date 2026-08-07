@@ -24,3 +24,12 @@ AI-assisted code is allowed, but it is not accepted as evidence that a change is
 ## Review approach
 
 Reviewers should prefer small, explicit code over generated architectural layers. A smaller fix with a reproducible test is more valuable than a broad compatibility claim.
+
+## Refactoring guardrails (0.20.2.2+)
+
+`AGENTS.md` is the operational instruction set for AI-assisted work. Agents must
+apply the smallest-scope rule, preserve behavior during code movement, keep the
+functional acceptance matrix honest, and run
+`scripts/check_architecture_guardrails.py` before proposing a refactoring
+package. Existing oversized or compressed runtime files are ratcheted in
+`architecture-policy.json`: refactoring should reduce that debt, not expand it.

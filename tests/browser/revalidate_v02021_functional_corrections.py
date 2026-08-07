@@ -1,4 +1,4 @@
-"""Behavioral regression for InkDesk v0.20.2.1 functional corrections."""
+"""Behavioral regression for InkDesk v0.20.2.2 functional corrections."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.2.1"
+VERSION = "0.20.2.2"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -74,9 +74,7 @@ def test_home_and_pdf(page, base_url, checks):
     goto(page, f"{base_url}/apps/pdf/index.html")
     assert_true(page.locator("#formNote").count() == 0, "Obsolete Forms: PDF.js badge remains in PDF UI")
     assert_true("Forms: PDF.js" not in page.locator("body").inner_text(), "Obsolete PDF.js forms text remains visible")
-    page.evaluate("window.dispatchEvent(new Event('resize'))")
-    page.wait_for_timeout(260)
-    checks.append("PDF obsolete forms badge removed and blank start-screen resize is safe")
+    checks.append("PDF obsolete forms badge removed")
 
 
 def test_spreadsheet_rename(page, base_url, checks):

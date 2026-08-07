@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 COMMANDS = [
     ("Repository validation", [sys.executable, "scripts/validate_repository.py"]),
     ("Source audit", [sys.executable, "scripts/audit_source.py"]),
+    ("Architecture guardrails", [sys.executable, "scripts/check_architecture_guardrails.py"]),
     ("Unit and package tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]),
     ("Browser regressions", [sys.executable, "scripts/run_browser_regressions.py"]),
     ("Checksum verification", [sys.executable, "scripts/verify_checksums.py"]),

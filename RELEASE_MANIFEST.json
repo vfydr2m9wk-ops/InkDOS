@@ -1,8 +1,8 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.1",
-  "releaseName": "Functional Corrections",
-  "releaseType": "Beta Patch",
+  "version": "0.20.2.2",
+  "releaseName": "Refactoring Guardrails",
+  "releaseType": "Beta Architecture Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
     "InkDesk.html": "index.html",
@@ -37,7 +37,7 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "219 passed locally for v0.20.2.1 correction 2",
+    "structuralUnitTests": "226 passed locally for v0.20.2.2",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
@@ -49,10 +49,10 @@
     "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
     "browserMatrixRunner": "chromium, firefox, webkit",
     "presentationsControlRegression": "correction revision 6: one canonical open/closed class state across desktop/compact widths; resize is CSS-only; cold-start and open-close-escape behavioral coverage",
-    "functionalAcceptanceInventory": "212 visible controls inventoried; 88 automated, 124 explicitly scheduled; 17 capabilities tracked",
+    "functionalAcceptanceInventory": "212 visible controls retained from v0.20.2.1; no behavior claims added by this architecture-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
-    "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal plus blank-start resize safety, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "crossWorkspaceIsolationRegression": "editable Spreadsheet/Presentation title inputs read by value; five switch rounds and independent package exports remain covered"
+    "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
+    "architectureGuardrails": "required: source-debt ratchet, workspace dependency boundaries, relative import cycles"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

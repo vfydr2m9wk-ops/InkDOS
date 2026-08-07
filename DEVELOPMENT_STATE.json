@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 3,
-  "currentPackage": "0.20.2.1",
+  "appliedSequence": 4,
+  "currentPackage": "0.20.2.2",
   "status": "in-progress",
   "history": [
     {
@@ -20,6 +20,11 @@
       "sequence": 3,
       "packageLabel": "0.20.2.1",
       "description": "Functional Corrections v0.20.2.1 correction revision 2: fixes the two hosted browser-validation failures without changing the release target or workflow. Cross-workspace isolation now reads the editable Spreadsheet/Presentation title inputs correctly, and the PDF viewer safely ignores delayed resize work when no PDF document is active."
+    },
+    {
+      "sequence": 4,
+      "packageLabel": "0.20.2.2",
+      "description": "Refactoring Guardrails v0.20.2.2 correction 2: remove the stale checksum entry for shared/vendor/pdfjs/README.md, which the hosted v0.20.2.1 tree proves is absent, and add a fail-fast checksum-manifest regression to the unit suite. No application runtime or workflow file is changed."
     }
   ]
 }

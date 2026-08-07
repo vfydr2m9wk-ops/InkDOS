@@ -36,3 +36,11 @@ Planned 0.20.x extraction order:
 
 The shared public event and data-attribute contract must remain compatible
 during extraction. No visual redesign is part of these refactoring tasks.
+
+## Guardrail phase added in v0.20.2.2
+
+Before the extractions above begin, `AGENTS.md`, `architecture-policy.json` and
+`scripts/check_architecture_guardrails.py` establish a zero-regression
+refactoring contract. The ordered implementation sequence is now documented in
+`docs/REFACTORING_SEQUENCE_0.20.md`. Presentations is intentionally the first
+runtime decomposition target, followed by PDF and then shared UI.

@@ -23,3 +23,15 @@ npm run test:release
 ```
 
 Use focused commits such as `fix:`, `docs:`, `test:`, `refactor:`, and `chore:`. Do not rename persisted storage keys without migration or a backward-compatible fallback. The current application has no persisted document schema.
+
+## Architecture guardrail
+
+Before extracting runtime code, run:
+
+```bash
+python3 scripts/check_architecture_guardrails.py
+```
+
+The command enforces the v0.20.2.1 source-debt ratchet, workspace dependency
+boundaries and relative-import cycle checks. See `AGENTS.md` and
+`docs/ARCHITECTURE_GUARDRAILS.md`.

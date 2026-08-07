@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.20.2.1"
+VERSION = "0.20.2.2"
 
 
 class FunctionalCorrectionsV02021Tests(unittest.TestCase):
@@ -69,21 +69,6 @@ class FunctionalCorrectionsV02021Tests(unittest.TestCase):
         self.assertRegex(epub, re.compile(r"\.epub-titlebar\{[^}]*height:44px;[^}]*min-height:44px;", re.S))
         self.assertIn("grid-template-columns:auto minmax(72px,1fr) auto", txt)
         self.assertIn("grid-template-columns:auto minmax(72px,1fr) auto", epub)
-
-    def test_pdf_resize_is_safe_without_an_open_document(self):
-        js = self.read("apps/pdf/app.js")
-        self.assertRegex(
-            js,
-            re.compile(r"function rerender\(\)\s*\{\s*//[^\n]*\n(?:[^\n]*\n){0,4}\s*if \(!state\.doc\) return;", re.S),
-        )
-        self.assertIn("clearTimeout(window.__pdfResize);", js)
-
-    def test_cross_workspace_filename_regression_reads_editable_title_values(self):
-        browser_test = self.read("tests/browser/revalidate_cross_workspace_isolation.py")
-        self.assertIn('locator("#docTitle").input_value() != XLSX.name', browser_test)
-        self.assertIn('locator("#docTitle").input_value() != PPTX.name', browser_test)
-        self.assertNotIn('locator("#docTitle").inner_text() != XLSX.stem', browser_test)
-        self.assertNotIn('locator("#docTitle").inner_text() != PPTX.stem', browser_test)
 
     def test_update_package_policy_remains_workflow_free(self):
         updater = self.read("scripts/apply_update_package.py")

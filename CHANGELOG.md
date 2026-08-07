@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.20.2.2 — Refactoring Guardrails (2026-08-07)
+
+- Added repository-level AI/human guardrails and a behavior-neutral refactoring contract.
+- Added a source-size/readability ratchet for inherited runtime debt and strict limits for new runtime files.
+- Added cross-workspace/shared dependency and relative import-cycle checks to the release gate.
+- Recorded the native modular runtime decision and ordered 0.20.x decomposition sequence.
+- No editor feature or visual redesign is intentionally included.
+
+
 ## 0.20.2.1 — Functional Corrections (2026-08-07)
 
 - Removed stale Home preview/status copy and synchronized the visible beta version.

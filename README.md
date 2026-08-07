@@ -4,24 +4,17 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.1
+## InkDesk v0.20.2.2
 
-Version 0.20.2.1 is a narrow **Functional Corrections** beta patch on top of
-v0.20.2. It adds no new formats or broad editing features. The patch fixes
-visible and workflow inconsistencies found during the functional audit:
+Version 0.20.2.2 is a behavior-neutral **Refactoring Guardrails** beta patch.
+It adds repository rules and automated architecture checks so the large runtime
+files can be decomposed incrementally without changing established editing,
+file-safety or visual behavior. The runtime remains native HTML/CSS/JavaScript,
+local-first and build-free.
 
-- simplifies the Home copy and synchronizes the visible beta version;
-- makes Spreadsheet and Presentation filenames editable from the top bar;
-- removes the obsolete visible `Forms: PDF.js` note while retaining AcroForm support;
-- normalizes the TXT and EPUB primary title bars to the 44 px Office reference;
-- adds permanent static and browser regression coverage for these corrections.
-
-The v0.20.2 private recovery system remains unchanged: Documents, Spreadsheets
-and Presentations keep bounded IndexedDB snapshots with Restore, Open normally
-and Discard recovery choices.
-
-The functional acceptance matrix remains the release policy: a visible control
-is not considered verified merely because it exists or has an event handler.
+The refactoring order is Presentations → PDF → shared UI →
+Documents/Spreadsheets cleanup. Each extraction must keep the existing
+behavioral tests green and may not carry a regression into the next step.
 
 ## Privacy
 
@@ -52,7 +45,7 @@ unless strict matrix mode is requested.
 
 ## Status
 
-v0.20.2.1 remains a beta. Real-device validation is still required for critical
+v0.20.2.2 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

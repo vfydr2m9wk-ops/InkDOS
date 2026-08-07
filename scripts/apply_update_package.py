@@ -43,6 +43,7 @@ VALIDATION_PROFILES: dict[str, list[list[str]]] = {
         [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"],
         [sys.executable, "scripts/validate_repository.py"],
         [sys.executable, "scripts/audit_source.py"],
+        [sys.executable, "scripts/check_architecture_guardrails.py"],
     ],
     # The release runner already performs repository validation, source audit,
     # unit tests, browser regressions, and checksum verification. Keep the full

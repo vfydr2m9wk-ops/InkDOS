@@ -23,3 +23,9 @@ npm run test:release
 ```
 
 Use focused commits such as `fix:`, `docs:`, `test:`, `refactor:`, and `chore:`. Do not rename persisted storage keys without migration or a backward-compatible fallback. The current application has no persisted document schema.
+
+## Architecture guardrail
+
+The 0.20.x refactor is behavior-neutral and protected by
+`architecture-policy.json`. Run `python3 scripts/check_architecture_guardrails.py`
+before and after each extraction. AI-assisted work must also follow `AGENTS.md`.
