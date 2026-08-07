@@ -39,11 +39,11 @@ class V0201ConsistencyTests(unittest.TestCase):
 
     def test_public_version_and_cache_are_synchronized(self):
         version=json.loads((ROOT/'VERSION.json').read_text())['version']
-        self.assertEqual(version,'0.20.2.11')
+        self.assertEqual(version,'0.20.2.12')
         self.assertEqual(json.loads((ROOT/'package.json').read_text())['version'],version)
         self.assertEqual(json.loads((ROOT/'app-manifest.json').read_text())['version'],version)
         self.assertIn(f"inkdesk-shell-v{version}",(ROOT/'service-worker.js').read_text())
-        self.assertIn('InkDesk v0.20.2.11',(ROOT/'index.html').read_text())
+        self.assertIn('InkDesk v0.20.2.12',(ROOT/'index.html').read_text())
 
     def test_critical_existing_functions_remain_present(self):
         documents=(ROOT/'apps/documents/app.js').read_text()

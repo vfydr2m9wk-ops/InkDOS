@@ -1,3 +1,10 @@
+## 0.20.2.12 — 2026-08-07
+
+- Extracted PDF review persistence, text-selection review, comments and Undo into `apps/pdf/review/review-controller.js`.
+- Extracted review-overlay rendering and free marker/text placement into `apps/pdf/review/annotation-layer.js`.
+- Added dedicated structural and isolated Chromium regression coverage for PDF review behavior.
+- Preserved the existing PDF UI, rendering/navigation boundaries and unified Save behavior.
+
 ## 0.20.2.11 — 2026-08-07
 
 - Extract PDF navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state into `apps/pdf/viewer/navigation-controller.js`.

@@ -32,28 +32,35 @@ class PdfTextSelectionTests(unittest.TestCase):
         self.assertIn("Free marker area", html)
 
     def test_application_separates_text_and_free_tools(self):
-        script = (ROOT / "apps" / "pdf" / "app.js").read_text(
+        app = (ROOT / "apps" / "pdf" / "app.js").read_text(
             encoding="utf-8"
         )
+        review = (
+            ROOT / "apps" / "pdf" / "review" / "review-controller.js"
+        ).read_text(encoding="utf-8")
+        layer = (
+            ROOT / "apps" / "pdf" / "review" / "annotation-layer.js"
+        ).read_text(encoding="utf-8")
 
+        self.assertIn("window.InkDeskPdfReviewController.createReviewController", app)
         for expected in (
             "TEXT_SELECTION_TOOLS",
             "FREE_ANNOTATION_TOOLS",
             "applyTextSelection",
             "captureCurrentTextSelection",
             "annotation-group",
-            "annotation.source === 'text-selection'",
         ):
-            self.assertIn(expected, script)
+            self.assertIn(expected, review)
+        self.assertIn("annotation.source === 'text-selection'", layer)
 
         helper = (
             ROOT / "apps" / "pdf" / "text-selection-review.js"
         ).read_text(encoding="utf-8")
         self.assertIn("source: 'text-selection'", helper)
 
-        free_start = script.index("const FREE_ANNOTATION_TOOLS")
-        free_end = script.index("const state", free_start)
-        free_block = script[free_start:free_end]
+        free_start = review.index("const FREE_ANNOTATION_TOOLS")
+        free_end = review.index("function createReviewController", free_start)
+        free_block = review[free_start:free_end]
 
         self.assertIn("'marker'", free_block)
         self.assertIn("'text'", free_block)
@@ -202,12 +209,12 @@ if (annotations[0].pageSegmentCount !== 2) process.exit(21);
         )
 
     def test_legacy_rectangles_remain_supported(self):
-        script = (ROOT / "apps" / "pdf" / "app.js").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn("function annotationRects", script)
-        self.assertIn("Array.isArray(annotation.rects)", script)
-        self.assertIn("Number(annotation.x)", script)
+        layer = (
+            ROOT / "apps" / "pdf" / "review" / "annotation-layer.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("function annotationRects", layer)
+        self.assertIn("Array.isArray(annotation.rects)", layer)
+        self.assertIn("Number(annotation.x)", layer)
 
     def test_permanent_pdf_architecture_markers_remain_exact(self):
         app = (ROOT / "apps" / "pdf" / "app.js").read_text(
@@ -216,16 +223,20 @@ if (annotations[0].pageSegmentCount !== 2) process.exit(21);
         renderer = (
             ROOT / "apps" / "pdf" / "viewer" / "page-renderer.js"
         ).read_text(encoding="utf-8")
+        review = (
+            ROOT / "apps" / "pdf" / "review" / "review-controller.js"
+        ).read_text(encoding="utf-8")
 
         for marker in (
             "pdfjsLib.GlobalWorkerOptions.workerSrc = "
             "'../../shared/vendor/pdfjs/pdf.worker.min.js'",
             "pdfjsLib.getDocument(",
             "state.doc.saveDocument()",
-            "schema:'inkdesk-pdf-review/2'",
             "window.InkDeskPdfPageRenderer.createPageRenderer",
+            "window.InkDeskPdfReviewController.createReviewController",
         ):
             self.assertIn(marker, app)
+        self.assertIn("schema: 'inkdesk-pdf-review/2'", review)
 
         for marker in (
             "pdfjs.renderTextLayer(",

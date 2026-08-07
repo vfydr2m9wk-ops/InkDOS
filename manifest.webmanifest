@@ -1,6 +1,6 @@
 {
   "id": "./index.html",
-  "name": "InkDesk 0.20.2.11",
+  "name": "InkDesk 0.20.2.12",
   "short_name": "InkDesk",
   "description": "Local-first DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workspaces.",
   "start_url": "./index.html",

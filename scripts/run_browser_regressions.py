@@ -27,6 +27,7 @@ SCRIPTS = [
     "revalidate_presentations_slideshow.py",
     "revalidate_pdf_page_rendering.py",
     "revalidate_pdf_navigation.py",
+    "revalidate_pdf_review.py",
     "revalidate_v02021_functional_corrections.py",
 ]
 

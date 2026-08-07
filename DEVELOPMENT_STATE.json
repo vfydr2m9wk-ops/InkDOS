@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 13,
-  "currentPackage": "0.20.2.11",
+  "appliedSequence": 14,
+  "currentPackage": "0.20.2.12",
   "status": "in-progress",
   "history": [
     {
@@ -70,6 +70,11 @@
       "sequence": 13,
       "packageLabel": "0.20.2.11",
       "description": "PDF navigation decomposition v0.20.2.11 correction 1. Application runtime is unchanged. The hosted attempt passed repository validation, source audit, architecture guardrails, all 246 unit/package tests and 14/15 Chromium scripts. The sole failure was the new isolated PDF navigation harness clicking an outline tab while the shared workspace layout correctly kept the PDF navigation sidebar collapsed by default. The harness now asserts the default-closed state, explicitly opens the sidebar before using its tabs, and verifies a close/reopen round-trip."
+    },
+    {
+      "sequence": 14,
+      "packageLabel": "0.20.2.12",
+      "description": "PDF review decomposition: isolate local review persistence, selected-text review tools, free annotation overlays, comment rendering and review Undo behind focused PDF review components without changing the visible PDF workflow or unified Save behavior."
     }
   ]
 }

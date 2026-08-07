@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.11
+# Testing guide — InkDesk v0.20.2.12
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -94,7 +94,7 @@ gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
 
 
-## v0.20.2.11 Presentations architecture consolidation
+## v0.20.2.12 Presentations architecture consolidation
 
 - `tests/test_presentations_modularization.py` requires the PPTX write adapter plus file/recovery controllers to load before `app.js`, remain within new-source limits and be precached offline.
 - Package-preserving imported-slide mutation, notes patching, transition patching and new object XML generation now live in `io/pptx-write-adapter.js`.

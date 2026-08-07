@@ -43,16 +43,6 @@ const E = Object.fromEntries(
   ].map(id => [id, $(id)])
 );
 
-const TEXT_SELECTION_TOOLS = new Set([
-  'highlight',
-  'underline',
-  'comment'
-]);
-
-const FREE_ANNOTATION_TOOLS = new Set([
-  'marker',
-  'text'
-]);
 
 const state = {
   file: null,
@@ -101,12 +91,36 @@ const {
   renderBookmarks
 } = navigationController;
 
+const reviewController =
+  window.InkDeskPdfReviewController.createReviewController({
+    state,
+    elements: E,
+    clamp,
+    makeId,
+    status,
+    toast,
+    renderBookmarks: () => renderBookmarks(),
+    navigateToPage: pageNumber =>
+      navigateToPage(pageNumber),
+    rerender: () => pageRenderer?.rerender()
+  });
+
+const {
+  saveReview,
+  loadReview,
+  markDirty,
+  renderPageReview,
+  wireReviewLayer,
+  renderSideLists
+} = reviewController;
+
 pageRenderer = window.InkDeskPdfPageRenderer.createPageRenderer({
   state,
   elements: E,
   pdfjs: pdfjsLib,
   clamp,
-  isFreeAnnotationTool: tool => FREE_ANNOTATION_TOOLS.has(tool),
+  isFreeAnnotationTool: tool =>
+    reviewController.isFreeAnnotationTool(tool),
   renderPageReview: pageNumber => renderPageReview(pageNumber),
   wireReviewLayer: (layer, pageNumber) =>
     wireReviewLayer(layer, pageNumber),
@@ -187,391 +201,6 @@ async function fingerprint(file) {
   }
 
   return `${file.size.toString(36)}-${(hash >>> 0).toString(36)}`;
-}
-
-function saveReview() {
-  if (!state.storageKey) return;
-
-  localStorage.setItem(
-    state.storageKey,
-    JSON.stringify({
-      schema:'inkdesk-pdf-review/2',
-      fingerprint: state.fingerprint,
-      annotations: state.annotations,
-      bookmarks: state.bookmarks
-    })
-  );
-}
-
-function loadReview() {
-  try {
-    const data = JSON.parse(
-      localStorage.getItem(state.storageKey) || 'null'
-    );
-
-    if (data?.schema === 'inkdesk-pdf-review/2') {
-      state.annotations = Array.isArray(data.annotations)
-        ? data.annotations
-        : [];
-
-      state.bookmarks = Array.isArray(data.bookmarks)
-        ? data.bookmarks
-        : [];
-    }
-  } catch (error) {
-    console.warn('InkDesk could not load the local PDF review.', error);
-  }
-
-  renderSideLists();
-}
-
-function markDirty() {
-  state.dirty = true;
-  E.dirtyMark.hidden = false;
-  saveReview();
-}
-
-function annotationRects(annotation) {
-  if (
-    Array.isArray(annotation.rects) &&
-    annotation.rects.length
-  ) {
-    return annotation.rects;
-  }
-
-  if (
-    Number.isFinite(Number(annotation.x)) &&
-    Number.isFinite(Number(annotation.y)) &&
-    Number.isFinite(Number(annotation.w)) &&
-    Number.isFinite(Number(annotation.h))
-  ) {
-    return [
-      {
-        x: Number(annotation.x),
-        y: Number(annotation.y),
-        w: Number(annotation.w),
-        h: Number(annotation.h)
-      }
-    ];
-  }
-
-  return [];
-}
-
-function renderPageReview(pageNumber) {
-  const shell = state.pages.get(pageNumber);
-  const layer = shell?.querySelector('.page-review-layer');
-  if (!layer) return;
-
-  layer.replaceChildren();
-
-  for (
-    const annotation of state.annotations.filter(
-      item => item.page === pageNumber
-    )
-  ) {
-    const rects = annotationRects(annotation);
-
-    rects.forEach((rect, rectIndex) => {
-      const element = document.createElement('div');
-
-      element.className =
-        `review-annotation ${annotation.type}` +
-        (annotation.source === 'text-selection'
-          ? ' text-selection-segment'
-          : '') +
-        (rectIndex === rects.length - 1
-          ? ' selection-segment-last'
-          : '');
-
-      element.style.cssText = [
-        `left:${clamp(rect.x, 0, 1) * 100}%`,
-        `top:${clamp(rect.y, 0, 1) * 100}%`,
-        `width:${clamp(rect.w, 0, 1) * 100}%`,
-        `height:${clamp(rect.h, 0, 1) * 100}%`
-      ].join(';');
-
-      if (
-        annotation.text &&
-        annotation.source !== 'text-selection'
-      ) {
-        element.textContent = annotation.text;
-      }
-
-      const titleParts = [];
-
-      if (annotation.comment) {
-        titleParts.push(annotation.comment);
-      }
-
-      if (annotation.selectedText) {
-        titleParts.push(`Selected text: ${annotation.selectedText}`);
-      }
-
-      element.title = titleParts.join('\n');
-      layer.append(element);
-    });
-  }
-}
-
-function wireReviewLayer(layer, pageNumber) {
-  let start = null;
-
-  layer.onpointerdown = event => {
-    if (!FREE_ANNOTATION_TOOLS.has(state.tool)) return;
-
-    const bounds = layer.getBoundingClientRect();
-
-    start = {
-      x: clamp(
-        (event.clientX - bounds.left) / bounds.width,
-        0,
-        1
-      ),
-      y: clamp(
-        (event.clientY - bounds.top) / bounds.height,
-        0,
-        1
-      ),
-      id: event.pointerId
-    };
-
-    layer.setPointerCapture?.(event.pointerId);
-  };
-
-  layer.onpointerup = event => {
-    if (!start) return;
-
-    const bounds = layer.getBoundingClientRect();
-
-    const endX = clamp(
-      (event.clientX - bounds.left) / bounds.width,
-      0,
-      1
-    );
-
-    const endY = clamp(
-      (event.clientY - bounds.top) / bounds.height,
-      0,
-      1
-    );
-
-    const item = {
-      id: makeId(),
-      page: pageNumber,
-      type: state.tool,
-      source: 'free',
-      x: Math.min(start.x, endX),
-      y: Math.min(start.y, endY),
-      w: Math.max(0.012, Math.abs(endX - start.x)),
-      h: Math.max(0.012, Math.abs(endY - start.y))
-    };
-
-    if (state.tool === 'text') {
-      const insertedText = prompt('Text:', '');
-      if (insertedText === null) {
-        start = null;
-        return;
-      }
-      item.text = insertedText;
-    }
-
-    state.undo.push({
-      kind: 'annotation',
-      id: item.id
-    });
-
-    state.annotations.push(item);
-    start = null;
-
-    markDirty();
-    renderPageReview(pageNumber);
-    renderSideLists();
-  };
-}
-
-function selectionApi() {
-  return window.InkDeskPdfTextSelection;
-}
-
-function captureCurrentTextSelection() {
-  const api = selectionApi();
-
-  if (
-    !api ||
-    typeof api.captureSelection !== 'function'
-  ) {
-    state.textSelection = null;
-    return null;
-  }
-
-  state.textSelection = api.captureSelection(
-    window.getSelection(),
-    document
-  );
-
-  return state.textSelection;
-}
-
-function clearBrowserSelection() {
-  const selection = window.getSelection();
-
-  if (
-    selection &&
-    typeof selection.removeAllRanges === 'function'
-  ) {
-    selection.removeAllRanges();
-  }
-
-  state.textSelection = null;
-}
-
-function renderAnnotationPages(annotations) {
-  const pageNumbers = new Set(
-    annotations.map(annotation => annotation.page)
-  );
-
-  pageNumbers.forEach(pageNumber => {
-    renderPageReview(pageNumber);
-  });
-}
-
-function applyTextSelection(tool, captured) {
-  const api = selectionApi();
-  const selection =
-    captured ||
-    state.textSelection ||
-    captureCurrentTextSelection();
-
-  if (
-    !api ||
-    !selection ||
-    !selection.pages?.length
-  ) {
-    status(
-      tool === 'comment'
-        ? 'Select PDF text, then choose Comment.'
-        : `Select PDF text to ${tool} it.`
-    );
-    return false;
-  }
-
-  let comment = '';
-
-  if (tool === 'comment') {
-    const entered = prompt(
-      `Comment on “${selection.text.slice(0, 120)}”`,
-      ''
-    );
-
-    if (entered === null) {
-      status('Comment cancelled.');
-      return false;
-    }
-
-    comment = entered.trim() || 'Comment';
-  }
-
-  const groupId = makeId();
-
-  const annotations = api.buildAnnotations(
-    selection,
-    tool,
-    {
-      groupId,
-      comment,
-      makeId
-    }
-  );
-
-  if (!annotations.length) {
-    status('The selected PDF text could not be mapped.');
-    return false;
-  }
-
-  state.annotations.push(...annotations);
-
-  state.undo.push({
-    kind: 'annotation-group',
-    groupId
-  });
-
-  markDirty();
-  renderAnnotationPages(annotations);
-  renderSideLists();
-  clearBrowserSelection();
-
-  const label = {
-    highlight: 'Highlight',
-    underline: 'Underline',
-    comment: 'Comment'
-  }[tool];
-
-  toast(
-    `${label} applied to selected text. Select another passage to continue.`
-  );
-
-  return true;
-}
-
-function scheduleSelectionCapture(applyActiveTool) {
-  clearTimeout(state.selectionTimer);
-
-  state.selectionTimer = setTimeout(() => {
-    const captured = captureCurrentTextSelection();
-
-    if (
-      applyActiveTool &&
-      captured &&
-      TEXT_SELECTION_TOOLS.has(state.tool)
-    ) {
-      applyTextSelection(state.tool, captured);
-    }
-  }, 80);
-}
-
-function renderSideLists() {
-  renderBookmarks();
-  E.commentList.replaceChildren();
-
-  const representedGroups = new Set();
-
-  for (
-    const annotation of state.annotations.filter(
-      item => item.comment || item.text
-    )
-  ) {
-    const identity =
-      annotation.groupId || annotation.id;
-
-    if (representedGroups.has(identity)) continue;
-    representedGroups.add(identity);
-
-    const button = document.createElement('button');
-    button.className = 'comment-item';
-
-    const primary =
-      annotation.comment ||
-      annotation.text ||
-      'Comment';
-
-    const selected =
-      annotation.selectedText
-        ? ` — “${annotation.selectedText.slice(0, 100)}”`
-        : '';
-
-    button.textContent =
-      `Page ${annotation.page}: ${primary}${selected}`;
-
-    button.onclick = () =>
-      navigateToPage(annotation.page);
-
-    E.commentList.append(button);
-  }
-
-  if (!E.commentList.children.length) {
-    E.commentList.textContent = 'No comments.';
-  }
 }
 
 async function openFile(file) {
@@ -665,56 +294,6 @@ async function closeDocument() {
   E.saveModifiedPdfBtn.disabled = true;
   E.saveModifiedPdfBtn.classList.remove('is-saving');
   E.saveModifiedPdfBtn.removeAttribute('aria-busy');
-}
-
-function setTool(tool) {
-  state.tool = tool;
-
-  document
-    .querySelectorAll('.annotation-tool')
-    .forEach(button => {
-      button.classList.toggle(
-        'active',
-        button.dataset.tool === tool
-      );
-    });
-
-  const freeTool = FREE_ANNOTATION_TOOLS.has(tool);
-
-  document
-    .querySelectorAll('.page-review-layer')
-    .forEach(layer => {
-      layer.classList.toggle('inactive', !freeTool);
-    });
-
-  document.body.dataset.pdfReviewMode =
-    TEXT_SELECTION_TOOLS.has(tool)
-      ? 'text-selection'
-      : freeTool
-        ? 'free-annotation'
-        : 'select';
-
-  if (TEXT_SELECTION_TOOLS.has(tool)) {
-    const captured =
-      state.textSelection ||
-      captureCurrentTextSelection();
-
-    if (captured) {
-      applyTextSelection(tool, captured);
-    } else {
-      status(
-        tool === 'comment'
-          ? 'Select PDF text to attach a comment.'
-          : `Select PDF text to ${tool} it.`
-      );
-    }
-  } else if (tool === 'marker') {
-    status('Drag freely over the page to add a marker area.');
-  } else if (tool === 'text') {
-    status('Drag over the page to place free text.');
-  } else {
-    status('Select PDF text or fill supported form fields.');
-  }
 }
 
 function setZoom(value) {
@@ -868,26 +447,6 @@ async function saveModifiedPdf() {
   }
 }
 
-function undoLastReviewAction() {
-  const action = state.undo.pop();
-  if (!action) return;
-
-  if (action.kind === 'annotation-group') {
-    state.annotations = state.annotations.filter(
-      annotation =>
-        annotation.groupId !== action.groupId
-    );
-  } else if (action.kind === 'annotation') {
-    state.annotations = state.annotations.filter(
-      annotation => annotation.id !== action.id
-    );
-  }
-
-  markDirty();
-  rerender();
-  renderSideLists();
-}
-
 E.openBtn.onclick =
   E.openSmall.onclick =
     () => E.fileInput.click();
@@ -914,52 +473,6 @@ E.verticalScroll.onclick = () =>
 E.horizontalScroll.onclick = () =>
   setDirection('horizontal');
 
-document
-  .querySelectorAll('.annotation-tool')
-  .forEach(button => {
-    button.addEventListener(
-      'pointerdown',
-      () => captureCurrentTextSelection(),
-      true
-    );
-
-    button.onclick = () =>
-      setTool(button.dataset.tool);
-  });
-
-document.addEventListener(
-  'selectionchange',
-  () => scheduleSelectionCapture(false)
-);
-
-E.pdfPages.addEventListener(
-  'pointerdown',
-  event => {
-    if (event.target.closest('.textLayer')) {
-      state.textSelection = null;
-    }
-  }
-);
-
-E.pdfPages.addEventListener(
-  'pointerup',
-  event => {
-    if (event.target.closest('.textLayer')) {
-      scheduleSelectionCapture(true);
-    }
-  }
-);
-
-E.pdfPages.addEventListener(
-  'touchend',
-  event => {
-    if (event.target.closest('.textLayer')) {
-      scheduleSelectionCapture(true);
-    }
-  },
-  { passive: true }
-);
-
 /*
  * The shared 0.19.4.5 shell owns the PDF sidebar toggle in the
  * capture phase. Do not install another legacy toggle here.
@@ -979,7 +492,6 @@ E.bookmarkBtn.onclick = () => {
 };
 
 E.saveModifiedPdfBtn.onclick = saveModifiedPdf;
-E.undoReview.onclick = undoLastReviewAction;
 
 function exitImmersive() {
   document.body.classList.remove('immersive');
@@ -1063,27 +575,12 @@ window.InkDeskPdfDebug = {
     navigateToPage(pageNumber),
   setZoom,
   applyCapturedSelection: tool =>
-    applyTextSelection(
+    reviewController.applyTextSelection(
       tool,
-      captureCurrentTextSelection()
+      reviewController.captureCurrentTextSelection()
     ),
-  addSyntheticAnnotation: (
-    type = 'highlight'
-  ) => {
-    const annotation = {
-      id: makeId(),
-      page: state.page,
-      type,
-      source: 'free',
-      x: 0.1,
-      y: 0.1,
-      w: 0.2,
-      h: 0.04
-    };
-
-    state.annotations.push(annotation);
-    renderPageReview(state.page);
-  },
+  addSyntheticAnnotation: type =>
+    reviewController.addSyntheticAnnotation(type),
   toggleFullscreen: () =>
     E.fullscreenBtn.click(),
   exitFullscreen: exitImmersive

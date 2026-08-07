@@ -1,11 +1,11 @@
 
-## v0.20.2.11 PDF navigation decomposition
+## v0.20.2.12 PDF review decomposition
 
-- `tests/test_pdf_navigation_modularization.py` requires `viewer/navigation-controller.js` to remain focused, precached and outside inherited-debt exemptions.
-- `tests/browser/revalidate_pdf_navigation.py` independently verifies page list construction, thumbnail rendering, previous/next navigation, outline destinations, bookmark navigation and sidebar tabs.
-- `revalidate_pdf_page_rendering.py` remains a separate gate for page virtualization/rendering so navigation-state failures cannot be masked by renderer state.
+- `tests/test_pdf_review_modularization.py` requires the review controller and annotation layer to remain focused, precached and outside inherited-debt exemptions.
+- `tests/browser/revalidate_pdf_review.py` independently verifies selected-text highlight, free marker + Undo, selected-text comments, comment navigation and local review persistence.
+- Rendering and navigation keep their own isolated browser gates so review-state failures cannot be masked by viewer state.
 
-# Testing guide — InkDesk v0.20.2.11
+# Testing guide — InkDesk v0.20.2.12
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -42,8 +42,8 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails now include the dedicated PDF page-renderer and navigation controllers. The PDF `app.js` ratchet is reduced again after navigation/sidebar extraction; both new viewer controllers remain below the 500-line new-file ceiling.
-- The Python suite contains 246 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
+- Architecture guardrails now include the dedicated PDF page-renderer, navigation and review controllers. The PDF `app.js` ratchet is reduced again after navigation/sidebar extraction; both new viewer controllers remain below the 500-line new-file ceiling.
+- The Python suite contains 247 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
