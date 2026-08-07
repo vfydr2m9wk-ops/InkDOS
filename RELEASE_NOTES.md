@@ -1,3 +1,3 @@
-# InkDesk v0.20.2.16 — Documents Ruler Model Decomposition
+# InkDesk v0.20.2.17 — Documents Ruler Interaction Decomposition
 
-Pure Documents ruler geometry and indentation calculations now live in `shared/ui/document-ruler-model.js`; `shared/ui/workspace-layout.js` retains DOM synchronization and pointer interaction. No visible or file-format behavior is intentionally changed. See `RELEASE_NOTES_0.20.2.16.md`.
+The Documents ruler pointer-drag lifecycle now lives in `shared/ui/document-ruler-drag-controller.js`; `shared/ui/workspace-layout.js` retains ruler DOM synchronization/rendering and observer wiring, while `shared/ui/document-ruler-model.js` continues to own pure geometry and indent-state calculations. No visible or file-format behavior is intentionally changed. See `RELEASE_NOTES_0.20.2.17.md`.

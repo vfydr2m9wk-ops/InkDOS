@@ -133,3 +133,9 @@ The next shared-UI cut should stay bounded and should not mix Documents ruler ex
 Pure ruler math/state moves from `workspace-layout.js` to `shared/ui/document-ruler-model.js`: tick generation, active-page metrics, selected-block indent state, clamping, pointer conversion and indent application. DOM synchronization, observer wiring and pointer-drag interaction stay in `workspace-layout.js`. The external ruler-helper API remains compatible and no visible ruler behavior is intentionally changed.
 
 The next shared-UI cut should keep the same boundary discipline: do not combine ruler interaction extraction with unrelated Documents or Spreadsheet behavior.
+
+### v0.20.2.17 — Documents ruler interaction decomposition
+
+Pointer-drag lifecycle moves from `workspace-layout.js` to `shared/ui/document-ruler-drag-controller.js`: pointer capture, pointerdown/move/up/cancel handling, drag-state transitions and indentation-application orchestration. Ruler DOM synchronization, rendering and observers stay in `workspace-layout.js`, while pure geometry remains in `document-ruler-model.js`. No visible ruler behavior is intentionally changed.
+
+The next shared-UI cut should finish the remaining ruler DOM synchronization/observer debt or stop shared-UI decomposition if the resulting boundary would become less clear.

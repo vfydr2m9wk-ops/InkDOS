@@ -68,10 +68,10 @@ class PdfTextSelectionTests(unittest.TestCase):
         self.assertNotIn("'underline'", free_block)
         self.assertNotIn("'comment'", free_block)
 
-        shared = (
-            ROOT / "shared" / "ui" / "workspace-layout.js"
+        ruler_drag = (
+            ROOT / "shared" / "ui" / "document-ruler-drag-controller.js"
         ).read_text(encoding="utf-8")
-        self.assertIn("stopImmediatePropagation", shared)
+        self.assertIn("stopImmediatePropagation", ruler_drag)
 
     def test_service_worker_caches_selection_helper(self):
         worker = (ROOT / "service-worker.js").read_text(

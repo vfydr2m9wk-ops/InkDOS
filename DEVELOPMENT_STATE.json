@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 18,
-  "currentPackage": "0.20.2.16",
+  "appliedSequence": 19,
+  "currentPackage": "0.20.2.17",
   "status": "in-progress",
   "history": [
     {
@@ -95,6 +95,11 @@
       "sequence": 18,
       "packageLabel": "0.20.2.16",
       "description": "Documents ruler-model decomposition: move existing pure ruler tick, page-geometry and indentation calculations behind shared/ui/document-ruler-model.js while workspace-layout.js retains DOM synchronization, observers and pointer interaction. Compatibility ruler-helper methods remain exposed from InkDeskWorkspaceLayout. No visible control, DOCX behavior, save behavior, panel behavior or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 19,
+      "packageLabel": "0.20.2.17",
+      "description": "Documents ruler interaction decomposition: move the existing pointer-drag lifecycle, pointer capture, drag-state transitions and indentation-application orchestration from shared/ui/workspace-layout.js into shared/ui/document-ruler-drag-controller.js. Ruler DOM synchronization/rendering and observers remain in workspace-layout.js; pure ruler geometry remains in document-ruler-model.js. No visible control, DOCX behavior, save behavior, panel behavior or workflow behavior is intentionally changed."
     }
   ]
 }

@@ -4,13 +4,13 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.16
+## InkDesk v0.20.2.17
 
-Version 0.20.2.16 continues the **shared UI decomposition** without changing the visible workflow. The pure Documents ruler model now lives in `shared/ui/document-ruler-model.js`, while `shared/ui/workspace-layout.js` keeps DOM synchronization, observer wiring and pointer-drag interaction.
+Version 0.20.2.17 continues the **shared UI decomposition** without changing the visible workflow. The Documents ruler pointer-drag lifecycle now lives in `shared/ui/document-ruler-drag-controller.js`; `shared/ui/workspace-layout.js` keeps ruler DOM synchronization/rendering and observer wiring, while `shared/ui/document-ruler-model.js` continues to own pure geometry and indent-state calculations.
 
-The extracted model owns the existing ruler tick generation, active-page geometry, selected-block indentation state, clamping, pointer-to-indent conversion and style/input application. The external `InkDeskWorkspaceLayout` ruler-helper API remains available through compatibility delegation. `workspace-layout.js` drops from 1,009 to 710 physical lines; the new model is 346 lines and stays below the normal 500-line ceiling.
+The extraction moves pointerdown/move/up/cancel handling, pointer capture and drag-state transitions behind a focused controller. `workspace-layout.js` drops from 710 to 541 physical lines; the new drag controller is 252 lines and remains below the normal 500-line ceiling. The public `InkDeskWorkspaceLayout` ruler-helper API remains unchanged.
 
-The panel-state extraction completed in v0.20.2.15, document-session extraction in v0.20.2.14 and PDF decomposition in v0.20.2.13 remain unchanged. The hardened updater flow, package SHA identity, incremental checksums and the same 17 isolated Chromium scenarios continue to protect the behavior-neutral refactoring sequence.
+The ruler-model extraction completed in v0.20.2.16, panel-state extraction in v0.20.2.15, document-session extraction in v0.20.2.14 and PDF decomposition in v0.20.2.13 remain unchanged. The hardened updater flow, package SHA identity, incremental checksums and the same 17 isolated Chromium scenarios continue to protect the behavior-neutral refactoring sequence.
 
 ## Refactoring policy
 
@@ -48,7 +48,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.16 remains a beta. Real-device validation is still required for critical
+v0.20.2.17 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

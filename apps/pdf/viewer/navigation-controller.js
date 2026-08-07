@@ -290,7 +290,7 @@
   }
 
   global.InkDeskPdfNavigationController = Object.freeze({
-    version: '0.20.2.16',
+    version: '0.20.2.17',
     createNavigationController
   });
 })(globalThis);

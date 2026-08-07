@@ -49,7 +49,7 @@ class DocumentSessionModularizationTests(unittest.TestCase):
         self.assertLessEqual(len(shell.read_text(encoding="utf-8").splitlines()), 500)
         self.assertLessEqual(len(controller.read_text(encoding="utf-8").splitlines()), 500)
         self.assertNotIn("shared/office-shell.js", policy["grandfatheredDebt"])
-        self.assertEqual(policy["release"], "0.20.2.16")
+        self.assertEqual(policy["release"], "0.20.2.17")
 
     def test_controller_is_declared_and_precached(self):
         manifest = json.loads((ROOT / "app-manifest.json").read_text(encoding="utf-8"))

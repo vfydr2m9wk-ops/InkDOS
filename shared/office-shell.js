@@ -90,7 +90,7 @@
   function loadWorkspacePanelController() {
     if (
       global.InkDeskWorkspacePanelController &&
-      global.InkDeskWorkspacePanelController.version === '0.20.2.16'
+      global.InkDeskWorkspacePanelController.version === '0.20.2.17'
     ) {
       return Promise.resolve(global.InkDeskWorkspacePanelController);
     }
@@ -146,7 +146,7 @@
   function loadDocumentRulerModel() {
     if (
       global.InkDeskDocumentRulerModel &&
-      global.InkDeskDocumentRulerModel.version === '0.20.2.16'
+      global.InkDeskDocumentRulerModel.version === '0.20.2.17'
     ) {
       return Promise.resolve(global.InkDeskDocumentRulerModel);
     }
@@ -190,6 +190,62 @@
         function () {
           reject(new Error(
             'The shared InkDesk document ruler model could not be loaded.'
+          ));
+        },
+        { once: true }
+      );
+
+      documentObject.head.appendChild(script);
+    });
+  }
+
+  function loadDocumentRulerDragController() {
+    if (
+      global.InkDeskDocumentRulerDragController &&
+      global.InkDeskDocumentRulerDragController.version === '0.20.2.17'
+    ) {
+      return Promise.resolve(global.InkDeskDocumentRulerDragController);
+    }
+
+    return new Promise(function (resolve, reject) {
+      const existing = documentObject.querySelector(
+        'script[data-inkdesk-ui="document-ruler-drag-controller"]'
+      );
+
+      if (existing) {
+        existing.addEventListener(
+          'load',
+          function () { resolve(global.InkDeskDocumentRulerDragController); },
+          { once: true }
+        );
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = documentObject.createElement('script');
+      script.src = new URL('document-ruler-drag-controller.js', uiBase).href;
+      script.async = false;
+      script.dataset.inkdeskUi = 'document-ruler-drag-controller';
+
+      script.addEventListener(
+        'load',
+        function () {
+          if (!global.InkDeskDocumentRulerDragController) {
+            reject(new Error(
+              'InkDesk document ruler drag controller did not initialize.'
+            ));
+            return;
+          }
+          resolve(global.InkDeskDocumentRulerDragController);
+        },
+        { once: true }
+      );
+
+      script.addEventListener(
+        'error',
+        function () {
+          reject(new Error(
+            'The shared InkDesk document ruler drag controller could not be loaded.'
           ));
         },
         { once: true }
@@ -254,6 +310,8 @@
   function loadWorkspaceLayout() {
     return loadWorkspacePanelController().then(function () {
       return loadDocumentRulerModel();
+    }).then(function () {
+      return loadDocumentRulerDragController();
     }).then(function () {
       return loadWorkspaceLayoutRuntime();
     });
@@ -346,7 +404,7 @@
   function loadDocumentSessionController() {
     if (
       global.InkDeskDocumentSessionController &&
-      global.InkDeskDocumentSessionController.version === '0.20.2.16'
+      global.InkDeskDocumentSessionController.version === '0.20.2.17'
     ) {
       return Promise.resolve(global.InkDeskDocumentSessionController);
     }

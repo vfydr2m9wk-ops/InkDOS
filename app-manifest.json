@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.16",
+  "version": "0.20.2.17",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.16"
+    "nextPatch": "0.20.2.17"
   },
   "capabilities": {
     "documents": [
@@ -238,11 +238,13 @@
         "documentation": "docs/DOCUMENTS_RULER.md",
         "originMilestone": "0.19.4.7",
         "model": "shared/ui/document-ruler-model.js",
-        "modelRelease": "0.20.2.16"
+        "modelRelease": "0.20.2.16",
+        "dragController": "shared/ui/document-ruler-drag-controller.js",
+        "dragControllerRelease": "0.20.2.17"
       },
       "originMilestone": "0.19.4.7",
       "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.2.16"
+      "architectureRelease": "0.20.2.17"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -495,9 +497,9 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.16",
+    "version": "0.20.2.17",
     "channel": "beta",
-    "name": "Shared Workspace Panel Decomposition",
+    "name": "Documents Ruler Interaction Decomposition",
     "date": "2026-08-07",
     "consolidated": true,
     "sourceDevelopmentLine": "0.19.4",

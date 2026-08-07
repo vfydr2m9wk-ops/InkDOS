@@ -1,3 +1,11 @@
+## 0.20.2.17 — Documents Ruler Interaction Decomposition (2026-08-07)
+
+- Extracted Documents ruler pointer-drag lifecycle to `shared/ui/document-ruler-drag-controller.js`.
+- Kept ruler DOM synchronization/rendering and observers in `shared/ui/workspace-layout.js`; pure geometry remains in `document-ruler-model.js`.
+- Added deterministic load order and offline precache for the new drag controller.
+- Lowered the `workspace-layout.js` architecture ratchet from 710 to 541 physical lines; the new controller is 252 lines.
+- No visible UI, DOCX, save, panel or workflow behavior change is intended.
+
 ## 0.20.2.16 — Documents Ruler Model Decomposition (2026-08-07)
 
 - Extracted pure Documents ruler geometry, tick generation and indentation calculations to `shared/ui/document-ruler-model.js`.

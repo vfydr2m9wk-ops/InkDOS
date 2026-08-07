@@ -30,8 +30,9 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
         self.assertIn("function installDocumentsRuler(", layout)
         self.assertIn("InkDeskDocumentRulerModel", layout)
         self.assertIn("model.rulerMetrics(", layout)
-        self.assertIn("model.pointerToDocumentIndent(", layout)
-        self.assertIn("model.applyDocumentIndent(", layout)
+        drag = (ROOT / "shared/ui/document-ruler-drag-controller.js").read_text(encoding="utf-8")
+        self.assertIn("model.pointerToDocumentIndent(", drag)
+        self.assertIn("model.applyDocumentIndent(", drag)
         for implementation in (
             "function finiteNumber(",
             "function rulerTickModel(",
@@ -55,8 +56,8 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
             shell.index("loadWorkspaceLayoutRuntime();"),
         )
 
-        model_tag = "document-ruler-model.js?v=0.20.2.16"
-        layout_tag = "workspace-layout.js?v=0.20.2.16"
+        model_tag = "document-ruler-model.js?v=0.20.2.17"
+        layout_tag = "workspace-layout.js?v=0.20.2.17"
         self.assertIn(model_tag, documents)
         self.assertIn(layout_tag, documents)
         self.assertLess(documents.index(model_tag), documents.index(layout_tag))
@@ -71,7 +72,7 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
         model_lines = len(model.read_text(encoding="utf-8").splitlines())
         shell_lines = len(shell.read_text(encoding="utf-8").splitlines())
 
-        self.assertEqual(policy["release"], "0.20.2.16")
+        self.assertEqual(policy["release"], "0.20.2.17")
         self.assertLess(layout_lines, 1009)
         self.assertLessEqual(model_lines, 500)
         self.assertLessEqual(shell_lines, 500)
@@ -90,7 +91,7 @@ require('./shared/ui/document-ruler-model.js');
 require('./shared/ui/workspace-layout.js');
 const model = globalThis.InkDeskDocumentRulerModel;
 const layout = globalThis.InkDeskWorkspaceLayout;
-if (!model || model.version !== '0.20.2.16') process.exit(10);
+if (!model || model.version !== '0.20.2.17') process.exit(10);
 if (!layout || layout.version !== '0.20.0') process.exit(11);
 const a = model.rulerTickModel(816, 96);
 const b = layout.rulerTickModel(816, 96);
