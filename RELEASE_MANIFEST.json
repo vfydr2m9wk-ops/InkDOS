@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.4",
-  "releaseName": "Presentations Navigation and Notes Decomposition",
+  "version": "0.20.2.5",
+  "releaseName": "Presentations State and Selection Decomposition",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,7 +37,7 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "234 configured; 233 pass in local reconstruction, with checksum integrity deferred to hosted tree because three pinned PDF.js publication files are absent locally",
+    "structuralUnitTests": "235 configured; 234 pass in local reconstruction, with the checksum-integrity test deferred to hosted tree because two hosted baseline files and three pinned PDF.js publication files are not reproduced locally",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
@@ -52,8 +52,8 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: Presentations app ratchet reduced again after thumbnail and presenter-notes extraction; source-debt, workspace boundaries and relative import-cycle checks remain active",
-    "presentationsModularization": "Format/Inspector, slide-thumbnail rendering and presenter-notes UI are isolated in apps/presentations/ui controllers; app.js remains the orchestration entry point"
+    "architectureGuardrails": "required: 49 runtime JS/CSS files checked; Presentations app ratchet reduced to 868 physical lines / 82 long lines after state/history/selection extraction",
+    "presentationsModularization": "selection/drag interactions and undo/redo history isolated in apps/presentations/state; Inspector, thumbnails and presenter notes remain isolated in apps/presentations/ui; app.js remains the orchestration entry point"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

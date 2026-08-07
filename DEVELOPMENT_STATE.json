@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 6,
-  "currentPackage": "0.20.2.4",
+  "appliedSequence": 7,
+  "currentPackage": "0.20.2.5",
   "status": "in-progress",
   "history": [
     {
@@ -35,6 +35,11 @@
       "sequence": 6,
       "packageLabel": "0.20.2.4",
       "description": "Presentations decomposition v0.20.2.4: behavior-neutral extraction of slide-thumbnail rendering/visibility and presenter-notes rendering/input/visibility from apps/presentations/app.js into focused UI controllers. No visual redesign, editing feature, PPTX behavior, recovery behavior or workflow change is intended."
+    },
+    {
+      "sequence": 7,
+      "packageLabel": "0.20.2.5",
+      "description": "Presentations decomposition v0.20.2.5: behavior-neutral extraction of selected-object state, drag/resize/rotate interactions, and Undo/Redo history into focused state controllers. No visual redesign, editing feature, PPTX behavior, save/recovery behavior or workflow change is intended."
     }
   ]
 }

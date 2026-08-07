@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2.5 — Presentations State and Selection Decomposition (2026-08-07)
+
+- Extracted object-selection ownership and pointer drag/resize/rotate interactions into `apps/presentations/state/selection-controller.js`.
+- Extracted snapshot capture, bounded Undo/Redo stacks and history-button synchronization into `apps/presentations/state/history-controller.js`.
+- Extended the Presentations behavioral regression to prove clear/reselect plus Undo/Redo restoration after formatting.
+- Updated offline precaching and manual browser harnesses so both state components load before `app.js`.
+- Lowered the Presentations `app.js` architecture ratchet again with no intended visual, PPTX, save or recovery behavior change.
+
 ## 0.20.2.4 — Presentations Navigation and Notes Decomposition (2026-08-07)
 
 - Extracted slide-thumbnail rendering and thumbnail visibility into `apps/presentations/ui/thumbnails-controller.js`.

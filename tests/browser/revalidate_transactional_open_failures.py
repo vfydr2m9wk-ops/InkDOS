@@ -105,6 +105,8 @@ def verify_pptx(browser):
         "shared/vendor/jszip.min.js",
         "apps/presentations/engine/compatibility.js",
         "shared/office-shell.js",
+        "apps/presentations/state/selection-controller.js",
+        "apps/presentations/state/history-controller.js",
         "apps/presentations/ui/inspector-controller.js",
         "apps/presentations/ui/thumbnails-controller.js",
         "apps/presentations/ui/presenter-notes-controller.js",

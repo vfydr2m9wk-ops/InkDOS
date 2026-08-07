@@ -8,7 +8,8 @@ pass the full release gate before the next ownership boundary is moved.
 | 0.20.2.2 | Guardrails, policy, architecture checks and AI instructions | None |
 | 0.20.2.3 | Presentations: Format/Inspector extraction | None intended |
 | 0.20.2.4 | Presentations: thumbnails and presenter-notes extraction | None intended |
-| next 0.20.2.x | Presentations: state/history/selection, then slideshow and I/O in bounded steps | None intended |
+| 0.20.2.5 | Presentations: state/history/selection extraction | None intended |
+| next 0.20.2.x | Presentations: slideshow/presentation mode, then I/O in bounded steps | None intended |
 | later 0.20.2.x | PDF decomposition | None intended |
 | later 0.20.2.x | Shared UI decomposition | None intended |
 | later 0.20.2.x | Documents/Spreadsheets cleanup | None intended |
@@ -25,8 +26,8 @@ apps/presentations/
   app.js
   state/
     presentation-state.js
-    history.js
-    selection.js
+    history-controller.js
+    selection-controller.js
   ui/
     toolbar.js
     inspector-controller.js
@@ -59,6 +60,14 @@ v0.20.2.4 implements the second boundary. `ui/thumbnails-controller.js` owns
 thumbnail rendering and thumbnail panel visibility. `ui/presenter-notes-controller.js`
 owns the presenter-notes editor state, character count, input debounce and notes
 panel visibility. The visible UI and default open/closed state remain unchanged.
+
+v0.20.2.5 implements the third boundary. `state/selection-controller.js` owns
+selected-object identity, canvas clear/reselect behavior, drag/resize/rotate
+interactions, selection handles and alignment guides.
+`state/history-controller.js` owns snapshot capture, bounded Undo/Redo stacks,
+action wrapping, restoration and toolbar disabled-state synchronization. The
+entry point still owns the presentation document itself and composes these state
+controllers with the previously extracted UI controllers.
 
 ## Later target: PDF
 

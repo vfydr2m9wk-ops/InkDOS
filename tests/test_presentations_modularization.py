@@ -6,7 +6,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 APP = ROOT / "apps/presentations/app.js"
+STATE = ROOT / "apps/presentations/state"
 UI = ROOT / "apps/presentations/ui"
+SELECTION = STATE / "selection-controller.js"
+HISTORY = STATE / "history-controller.js"
 INSPECTOR = UI / "inspector-controller.js"
 THUMBNAILS = UI / "thumbnails-controller.js"
 NOTES = UI / "presenter-notes-controller.js"
@@ -18,18 +21,20 @@ class PresentationsModularizationTests(unittest.TestCase):
     def test_feature_components_load_before_app(self):
         html = HTML.read_text(encoding="utf-8")
         components = (
-            "ui/inspector-controller.js?v=0.20.2.4",
-            "ui/thumbnails-controller.js?v=0.20.2.4",
-            "ui/presenter-notes-controller.js?v=0.20.2.4",
+            "state/selection-controller.js?v=0.20.2.5",
+            "state/history-controller.js?v=0.20.2.5",
+            "ui/inspector-controller.js?v=0.20.2.5",
+            "ui/thumbnails-controller.js?v=0.20.2.5",
+            "ui/presenter-notes-controller.js?v=0.20.2.5",
         )
-        app = "app.js?v=0.20.2.4"
+        app = "app.js?v=0.20.2.5"
         for component in components:
             self.assertIn(component, html)
             self.assertLess(html.index(component), html.index(app))
 
     def test_extracted_components_are_readable_and_within_new_source_limits(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
-        for path in (INSPECTOR, THUMBNAILS, NOTES):
+        for path in (SELECTION, HISTORY, INSPECTOR, THUMBNAILS, NOTES):
             self.assertTrue(path.is_file(), path)
             source = path.read_text(encoding="utf-8").splitlines()
             self.assertLessEqual(len(source), policy["extensions"][".js"]["newFileMaxLines"], path)
@@ -40,19 +45,32 @@ class PresentationsModularizationTests(unittest.TestCase):
             self.assertEqual(long_lines, [], path)
             self.assertNotIn(str(path.relative_to(ROOT)), policy["grandfatheredDebt"])
 
-    def test_app_delegates_extracted_ui_behavior(self):
+    def test_app_delegates_extracted_state_and_ui_behavior(self):
         app = APP.read_text(encoding="utf-8")
+        selection = SELECTION.read_text(encoding="utf-8")
+        history = HISTORY.read_text(encoding="utf-8")
         inspector = INSPECTOR.read_text(encoding="utf-8")
         thumbnails = THUMBNAILS.read_text(encoding="utf-8")
         notes = NOTES.read_text(encoding="utf-8")
 
+        self.assertIn("InkDeskPresentationsSelection.create", app)
+        self.assertIn("InkDeskPresentationsHistory.create", app)
         self.assertIn("InkDeskPresentationsInspector.create", app)
         self.assertIn("InkDeskPresentationsThumbnails.create", app)
         self.assertIn("InkDeskPresentationsNotes.create", app)
+        self.assertIn("class PresentationSelectionController", selection)
+        self.assertIn("class PresentationHistoryController", history)
         self.assertIn("class PresentationInspectorController", inspector)
         self.assertIn("class PresentationThumbnailsController", thumbnails)
         self.assertIn("class PresentationNotesController", notes)
 
+        self.assertNotIn("let undoStack", app)
+        self.assertNotIn("let redoStack", app)
+        self.assertNotIn("historyBeforeDrag", app)
+        self.assertNotIn("function startDrag(", app)
+        self.assertNotIn("function startResize(", app)
+        self.assertNotIn("function startRotate(", app)
+        self.assertNotIn("function addSelectionHandles(", app)
         self.assertNotIn("const COLORS=[", app)
         self.assertNotIn("let inspectorOpen=false", app)
         self.assertNotIn("compactInspectorQuery", app)
@@ -61,17 +79,39 @@ class PresentationsModularizationTests(unittest.TestCase):
         self.assertNotIn("$('togglePresentationsBtn').onclick", app)
         self.assertNotIn("$('toggleNotesBtn').onclick", app)
 
-    def test_presentations_app_ratchet_moves_down_after_second_extraction(self):
+    def test_state_controllers_own_selection_interactions_and_history_stacks(self):
+        selection = SELECTION.read_text(encoding="utf-8")
+        history = HISTORY.read_text(encoding="utf-8")
+        self.assertIn("this.selectedId = null", selection)
+        self.assertIn("this.drag = null", selection)
+        self.assertIn("startDrag(event)", selection)
+        self.assertIn("startResize(event)", selection)
+        self.assertIn("startRotate(event)", selection)
+        self.assertIn("addHandles(element)", selection)
+        self.assertIn("this.undoStack = []", history)
+        self.assertIn("this.redoStack = []", history)
+        self.assertIn("action(fn)", history)
+        self.assertIn("undo()", history)
+        self.assertIn("redo()", history)
+
+    def test_presentations_app_ratchet_moves_down_after_state_extraction(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
         debt = policy["grandfatheredDebt"]["apps/presentations/app.js"]
         lines = APP.read_text(encoding="utf-8").splitlines()
+        long_lines = sum(
+            len(line) > policy["extensions"][".js"]["maxPhysicalLineLength"]
+            for line in lines
+        )
         self.assertEqual(debt["maxLines"], len(lines))
-        self.assertLess(debt["maxLines"], 883)
-        self.assertLess(debt["maxLongLines"], 93)
+        self.assertEqual(debt["maxLongLines"], long_lines)
+        self.assertLess(debt["maxLines"], 870)
+        self.assertLess(debt["maxLongLines"], 88)
 
     def test_offline_shell_precaches_every_extracted_component(self):
         worker = WORKER.read_text(encoding="utf-8")
         for component in (
+            "./apps/presentations/state/selection-controller.js",
+            "./apps/presentations/state/history-controller.js",
             "./apps/presentations/ui/inspector-controller.js",
             "./apps/presentations/ui/thumbnails-controller.js",
             "./apps/presentations/ui/presenter-notes-controller.js",
@@ -87,6 +127,8 @@ class PresentationsModularizationTests(unittest.TestCase):
             "tests/browser/revalidate_launch_and_offline_modes.py",
         )
         components = (
+            "apps/presentations/state/selection-controller.js",
+            "apps/presentations/state/history-controller.js",
             "apps/presentations/ui/inspector-controller.js",
             "apps/presentations/ui/thumbnails-controller.js",
             "apps/presentations/ui/presenter-notes-controller.js",

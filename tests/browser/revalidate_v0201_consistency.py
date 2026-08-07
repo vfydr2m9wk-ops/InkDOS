@@ -17,7 +17,7 @@ def inject(page,workspace):
     for css in ('shared/office-shell.css',f'apps/{workspace}/styles.css'):
         page.add_style_tag(path=str(ROOT/css))
     if workspace=='presentations':
-        scripts=('shared/office-runtime.js','shared/vendor/jszip.min.js','apps/presentations/engine/compatibility.js','shared/office-shell.js','apps/presentations/ui/inspector-controller.js','apps/presentations/ui/thumbnails-controller.js','apps/presentations/ui/presenter-notes-controller.js','apps/presentations/app.js')
+        scripts=('shared/office-runtime.js','shared/vendor/jszip.min.js','apps/presentations/engine/compatibility.js','shared/office-shell.js','apps/presentations/state/selection-controller.js','apps/presentations/state/history-controller.js','apps/presentations/ui/inspector-controller.js','apps/presentations/ui/thumbnails-controller.js','apps/presentations/ui/presenter-notes-controller.js','apps/presentations/app.js')
     elif workspace=='spreadsheets':
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-reference.css'))
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-editor.css'))

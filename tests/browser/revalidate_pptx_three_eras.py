@@ -38,6 +38,8 @@ def load_app(page) -> None:
                 ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/presentations/engine/compatibility.js",
         ROOT / "shared/office-shell.js",
+        ROOT / "apps/presentations/state/selection-controller.js",
+        ROOT / "apps/presentations/state/history-controller.js",
         ROOT / "apps/presentations/ui/inspector-controller.js",
         ROOT / "apps/presentations/ui/thumbnails-controller.js",
         ROOT / "apps/presentations/ui/presenter-notes-controller.js",

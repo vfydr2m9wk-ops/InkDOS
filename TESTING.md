@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.4
+# Testing guide — InkDesk v0.20.2.5
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,13 +35,13 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails pass with 45 runtime JS/CSS files and the Presentations `app.js` ratchet reduced from 886/97 to 883/93 physical/long lines.
-- The Python suite contains 234 tests. In the local reconstruction, 233 pass; the checksum-manifest test is the only local hold because the three pinned PDF.js publication files are not available in this environment. The hosted repository contains those files and remains the authoritative checksum gate.
-- `revalidate_v0201_consistency.py` passes with the extracted Inspector component loaded before `app.js`.
+- Architecture guardrails pass with 49 runtime JS/CSS files and the Presentations `app.js` ratchet reduced again from 870/88 to 868/82 physical/long lines.
+- The Python suite contains 235 tests. In the local reconstruction, 234 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
+- `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
 - Launch/offline validation passes static-asset and restricted-API/touch-emulation checks; local HTTP/file navigation can be reported as not performed when blocked by the execution environment.
-- The dedicated `revalidate_presentations_controls.py` remains the hosted behavior gate for Format-panel open/hide/reopen, formatting changes, compact drawer state and Escape handling.
+- The dedicated `revalidate_presentations_controls.py` remains the hosted behavior gate for Format-panel open/hide/reopen, formatting changes, selection clear/reselect, Undo/Redo restoration, compact drawer state and Escape handling. Local HTTP navigation was blocked by the execution environment, so this expanded path is not claimed locally.
 - Firefox, native WebKit/Safari, iPadOS, Edge and installed-PWA behavior remain explicit matrix/manual checks; unavailable engines are never inferred from Chromium results.
 
 ## Python validation dependencies
@@ -93,10 +93,10 @@ executes this gate after the source audit and before unit/package tests. The
 gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
 
-## v0.20.2.4 Presentations decomposition
+## v0.20.2.5 Presentations decomposition
 
-- `tests/test_presentations_modularization.py` verifies the Inspector, thumbnail and presenter-notes controllers as real focused components loaded before `app.js`, within new-source limits and precached offline.
-- The Presentations `app.js` ratchet must move downward again after the extraction; the extracted UI behavior may not be reimplemented in the entry point.
-- Browser harnesses that strip HTML script tags explicitly load all three Presentations UI controllers before `app.js`.
-- `tests/browser/revalidate_presentations_controls.py` remains the user-visible behavior gate for Format, notes and thumbnail visibility, including compact-width behavior.
+- `tests/test_presentations_modularization.py` verifies the selection/history state controllers plus Inspector, thumbnail and presenter-notes UI controllers as focused components loaded before `app.js`, within new-source limits and precached offline.
+- The Presentations `app.js` ratchet is 868 physical lines / 82 long lines; selection/drag and history stacks may not be reimplemented in the entry point.
+- Browser harnesses that strip HTML script tags explicitly load both Presentations state controllers and all three UI controllers before `app.js`.
+- `tests/browser/revalidate_presentations_controls.py` remains the user-visible behavior gate for Format, notes and thumbnail visibility, compact-width behavior, selection clear/reselect, and Undo/Redo snapshot restoration.
 - Existing PPTX, recovery, cross-workspace and transactional-open browser regressions must remain unchanged.

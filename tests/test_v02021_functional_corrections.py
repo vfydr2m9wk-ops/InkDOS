@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.20.2.4"
+VERSION = "0.20.2.5"
 
 
 class FunctionalCorrectionsV02021Tests(unittest.TestCase):

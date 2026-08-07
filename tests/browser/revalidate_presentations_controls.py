@@ -186,6 +186,26 @@ def main():
                 assert_true(background in {"rgb(37, 99, 235)", "rgba(37, 99, 235, 1)"}, "Format panel fill did not update the selected object")
                 report["checks"].append("format panel modifies selected object")
 
+                # Selection and history are separate state components in v0.20.2.5.
+                # Verify that clearing/reselecting still drives the visible handles
+                # and that Undo/Redo restores the same selected object state.
+                page.locator("#slideCanvas").evaluate("node => node.click()")
+                assert_true(page.locator("#slideCanvas .obj.selected").count() == 0, "Canvas click did not clear object selection")
+                page.locator("#slideCanvas .obj").last.evaluate("node => node.click()")
+                assert_true(page.locator("#slideCanvas .obj.selected").count() == 1, "Object click did not restore selection")
+                page.wait_for_timeout(450)
+                page.click("#undoBtn")
+                undone = page.locator("#slideCanvas .obj.selected")
+                assert_true(undone.count() == 1, "Undo did not preserve the snapshot selection")
+                undone_style = undone.get_attribute("style") or ""
+                assert_true("rotate(17deg)" not in undone_style, "Undo did not restore the pre-format object state")
+                page.click("#redoBtn")
+                redone = page.locator("#slideCanvas .obj.selected")
+                assert_true(redone.count() == 1, "Redo did not restore the selected object")
+                redone_style = redone.get_attribute("style") or ""
+                assert_true("rotate(17deg)" in redone_style, "Redo did not restore the formatted object state")
+                report["checks"].append("selection clear/reselect and Undo/Redo snapshot restoration")
+
                 # Presenter notes toggle must be reversible.
                 ensure_notes_visible(page)
                 page.click('[data-tab="view"]')

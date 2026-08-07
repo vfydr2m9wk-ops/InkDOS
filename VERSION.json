@@ -1,9 +1,9 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.2.4",
+  "version": "0.20.2.5",
   "releaseChannel": "beta",
-  "releaseName": "Presentations Navigation and Notes Decomposition",
+  "releaseName": "Presentations State and Selection Decomposition",
   "date": "2026-08-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",
