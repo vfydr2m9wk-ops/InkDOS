@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.12
+# Testing guide — InkDesk v0.20.2.13
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,14 +35,20 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails target 54 runtime JS/CSS files. The PDF `app.js` ratchet is reduced to 1322 physical lines / 0 long lines, while the new page renderer remains below the 500-line new-file ceiling.
-- The Python suite contains 245 tests. In the reconstructed local tree, 244 pass; the checksum-manifest test is the only local hold because the three pinned PDF.js publication files are absent from this environment. The hosted repository remains the authoritative checksum gate.
+- Architecture guardrails include the new PDF save controller. `apps/pdf/app.js` is 486 physical lines / 0 long lines and is no longer grandfathered; `io/save-controller.js` remains below the normal 500-line ceiling.
+- The Python suite contains 248 tests after the save-boundary regression was added. The reconstructed local tree may retain the checksum-manifest hold because the three pinned PDF.js publication files are absent; the hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
 - Launch/offline validation passes static-asset and restricted-API/touch-emulation checks; local HTTP/file navigation can be reported as not performed when blocked by the execution environment.
 - The dedicated `revalidate_presentations_controls.py` remains the hosted behavior gate for Format-panel open/hide/reopen, formatting changes, selection clear/reselect, Undo/Redo restoration, compact drawer state and Escape handling. Slideshow behavior now runs independently in `revalidate_presentations_slideshow.py`; local HTTP navigation was blocked by the execution environment, so these browser paths are not claimed locally.
 - Firefox, native WebKit/Safari, iPadOS, Edge and installed-PWA behavior remain explicit matrix/manual checks; unavailable engines are never inferred from Chromium results.
+
+## v0.20.2.13 PDF save decomposition
+
+- `tests/test_pdf_save_modularization.py` enforces the new I/O boundary and the removal of PDF `app.js` from inherited architecture debt.
+- `tests/browser/revalidate_pdf_save.py` is an isolated 17th Chromium scenario for both unified-save modes and download/button lifecycle.
+- Existing PDF rendering, navigation and review scenarios remain separate release blockers.
 
 ## Python validation dependencies
 
@@ -94,7 +100,7 @@ gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
 
 
-## v0.20.2.12 Presentations architecture consolidation
+## v0.20.2.13 Presentations architecture consolidation
 
 - `tests/test_presentations_modularization.py` requires the PPTX write adapter plus file/recovery controllers to load before `app.js`, remain within new-source limits and be precached offline.
 - Package-preserving imported-slide mutation, notes patching, transition patching and new object XML generation now live in `io/pptx-write-adapter.js`.

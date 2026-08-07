@@ -28,6 +28,7 @@ SCRIPTS = [
     "revalidate_pdf_page_rendering.py",
     "revalidate_pdf_navigation.py",
     "revalidate_pdf_review.py",
+    "revalidate_pdf_save.py",
     "revalidate_v02021_functional_corrections.py",
 ]
 

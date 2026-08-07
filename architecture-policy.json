@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.12",
+  "release": "0.20.2.13",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -28,11 +28,6 @@
       "maxLongLines": 0,
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
-    "apps/pdf/app.js": {
-      "maxLines": 587,
-      "maxLongLines": 0,
-      "reason": "PDF review decomposition ratchet: review persistence, text-selection annotations, free annotation layer, comments and undo moved behind focused review components in v0.20.2.12."
-    },
     "apps/txt/styles.css": {
       "maxLines": 417,
       "maxLongLines": 1,
@@ -51,7 +46,7 @@
     "apps/presentations/app.js": {
       "maxLines": 698,
       "maxLongLines": 56,
-      "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.12."
+      "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.13."
     },
     "apps/documents/styles.css": {
       "maxLines": 65,

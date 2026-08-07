@@ -4,22 +4,13 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.12
+## InkDesk v0.20.2.13
 
-Version 0.20.2.12 continues the behavior-neutral **PDF architecture decomposition**.
-Rendering remains in `viewer/page-renderer.js`, navigation remains in
-`viewer/navigation-controller.js`, and PDF review behavior is now isolated in
-`review/review-controller.js` plus `review/annotation-layer.js`.
+Version 0.20.2.13 completes the main **PDF architecture decomposition** without changing the visible workflow. PDF rendering, navigation and review already live behind focused components; unified Save / flattened annotated export now moves behind `apps/pdf/io/save-controller.js`.
 
-The new review boundary owns local review persistence, selected-text
-highlight/underline/comment flows, free marker/text placement, comments and review
-Undo. `apps/pdf/app.js` remains the composition entry point and still owns unified
-Save / flattened export and document lifecycle. No visible PDF control or file
-format behavior is intentionally changed in this release.
+The save controller owns both existing save paths: PDF.js `saveDocument()` when there are no InkDesk review marks, and the local flattened exporter when review annotations must be embedded visibly. It also owns the Save button busy/available lifecycle and download coordination. `apps/pdf/app.js` is now below the normal 500-line architecture ceiling and remains the document-lifecycle/composition entry point.
 
-The hardened updater flow remains in place: real dry-run, package SHA identity,
-incremental checksums and isolated browser scenarios protect each refactoring
-package.
+The hardened updater flow remains in place: real dry-run, package SHA identity, incremental checksums and isolated browser scenarios protect each refactoring package.
 
 ## Refactoring policy
 
@@ -57,7 +48,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.12 remains a beta. Real-device validation is still required for critical
+v0.20.2.13 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.12",
-  "releaseName": "PDF Review Decomposition",
+  "version": "0.20.2.13",
+  "releaseName": "PDF Save Decomposition",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,14 +37,14 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "247 configured; local execution expected to pass all non-checksum tests, with hosted main remaining the authoritative full checksum gate",
+    "structuralUnitTests": "248 configured; local execution expected to pass all non-checksum tests, with hosted main remaining the authoritative full checksum gate",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "16 configured; hosted Chromium remains the transaction gate; PDF rendering, navigation and review now run in separate isolated scenarios",
+    "browserRegressionScripts": "17 configured; hosted Chromium remains the transaction gate; PDF rendering, navigation, review and save now run in separate isolated scenarios",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
     "browserMatrixRunner": "chromium, firefox, webkit",
@@ -52,11 +52,12 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: PDF app ratchet reduced again after review-layer extraction; new review-controller.js and annotation-layer.js remain below the 500-line new-file limit",
+    "architectureGuardrails": "required: PDF app.js is now below the normal 500-line ceiling after save/export coordination moved behind a dedicated I/O controller",
     "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point",
     "pdfRenderingModularization": "page virtualization, canvas/text/AcroForm rendering, render-window disposal and resize rerender remain isolated in apps/pdf/viewer/page-renderer.js",
     "pdfNavigationModularization": "page navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state are isolated in apps/pdf/viewer/navigation-controller.js",
-    "pdfReviewModularization": "review persistence, selected-text highlight/underline/comment, free marker/text annotations, comment list rendering and undo are isolated in apps/pdf/review/review-controller.js plus annotation-layer.js"
+    "pdfReviewModularization": "review persistence, selected-text highlight/underline/comment, free marker/text annotations, comment list rendering and undo are isolated in apps/pdf/review/review-controller.js plus annotation-layer.js",
+    "pdfSaveModularization": "unannotated PDF.js saveDocument and annotated flattened export coordination are isolated in apps/pdf/io/save-controller.js; app.js only composes availability with document lifecycle"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

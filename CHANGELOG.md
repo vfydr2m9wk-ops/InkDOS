@@ -1,9 +1,10 @@
-## 0.20.2.12 — 2026-08-07
+## 0.20.2.13 — 2026-08-07
 
-- Extracted PDF review persistence, text-selection review, comments and Undo into `apps/pdf/review/review-controller.js`.
-- Extracted review-overlay rendering and free marker/text placement into `apps/pdf/review/annotation-layer.js`.
-- Added dedicated structural and isolated Chromium regression coverage for PDF review behavior.
-- Preserved the existing PDF UI, rendering/navigation boundaries and unified Save behavior.
+- Extracted unified PDF save/download coordination into `apps/pdf/io/save-controller.js`.
+- Preserved the PDF.js structure-preserving save path and flattened annotated-export path behind the new boundary.
+- Reduced `apps/pdf/app.js` below the normal 500-line runtime ceiling and removed its grandfathered debt entry.
+- Added permanent structural and isolated Chromium coverage for both PDF save paths.
+- Preserved the existing PDF UI, local-review persistence and original-file safety behavior.
 
 ## 0.20.2.11 — 2026-08-07
 

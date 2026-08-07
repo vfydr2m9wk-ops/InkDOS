@@ -19,6 +19,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             "apps/pdf/flatten-export.css",
             "apps/pdf/index.html",
             "apps/pdf/app.js",
+            "apps/pdf/io/save-controller.js",
             "docs/PDF_UNIFIED_SAVE.md",
         ):
             self.assertTrue((ROOT / relative).is_file(), relative)
@@ -56,23 +57,24 @@ class PdfUnifiedSaveTests(unittest.TestCase):
         )
 
         exporter = html.index('src="flatten-export.js')
+        save_controller = html.index('src="io/save-controller.js')
         application = html.index('src="app.js')
 
-        self.assertLess(exporter, application)
+        self.assertLess(exporter, save_controller)
+        self.assertLess(save_controller, application)
         self.assertIn(
-            "flatten-export.css?v=0.20.2.12",
+            "flatten-export.css?v=0.20.2.13",
             html,
         )
 
-    def test_pdf_app_uses_both_save_paths(self):
-        script = (ROOT / "apps/pdf/app.js").read_text(
-            encoding="utf-8"
-        )
+    def test_pdf_save_controller_uses_both_save_paths(self):
+        app = (ROOT / "apps/pdf/app.js").read_text(encoding="utf-8")
+        controller = (ROOT / "apps/pdf/io/save-controller.js").read_text(encoding="utf-8")
 
+        self.assertIn("window.InkDeskPdfSaveController.createSaveController", app)
         for marker in (
-            "window.InkDeskPdfFlattenExport",
-            "const hasInkDeskAnnotations",
-            "if (!hasInkDeskAnnotations)",
+            "global.InkDeskPdfFlattenExport",
+            "state.annotations.length > 0",
             "state.doc.saveDocument()",
             "exporter.exportDocument",
             "Annotated PDF saved",
@@ -80,16 +82,15 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             "maxPagePixels: 8000000",
             "jpegQuality: 0.91",
         ):
-            self.assertIn(marker, script)
+            self.assertIn(marker, controller)
 
         for removed in (
-            "E.exportReviewBtn.onclick",
-            "E.importReviewBtn.onclick",
-            "E.downloadBtn.onclick",
-            "E.printBtn.onclick",
+            "state.doc.saveDocument()",
+            "exporter.exportDocument",
+            "E.saveModifiedPdfBtn.onclick = saveModifiedPdf",
             "function exportReview()",
         ):
-            self.assertNotIn(removed, script)
+            self.assertNotIn(removed, app)
 
     def test_manifest_exposes_save_contract_and_visual_foundation(self):
         manifest = json.loads(

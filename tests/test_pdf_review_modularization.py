@@ -30,20 +30,20 @@ class PdfReviewModularizationTests(unittest.TestCase):
         self.assertNotIn("function wireReviewLayer(", app)
         self.assertNotIn("function undoLastReviewAction(", app)
         self.assertNotIn("function saveReview()", app)
-        self.assertIn("review/annotation-layer.js?v=0.20.2.12", html)
-        self.assertIn("review/review-controller.js?v=0.20.2.12", html)
+        self.assertIn("review/annotation-layer.js?v=0.20.2.13", html)
+        self.assertIn("review/review-controller.js?v=0.20.2.13", html)
         self.assertLess(
-            html.index("review/annotation-layer.js?v=0.20.2.12"),
-            html.index("review/review-controller.js?v=0.20.2.12"),
+            html.index("review/annotation-layer.js?v=0.20.2.13"),
+            html.index("review/review-controller.js?v=0.20.2.13"),
         )
         self.assertLess(
-            html.index("review/review-controller.js?v=0.20.2.12"),
-            html.index("viewer/page-renderer.js?v=0.20.2.12"),
+            html.index("review/review-controller.js?v=0.20.2.13"),
+            html.index("viewer/page-renderer.js?v=0.20.2.13"),
         )
         self.assertIn("'./apps/pdf/review/annotation-layer.js'", worker)
         self.assertIn("'./apps/pdf/review/review-controller.js'", worker)
-        debt = policy["grandfatheredDebt"]["apps/pdf/app.js"]
-        self.assertEqual(debt["maxLines"], len(app.splitlines()))
+        self.assertLessEqual(len(app.splitlines()), 500)
+        self.assertNotIn("apps/pdf/app.js", policy["grandfatheredDebt"])
         self.assertNotIn("apps/pdf/review/review-controller.js", policy["grandfatheredDebt"])
         self.assertNotIn("apps/pdf/review/annotation-layer.js", policy["grandfatheredDebt"])
 

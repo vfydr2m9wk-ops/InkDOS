@@ -24,14 +24,14 @@ class PdfNavigationModularizationTests(unittest.TestCase):
         self.assertNotIn("function renderOutline()", app)
         self.assertNotIn("function navigateToPage(", app)
         self.assertNotIn("querySelectorAll('.sidebar-tab')", app)
-        self.assertIn("viewer/navigation-controller.js?v=0.20.2.12", html)
+        self.assertIn("viewer/navigation-controller.js?v=0.20.2.13", html)
         self.assertLess(
-            html.index("viewer/navigation-controller.js?v=0.20.2.12"),
-            html.index("viewer/page-renderer.js?v=0.20.2.12"),
+            html.index("viewer/navigation-controller.js?v=0.20.2.13"),
+            html.index("viewer/page-renderer.js?v=0.20.2.13"),
         )
         self.assertIn("'./apps/pdf/viewer/navigation-controller.js'", worker)
-        debt = policy["grandfatheredDebt"]["apps/pdf/app.js"]
-        self.assertEqual(debt["maxLines"], len(app.splitlines()))
+        self.assertLessEqual(len(app.splitlines()), 500)
+        self.assertNotIn("apps/pdf/app.js", policy["grandfatheredDebt"])
         self.assertNotIn("apps/pdf/viewer/navigation-controller.js", policy["grandfatheredDebt"])
 
 

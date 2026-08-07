@@ -1,15 +1,11 @@
+## v0.20.2.13 PDF save decomposition
 
-## v0.20.2.12 PDF review decomposition
+- `tests/test_pdf_save_modularization.py` requires the save controller to own both save paths, remain below normal source limits, load before `app.js` and be precached offline.
+- `tests/test_pdf_unified_save.py` continues to enforce the single visible Save contract and now follows the save-controller boundary.
+- `tests/browser/revalidate_pdf_save.py` independently exercises the PDF.js save path and the flattened annotated path, validates the downloaded PDF copies and verifies Save-button busy/available state.
+- The hosted Chromium regression runner now has seventeen independent scripts; rendering, navigation, review and save are separate PDF scenarios.
+- `apps/pdf/app.js` is below 500 physical lines and no longer has an inherited-debt exemption.
 
-- `tests/test_pdf_review_modularization.py` requires the review controller and annotation layer to remain focused, precached and outside inherited-debt exemptions.
-- `tests/browser/revalidate_pdf_review.py` independently verifies selected-text highlight, free marker + Undo, selected-text comments, comment navigation and local review persistence.
-- Rendering and navigation keep their own isolated browser gates so review-state failures cannot be masked by viewer state.
-
-# Testing guide — InkDesk v0.20.2.12
-
-Every meaningful change requires static validation, targeted tests, and broader
-regression. Data corruption, silent save failure, stale export, and
-cross-workspace contamination are release-blocking defects.
 
 ## Source-package checks
 

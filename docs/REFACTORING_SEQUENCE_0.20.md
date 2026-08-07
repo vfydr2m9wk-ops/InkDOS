@@ -112,6 +112,6 @@ Final Presentations consolidation before beginning PDF decomposition. Package-pr
 
 Page navigation, thumbnails, outline destinations, bookmark navigation and sidebar tab state move out of the PDF entry point. Review annotations and Save remain separate future cuts.
 
-### v0.20.2.12 — PDF review decomposition
+### v0.20.2.13 — PDF review decomposition
 
 Review persistence, selected-text annotations, free marker/text overlays, comments and review Undo move behind focused PDF review components. Unified Save remains intentionally separate for the next bounded extraction.

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 14,
-  "currentPackage": "0.20.2.12",
+  "appliedSequence": 15,
+  "currentPackage": "0.20.2.13",
   "status": "in-progress",
   "history": [
     {
@@ -75,6 +75,11 @@
       "sequence": 14,
       "packageLabel": "0.20.2.12",
       "description": "PDF review decomposition: isolate local review persistence, selected-text review tools, free annotation overlays, comment rendering and review Undo behind focused PDF review components without changing the visible PDF workflow or unified Save behavior."
+    },
+    {
+      "sequence": 15,
+      "packageLabel": "0.20.2.13",
+      "description": "PDF Save Decomposition v0.20.2.13 correction 1. Application runtime is unchanged. The hosted attempt passed repository validation, source audit, architecture guardrails, all 248 unit/package tests and 16/17 Chromium scripts. The sole failure was a race in the new isolated PDF Save harness: it treated PDF.js pageCount availability as completion of the whole asynchronous openFile transaction, while Save is intentionally enabled only after the initial page/navigation/review setup completes. The harness now waits for the Save button to become enabled before exercising save behavior."
     }
   ]
 }

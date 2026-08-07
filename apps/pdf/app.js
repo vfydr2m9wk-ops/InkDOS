@@ -114,6 +114,17 @@ const {
   renderSideLists
 } = reviewController;
 
+const saveController =
+  window.InkDeskPdfSaveController.createSaveController({
+    state,
+    elements: E,
+    pdfjs: pdfjsLib,
+    cleanName,
+    status,
+    toast,
+    saveReview
+  });
+
 pageRenderer = window.InkDeskPdfPageRenderer.createPageRenderer({
   state,
   elements: E,
@@ -167,23 +178,6 @@ function cleanName(name) {
       .slice(0, 180) ||
     'document.pdf'
   );
-}
-
-function download(bytes, name, type) {
-  const blob =
-    bytes instanceof Blob
-      ? bytes
-      : new Blob([bytes], { type });
-
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = name;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
 
 async function fingerprint(file) {
@@ -250,7 +244,7 @@ async function openFile(file) {
 
   await navigateToPage(1);
 
-  E.saveModifiedPdfBtn.disabled = false;
+  saveController.setAvailable(true);
 
   toast(
     `${state.doc.numPages} pages · PDF.js local`
@@ -291,9 +285,7 @@ async function closeDocument() {
   });
 
   E.dirtyMark.hidden = true;
-  E.saveModifiedPdfBtn.disabled = true;
-  E.saveModifiedPdfBtn.classList.remove('is-saving');
-  E.saveModifiedPdfBtn.removeAttribute('aria-busy');
+  saveController.setAvailable(false);
 }
 
 function setZoom(value) {
@@ -355,98 +347,6 @@ function setDirection(direction) {
   navigateToPage(state.page);
 }
 
-async function saveModifiedPdf() {
-  if (!state.doc || !state.file || E.saveModifiedPdfBtn.disabled) return;
-
-  const exporter = window.InkDeskPdfFlattenExport;
-  const hasInkDeskAnnotations = state.annotations.length > 0;
-
-  E.saveModifiedPdfBtn.disabled = true;
-  E.saveModifiedPdfBtn.classList.add('is-saving');
-  E.saveModifiedPdfBtn.setAttribute('aria-busy', 'true');
-
-  try {
-    /*
-     * With no InkDesk review marks, PDF.js can preserve supported form state
-     * and the original selectable PDF structure.
-     */
-    if (!hasInkDeskAnnotations) {
-      status('Saving PDF…');
-      const bytes = await state.doc.saveDocument();
-
-      download(
-        bytes,
-        cleanName(state.file.name).replace(
-          /\.pdf$/i,
-          ''
-        ) + '-modified.pdf',
-        'application/pdf'
-      );
-
-      state.dirty = false;
-      E.dirtyMark.hidden = true;
-      toast('PDF saved');
-      return;
-    }
-
-    if (
-      !exporter ||
-      typeof exporter.exportDocument !== 'function'
-    ) {
-      throw new Error(
-        'The local annotated-PDF exporter is unavailable.'
-      );
-    }
-
-    const result = await exporter.exportDocument({
-      pdfDocument: state.doc,
-      pdfjsLib,
-      documentObject: document,
-      annotations: state.annotations,
-      fileName: cleanName(state.file.name),
-      dpi: 144,
-      jpegQuality: 0.91,
-      maxPagePixels: 8000000,
-      onProgress(progress) {
-        const phase =
-          progress.phase === 'encode'
-            ? 'Encoding'
-            : 'Rendering';
-
-        status(
-          `${phase} annotated PDF · page ` +
-          `${progress.page} of ${progress.total}`
-        );
-      }
-    });
-
-    download(
-      result.bytes,
-      result.fileName,
-      'application/pdf'
-    );
-
-    state.dirty = false;
-    E.dirtyMark.hidden = true;
-    saveReview();
-
-    toast(
-      `Annotated PDF saved · ${result.pageCount} pages`
-    );
-  } catch (error) {
-    alert(
-      'InkDesk could not create the PDF copy. ' +
-      'The original file and the local review were not changed.'
-    );
-    console.error(error);
-    status('PDF save failed.');
-  } finally {
-    E.saveModifiedPdfBtn.classList.remove('is-saving');
-    E.saveModifiedPdfBtn.removeAttribute('aria-busy');
-    E.saveModifiedPdfBtn.disabled = !state.doc;
-  }
-}
-
 E.openBtn.onclick =
   E.openSmall.onclick =
     () => E.fileInput.click();
@@ -491,7 +391,6 @@ E.bookmarkBtn.onclick = () => {
   renderSideLists();
 };
 
-E.saveModifiedPdfBtn.onclick = saveModifiedPdf;
 
 function exitImmersive() {
   document.body.classList.remove('immersive');

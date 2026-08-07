@@ -226,16 +226,20 @@ if (annotations[0].pageSegmentCount !== 2) process.exit(21);
         review = (
             ROOT / "apps" / "pdf" / "review" / "review-controller.js"
         ).read_text(encoding="utf-8")
+        save = (
+            ROOT / "apps" / "pdf" / "io" / "save-controller.js"
+        ).read_text(encoding="utf-8")
 
         for marker in (
             "pdfjsLib.GlobalWorkerOptions.workerSrc = "
             "'../../shared/vendor/pdfjs/pdf.worker.min.js'",
             "pdfjsLib.getDocument(",
-            "state.doc.saveDocument()",
             "window.InkDeskPdfPageRenderer.createPageRenderer",
             "window.InkDeskPdfReviewController.createReviewController",
+            "window.InkDeskPdfSaveController.createSaveController",
         ):
             self.assertIn(marker, app)
+        self.assertIn("state.doc.saveDocument()", save)
         self.assertIn("schema: 'inkdesk-pdf-review/2'", review)
 
         for marker in (
