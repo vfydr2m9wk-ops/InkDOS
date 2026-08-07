@@ -7,10 +7,10 @@ const xmlParser=new DOMParser();
 let pres=null,currentSlide=0,selectedId=null,zoom=0.9,dirty=false,drag=null,idSeq=1;
 let editingId=null,textEditBefore=null,templateMode='presentation';
 let undoStack=[],redoStack=[],historyLock=false,historyBeforeDrag=null;
-let activeTheme=null,presentationTextDefaults=null,notesTimer=null;
+let activeTheme=null,presentationTextDefaults=null;
 let renderZoomOverride=null,presentTouchStart=null,presentHelpTimer=null;
 let sourcePptxBuffer=null,recovery=null,restoringRecovery=false;
-let inspectorController=null;
+let thumbnailsController=null,presenterNotesController=null,inspectorController=null;
 const ui={start:$('startScreen'),app:$('app'),file:$('fileInput'),img:$('imageInput'),title:$('docTitle'),list:$('slideList'),canvas:$('slideCanvas'),stageWrap:$('stageWrap'),save:$('saveBtn'),state:$('stateBadge'),status:$('slideStatus'),zoomText:$('zoomText'),present:$('presentOverlay'),presentSlide:$('presentSlide'),exitPresent:$('exitPresentBtn'),fullscreenPresent:$('fullscreenPresentBtn'),fullscreenPresentLabel:$('fullscreenPresentLabel'),presentCounter:$('presentCounter'),presentHelp:$('presentHelp'),template:$('templateDialog'),templateGrid:$('templateGrid'),notes:$('presenterNotes'),notesPanel:$('notesPanel'),notesCount:$('notesCount')};
 function uid(prefix='o'){return prefix+(idSeq++).toString(36)+Date.now().toString(36).slice(-4)}
 function cloneState(){return pres?JSON.parse(JSON.stringify({pres,currentSlide,selectedId})):null}function restoreState(st){if(!st)return;historyLock=true;pres=st.pres;activeTheme=pres.theme||null;currentSlide=Math.min(st.currentSlide,pres.slides.length-1);selectedId=st.selectedId;editingId=null;historyLock=false;markDirty();renderAll();updateHistoryButtons()}function pushHistory(before){if(historyLock||!before)return;undoStack.push(before);if(undoStack.length>80)undoStack.shift();redoStack=[];updateHistoryButtons()}function action(fn){const before=cloneState();fn();pushHistory(before)}function undo(){if(!undoStack.length)return;redoStack.push(cloneState());restoreState(undoStack.pop())}function redo(){if(!redoStack.length)return;undoStack.push(cloneState());restoreState(redoStack.pop())}function updateHistoryButtons(){const u=$('undoBtn'),r=$('redoBtn');if(u)u.disabled=!undoStack.length;if(r)r.disabled=!redoStack.length}function markDirty(){dirty=true;ui.state.textContent='Unsaved';if(recovery)recovery.markDirty();setPresentationTitleValue()}
@@ -22,7 +22,7 @@ function markSaved(){dirty=false;ui.state.textContent='Saved';setPresentationTit
 function setReady(t='Ready'){ui.state.textContent=t}
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
 function confirmIfDirty(){return !dirty || confirm('This presentation has unsaved changes. Continue and discard changes?')}
-function resetOptionalPanelsForOpen(){setInspectorOpen(false,{relayout:false});ui.app.classList.add('hide-notes');const notes=$('toggleNotesBtn');if(notes)notes.textContent='Show presenter notes'}
+function resetOptionalPanelsForOpen(){setInspectorOpen(false,{relayout:false});if(presenterNotesController)presenterNotesController.resetClosed({relayout:false});else{ui.app.classList.add('hide-notes');const notes=$('toggleNotesBtn');if(notes)notes.textContent='Show presenter notes'}}
 function showApp(){ui.start.classList.add('hidden');ui.app.classList.remove('hidden');resetOptionalPanelsForOpen()}
 
 function presentationRecoveryKey(file){return 'file:'+[file.name,file.size,file.lastModified||0].join(':')}
@@ -457,39 +457,7 @@ function goToSlide(index,focusThumb=false){
     if(thumb){thumb.scrollIntoView({block:'nearest',behavior:'smooth'});if(focusThumb)thumb.focus({preventScroll:true});}
   });
 }
-function renderPresentations(){
-  ui.list.innerHTML='';
-  pres.slides.forEach((s,i)=>{
-    const d=document.createElement('div');
-    d.className='thumb '+(i===currentSlide?'active':'');
-    d.tabIndex=-1;
-    d.dataset.slideIndex=i;
-    d.setAttribute('role','button');
-    d.setAttribute('aria-label','Slide '+(i+1));
-    d.innerHTML='<div class="thumb-num">'+(i+1)+'</div><div class="thumb-box"><div class="thumb-title"></div></div>';
-    d.querySelector('.thumb-title').textContent=s.title||('Slide '+(i+1));
-    d.onclick=()=>goToSlide(i,true);
-    ui.list.appendChild(d);
-    renderMini(s,d.querySelector('.thumb-box'));
-  });
-}
-function renderMini(slide,box){
-  const mini=document.createElement('div');mini.className='thumb-mini';mini.style.width='160px';mini.style.height='90px';mini.style.transform='scale('+((box.clientWidth||120)/160)+')';box.appendChild(mini);
-  const ratio=(pres.width||12192000)/(pres.height||6858000);let vw=160,vh=vw/ratio;if(vh>90){vh=90;vw=vh*ratio}
-  const area=document.createElement('div');area.style.position='absolute';area.style.left=((160-vw)/2)+'px';area.style.top=((90-vh)/2)+'px';area.style.width=vw+'px';area.style.height=vh+'px';area.style.overflow='hidden';area.style.backgroundColor=slide.background||'#fff';area.style.backgroundImage=slide.backgroundImage||'none';area.style.backgroundRepeat=slide.backgroundRepeat||'no-repeat';area.style.backgroundSize=slide.backgroundSize||'auto';mini.appendChild(area);
-  const mx=vw/pres.width,my=vh/pres.height;
-  slide.objects.slice(0,80).forEach(o=>{
-    const e=document.createElement('div');e.style.position='absolute';e.style.left=(o.x*mx)+'px';e.style.top=(o.y*my)+'px';e.style.width=Math.max(1,o.w*mx)+'px';e.style.height=Math.max(1,o.h*my)+'px';e.style.zIndex=String(Math.max(1,Number(o.z)||1));e.style.overflow='hidden';e.style.boxSizing='border-box';
-    if(o.type==='text'){
-      e.style.fontFamily=safeFont(o.font);e.style.fontSize=Math.max(2,(o.size||14)*(vh/540))+'px';e.style.color=o.color||'#222';e.style.textAlign=o.align||'left';
-      if(o.paragraphs&&o.paragraphs.length){o.paragraphs.forEach(p=>{const pe=document.createElement('div');pe.style.whiteSpace='nowrap';if(p.bullet){const b=document.createElement('span');b.textContent=(p.bullet.char||'•')+' ';b.style.color=p.bullet.color||o.color||'#222';pe.appendChild(b)}p.runs.forEach(r=>{const sp=document.createElement('span');sp.textContent=r.text;sp.style.color=r.color||o.color||'#222';sp.style.fontWeight=r.bold?'700':'400';pe.appendChild(sp)});e.appendChild(pe)});}else e.textContent=o.placeholderPrompt||o.text||'';
-    }else if(o.type==='image'){e.style.backgroundImage='url('+o.src+')';e.style.backgroundSize=o.fitMode==='fill'?'100% 100%':(o.fitMode==='contain'?'contain':'cover');e.style.backgroundRepeat='no-repeat';e.style.backgroundPosition='center';}
-    else if(o.type==='table'){e.style.border='1px solid #555';e.textContent=o.cells.map(r=>r.join(' ')).join(' ');e.style.fontSize='3px';}
-    else if(o.type==='chart'){e.style.border='1px solid rgba(80,80,80,.4)';e.style.fontSize='3px';e.textContent=(o.title||'Chart')+' '+(o.categories||[]).join(' ');}
-    else{if(o.useBackgroundFill){e.style.backgroundColor=slide.background||'#fff';e.style.backgroundImage=slide.backgroundImage||'none';e.style.backgroundRepeat=slide.backgroundRepeat||'no-repeat';e.style.backgroundSize=slide.backgroundSize||'auto';}else e.style.background=o.fill||'transparent';e.style.border=(o.lineWidth&&o.lineWidth>0)?'1px solid '+(o.line||'#333'):'none';if(o.shape==='roundRect')e.style.borderRadius='3px';}
-    area.appendChild(e);
-  });
-}
+function renderPresentations(){if(thumbnailsController)thumbnailsController.render();}
 function objectVisibleText(o){
   if(!o)return '';
   if(o.paragraphs&&o.paragraphs.length)return o.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');
@@ -629,8 +597,7 @@ function fitTextElement(box,inn){
   }
 }
 function addSelectionHandles(e,o){['tl','tc','tr','ml','mr','bl','bc','br'].forEach(pos=>{const h=document.createElement('div');h.className='handle '+pos;h.dataset.handle=pos;h.onpointerdown=startResize;e.appendChild(h)});const stem=document.createElement('div');stem.className='rotate-stem';e.appendChild(stem);const r=document.createElement('div');r.className='handle rotate';r.dataset.handle='rotate';r.onpointerdown=startRotate;e.appendChild(r);}
-function renderPresenterNotes(){if(!ui.notes||!pres)return;const value=slide().notes||'';if(document.activeElement!==ui.notes)ui.notes.value=value;ui.notesCount.textContent=value.length+' character'+(value.length===1?'':'s');}
-if(ui.notes){ui.notes.addEventListener('input',()=>{if(!pres)return;slide().notes=ui.notes.value;ui.notesCount.textContent=ui.notes.value.length+' character'+(ui.notes.value.length===1?'':'s');markDirty();clearTimeout(notesTimer);notesTimer=setTimeout(()=>renderPresentations(),250);});}
+function renderPresenterNotes(){if(presenterNotesController)presenterNotesController.render();}
 function slide(){return pres.slides[currentSlide]}function obj(){return slide().objects.find(o=>o.id===selectedId)}
 function selectObj(id){selectedId=id;renderSlide();}
 ui.canvas.onclick=()=>{selectedId=null;renderSlide()};
@@ -666,14 +633,34 @@ function relayoutWorkspace(){
     renderSlide();
   }));
 }
-$('togglePresentationsBtn').onclick=()=>{
-  const w=document.querySelector('.workspace');
-  w.classList.toggle('hide-slides');
-  $('togglePresentationsBtn').textContent=w.classList.contains('hide-slides')?'Show thumbnails':'Hide thumbnails';
-  relayoutWorkspace();
-};
-$('toggleNotesBtn').onclick=()=>{ui.app.classList.toggle('hide-notes');$('toggleNotesBtn').textContent=ui.app.classList.contains('hide-notes')?'Show presenter notes':'Hide presenter notes';relayoutWorkspace();};
 const presentationWorkspace=document.querySelector('.workspace');
+if(!window.InkDeskPresentationsThumbnails){
+  throw new Error('Presentations thumbnails controller is unavailable.');
+}
+thumbnailsController=InkDeskPresentationsThumbnails.create({
+  list:ui.list,
+  workspace:presentationWorkspace,
+  button:$('togglePresentationsBtn'),
+  getPresentation:()=>pres,
+  getCurrentSlide:()=>currentSlide,
+  goToSlide,
+  safeFont,
+  relayout:relayoutWorkspace,
+});
+if(!window.InkDeskPresentationsNotes){
+  throw new Error('Presentations presenter notes controller is unavailable.');
+}
+presenterNotesController=InkDeskPresentationsNotes.create({
+  app:ui.app,
+  textarea:ui.notes,
+  count:ui.notesCount,
+  button:$('toggleNotesBtn'),
+  getPresentation:()=>pres,
+  getCurrentSlideData:()=>pres?slide():null,
+  markDirty,
+  renderThumbnails:renderPresentations,
+  relayout:relayoutWorkspace,
+});
 function setInspectorOpen(open,options={}){
   if(inspectorController)inspectorController.setOpen(open,options);
 }
@@ -876,7 +863,7 @@ function shapeObj(o){const id=Math.floor(Math.random()*100000)+10;const fill=o.f
   return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="Shape '+id+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom>'+fill+line+'</p:spPr>'+tx+'</p:sp>';}
 function picObj(o,rid,n){return '<p:pic><p:nvPicPr><p:cNvPr id="'+(500+n)+'" name="Picture '+n+'"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="'+rid+'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm rot="'+Math.round((o.rot||0)*60000)+'"><a:off x="'+emu(o.x)+'" y="'+emu(o.y)+'"/><a:ext cx="'+emu(o.w)+'" cy="'+emu(o.h)+'"/></a:xfrm><a:prstGeom prst="'+(o.shape||'rect')+'"><a:avLst/></a:prstGeom></p:spPr></p:pic>'}
 function downloadBlob(blob,name){if(window.InkDeskRuntime)return InkDeskRuntime.requestDownload(blob,name);if(!(blob instanceof Blob)||!blob.size)throw new Error('The generated presentation copy is empty.');const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}}
-recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'presentations',appVersion:'0.20.2.3',defaultFileName:'Untitled presentation.pptx',serialize:capturePresentationRecovery,restore:restorePresentationRecovery,status:message=>{if(message&&/failed/i.test(message))setReady(message)}}):null;
+recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'presentations',appVersion:'0.20.2.4',defaultFileName:'Untitled presentation.pptx',serialize:capturePresentationRecovery,restore:restorePresentationRecovery,status:message=>{if(message&&/failed/i.test(message))setReady(message)}}):null;
 if(recovery){window.__InkDeskPresentationsRecovery={manager:recovery,capture:capturePresentationRecovery,restore:restorePresentationRecovery};recovery.promptLatest()}
 ui.save.onclick=savePptx;
 // Advanced editor keyboard shortcuts are intentionally disabled in this beta to avoid iPadOS/WebKit conflicts.

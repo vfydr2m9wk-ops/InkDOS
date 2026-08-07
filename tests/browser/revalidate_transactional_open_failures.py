@@ -106,6 +106,8 @@ def verify_pptx(browser):
         "apps/presentations/engine/compatibility.js",
         "shared/office-shell.js",
         "apps/presentations/ui/inspector-controller.js",
+        "apps/presentations/ui/thumbnails-controller.js",
+        "apps/presentations/ui/presenter-notes-controller.js",
         "apps/presentations/app.js",
     ))
     page.set_input_files("#fileInput", str(fixture))

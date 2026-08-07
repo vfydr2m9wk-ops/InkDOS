@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.3
+# Testing guide — InkDesk v0.20.2.4
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -92,10 +92,10 @@ The Format panel and Presenter Notes now have an explicit closed-at-open contrac
 and physical-line debt, workspace dependency direction and relative import
 cycles. It is part of `scripts/run_release_validation.py`.
 
-## v0.20.2.3 Presentations decomposition
+## v0.20.2.4 Presentations decomposition
 
-- `tests/test_presentations_modularization.py` verifies that the Inspector is a real focused component, is loaded before `app.js`, stays within new-source limits, is precached offline and lowers the Presentations architecture ratchet.
-- `tests/test_presentations_responsive_controls.py` now reads Inspector state from the extracted component while preserving the existing behavioral contract.
-- `tests/test_interactive_dom_contracts.py` verifies that Inspector DOM references resolve against the Presentations workspace.
-- Browser harnesses that strip HTML script tags explicitly load `ui/inspector-controller.js` before `app.js`.
-- `tests/browser/revalidate_presentations_controls.py` remains the user-visible behavior gate; a modularization patch is not accepted if its open/hide/reopen, formatting, compact drawer or Escape checks change.
+- `tests/test_presentations_modularization.py` verifies the Inspector, thumbnail and presenter-notes controllers as real focused components loaded before `app.js`, within new-source limits and precached offline.
+- The Presentations `app.js` ratchet must move downward again after the extraction; the extracted UI behavior may not be reimplemented in the entry point.
+- Browser harnesses that strip HTML script tags explicitly load all three Presentations UI controllers before `app.js`.
+- `tests/browser/revalidate_presentations_controls.py` remains the user-visible behavior gate for Format, notes and thumbnail visibility, including compact-width behavior.
+- Existing PPTX, recovery, cross-workspace and transactional-open browser regressions must remain unchanged.

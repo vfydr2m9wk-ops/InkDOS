@@ -3,7 +3,7 @@
   "id": "pdf",
   "name": "PDF Workspace",
   "description": "Local PDF rendering, forms, navigation and a private review layer.",
-  "version": "0.20.2.3",
+  "version": "0.20.2.4",
   "enabled": true,
   "optional": false,
   "order": 40,

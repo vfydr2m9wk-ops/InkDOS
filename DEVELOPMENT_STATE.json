@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 5,
-  "currentPackage": "0.20.2.3",
+  "appliedSequence": 6,
+  "currentPackage": "0.20.2.4",
   "status": "in-progress",
   "history": [
     {
@@ -30,6 +30,11 @@
       "sequence": 5,
       "packageLabel": "0.20.2.3",
       "description": "Presentations decomposition v0.20.2.3: behavior-neutral extraction of the Format/Inspector state and property-control handlers from apps/presentations/app.js into apps/presentations/ui/inspector-controller.js. The existing visual contract, editing behavior, offline shell, recovery semantics and stable workflow remain unchanged."
+    },
+    {
+      "sequence": 6,
+      "packageLabel": "0.20.2.4",
+      "description": "Presentations decomposition v0.20.2.4: behavior-neutral extraction of slide-thumbnail rendering/visibility and presenter-notes rendering/input/visibility from apps/presentations/app.js into focused UI controllers. No visual redesign, editing feature, PPTX behavior, recovery behavior or workflow change is intended."
     }
   ]
 }

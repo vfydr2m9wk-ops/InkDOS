@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.20.2.3';
+const CACHE_NAME='inkdesk-shell-v0.20.2.4';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -72,6 +72,8 @@ const APP_SHELL=[
   './apps/presentations/styles.css',
   './apps/presentations/engine/compatibility.js',
   './apps/presentations/ui/inspector-controller.js',
+  './apps/presentations/ui/thumbnails-controller.js',
+  './apps/presentations/ui/presenter-notes-controller.js',
   './apps/presentations/app.js',
   './apps/pdf/module.json',
   './apps/pdf/index.html',

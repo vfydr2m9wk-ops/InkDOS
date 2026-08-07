@@ -39,6 +39,8 @@ def load_app(page) -> None:
         ROOT / "apps/presentations/engine/compatibility.js",
         ROOT / "shared/office-shell.js",
         ROOT / "apps/presentations/ui/inspector-controller.js",
+        ROOT / "apps/presentations/ui/thumbnails-controller.js",
+        ROOT / "apps/presentations/ui/presenter-notes-controller.js",
         ROOT / "apps/presentations/app.js",
     ):
         page.add_script_tag(path=str(path))

@@ -4,26 +4,26 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.3
+## InkDesk v0.20.2.4
 
-Version 0.20.2.3 is the first behavior-neutral **Presentations decomposition**
-patch. The existing Format/Inspector feature has been moved out of the large
-`apps/presentations/app.js` controller into the focused
-`apps/presentations/ui/inspector-controller.js` component.
+Version 0.20.2.4 continues the behavior-neutral **Presentations decomposition**.
+After the Format/Inspector extraction in v0.20.2.3, slide-thumbnail rendering
+and presenter-notes UI behavior now live in focused controllers under
+`apps/presentations/ui/`.
 
-The extracted controller owns Format-panel open/closed state, accessibility
-state, compact Escape behavior, object geometry/opacity/fill/rotation controls,
-image crop controls and the fill palette. `app.js` now composes that component
-through a small dependency interface instead of owning those handlers directly.
+`thumbnails-controller.js` owns thumbnail rendering and thumbnail-panel
+visibility. `presenter-notes-controller.js` owns notes rendering, character
+count, input/debounce handling and notes-panel visibility. `app.js` composes
+these components through explicit dependencies instead of owning their handlers.
 
-No Presentations command, visual layout, file format or save behavior is
-intentionally changed. The runtime remains native HTML/CSS/JavaScript,
-local-first and build-free.
+No Presentations command, visual layout, default panel visibility, file format
+or save behavior is intentionally changed. The runtime remains native
+HTML/CSS/JavaScript, local-first and build-free.
 
 ## Refactoring policy
 
-The 0.20.x decomposition remains incremental: Presentations → PDF → shared UI →
-Documents/Spreadsheets cleanup. Every extraction must preserve existing
+The 0.20.x decomposition remains incremental: finish Presentations in bounded
+steps, then PDF → shared UI → Documents/Spreadsheets cleanup. Every extraction must preserve existing
 behavioral tests, stay inside the architecture guardrails and stop immediately
 if a regression appears.
 
@@ -56,7 +56,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.3 remains a beta. Real-device validation is still required for critical
+v0.20.2.4 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

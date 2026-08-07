@@ -19,7 +19,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
         ]
         self.assertEqual(positions, sorted(positions))
         self.assertIn("The selected file stays on this device.", html)
-        self.assertIn("v0.20.2.3 beta", html)
+        self.assertIn("v0.20.2.4 beta", html)
         self.assertNotIn("Choose a DOCX, XLS, XLSX, PPTX or PDF file.", html)
 
     def test_shared_shell_contains_non_invasive_title_adapter(self):

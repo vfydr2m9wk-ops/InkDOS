@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.3",
-  "releaseName": "Presentations Inspector Decomposition",
+  "version": "0.20.2.4",
+  "releaseName": "Presentations Navigation and Notes Decomposition",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -52,8 +52,8 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: Presentations app ratchet reduced after Inspector extraction; source-debt, workspace boundaries and relative import-cycle checks remain active",
-    "presentationsModularization": "Inspector state and format-property handlers extracted to apps/presentations/ui/inspector-controller.js; app.js remains orchestration entry point"
+    "architectureGuardrails": "required: Presentations app ratchet reduced again after thumbnail and presenter-notes extraction; source-debt, workspace boundaries and relative import-cycle checks remain active",
+    "presentationsModularization": "Format/Inspector, slide-thumbnail rendering and presenter-notes UI are isolated in apps/presentations/ui controllers; app.js remains the orchestration entry point"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

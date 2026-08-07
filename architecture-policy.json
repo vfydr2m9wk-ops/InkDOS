@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.3",
+  "release": "0.20.2.4",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -49,9 +49,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/presentations/app.js": {
-      "maxLines": 883,
-      "maxLongLines": 93,
-      "reason": "First Presentations decomposition ratchet: Format/Inspector behavior moved to apps/presentations/ui/inspector-controller.js in v0.20.2.3."
+      "maxLines": 870,
+      "maxLongLines": 88,
+      "reason": "Second Presentations decomposition ratchet: thumbnail rendering and presenter-notes UI moved to dedicated controllers in v0.20.2.4."
     },
     "apps/documents/styles.css": {
       "maxLines": 65,

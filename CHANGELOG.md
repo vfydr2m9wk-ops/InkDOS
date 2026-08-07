@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2.4 — Presentations Navigation and Notes Decomposition (2026-08-07)
+
+- Extracted slide-thumbnail rendering and thumbnail visibility into `apps/presentations/ui/thumbnails-controller.js`.
+- Extracted presenter-notes rendering, character count, input/debounce behavior and panel visibility into `apps/presentations/ui/presenter-notes-controller.js`.
+- Preserved the existing visual contract, default panel visibility, PPTX behavior and recovery semantics.
+- Updated offline precaching and manual browser harnesses so both new components are exercised by the existing regression paths.
+- Lowered the Presentations `app.js` architecture ratchet again; no editing command or file-format behavior is intentionally changed.
+
 ## 0.20.2.3 — Presentations Inspector Decomposition (2026-08-07)
 
 - Extracted the Presentations Format/Inspector behavior into `apps/presentations/ui/inspector-controller.js`.
