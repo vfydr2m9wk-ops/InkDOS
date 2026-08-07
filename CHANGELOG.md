@@ -1,6 +1,12 @@
+## 0.20.2.10 — 2026-08-07
+
+- Extract PDF page rendering/virtualization into `apps/pdf/viewer/page-renderer.js`.
+- Add isolated PDF rendering/navigation browser regression and architecture boundary test.
+- Tighten the PDF `app.js` ratchet without changing visible behavior.
+
 ## 0.20.2.8 — Presentations I/O and Recovery Decomposition (2026-08-07)
 
-## 0.20.2.9 — Presentations Architecture Consolidation
+## 0.20.2.10 — Presentations Architecture Consolidation
 
 - Extracted package-preserving PPTX write/patch logic from the Presentations entry point into `apps/presentations/io/pptx-write-adapter.js`.
 - Kept imported PPTX slide patching, notes patching, new shape/image serialization and source-order checks behaviorally unchanged behind the new adapter.

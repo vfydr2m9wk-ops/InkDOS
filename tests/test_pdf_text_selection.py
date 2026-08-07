@@ -210,24 +210,32 @@ if (annotations[0].pageSegmentCount !== 2) process.exit(21);
         self.assertIn("Number(annotation.x)", script)
 
     def test_permanent_pdf_architecture_markers_remain_exact(self):
-        script = (ROOT / "apps" / "pdf" / "app.js").read_text(
+        app = (ROOT / "apps" / "pdf" / "app.js").read_text(
             encoding="utf-8"
         )
+        renderer = (
+            ROOT / "apps" / "pdf" / "viewer" / "page-renderer.js"
+        ).read_text(encoding="utf-8")
+
         for marker in (
             "pdfjsLib.GlobalWorkerOptions.workerSrc = "
             "'../../shared/vendor/pdfjs/pdf.worker.min.js'",
             "pdfjsLib.getDocument(",
-            "pdfjsLib.renderTextLayer(",
-            "new pdfjsLib.AnnotationLayer(",
             "state.doc.saveDocument()",
-            "CACHE_RADIUS=2",
-            "MAX_CANVAS_PIXELS=",
-            "record.canvas.width=0",
             "schema:'inkdesk-pdf-review/2'",
-            "record.page?.cleanup?.()",
-            "canvas.width=0",
+            "window.InkDeskPdfPageRenderer.createPageRenderer",
         ):
-            self.assertIn(marker, script)
+            self.assertIn(marker, app)
+
+        for marker in (
+            "pdfjs.renderTextLayer(",
+            "new pdfjs.AnnotationLayer(",
+            "const CACHE_RADIUS = 2",
+            "const MAX_CANVAS_PIXELS = 16777216",
+            "record.canvas.width = 0",
+            "record.page?.cleanup?.()",
+        ):
+            self.assertIn(marker, renderer)
 
 
 if __name__ == "__main__":

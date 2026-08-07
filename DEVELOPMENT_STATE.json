@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 11,
-  "currentPackage": "0.20.2.9",
+  "appliedSequence": 12,
+  "currentPackage": "0.20.2.10",
   "status": "in-progress",
   "history": [
     {
@@ -60,6 +60,11 @@
       "sequence": 11,
       "packageLabel": "0.20.2.9",
       "description": "Presentations architecture consolidation: move package-preserving PPTX write/patch helpers into a dedicated I/O adapter, tighten the app.js ratchet, and preserve the established UI/file behavior."
+    },
+    {
+      "sequence": 12,
+      "packageLabel": "0.20.2.10",
+      "description": "PDF page-rendering decomposition: move page virtualization, PDF.js canvas/text/AcroForm rendering, rendered-page disposal and resize rerender behind a focused viewer controller while preserving the existing PDF UI, navigation, review and unified-save behavior."
     }
   ]
 }

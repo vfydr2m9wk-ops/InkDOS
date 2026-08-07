@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.9
+# Testing guide — InkDesk v0.20.2.10
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,8 +35,8 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails target 53 runtime JS/CSS files and the Presentations `app.js` ratchet is reduced to 698 physical lines / 56 long lines after the PPTX writer extraction.
-- The Python suite contains 244 tests. In the local reconstruction, 243 pass; the checksum-manifest test is the only local hold. Its five reported baseline discrepancies are the two hosted-tree files not reproduced byte-for-byte locally (`apps/pdf/app.js` and `RELEASE_NOTES_0.20.2.1.md`) plus the three pinned PDF.js publication files absent from this environment. The hosted repository remains the authoritative checksum gate.
+- Architecture guardrails target 54 runtime JS/CSS files. The PDF `app.js` ratchet is reduced to 1322 physical lines / 0 long lines, while the new page renderer remains below the 500-line new-file ceiling.
+- The Python suite contains 245 tests. In the reconstructed local tree, 244 pass; the checksum-manifest test is the only local hold because the three pinned PDF.js publication files are absent from this environment. The hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
@@ -94,7 +94,7 @@ gate is intentionally ratcheted: inherited debt can shrink, but new debt or
 cross-workspace coupling fails validation.
 
 
-## v0.20.2.9 Presentations architecture consolidation
+## v0.20.2.10 Presentations architecture consolidation
 
 - `tests/test_presentations_modularization.py` requires the PPTX write adapter plus file/recovery controllers to load before `app.js`, remain within new-source limits and be precached offline.
 - Package-preserving imported-slide mutation, notes patching, transition patching and new object XML generation now live in `io/pptx-write-adapter.js`.
@@ -118,3 +118,5 @@ cross-workspace coupling fails validation.
 - `tests/browser/revalidate_presentations_slideshow.py` independently proves top/View/Present entry points, current/start behavior, slide counter navigation, Home/End/Arrow keys, Escape and the visible Exit control while remaining independent of headless Fullscreen API policy.
 - Existing PPTX, recovery, cross-workspace and transactional-open browser regressions must remain unchanged.
 
+
+- Browser validation now contains 14 isolated regression scripts, including a dedicated PDF page-rendering/navigation gate.

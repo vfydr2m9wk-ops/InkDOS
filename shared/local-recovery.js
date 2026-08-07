@@ -198,7 +198,7 @@ function create(options){
         const payload=await serialize();
         if(payload==null)return null;
         const now=Date.now();
-        const record={id:moduleName+':'+documentKey+':'+now+':'+Math.random().toString(36).slice(2,7),module:moduleName,documentKey,fileName,appVersion:String(options.appVersion||'0.20.2.9'),schemaVersion:1,createdAt:now,updatedAt:now,payload};
+        const record={id:moduleName+':'+documentKey+':'+now+':'+Math.random().toString(36).slice(2,7),module:moduleName,documentKey,fileName,appVersion:String(options.appVersion||'0.20.2.10'),schemaVersion:1,createdAt:now,updatedAt:now,payload};
         await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.put(record)});
         await prune(moduleName,documentKey);
         if(revision===capturedRevision)dirty=false;
@@ -268,7 +268,7 @@ async function clearModule(moduleName){
 }
 
 global.InkDeskLocalRecovery=Object.freeze({
-  version:'0.20.2.9',
+  version:'0.20.2.10',
   create,
   openDatabase,
   listSnapshots:getAllSnapshots,

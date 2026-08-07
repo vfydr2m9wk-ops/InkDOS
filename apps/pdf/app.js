@@ -43,9 +43,7 @@ const E = Object.fromEntries(
   ].map(id => [id, $(id)])
 );
 
-const CACHE_RADIUS=2;
 const THUMB_RADIUS = 12;
-const MAX_CANVAS_PIXELS=16777216;
 
 const TEXT_SELECTION_TOOLS = new Set([
   'highlight',
@@ -84,6 +82,26 @@ const state = {
   textSelection: null,
   selectionTimer: 0
 };
+
+const pageRenderer = window.InkDeskPdfPageRenderer.createPageRenderer({
+  state,
+  elements: E,
+  pdfjs: pdfjsLib,
+  clamp,
+  isFreeAnnotationTool: tool => FREE_ANNOTATION_TOOLS.has(tool),
+  renderPageReview: pageNumber => renderPageReview(pageNumber),
+  wireReviewLayer: (layer, pageNumber) =>
+    wireReviewLayer(layer, pageNumber),
+  goToDestination: destination => goToDestination(destination),
+  syncNavigation: () => syncNavigation()
+});
+
+const {
+  buildPlaceholders,
+  ensureWindow,
+  destroyRendered,
+  rerender
+} = pageRenderer;
 
 function status(message) {
   E.statusText.textContent = message;
@@ -194,302 +212,6 @@ function markDirty() {
   state.dirty = true;
   E.dirtyMark.hidden = false;
   saveReview();
-}
-
-function pageScale(base) {
-  if (typeof state.zoom === 'number') return state.zoom;
-
-  const availableWidth = Math.max(
-    260,
-    E.viewerStage.clientWidth -
-      (state.direction === 'vertical' ? 48 : 24)
-  );
-
-  const availableHeight = Math.max(
-    260,
-    E.viewerStage.clientHeight - 36
-  );
-
-  return state.zoom === 'page-fit'
-    ? Math.min(
-        availableWidth / base.width,
-        availableHeight / base.height
-      )
-    : availableWidth / base.width;
-}
-
-function placeholder(pageNumber) {
-  const shell = document.createElement('section');
-  shell.className = 'pdf-page-shell';
-  shell.dataset.page = pageNumber;
-  shell.setAttribute('aria-label', `Page ${pageNumber}`);
-  shell.style.setProperty('--ratio', '1.294');
-
-  const inner = document.createElement('div');
-  inner.className = 'pdf-page';
-
-  const loading = document.createElement('div');
-  loading.className = 'page-loading';
-  loading.textContent = `Page ${pageNumber}`;
-
-  inner.append(loading);
-  shell.append(inner);
-  return shell;
-}
-
-function buildPlaceholders() {
-  E.pdfPages.replaceChildren();
-  state.pages.clear();
-
-  for (
-    let pageNumber = 1;
-    pageNumber <= state.doc.numPages;
-    pageNumber += 1
-  ) {
-    const shell = placeholder(pageNumber);
-    state.pages.set(pageNumber, shell);
-    E.pdfPages.append(shell);
-  }
-
-  observePages();
-}
-
-function observePages() {
-  state.observer?.disconnect();
-
-  state.observer = new IntersectionObserver(
-    entries => {
-      if (performance.now() < state.navLockUntil) return;
-
-      let best = null;
-
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-
-        const pageNumber = Number(entry.target.dataset.page);
-        ensureWindow(pageNumber);
-
-        if (
-          !best ||
-          entry.intersectionRatio > best.intersectionRatio
-        ) {
-          best = entry;
-        }
-      }
-
-      if (!best) return;
-
-      const pageNumber = Number(best.target.dataset.page);
-
-      if (pageNumber !== state.page) {
-        state.page = pageNumber;
-        syncNavigation();
-      }
-    },
-    {
-      root: E.viewerStage,
-      rootMargin: '120% 120%',
-      threshold: [0, 0.05, 0.25, 0.5, 0.75]
-    }
-  );
-
-  state.pages.forEach(shell => state.observer.observe(shell));
-}
-
-async function ensureWindow(center) {
-  const wanted = new Set();
-
-  for (
-    let pageNumber = Math.max(1, center - CACHE_RADIUS);
-    pageNumber <= Math.min(
-      state.doc.numPages,
-      center + CACHE_RADIUS
-    );
-    pageNumber += 1
-  ) {
-    wanted.add(pageNumber);
-  }
-
-  state.wanted = wanted;
-
-  for (const [pageNumber, record] of [...state.rendered]) {
-    if (!wanted.has(pageNumber)) {
-      destroyRendered(pageNumber, record);
-    }
-  }
-
-  await Promise.all(
-    [...wanted].map(pageNumber => renderPage(pageNumber))
-  );
-
-  for (const [pageNumber, record] of [...state.rendered]) {
-    if (!state.wanted.has(pageNumber)) {
-      destroyRendered(pageNumber, record);
-    }
-  }
-}
-
-function destroyRendered(pageNumber, record) {
-  record.task?.cancel?.();
-  record.page?.cleanup?.();
-  record.canvas.width=0;
-  record.canvas.height = 0;
-
-  const shell = state.pages.get(pageNumber);
-
-  if (shell) {
-    const inner = shell.querySelector('.pdf-page');
-    const loading = document.createElement('div');
-    loading.className = 'page-loading';
-    loading.textContent = `Page ${pageNumber}`;
-    inner.replaceChildren(loading);
-  }
-
-  state.rendered.delete(pageNumber);
-}
-
-async function renderPage(pageNumber) {
-  if (state.rendered.has(pageNumber)) return;
-
-  const epoch = state.renderEpoch;
-  const shell = state.pages.get(pageNumber);
-  if (!shell) return;
-
-  const page = await state.doc.getPage(pageNumber);
-
-  if (
-    epoch !== state.renderEpoch ||
-    !state.wanted.has(pageNumber)
-  ) {
-    page.cleanup();
-    return;
-  }
-
-  const base = page.getViewport({ scale: 1 });
-  const scale = clamp(pageScale(base), 0.5, 4);
-  state.scale = scale;
-
-  const viewport = page.getViewport({ scale });
-
-  shell.style.width = `${viewport.width}px`;
-  shell.style.height = `${viewport.height}px`;
-
-  const holder = shell.querySelector('.pdf-page');
-  holder.replaceChildren();
-  holder.style.width = `${viewport.width}px`;
-  holder.style.height = `${viewport.height}px`;
-  holder.style.setProperty(
-    '--scale-factor',
-    String(viewport.scale)
-  );
-
-  const canvas = document.createElement('canvas');
-  canvas.className = 'canvas-layer';
-
-  const outputScale = Math.min(
-    devicePixelRatio || 1,
-    Math.sqrt(
-      MAX_CANVAS_PIXELS /
-        (viewport.width * viewport.height)
-    )
-  );
-
-  canvas.width = Math.floor(viewport.width * outputScale);
-  canvas.height = Math.floor(viewport.height * outputScale);
-  canvas.style.width = `${viewport.width}px`;
-  canvas.style.height = `${viewport.height}px`;
-  holder.append(canvas);
-
-  const task = page.render({
-    canvasContext: canvas.getContext('2d'),
-    viewport,
-    transform:
-      outputScale === 1
-        ? null
-        : [outputScale, 0, 0, outputScale, 0, 0],
-    annotationMode:
-      pdfjsLib.AnnotationMode.ENABLE_STORAGE,
-    annotationStorage: state.doc.annotationStorage
-  });
-
-  state.rendered.set(pageNumber, {
-    page,
-    canvas,
-    task
-  });
-
-  await task.promise.catch(error => {
-    if (error?.name !== 'RenderingCancelledException') {
-      throw error;
-    }
-  });
-
-  if (epoch !== state.renderEpoch) return;
-
-  const textLayer = document.createElement('div');
-  textLayer.className = 'textLayer';
-  holder.append(textLayer);
-
-  const textContent = await page.getTextContent();
-  const textTask = pdfjsLib.renderTextLayer({
-    textContentSource: textContent,
-    container: textLayer,
-    viewport,
-    textDivs: []
-  });
-
-  await textTask.promise;
-
-  const annotations = await page.getAnnotations({
-    intent: 'display'
-  });
-
-  if (annotations.length) {
-    const layer = document.createElement('div');
-    layer.className = 'annotationLayer pdfjs-annotations';
-    holder.append(layer);
-
-    const annotationLayer = new pdfjsLib.AnnotationLayer({
-      div: layer,
-      page,
-      viewport: viewport.clone({ dontFlip: true }),
-      accessibilityManager: null,
-      annotationCanvasMap: null
-    });
-
-    await annotationLayer.render({
-      annotations,
-      annotationStorage: state.doc.annotationStorage,
-      renderForms: true,
-      linkService: {
-        getDestinationHash: () => '',
-        getAnchorUrl: () => '',
-        addLinkAttributes: (anchor, url) => {
-          anchor.href = url || '#';
-        },
-        goToDestination: destination =>
-          goToDestination(destination)
-      },
-      downloadManager: null,
-      imageResourcesPath: '',
-      enableScripting: false,
-      hasJSActions: false,
-      fieldObjects: null
-    });
-  }
-
-  const review = document.createElement('div');
-  review.className =
-    'page-review-layer' +
-    (FREE_ANNOTATION_TOOLS.has(state.tool)
-      ? ''
-      : ' inactive');
-
-  review.dataset.page = pageNumber;
-  holder.append(review);
-
-  wireReviewLayer(review, pageNumber);
-  renderPageReview(pageNumber);
 }
 
 function annotationRects(annotation) {
@@ -789,21 +511,6 @@ function scheduleSelectionCapture(applyActiveTool) {
       applyTextSelection(state.tool, captured);
     }
   }, 80);
-}
-
-function rerender() {
-  // Resize events may fire while the start screen is visible or after pagehide
-  // has already released the active PDF. In both cases there is nothing to
-  // render and state.doc is intentionally null.
-  if (!state.doc) return;
-
-  state.renderEpoch += 1;
-
-  for (const [pageNumber, record] of [...state.rendered]) {
-    destroyRendered(pageNumber, record);
-  }
-
-  ensureWindow(state.page);
 }
 
 function syncNavigation() {

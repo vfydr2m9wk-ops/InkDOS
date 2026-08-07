@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.9",
-  "releaseName": "Presentations Architecture Consolidation",
+  "version": "0.20.2.10",
+  "releaseName": "PDF Page Rendering Decomposition",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,14 +37,14 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "244 configured; 243 pass in the local reconstruction, with only checksum-integrity deferred because the hosted repository remains authoritative for five baseline files not reproduced byte-for-byte locally",
+    "structuralUnitTests": "245 configured; 244 pass in the reconstructed local tree, with only checksum-integrity deferred because the three pinned PDF.js publication files are absent from this environment",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "13 configured; hosted Chromium remains the transaction gate",
+    "browserRegressionScripts": "14 configured; hosted Chromium remains the transaction gate; the new PDF page-rendering scenario is isolated from prior browser state",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
     "browserMatrixRunner": "chromium, firefox, webkit",
@@ -52,8 +52,9 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: 53 runtime JS/CSS files checked; Presentations app ratchet reduced to 698 physical lines / 56 long lines after PPTX write-adapter extraction",
-    "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point"
+    "architectureGuardrails": "required: 54 runtime JS/CSS files checked; PDF app ratchet reduced to 1322 physical lines / 0 long lines after page-rendering extraction; new page-renderer.js remains below the 500-line limit",
+    "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point",
+    "pdfRenderingModularization": "page virtualization, canvas/text/AcroForm rendering, render-window disposal and resize rerender are isolated in apps/pdf/viewer/page-renderer.js; navigation/review/save remain behaviorally unchanged in app.js"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

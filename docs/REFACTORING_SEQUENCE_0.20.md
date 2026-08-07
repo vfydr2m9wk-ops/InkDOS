@@ -103,6 +103,6 @@ release until the regression is explained, fixed and permanently tested. Debt
 from one extraction is not carried into the next module.
 
 
-## v0.20.2.9 — Presentations architecture consolidation
+## v0.20.2.10 — Presentations architecture consolidation
 
 Final Presentations consolidation before beginning PDF decomposition. Package-preserving PPTX write/patch helpers move behind a dedicated I/O adapter; the visible editor and file-format contract remain frozen. After this gate is accepted, the next architectural target is PDF.
