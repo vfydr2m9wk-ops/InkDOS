@@ -4,18 +4,18 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.13
+## InkDesk v0.20.2.14
 
-Version 0.20.2.13 completes the main **PDF architecture decomposition** without changing the visible workflow. PDF rendering, navigation and review already live behind focused components; unified Save / flattened annotated export now moves behind `apps/pdf/io/save-controller.js`.
+Version 0.20.2.14 begins the **shared UI decomposition** without changing the visible workflow. The existing cross-workspace document-session behavior now lives in `shared/ui/document-session-controller.js` instead of being implemented inside the Office bootstrap.
 
-The save controller owns both existing save paths: PDF.js `saveDocument()` when there are no InkDesk review marks, and the local flattened exporter when review annotations must be embedded visibly. It also owns the Save button busy/available lifecycle and download coordination. `apps/pdf/app.js` is now below the normal 500-line architecture ceiling and remains the document-lifecycle/composition entry point.
+The extracted controller owns the existing editable filename normalization, title/content dirty-state bridge, discard warning, and download-name rewriting for Documents, Spreadsheets, Presentations, PDF, TXT and EPUB. `shared/office-shell.js` now only loads and composes the controller with the existing file-lifecycle service, dropping from 617 to 315 physical lines and leaving the inherited-debt list.
 
-The hardened updater flow remains in place: real dry-run, package SHA identity, incremental checksums and isolated browser scenarios protect each refactoring package.
+The PDF decomposition completed in v0.20.2.13 remains unchanged. The hardened updater flow, package SHA identity, incremental checksums and the same 17 isolated Chromium scenarios continue to protect the behavior-neutral refactoring sequence.
 
 ## Refactoring policy
 
-The 0.20.x decomposition remains incremental: finish Presentations in bounded
-steps, then PDF → shared UI → Documents/Spreadsheets cleanup. Every extraction
+The 0.20.x decomposition remains incremental: continue shared UI in bounded
+steps, then Documents/Spreadsheets cleanup and final architecture consolidation. Every extraction
 must preserve existing behavioral tests, stay inside the architecture guardrails
 and stop immediately if a regression appears.
 
@@ -48,7 +48,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.13 remains a beta. Real-device validation is still required for critical
+v0.20.2.14 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

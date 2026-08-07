@@ -19,16 +19,16 @@ class HomeSessionRefinementTests(unittest.TestCase):
         ]
         self.assertEqual(positions, sorted(positions))
         self.assertIn("The selected file stays on this device.", html)
-        self.assertIn("v0.20.2.13 beta", html)
+        self.assertIn("v0.20.2.14 beta", html)
         self.assertNotIn("Choose a DOCX, XLS, XLSX, PPTX or PDF file.", html)
 
-    def test_shared_shell_contains_non_invasive_title_adapter(self):
-        shell = (
-            ROOT / "shared/office-shell.js"
+    def test_document_session_controller_contains_non_invasive_title_adapter(self):
+        controller = (
+            ROOT / "shared/ui/document-session-controller.js"
         ).read_text(encoding="utf-8")
+        shell = (ROOT / "shared/office-shell.js").read_text(encoding="utf-8")
 
         for marker in (
-            "Document-session title adapter — 0.20.0",
             "initializeDocumentSessionAdapter",
             "office-documents",
             "office-spreadsheets",
@@ -38,9 +38,19 @@ class HomeSessionRefinementTests(unittest.TestCase):
             "office-epub",
             "rewriteDownloadName",
             "requestDownload.__inkdeskDocumentSessionWrapped",
+        ):
+            self.assertIn(marker, controller)
+
+        for marker in (
             "loadFileLifecycle()",
+            "loadDocumentSessionController()",
+            "document-session-controller.js",
+            "controller.initialize()",
         ):
             self.assertIn(marker, shell)
+
+        self.assertNotIn("function rewriteDownloadName", shell)
+        self.assertNotIn("replacementActionIds", shell)
 
     def test_title_adapter_does_not_require_application_replacements(self):
         manifest = json.loads(

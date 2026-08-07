@@ -1,3 +1,10 @@
+## v0.20.2.14 shared document-session decomposition
+
+- `tests/test_document_session_modularization.py` enforces the new shared UI ownership boundary, offline precache registration and Office-shell debt retirement.
+- `tests/test_home_session_refinement.py` now follows title/download behavior into the extracted controller while requiring `shared/office-shell.js` to remain composition-only.
+- The existing `tests/browser/revalidate_v02021_functional_corrections.py` remains the behavioral title/session gate for Spreadsheets and Presentations; the complete runner remains at 17 isolated Chromium scenarios.
+- `shared/office-shell.js` is 315 physical lines and no longer needs an inherited-debt exemption; the new controller is below the normal 500-line ceiling.
+
 ## v0.20.2.13 PDF save decomposition
 
 - `tests/test_pdf_save_modularization.py` requires the save controller to own both save paths, remain below normal source limits, load before `app.js` and be precached offline.
@@ -39,7 +46,7 @@ replacement.
 ## Current evidence
 
 - Architecture guardrails now include the dedicated PDF page-renderer, navigation and review controllers. The PDF `app.js` ratchet is reduced again after navigation/sidebar extraction; both new viewer controllers remain below the 500-line new-file ceiling.
-- The Python suite contains 247 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
+- The Python suite contains 252 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.

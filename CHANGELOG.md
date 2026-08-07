@@ -1,3 +1,11 @@
+## 0.20.2.14 — 2026-08-07
+
+- Extracted the shared document-session implementation into `shared/ui/document-session-controller.js`.
+- Preserved editable filenames, dirty-state bridging, discard warnings and download-name rewriting across all six workspaces.
+- Reduced `shared/office-shell.js` from 617 to 315 physical lines and retired its inherited architecture-debt entry.
+- Added permanent structural coverage and offline precaching for the new shared UI boundary.
+- No visual, editor, file-format, save-path or workflow behavior change is intended.
+
 ## 0.20.2.13 — 2026-08-07
 
 - Extracted unified PDF save/download coordination into `apps/pdf/io/save-controller.js`.

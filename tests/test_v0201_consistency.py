@@ -39,11 +39,11 @@ class V0201ConsistencyTests(unittest.TestCase):
 
     def test_public_version_and_cache_are_synchronized(self):
         version=json.loads((ROOT/'VERSION.json').read_text())['version']
-        self.assertEqual(version,'0.20.2.13')
+        self.assertEqual(version,'0.20.2.14')
         self.assertEqual(json.loads((ROOT/'package.json').read_text())['version'],version)
         self.assertEqual(json.loads((ROOT/'app-manifest.json').read_text())['version'],version)
         self.assertIn(f"inkdesk-shell-v{version}",(ROOT/'service-worker.js').read_text())
-        self.assertIn('InkDesk v0.20.2.13',(ROOT/'index.html').read_text())
+        self.assertIn('InkDesk v0.20.2.14',(ROOT/'index.html').read_text())
 
     def test_critical_existing_functions_remain_present(self):
         documents=(ROOT/'apps/documents/app.js').read_text()
@@ -62,8 +62,10 @@ class V0201ConsistencyTests(unittest.TestCase):
         for marker in ('enter(fromFirst = false)','move(delta)','async exit()'):
             self.assertIn(marker,slideshow)
         shell=(ROOT/'shared/office-shell.js').read_text()
-        self.assertIn('Object.freeze(Object.assign(',shell)
-        self.assertNotIn('InkDeskRuntime.requestDownload = requestDownload',shell)
+        controller=(ROOT/'shared/ui/document-session-controller.js').read_text()
+        self.assertIn('Object.freeze(Object.assign(',controller)
+        self.assertNotIn('InkDeskRuntime.requestDownload = requestDownload',controller)
+        self.assertIn('document-session-controller.js',shell)
 
 
     def test_all_workspace_pages_declare_existing_favicons(self):

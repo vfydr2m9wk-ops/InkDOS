@@ -1,4 +1,4 @@
-# Functional acceptance checklist — InkDesk 0.20.2.13
+# Functional acceptance checklist — InkDesk 0.20.2.14
 
 A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.
 

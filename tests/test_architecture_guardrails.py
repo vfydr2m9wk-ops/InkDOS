@@ -14,10 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 class ArchitectureGuardrailsTests(unittest.TestCase):
     def test_policy_has_refactoring_ratchet(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
-        self.assertEqual(policy["release"], "0.20.2.13")
+        self.assertEqual(policy["release"], "0.20.2.14")
         self.assertTrue(policy["rules"]["grandfatheredFilesMayShrinkButNotGrow"])
         self.assertIn("apps/presentations/app.js", policy["grandfatheredDebt"])
         self.assertNotIn("apps/pdf/app.js", policy["grandfatheredDebt"])
+        self.assertNotIn("shared/office-shell.js", policy["grandfatheredDebt"])
         self.assertIn("shared/ui/workspace-layout.js", policy["grandfatheredDebt"])
 
     def test_agent_rules_preserve_behavior_and_visual_contract(self):

@@ -12,8 +12,8 @@ pass the full release gate before the next ownership boundary is moved.
 | 0.20.2.6 | Presentations: slideshow/presentation-mode extraction | None intended |
 | 0.20.2.7 | Update-flow hardening: real dry-run, incremental checksums, isolated slideshow regression | None intended |
 | 0.20.2.8 | Presentations: I/O/save/recovery extraction | None intended |
-| later 0.20.2.x | PDF decomposition | None intended |
-| later 0.20.2.x | Shared UI decomposition | None intended |
+| 0.20.2.10–0.20.2.13 | PDF rendering, navigation, review and Save decomposition | None intended |
+| 0.20.2.14+ | Shared UI decomposition, beginning with document-session behavior | None intended |
 | later 0.20.2.x | Documents/Spreadsheets cleanup | None intended |
 | final 0.20.2.x | Architecture consolidation and dead-code cleanup | None intended |
 | 0.20.3 | Format fidelity work resumes | Explicitly scoped |
@@ -112,6 +112,13 @@ Final Presentations consolidation before beginning PDF decomposition. Package-pr
 
 Page navigation, thumbnails, outline destinations, bookmark navigation and sidebar tab state move out of the PDF entry point. Review annotations and Save remain separate future cuts.
 
-### v0.20.2.13 — PDF review decomposition
+### v0.20.2.12 — PDF review decomposition
 
 Review persistence, selected-text annotations, free marker/text overlays, comments and review Undo move behind focused PDF review components. Unified Save remains intentionally separate for the next bounded extraction.
+
+
+### v0.20.2.14 — Shared document-session decomposition
+
+The first shared-UI boundary moves filename normalization, editable-title state, dirty-state bridging, discard protection and download-name rewriting from `shared/office-shell.js` into `shared/ui/document-session-controller.js`. The Office shell remains responsible for loading/composition and preserves `InkDeskDocumentSessionReady`. No visible control or workspace behavior changes.
+
+Next shared-UI cuts should remain similarly bounded; `shared/ui/workspace-layout.js` is still grandfathered and is the primary remaining shared UI debt target.

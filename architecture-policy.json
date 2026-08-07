@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.13",
+  "release": "0.20.2.14",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -116,11 +116,6 @@
     "shared/local-recovery.js": {
       "maxLines": 278,
       "maxLongLines": 4,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
-    },
-    "shared/office-shell.js": {
-      "maxLines": 617,
-      "maxLongLines": 0,
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "shared/formula-engine.js": {

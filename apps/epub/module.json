@@ -3,7 +3,7 @@
   "id": "epub",
   "name": "EPUB Reader",
   "description": "A local purple-book reader with lateral pages, text sizing, themes, contents and simple images.",
-  "version": "0.20.2.13",
+  "version": "0.20.2.14",
   "enabled": true,
   "optional": true,
   "order": 60,

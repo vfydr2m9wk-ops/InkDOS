@@ -674,7 +674,7 @@ fileController=InkDeskPresentationsFileIO.create({
 });
 if(!window.InkDeskPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
 recoveryController=InkDeskPresentationsRecovery.create({
-  appVersion:'0.20.2.13',
+  appVersion:'0.20.2.14',
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},
   getCurrentSlide:()=>currentSlide,

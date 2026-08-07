@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.13
+# Testing guide — InkDesk v0.20.2.14
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -35,14 +35,21 @@ replacement.
 
 ## Current evidence
 
-- Architecture guardrails include the new PDF save controller. `apps/pdf/app.js` is 486 physical lines / 0 long lines and is no longer grandfathered; `io/save-controller.js` remains below the normal 500-line ceiling.
-- The Python suite contains 248 tests after the save-boundary regression was added. The reconstructed local tree may retain the checksum-manifest hold because the three pinned PDF.js publication files are absent; the hosted repository remains the authoritative checksum gate.
+- Architecture guardrails now also retire `shared/office-shell.js` from inherited debt: the shell is 315 physical lines after document-session behavior moved to `shared/ui/document-session-controller.js`; both files are below the normal 500-line ceiling.
+- The Python suite contains 252 tests after the shared document-session boundary regression was added. The reconstructed local tree may retain the checksum-manifest hold because hosted-only publication/workflow files are not byte-identical locally; the hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
 - Launch/offline validation passes static-asset and restricted-API/touch-emulation checks; local HTTP/file navigation can be reported as not performed when blocked by the execution environment.
 - The dedicated `revalidate_presentations_controls.py` remains the hosted behavior gate for Format-panel open/hide/reopen, formatting changes, selection clear/reselect, Undo/Redo restoration, compact drawer state and Escape handling. Slideshow behavior now runs independently in `revalidate_presentations_slideshow.py`; local HTTP navigation was blocked by the execution environment, so these browser paths are not claimed locally.
 - Firefox, native WebKit/Safari, iPadOS, Edge and installed-PWA behavior remain explicit matrix/manual checks; unavailable engines are never inferred from Chromium results.
+
+## v0.20.2.14 shared document-session decomposition
+
+- `tests/test_document_session_modularization.py` requires document-session behavior to live in the focused shared UI controller and keeps both the controller and Office shell under the normal source-size ceiling.
+- `tests/test_home_session_refinement.py` requires `shared/office-shell.js` to load/compose the controller rather than reimplement filename, dirty-state or download behavior.
+- `service-worker.js` precaches `shared/ui/document-session-controller.js` so installed/offline workspaces keep the same shared session contract.
+- The browser runner remains at 17 isolated scenarios; existing functional-correction coverage continues to exercise the shared title/session path rather than creating a redundant new browser harness.
 
 ## v0.20.2.13 PDF save decomposition
 

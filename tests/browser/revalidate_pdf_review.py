@@ -147,7 +147,7 @@ def main():
                         "() => ({controller: window.InkDeskPdfReviewController?.version, layer: window.InkDeskPdfAnnotationLayer?.version})"
                     )
                     assert_true(
-                        versions == {"controller": "0.20.2.13", "layer": "0.20.2.13"},
+                        versions == {"controller": "0.20.2.14", "layer": "0.20.2.14"},
                         f"Unexpected PDF review component versions: {versions}",
                     )
                     report["checks"].append("review components loaded")
