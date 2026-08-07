@@ -11,24 +11,34 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class DocumentsRulerTests(unittest.TestCase):
     def test_shared_runtime_contains_page_linked_controller(self):
-        runtime = (
+        layout = (
             ROOT / "shared" / "ui" / "workspace-layout.js"
+        ).read_text(encoding="utf-8")
+        model = (
+            ROOT / "shared" / "ui" / "document-ruler-model.js"
         ).read_text(encoding="utf-8")
 
         for marker in (
             "installDocumentsRuler",
-            "visibleDocumentPage",
-            "rulerMetrics",
-            "rulerTickModel",
-            "pointerToDocumentIndent",
-            "applyDocumentIndent",
             "dataset.inkdeskRuler",
             "page-linked",
             "selectionchange",
             "contentStartDisplay",
             "contentEndDisplay",
+            "InkDeskDocumentRulerModel",
         ):
-            self.assertIn(marker, runtime)
+            self.assertIn(marker, layout)
+
+        for marker in (
+            "visibleDocumentPage",
+            "rulerMetrics",
+            "rulerTickModel",
+            "pointerToDocumentIndent",
+            "applyDocumentIndent",
+            "documentIndentState",
+            "clampIndentState",
+        ):
+            self.assertIn(marker, model)
 
     def test_legacy_number_stream_is_disabled(self):
         styles = (
@@ -83,6 +93,7 @@ class DocumentsRulerTests(unittest.TestCase):
         )
         self.assertIn("0.20.0", bootstrap)
         self.assertIn("workspace-layout.js", worker)
+        self.assertIn("document-ruler-model.js", worker)
         self.assertIn("workspace-layout.css", worker)
 
     def test_runtime_geometry_and_indent_helpers(self):
@@ -91,6 +102,7 @@ class DocumentsRulerTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
 
         script = r"""
+require('./shared/ui/document-ruler-model.js');
 require('./shared/ui/workspace-layout.js');
 const api = globalThis.InkDeskWorkspaceLayout;
 

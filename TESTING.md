@@ -1,6 +1,6 @@
-## v0.20.2.15 shared workspace-panel decomposition
+## v0.20.2.16 Documents ruler-model decomposition
 
-The hosted package gate must preserve the complete existing behavior suite and additionally verify that panel-state ownership is isolated in `shared/ui/workspace-panel-controller.js`, loaded before `workspace-layout.js`, precached for offline use and bounded by the architecture ratchet. Expected unit/package count: 257. Expected Chromium regression count: 17/17.
+The hosted package gate must preserve the complete existing behavior suite and additionally verify that pure ruler calculations are isolated in `shared/ui/document-ruler-model.js`, the model is loaded before `workspace-layout.js`, the compatibility helper API remains available, the model is precached offline and the architecture ratchet is lowered without changing ruler interaction. Expected unit/package count: 262. Expected Chromium regression count: 17/17.
 
 ## v0.20.2.14 shared document-session decomposition
 
@@ -50,7 +50,7 @@ replacement.
 ## Current evidence
 
 - Architecture guardrails now include the dedicated PDF page-renderer, navigation and review controllers. The PDF `app.js` ratchet is reduced again after navigation/sidebar extraction; both new viewer controllers remain below the 500-line new-file ceiling.
-- The Python suite contains 252 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
+- The Python suite contains 262 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.

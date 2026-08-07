@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 17,
-  "currentPackage": "0.20.2.15",
+  "appliedSequence": 18,
+  "currentPackage": "0.20.2.16",
   "status": "in-progress",
   "history": [
     {
@@ -90,6 +90,11 @@
       "sequence": 17,
       "packageLabel": "0.20.2.15",
       "description": "Shared workspace-panel decomposition: move existing Documents navigation-panel state, Presentations thumbnails/Format/notes panel state, PDF navigation-sidebar state and Spreadsheet layout markers behind shared/ui/workspace-panel-controller.js. The Documents ruler remains in workspace-layout.js. No visible control, panel default, editing behavior, file-format behavior, save path or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 18,
+      "packageLabel": "0.20.2.16",
+      "description": "Documents ruler-model decomposition: move existing pure ruler tick, page-geometry and indentation calculations behind shared/ui/document-ruler-model.js while workspace-layout.js retains DOM synchronization, observers and pointer interaction. Compatibility ruler-helper methods remain exposed from InkDeskWorkspaceLayout. No visible control, DOCX behavior, save behavior, panel behavior or workflow behavior is intentionally changed."
     }
   ]
 }

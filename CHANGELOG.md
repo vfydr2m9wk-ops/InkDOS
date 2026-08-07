@@ -1,3 +1,11 @@
+## 0.20.2.16 — Documents Ruler Model Decomposition (2026-08-07)
+
+- Extracted pure Documents ruler geometry, tick generation and indentation calculations to `shared/ui/document-ruler-model.js`.
+- Kept ruler DOM synchronization, observers and pointer-drag interaction in `shared/ui/workspace-layout.js`.
+- Preserved the existing `InkDeskWorkspaceLayout` ruler-helper API through delegation and added deterministic script load order/offline precache.
+- Lowered the `workspace-layout.js` architecture ratchet from 1,009 to 710 physical lines; the new model remains below 500 lines.
+- No visible UI, DOCX, save, panel or workflow behavior change is intended.
+
 ## 0.20.2.15 — 2026-08-07
 
 ### Shared Workspace Panel Decomposition

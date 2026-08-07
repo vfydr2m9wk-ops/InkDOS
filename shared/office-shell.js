@@ -90,7 +90,7 @@
   function loadWorkspacePanelController() {
     if (
       global.InkDeskWorkspacePanelController &&
-      global.InkDeskWorkspacePanelController.version === '0.20.2.15'
+      global.InkDeskWorkspacePanelController.version === '0.20.2.16'
     ) {
       return Promise.resolve(global.InkDeskWorkspacePanelController);
     }
@@ -134,6 +134,62 @@
         function () {
           reject(new Error(
             'The shared InkDesk workspace panel controller could not be loaded.'
+          ));
+        },
+        { once: true }
+      );
+
+      documentObject.head.appendChild(script);
+    });
+  }
+
+  function loadDocumentRulerModel() {
+    if (
+      global.InkDeskDocumentRulerModel &&
+      global.InkDeskDocumentRulerModel.version === '0.20.2.16'
+    ) {
+      return Promise.resolve(global.InkDeskDocumentRulerModel);
+    }
+
+    return new Promise(function (resolve, reject) {
+      const existing = documentObject.querySelector(
+        'script[data-inkdesk-ui="document-ruler-model"]'
+      );
+
+      if (existing) {
+        existing.addEventListener(
+          'load',
+          function () { resolve(global.InkDeskDocumentRulerModel); },
+          { once: true }
+        );
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = documentObject.createElement('script');
+      script.src = new URL('document-ruler-model.js', uiBase).href;
+      script.async = false;
+      script.dataset.inkdeskUi = 'document-ruler-model';
+
+      script.addEventListener(
+        'load',
+        function () {
+          if (!global.InkDeskDocumentRulerModel) {
+            reject(new Error(
+              'InkDesk document ruler model did not initialize.'
+            ));
+            return;
+          }
+          resolve(global.InkDeskDocumentRulerModel);
+        },
+        { once: true }
+      );
+
+      script.addEventListener(
+        'error',
+        function () {
+          reject(new Error(
+            'The shared InkDesk document ruler model could not be loaded.'
           ));
         },
         { once: true }
@@ -197,6 +253,8 @@
 
   function loadWorkspaceLayout() {
     return loadWorkspacePanelController().then(function () {
+      return loadDocumentRulerModel();
+    }).then(function () {
       return loadWorkspaceLayoutRuntime();
     });
   }
@@ -288,7 +346,7 @@
   function loadDocumentSessionController() {
     if (
       global.InkDeskDocumentSessionController &&
-      global.InkDeskDocumentSessionController.version === '0.20.2.15'
+      global.InkDeskDocumentSessionController.version === '0.20.2.16'
     ) {
       return Promise.resolve(global.InkDeskDocumentSessionController);
     }

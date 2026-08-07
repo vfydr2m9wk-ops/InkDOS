@@ -1,9 +1,9 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.2.15",
+  "version": "0.20.2.16",
   "releaseChannel": "beta",
-  "releaseName": "Shared Workspace Panel Decomposition",
+  "releaseName": "Documents Ruler Model Decomposition",
   "date": "2026-08-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",

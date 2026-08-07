@@ -128,3 +128,8 @@ Documents navigation-panel state, Presentations thumbnails/Format/notes panel st
 
 The next shared-UI cut should stay bounded and should not mix Documents ruler extraction with unrelated workspace behavior.
 
+### v0.20.2.16 — Documents ruler model decomposition
+
+Pure ruler math/state moves from `workspace-layout.js` to `shared/ui/document-ruler-model.js`: tick generation, active-page metrics, selected-block indent state, clamping, pointer conversion and indent application. DOM synchronization, observer wiring and pointer-drag interaction stay in `workspace-layout.js`. The external ruler-helper API remains compatible and no visible ruler behavior is intentionally changed.
+
+The next shared-UI cut should keep the same boundary discipline: do not combine ruler interaction extraction with unrelated Documents or Spreadsheet behavior.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.15",
+  "release": "0.20.2.16",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -134,9 +134,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "shared/ui/workspace-layout.js": {
-      "maxLines": 1009,
+      "maxLines": 710,
       "maxLongLines": 0,
-      "reason": "Shared workspace panel visibility/persistence moved to a focused controller in v0.20.2.15; the remaining grandfathered debt is the Documents ruler/layout runtime."
+      "reason": "Pure Documents ruler geometry/indent calculations moved to shared/ui/document-ruler-model.js in v0.20.2.16; remaining debt is DOM synchronization and pointer interaction for the ruler."
     },
     "shared/ui/workspace-layout.css": {
       "maxLines": 982,
