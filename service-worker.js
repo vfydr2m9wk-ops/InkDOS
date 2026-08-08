@@ -1,4 +1,5 @@
 'use strict';
+// Update sequence 42: worksheet deletion support and cache refresh.
 const CACHE_NAME='inkdesk-shell-v0.20.3.1';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[

@@ -47,6 +47,19 @@
       if (typeof settings.onAdd === 'function') settings.onAdd(name, index);
     });
     container.appendChild(add);
+
+    const remove = document.createElement('button');
+    remove.id = 'deleteSheetBtn';
+    remove.type = 'button';
+    remove.textContent = '−';
+    remove.title = 'Delete active worksheet';
+    remove.setAttribute('aria-label', 'Delete active worksheet');
+    remove.disabled = typeof settings.canDelete === 'function' ? !settings.canDelete() : false;
+    remove.addEventListener('click', () => {
+      if (remove.disabled) return;
+      if (typeof settings.onDelete === 'function') settings.onDelete(book.active);
+    });
+    container.appendChild(remove);
   }
 
   global.InkDeskSpreadsheetWorksheetTabs = Object.freeze({ render, nextSheetName });

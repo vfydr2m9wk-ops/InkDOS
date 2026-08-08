@@ -18,7 +18,7 @@ class UICorrection02031Tests(unittest.TestCase):
         self.assertIn("#sheetTabs > #addSheetBtn", css)
         self.assertIn("InkDeskSpreadsheetWorksheetTabs.render", app)
         self.assertIn("add.id = 'addSheetBtn'", tabs)
-        self.assertIn("InkDeskSpreadsheetWorksheetPackage.appendNewSheets", engine)
+        self.assertIn("InkDeskSpreadsheetWorksheetPackage.syncSheets", engine)
         self.assertIn("async function appendNewSheets", package)
         self.assertIn("Workbook package metadata is incomplete", package)
         self.assertIn("activeTab", package)

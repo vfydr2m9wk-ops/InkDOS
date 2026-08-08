@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 41,
+  "appliedSequence": 42,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -210,6 +210,11 @@
       "sequence": 41,
       "packageLabel": "0.20.3.1",
       "description": "Format fidelity correction 7 correction 1. Replaces the un-applied sequence-41 candidate without consuming a new sequence. Reproduced against real DOCX and PPTX files, it preserves Word floating-letterhead geometry instead of treating anchored images as in-flow content, keeps paragraph indents independent from anchored-image coordinates, restores VML header watermark artwork on every page without including it in editable document text, preserves declared OOXML image extents before pagination, and keeps safe font-family CSS. Presentations retains the direct slide/layout/master background-image resolver so imported PPTX backgrounds render in both the canvas and thumbnails. The approved sequence-40 UI shell, editing tools, writers, recovery semantics, storage, formulas, PDF, Spreadsheet, TXT, EPUB, Launcher and workflow logic are otherwise unchanged."
+    },
+    {
+      "sequence": 42,
+      "packageLabel": "0.20.3.1",
+      "description": "Spreadsheet worksheet deletion correction. Adds a compact Delete active worksheet control beside the existing Add worksheet control, requires explicit confirmation, blocks deletion of the last visible worksheet, preserves formula-draft safety, resets sheet-local history after deletion, and keeps a surviving sheet active. Imported XLSX packages are updated in place: deleted worksheet registry entries, workbook relationships, worksheet parts, worksheet relationship parts, local defined-name indices and stale calculation-chain metadata are reconciled without rebuilding unrelated workbook content. Recovery now matches surviving worksheets by package path/name rather than array position so deleting an earlier sheet cannot remap recovered edits onto the wrong worksheet. Existing worksheet-add behavior, formulas, formatting, drawings, tables, hidden sheets, legacy XLS import and the approved sequence-41 Documents/Presentations fidelity fixes remain unchanged."
     }
   ]
 }

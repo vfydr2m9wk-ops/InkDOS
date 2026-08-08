@@ -31,6 +31,93 @@
     return { path: `xl/worksheets/sheet${number}.xml`, next: number + 1 };
   }
 
+  function normalizeWorkbookTarget(target) {
+    let value = String(target || '').replace(/\\/g, '/');
+    if (!value) return '';
+    if (value.startsWith('/')) value = value.slice(1);
+    if (value.startsWith('./')) value = value.slice(2);
+    if (!value.startsWith('xl/')) value = 'xl/' + value.replace(/^\.\.\//, '');
+    return value;
+  }
+
+  function worksheetRelsPath(path) {
+    const parts = String(path || '').split('/');
+    const file = parts.pop();
+    return parts.concat('_rels', `${file}.rels`).join('/');
+  }
+
+  function removeContentTypeOverride(contentTypes, partName) {
+    for (const node of localAll(contentTypes, 'Override')) {
+      if (node.getAttribute('PartName') === partName) node.parentNode.removeChild(node);
+    }
+  }
+
+  async function removeDeletedSheets(zip, book) {
+    const workbookRaw = await zip.file('xl/workbook.xml')?.async('text');
+    const relationshipsRaw = await zip.file('xl/_rels/workbook.xml.rels')?.async('text');
+    const contentTypesRaw = await zip.file('[Content_Types].xml')?.async('text');
+    if (!workbookRaw || !relationshipsRaw || !contentTypesRaw) return false;
+
+    const workbook = parseXml(workbookRaw, 'xl/workbook.xml');
+    const relationships = parseXml(relationshipsRaw, 'xl/_rels/workbook.xml.rels');
+    const contentTypes = parseXml(contentTypesRaw, '[Content_Types].xml');
+    const sheetsNode = localOne(workbook, 'sheets');
+    if (!sheetsNode) return false;
+
+    const keptPaths = new Set((book.sheets || []).map(sheet => String(sheet.path || '')).filter(Boolean));
+    const relationshipById = new Map(localAll(relationships, 'Relationship').map(node => [node.getAttribute('Id') || '', node]));
+    const originalSheets = localAll(sheetsNode, 'sheet');
+    const deletedIndices = [];
+    let changed = false;
+
+    originalSheets.forEach((sheetNode, index) => {
+      const relationshipId = sheetNode.getAttributeNS(REL_NS, 'id') || sheetNode.getAttribute('r:id') || '';
+      const relationship = relationshipById.get(relationshipId);
+      const path = normalizeWorkbookTarget(relationship?.getAttribute('Target') || '');
+      if (!path || keptPaths.has(path)) return;
+      deletedIndices.push(index);
+      sheetNode.parentNode.removeChild(sheetNode);
+      if (relationship?.parentNode) relationship.parentNode.removeChild(relationship);
+      zip.remove(path);
+      zip.remove(worksheetRelsPath(path));
+      removeContentTypeOverride(contentTypes, '/' + path);
+      changed = true;
+    });
+
+    if (!changed) return false;
+
+    for (const definedName of localAll(workbook, 'definedName')) {
+      if (!definedName.hasAttribute('localSheetId')) continue;
+      const oldIndex = Number(definedName.getAttribute('localSheetId'));
+      if (!Number.isInteger(oldIndex)) continue;
+      if (deletedIndices.includes(oldIndex)) {
+        definedName.parentNode.removeChild(definedName);
+        continue;
+      }
+      const shift = deletedIndices.filter(index => index < oldIndex).length;
+      definedName.setAttribute('localSheetId', String(Math.max(0, oldIndex - shift)));
+    }
+
+    for (const relationship of [...localAll(relationships, 'Relationship')]) {
+      if (!/\/calcChain$/i.test(relationship.getAttribute('Type') || '')) continue;
+      const target = normalizeWorkbookTarget(relationship.getAttribute('Target') || 'calcChain.xml');
+      zip.remove(target);
+      if (relationship.parentNode) relationship.parentNode.removeChild(relationship);
+      removeContentTypeOverride(contentTypes, '/' + target);
+    }
+
+    const view = localOne(workbook, 'workbookView');
+    if (view) {
+      const active = Math.max(0, Math.min(Number(book.active || 0), Math.max(0, (book.sheets || []).length - 1)));
+      view.setAttribute('activeTab', String(active));
+    }
+
+    zip.file('xl/workbook.xml', serialize(workbook), { createFolders: false });
+    zip.file('xl/_rels/workbook.xml.rels', serialize(relationships), { createFolders: false });
+    zip.file('[Content_Types].xml', serialize(contentTypes), { createFolders: false });
+    return true;
+  }
+
   async function appendNewSheets(zip, book, options) {
     const pending = (book.sheets || []).filter(sheet => !sheet.path || !zip.file(sheet.path));
     if (!pending.length) return false;
@@ -105,5 +192,11 @@
     return true;
   }
 
-  global.InkDeskSpreadsheetWorksheetPackage = Object.freeze({ appendNewSheets });
+  async function syncSheets(zip, book, options) {
+    const removed = await removeDeletedSheets(zip, book);
+    const added = await appendNewSheets(zip, book, options);
+    return removed || added;
+  }
+
+  global.InkDeskSpreadsheetWorksheetPackage = Object.freeze({ appendNewSheets, removeDeletedSheets, syncSheets });
 })(typeof window !== 'undefined' ? window : globalThis);
