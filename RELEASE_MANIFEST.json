@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.24",
-  "releaseName": "Spreadsheet History Safety Hardening",
+  "version": "0.20.2.25",
+  "releaseName": "Local Recovery Source Continuity Hardening",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {

@@ -190,3 +190,10 @@ This closes a concrete data-loss/race boundary. Further 0.20.2.x work should con
 - Keep Undo/Redo from mutating committed workbook state beneath pending formula drafts.
 - Recalculate the workbook after history restoration.
 - Carry bounded Undo/Redo state in Spreadsheet recovery schema version 3.
+
+### v0.20.2.25 — Local recovery source continuity hardening
+
+- Treat the source package as an active-session recovery dependency rather than a disposable snapshot attachment.
+- Save-copy cleanup clears snapshots but retains source context for later edits.
+- Recovery inspection removes clean-session orphan sources.
+- Added end-to-end fidelity coverage for save → edit → restore → re-export.

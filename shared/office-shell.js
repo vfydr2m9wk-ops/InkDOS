@@ -90,7 +90,7 @@
   function loadWorkspacePanelController() {
     if (
       global.InkDeskWorkspacePanelController &&
-      global.InkDeskWorkspacePanelController.version === '0.20.2.24'
+      global.InkDeskWorkspacePanelController.version === '0.20.2.25'
     ) {
       return Promise.resolve(global.InkDeskWorkspacePanelController);
     }
@@ -146,7 +146,7 @@
   function loadDocumentRulerModel() {
     if (
       global.InkDeskDocumentRulerModel &&
-      global.InkDeskDocumentRulerModel.version === '0.20.2.24'
+      global.InkDeskDocumentRulerModel.version === '0.20.2.25'
     ) {
       return Promise.resolve(global.InkDeskDocumentRulerModel);
     }
@@ -202,7 +202,7 @@
   function loadDocumentRulerDragController() {
     if (
       global.InkDeskDocumentRulerDragController &&
-      global.InkDeskDocumentRulerDragController.version === '0.20.2.24'
+      global.InkDeskDocumentRulerDragController.version === '0.20.2.25'
     ) {
       return Promise.resolve(global.InkDeskDocumentRulerDragController);
     }
@@ -404,7 +404,7 @@
   function loadDocumentSessionController() {
     if (
       global.InkDeskDocumentSessionController &&
-      global.InkDeskDocumentSessionController.version === '0.20.2.24'
+      global.InkDeskDocumentSessionController.version === '0.20.2.25'
     ) {
       return Promise.resolve(global.InkDeskDocumentSessionController);
     }

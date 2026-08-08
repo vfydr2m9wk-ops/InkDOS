@@ -23,7 +23,7 @@ class LocalRecoveryTests(unittest.TestCase):
             "markClean",
             "resetSnapshots",
             "orphanSources",
-            "remainingDocumentKeys",
+            "cleanupOrphanSources",
         ):
             self.assertIn(token, text)
         self.assertNotIn("fetch('http", text)
@@ -34,7 +34,7 @@ class LocalRecoveryTests(unittest.TestCase):
         disabled = ("pdf", "txt", "epub")
         for module in enabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
-            self.assertIn("../../shared/local-recovery.js?v=0.20.2.24", html)
+            self.assertIn("../../shared/local-recovery.js?v=0.20.2.25", html)
             self.assertLess(html.index("local-recovery.js"), html.index("app.js"))
         for module in disabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
@@ -79,7 +79,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_service_worker_caches_recovery_runtime(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("./shared/local-recovery.js", text)
-        self.assertIn("inkdesk-shell-v0.20.2.24", text)
+        self.assertIn("inkdesk-shell-v0.20.2.25", text)
 
     def test_service_worker_canonicalizes_versioned_shell_assets(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -87,7 +87,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("canonical.hash=''", text)
         self.assertIn("APP_SHELL_URLS.has(canonical.href)", text)
         hub = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("module-registry.js?v=0.20.2.24", hub)
+        self.assertIn("module-registry.js?v=0.20.2.25", hub)
 
     def test_local_recovery_browser_waits_use_playwright_keyword_arg(self):
         text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
@@ -105,13 +105,38 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("revalidate_v0202_local_recovery.py", runner)
         self.assertIn("INKDESK_BROWSER", runner)
 
+
+    def test_mark_clean_retains_source_package_for_edits_after_save(self):
+        text = (ROOT / "shared/local-recovery.js").read_text(encoding="utf-8")
+        start = text.index("async function markClean()")
+        end = text.index("async function discardCurrent()", start)
+        block = text[start:end]
+        self.assertIn("await deleteSnapshotsOnly(moduleName,key)", block)
+        self.assertNotIn("await deleteDocument(moduleName,key)", block)
+        self.assertIn("Recovery cleanup deferred because new edits arrived", block)
+        self.assertIn("async function cleanupOrphanSources(moduleName)", text)
+        prompt = text[text.index("async function promptLatest()"):text.index("function getState()") ]
+        self.assertIn("await cleanupOrphanSources(moduleName)", prompt)
+
+    def test_browser_recovery_covers_save_then_edit_then_restore_fidelity(self):
+        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        for marker in (
+            "spreadsheets_post_save_edit_recovery_case",
+            "RECOVERY-SAVED-BASE-020225",
+            "RECOVERY-POST-SAVE-EDIT-020225",
+            "recovery_post_save_restored.xlsx",
+            "originalFeatures",
+            "restoredFeatures",
+        ):
+            self.assertIn(marker, text)
+
     def test_release_identity_is_v0202(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(version["version"], "0.20.2.24")
-        self.assertEqual(version["releaseName"], "Spreadsheet History Safety Hardening")
-        self.assertEqual(state["appliedSequence"], 26)
-        self.assertEqual(state["currentPackage"], "0.20.2.24")
+        self.assertEqual(version["version"], "0.20.2.25")
+        self.assertEqual(version["releaseName"], "Local Recovery Source Continuity Hardening")
+        self.assertEqual(state["appliedSequence"], 27)
+        self.assertEqual(state["currentPackage"], "0.20.2.25")
 
 
 if __name__ == "__main__":

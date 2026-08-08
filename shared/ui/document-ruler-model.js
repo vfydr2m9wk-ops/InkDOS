@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.20.2.24';
+  const VERSION = '0.20.2.25';
 
 function finiteNumber(value, fallback) {
   const number = Number(value);

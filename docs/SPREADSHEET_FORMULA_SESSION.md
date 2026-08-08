@@ -83,3 +83,7 @@ The recovery payload uses schema version 2 and includes `formulaDrafts`. Restori
 Spreadsheet history is now workbook-scoped rather than implicitly bound to whichever worksheet is visible when Undo or Redo is requested. Each history action carries its originating worksheet index; applying the action targets that worksheet and recalculates the workbook before the visible grid is refreshed.
 
 Pending formula drafts block history mutation until they are confirmed or cancelled, preventing Undo/Redo from changing the committed workbook underneath draft text that exists only in the formula session. Recovery payload schema version 3 also carries bounded Undo/Redo stacks, so a restored session retains its usable committed-edit history rather than reopening with empty history buttons.
+
+## v0.20.2.25 post-save recovery continuity
+
+Formula/history snapshots are only useful if restore can reconstruct the workbook against the correct source package. Save-copy cleanup therefore retains the active OOXML source while the editing session continues. If a later formula or cell edit creates a new recovery snapshot, Restore still has the original workbook package available and does not fall back to blank-package reconstruction.

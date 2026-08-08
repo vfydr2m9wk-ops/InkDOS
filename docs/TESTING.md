@@ -1,3 +1,7 @@
+## v0.20.2.25 recovery source-continuity gate
+
+Validate that Save-copy cleanup does not remove the source package needed by later recovery. The browser scenario must preserve modern XLSX package features across save → continued editing → close/reload → Restore → re-export. Also verify that a clean session with no snapshots purges its orphan source on the next recovery inspection.
+
 ## v0.20.2.24 Spreadsheet history safety gate
 
 This gate verifies that Undo/Redo never applies cell or merge state to the wrong worksheet, that formula drafts block workbook-history mutation, that history restoration recalculates dependent formulas, and that recovery schema version 3 retains bounded Undo/Redo stacks. The existing functional-corrections Chromium scenario exercises cross-sheet Undo/Redo with a manually injected Spreadsheet runtime, while deterministic tests verify recovery-history import/export.
@@ -16,7 +20,7 @@ The release gate adds `tests.test_spreadsheet_formula_safety` plus browser asser
 
 The package must pass the complete Python suite, architecture/source checks, checksum verification and all 17 Chromium scripts. Additional tests exercise the DOM-free formula-session lifecycle: start, normalized update, suspend, resume, commit cleanup and cancel cleanup.
 
-# Testing guide — InkDesk v0.20.2.24
+# Testing guide — InkDesk v0.20.2.25
 
 ## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
 

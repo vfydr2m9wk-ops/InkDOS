@@ -86,6 +86,10 @@ async function deleteSnapshotsOnly(moduleName,documentKey){
     snapshots.filter(item=>item.module===moduleName).forEach(item=>store.delete(item.id));
   });
 }
+async function cleanupOrphanSources(moduleName){
+  const live=new Set((await getAllSnapshots(moduleName)).map(item=>item.documentKey)),sources=await allFromIndex(SOURCE_STORE,'module',moduleName);
+  const orphanSources=sources.filter(item=>!live.has(item.documentKey));
+  if(orphanSources.length)await withStore(SOURCE_STORE,'readwrite',store=>{orphanSources.forEach(item=>store.delete(item.id))});return orphanSources.length}
 async function prune(moduleName,documentKey){
   const now=Date.now();
   const moduleSnapshots=await getAllSnapshots(moduleName);
@@ -95,12 +99,7 @@ async function prune(moduleName,documentKey){
   const surviving=moduleSnapshots.filter(item=>!expired.some(x=>x.id===item.id)&&!excessDocument.some(x=>x.id===item.id));
   const excessModule=surviving.slice(MAX_PER_MODULE);
   const ids=new Set(expired.concat(excessDocument,excessModule).map(item=>item.id));
-  const remaining=moduleSnapshots.filter(item=>!ids.has(item.id));
-  if(ids.size)await withStore(SNAPSHOT_STORE,'readwrite',store=>{ids.forEach(id=>store.delete(id))});
-  const remainingDocumentKeys=new Set(remaining.map(item=>item.documentKey));
-  const sources=await allFromIndex(SOURCE_STORE,'module',moduleName);
-  const orphanSources=sources.filter(item=>!remainingDocumentKeys.has(item.documentKey));
-  if(orphanSources.length)await withStore(SOURCE_STORE,'readwrite',store=>{orphanSources.forEach(item=>store.delete(item.id))});
+  if(ids.size)await withStore(SNAPSHOT_STORE,'readwrite',store=>{ids.forEach(id=>store.delete(id))});await cleanupOrphanSources(moduleName);
 }
 function randomKey(){
   if(global.crypto&&typeof global.crypto.randomUUID==='function')return global.crypto.randomUUID();
@@ -190,7 +189,7 @@ function create(options){
         if(payload==null)return null;
         if(destroyed||capturedGeneration!==generation||capturedDocumentKey!==documentKey)return null;
         const now=Date.now();
-        const record={id:moduleName+':'+capturedDocumentKey+':'+now+':'+Math.random().toString(36).slice(2,7),module:moduleName,documentKey:capturedDocumentKey,fileName:capturedFileName,appVersion:String(options.appVersion||'0.20.2.24'),schemaVersion:1,createdAt:now,updatedAt:now,payload};
+        const record={id:moduleName+':'+capturedDocumentKey+':'+now+':'+Math.random().toString(36).slice(2,7),module:moduleName,documentKey:capturedDocumentKey,fileName:capturedFileName,appVersion:String(options.appVersion||'0.20.2.25'),schemaVersion:1,createdAt:now,updatedAt:now,payload};
         await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.put(record)});
         if(capturedGeneration!==generation||capturedDocumentKey!==documentKey){
           await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.delete(record.id)});
@@ -222,7 +221,8 @@ function create(options){
   async function markClean(){
     const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;
     if(pending)await pending;if(!key)return;
-    try{await deleteDocument(moduleName,key);report('Recovery snapshot cleared after save')}catch(error){console.warn('InkDesk could not clear the recovery snapshot.',error)}
+    if(documentKey===key&&(dirty||revision>0)){report('Recovery cleanup deferred because new edits arrived');return}
+    try{await deleteSnapshotsOnly(moduleName,key);report('Recovery snapshot cleared after save')}catch(error){console.warn('InkDesk could not clear the recovery snapshot.',error)}
   }
   async function discardCurrent(){
     const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;
@@ -232,7 +232,7 @@ function create(options){
   async function promptLatest(){
     if(destroyed)return null;
     try{
-      const snapshots=await getAllSnapshots(moduleName);
+      await cleanupOrphanSources(moduleName);const snapshots=await getAllSnapshots(moduleName);
       if(!snapshots.length)return null;
       const record=snapshots[0];
       const versions=snapshots.filter(item=>item.documentKey===record.documentKey).length;
@@ -266,7 +266,7 @@ async function clearModule(moduleName){
   await withStore(SOURCE_STORE,'readwrite',store=>sources.forEach(item=>store.delete(item.id)));
 }
 global.InkDeskLocalRecovery=Object.freeze({
-  version:'0.20.2.24',
+  version:'0.20.2.25',
   create,
   openDatabase,
   listSnapshots:getAllSnapshots,

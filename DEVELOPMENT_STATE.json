@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 26,
-  "currentPackage": "0.20.2.24",
+  "appliedSequence": 27,
+  "currentPackage": "0.20.2.25",
   "status": "in-progress",
   "history": [
     {
@@ -135,6 +135,11 @@
       "sequence": 26,
       "packageLabel": "0.20.2.24",
       "description": "Spreadsheet history safety hardening: Undo/Redo actions are bound to their originating worksheet, workbook recalculation follows history restoration, pending formula drafts guard history mutation, and private recovery schema v3 preserves bounded Undo/Redo state across restored sessions."
+    },
+    {
+      "sequence": 27,
+      "packageLabel": "0.20.2.25",
+      "description": "Local recovery source-continuity hardening: Save-copy cleanup clears stale snapshots while retaining the active source package for later edits, so a subsequent recovery can restore against the original OOXML package instead of a blank reconstruction. Recovery inspection removes orphaned clean-session sources, and browser coverage exercises save -> continue editing -> restore -> re-export fidelity."
     }
   ]
 }

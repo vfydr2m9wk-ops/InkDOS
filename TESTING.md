@@ -1,3 +1,11 @@
+## v0.20.2.25 recovery source-continuity hardening
+
+The v0.20.2.25 gate covers a post-save recovery boundary that was previously unsafe: an imported workbook is edited, a copy is saved, editing continues, the page closes, recovery is restored, and a new XLSX copy is generated. The original OOXML preservation context must remain available throughout that sequence.
+
+The shared recovery runtime now keeps the active source package after `markClean()` while clearing only stale snapshots, and recovery inspection removes source records that are no longer referenced by any snapshot. Browser coverage compares preservation-sensitive XLSX features before and after the full restore/re-export sequence.
+
+The hosted workflow remains the final checksum and 17/17 Chromium gate.
+
 ## v0.20.2.24 Spreadsheet history safety hardening
 
 The v0.20.2.24 gate binds Spreadsheet Undo/Redo actions to their originating worksheet, recalculates the workbook after history restoration, blocks history mutation while formula drafts are pending, and preserves bounded Undo/Redo history in private recovery snapshots. Deterministic Node tests cover sheet scope, clone safety, limits and recovery round-trip; the existing Chromium functional-corrections scenario adds cross-sheet Undo/Redo and post-recovery Undo assertions.

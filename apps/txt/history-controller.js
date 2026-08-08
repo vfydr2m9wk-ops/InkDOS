@@ -124,7 +124,7 @@
   }
 
   global.InkDeskTxtHistoryController = Object.freeze({
-    version: '0.20.2.24',
+    version: '0.20.2.25',
     createHistoryController
   });
 })(globalThis);

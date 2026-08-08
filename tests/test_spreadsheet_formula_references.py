@@ -25,21 +25,21 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            'formula-reference.css?v=0.20.2.24',
+            'formula-reference.css?v=0.20.2.25',
             html,
         )
         self.assertIn('id="addFormulaRangeBtn"', html)
         self.assertIn('id="formulaReferenceStatus"', html)
         self.assertIn('id="formulaSuggestions"', html)
 
-        core_position = html.index('<script src="app.js?v=0.20.2.24"></script>')
-        model_position = html.index('formula-model.js?v=0.20.2.24')
-        session_position = html.index('formula-session.js?v=0.20.2.24')
+        core_position = html.index('<script src="app.js?v=0.20.2.25"></script>')
+        model_position = html.index('formula-model.js?v=0.20.2.25')
+        session_position = html.index('formula-session.js?v=0.20.2.25')
         reference_position = html.index(
-            'formula-reference.js?v=0.20.2.24'
+            'formula-reference.js?v=0.20.2.25'
         )
         editor_position = html.index(
-            'formula-editor.js?v=0.20.2.24'
+            'formula-editor.js?v=0.20.2.25'
         )
         self.assertLess(core_position, model_position)
         self.assertLess(model_position, session_position)

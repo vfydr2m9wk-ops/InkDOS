@@ -1,3 +1,11 @@
+## 0.20.2.25 — Local Recovery Source Continuity Hardening
+
+- Keep the active OOXML source package after Save-copy cleanup so later edits remain fully recoverable.
+- Clear stale snapshots without destroying the source needed for preservation-aware restore.
+- Remove orphaned clean-session source packages during the next recovery inspection.
+- Extend browser recovery coverage through save → edit → restore → re-export fidelity.
+- Preserve frozen visual behavior and existing Spreadsheet formula semantics.
+
 ## 0.20.2.24 — Spreadsheet History Safety Hardening (2026-08-07)
 
 - Bind Spreadsheet Undo/Redo actions to their originating worksheet to prevent cross-sheet state corruption.
