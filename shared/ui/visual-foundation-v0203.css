@@ -470,3 +470,15 @@ body.office-pdf .pdf-save-note{display:none!important}
   body.office-spreadsheets .titlebar{grid-template-columns:minmax(120px,1fr) minmax(120px,auto) minmax(120px,1fr)!important}
   body.office-presentations .slide-list{box-shadow:none!important}
 }
+
+/* Launcher alignment correction — the runtime registry inserts icon, arrow,
+ * then copy. Pin every element to the intended visual columns so landscape and
+ * phone layouts keep the same icon -> text -> arrow reading order. */
+.workspace-card > .app-icon{grid-column:1!important;grid-row:1!important}
+.workspace-card > .workspace-copy{grid-column:2!important;grid-row:1!important;align-self:center!important;text-align:left!important}
+.workspace-card > .open-arrow{grid-column:3!important;grid-row:1!important;justify-self:end!important;align-self:center!important;margin:0!important}
+@media(max-width:620px){
+  .workspace-card{grid-template-columns:42px minmax(0,1fr) 18px!important;column-gap:12px!important}
+  .workspace-card > .workspace-copy{width:100%!important}
+  .workspace-card > .open-arrow{font-size:21px!important}
+}

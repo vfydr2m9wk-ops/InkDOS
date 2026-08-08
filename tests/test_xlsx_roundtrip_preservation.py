@@ -26,8 +26,8 @@ class XlsxRoundTripTests(unittest.TestCase):
         self.assertNotIn("for(const s of book.sheets)book.zip.file(s.path,serializeSheet(s))", source)
 
     def test_modern_preview_paths_are_present(self):
-        source = APP.read_text(encoding="utf-8")
-        for token in ("XLOOKUP", "FILTER", "LET", "sheet-chart", "state!=='hidden'", "dynamic-array-preview"):
+        source = APP.read_text(encoding="utf-8") + (ROOT / "apps" / "spreadsheets" / "worksheet-tabs.js").read_text(encoding="utf-8")
+        for token in ("XLOOKUP", "FILTER", "LET", "sheet-chart", "state !== 'hidden'", "dynamic-array-preview"):
             self.assertIn(token, source)
 
     def test_baseline_fixture_contains_preserved_structures(self):

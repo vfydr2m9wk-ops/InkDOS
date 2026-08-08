@@ -36,11 +36,13 @@ def load_app(page):
         ROOT / "shared/office-runtime.js",
         ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/spreadsheets/xls-biff8-engine.js",
-        ROOT / "apps/spreadsheets/xlsx-engine.js",
+        ROOT / "apps/spreadsheets/worksheet-package.js",
+        "apps/spreadsheets/xlsx-engine.js",
         ROOT / "shared/office-shell.js",
         ROOT / "apps/spreadsheets/formula-safety.js",
         ROOT / "apps/spreadsheets/history-controller.js",
-        ROOT / "apps/spreadsheets/app.js",
+        ROOT / "apps/spreadsheets/worksheet-tabs.js",
+        "apps/spreadsheets/app.js",
     ):
         page.add_script_tag(path=str(js))
 

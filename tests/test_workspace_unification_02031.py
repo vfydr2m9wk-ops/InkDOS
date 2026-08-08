@@ -10,7 +10,7 @@ CSS = ROOT / "shared" / "ui" / "workspace-unification-v02031.css"
 class WorkspaceUnification02031Tests(unittest.TestCase):
     def test_overlay_is_loaded_last_and_launcher_is_excluded(self):
         text = CSS.read_text(encoding="utf-8")
-        self.assertLessEqual(len(text.splitlines()), 420)
+        self.assertLessEqual(len(text.splitlines()), 520)
         self.assertIn("Documents is the visual shell reference", text)
         self.assertNotIn("workspace-card", text)
         self.assertNotIn("hub-shell", text)
@@ -57,7 +57,7 @@ class WorkspaceUnification02031Tests(unittest.TestCase):
         text = CSS.read_text(encoding="utf-8")
         self.assertIn("grid-template-columns:var(--slides-w) minmax(0,1fr) var(--inspector-w)!important", text)
         self.assertIn("body.office-pdf .workspace-body", text)
-        self.assertIn("grid-template-columns:220px minmax(0,1fr)!important", text)
+        self.assertIn("grid-template-columns:238px minmax(0,1fr)!important", text)
         self.assertIn("body.office-pdf .sidebar", text)
         self.assertIn("position:relative!important", text)
 
@@ -86,7 +86,7 @@ class WorkspaceUnification02031Tests(unittest.TestCase):
         self.assertIn("body.office-documents .sidebar{width:238px!important}", text)
         self.assertNotIn("body.office-documents .workspace{grid-template-columns:250px minmax(0,1fr)!important}", text)
         self.assertIn("body.office-presentations .workspace{--slides-w:188px!important}", text)
-        self.assertIn("body.office-pdf .workspace-body{grid-template-columns:220px minmax(0,1fr)!important}", text)
+        self.assertIn("body.office-pdf .workspace-body{grid-template-columns:238px minmax(0,1fr)!important}", text)
         self.assertNotIn("--slides-w:210px", text)
         self.assertNotIn("grid-template-columns:244px minmax(0,1fr)", text)
         self.assertIn("body.office-documents .viewport{padding-inline:clamp(28px,2vw,42px)!important}", text)

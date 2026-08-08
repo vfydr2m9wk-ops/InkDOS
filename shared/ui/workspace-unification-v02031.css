@@ -367,3 +367,102 @@ body.office-spreadsheets .status{margin-left:auto!important;gap:10px!important;m
   body.office-pdf .workspace-body{grid-template-columns:198px minmax(0,1fr)!important}
   body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
 }
+
+/* UI correction pass 6: preserve the stable Documents/TXT/EPUB shell while
+ * fixing worksheet tabs, PDF navigation tabs and redundant presentation zoom. */
+body.office-spreadsheets footer{
+  min-height:34px!important;
+  height:34px!important;
+  overflow:hidden!important;
+}
+body.office-spreadsheets #sheetTabs{
+  height:33px!important;
+  min-height:33px!important;
+  align-self:center!important;
+  align-items:stretch!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+}
+body.office-spreadsheets #sheetTabs > button{
+  height:33px!important;
+  min-height:33px!important;
+  flex:0 0 auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 14px!important;
+  line-height:1!important;
+}
+body.office-spreadsheets #sheetTabs > #addSheetBtn{
+  width:34px!important;
+  min-width:34px!important;
+  padding:0!important;
+  font-size:17px!important;
+  font-weight:600!important;
+  color:var(--ink-muted)!important;
+  background:var(--ink-surface-raised)!important;
+  position:sticky!important;
+  right:0!important;
+  z-index:2!important;
+}
+body.office-spreadsheets #sheetTabs > #addSheetBtn:hover,
+body.office-spreadsheets #sheetTabs > #addSheetBtn:focus-visible{
+  color:var(--ink-accent)!important;
+  background:color-mix(in srgb,var(--ink-accent) 8%,var(--ink-surface-raised))!important;
+}
+
+body.office-pdf .workspace-body{grid-template-columns:238px minmax(0,1fr)!important}
+body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
+body.office-pdf .sidebar-tabs{
+  display:grid!important;
+  grid-template-columns:max-content max-content max-content max-content!important;
+  justify-content:space-between!important;
+  align-items:stretch!important;
+  gap:1px!important;
+  padding:4px 6px!important;
+  overflow:hidden!important;
+}
+body.office-pdf .sidebar-tab{
+  min-width:0!important;
+  width:max-content!important;
+  max-width:none!important;
+  padding:0 4px!important;
+  font-size:10px!important;
+  letter-spacing:-.02em!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+
+/* View-specific zoom is redundant now that every workspace owns the common
+ * bottom zoom strip. Keep the existing DOM wiring for compatibility but do not
+ * render a second zoom control in Presentations. */
+body.office-presentations #toolsView #zoomOutBtn,
+body.office-presentations #toolsView #zoomRange,
+body.office-presentations #toolsView #zoomInBtn,
+body.office-presentations #toolsView #fitBtn,
+body.office-presentations #toolsView #presentViewBtn + .sep{display:none!important}
+body.office-presentations .present-top-action svg{
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.75!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+body.office-presentations .present-top-action{
+  color:color-mix(in srgb,var(--ink-accent) 78%,var(--ink-text))!important;
+}
+body.office-presentations .present-top-action:hover,
+body.office-presentations .present-top-action:focus-visible{
+  background:color-mix(in srgb,var(--ink-accent) 8%,var(--ink-surface-raised))!important;
+  border-color:color-mix(in srgb,var(--ink-accent) 20%,var(--ink-edge))!important;
+}
+
+@media(max-width:1000px){
+  body.office-pdf .workspace-body{grid-template-columns:214px minmax(0,1fr)!important}
+  body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
+  body.office-pdf .sidebar-tab{font-size:10px!important}
+}
+@media(max-width:760px){
+  body.office-pdf .workspace-body{grid-template-columns:194px minmax(0,1fr)!important}
+  body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
+}

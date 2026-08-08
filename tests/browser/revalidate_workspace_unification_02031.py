@@ -122,7 +122,7 @@ def main() -> int:
     assert abs(slide_edge - stage_edge) < 0.5 and abs(slide_edge - 188) < 0.5, result
     assert pres_top_label == 'none', result
     assert abs(pres_footer[3] - 720) < 0.5 and abs(pres_footer[5] - 34) < 0.5, result
-    assert abs(pdf_sidebar_edge - pdf_stage_edge) < 0.5 and pdf_sidebar_style['width'] == '220px', result
+    assert abs(pdf_sidebar_edge - pdf_stage_edge) < 0.5 and pdf_sidebar_style['width'] == '238px', result
     assert abs((pdf_group[0] + pdf_group[2]) / 2 - 512) < 2, result
     assert abs(pdf_footer[3] - 720) < 0.5 and abs(pdf_footer[5] - 34) < 0.5, result
     assert abs(epub_toolbar[5] - 40) < 0.5, result

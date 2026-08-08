@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 39,
+  "appliedSequence": 40,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -200,6 +200,11 @@
       "sequence": 39,
       "packageLabel": "0.20.3.1",
       "description": "UI shell fidelity pass 5 correction 1. Replaces the failed sequence-39 candidate without consuming a new sequence. The hosted run passed 365/365 unit/package tests and 19/20 Chromium regressions; the sole failure showed that the fidelity overlay had inadvertently changed the Documents reference sidebar from its established 238 px (200 px at narrow viewport) to 250 px. This correction restores the validated Documents geometry and keeps Documents as the untouched visual reference while retaining the intended titlebar, toolbar, fixed sidebar, statusbar and wide-workspace refinements in Spreadsheets, Presentations, PDF, TXT and EPUB. PDF remains the only centered command bar. No parser, writer, recovery, formula, history, storage, export-format, transactional document-state, launcher, or workflow logic is changed."
+    },
+    {
+      "sequence": 40,
+      "packageLabel": "0.20.3.1",
+      "description": "UI correction pass 6. Preserves the approved Documents, TXT and EPUB shells while fixing the remaining iPad-landscape regressions: Spreadsheets keeps its bottom worksheet strip fully visible and restores an Add worksheet control; newly added worksheets are appended safely to imported XLSX packages and survive save/reopen without rebuilding or discarding existing workbook parts. PDF navigation keeps Pages, Index, Bookmarks and Comments fully readable in a Documents-like pushed sidebar. Presentations removes the redundant View-tab zoom strip in favor of the shared bottom zoom and normalizes the top presentation icons. The Launcher keeps its current proportions but pins runtime-generated icon, text and arrow into stable columns so card text aligns correctly in both landscape and smartphone views. Parsers, recovery semantics, formula drafts, history behavior, storage, existing export preservation and workflow logic are otherwise unchanged."
     }
   ]
 }

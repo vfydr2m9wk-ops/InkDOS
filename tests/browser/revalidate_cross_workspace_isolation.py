@@ -37,10 +37,12 @@ SCRIPTS = {
         "shared/office-runtime.js",
         "shared/vendor/jszip.min.js",
         "apps/spreadsheets/xls-biff8-engine.js",
+        "apps/spreadsheets/worksheet-package.js",
         "apps/spreadsheets/xlsx-engine.js",
         "shared/office-shell.js",
         "apps/spreadsheets/formula-safety.js",
         "apps/spreadsheets/history-controller.js",
+        "apps/spreadsheets/worksheet-tabs.js",
         "apps/spreadsheets/app.js",
     ),
     "presentations": (
