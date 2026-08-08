@@ -184,3 +184,10 @@ cross-workspace coupling fails validation.
 ## v0.20.2.30 recovery session isolation
 
 The local-recovery browser harness creates two independent recovery managers with the same document key but different session IDs. It verifies that discard, reset and clear operations in one session do not remove the other session's snapshot. Static regressions also require Documents and Presentations to discard their previous recovery only on committed replacement transitions.
+
+
+## v0.20.2.31 recovery prompt startup isolation
+
+- `tests/test_recovery_prompt_startup_safety.py` enforces prompt token/generation guards and requires Documents, Spreadsheets and Presentations to cancel a pending startup prompt before replacement work can race it.
+- `tests/browser/revalidate_v0202_local_recovery.py` starts `promptLatest()` and immediately changes the active recovery document. The stale prompt must not render, while the older snapshot must remain available for a later clean launch.
+- The scenario stays inside the existing local-recovery browser script, so the hosted Chromium script count remains unchanged.

@@ -4,11 +4,11 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.30
+## InkDesk v0.20.2.31
 
-Version 0.20.2.30 isolates local recovery snapshots by browser session. Two tabs can open the same DOCX/XLSX/PPTX without one tab's discard, reset or clean operation deleting the other tab's unsaved recovery snapshots.
+Version 0.20.2.31 closes a startup race in private local recovery. A recovery scan that began before a user started New/Open can no longer surface later and replace the newly started document state.
 
-Documents and Presentations now clean up only the recovery session that the user actually replaced, and only after the replacement is known to have succeeded. Restored snapshots are re-homed into the restoring tab's current session, while the shared OOXML source package remains protected by the existing source-continuity grace and rehydration rules. The patch intentionally does not change parsers, writers, visual layout or editing behavior.
+Recovery prompts are now tied to the document state that existed when IndexedDB inspection began, and Documents, Spreadsheets and Presentations explicitly cancel pending prompt work before their replacement flows. Deferred snapshots are kept for a later clean launch. The patch intentionally leaves Office parsers/writers, formulas and visual layout unchanged.
 
 ## Refactoring policy
 
@@ -46,7 +46,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.30 remains a beta. Real-device validation is still required for critical
+v0.20.2.31 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

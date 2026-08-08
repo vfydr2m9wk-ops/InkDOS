@@ -340,6 +340,68 @@ def recovery_session_isolation_case(browser, base_url):
     }
 
 
+def recovery_prompt_startup_race_case(browser, base_url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.set_default_timeout(10000)
+    page.set_default_navigation_timeout(15000)
+    errors = watch_errors(page)
+    page.goto(f"{base_url}/apps/spreadsheets/index.html", wait_until="networkidle")
+    result = page.evaluate("""async () => {
+      const moduleName = 'recovery-prompt-race';
+      await InkDeskLocalRecovery.clearModule(moduleName);
+      const seed = InkDeskLocalRecovery.create({
+        module: moduleName, sessionId: 'seed-session', appVersion: 'prompt-race-test',
+        serialize: async () => ({marker:'older-unsaved-work'})
+      });
+      await seed.startDocument({documentKey:'older-doc', fileName:'older.xlsx'});
+      seed.markDirty();
+      await seed.flush();
+      seed.destroy();
+
+      const manager = InkDeskLocalRecovery.create({
+        module: moduleName, sessionId: 'current-session', appVersion: 'prompt-race-test',
+        serialize: async () => ({marker:'current-work'})
+      });
+      const pendingPrompt = manager.promptLatest();
+      await manager.startDocument({documentKey:'current-doc', fileName:'current.xlsx'});
+      const stalePromptResult = await pendingPrompt;
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const promptAfterDocumentChange = Boolean(document.querySelector('.inkdesk-recovery-overlay'));
+      const snapshotsAfterDocumentChange = await InkDeskLocalRecovery.listSnapshots(moduleName);
+
+      const pendingCancelledPrompt = manager.promptLatest();
+      manager.cancelPrompt();
+      await pendingCancelledPrompt;
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const promptAfterExplicitCancel = Boolean(document.querySelector('.inkdesk-recovery-overlay'));
+      const snapshotsAfterCancel = await InkDeskLocalRecovery.listSnapshots(moduleName);
+      manager.destroy();
+      await InkDeskLocalRecovery.clearModule(moduleName);
+      return {
+        stalePromptReturned: Boolean(stalePromptResult),
+        promptAfterDocumentChange,
+        promptAfterExplicitCancel,
+        oldSnapshotPreserved: snapshotsAfterDocumentChange.some(item => item.documentKey === 'older-doc'),
+        snapshotPreservedAfterCancel: snapshotsAfterCancel.some(item => item.documentKey === 'older-doc')
+      };
+    }""")
+    page.close()
+    context.close()
+    return {
+        "workspace": "recovery-prompt-startup-race",
+        "restored": (
+            not result["stalePromptReturned"]
+            and not result["promptAfterDocumentChange"]
+            and not result["promptAfterExplicitCancel"]
+            and result["oldSnapshotPreserved"]
+            and result["snapshotPreservedAfterCancel"]
+        ),
+        **result,
+        "errors": errors,
+    }
+
+
 def recovery_source_rehydration_case(browser, base_url):
     context = browser.new_context()
     page = context.new_page()
@@ -456,7 +518,7 @@ def presentations_case(browser, base_url):
     page.click("#newBtn")
     page.wait_for_selector("#templateDialog:not(.hidden)")
     page.locator("#templateGrid .template-option").first.click()
-    # v0.20.2.30 makes New transactional/async while the prior recovery
+    # v0.20.2.31 makes New transactional/async while the prior recovery
     # session is discarded. Wait until the editor is active before injecting
     # notes, otherwise the input event can race presentation creation.
     page.wait_for_selector("#app:not(.hidden)", state="visible")
@@ -492,6 +554,7 @@ def main():
                     presentations_case(browser, base_url),
                     recovery_write_barrier_case(browser, base_url),
                     recovery_session_isolation_case(browser, base_url),
+                    recovery_prompt_startup_race_case(browser, base_url),
                     recovery_source_rehydration_case(browser, base_url),
                 ]
             except Exception as error:

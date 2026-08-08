@@ -6,7 +6,9 @@ InkDesk 0.20.2 stores unsaved recovery snapshots only in the browser IndexedDB d
 
 Recovery never overwrites the selected source file. On startup, the user chooses **Restore**, **Open normally**, or **Discard recovery**. A browser download request is deliberately treated as unverified: editable Office workspaces keep dirty/recovery protection until the user explicitly replaces or discards that work. Shared OOXML source data is retained locally when needed for package-preserving recovery and can be rehydrated by an active session.
 
-New recovery snapshots are isolated by both document identity and a per-tab/session identifier. Reset, clean and discard operations therefore affect only the current recovery session, not another tab editing the same file. Retention keeps up to three snapshots per document session and targets twelve snapshots per workspace while preserving at least one recovery point per independent session; records expire after thirty days. Legacy snapshots created before session isolation remain discoverable and restorable.
+New recovery snapshots are isolated by both document identity and a per-tab/session identifier. Reset, clean and discard operations therefore affect only the current recovery session, not another tab editing the same file. Retention keeps up to three snapshots per document session and targets twelve snapshots per workspace while preserving at least one recovery point per independent session; records expire after thirty days.  Legacy snapshots created before session isolation remain discoverable and restorable.
+
+Startup recovery inspection is also transition-safe: if New/Open begins while IndexedDB is still being inspected, the stale prompt is deferred without deleting its snapshot. This prevents an older recovery dialog from appearing over a document the user has already started opening or creating.
 
 ## Browser validation
 

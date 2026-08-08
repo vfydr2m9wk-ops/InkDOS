@@ -136,10 +136,18 @@
       return this.manager ? this.manager.flush() : Promise.resolve();
     }
 
+
+    cancelPrompt() {
+      if (this.manager) {
+        this.manager.cancelPrompt();
+      }
+    }
+
     async startNewDocument() {
       if (!this.manager) {
         return;
       }
+      this.manager.cancelPrompt();
       await this.manager.discardCurrent();
       return this.manager.startDocument({
         fileName: 'Untitled presentation.pptx',
@@ -151,6 +159,7 @@
       if (!this.manager) {
         return;
       }
+      this.manager.cancelPrompt();
       await this.manager.discardCurrent();
       return this.manager.startDocument({
         documentKey: this.documentKey(file),

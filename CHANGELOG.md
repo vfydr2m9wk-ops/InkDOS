@@ -1,3 +1,11 @@
+## 0.20.2.31 — Recovery Prompt Startup Isolation Hardening (2026-08-08)
+
+- Prevent asynchronous startup recovery inspection from surfacing a stale prompt after New/Open has already started.
+- Bind recovery prompt validity to a prompt epoch plus the current document generation/key.
+- Cancel a pending prompt before slow DOCX/XLS(X)/PPTX replacement work begins.
+- Preserve deferred recovery snapshots for a later clean launch rather than deleting them.
+- Add deterministic startup-race regression coverage without changing parsers, writers or visual layout.
+
 ## 0.20.2.30 — Recovery Session Isolation Hardening (2026-08-08)
 
 - Isolate IndexedDB recovery snapshots by `documentKey + sessionId`, preventing one tab from clearing another tab's recovery for the same Office file.

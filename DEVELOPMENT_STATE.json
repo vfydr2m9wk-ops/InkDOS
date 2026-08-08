@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 32,
-  "currentPackage": "0.20.2.30",
+  "appliedSequence": 33,
+  "currentPackage": "0.20.2.31",
   "status": "in-progress",
   "history": [
     {
@@ -165,6 +165,11 @@
       "sequence": 32,
       "packageLabel": "0.20.2.30",
       "description": "Recovery session isolation hardening. IndexedDB recovery snapshots are owned by documentKey plus per-manager sessionId, so discard/reset/clean in one tab cannot remove another tab's unsaved recovery for the same Office file. Documents and Presentations discard only their own prior recovery after a committed replacement; restored snapshots are re-homed into the restoring session. Parsers, writers and visual behavior are unchanged. Correction 1 synchronizes Chromium regressions with the transactional asynchronous New flows introduced by this release; runtime files are unchanged."
+    },
+    {
+      "sequence": 33,
+      "packageLabel": "0.20.2.31",
+      "description": "Recovery prompt startup isolation hardening. Asynchronous IndexedDB recovery inspection is bound to a prompt epoch plus the active document generation/key, and Documents, Spreadsheets and Presentations explicitly cancel a pending prompt before user-initiated New/Open transitions. Deferred snapshots are preserved for a later clean launch. Parsers, writers, formulas and visual layout are unchanged."
     }
   ]
 }

@@ -74,7 +74,7 @@ function normalizePath(base,target){let parts=(base+'/'+target).split('/'),out=[
 function relationshipPartPath(partPath){const slash=String(partPath||'').lastIndexOf('/');if(slash<0)return '_rels/'+partPath+'.rels';return partPath.slice(0,slash)+'/_rels/'+partPath.slice(slash+1)+'.rels'}
 function serializeXml(doc){return new XMLSerializer().serializeToString(doc)}
 function relMap(xml){const map={};all(xml,'Relationship').forEach(r=>{map[attr(r,'Id')]=attr(r,'Target')});return map}
-async function loadPptx(file){return fileController.load(file)}
+async function loadPptx(file){if(recoveryController)recoveryController.cancelPrompt();return fileController.load(file)}
 function parseSlideTransition(xml){
   const transition=first(xml,'transition');if(!transition)return {type:'none',rawType:'none',duration:0,advanceAfter:null};
   const effect=Array.from(transition.children||[]).find(n=>!['sndAc','extLst'].includes(n.localName));
@@ -674,7 +674,7 @@ fileController=InkDeskPresentationsFileIO.create({
 });
 if(!window.InkDeskPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
 recoveryController=InkDeskPresentationsRecovery.create({
-  appVersion:'0.20.2.30',
+  appVersion:'0.20.2.31',
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},
   getCurrentSlide:()=>currentSlide,

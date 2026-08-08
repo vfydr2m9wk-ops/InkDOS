@@ -239,3 +239,10 @@ This patch continues the risk/benefit gate: no additional 0.20.2.x change is jus
 ### v0.20.2.30 — recovery session isolation hardening
 
 Recovery ownership now distinguishes the document identity from the active browser-session identity. Snapshot deletion and rolling history are session-scoped; Documents and Presentations can therefore clean the recovery they intentionally replace without risking snapshots owned by another tab. The change is deliberately bounded to data-safety lifecycle behavior.
+
+
+### v0.20.2.31 — recovery prompt startup isolation hardening
+
+The final structural audit found a concrete startup race rather than a code-style concern: asynchronous recovery inspection could finish after a user had already begun New/Open and surface a stale restore prompt over the newer document state. The shared recovery manager now invalidates stale prompt work by token and document generation/key, while editable Office workspaces explicitly cancel a pending prompt before slow replacement parsing starts. Deferred snapshots remain private and recoverable on a later clean launch.
+
+This patch is intentionally bounded to recovery-prompt lifecycle safety. Further structural releases require a new demonstrated integrity risk; otherwise the 0.20.2 architecture phase should freeze in favor of v0.20.3 visual/UX work.
