@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 30,
-  "currentPackage": "0.20.2.28",
+  "appliedSequence": 31,
+  "currentPackage": "0.20.2.29",
   "status": "in-progress",
   "history": [
     {
@@ -155,6 +155,11 @@
       "sequence": 30,
       "packageLabel": "0.20.2.28",
       "description": "Documents replacement transaction safety hardening. Dirty DOCX replacement now requires explicit confirmation before parsing starts; cancellation preserves the active unsaved document, and confirmed replacement remains transactional so parse failure restores the complete previous unsaved state. Existing transactional Chromium coverage now exercises both paths."
+    },
+    {
+      "sequence": 31,
+      "packageLabel": "0.20.2.29",
+      "description": "Cross-workspace unverified export safety hardening v0.20.2.29 correction 2. Application runtime is unchanged. Hosted validation again passed repository validation, source audit, architecture guardrails and all 330 unit/package tests, with 16/17 Chromium scripts passing. The remaining failure was traced to an invalid aggregate-harness selector: Documents renders editor pages under #pagesHost, while the harness waited for #pages .page-content, an element tree that does not exist. Correction 2 changes the aggregate harness to synchronize on statusText containing opened, then waits for #pagesHost .page-content to be attached and edits the first paragraph through the same #pagesHost root. No application runtime file changes."
     }
   ]
 }

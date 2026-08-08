@@ -1,4 +1,4 @@
-"""Behavioral regression for InkDesk v0.20.2.28 functional corrections."""
+"""Behavioral regression for InkDesk v0.20.2.29 functional corrections."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.2.28"
+VERSION = "0.20.2.29"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -169,6 +169,57 @@ def test_txt_interactions(page, base_url, checks):
     assert_true(selected == [6, 10], f"TXT Find did not select beta: {selected}")
     checks.append("TXT extracted history and Find interactions preserve behavior")
 
+
+
+def test_unverified_export_protection(page, base_url, checks):
+    # Documents: a download request must not clear dirty/recovery protection.
+    goto(page, f"{base_url}/apps/documents/index.html")
+    docx = ROOT / "tests/compatibility-fixtures/documents/era2_office_2007_2013_baseline.docx"
+    page.set_input_files("#fileInput", str(docx))
+    page.wait_for_function("() => document.querySelector('#statusText').textContent.includes('opened')", timeout=30000)
+    page.wait_for_selector("#pagesHost .page-content", state="attached", timeout=30000)
+    paragraph = page.locator("#pagesHost .page-content p").first
+    paragraph.evaluate("node => { node.textContent += ' export guard'; node.dispatchEvent(new InputEvent('input', {bubbles:true,inputType:'insertText',data:' export guard'})); }")
+    page.wait_for_function("() => document.querySelector('#dirtyDot').classList.contains('visible')")
+    page.click("#saveBtn")
+    page.wait_for_selector("#saveReadyPanel", state="visible")
+    with page.expect_download() as info:
+        page.click("#saveCopyDownload")
+    download = info.value
+    assert_true(bool(download.suggested_filename), "Documents save did not request a download")
+    assert_true(page.locator("#dirtyDot").is_visible(), "Documents download request cleared dirty protection")
+    assert_true(" •" in page.title(), "Documents title stopped warning after unverified download")
+
+    # TXT: lifecycle must remain unverified after the browser receives the copy request.
+    goto(page, f"{base_url}/apps/txt/index.html")
+    page.click("#newStartBtn")
+    editor = page.locator("#editor")
+    editor.fill("unverified export protection")
+    page.wait_for_function("() => !document.querySelector('#dirtyMark').hidden")
+    with page.expect_download() as info:
+        page.click("#saveBtn")
+    download = info.value
+    assert_true(bool(download.suggested_filename), "TXT save did not request a download")
+    assert_true(not page.locator("#dirtyMark").get_attribute("hidden"), "TXT download request cleared dirty protection")
+    assert_true(" •" in page.title(), "TXT title stopped warning after unverified download")
+
+    # Presentations: generated-copy dispatch must not clear presentation dirty state.
+    goto(page, f"{base_url}/apps/presentations/index.html")
+    page.click("#newBtn")
+    page.wait_for_selector("#templateDialog:not(.hidden)", state="visible")
+    page.locator("#templateGrid .template-option").first.click()
+    page.wait_for_selector("#app:not(.hidden)", state="visible")
+    title = page.locator("#docTitle")
+    title.fill("Export Guard")
+    title.press("Enter")
+    page.wait_for_function("() => document.title.includes(' •')")
+    with page.expect_download(timeout=15000) as info:
+        page.click("#saveBtn")
+    download = info.value
+    assert_true(bool(download.suggested_filename), "Presentations save did not request a download")
+    assert_true(" •" in page.title(), "Presentations download request cleared dirty protection")
+    checks.append("Documents, TXT and Presentations keep unverified export protection")
+
 def titlebar_height(page, selector):
     return page.locator(selector).evaluate("node => Math.round(node.getBoundingClientRect().height)")
 
@@ -206,6 +257,7 @@ def main():
                     test_spreadsheet_history_safety(page, base_url, report["checks"])
                     test_presentation_rename(page, base_url, report["checks"])
                     test_txt_interactions(page, base_url, report["checks"])
+                    test_unverified_export_protection(page, base_url, report["checks"])
                 except Exception as error:
                     if "ERR_BLOCKED_BY_ADMINISTRATOR" in str(error):
                         report.update({"passed": True, "status": "not-performed", "environment_block": str(error)})

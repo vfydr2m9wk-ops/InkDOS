@@ -82,7 +82,7 @@ replacement.
 ## Current evidence
 
 - Architecture guardrails now include the dedicated PDF page-renderer, navigation and review controllers. The PDF `app.js` ratchet is reduced again after navigation/sidebar extraction; both new viewer controllers remain below the 500-line new-file ceiling.
-- The Python suite contains 322 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
+- The Python suite contains 330 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
@@ -172,3 +172,11 @@ cross-workspace coupling fails validation.
 - `tests/test_local_recovery.py` enforces source-only orphan grace, active-session source rehydration and race-aware snapshot cleanup.
 - `tests/browser/revalidate_v0202_local_recovery.py` now includes a fresh-source preservation and forced-source-loss/rehydration scenario without increasing the browser-script count.
 - `tests/test_release_metadata_consistency.py` prevents public release metadata and the Home shell from drifting behind `VERSION.json`.
+
+
+## v0.20.2.29 unverified-export safety
+
+- `tests/test_cross_workspace_export_safety.py` enforces that Documents, Presentations and TXT do not clear dirty/recovery protection after a browser download request.
+- The same test proves the shared `InkDeskFileLifecycle` remains warning-active in `download-requested-unverified` when revisions are still unverified.
+- `tests/browser/revalidate_v02021_functional_corrections.py` now exercises DOCX, PPTX and TXT download dispatch and verifies the visible unsaved state remains protected, without increasing the browser-script count.
+- Spreadsheet export safety remains a regression invariant; PDF/EPUB are explicitly out of scope because this audit did not demonstrate an equivalent high-severity loss path.

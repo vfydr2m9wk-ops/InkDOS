@@ -294,6 +294,7 @@
 
     commitTitle();
     setStatus('Saving text copy…');
+    lifecycle.beginExport();
 
     try {
       const blob = encodeForSave();
@@ -306,10 +307,11 @@
             )
           : fallbackDownload(blob, state.fileName);
 
-      lifecycle.resetClean();
+      lifecycle.downloadRequested(receipt);
       setStatus(
-        'Download requested · ' +
-        receipt.fileName
+        lifecycle.shouldWarnBeforeUnload()
+          ? 'Download requested — changes remain protected until you verify the TXT copy'
+          : 'Download requested · ' + receipt.fileName
       );
     } catch (error) {
       lifecycle.exportFailed(error);

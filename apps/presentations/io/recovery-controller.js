@@ -132,6 +132,10 @@
       }
     }
 
+    flush() {
+      return this.manager ? this.manager.flush() : Promise.resolve();
+    }
+
     startNewDocument() {
       if (!this.manager) {
         return Promise.resolve();

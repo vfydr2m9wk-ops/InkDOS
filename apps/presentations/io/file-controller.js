@@ -37,6 +37,7 @@
       this.onOpenedSource = options.onOpenedSource;
       this.isRecoveryRestore = options.isRecoveryRestore;
       this.markRecoveryClean = options.markRecoveryClean;
+      this.flushRecovery = options.flushRecovery || (() => Promise.resolve());
       this.sourceBuffer = null;
     }
 
@@ -222,13 +223,12 @@
           bytes.byteOffset + bytes.byteLength
         );
         const blob = new Blob([bytes], {type: PPTX_MIME});
+        await this.flushRecovery();
         this.downloadBlob(
           blob,
           (presentation.name || 'InkDesk Presentation') + '_copy.pptx'
         );
         this.sourceBuffer = nextSource;
-        this.markSaved();
-        this.markRecoveryClean();
         this.setReady('Download requested');
       } catch (error) {
         const restored = JSON.parse(previousPresentation);
@@ -362,12 +362,11 @@
           compression: 'DEFLATE',
           compressionOptions: {level: 6},
         });
+        await this.flushRecovery();
         this.downloadBlob(
           blob,
           (presentation.name || 'InkDesk Presentation') + '_copy.pptx'
         );
-        this.markSaved();
-        this.markRecoveryClean();
         this.setReady('Download requested');
       } catch (error) {
         global.console.error('New presentation export failed.', error);

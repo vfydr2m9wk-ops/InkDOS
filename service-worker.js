@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.20.2.28';
+const CACHE_NAME='inkdesk-shell-v0.20.2.29';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',

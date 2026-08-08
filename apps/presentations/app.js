@@ -670,11 +670,11 @@ fileController=InkDeskPresentationsFileIO.create({
   pictureObjectXml:(object,rid,index)=>pptxWriteAdapter.pictureObjectXml(object,rid,index),
   onOpenedSource:(file,buffer)=>recoveryController?recoveryController.startOpenedFile(file,buffer):Promise.resolve(),
   isRecoveryRestore:()=>Boolean(recoveryController&&recoveryController.isRestoring()),
-  markRecoveryClean:()=>{if(recoveryController)recoveryController.markClean()},
+  markRecoveryClean:()=>{if(recoveryController)recoveryController.markClean()},flushRecovery:()=>recoveryController?recoveryController.flush():Promise.resolve(),
 });
 if(!window.InkDeskPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
 recoveryController=InkDeskPresentationsRecovery.create({
-  appVersion:'0.20.2.28',
+  appVersion:'0.20.2.29',
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},
   getCurrentSlide:()=>currentSlide,

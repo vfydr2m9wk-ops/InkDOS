@@ -1,3 +1,12 @@
+## 0.20.2.29 — Cross-Workspace Unverified Export Safety Hardening (2026-08-08)
+
+- Treat browser download dispatch as unverified in Documents, Presentations and TXT instead of immediately clearing unsaved-work protection.
+- Flush pending DOCX/PPTX local recovery before generated-copy download dispatch.
+- Keep Documents dirty/recovery state after Save-copy click and keep Presentations dirty/recovery state after PPTX dispatch.
+- Move TXT Save through the shared `export-preparing` → `download-requested-unverified` lifecycle.
+- Extend deterministic and Chromium coverage without broadening the patch to lower-risk PDF/EPUB paths.
+- Preserve visual layout, document editing semantics and file-format behavior.
+
 ## 0.20.2.28 — Documents Replacement Transaction Safety Hardening (2026-08-08)
 
 - Guard Documents Open against replacing an active DOCX with unsaved changes without explicit confirmation.

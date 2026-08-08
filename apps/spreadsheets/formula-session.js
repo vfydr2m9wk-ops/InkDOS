@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.28';
+  const VERSION = '0.20.2.29';
 
   function fallbackClamp(value, minimum, maximum) {
     return Math.max(

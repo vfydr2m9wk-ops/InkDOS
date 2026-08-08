@@ -88,7 +88,7 @@ Pending formula drafts block history mutation until they are confirmed or cancel
 
 Formula/history snapshots are only useful if restore can reconstruct the workbook against the correct source package. Save-copy cleanup therefore retains the active OOXML source while the editing session continues. If a later formula or cell edit creates a new recovery snapshot, Restore still has the original workbook package available and does not fall back to blank-package reconstruction.
 
-## v0.20.2.28 export confirmation boundary
+## v0.20.2.29 export confirmation boundary
 
 A generated XLSX download is not treated as proof that the user retained a saved file. Before dispatch, Spreadsheet recovery is flushed; after dispatch, committed dirty state and recovery snapshots remain intact. The user must verify the XLSX in the browser's Downloads before explicitly discarding or replacing the workbook. Formula drafts remain blocked from Save by the existing safety coordinator, so this boundary applies only after formula-session state has been committed or cancelled.
 

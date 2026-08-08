@@ -225,3 +225,13 @@ This remains stability hardening; visual polish stays frozen until the data-safe
 - Extend the existing transactional-open browser regression instead of adding another browser-script surface.
 
 This is a direct data-loss prevention fix discovered by audit. Further 0.20.2.x changes should continue only when a similarly concrete risk justifies the regression risk of touching stable code.
+
+
+### v0.20.2.29 — cross-workspace unverified export safety hardening
+
+- Audit Save-copy semantics only where browser download dispatch could remove the final protection for editable work.
+- Keep Documents and Presentations dirty/recovery protection after unverified download requests and flush pending recovery before dispatch.
+- Move TXT onto the existing shared unverified-export lifecycle instead of marking the editor clean immediately.
+- Deliberately leave PDF and EPUB unchanged because their demonstrated loss risk is lower and does not justify widening this patch.
+
+This patch continues the risk/benefit gate: no additional 0.20.2.x change is justified solely for cross-module symmetry.

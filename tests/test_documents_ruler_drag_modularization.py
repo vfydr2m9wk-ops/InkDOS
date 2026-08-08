@@ -57,9 +57,9 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
             shell.index("loadWorkspaceLayoutRuntime();"),
         )
 
-        model_tag = "document-ruler-model.js?v=0.20.2.28"
-        drag_tag = "document-ruler-drag-controller.js?v=0.20.2.28"
-        layout_tag = "workspace-layout.js?v=0.20.2.28"
+        model_tag = "document-ruler-model.js?v=0.20.2.29"
+        drag_tag = "document-ruler-drag-controller.js?v=0.20.2.29"
+        layout_tag = "workspace-layout.js?v=0.20.2.29"
         self.assertIn(model_tag, documents)
         self.assertIn(drag_tag, documents)
         self.assertIn(layout_tag, documents)
@@ -76,7 +76,7 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
         controller_lines = len(controller.read_text(encoding="utf-8").splitlines())
         shell_lines = len(shell.read_text(encoding="utf-8").splitlines())
 
-        self.assertEqual(policy["release"], "0.20.2.28")
+        self.assertEqual(policy["release"], "0.20.2.29")
         self.assertLessEqual(layout_lines, 500)
         self.assertLessEqual(controller_lines, 500)
         self.assertLessEqual(shell_lines, 500)
@@ -95,7 +95,7 @@ globalThis.removeEventListener = (name, fn) => {
 };
 require('./shared/ui/document-ruler-drag-controller.js');
 const factory = globalThis.InkDeskDocumentRulerDragController;
-if (!factory || factory.version !== '0.20.2.28') process.exit(10);
+if (!factory || factory.version !== '0.20.2.29') process.exit(10);
 
 const rulerListeners = {};
 const ruler = {
@@ -148,7 +148,7 @@ const controller = factory.create({
   setMetrics(value) { metrics = value; },
   getActivePage() { return {}; }
 });
-if (!controller || controller.version !== '0.20.2.28') process.exit(12);
+if (!controller || controller.version !== '0.20.2.29') process.exit(12);
 
 const down = {
   target,
