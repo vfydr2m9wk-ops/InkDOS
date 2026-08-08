@@ -197,3 +197,13 @@ This closes a concrete data-loss/race boundary. Further 0.20.2.x work should con
 - Save-copy cleanup clears snapshots but retains source context for later edits.
 - Recovery inspection removes clean-session orphan sources.
 - Added end-to-end fidelity coverage for save → edit → restore → re-export.
+
+### v0.20.2.26 — Export confirmation safety and release-note organization
+
+- Flush Spreadsheet recovery before generated XLSX download dispatch.
+- Treat browser download dispatch as unverified: keep dirty/recovery protection until the workbook is explicitly replaced or discarded.
+- Extend recovery regression coverage to assert the post-download safety state.
+- Move historical per-version release notes into `docs/releases/` and enforce that layout with repository tests.
+
+This is a stability/maintenance step, not a visual or feature expansion.
+

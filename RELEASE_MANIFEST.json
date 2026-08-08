@@ -1,9 +1,9 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.25",
-  "releaseName": "Local Recovery Source Continuity Hardening",
-  "releaseType": "Beta Architecture Refactor Patch",
-  "releaseDate": "2026-08-07",
+  "version": "0.20.2.26",
+  "releaseName": "Export Confirmation Safety and Release Notes Organization",
+  "releaseType": "Beta Stability Hardening Patch",
+  "releaseDate": "2026-08-08",
   "entryPoints": {
     "InkDesk.html": "index.html",
     "Documents.html": "apps/documents/index.html",
@@ -37,16 +37,16 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "305 configured tests; local reconstruction 304/305 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
+    "structuralUnitTests": "314 configured tests; local reconstruction 313/314 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "17 configured; the existing hosted Chromium suite remains the behavior gate, including Documents editing/ruler-adjacent behavior and shared UI behavior",
+    "browserRegressionScripts": "17 configured; hosted Chromium remains authoritative. Local environment blocks loopback HTTP, so the v0.20.2.26 recovery scenario is configured but not performed locally.",
     "dedicatedV0201BrowserRegression": "passed",
-    "dedicatedV0202RecoveryRegression": "passed on hosted Chromium in correction-2 transaction",
+    "dedicatedV0202RecoveryRegression": "extended: save -> unverified download retains dirty/recovery -> continue editing -> restore -> re-export fidelity",
     "browserMatrixRunner": "chromium, firefox, webkit",
     "presentationsControlRegression": "extended: Format/notes/thumbnails plus slideshow current/start entry, keyboard navigation, Escape/Exit and compact drawer behavior",
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
@@ -67,7 +67,9 @@
     "spreadsheetFormulaModelModularization": "function catalog, cell/reference encoding, parenthesis tracking, formula balancing, suggestion matching/insertion and reference/commit predicates are isolated in apps/spreadsheets/formula-model.js; InkDeskFormulaEditor helper API remains compatible",
     "spreadsheetFormulaSessionModularization": "persistent draft Map plus start/update/suspend/resume/commit-preparation/cancel-preparation transitions are isolated in apps/spreadsheets/formula-session.js and covered by DOM-free lifecycle tests",
     "spreadsheetFormulaDraftSafety": "pending formula drafts are guarded across Save/New/Open/before-unload; confirmed replacement resets drafts only after a replacement workbook parses successfully",
-    "spreadsheetHistorySafety": "Undo/Redo actions retain their originating worksheet, workbook recalculation follows history restore, pending formula drafts guard history mutation, and recovery schema v3 preserves bounded Undo/Redo state"
+    "spreadsheetHistorySafety": "Undo/Redo actions retain their originating worksheet, workbook recalculation follows history restore, pending formula drafts guard history mutation, and recovery schema v3 preserves bounded Undo/Redo state",
+    "spreadsheetExportConfirmationSafety": "recovery flush precedes XLSX download dispatch; unverified download requests retain dirty state and snapshots until explicit replacement/discard",
+    "releaseNotesOrganization": "historical RELEASE_NOTES_*.md files live under docs/releases/; root keeps RELEASE_NOTES.md only"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

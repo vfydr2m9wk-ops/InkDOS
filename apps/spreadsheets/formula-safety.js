@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.25';
+  const VERSION = '0.20.2.26';
 
   function create(options) {
     const settings = options || {};

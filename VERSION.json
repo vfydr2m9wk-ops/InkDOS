@@ -1,10 +1,10 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.2.25",
+  "version": "0.20.2.26",
   "releaseChannel": "beta",
-  "releaseName": "Local Recovery Source Continuity Hardening",
-  "date": "2026-08-07",
+  "releaseName": "Export Confirmation Safety and Release Notes Organization",
+  "date": "2026-08-08",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",
   "status": "beta",

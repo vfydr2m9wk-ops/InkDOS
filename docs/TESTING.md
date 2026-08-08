@@ -1,3 +1,9 @@
+## v0.20.2.26 export/download safety gate
+
+Verify that Spreadsheet recovery is flushed before XLSX download dispatch and that an unverified browser download request does not clear dirty state or private recovery snapshots. The local-recovery Chromium scenario must observe a visible dirty indicator, a title warning and at least one recovery snapshot immediately after the first download request.
+
+The repository organization gate also requires historical release notes under `docs/releases/` with no `RELEASE_NOTES_*.md` files left at the repository root.
+
 ## v0.20.2.25 recovery source-continuity gate
 
 Validate that Save-copy cleanup does not remove the source package needed by later recovery. The browser scenario must preserve modern XLSX package features across save → continued editing → close/reload → Restore → re-export. Also verify that a clean session with no snapshots purges its orphan source on the next recovery inspection.
@@ -20,7 +26,7 @@ The release gate adds `tests.test_spreadsheet_formula_safety` plus browser asser
 
 The package must pass the complete Python suite, architecture/source checks, checksum verification and all 17 Chromium scripts. Additional tests exercise the DOM-free formula-session lifecycle: start, normalized update, suspend, resume, commit cleanup and cancel cleanup.
 
-# Testing guide — InkDesk v0.20.2.25
+# Testing guide — InkDesk v0.20.2.26
 
 ## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
 

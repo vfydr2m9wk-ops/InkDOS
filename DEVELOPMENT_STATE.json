@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 27,
-  "currentPackage": "0.20.2.25",
+  "appliedSequence": 28,
+  "currentPackage": "0.20.2.26",
   "status": "in-progress",
   "history": [
     {
@@ -140,6 +140,11 @@
       "sequence": 27,
       "packageLabel": "0.20.2.25",
       "description": "Local recovery source-continuity hardening: Save-copy cleanup clears stale snapshots while retaining the active source package for later edits, so a subsequent recovery can restore against the original OOXML package instead of a blank reconstruction. Recovery inspection removes orphaned clean-session sources, and browser coverage exercises save -> continue editing -> restore -> re-export fidelity."
+    },
+    {
+      "sequence": 28,
+      "packageLabel": "0.20.2.26",
+      "description": "Spreadsheet export-confirmation safety hardening plus release-note repository organization. Recovery is flushed before XLSX download dispatch, unverified browser download requests retain dirty/recovery protection, and historical RELEASE_NOTES_*.md files move from the repository root into docs/releases/ with an enforced index."
     }
   ]
 }

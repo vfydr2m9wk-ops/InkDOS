@@ -1,3 +1,11 @@
+## 0.20.2.26 — Export Confirmation Safety and Release Notes Organization
+
+- Flush Spreadsheet recovery before dispatching a generated XLSX download.
+- Keep Spreadsheet dirty/recovery protection after an unverified browser download request.
+- Extend the Chromium recovery scenario to assert post-download protection.
+- Move historical `RELEASE_NOTES_*.md` files into `docs/releases/` and add an indexed history.
+- Preserve the frozen visual surface and existing workbook/formula behavior.
+
 ## 0.20.2.25 — Local Recovery Source Continuity Hardening
 
 - Keep the active OOXML source package after Save-copy cleanup so later edits remain fully recoverable.

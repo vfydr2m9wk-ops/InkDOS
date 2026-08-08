@@ -181,8 +181,8 @@ def spreadsheets_post_save_edit_recovery_case(browser, base_url):
     page.set_input_files("#fileInput", str(fixture))
     page.wait_for_function("!document.querySelector('#gridViewport').hidden && !document.querySelector('#loading').offsetParent", timeout=30000)
 
-    first_marker = "RECOVERY-SAVED-BASE-020225"
-    second_marker = "RECOVERY-POST-SAVE-EDIT-020225"
+    first_marker = "RECOVERY-SAVED-BASE-020226"
+    second_marker = "RECOVERY-POST-SAVE-EDIT-020226"
     page.click('.cell[data-r="9"][data-c="0"]')
     page.fill("#formulaInput", first_marker)
     page.press("#formulaInput", "Enter")
@@ -192,7 +192,14 @@ def spreadsheets_post_save_edit_recovery_case(browser, base_url):
     with page.expect_download(timeout=30000) as download_info:
         page.click("#downloadBtn")
     download_info.value.save_as(str(first_output))
-    page.wait_for_function("InkDeskLocalRecovery.listSnapshots('spreadsheets').then(items=>items.length===0)")
+    page.wait_for_function("InkDeskLocalRecovery.listSnapshots('spreadsheets').then(items=>items.length>=1)")
+    protected_after_download = page.evaluate("""async () => ({
+      snapshots: (await InkDeskLocalRecovery.listSnapshots('spreadsheets')).length,
+      dirtyVisible: !document.querySelector('#dirtyDot').hidden,
+      titleWarns: document.title.includes(' •')
+    })""")
+    if not (protected_after_download["snapshots"] >= 1 and protected_after_download["dirtyVisible"] and protected_after_download["titleWarns"]):
+        raise RuntimeError("Spreadsheet download request cleared unsaved/recovery protection before the copy was verified")
 
     page.click('.cell[data-r="10"][data-c="0"]')
     page.fill("#formulaInput", second_marker)
@@ -224,6 +231,7 @@ def spreadsheets_post_save_edit_recovery_case(browser, base_url):
         "workspace": "spreadsheets-post-save-recovery",
         "restored": preserved,
         "snapshots": snapshots,
+        "protectedAfterDownload": protected_after_download,
         "originalFeatures": original_features,
         "restoredFeatures": restored_features,
         "errors": errors + restored_errors,

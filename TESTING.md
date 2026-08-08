@@ -1,3 +1,11 @@
+## v0.20.2.26 export confirmation safety and release-note organization
+
+The v0.20.2.26 gate verifies that a Spreadsheet Save-copy request cannot silently clear the dirty/recovery safety net before the user has verified the downloaded XLSX. Recovery must be flushed before download dispatch, the workbook must remain marked unsaved after the request, and the existing Chromium recovery path must still restore and re-export the workbook.
+
+Repository checks also require every historical `RELEASE_NOTES_*.md` file to live under `docs/releases/`, leaving only `RELEASE_NOTES.md` at the root.
+
+The hosted workflow remains the final checksum and 17/17 Chromium gate. Local reconstruction: **313/314** tests pass; the single hold is the authoritative checksum test because the three hosted PDF.js publication files are absent locally. Hosted target: **314/314 + 17/17 Chromium**.
+
 ## v0.20.2.25 recovery source-continuity hardening
 
 The v0.20.2.25 gate covers a post-save recovery boundary that was previously unsafe: an imported workbook is edited, a copy is saved, editing continues, the page closes, recovery is restored, and a new XLSX copy is generated. The original OOXML preservation context must remain available throughout that sequence.
