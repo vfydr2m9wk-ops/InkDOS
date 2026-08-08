@@ -4,7 +4,7 @@
   const documentObject = global.document;
   if (!documentObject) return;
 
-  const VERSION = '0.20.2.31';
+  const VERSION = '0.20.3.0';
 
   /*
    * Document-session controller.

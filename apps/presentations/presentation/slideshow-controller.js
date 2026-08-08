@@ -302,7 +302,7 @@
   }
 
   global.InkDeskPresentationsSlideshow = Object.freeze({
-    version: '0.20.2.31',
+    version: '0.20.3.0',
     create(options) {
       return new PresentationSlideshowController(options);
     },

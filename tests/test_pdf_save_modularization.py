@@ -47,14 +47,14 @@ class PdfSaveModularizationTests(unittest.TestCase):
         ):
             self.assertIn(marker, controller)
 
-        self.assertIn("io/save-controller.js?v=0.20.2.31", html)
+        self.assertIn("io/save-controller.js?v=0.20.3.0", html)
         self.assertLess(
-            html.index("flatten-export.js?v=0.20.2.31"),
-            html.index("io/save-controller.js?v=0.20.2.31"),
+            html.index("flatten-export.js?v=0.20.3.0"),
+            html.index("io/save-controller.js?v=0.20.3.0"),
         )
         self.assertLess(
-            html.index("io/save-controller.js?v=0.20.2.31"),
-            html.index("app.js?v=0.20.2.31"),
+            html.index("io/save-controller.js?v=0.20.3.0"),
+            html.index("app.js?v=0.20.3.0"),
         )
         self.assertIn("'./apps/pdf/io/save-controller.js'", worker)
         self.assertNotIn("apps/pdf/app.js", policy["grandfatheredDebt"])

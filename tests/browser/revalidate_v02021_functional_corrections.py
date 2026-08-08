@@ -1,4 +1,4 @@
-"""Behavioral regression for InkDesk v0.20.2.31 functional corrections."""
+"""Behavioral regression for InkDesk v0.20.3.0 functional corrections."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.2.31"
+VERSION = "0.20.3.0"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -114,7 +114,7 @@ def test_spreadsheet_history_safety(page, base_url, checks):
 
     goto(page, f"{base_url}/apps/spreadsheets/index.html")
     page.click("#newEmptyBtn")
-    # v0.20.2.31 awaits recovery.startDocument() before New is complete.
+    # v0.20.3.0 awaits recovery.startDocument() before New is complete.
     # Use the completion toast as the transaction boundary before building
     # the Undo history used by this recovery regression.
     page.wait_for_function("() => document.querySelector('#toast')?.textContent === 'New workbook created'")

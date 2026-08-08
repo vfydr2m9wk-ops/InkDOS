@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaSessionModularizationTests(unittest.TestCase):
     def test_session_module_is_loaded_between_model_and_interaction(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        model = "formula-model.js?v=0.20.2.31"
-        session = "formula-session.js?v=0.20.2.31"
-        reference = "formula-reference.js?v=0.20.2.31"
-        editor = "formula-editor.js?v=0.20.2.31"
+        model = "formula-model.js?v=0.20.3.0"
+        session = "formula-session.js?v=0.20.3.0"
+        reference = "formula-reference.js?v=0.20.3.0"
+        editor = "formula-editor.js?v=0.20.3.0"
         for asset in (model, session, reference, editor):
             self.assertIn(asset, html)
         self.assertLess(html.index(model), html.index(session))
@@ -49,7 +49,7 @@ class SpreadsheetFormulaSessionModularizationTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-session.js');
-if (!api || api.version !== '0.20.2.31') process.exit(10);
+if (!api || api.version !== '0.20.3.0') process.exit(10);
 const session = api.createSession();
 const cell = { id: 'C1' };
 let opened = session.start({

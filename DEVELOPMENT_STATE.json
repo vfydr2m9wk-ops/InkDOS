@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 33,
-  "currentPackage": "0.20.2.31",
+  "appliedSequence": 34,
+  "currentPackage": "0.20.3.0",
   "status": "in-progress",
   "history": [
     {
@@ -170,6 +170,11 @@
       "sequence": 33,
       "packageLabel": "0.20.2.31",
       "description": "Recovery prompt startup isolation hardening. Asynchronous IndexedDB recovery inspection is bound to a prompt epoch plus the active document generation/key, and Documents, Spreadsheets and Presentations explicitly cancel a pending prompt before user-initiated New/Open transitions. Deferred snapshots are preserved for a later clean launch. Parsers, writers, formulas and visual layout are unchanged."
+    },
+    {
+      "sequence": 34,
+      "packageLabel": "0.20.3.0",
+      "description": "Visual Foundation. Freezes v0.20.2.31 as the structural/data-safety baseline and adds a last-loaded shared presentation layer for Home and all six workspaces. Standardizes typography, 44 px titlebar chrome, control states, start surfaces, responsive launcher cards, coarse-pointer behavior and reduced-motion handling while preserving product identities. Parsers, writers, recovery semantics, formulas, history and transactional document logic are unchanged apart from release identity/cache metadata."
     }
   ]
 }

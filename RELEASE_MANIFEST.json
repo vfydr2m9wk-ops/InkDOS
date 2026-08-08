@@ -1,8 +1,8 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.31",
-  "releaseName": "Recovery Prompt Startup Isolation Hardening",
-  "releaseType": "Beta Stability Hardening Patch",
+  "version": "0.20.3.0",
+  "releaseName": "Visual Foundation",
+  "releaseType": "Beta Visual Foundation Release",
   "releaseDate": "2026-08-08",
   "entryPoints": {
     "InkDesk.html": "index.html",
@@ -44,12 +44,12 @@
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "17 configured; existing functional-corrections regression now verifies unverified DOCX/PPTX/TXT download requests retain unsaved-work protection",
+    "browserRegressionScripts": "18 configured; the added visual-foundation regression checks shared tokens, app identities, titlebar geometry, Home cards and compact layout without changing document logic",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "extended: save -> unverified download retains dirty/recovery -> continue editing -> restore -> re-export fidelity",
     "browserMatrixRunner": "chromium, firefox, webkit",
     "presentationsControlRegression": "extended: Format/notes/thumbnails plus slideshow current/start entry, keyboard navigation, Escape/Exit and compact drawer behavior",
-    "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
+    "functionalAcceptanceInventory": "Existing visible controls retained; v0.20.3.0 changes presentation, spacing, typography and interaction states only",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
     "architectureGuardrails": "required: Spreadsheet formula syntax/model and draft lifecycle remain isolated; new history-controller.js is DOM-free and below the normal 500-line ceiling; app.js remains at its 295-line ratchet",
@@ -71,7 +71,8 @@
     "spreadsheetExportConfirmationSafety": "recovery flush precedes XLSX download dispatch; unverified download requests retain dirty state and snapshots until explicit replacement/discard",
     "releaseNotesOrganization": "historical RELEASE_NOTES_*.md files live under docs/releases/; root keeps RELEASE_NOTES.md only",
     "documentsReplacementSafety": "dirty Documents Open requires explicit confirmation; cancellation and parse failure preserve the active unsaved DOCX",
-    "crossWorkspaceExportSafety": "Documents and Presentations flush pending recovery before download dispatch and retain dirty/recovery state; TXT uses the shared download-requested-unverified lifecycle; Spreadsheet strict policy remains unchanged"
+    "crossWorkspaceExportSafety": "Documents and Presentations flush pending recovery before download dispatch and retain dirty/recovery state; TXT uses the shared download-requested-unverified lifecycle; Spreadsheet strict policy remains unchanged",
+    "visualFoundation": "shared/ui/visual-foundation-v0203.css is loaded last by Home and all six workspaces; runtime/editor logic remains unchanged apart from release identity/cache metadata"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

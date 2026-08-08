@@ -4,18 +4,15 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.31
+## InkDesk v0.20.3.0
 
-Version 0.20.2.31 closes a startup race in private local recovery. A recovery scan that began before a user started New/Open can no longer surface later and replace the newly started document state.
+Version 0.20.3.0 starts the user-visible visual/UX phase on top of the frozen v0.20.2.31 structural baseline. A new shared presentation layer is loaded last by Home and all six workspaces, giving InkDesk one typography, surface, control-state and spacing system while preserving each workspace color identity.
 
-Recovery prompts are now tied to the document state that existed when IndexedDB inspection began, and Documents, Spreadsheets and Presentations explicitly cancel pending prompt work before their replacement flows. Deferred snapshots are kept for a later clean launch. The patch intentionally leaves Office parsers/writers, formulas and visual layout unchanged.
+The first pass deliberately avoids editor logic: parsers, writers, recovery, formulas, history and document transactions are unchanged. Home receives the largest immediate polish; the six workspaces receive common titlebar, toolbar, start-surface, focus and touch-target refinement without changing their feature set.
 
-## Refactoring policy
+## Development policy
 
-The 0.20.x decomposition remains incremental: continue shared UI in bounded
-steps, then Documents/Spreadsheets cleanup and final architecture consolidation. Every extraction
-must preserve existing behavioral tests, stay inside the architecture guardrails
-and stop immediately if a regression appears.
+The v0.20.2.31 structural baseline is frozen. During the 0.20.3 visual train, architecture and data-safety code should change only for a reproducible defect whose benefit clearly exceeds regression risk. Visual work should prefer shared CSS and bounded markup changes over opportunistic refactors.
 
 ## Privacy
 
@@ -46,7 +43,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.31 remains a beta. Real-device validation is still required for critical
+v0.20.3.0 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

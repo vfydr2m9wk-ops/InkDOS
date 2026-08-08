@@ -1,0 +1,211 @@
+/* InkDesk v0.20.3.0 — shared visual foundation
+ * Presentation-only layer loaded after workspace styles. It changes visual
+ * hierarchy and responsive interaction without owning document state or I/O.
+ */
+:root{
+  --ink-ui-font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+  --ink-bg:#eef1f5;
+  --ink-surface:#ffffff;
+  --ink-surface-soft:#f7f8fa;
+  --ink-surface-raised:rgba(255,255,255,.92);
+  --ink-text:#1f242c;
+  --ink-muted:#6d7480;
+  --ink-edge:rgba(31,36,44,.13);
+  --ink-edge-strong:rgba(31,36,44,.20);
+  --ink-shadow-sm:0 2px 8px rgba(20,28,40,.07);
+  --ink-shadow-md:0 12px 34px rgba(20,28,40,.11);
+  --ink-radius-sm:8px;
+  --ink-radius-md:12px;
+  --ink-radius-lg:20px;
+  --ink-titlebar-height:44px;
+  --ink-control-height:34px;
+  --ink-accent:#2f6fed;
+  --ink-accent-soft:color-mix(in srgb,var(--ink-accent) 11%,var(--ink-surface));
+  color-scheme:light dark;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --ink-bg:#17191d;
+    --ink-surface:#23262c;
+    --ink-surface-soft:#1e2126;
+    --ink-surface-raised:rgba(35,38,44,.92);
+    --ink-text:#f2f4f7;
+    --ink-muted:#aab0ba;
+    --ink-edge:rgba(255,255,255,.10);
+    --ink-edge-strong:rgba(255,255,255,.17);
+    --ink-shadow-sm:0 2px 8px rgba(0,0,0,.20);
+    --ink-shadow-md:0 14px 38px rgba(0,0,0,.30);
+  }
+}
+*{scrollbar-color:color-mix(in srgb,var(--ink-muted) 45%,transparent) transparent}
+html,body,button,input,select,textarea{font-family:var(--ink-ui-font)}
+body{font-feature-settings:"kern" 1,"liga" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,a,label[for],select,input[type="range"]{-webkit-tap-highlight-color:transparent}
+:where(button,a,input,select,textarea,[role="button"]):focus-visible{
+  outline:2px solid color-mix(in srgb,var(--ink-accent) 72%,white);
+  outline-offset:2px;
+}
+:where(button,[role="button"],label[for]){
+  transition:background-color .13s ease,border-color .13s ease,box-shadow .13s ease,transform .10s ease,opacity .13s ease;
+}
+:where(button,[role="button"],label[for]):active:not(:disabled){transform:translateY(1px)}
+:where(button:disabled,[aria-disabled="true"]){cursor:default;opacity:.55}
+
+/* Stable product identities. */
+body.office-documents{--ink-accent:#2f6fed}
+body.office-spreadsheets{--ink-accent:#267a45}
+body.office-presentations{--ink-accent:#d64a24}
+body.office-pdf{--ink-accent:#b42318}
+body.office-txt{--ink-accent:#d9a514}
+body.office-epub{--ink-accent:#7655c7}
+
+/* Shared workspace chrome. */
+body.office-product{background:var(--ink-bg);color:var(--ink-text)}
+body.office-product :where(.topbar,.titlebar,.txt-titlebar,.epub-titlebar){
+  min-height:var(--ink-titlebar-height);
+  background:var(--ink-surface-raised);
+  border-bottom:1px solid var(--ink-edge);
+  box-shadow:0 1px 0 rgba(255,255,255,.40) inset;
+  backdrop-filter:blur(18px) saturate(1.12);
+  -webkit-backdrop-filter:blur(18px) saturate(1.12);
+}
+body.office-product :where(.icon-btn,.tool-btn,.fmt-btn,.mini-btn,.zoom-label){border-radius:var(--ink-radius-sm)}
+body.office-product :where(.icon-btn){min-width:34px;min-height:34px}
+body.office-product :where(.icon-btn,.tool-btn,.fmt-btn,.mini-btn,.zoom-label):hover:not(:disabled){background:color-mix(in srgb,var(--ink-text) 7%,transparent)}
+body.office-product :where(.icon-btn,.tool-btn,.fmt-btn,.mini-btn,.zoom-label).active,
+body.office-product :where(.icon-btn,.tool-btn,.fmt-btn,.mini-btn,.zoom-label)[aria-pressed="true"]{
+  background:var(--ink-accent-soft);
+  color:color-mix(in srgb,var(--ink-accent) 82%,var(--ink-text));
+}
+body.office-product :where(.toolbar,.formatbar,.commandbar,.txt-toolbar,.reader-toolbar,.formula-row){
+  background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
+  border-color:var(--ink-edge);
+}
+body.office-product :where(select,input[type="text"],input[type="search"],input[type="number"],textarea){border-color:var(--ink-edge)}
+body.office-product :where(.title-input,.file-title-input){border-radius:8px;font-weight:650;letter-spacing:-.01em}
+body.office-product :where(.top-divider,.separator,.toolbar-separator,.command-separator){opacity:.72}
+body.office-product :where(.sidebar,.toc-panel){border-color:var(--ink-edge)}
+body.office-product :where(.sidebar-tabs,.toc-header){background:color-mix(in srgb,var(--ink-surface-soft) 94%,transparent);border-color:var(--ink-edge)}
+body.office-product :where(.tab,.sidebar-tab).active{color:var(--ink-text);border-color:var(--ink-accent)}
+body.office-product :where(.statusbar,.txt-statusbar,.reader-statusbar,footer){border-color:var(--ink-edge)}
+
+/* Shared start surfaces. */
+body.office-product :where(.welcome-card,.start-card,.txt-start-card,.epub-start-card){
+  border:1px solid var(--ink-edge)!important;
+  border-radius:var(--ink-radius-lg)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ink-surface) 97%,white),var(--ink-surface))!important;
+  box-shadow:var(--ink-shadow-md)!important;
+}
+body.office-product :where(.welcome-card,.start-card,.txt-start-card,.epub-start-card) h1{letter-spacing:-.035em}
+body.office-product :where(.welcome-card,.start-card,.txt-start-card,.epub-start-card) p{color:var(--ink-muted)}
+body.office-product :where(.start-btn,.open-primary){min-height:46px;border-radius:12px!important;font-weight:700}
+body.office-product :where(.start-btn.primary,.open-document-primary,.epub-start-card .start-btn){
+  background:var(--ink-accent)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 8px 20px color-mix(in srgb,var(--ink-accent) 23%,transparent);
+}
+body.office-product :where(.start-btn.secondary,.new-primary){
+  background:var(--ink-surface)!important;
+  color:var(--ink-text)!important;
+  border:1px solid var(--ink-edge-strong)!important;
+  box-shadow:var(--ink-shadow-sm);
+}
+
+/* Spreadsheet chrome: preserve density while making hierarchy clearer. */
+body.office-spreadsheets .titlebar{height:44px}
+body.office-spreadsheets .toolbar{height:42px;gap:5px}
+body.office-spreadsheets .formula-row{height:38px;box-shadow:0 1px 0 var(--ink-edge) inset}
+body.office-spreadsheets .formula-row .fx{font-weight:700;color:var(--ink-accent)}
+body.office-spreadsheets #nameBox{background:color-mix(in srgb,var(--ink-surface-soft) 78%,transparent)}
+body.office-spreadsheets footer{background:var(--ink-surface-raised)}
+body.office-spreadsheets #sheetTabs button.active{box-shadow:inset 0 2px 0 var(--ink-accent)}
+
+/* Presentations/PDF: stronger panel separation without geometry changes. */
+body.office-presentations :where(.sidebar,.inspector,.notes-panel),
+body.office-pdf .sidebar{background:color-mix(in srgb,var(--ink-surface-soft) 94%,var(--ink-bg))}
+body.office-pdf .commandbar{box-shadow:0 1px 0 var(--ink-edge)}
+body.office-pdf .annotation-tool.active{background:var(--ink-accent-soft);color:var(--ink-accent)}
+
+/* TXT/EPUB: quiet document/reader chrome. */
+body.office-txt .txt-toolbar,
+body.office-epub .reader-toolbar{min-height:42px;box-shadow:0 1px 0 rgba(255,255,255,.35) inset}
+body.office-txt .editor-shell,
+body.office-epub .page-surface{border-color:var(--ink-edge);box-shadow:var(--ink-shadow-md)}
+
+/* Home / launcher. */
+body:not(.office-product){
+  background:radial-gradient(circle at 18% -8%,rgba(47,111,237,.11),transparent 34%),radial-gradient(circle at 88% 8%,rgba(118,85,199,.08),transparent 30%),var(--ink-bg);
+  color:var(--ink-text);
+}
+.hub-shell{width:min(1100px,calc(100% - 40px));margin:0 auto;padding:max(28px,env(safe-area-inset-top)) 0 max(30px,env(safe-area-inset-bottom))}
+.hub-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:48px;padding:4px 2px 0;margin-bottom:28px}
+.brand-lockup{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none}
+.brand-mark{width:42px!important;height:42px!important;border-radius:13px!important;box-shadow:var(--ink-shadow-sm)!important}
+.brand-copy{display:flex;flex-direction:column;gap:1px}
+.brand-copy strong{font-size:17px;letter-spacing:-.02em}
+.brand-copy small{font-size:11px;color:var(--ink-muted)}
+.release-badge{padding:6px 10px;border:1px solid var(--ink-edge);border-radius:999px;background:color-mix(in srgb,var(--ink-surface) 82%,transparent);color:var(--ink-muted);font-size:11px;font-weight:650;box-shadow:var(--ink-shadow-sm)}
+.hub-intro{max-width:660px;margin:0 0 22px}
+.hub-intro h1{margin:0 0 7px;font-size:clamp(29px,4vw,42px);line-height:1.05;letter-spacing:-.055em}
+.hub-intro p{margin:0;color:var(--ink-muted);font-size:14px;line-height:1.55}
+.workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.workspace-card{
+  --ink-card-accent:#2f6fed;
+  min-height:132px;
+  position:relative;
+  display:grid;
+  grid-template-columns:50px minmax(0,1fr) auto;
+  align-items:center;
+  gap:15px;
+  padding:20px;
+  overflow:hidden;
+  color:inherit;
+  text-decoration:none;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ink-surface) 98%,white),var(--ink-surface));
+  border:1px solid var(--ink-edge);
+  border-radius:18px;
+  box-shadow:var(--ink-shadow-sm);
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+}
+.workspace-card::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--ink-card-accent);opacity:.85}
+.workspace-card:hover,.workspace-card:focus-visible{transform:translateY(-2px);border-color:color-mix(in srgb,var(--ink-card-accent) 35%,var(--ink-edge));box-shadow:var(--ink-shadow-md)}
+.workspace-card:active{transform:translateY(0) scale(.992)}
+.workspace-card.documents{--ink-card-accent:#2f6fed}
+.workspace-card.spreadsheets{--ink-card-accent:#267a45}
+.workspace-card.presentations{--ink-card-accent:#d64a24}
+.workspace-card.pdf{--ink-card-accent:#b42318}
+.workspace-card.txt{--ink-card-accent:#d9a514}
+.workspace-card.epub{--ink-card-accent:#7655c7}
+.workspace-card .app-icon{
+  width:50px;height:50px;border-radius:14px;display:grid;place-items:center;
+  box-shadow:0 8px 20px color-mix(in srgb,var(--ink-card-accent) 24%,transparent);
+}
+.workspace-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
+.workspace-copy strong{font-size:16px;letter-spacing:-.02em}
+.workspace-copy small{color:var(--ink-muted);font-size:11px;font-weight:650;letter-spacing:.025em}
+.workspace-card .open-arrow{font-size:25px;color:color-mix(in srgb,var(--ink-card-accent) 72%,var(--ink-muted));transform:translateX(-2px)}
+.open-any-panel{margin-top:16px;border:1px solid var(--ink-edge)!important;border-radius:18px!important;background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg))!important;box-shadow:var(--ink-shadow-sm)!important}
+.open-any-button{min-height:46px!important;border-radius:12px!important;box-shadow:0 7px 18px rgba(47,111,237,.18)!important}
+.hub-footer{margin-top:18px;color:var(--ink-muted)}
+
+@media(max-width:860px){.workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){
+  .hub-shell{width:min(100% - 24px,560px);padding-top:max(18px,env(safe-area-inset-top))}
+  .hub-topbar{margin-bottom:22px}
+  .brand-copy small{display:none}
+  .release-badge{font-size:10px}
+  .hub-intro h1{font-size:31px}
+  .workspace-grid{grid-template-columns:1fr;gap:10px}
+  .workspace-card{min-height:92px;padding:15px 16px;grid-template-columns:44px minmax(0,1fr) auto;border-radius:15px}
+  .workspace-card .app-icon{width:44px;height:44px;border-radius:12px}
+  body.office-product :where(.icon-btn){min-width:36px;min-height:36px}
+  body.office-product :where(.topbar,.titlebar,.txt-titlebar,.epub-titlebar){padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
+}
+@media(pointer:coarse){
+  body.office-product :where(.icon-btn,.tool-btn,.mini-btn){min-height:38px}
+  .workspace-card{min-height:104px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}

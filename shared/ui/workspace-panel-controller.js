@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.20.2.31';
+  const VERSION = '0.20.3.0';
   const WORKSPACE_LAYOUT_VERSION = '0.20.0';
   const STORAGE_PREFIX = 'inkdesk.ui.session.';
 

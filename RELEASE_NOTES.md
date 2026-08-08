@@ -1,17 +1,21 @@
-# InkDesk v0.20.2.31 — Recovery Prompt Startup Isolation Hardening
+# InkDesk v0.20.3.0 — Visual Foundation
 
-This maintenance release prevents a stale asynchronous recovery scan from appearing after the user has already started a different New/Open document action.
+This release begins the visible 0.20.3 UX phase while keeping the v0.20.2.31 structural/data-safety baseline frozen.
 
-## Current release
+## What changes
 
-- Startup recovery inspection is guarded by both a prompt epoch and the active document generation/key.
-- A recovery prompt started for the empty startup state is abandoned if a document transition begins before IndexedDB inspection finishes.
-- Documents and Spreadsheets explicitly cancel a pending recovery prompt before slow file parsing or a New-document transition.
-- Presentations cancels a pending prompt as soon as a PPTX file is selected, before the potentially slower PPTX parse begins, and also cancels defensively inside its recovery transition controller.
-- Cancelling/defering a stale prompt does **not** delete the older snapshot; it remains available on a later clean launch.
-- Session isolation, source-package continuity and unverified-download protection from v0.20.2.30 and earlier remain unchanged.
-- Parsers, writers, formula semantics and visual layout are intentionally unchanged.
+- Adds `shared/ui/visual-foundation-v0203.css`, a presentation-only layer loaded after existing workspace styles.
+- Gives Home a calmer three-column launcher on desktop, two columns on tablet and a compact one-column phone layout.
+- Standardizes native-system typography, focus rings, pressed/selected states, border radii, surfaces and shadows.
+- Preserves the six product identities: Documents blue, Spreadsheets green, Presentations orange, PDF red, TXT yellow and EPUB purple.
+- Harmonizes 44 px titlebar geometry and common toolbar/start-screen treatment without changing editor commands.
+- Adds coarse-pointer and reduced-motion rules for iPhone/iPad/WebKit-friendly interaction.
+- Adds a dedicated visual-foundation unit contract and an 18th Chromium regression script.
 
-Full notes: [`docs/releases/RELEASE_NOTES_0.20.2.31.md`](docs/releases/RELEASE_NOTES_0.20.2.31.md)
+## Intentionally unchanged
+
+DOCX/XLS/XLSX/PPTX/PDF parsers and writers, formula semantics, recovery, history, transactional Open/New/Discard, export safety and document models are unchanged apart from release identity/cache metadata.
+
+Full notes: [`docs/releases/RELEASE_NOTES_0.20.3.0.md`](docs/releases/RELEASE_NOTES_0.20.3.0.md)
 
 Historical notes: [`docs/releases/`](docs/releases/)

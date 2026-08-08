@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.31",
+  "release": "0.20.3.0",
   "policy": {
     "rule": "A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.",
     "newControlGate": "Every new visible control must appear in this inventory before release.",
@@ -31,7 +31,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/documents/index.html\"]#1",
-      "label": "D Documents DOCX ›",
+      "label": "D Documents DOCX \u203a",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -44,7 +44,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/spreadsheets/index.html\"]#1",
-      "label": "S Spreadsheets XLS · XLSX ›",
+      "label": "S Spreadsheets XLS \u00b7 XLSX \u203a",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -57,7 +57,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/presentations/index.html\"]#1",
-      "label": "P Presentations PPTX ›",
+      "label": "P Presentations PPTX \u203a",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -70,7 +70,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/pdf/index.html\"]#1",
-      "label": "PDF PDF Workspace PDF ›",
+      "label": "PDF PDF Workspace PDF \u203a",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -83,7 +83,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/txt/index.html\"]#1",
-      "label": "TXT Plain Text TXT ›",
+      "label": "TXT Plain Text TXT \u203a",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -96,7 +96,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/epub/index.html\"]#1",
-      "label": "EPUB EPUB Reader EPUB ›",
+      "label": "EPUB EPUB Reader EPUB \u203a",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -358,7 +358,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyLeft\"]",
-      "label": "≡",
+      "label": "\u2261",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -368,7 +368,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyCenter\"]",
-      "label": "≣",
+      "label": "\u2263",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -378,7 +378,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyRight\"]",
-      "label": "≡",
+      "label": "\u2261",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -388,7 +388,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyFull\"]",
-      "label": "☰",
+      "label": "\u2630",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -398,7 +398,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"insertUnorderedList\"]",
-      "label": "• List",
+      "label": "\u2022 List",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -508,7 +508,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "#prevHit",
-      "label": "↑",
+      "label": "\u2191",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -518,7 +518,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "#nextHit",
-      "label": "↓",
+      "label": "\u2193",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -1113,7 +1113,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#addSlideBtn",
-      "label": "New slide ▾",
+      "label": "New slide \u25be",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1197,7 +1197,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#alignLeft",
-      "label": "⇤",
+      "label": "\u21e4",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1209,7 +1209,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#alignCenter",
-      "label": "≡",
+      "label": "\u2261",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1221,7 +1221,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#alignRight",
-      "label": "⇥",
+      "label": "\u21e5",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1369,7 +1369,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#zoomOutBtn",
-      "label": "−",
+      "label": "\u2212",
       "element": "button",
       "coverage": "automated",
       "evidence": [

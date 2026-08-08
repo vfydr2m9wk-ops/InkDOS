@@ -63,8 +63,8 @@ class WorkspacePanelModularizationTests(unittest.TestCase):
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         documents = (ROOT / "apps/documents/index.html").read_text(encoding="utf-8")
         self.assertIn("'./shared/ui/workspace-panel-controller.js'", worker)
-        controller_tag = "workspace-panel-controller.js?v=0.20.2.31"
-        layout_tag = "workspace-layout.js?v=0.20.2.31"
+        controller_tag = "workspace-panel-controller.js?v=0.20.3.0"
+        layout_tag = "workspace-layout.js?v=0.20.3.0"
         self.assertIn(controller_tag, documents)
         self.assertIn(layout_tag, documents)
         self.assertLess(documents.index(controller_tag), documents.index(layout_tag))
@@ -73,7 +73,7 @@ class WorkspacePanelModularizationTests(unittest.TestCase):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
         layout = ROOT / "shared/ui/workspace-layout.js"
         controller = ROOT / "shared/ui/workspace-panel-controller.js"
-        self.assertEqual(policy["release"], "0.20.2.31")
+        self.assertEqual(policy["release"], "0.20.3.0")
         self.assertLessEqual(len(controller.read_text(encoding="utf-8").splitlines()), 500)
         self.assertLessEqual(len(layout.read_text(encoding="utf-8").splitlines()), 500)
         self.assertNotIn("shared/ui/workspace-layout.js", policy["grandfatheredDebt"])

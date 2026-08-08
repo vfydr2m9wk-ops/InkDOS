@@ -191,3 +191,10 @@ The local-recovery browser harness creates two independent recovery managers wit
 - `tests/test_recovery_prompt_startup_safety.py` enforces prompt token/generation guards and requires Documents, Spreadsheets and Presentations to cancel a pending startup prompt before replacement work can race it.
 - `tests/browser/revalidate_v0202_local_recovery.py` starts `promptLatest()` and immediately changes the active recovery document. The stale prompt must not render, while the older snapshot must remain available for a later clean launch.
 - The scenario stays inside the existing local-recovery browser script, so the hosted Chromium script count remains unchanged.
+
+
+## v0.20.3.0 visual foundation
+
+- `tests/test_visual_foundation_0203.py` checks that Home and all six workspaces load the new shared visual layer last, that product identities/tokens/compact/reduced-motion rules remain present, and that the service worker precaches the asset.
+- `tests/browser/revalidate_visual_foundation_0203.py` exercises the presentation layer in Chromium without opening user files: desktop Home cards, 44 px workspace chrome, per-app accent identity and compact phone layout.
+- The visual release must keep all existing data-safety and Office round-trip gates green.

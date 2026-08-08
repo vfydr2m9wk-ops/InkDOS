@@ -189,7 +189,7 @@ function create(options){
         const now=Date.now();
         const record={id:moduleName+':'+capturedDocumentKey+':'+capturedSessionId+':'+now+':'+Math.random().toString(36).slice(2,7),
           module:moduleName,documentKey:capturedDocumentKey,sessionId:capturedSessionId,fileName:capturedFileName,
-          appVersion:String(options.appVersion||'0.20.2.31'),schemaVersion:2,createdAt:now,updatedAt:now,payload};
+          appVersion:String(options.appVersion||'0.20.3.0'),schemaVersion:2,createdAt:now,updatedAt:now,payload};
         await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.put(record)});
         if(capturedGeneration!==generation||capturedDocumentKey!==documentKey||capturedSessionId!==sessionId){
           await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.delete(record.id)});
@@ -266,7 +266,7 @@ async function clearModule(moduleName){
   await withStore(SOURCE_STORE,'readwrite',store=>sources.forEach(item=>store.delete(item.id)));
 }
 global.InkDeskLocalRecovery=Object.freeze({
-  version:'0.20.2.31',
+  version:'0.20.3.0',
   create,
   openDatabase,
   listSnapshots:getAllSnapshots,

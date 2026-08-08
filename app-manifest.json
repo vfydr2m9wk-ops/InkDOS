@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.31",
+  "version": "0.20.3.0",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.31"
+    "nextPatch": "0.20.3.0"
   },
   "capabilities": {
     "documents": [
@@ -244,7 +244,7 @@
       },
       "originMilestone": "0.19.4.7",
       "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.2.31"
+      "architectureRelease": "0.20.3.0"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -265,7 +265,25 @@
       "documentation": "docs/VISUAL_FOUNDATION.md",
       "originMilestone": "0.19.4.11"
     },
-    "originMilestone": "0.19.4.3"
+    "originMilestone": "0.19.4.3",
+    "visualRefresh0203": {
+      "schemaVersion": 1,
+      "version": "0.20.3.0",
+      "stylesheet": "shared/ui/visual-foundation-v0203.css",
+      "layering": "loaded after existing Home/workspace styles",
+      "titlebarMinimum": 44,
+      "productAccents": {
+        "documents": "#2f6fed",
+        "spreadsheets": "#267a45",
+        "presentations": "#d64a24",
+        "pdf": "#b42318",
+        "txt": "#d9a514",
+        "epub": "#7655c7"
+      },
+      "documentation": "docs/VISUAL_ROADMAP_0.20.3.md",
+      "originMilestone": "0.20.3.0",
+      "dataPathChanges": false
+    }
   },
   "pdfReviewSystem": {
     "schemaVersion": 1,
@@ -507,13 +525,13 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.31",
+    "version": "0.20.3.0",
     "channel": "beta",
-    "name": "Recovery Session Isolation Hardening",
+    "name": "Visual Foundation",
     "date": "2026-08-08",
     "consolidated": true,
-    "sourceDevelopmentLine": "0.19.4",
-    "publicVersioning": "0.20.x maintenance train (four-part correction releases allowed)"
+    "sourceDevelopmentLine": "0.20.3",
+    "publicVersioning": "0.20.3 visual/UX train (four-part correction releases allowed)"
   },
   "consistencyRefinement": {
     "schemaVersion": 1,
@@ -535,7 +553,7 @@
   },
   "localRecoverySystem": {
     "schemaVersion": 3,
-    "version": "0.20.2.31",
+    "version": "0.20.3.0",
     "runtime": "shared/local-recovery.js",
     "storage": "IndexedDB",
     "workspaces": [

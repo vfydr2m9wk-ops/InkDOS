@@ -1,3 +1,9 @@
+## 0.20.3.0 — Visual Foundation (2026-08-08)
+
+- Froze v0.20.2.31 as the structural/data-safety baseline and started the user-visible 0.20.3 UX train.
+- Added a last-loaded shared visual layer for Home and all six workspaces, preserving each app identity while standardizing typography, controls, surfaces, interaction states and compact behavior.
+- Added visual-foundation structural and Chromium regression coverage; editor logic and data contracts remain unchanged.
+
 ## 0.20.2.31 — Recovery Prompt Startup Isolation Hardening (2026-08-08)
 
 - Prevent asynchronous startup recovery inspection from surfacing a stale prompt after New/Open has already started.

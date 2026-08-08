@@ -15,7 +15,7 @@ class SpreadsheetFormulaSafetyTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-safety.js');
-if (!api || api.version !== '0.20.2.31') process.exit(10);
+if (!api || api.version !== '0.20.3.0') process.exit(10);
 let pending = false;
 let resets = 0;
 const coordinator = api.create({editor:()=>({
@@ -41,8 +41,8 @@ if (coordinator.guardSave(()=>{}) || coordinator.guardHistory(()=>{})) process.e
 
     def test_safety_runtime_loads_before_spreadsheet_app_and_is_precached(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        safety = "formula-safety.js?v=0.20.2.31"
-        app = "app.js?v=0.20.2.31"
+        safety = "formula-safety.js?v=0.20.3.0"
+        app = "app.js?v=0.20.3.0"
         self.assertIn(safety, html)
         self.assertIn(app, html)
         self.assertLess(html.index(safety), html.index(app))
@@ -66,7 +66,7 @@ if (coordinator.guardSave(()=>{}) || coordinator.guardHistory(()=>{})) process.e
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-session.js');
-if (!api || api.version !== '0.20.2.31') process.exit(10);
+if (!api || api.version !== '0.20.3.0') process.exit(10);
 const session = api.createSession();
 const first = { id: 'A1' };
 const second = { id: 'B2' };

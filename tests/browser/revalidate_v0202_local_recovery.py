@@ -518,7 +518,7 @@ def presentations_case(browser, base_url):
     page.click("#newBtn")
     page.wait_for_selector("#templateDialog:not(.hidden)")
     page.locator("#templateGrid .template-option").first.click()
-    # v0.20.2.31 makes New transactional/async while the prior recovery
+    # v0.20.3.0 makes New transactional/async while the prior recovery
     # session is discarded. Wait until the editor is active before injecting
     # notes, otherwise the input event can race presentation creation.
     page.wait_for_selector("#app:not(.hidden)", state="visible")

@@ -83,7 +83,7 @@
   }
 
   global.InkDeskPresentationsHistory = Object.freeze({
-    version: '0.20.2.31',
+    version: '0.20.3.0',
     create(options) {
       return new PresentationHistoryController(options);
     },

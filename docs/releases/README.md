@@ -6,6 +6,7 @@ The root [`RELEASE_NOTES.md`](../../RELEASE_NOTES.md) points to the current rele
 
 ## Releases
 
+- [v0.20.3.0](RELEASE_NOTES_0.20.3.0.md)
 - [v0.20.2.31](RELEASE_NOTES_0.20.2.31.md)
 - [v0.20.2.30](RELEASE_NOTES_0.20.2.30.md)
 - [v0.20.2.29](RELEASE_NOTES_0.20.2.29.md)
