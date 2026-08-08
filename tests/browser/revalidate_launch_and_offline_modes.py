@@ -196,7 +196,8 @@ def validate_restricted_apis(browser, base_url):
         "documents": (
             "shared/vendor/pako_inflate.min.js",
             "shared/office-runtime.js",
-            "apps/documents/docx-parser.js",
+            "apps/documents/drawing-layout.js",
+        "apps/documents/docx-parser.js",
             "shared/vendor/jszip.min.js",
             "apps/documents/docx-writer.js",
             "shared/office-shell.js",
@@ -220,6 +221,7 @@ def validate_restricted_apis(browser, base_url):
             "shared/office-runtime.js",
             "shared/vendor/jszip.min.js",
             "apps/presentations/engine/compatibility.js",
+        "apps/presentations/engine/background-resolver.js",
             "shared/office-shell.js",
             "apps/presentations/state/selection-controller.js",
             "apps/presentations/state/history-controller.js",

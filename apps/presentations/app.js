@@ -88,7 +88,7 @@ async function parseSlide(zip,path,index){
   const relPath=relationshipPartPath(path);
   let rmap={};if(zip.file(relPath))rmap=relMap(parseXml(await zip.file(relPath).async('text')));
   const inheritance=await loadSlideInheritance(zip,path,rmap);
-  const bgStyle=resolveSlideBackground(xml,inheritance.layoutXml,inheritance.masterXml);
+  const bgStyle=await resolveSlideBackground(zip,path,rmap,xml,inheritance);
   const slide={id:uid('s'),sourcePath:path,background:bgStyle.color||'#ffffff',backgroundImage:bgStyle.image||'',backgroundRepeat:bgStyle.repeat||'no-repeat',backgroundSize:bgStyle.size||'auto',objects:[],notes:'',originalNotes:'',notesPath:'',transition:parseSlideTransition(xml),originalTransition:null,title:'',compatibilityWarnings:[]};
   slide.originalTransition=slide.transition?JSON.parse(JSON.stringify(slide.transition)):null;
   const phMap=mergePlaceholderMaps(
@@ -129,7 +129,7 @@ function addMissingPlaceholders(slide,slideXml,phMap,layoutXml){
   }
 }
 async function loadSlideInheritance(zip,slidePath,rmap){let layoutXml=null,masterXml=null,layoutPath=null,masterPath=null,layoutRmap={},masterRmap={};const layoutRid=Object.keys(rmap).find(k=>/(^|\/)slideLayouts?\/slideLayout\d*\.xml(?:$|[?#])/i.test(String(rmap[k]))||/slideLayout/i.test(String(rmap[k])));if(layoutRid){layoutPath=normalizePath(slidePath.split('/').slice(0,-1).join('/'),rmap[layoutRid]);if(zip.file(layoutPath)){layoutXml=parseXml(await zip.file(layoutPath).async('text'));const lr=relationshipPartPath(layoutPath);if(zip.file(lr)){layoutRmap=relMap(parseXml(await zip.file(lr).async('text')));const masterRid=Object.keys(layoutRmap).find(k=>/(^|\/)slideMasters?\/slideMaster\d*\.xml(?:$|[?#])/i.test(String(layoutRmap[k]))||/slideMaster/i.test(String(layoutRmap[k])));if(masterRid){masterPath=normalizePath(layoutPath.split('/').slice(0,-1).join('/'),layoutRmap[masterRid]);if(zip.file(masterPath)){masterXml=parseXml(await zip.file(masterPath).async('text'));const mr=relationshipPartPath(masterPath);if(zip.file(mr))masterRmap=relMap(parseXml(await zip.file(mr).async('text')));}}}}}return {layoutXml,masterXml,layoutPath,masterPath,layoutRmap,masterRmap};}
-function resolveSlideBackground(slideXml,layoutXml,masterXml){for(const xml of [slideXml,layoutXml,masterXml]){if(!xml)continue;const bg=first(xml,'bg');if(!bg)continue;const ref=first(bg,'bgRef');if(ref){const idx=+attr(ref,'idx','0'),color=colorFromNode(ref,'#ffffff'),fill=activeTheme&&activeTheme.backgroundFills?activeTheme.backgroundFills[idx>=1000?idx-1000:idx]:null;if(fill&&fill.type==='image'&&fill.src){const veil=rgbaColor(color,.94);return {color,image:'linear-gradient('+veil+','+veil+'),url("'+fill.src+'")',repeat:fill.tile?'repeat':'no-repeat',size:fill.tile?(fill.tileWidth+'px '+fill.tileHeight+'px'):'cover'};}return {color};}return {color:colorFromNode(bg,'#ffffff')};}return {color:'#ffffff'};}
+async function resolveSlideBackground(zip,path,rmap,slideXml,inheritance){return window.InkDeskPresentationsBackground.resolve({zip,theme:activeTheme,colorFromNode,rgbaColor,sources:[{xml:slideXml,path,rmap},{xml:inheritance.layoutXml,path:inheritance.layoutPath,rmap:inheritance.layoutRmap},{xml:inheritance.masterXml,path:inheritance.masterPath,rmap:inheritance.masterRmap}]})}
 async function parseTreeObjects(zip,path,tree,rmap,out,phMap,parentGroup,warnings,options={}){
   const children=Array.from(tree.children||[]).filter(n=>['sp','pic','graphicFrame','grpSp','cxnSp'].includes(n.localName));
   for(const n of children){

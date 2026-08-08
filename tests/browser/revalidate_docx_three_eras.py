@@ -35,6 +35,7 @@ def load_app(page):
     for js in (
         ROOT / "shared/office-runtime.js",
         ROOT / "shared/vendor/pako_inflate.min.js",
+        ROOT / "apps/documents/drawing-layout.js",
         ROOT / "apps/documents/docx-parser.js",
         ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/documents/docx-writer.js",

@@ -37,6 +37,7 @@ def load_app(page) -> None:
         ROOT / "shared/office-runtime.js",
                 ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/presentations/engine/compatibility.js",
+        ROOT / "apps/presentations/engine/background-resolver.js",
         ROOT / "shared/office-shell.js",
         ROOT / "apps/presentations/state/selection-controller.js",
         ROOT / "apps/presentations/state/history-controller.js",

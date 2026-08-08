@@ -37,6 +37,7 @@ def verify_docx(browser):
     load_app(page, "documents", (
         "shared/office-runtime.js",
         "shared/vendor/pako_inflate.min.js",
+        "apps/documents/drawing-layout.js",
         "apps/documents/docx-parser.js",
         "shared/vendor/jszip.min.js",
         "apps/documents/docx-writer.js",
@@ -123,6 +124,7 @@ def verify_pptx(browser):
         "shared/office-runtime.js",
         "shared/vendor/jszip.min.js",
         "apps/presentations/engine/compatibility.js",
+        "apps/presentations/engine/background-resolver.js",
         "shared/office-shell.js",
         "apps/presentations/state/selection-controller.js",
         "apps/presentations/state/history-controller.js",
