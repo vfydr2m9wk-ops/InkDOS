@@ -182,7 +182,7 @@ class LocalRecoveryTests(unittest.TestCase):
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
         self.assertEqual(version["version"], "0.20.3.1")
         self.assertEqual(version["releaseName"], "Content Workspaces Visual Pass")
-        self.assertEqual(state["appliedSequence"], 35)
+        self.assertEqual(state["appliedSequence"], 36)
         self.assertEqual(state["currentPackage"], "0.20.3.1")
 
 

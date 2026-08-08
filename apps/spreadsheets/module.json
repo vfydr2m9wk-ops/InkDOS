@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "spreadsheets",
   "name": "Spreadsheets",
-  "description": "Offline XLSX editing plus focused Excel 97–2004 XLS import and XLSX copy export.",
+  "description": "Edit XLSX files locally and open legacy XLS workbooks.",
   "version": "0.20.3.1",
   "enabled": true,
   "optional": false,

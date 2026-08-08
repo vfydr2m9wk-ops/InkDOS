@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "documents",
   "name": "Documents",
-  "description": "Basic DOCX creation, editing and copy export.",
+  "description": "Create, edit and save DOCX copies locally.",
   "version": "0.20.3.1",
   "enabled": true,
   "optional": false,

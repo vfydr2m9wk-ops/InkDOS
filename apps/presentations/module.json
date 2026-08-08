@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "presentations",
   "name": "Presentations",
-  "description": "Basic PPTX editing and presentation with best-effort compatibility.",
+  "description": "Create, edit and present PPTX files locally.",
   "version": "0.20.3.1",
   "enabled": true,
   "optional": false,

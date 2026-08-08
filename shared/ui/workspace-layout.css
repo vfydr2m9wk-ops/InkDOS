@@ -520,7 +520,7 @@ body.office-pdf .viewer-app {
     var(--inkdesk-statusbar-height) !important;
 }
 
-body.office-pdf .start-screen {
+body.office-pdf .start-screen:not(.hidden) {
   display: grid !important;
   place-items: center !important;
   padding:

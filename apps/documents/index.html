@@ -45,12 +45,6 @@
       </div>
 
       <div class="right-tools">
-        <button id="zoomOut" class="icon-btn" title="Zoom out" aria-label="Zoom out">−</button>
-        <button id="zoomLabel" class="zoom-label" title="Reset zoom">100%</button>
-        <button id="zoomIn" class="icon-btn" title="Zoom in" aria-label="Zoom in">+</button>
-        <button id="fitWidth" class="icon-btn wide-icon" title="Fit width" aria-label="Fit width">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><path d="M8 12h8M10 10l-2 2 2 2M14 10l2 2-2 2"/></svg>
-        </button>
         <button id="saveBtn" class="icon-btn" title="Save" aria-label="Save" disabled>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg>
         </button>
@@ -106,7 +100,7 @@
             <button id="newWelcomeBtn" class="open-primary new-primary" type="button"><span class="new-plus" aria-hidden="true">+</span><span>New document</span></button>
             <label class="open-primary open-document-primary" for="fileInput"><span class="open-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3z"/><path d="M3 9h18"/></svg></span><span>Open document</span></label>
           </div>
-          <p class="support-note">Basic DOCX workflows · best-effort layout · saving exports a new copy</p>
+          <p class="support-note">DOCX · Local editing · Saving creates a new copy</p>
         </div>
         <div id="pagesHost" class="pages-host" aria-live="polite"></div>
       </main>
@@ -115,6 +109,15 @@
     <footer class="statusbar">
       <span id="statusText">Ready</span>
       <span id="pageStatus">—</span>
+      <span class="status-spacer"></span>
+      <div class="document-zoom" aria-label="Document zoom">
+        <button id="zoomOut" class="icon-btn" title="Zoom out" aria-label="Zoom out">−</button>
+        <button id="zoomLabel" class="zoom-label" title="Reset zoom">100%</button>
+        <button id="zoomIn" class="icon-btn" title="Zoom in" aria-label="Zoom in">+</button>
+        <button id="fitWidth" class="icon-btn wide-icon" title="Fit width" aria-label="Fit width">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><path d="M8 12h8M10 10l-2 2 2 2M14 10l2 2-2 2"/></svg>
+        </button>
+      </div>
     </footer>
   </div>
   <script src="../../shared/vendor/pako_inflate.min.js?v=1.0.11"></script>

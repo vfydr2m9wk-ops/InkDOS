@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "epub",
   "name": "EPUB Reader",
-  "description": "A local purple-book reader with lateral pages, text sizing, themes, contents and simple images.",
+  "description": "Read local EPUB books with pages, themes and contents.",
   "version": "0.20.3.1",
   "enabled": true,
   "optional": true,

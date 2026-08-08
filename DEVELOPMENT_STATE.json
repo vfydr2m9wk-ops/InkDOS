@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 35,
+  "appliedSequence": 36,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -180,6 +180,11 @@
       "sequence": 35,
       "packageLabel": "0.20.3.1",
       "description": "Content Workspaces Visual Pass. Builds on the validated v0.20.3.0 visual foundation with a last-loaded presentation-only layer for Documents, Plain Text and EPUB. Refines Documents toolbar/sidebar/page hierarchy, TXT writing surfaces and EPUB reader/navigation hierarchy while preserving the v0.20.2.31 structural/data-safety baseline. No parser, writer, recovery, formula, history, transactional document-state or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 36,
+      "packageLabel": "0.20.3.1",
+      "description": "Content Workspaces Visual Pass correction revision 2. Replaces the failed revision 1 without consuming a new update sequence. It preserves the v0.20.2.31 data-safety baseline and application version 0.20.3.1, retains all intended visual changes from revision 1, and fixes the PDF start-screen CSS cascade so the hidden empty state cannot intercept navigation controls after a PDF is opened. No parser, writer, recovery, formula, history, or workflow logic is changed. Sequence remains 36 because the prior transaction rolled back and the repository remains on sequence 35."
     }
   ]
 }

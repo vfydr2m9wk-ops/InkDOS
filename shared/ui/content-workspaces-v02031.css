@@ -2,7 +2,6 @@
  * Presentation-only refinement for content-centric workspaces.
  * No document state, file I/O, recovery or editor behavior is owned here.
  */
-
 /* Shared content-workspace details. */
 body.office-documents,
 body.office-txt,
@@ -13,7 +12,6 @@ body.office-epub{
   --content-hairline:color-mix(in srgb,var(--ink-text) 11%,transparent);
   --content-shadow:0 14px 34px rgba(20,28,40,.10);
 }
-
 body.office-documents :where(.title-input),
 body.office-txt :where(.file-title-input),
 body.office-epub :where(.file-title-input){
@@ -38,7 +36,6 @@ body.office-epub :where(.file-title-input):focus{
   background:var(--ink-surface);
   box-shadow:0 0 0 3px color-mix(in srgb,var(--ink-accent) 12%,transparent);
 }
-
 body.office-documents :where(.welcome-card),
 body.office-txt :where(.txt-start-card),
 body.office-epub :where(.epub-start-card){
@@ -62,7 +59,6 @@ body.office-epub :where(.epub-start-card) p{
   font-size:13px;
   line-height:1.55;
 }
-
 /* Documents — calmer document chrome with clearer editing hierarchy. */
 body.office-documents .topbar{
   padding-inline:8px;
@@ -218,11 +214,9 @@ body.office-documents .statusbar{
   background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
   font-variant-numeric:tabular-nums;
 }
-
 body.office-documents .app-shell{
   grid-template-rows:44px 40px 28px minmax(0,1fr) 25px!important;
 }
-
 /* TXT — focused writing surface with low-noise controls. */
 body.office-txt .txt-titlebar{
   box-shadow:none;
@@ -317,7 +311,6 @@ body.office-txt .txt-statusbar > span:not(.status-spacer) + span:not(.status-spa
   padding-left:12px;
   border-left:1px solid var(--ink-edge);
 }
-
 /* EPUB — book-first reading surface with quieter navigation. */
 body.office-epub .epub-titlebar{
   box-shadow:none;
@@ -447,7 +440,6 @@ body.office-epub .reader-statusbar{
   padding-inline:12px;
   background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
 }
-
 /* Narrow refinement: preserve every command while reducing chrome pressure. */
 @media(max-width:760px){
   body.office-documents .workspace{grid-template-columns:200px minmax(0,1fr)!important}
@@ -464,7 +456,6 @@ body.office-epub .reader-statusbar{
   body.office-epub .page-surface{border-radius:10px}
   body.office-epub .page-content{padding:30px 22px}
 }
-
 @media(max-width:520px){
   body.office-documents .word-badge{display:none}
   body.office-documents .document-title{gap:4px}
@@ -472,7 +463,6 @@ body.office-epub .reader-statusbar{
   body.office-txt .txt-statusbar #characterCount{display:none}
   body.office-epub .theme-controls{gap:2px}
 }
-
 @media(pointer:coarse){
   body.office-documents .formatbar select,
   body.office-documents .fmt-btn,
@@ -484,7 +474,6 @@ body.office-epub .reader-statusbar{
   body.office-epub .theme-dot{width:28px;height:28px}
   body.office-epub .page-arrow{width:44px;height:44px}
 }
-
 @media(prefers-reduced-motion:reduce){
   body.office-documents *,
   body.office-txt *,
@@ -492,3 +481,14 @@ body.office-epub .reader-statusbar{
     scroll-behavior:auto!important;
   }
 }
+body.office-documents .word-badge{font-size:0!important;background:url("../../assets/icons/documents.svg") center/cover no-repeat!important}
+body.office-documents .welcome-icon{font-size:0!important;background:url("../../assets/icons/documents.svg") center/cover no-repeat!important}
+body.office-documents .statusbar{min-height:34px!important;height:34px!important;display:flex!important;align-items:center!important;gap:10px!important;padding:0 10px!important;font-size:11px!important}
+body.office-documents .statusbar .status-spacer{flex:1}body.office-documents .document-zoom{display:flex;align-items:center;gap:4px}
+body.office-documents .document-zoom .icon-btn{width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;border:1px solid var(--ink-edge)!important;border-radius:999px!important}
+body.office-documents .document-zoom .zoom-label{height:26px!important;min-width:48px!important;padding:0 8px!important;border:1px solid var(--ink-edge)!important;background:var(--content-control)!important;font-size:11px!important}
+body.office-documents .document-zoom .wide-icon{border-radius:8px!important}body.office-documents .app-shell{grid-template-rows:44px 40px 28px minmax(0,1fr) 34px!important}
+body.office-txt .txt-toolbar,body.office-epub .reader-toolbar{min-height:40px!important;height:40px!important;padding-top:3px!important;padding-bottom:3px!important}
+body.office-txt .txt-statusbar,body.office-epub .reader-statusbar{min-height:30px!important;height:30px!important;font-size:11px!important}
+body.office-txt .editor-shell{width:min(940px,100%)!important;border-radius:12px!important}body.office-txt #editor{padding:36px clamp(28px,5vw,54px)!important}
+body.office-epub .page-surface{border-radius:12px!important}body.office-epub .page-content{max-width:740px!important}

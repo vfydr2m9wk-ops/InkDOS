@@ -31,7 +31,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/documents/index.html\"]#1",
-      "label": "D Documents DOCX \u203a",
+      "label": "D Documents DOCX ›",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -44,7 +44,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/spreadsheets/index.html\"]#1",
-      "label": "S Spreadsheets XLS \u00b7 XLSX \u203a",
+      "label": "S Spreadsheets XLS · XLSX ›",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -57,7 +57,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/presentations/index.html\"]#1",
-      "label": "P Presentations PPTX \u203a",
+      "label": "P Presentations PPTX ›",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -70,7 +70,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/pdf/index.html\"]#1",
-      "label": "PDF PDF Workspace PDF \u203a",
+      "label": "PDF PDF Workspace PDF ›",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -83,7 +83,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/txt/index.html\"]#1",
-      "label": "TXT Plain Text TXT \u203a",
+      "label": "TXT Plain Text TXT ›",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -96,7 +96,7 @@
       "module": "home",
       "source": "index.html",
       "selector": "a[href=\"./apps/epub/index.html\"]#1",
-      "label": "EPUB EPUB Reader EPUB \u203a",
+      "label": "EPUB EPUB Reader EPUB ›",
       "element": "a",
       "coverage": "automated",
       "evidence": [
@@ -231,46 +231,6 @@
       "evidence": []
     },
     {
-      "key": "documents.zoomout",
-      "module": "documents",
-      "source": "apps/documents/index.html",
-      "selector": "#zoomOut",
-      "label": "Zoom out",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "documents.zoomlabel",
-      "module": "documents",
-      "source": "apps/documents/index.html",
-      "selector": "#zoomLabel",
-      "label": "Reset zoom",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "documents.zoomin",
-      "module": "documents",
-      "source": "apps/documents/index.html",
-      "selector": "#zoomIn",
-      "label": "Zoom in",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "documents.fitwidth",
-      "module": "documents",
-      "source": "apps/documents/index.html",
-      "selector": "#fitWidth",
-      "label": "Fit width",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
       "key": "documents.savebtn",
       "module": "documents",
       "source": "apps/documents/index.html",
@@ -358,7 +318,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyLeft\"]",
-      "label": "\u2261",
+      "label": "≡",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -368,7 +328,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyCenter\"]",
-      "label": "\u2263",
+      "label": "≣",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -378,7 +338,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyRight\"]",
-      "label": "\u2261",
+      "label": "≡",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -388,7 +348,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"justifyFull\"]",
-      "label": "\u2630",
+      "label": "☰",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -398,7 +358,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"insertUnorderedList\"]",
-      "label": "\u2022 List",
+      "label": "• List",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -508,7 +468,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "#prevHit",
-      "label": "\u2191",
+      "label": "↑",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -518,7 +478,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "#nextHit",
-      "label": "\u2193",
+      "label": "↓",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -543,6 +503,46 @@
       "selector": "label[for=\"fileInput\"]",
       "label": "Open document",
       "element": "label",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomout",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomOut",
+      "label": "Zoom out",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomlabel",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomLabel",
+      "label": "Reset zoom",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomin",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomIn",
+      "label": "Zoom in",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.fitwidth",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#fitWidth",
+      "label": "Fit width",
+      "element": "button",
       "coverage": "scheduled",
       "evidence": []
     },
@@ -1113,7 +1113,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#addSlideBtn",
-      "label": "New slide \u25be",
+      "label": "New slide ▾",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1197,7 +1197,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#alignLeft",
-      "label": "\u21e4",
+      "label": "⇤",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1209,7 +1209,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#alignCenter",
-      "label": "\u2261",
+      "label": "≡",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1221,7 +1221,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#alignRight",
-      "label": "\u21e5",
+      "label": "⇥",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1369,7 +1369,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#zoomOutBtn",
-      "label": "\u2212",
+      "label": "−",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1745,66 +1745,6 @@
       "evidence": []
     },
     {
-      "key": "pdf.prevpage",
-      "module": "pdf",
-      "source": "apps/pdf/index.html",
-      "selector": "#prevPage",
-      "label": "Previous page",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "pdf.pagenumber",
-      "module": "pdf",
-      "source": "apps/pdf/index.html",
-      "selector": "#pageNumber",
-      "label": "Page number",
-      "element": "input",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "pdf.nextpage",
-      "module": "pdf",
-      "source": "apps/pdf/index.html",
-      "selector": "#nextPage",
-      "label": "Next page",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "pdf.zoomout",
-      "module": "pdf",
-      "source": "apps/pdf/index.html",
-      "selector": "#zoomOut",
-      "label": "Zoom out",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "pdf.zoomselect",
-      "module": "pdf",
-      "source": "apps/pdf/index.html",
-      "selector": "#zoomSelect",
-      "label": "Zoom",
-      "element": "select",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "pdf.zoomin",
-      "module": "pdf",
-      "source": "apps/pdf/index.html",
-      "selector": "#zoomIn",
-      "label": "Zoom in",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
       "key": "pdf.verticalscroll",
       "module": "pdf",
       "source": "apps/pdf/index.html",
@@ -1940,6 +1880,66 @@
       "source": "apps/pdf/index.html",
       "selector": "[data-tab=\"comments\"]",
       "label": "Comments",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.prevpage",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#prevPage",
+      "label": "Previous page",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.pagenumber",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#pageNumber",
+      "label": "Page number",
+      "element": "input",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.nextpage",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#nextPage",
+      "label": "Next page",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.zoomout",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#zoomOut",
+      "label": "Zoom out",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.zoomselect",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#zoomSelect",
+      "label": "Zoom",
+      "element": "select",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "pdf.zoomin",
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#zoomIn",
+      "label": "Zoom in",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []

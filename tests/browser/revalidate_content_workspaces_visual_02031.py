@@ -125,13 +125,13 @@ def main() -> int:
     assert docs_mobile_grid.split()[0] == "200px", result
     assert result["documents_page_shadow_present"], result
     assert result["documents_save_emphasized"], result
-    assert txt_toolbar_height == "42px", result
-    assert txt_editor_radius == "14px", result
-    assert txt_mobile_radius == "10px", result
+    assert txt_toolbar_height == "40px", result
+    assert txt_editor_radius == "12px", result
+    assert txt_mobile_radius == "12px", result
     assert result["txt_editor_shadow_present"], result
-    assert epub_toolbar_height == "42px", result
-    assert epub_surface_radius == "14px", result
-    assert epub_mobile_radius == "10px", result
+    assert epub_toolbar_height == "40px", result
+    assert epub_surface_radius == "12px", result
+    assert epub_mobile_radius == "12px", result
     assert epub_arrow_size == ("40px", "40px"), result
     assert epub_grid.split()[0] == "44px", result
     print(json.dumps(result, indent=2))

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "pdf",
   "name": "PDF Workspace",
-  "description": "Local PDF rendering, forms, navigation and a private review layer.",
+  "description": "Read, navigate and review PDF files locally.",
   "version": "0.20.3.1",
   "enabled": true,
   "optional": false,
