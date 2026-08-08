@@ -302,10 +302,11 @@ body.office-txt #editor{
   letter-spacing:.002em;
 }
 body.office-txt .txt-statusbar{
-  min-height:30px;
+  min-height:34px;
+  height:34px;
   gap:12px;
   padding-inline:12px;
-  background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
+  background:var(--ink-surface-raised);
 }
 body.office-txt .txt-statusbar > span:not(.status-spacer) + span:not(.status-spacer){
   padding-left:12px;
@@ -327,25 +328,29 @@ body.office-epub .save-btn:not(:disabled){
   color:#fff!important;
 }
 body.office-epub .reader-toolbar{
-  min-height:42px;
-  gap:10px;
-  padding:4px 10px;
+  min-height:36px;
+  height:36px;
+  gap:8px;
+  padding:2px 10px;
   background:var(--content-panel);
 }
 body.office-epub .size-controls,
 body.office-epub .theme-controls{
-  min-height:32px;
+  min-height:30px;
+  height:30px;
   display:flex;
   align-items:center;
   gap:3px;
-  padding:2px 4px;
+  padding:1px 3px;
   border:1px solid var(--ink-edge);
-  border-radius:9px;
+  border-radius:8px;
   background:var(--content-control);
 }
 body.office-epub .size-controls .tool-btn{
-  min-height:28px;
-  min-width:36px;
+  min-height:28px!important;
+  height:28px!important;
+  min-width:34px;
+  padding-inline:6px;
   border:0;
   background:transparent;
   box-shadow:none;
@@ -358,8 +363,8 @@ body.office-epub #fontSizeLabel{
   text-align:center;
 }
 body.office-epub .theme-dot{
-  width:24px;
-  height:24px;
+  width:22px;
+  height:22px;
   border-width:1px;
   box-shadow:0 1px 4px rgba(20,28,40,.10);
 }
@@ -435,11 +440,7 @@ body.office-epub .toc-item{
   border-radius:8px;
   font-size:12px;
 }
-body.office-epub .reader-statusbar{
-  min-height:30px;
-  padding-inline:12px;
-  background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
-}
+body.office-epub .reader-statusbar{min-height:34px;height:34px;padding-inline:12px;background:var(--ink-surface-raised)}
 /* Narrow refinement: preserve every command while reducing chrome pressure. */
 @media(max-width:760px){
   body.office-documents .workspace{grid-template-columns:200px minmax(0,1fr)!important}
@@ -469,9 +470,10 @@ body.office-epub .reader-statusbar{
   body.office-txt .txt-toolbar .tool-btn,
   body.office-txt .font-size-control select,
   body.office-epub .size-controls .tool-btn{
-    min-height:38px;
+    min-height:28px!important;
+    height:28px!important;
   }
-  body.office-epub .theme-dot{width:28px;height:28px}
+  body.office-epub .theme-dot{width:24px;height:24px}
   body.office-epub .page-arrow{width:44px;height:44px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -488,7 +490,8 @@ body.office-documents .statusbar .status-spacer{flex:1}body.office-documents .do
 body.office-documents .document-zoom .icon-btn{width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;border:1px solid var(--ink-edge)!important;border-radius:999px!important}
 body.office-documents .document-zoom .zoom-label{height:26px!important;min-width:48px!important;padding:0 8px!important;border:1px solid var(--ink-edge)!important;background:var(--content-control)!important;font-size:11px!important}
 body.office-documents .document-zoom .wide-icon{border-radius:8px!important}body.office-documents .app-shell{grid-template-rows:44px 40px 28px minmax(0,1fr) 34px!important}
-body.office-txt .txt-toolbar,body.office-epub .reader-toolbar{min-height:40px!important;height:40px!important;padding-top:3px!important;padding-bottom:3px!important}
-body.office-txt .txt-statusbar,body.office-epub .reader-statusbar{min-height:30px!important;height:30px!important;font-size:11px!important}
+body.office-txt .txt-toolbar{min-height:40px!important;height:40px!important;padding-top:3px!important;padding-bottom:3px!important}
+body.office-epub .reader-toolbar{min-height:36px!important;height:36px!important;padding-top:2px!important;padding-bottom:2px!important}
+body.office-txt .txt-statusbar,body.office-epub .reader-statusbar{min-height:34px!important;height:34px!important;font-size:11px!important}
 body.office-txt .editor-shell{width:min(940px,100%)!important;border-radius:12px!important}body.office-txt #editor{padding:36px clamp(28px,5vw,54px)!important}
 body.office-epub .page-surface{border-radius:12px!important}body.office-epub .page-content{max-width:740px!important}

@@ -52,6 +52,8 @@ class ContentWorkspacesVisual02031Tests(unittest.TestCase):
         self.assertIn("@media(max-width:760px)", text)
         self.assertIn("@media(max-width:520px)", text)
         self.assertIn("@media(pointer:coarse)", text)
+        self.assertIn("body.office-epub .reader-toolbar{min-height:36px!important;height:36px!important", text)
+        self.assertIn("body.office-txt .txt-statusbar,body.office-epub .reader-statusbar{min-height:34px!important;height:34px!important", text)
         self.assertIn("@media(prefers-reduced-motion:reduce)", text)
 
 

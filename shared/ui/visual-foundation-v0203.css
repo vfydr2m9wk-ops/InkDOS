@@ -423,3 +423,50 @@ body.office-spreadsheets .toolbar button,body.office-spreadsheets .toolbar selec
 body.office-pdf .pdf-bottom-nav .tool-btn{min-height:30px!important}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* 0.20.3.1 visual polish — shared chrome geometry, iPad-safe viewport anchoring. */
+body.office-product :where(.statusbar,.txt-statusbar,.reader-statusbar,footer){
+  min-height:34px!important;height:34px!important;background:var(--ink-surface-raised)!important;
+  border-top:1px solid var(--ink-edge)!important;box-shadow:0 -1px 0 rgba(255,255,255,.32) inset!important;
+}
+body.office-spreadsheets .titlebar{
+  display:grid!important;grid-template-columns:minmax(170px,1fr) minmax(150px,auto) minmax(170px,1fr)!important;
+  align-items:center!important;padding-inline:12px!important;
+}
+body.office-spreadsheets .titlebar .left{min-width:0!important;padding-right:0!important;justify-self:start!important}
+body.office-spreadsheets .document-title{
+  position:static!important;left:auto!important;top:auto!important;transform:none!important;
+  justify-self:center!important;max-width:min(48vw,560px)!important;
+}
+body.office-spreadsheets .titlebar .right{
+  position:static!important;right:auto!important;top:auto!important;transform:none!important;
+  min-width:0!important;width:auto!important;justify-self:end!important;
+}
+body.office-spreadsheets #saveBtn{width:32px!important;height:32px!important;min-width:32px!important}
+body.office-spreadsheets main{height:calc(100% - 44px - 40px - 38px - 34px)!important}
+
+body.office-presentations .app{height:100dvh!important;max-height:100dvh!important;grid-template-rows:44px 38px 40px minmax(0,1fr) minmax(112px,20vh) 34px!important}
+body.office-presentations .app.hide-notes{grid-template-rows:44px 38px 40px minmax(0,1fr) 0 34px!important}
+body.office-presentations .workspace{min-width:0!important;overflow:hidden!important}
+body.office-presentations .slide-list{
+  position:relative!important;z-index:1!important;border-radius:0!important;box-shadow:none!important;
+}
+body.office-presentations .stage-wrap{position:relative!important;z-index:0!important;min-width:0!important;isolation:isolate}
+body.office-presentations .inspector{border-radius:0!important;box-shadow:none!important}
+body.office-product.office-presentations main.app > footer.statusbar{height:34px!important;min-height:34px!important;align-self:stretch!important}
+
+body.office-pdf .viewer-app{
+  height:100dvh!important;max-height:100dvh!important;min-height:0!important;
+  grid-template-rows:44px 42px minmax(0,1fr) 34px!important;overflow:hidden!important;
+}
+body.office-pdf .titlebar{position:relative!important;z-index:12!important;flex:0 0 44px}
+body.office-pdf .commandbar{position:relative!important;z-index:11!important}
+body.office-pdf .workspace-body{min-height:0!important;overflow:hidden!important}
+body.office-pdf .viewer-stage{min-height:0!important;overscroll-behavior:contain!important}
+body.office-pdf .statusbar{height:34px!important;min-height:34px!important;position:relative!important;z-index:12!important}
+body.office-pdf .pdf-save-note{display:none!important}
+
+@media(max-width:900px){
+  body.office-spreadsheets .titlebar{grid-template-columns:minmax(120px,1fr) minmax(120px,auto) minmax(120px,1fr)!important}
+  body.office-presentations .slide-list{box-shadow:none!important}
+}

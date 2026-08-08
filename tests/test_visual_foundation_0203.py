@@ -59,6 +59,16 @@ class VisualFoundation0203Tests(unittest.TestCase):
         self.assertIn("inkdesk-shell-v" + VERSION, worker)
         self.assertIn("./shared/ui/visual-foundation-v0203.css", worker)
 
+    def test_polish_contract_keeps_workspace_chrome_aligned(self):
+        text = CSS.read_text(encoding="utf-8")
+        self.assertIn("body.office-spreadsheets .titlebar{", text)
+        self.assertIn("grid-template-columns:minmax(170px,1fr) minmax(150px,auto) minmax(170px,1fr)!important", text)
+        self.assertIn("body.office-presentations .slide-list{", text)
+        self.assertIn("border-radius:0!important;box-shadow:none!important", text)
+        self.assertIn("body.office-product.office-presentations main.app > footer.statusbar{height:34px!important", text)
+        self.assertIn("height:100dvh!important;max-height:100dvh!important", text)
+        self.assertIn("body.office-pdf .pdf-save-note{display:none!important}", text)
+
     def test_visual_layer_does_not_define_data_or_editor_logic(self):
         text = CSS.read_text(encoding="utf-8").lower()
         for forbidden in ("indexeddb", "localstorage", "fetch(", "formulaengine", "undostack"):

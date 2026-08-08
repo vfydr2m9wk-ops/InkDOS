@@ -79,6 +79,7 @@ def main() -> int:
         txt_toolbar_height = px(page, ".txt-toolbar", "min-height")
         txt_editor_radius = px(page, ".editor-shell", "border-radius")
         txt_editor_shadow = px(page, ".editor-shell", "box-shadow")
+        txt_status_height = px(page, ".txt-statusbar", "height")
         page.set_viewport_size({"width": 390, "height": 780})
         txt_mobile_radius = px(page, ".editor-shell", "border-radius")
 
@@ -97,6 +98,7 @@ def main() -> int:
             px(page, ".page-arrow:first-child", "height"),
         )
         epub_grid = px(page, ".reader-shell", "grid-template-columns")
+        epub_status_height = px(page, ".reader-statusbar", "height")
         page.set_viewport_size({"width": 390, "height": 780})
         epub_mobile_radius = px(page, ".page-surface", "border-radius")
         browser.close()
@@ -111,11 +113,13 @@ def main() -> int:
         "txt_editor_radius": txt_editor_radius,
         "txt_mobile_radius": txt_mobile_radius,
         "txt_editor_shadow_present": txt_editor_shadow != "none",
+        "txt_status_height": txt_status_height,
         "epub_toolbar_min_height": epub_toolbar_height,
         "epub_surface_radius": epub_surface_radius,
         "epub_mobile_radius": epub_mobile_radius,
         "epub_arrow_size": epub_arrow_size,
         "epub_grid": epub_grid,
+        "epub_status_height": epub_status_height,
     }
     RESULT.parent.mkdir(parents=True, exist_ok=True)
     RESULT.write_text(json.dumps(result, indent=2), encoding="utf-8")
@@ -126,10 +130,12 @@ def main() -> int:
     assert result["documents_page_shadow_present"], result
     assert result["documents_save_emphasized"], result
     assert txt_toolbar_height == "40px", result
+    assert txt_status_height == "34px", result
     assert txt_editor_radius == "12px", result
     assert txt_mobile_radius == "12px", result
     assert result["txt_editor_shadow_present"], result
-    assert epub_toolbar_height == "40px", result
+    assert epub_toolbar_height == "36px", result
+    assert epub_status_height == "34px", result
     assert epub_surface_radius == "12px", result
     assert epub_mobile_radius == "12px", result
     assert epub_arrow_size == ("40px", "40px"), result
