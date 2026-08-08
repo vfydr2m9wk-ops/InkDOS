@@ -1,4 +1,4 @@
-"""Behavioral regression for InkDesk v0.20.2.18 functional corrections."""
+"""Behavioral regression for InkDesk v0.20.2.19 functional corrections."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.2.18"
+VERSION = "0.20.2.19"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -106,6 +106,29 @@ def test_presentation_rename(page, base_url, checks):
     checks.append("Presentations editable filename updates model/recovery state")
 
 
+
+def test_txt_interactions(page, base_url, checks):
+    goto(page, f"{base_url}/apps/txt/index.html")
+    assert_true(page.evaluate("() => !!window.InkDeskTxtHistoryController"), "TXT history controller did not load")
+    assert_true(page.evaluate("() => !!window.InkDeskTxtFindController"), "TXT find controller did not load")
+    page.click("#newStartBtn")
+    editor = page.locator("#editor")
+    editor.fill("alpha")
+    page.wait_for_timeout(240)
+    editor.press("End")
+    editor.type(" beta")
+    page.wait_for_timeout(240)
+    page.click("#undoBtn")
+    assert_true(editor.input_value() == "alpha", f"TXT Undo did not restore prior snapshot: {editor.input_value()!r}")
+    page.click("#redoBtn")
+    assert_true(editor.input_value() == "alpha beta", f"TXT Redo did not restore next snapshot: {editor.input_value()!r}")
+    page.click("#findBtn")
+    page.locator("#findInput").fill("beta")
+    page.click("#findNext")
+    selected = page.evaluate("() => [document.querySelector('#editor').selectionStart, document.querySelector('#editor').selectionEnd]")
+    assert_true(selected == [6, 10], f"TXT Find did not select beta: {selected}")
+    checks.append("TXT extracted history and Find interactions preserve behavior")
+
 def titlebar_height(page, selector):
     return page.locator(selector).evaluate("node => Math.round(node.getBoundingClientRect().height)")
 
@@ -141,6 +164,7 @@ def main():
                     test_home_and_pdf(page, base_url, report["checks"])
                     test_spreadsheet_rename(page, base_url, report["checks"])
                     test_presentation_rename(page, base_url, report["checks"])
+                    test_txt_interactions(page, base_url, report["checks"])
                 except Exception as error:
                     if "ERR_BLOCKED_BY_ADMINISTRATOR" in str(error):
                         report.update({"passed": True, "status": "not-performed", "environment_block": str(error)})

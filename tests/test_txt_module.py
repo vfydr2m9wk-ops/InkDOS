@@ -16,6 +16,8 @@ class TxtModuleTests(unittest.TestCase):
             "apps/txt/index.html",
             "apps/txt/styles.css",
             "apps/txt/app.js",
+            "apps/txt/history-controller.js",
+            "apps/txt/find-controller.js",
             "assets/icons/txt.svg",
             "assets/icons/txt.png",
             "docs/TXT_EDITOR.md",
@@ -59,12 +61,28 @@ class TxtModuleTests(unittest.TestCase):
             self.assertIn(marker, html)
 
         self.assertIn(
-            "../../shared/file-lifecycle.js?v=0.20.2.18",
+            "../../shared/file-lifecycle.js?v=0.20.2.19",
             html,
         )
         self.assertIn(
-            "../../shared/file-router.js?v=0.20.2.18",
+            "../../shared/file-router.js?v=0.20.2.19",
             html,
+        )
+        self.assertIn(
+            'history-controller.js?v=0.20.2.19',
+            html,
+        )
+        self.assertIn(
+            'find-controller.js?v=0.20.2.19',
+            html,
+        )
+        self.assertLess(
+            html.index('history-controller.js?v=0.20.2.19'),
+            html.index('app.js?v=0.20.2.19'),
+        )
+        self.assertLess(
+            html.index('find-controller.js?v=0.20.2.19'),
+            html.index('app.js?v=0.20.2.19'),
         )
 
     def test_runtime_opens_saves_and_warns(self):
@@ -123,6 +141,8 @@ class TxtModuleTests(unittest.TestCase):
             "./apps/txt/index.html",
             "./apps/txt/styles.css",
             "./apps/txt/app.js",
+            "./apps/txt/history-controller.js",
+            "./apps/txt/find-controller.js",
         ):
             self.assertIn(repr(asset), worker)
         self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
@@ -157,6 +177,10 @@ class TxtModuleTests(unittest.TestCase):
 
         for relative in (
             "apps/txt/app.js",
+            "apps/txt/history-controller.js",
+            "apps/txt/find-controller.js",
+            "apps/txt/history-controller.js",
+            "apps/txt/find-controller.js",
             "shared/file-router.js",
             "modules/module-registry.js",
         ):

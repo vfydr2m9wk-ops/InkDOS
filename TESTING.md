@@ -1,4 +1,7 @@
-## v0.20.2.18 shared workspace contract consolidation
+## v0.20.2.19 TXT editor interaction decomposition
+
+The v0.20.2.19 gate keeps the existing full suite and 17 Chromium scripts, and extends the TXT path to verify the extracted history/Find controllers load before `app.js`, Undo/Redo restores text, and Find still selects the expected match.
+
 
 The hosted package gate must preserve the complete behavior suite and verify that workspace module detection, session preference resolution and layout-ready notification are owned by `shared/ui/workspace-panel-controller.js`, while `shared/ui/workspace-layout.js` stays below 500 lines and retains its compatibility delegates. Expected unit/package count: 271. Expected Chromium regression count: 17/17.
 

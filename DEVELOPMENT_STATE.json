@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 20,
-  "currentPackage": "0.20.2.18",
+  "appliedSequence": 21,
+  "currentPackage": "0.20.2.19",
   "status": "in-progress",
   "history": [
     {
@@ -105,6 +105,11 @@
       "sequence": 20,
       "packageLabel": "0.20.2.18",
       "description": "Shared workspace contract consolidation: move workspace module detection, session-backed panel preference resolution and workspace-layout-ready notification ownership into shared/ui/workspace-panel-controller.js. shared/ui/workspace-layout.js preserves its compatibility API through delegation and remains responsible for Documents ruler DOM synchronization; it drops below the normal 500-line ceiling and leaves grandfathered architecture debt. No visible UI, file-format, save, recovery or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 21,
+      "packageLabel": "0.20.2.19",
+      "description": "TXT editor interaction decomposition: move Plain Text Undo/Redo snapshot history into apps/txt/history-controller.js and Find bar/search interaction into apps/txt/find-controller.js. apps/txt/app.js retains file lifecycle, encoding, line-ending preservation, Save, counts, wrap and text-size controls and falls below the normal 500-line ceiling. No visible UI, file-format, save, dirty-state or workflow behavior is intentionally changed."
     }
   ]
 }

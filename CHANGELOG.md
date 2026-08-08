@@ -1,3 +1,11 @@
+## 0.20.2.19 — TXT Editor Interaction Decomposition (2026-08-07)
+
+- Extracted TXT Undo/Redo snapshot history to `apps/txt/history-controller.js`.
+- Extracted TXT Find bar/search behavior to `apps/txt/find-controller.js`.
+- Reduced `apps/txt/app.js` from 591 to 457 physical lines and removed its grandfathered architecture-debt entry.
+- Added deterministic load order, offline precache and permanent structural/behavioral coverage for both controllers.
+- No visible UI, encoding, line-ending, save, dirty-state or workflow behavior change is intended.
+
 ## 0.20.2.18 — Shared Workspace Contract Consolidation (2026-08-07)
 
 - Consolidated workspace module detection, session-backed panel preference resolution and layout-ready notification into `shared/ui/workspace-panel-controller.js`.

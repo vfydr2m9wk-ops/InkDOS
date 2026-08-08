@@ -1,4 +1,4 @@
-# Testing guide — InkDesk v0.20.2.18
+# Testing guide — InkDesk v0.20.2.19
 
 ## v0.20.2.17 Documents ruler interaction decomposition
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.18",
+  "release": "0.20.2.19",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -31,11 +31,6 @@
     "apps/txt/styles.css": {
       "maxLines": 417,
       "maxLongLines": 1,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
-    },
-    "apps/txt/app.js": {
-      "maxLines": 591,
-      "maxLongLines": 0,
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/presentations/styles.css": {

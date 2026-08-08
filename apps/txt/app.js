@@ -38,11 +38,7 @@
     loaded: false,
     fileName: 'Untitled.txt',
     lineEnding: '\n',
-    encoding: 'UTF-8',
-    history: [],
-    historyIndex: -1,
-    historyTimer: 0,
-    restoringHistory: false
+    encoding: 'UTF-8'
   };
 
   const lifecycle = global.InkDeskFileLifecycle.create({
@@ -124,93 +120,18 @@
       (text.length === 1 ? ' character' : ' characters');
   }
 
-  function updateHistoryButtons() {
-    E.undoBtn.disabled = state.historyIndex <= 0;
-    E.redoBtn.disabled =
-      state.historyIndex < 0 ||
-      state.historyIndex >= state.history.length - 1;
-  }
-
-  function snapshot() {
-    return {
-      value: E.editor.value,
-      start: E.editor.selectionStart,
-      end: E.editor.selectionEnd
-    };
-  }
-
-  function resetHistory() {
-    clearTimeout(state.historyTimer);
-    state.history = [snapshot()];
-    state.historyIndex = 0;
-    updateHistoryButtons();
-  }
-
-  function pushHistory() {
-    if (state.restoringHistory) return;
-
-    const next = snapshot();
-    const current = state.history[state.historyIndex];
-
-    if (
-      current &&
-      current.value === next.value &&
-      current.start === next.start &&
-      current.end === next.end
-    ) {
-      return;
-    }
-
-    state.history = state.history.slice(
-      0,
-      state.historyIndex + 1
-    );
-    state.history.push(next);
-
-    if (state.history.length > 80) {
-      state.history.shift();
-    } else {
-      state.historyIndex += 1;
-    }
-
-    updateHistoryButtons();
-  }
-
-  function scheduleHistory() {
-    clearTimeout(state.historyTimer);
-    state.historyTimer = setTimeout(pushHistory, 180);
-  }
-
-  function restoreHistory(index) {
-    if (index < 0 || index >= state.history.length) return;
-
-    state.restoringHistory = true;
-    state.historyIndex = index;
-
-    const item = state.history[index];
-    E.editor.value = item.value;
-    E.editor.setSelectionRange(item.start, item.end);
-
-    updateCounts();
-    updateHistoryButtons();
-
-    if (!lifecycle.shouldWarnBeforeUnload()) {
+  const historyController = global.InkDeskTxtHistoryController.createHistoryController({
+    editor: E.editor,
+    undoButton: E.undoBtn,
+    redoButton: E.redoBtn,
+    onRestore: updateCounts,
+    shouldWarnBeforeUnload: function () {
+      return lifecycle.shouldWarnBeforeUnload();
+    },
+    markDirty: function () {
       lifecycle.markDirty();
     }
-
-    setTimeout(function () {
-      state.restoringHistory = false;
-      E.editor.focus();
-    }, 0);
-  }
-
-  function undo() {
-    restoreHistory(state.historyIndex - 1);
-  }
-
-  function redo() {
-    restoreHistory(state.historyIndex + 1);
-  }
+  });
 
   function detectLineEnding(text) {
     if (text.includes('\r\n')) return '\r\n';
@@ -281,7 +202,7 @@
 
     showEditor();
     lifecycle.sourceOpened();
-    resetHistory();
+    historyController.reset();
     updateCounts();
     setStatus('New text file');
     E.editor.focus();
@@ -323,7 +244,7 @@
 
     showEditor();
     lifecycle.sourceOpened();
-    resetHistory();
+    historyController.reset();
     updateCounts();
 
     setStatus(
@@ -420,58 +341,24 @@
     setStatus('Text size ' + size);
   }
 
-  function showFind() {
-    E.findBar.hidden = false;
-    E.findBtn.classList.add('active');
-    E.findInput.focus();
-    E.findInput.select();
-  }
-
-  function hideFind() {
-    E.findBar.hidden = true;
-    E.findBtn.classList.remove('active');
-    E.findStatus.textContent = '';
-    E.editor.focus();
-  }
-
-  function findText(direction) {
-    const query = E.findInput.value;
-    if (!query) {
-      E.findStatus.textContent = 'Type a search';
-      return;
-    }
-
-    const source = E.editor.value.toLocaleLowerCase();
-    const needle = query.toLocaleLowerCase();
-    let index;
-
-    if (direction < 0) {
-      const before = Math.max(0, E.editor.selectionStart - 1);
-      index = source.lastIndexOf(needle, before);
-      if (index < 0) index = source.lastIndexOf(needle);
-    } else {
-      index = source.indexOf(needle, E.editor.selectionEnd);
-      if (index < 0) index = source.indexOf(needle);
-    }
-
-    if (index < 0) {
-      E.findStatus.textContent = 'No results';
-      return;
-    }
-
-    E.editor.focus();
-    E.editor.setSelectionRange(index, index + query.length);
-    E.findStatus.textContent =
-      (index + 1) + ' of ' + source.length;
-  }
+  const findController = global.InkDeskTxtFindController.createFindController({
+    editor: E.editor,
+    button: E.findBtn,
+    bar: E.findBar,
+    input: E.findInput,
+    previousButton: E.findPrevious,
+    nextButton: E.findNext,
+    closeButton: E.findClose,
+    status: E.findStatus
+  });
 
   E.newBtn.addEventListener('click', newDocument);
   E.newStartBtn.addEventListener('click', newDocument);
   E.openBtn.addEventListener('click', openPicker);
   E.openStartBtn.addEventListener('click', openPicker);
   E.saveBtn.addEventListener('click', saveDocument);
-  E.undoBtn.addEventListener('click', undo);
-  E.redoBtn.addEventListener('click', redo);
+  E.undoBtn.addEventListener('click', historyController.undo);
+  E.redoBtn.addEventListener('click', historyController.redo);
 
   E.fileInput.addEventListener('change', function () {
     const file = E.fileInput.files && E.fileInput.files[0];
@@ -491,7 +378,7 @@
     if (!lifecycle.shouldWarnBeforeUnload()) {
       lifecycle.markDirty();
     }
-    scheduleHistory();
+    historyController.schedule();
     updateCounts();
   });
 
@@ -520,27 +407,6 @@
     setFontSize(E.fontSize.value);
   });
 
-  E.findBtn.addEventListener('click', function () {
-    if (E.findBar.hidden) showFind();
-    else hideFind();
-  });
-  E.findPrevious.addEventListener('click', function () {
-    findText(-1);
-  });
-  E.findNext.addEventListener('click', function () {
-    findText(1);
-  });
-  E.findClose.addEventListener('click', hideFind);
-  E.findInput.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      findText(event.shiftKey ? -1 : 1);
-    } else if (event.key === 'Escape') {
-      event.preventDefault();
-      hideFind();
-    }
-  });
-
   global.addEventListener('keydown', function (event) {
     const modifier = event.ctrlKey || event.metaKey;
 
@@ -552,7 +418,7 @@
       event.key.toLocaleLowerCase() === 'f'
     ) {
       event.preventDefault();
-      showFind();
+      findController.show();
     }
   });
 
@@ -570,7 +436,7 @@
   setFontSize(16);
   showStart();
   updateCounts();
-  updateHistoryButtons();
+
 
   global.InkDeskTxtDebug = Object.freeze({
     version: '0.20.0',

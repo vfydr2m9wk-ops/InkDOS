@@ -145,3 +145,9 @@ The next shared-UI cut should finish the remaining ruler DOM synchronization/obs
 Workspace module detection, session-backed panel preference resolution and the `inkdesk:workspace-layout-ready` notification move into the existing `workspace-panel-controller.js`. `workspace-layout.js` retains the Documents ruler DOM synchronization/observer boundary and keeps its compatibility helper API through delegation. The file is now below 500 physical lines and its grandfathered debt entry is retired.
 
 This closes the current shared workspace-layout debt cycle. Further decomposition should be driven by a concrete maintenance or regression need rather than line count alone.
+
+### v0.20.2.19 — TXT editor interaction decomposition
+
+TXT snapshot-history/Undo/Redo ownership moves to `apps/txt/history-controller.js`; Find bar/search interaction moves to `apps/txt/find-controller.js`. File lifecycle, encoding, line-ending preservation, Save, counts, wrap and text-size behavior remain in `app.js`. This bounded workspace cleanup retires the inherited TXT app.js line-count debt without changing the visible editor.
+
+After this gate, only high-value cleanup should remain in 0.20.2.x. Do not chase every grandfathered file solely to reach zero debt; the transition to 0.20.3 should be based on behavioral stability and a frozen ownership map.
