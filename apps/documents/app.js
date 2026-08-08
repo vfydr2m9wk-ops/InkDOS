@@ -27,6 +27,7 @@ function showOpenError(error,file){
 }
 async function openFile(file){
  if(!file)return;if(!/\.docx$/i.test(file.name)){alert('This document editor currently supports DOCX files.');return}
+ if(dirty&&!confirm('This document has unsaved changes. Continue and discard them only if the new document opens successfully?')){fileInput.value='';status('Open canceled; unsaved document preserved');return}
  const previous={currentFile,currentFileName,currentBuffer,sourceContext,zoom,pages,currentPage,currentPageSpec,dirty,documentActive,history:[...history],historyIndex,mediaUrls,content:pagesHost.innerHTML,outlineItems:Array.from($('outlineList').querySelectorAll('.outline-item')).map(button=>({level:Number((button.className.match(/level-(\d+)/)||[])[1]||1),text:button.textContent,blockIndex:Number(button.dataset.blockIndex)})),title:$('titleText').value,welcomeHidden:welcome.classList.contains('hidden')};
  let parsed=null;
  setLoading('Opening '+file.name+'…');status('Reading document…');
@@ -73,7 +74,6 @@ function commitTitleRename(){
  if(recovery){recovery.updateFileName(name);recovery.markDirty()}
  status('File renamed to '+name);
 }
-
 
 function fileRecoveryKey(file){return 'file:'+[file.name,file.size,file.lastModified||0].join(':')}
 async function recoveryImageSource(src){
@@ -179,7 +179,7 @@ function updateRulerVisual(){
 }
 function applyRulerToSelection(rect){const b=selectionBlock();if(!b)return;const left=rulerPixelsToDocument(rulerState.left,rect),first=rulerPixelsToDocument(rulerState.first,rect),right=rulerPixelsToDocument(rulerState.right,rect);b.style.marginLeft=left+'px';b.style.textIndent=(first-left)+'px';b.style.marginRight=right+'px';setDirty(true);queueHistory()}
 function bindRuler(id,kind){const h=$(id),track=$('ruler').querySelector('.ruler-track');let down=false,startX=0,startLeft=0,startFirst=0;h.onpointerdown=e=>{down=true;startX=e.clientX;startLeft=rulerState.left;startFirst=rulerState.first;h.setPointerCapture(e.pointerId);e.preventDefault()};h.onpointermove=e=>{if(!down)return;const rect=track.getBoundingClientRect(),max=Math.max(0,rect.width),local=Math.max(0,Math.min(max,e.clientX-rect.left));if(kind==='first')rulerState.first=local;else if(kind==='hanging')rulerState.left=local;else if(kind==='left'){const delta=e.clientX-startX;rulerState.left=Math.max(0,Math.min(max,startLeft+delta));rulerState.first=Math.max(0,Math.min(max,startFirst+delta))}else if(kind==='right')rulerState.right=Math.max(0,Math.min(max,rect.right-e.clientX));updateRulerVisual();applyRulerToSelection(rect)};h.onpointerup=h.onpointercancel=()=>down=false}
-recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'documents',appVersion:'0.20.2.27',defaultFileName:'Untitled.docx',serialize:captureDocumentRecovery,restore:restoreDocumentRecovery,status:message=>{if(message&&/restored|failed/i.test(message))status(message)}}):null;
+recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'documents',appVersion:'0.20.2.28',defaultFileName:'Untitled.docx',serialize:captureDocumentRecovery,restore:restoreDocumentRecovery,status:message=>{if(message&&/restored|failed/i.test(message))status(message)}}):null;
 if(recovery){window.__InkDeskDocumentsRecovery={manager:recovery,capture:captureDocumentRecovery,restore:restoreDocumentRecovery};recovery.promptLatest()}
 updateRulerVisual()
 fileInput.addEventListener('change',e=>openFile(e.target.files[0]));$('newBtn').addEventListener('click',newDocument);$('newWelcomeBtn').addEventListener('click',newDocument);$('sidebarBtn').onclick=()=>document.querySelector('.workspace').classList.toggle('sidebar-hidden');$('zoomIn').onclick=()=>{zoom=Math.min(1.8,zoom+.1);applyZoom()};$('zoomOut').onclick=()=>{zoom=Math.max(.45,zoom-.1);applyZoom()};$('zoomLabel').onclick=()=>{zoom=1;applyZoom()};$('fitWidth').onclick=fitWidth;$('saveBtn').onclick=save;

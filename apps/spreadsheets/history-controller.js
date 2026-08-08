@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.27';
+  const VERSION = '0.20.2.28';
   const DEFAULT_LIMIT = 80;
 
   function clone(value) {

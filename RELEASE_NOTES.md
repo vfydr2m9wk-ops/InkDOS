@@ -1,14 +1,15 @@
-# InkDesk v0.20.2.27 — Recovery Source Rehydration and Metadata Continuity Hardening
+# InkDesk v0.20.2.28 — Documents Replacement Transaction Safety Hardening
 
-This release hardens recovery-source continuity across browser tabs and makes release metadata self-checking.
+This release closes a direct unsaved-document replacement path in the Documents workspace.
 
 ## Current release
 
-- Recovery snapshots can rehydrate a missing imported source package from the still-active editing session before the snapshot is committed.
-- Fresh clean-session sources are no longer deleted immediately as apparent orphans by another tab.
-- Recovery cleanup defers or rewrites safely when edits race with an in-flight cleanup.
-- Public release entry points are checked against `VERSION.json` so README/release-note drift fails validation.
+- Opening another DOCX while the active document is dirty now requires explicit discard confirmation.
+- Cancelling that confirmation leaves the edited DOCX and its dirty state untouched.
+- If the user confirms replacement but the selected DOCX fails to parse, the previous unsaved document is restored transactionally.
+- The regression suite now exercises both cancellation and confirmed-but-failed replacement against a deliberately modified DOCX.
+- No visual, formatting, ruler, DOCX writer or file-format behavior is intentionally changed.
 
-Full notes: [`docs/releases/RELEASE_NOTES_0.20.2.27.md`](docs/releases/RELEASE_NOTES_0.20.2.27.md)
+Full notes: [`docs/releases/RELEASE_NOTES_0.20.2.28.md`](docs/releases/RELEASE_NOTES_0.20.2.28.md)
 
 Historical notes: [`docs/releases/`](docs/releases/)

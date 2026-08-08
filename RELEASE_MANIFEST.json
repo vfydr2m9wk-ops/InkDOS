@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.27",
-  "releaseName": "Recovery Source Rehydration and Metadata Continuity Hardening",
+  "version": "0.20.2.28",
+  "releaseName": "Documents Replacement Transaction Safety Hardening",
   "releaseType": "Beta Stability Hardening Patch",
   "releaseDate": "2026-08-08",
   "entryPoints": {
@@ -37,14 +37,14 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "322 configured tests; local reconstruction 321/322 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
+    "structuralUnitTests": "candidate suite includes dedicated Documents replacement safety assertions; hosted main remains authoritative for PDF.js checksum bytes",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "17 configured; hosted Chromium remains authoritative. Local environment blocks loopback HTTP, so the v0.20.2.27 recovery scenario is configured but not performed locally.",
+    "browserRegressionScripts": "17 configured; transactional-open regression now covers dirty DOCX cancellation and confirmed failed replacement",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "extended: save -> unverified download retains dirty/recovery -> continue editing -> restore -> re-export fidelity",
     "browserMatrixRunner": "chromium, firefox, webkit",
@@ -69,7 +69,8 @@
     "spreadsheetFormulaDraftSafety": "pending formula drafts are guarded across Save/New/Open/before-unload; confirmed replacement resets drafts only after a replacement workbook parses successfully",
     "spreadsheetHistorySafety": "Undo/Redo actions retain their originating worksheet, workbook recalculation follows history restore, pending formula drafts guard history mutation, and recovery schema v3 preserves bounded Undo/Redo state",
     "spreadsheetExportConfirmationSafety": "recovery flush precedes XLSX download dispatch; unverified download requests retain dirty state and snapshots until explicit replacement/discard",
-    "releaseNotesOrganization": "historical RELEASE_NOTES_*.md files live under docs/releases/; root keeps RELEASE_NOTES.md only"
+    "releaseNotesOrganization": "historical RELEASE_NOTES_*.md files live under docs/releases/; root keeps RELEASE_NOTES.md only",
+    "documentsReplacementSafety": "dirty Documents Open requires explicit confirmation; cancellation and parse failure preserve the active unsaved DOCX"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

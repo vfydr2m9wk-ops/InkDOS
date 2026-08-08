@@ -167,7 +167,7 @@ cross-workspace coupling fails validation.
 
 - Browser validation now contains 14 isolated regression scripts, including a dedicated PDF page-rendering/navigation gate.
 
-## v0.20.2.27 recovery-source continuity
+## v0.20.2.28 recovery-source continuity
 
 - `tests/test_local_recovery.py` enforces source-only orphan grace, active-session source rehydration and race-aware snapshot cleanup.
 - `tests/browser/revalidate_v0202_local_recovery.py` now includes a fresh-source preservation and forced-source-loss/rehydration scenario without increasing the browser-script count.

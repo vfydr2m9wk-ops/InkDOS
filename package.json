@@ -1,6 +1,6 @@
 {
   "name": "inkdesk",
-  "version": "0.20.2.27",
+  "version": "0.20.2.28",
   "private": true,
   "description": "A lightweight local-first browser productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "scripts": {

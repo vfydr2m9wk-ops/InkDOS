@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
     def test_model_is_loaded_before_formula_interaction_controllers(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        model = 'formula-model.js?v=0.20.2.27'
-        session = 'formula-session.js?v=0.20.2.27'
-        reference = 'formula-reference.js?v=0.20.2.27'
-        editor = 'formula-editor.js?v=0.20.2.27'
+        model = 'formula-model.js?v=0.20.2.28'
+        session = 'formula-session.js?v=0.20.2.28'
+        reference = 'formula-reference.js?v=0.20.2.28'
+        editor = 'formula-editor.js?v=0.20.2.28'
         self.assertIn(model, html)
         self.assertLess(html.index(model), html.index(session))
         self.assertLess(html.index(session), html.index(reference))
@@ -57,7 +57,7 @@ class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-model.js');
-if (!api || api.version !== '0.20.2.27') process.exit(10);
+if (!api || api.version !== '0.20.2.28') process.exit(10);
 if (api.encodeColumn(0) !== 'A' || api.encodeColumn(25) !== 'Z' || api.encodeColumn(26) !== 'AA') process.exit(11);
 if (api.parenthesisDepth('=IF(A1="(",SUM(B1:B2),0') !== 1) process.exit(12);
 if (api.balanceFormula('=SUM(A1:A10') !== '=SUM(A1:A10)') process.exit(13);

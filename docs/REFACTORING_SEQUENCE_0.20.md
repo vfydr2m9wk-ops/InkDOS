@@ -216,3 +216,12 @@ This is a stability/maintenance step, not a visual or feature expansion.
 - Add release metadata consistency as a permanent validation invariant.
 
 This remains stability hardening; visual polish stays frozen until the data-safety pass is complete.
+
+### v0.20.2.28 — Documents replacement transaction safety hardening
+
+- Make the Documents runtime itself guard dirty DOCX replacement before `openFile()` starts parsing a new file.
+- Preserve the active unsaved document when replacement is cancelled.
+- Keep the previous unsaved document transactionally intact if a confirmed replacement fails to open.
+- Extend the existing transactional-open browser regression instead of adding another browser-script surface.
+
+This is a direct data-loss prevention fix discovered by audit. Further 0.20.2.x changes should continue only when a similarly concrete risk justifies the regression risk of touching stable code.

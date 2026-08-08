@@ -1,9 +1,9 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.2.27",
+  "version": "0.20.2.28",
   "releaseChannel": "beta",
-  "releaseName": "Recovery Source Rehydration and Metadata Continuity Hardening",
+  "releaseName": "Documents Replacement Transaction Safety Hardening",
   "date": "2026-08-08",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",

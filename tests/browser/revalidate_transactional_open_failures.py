@@ -45,12 +45,27 @@ def verify_docx(browser):
     ))
     page.set_input_files("#fileInput", str(fixture))
     page.wait_for_function("document.querySelector('#pagesHost').innerText.includes('ERA2-DOCX-MARKER')")
+    page.evaluate("""() => {
+      const target = document.querySelector('.page-content p');
+      target.append(document.createTextNode(' UNSAVED-DOCX-REPLACEMENT-GUARD'));
+      target.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertText', data: 'x'}));
+    }""")
+    page.wait_for_function("document.querySelector('#dirtyDot').classList.contains('visible')")
     before = page.locator("#pagesHost").inner_text()
+    dialogs = []
+    page.once("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.dismiss()))
+    page.set_input_files("#fileInput", {"name": "replacement.docx", "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "buffer": fixture.read_bytes()})
+    page.wait_for_function("document.querySelector('#statusText').textContent.includes('Open canceled')")
+    if page.locator("#pagesHost").inner_text() != before:
+        raise RuntimeError("DOCX unsaved state changed after replacement was canceled")
+    if not dialogs or "unsaved changes" not in dialogs[0].lower():
+        raise RuntimeError("DOCX replacement did not warn about unsaved changes")
+    page.once("dialog", lambda dialog: dialog.accept())
     page.set_input_files("#fileInput", {"name": "corrupt.docx", "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "buffer": CORRUPT_BYTES})
     page.wait_for_function("document.querySelector('#statusText').textContent.includes('previous document preserved')")
     after = page.locator("#pagesHost").inner_text()
     if before != after or page.locator("#titleText").input_value() != fixture.name:
-        raise RuntimeError("DOCX state changed after a failed open")
+        raise RuntimeError("DOCX state changed after a confirmed replacement failed to open")
     page.click("#dismissError")
     page.click("#saveBtn")
     page.wait_for_selector("#saveReadyPanel")

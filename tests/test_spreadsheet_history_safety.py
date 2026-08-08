@@ -15,7 +15,7 @@ class SpreadsheetHistorySafetyTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/history-controller.js');
-if (!api || api.version !== '0.20.2.27') process.exit(10);
+if (!api || api.version !== '0.20.2.28') process.exit(10);
 const history = api.create({limit:3});
 history.push({kind:'cells',entries:[{ref:'A1',before:null,after:{v:'one'}}]}, 0);
 history.push({kind:'cells',entries:[{ref:'B2',before:null,after:{v:'two'}}]}, 1);
@@ -42,8 +42,8 @@ if (limited.undo.length !== 3 || limited.undo[0].sheetIndex !== 2) process.exit(
 
     def test_spreadsheet_loads_history_before_app_and_harnesses_match(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        history = "history-controller.js?v=0.20.2.27"
-        app = "app.js?v=0.20.2.27"
+        history = "history-controller.js?v=0.20.2.28"
+        app = "app.js?v=0.20.2.28"
         self.assertIn(history, html)
         self.assertIn(app, html)
         self.assertLess(html.index(history), html.index(app))
@@ -93,7 +93,7 @@ if (limited.undo.length !== 3 || limited.undo[0].sheetIndex !== 2) process.exit(
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-safety.js');
-if (!api || api.version !== '0.20.2.27') process.exit(10);
+if (!api || api.version !== '0.20.2.28') process.exit(10);
 let pending = true;
 const safety = api.create({editor:()=>({hasPendingDrafts:()=>pending,reset:()=>{pending=false;}})});
 let message = '';

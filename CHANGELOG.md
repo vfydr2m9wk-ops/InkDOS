@@ -1,3 +1,11 @@
+## 0.20.2.28 — Documents Replacement Transaction Safety Hardening (2026-08-08)
+
+- Guard Documents Open against replacing an active DOCX with unsaved changes without explicit confirmation.
+- Keep the active edited DOCX untouched when replacement is cancelled.
+- Preserve the complete previous unsaved state when a confirmed replacement file fails to parse.
+- Extend the transactional DOCX Chromium regression to cover cancellation and failed replacement after a real edit.
+- Preserve frozen visual and DOCX editing/export behavior.
+
 ## 0.20.2.27 — Recovery Source Rehydration and Metadata Continuity Hardening (2026-08-08)
 
 - Retain imported source data in the active recovery manager and rehydrate a missing IndexedDB source record before the next recovery snapshot.

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 29,
-  "currentPackage": "0.20.2.27",
+  "appliedSequence": 30,
+  "currentPackage": "0.20.2.28",
   "status": "in-progress",
   "history": [
     {
@@ -150,6 +150,11 @@
       "sequence": 29,
       "packageLabel": "0.20.2.27",
       "description": "Recovery-source continuity hardening across tabs and cleanup races. Active imported source data can rehydrate a missing IndexedDB source before a new recovery snapshot; fresh source-only records receive an orphan grace period; snapshot cleanup is race-aware. Public release metadata and the Home shell are synchronized and permanently checked against VERSION.json."
+    },
+    {
+      "sequence": 30,
+      "packageLabel": "0.20.2.28",
+      "description": "Documents replacement transaction safety hardening. Dirty DOCX replacement now requires explicit confirmation before parsing starts; cancellation preserves the active unsaved document, and confirmed replacement remains transactional so parse failure restores the complete previous unsaved state. Existing transactional Chromium coverage now exercises both paths."
     }
   ]
 }

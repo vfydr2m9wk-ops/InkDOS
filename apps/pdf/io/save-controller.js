@@ -145,7 +145,7 @@
   }
 
   global.InkDeskPdfSaveController = Object.freeze({
-    version: '0.20.2.27',
+    version: '0.20.2.28',
     createSaveController
   });
 })(globalThis);

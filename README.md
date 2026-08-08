@@ -4,11 +4,11 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.27
+## InkDesk v0.20.2.28
 
-Version 0.20.2.27 hardens private recovery-source continuity across browser tabs and long-lived editing sessions. If the IndexedDB source record for an imported Office file disappears while the editor is still open, the next recovery snapshot can rehydrate that source from the active session before recording unsaved work.
+Version 0.20.2.28 hardens document replacement in the DOCX workspace. If a document contains unsaved edits, opening another DOCX now requires explicit confirmation before replacement begins. Cancelling the replacement leaves the current document untouched, and accepting replacement does not destroy the active document unless the new DOCX actually opens successfully.
 
-The release also adds a permanent consistency gate tying `README.md`, `RELEASE_NOTES.md`, the release-history index and `CHANGELOG.md` to `VERSION.json`, preventing the public repository metadata from silently lagging behind the runtime version. No visual layout or editing behavior is intentionally changed.
+This closes a direct data-loss path found during the post-recovery audit: Documents previously protected New, but Open could replace an edited document without an application-level dirty-state confirmation. No visual layout, DOCX rendering, formatting or export behavior is intentionally changed.
 
 ## Refactoring policy
 
@@ -46,7 +46,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.27 remains a beta. Real-device validation is still required for critical
+v0.20.2.28 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 
