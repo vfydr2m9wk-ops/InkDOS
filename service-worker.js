@@ -32,6 +32,7 @@ const APP_SHELL=[
   './shared/ui/visual-foundation.css',
   './shared/ui/visual-foundation-v0203.css',
   './shared/ui/content-workspaces-v02031.css',
+  './shared/ui/workspace-unification-v02031.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
   './shared/local-recovery.js',

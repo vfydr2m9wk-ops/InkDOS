@@ -32,6 +32,7 @@ SCRIPTS = [
     "revalidate_v02021_functional_corrections.py",
     "revalidate_visual_foundation_0203.py",
     "revalidate_content_workspaces_visual_02031.py",
+    "revalidate_workspace_unification_02031.py",
 ]
 
 

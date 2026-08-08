@@ -31,6 +31,11 @@
     wordCount: document.getElementById('wordCount'),
     characterCount: document.getElementById('characterCount'),
     encodingLabel: document.getElementById('encodingLabel'),
+    txtZoomOut: document.getElementById('txtZoomOut'),
+    txtZoomSlider: document.getElementById('txtZoomSlider'),
+    txtZoomIn: document.getElementById('txtZoomIn'),
+    txtFit: document.getElementById('txtFit'),
+    txtZoomLabel: document.getElementById('txtZoomLabel'),
     fileInput: document.getElementById('fileInput')
   };
 
@@ -38,7 +43,8 @@
     loaded: false,
     fileName: 'Untitled.txt',
     lineEnding: '\n',
-    encoding: 'UTF-8'
+    encoding: 'UTF-8',
+    workspaceZoom: 100
   };
 
   const lifecycle = global.InkDeskFileLifecycle.create({
@@ -343,6 +349,15 @@
     setStatus('Text size ' + size);
   }
 
+  function setWorkspaceZoom(value) {
+    const zoom = Math.max(50, Math.min(160, Math.round((Number(value) || 100) / 5) * 5));
+    state.workspaceZoom = zoom;
+    E.editorShell.style.zoom = String(zoom / 100);
+    E.txtZoomSlider.value = String(zoom);
+    E.txtZoomLabel.textContent = zoom + '%';
+  }
+
+
   const findController = global.InkDeskTxtFindController.createFindController({
     editor: E.editor,
     button: E.findBtn,
@@ -409,6 +424,11 @@
     setFontSize(E.fontSize.value);
   });
 
+  E.txtZoomOut.addEventListener('click', function () { setWorkspaceZoom(state.workspaceZoom - 10); });
+  E.txtZoomSlider.addEventListener('input', function () { setWorkspaceZoom(E.txtZoomSlider.value); });
+  E.txtZoomIn.addEventListener('click', function () { setWorkspaceZoom(state.workspaceZoom + 10); });
+  E.txtFit.addEventListener('click', function () { setWorkspaceZoom(100); });
+
   global.addEventListener('keydown', function (event) {
     const modifier = event.ctrlKey || event.metaKey;
 
@@ -436,6 +456,7 @@
   setTitle('Untitled.txt');
   setWrap(true);
   setFontSize(16);
+  setWorkspaceZoom(100);
   showStart();
   updateCounts();
 

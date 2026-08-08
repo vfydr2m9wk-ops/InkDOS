@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 37,
+  "appliedSequence": 38,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -190,6 +190,11 @@
       "sequence": 37,
       "packageLabel": "0.20.3.1",
       "description": "Visual polish pass 3. Standardizes 34 px workspace status bars after the Spreadsheets pattern; anchors the PDF titlebar/content/statusbar to the dynamic viewport so the top and bottom chrome remain visible on iPad; removes the long redundant PDF save note from the status bar; separates the Presentations thumbnail rail from the slide stage without overlay shadow/rounding and keeps its status bar in the viewport; aligns the Spreadsheets titlebar into the same three-zone geometry as Documents; and compacts the EPUB reading toolbar for coarse-pointer/touch layouts. No parser, writer, recovery, formula, history, transactional document-state, storage, export-format, or workflow logic is changed."
+    },
+    {
+      "sequence": 38,
+      "packageLabel": "0.20.3.1",
+      "description": "UI unification pass 4. Makes Documents the visual shell reference across editing workspaces while leaving the Launcher responsive behavior unchanged; reserves a stable Spreadsheets footer; standardizes bottom zoom controls as minus, slider, plus, Fit and percentage across Documents, Spreadsheets, Presentations, PDF, TXT and EPUB; keeps only the PDF command toolbar centered; makes Presentations thumbnails and the PDF navigation rail consume real layout columns so they push content instead of overlaying it; turns EPUB page-theme choices into small toolbar-integrated circles; and adopts an iPad-landscape baseline that expands workspace area and spacing on 16:9, 20:9 and ultrawide displays without scaling controls. Spreadsheet formula/grid/sheet-tab logic, parsers, writers, recovery, history, storage, export formats and transactional document state are unchanged."
     }
   ]
 }

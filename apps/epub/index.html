@@ -66,9 +66,16 @@
 
   <footer class="reader-statusbar">
     <span id="statusText" role="status" aria-live="polite">Ready</span>
-    <span class="status-spacer"></span>
     <span id="chapterLabel">No book</span>
     <span id="pageCounter">0 / 0</span>
+    <span class="status-spacer"></span>
+    <div class="workspace-zoom" aria-label="Reader zoom">
+      <button id="epubZoomOut" type="button" aria-label="Zoom out">−</button>
+      <input id="epubZoomSlider" type="range" min="50" max="160" step="5" value="100" aria-label="Zoom level">
+      <button id="epubZoomIn" type="button" aria-label="Zoom in">+</button>
+      <button id="epubFit" type="button" aria-label="Fit page">Fit</button>
+      <span id="epubZoomLabel" class="zoom-percent">100%</span>
+    </div>
   </footer>
 
   <input id="fileInput" type="file" accept=".epub,application/epub+zip" hidden>

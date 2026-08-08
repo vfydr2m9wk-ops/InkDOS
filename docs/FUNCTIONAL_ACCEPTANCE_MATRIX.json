@@ -8,9 +8,9 @@
     "manualPolicy": "Platform-specific behavior that cannot be automated is marked manual/not-performed, never inferred from Chromium."
   },
   "summary": {
-    "visibleControls": 212,
+    "visibleControls": 222,
     "coverageCounts": {
-      "scheduled": 124,
+      "scheduled": 134,
       "automated": 88
     },
     "capabilities": 17
@@ -517,14 +517,14 @@
       "evidence": []
     },
     {
-      "key": "documents.zoomlabel",
+      "key": "documents.zoomslider",
+      "coverage": "scheduled",
+      "evidence": [],
       "module": "documents",
       "source": "apps/documents/index.html",
-      "selector": "#zoomLabel",
-      "label": "Reset zoom",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
+      "selector": "#zoomSlider",
+      "label": "Zoom level",
+      "element": "input"
     },
     {
       "key": "documents.zoomin",
@@ -542,6 +542,16 @@
       "source": "apps/documents/index.html",
       "selector": "#fitWidth",
       "label": "Fit width",
+      "element": "button",
+      "coverage": "scheduled",
+      "evidence": []
+    },
+    {
+      "key": "documents.zoomlabel",
+      "module": "documents",
+      "source": "apps/documents/index.html",
+      "selector": "#zoomLabel",
+      "label": "Reset zoom",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -1925,14 +1935,14 @@
       "evidence": []
     },
     {
-      "key": "pdf.zoomselect",
+      "key": "pdf.pdfzoomslider",
+      "coverage": "scheduled",
+      "evidence": [],
       "module": "pdf",
       "source": "apps/pdf/index.html",
-      "selector": "#zoomSelect",
-      "label": "Zoom",
-      "element": "select",
-      "coverage": "scheduled",
-      "evidence": []
+      "selector": "#pdfZoomSlider",
+      "label": "Zoom level",
+      "element": "input"
     },
     {
       "key": "pdf.zoomin",
@@ -1943,6 +1953,16 @@
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
+    },
+    {
+      "key": "pdf.pdffitwidth",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "pdf",
+      "source": "apps/pdf/index.html",
+      "selector": "#pdfFitWidth",
+      "label": "Fit width",
+      "element": "button"
     },
     {
       "key": "pdf.immersiveexit",
@@ -2176,6 +2196,46 @@
       "evidence": []
     },
     {
+      "key": "txt.txtzoomout",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#txtZoomOut",
+      "label": "Zoom out",
+      "element": "button"
+    },
+    {
+      "key": "txt.txtzoomslider",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#txtZoomSlider",
+      "label": "Zoom level",
+      "element": "input"
+    },
+    {
+      "key": "txt.txtzoomin",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#txtZoomIn",
+      "label": "Zoom in",
+      "element": "button"
+    },
+    {
+      "key": "txt.txtfit",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "txt",
+      "source": "apps/txt/index.html",
+      "selector": "#txtFit",
+      "label": "Fit editor",
+      "element": "button"
+    },
+    {
       "key": "epub.inkdesk-home",
       "module": "epub",
       "source": "apps/epub/index.html",
@@ -2342,6 +2402,46 @@
         "tests/browser/revalidate_cross_workspace_isolation.py",
         "tests/browser/revalidate_launch_and_offline_modes.py"
       ]
+    },
+    {
+      "key": "epub.epubzoomout",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#epubZoomOut",
+      "label": "Zoom out",
+      "element": "button"
+    },
+    {
+      "key": "epub.epubzoomslider",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#epubZoomSlider",
+      "label": "Zoom level",
+      "element": "input"
+    },
+    {
+      "key": "epub.epubzoomin",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#epubZoomIn",
+      "label": "Zoom in",
+      "element": "button"
+    },
+    {
+      "key": "epub.epubfit",
+      "coverage": "scheduled",
+      "evidence": [],
+      "module": "epub",
+      "source": "apps/epub/index.html",
+      "selector": "#epubFit",
+      "label": "Fit page",
+      "element": "button"
     }
   ],
   "capabilities": [

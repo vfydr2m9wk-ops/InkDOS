@@ -112,11 +112,10 @@
       <span class="status-spacer"></span>
       <div class="document-zoom" aria-label="Document zoom">
         <button id="zoomOut" class="icon-btn" title="Zoom out" aria-label="Zoom out">−</button>
-        <button id="zoomLabel" class="zoom-label" title="Reset zoom">100%</button>
+        <input id="zoomSlider" type="range" min="45" max="180" step="5" value="100" aria-label="Zoom level">
         <button id="zoomIn" class="icon-btn" title="Zoom in" aria-label="Zoom in">+</button>
-        <button id="fitWidth" class="icon-btn wide-icon" title="Fit width" aria-label="Fit width">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><path d="M8 12h8M10 10l-2 2 2 2M14 10l2 2-2 2"/></svg>
-        </button>
+        <button id="fitWidth" class="icon-btn wide-icon" title="Fit width" aria-label="Fit width">Fit</button>
+        <button id="zoomLabel" class="zoom-label zoom-percent" title="Reset zoom">100%</button>
       </div>
     </footer>
   </div>

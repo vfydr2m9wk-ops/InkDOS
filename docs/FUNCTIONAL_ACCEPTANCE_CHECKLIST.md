@@ -2,7 +2,7 @@
 
 A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.
 
-Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: **0**
+Visible controls: **222** · Automated: **88** · Scheduled: **134** · Manual: **0**
 
 ## Controls
 
@@ -20,6 +20,7 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `a[href="./docs/PROJECT_STATUS.md"]#1` — Status — **scheduled**
 - ⬜ `a[href="./docs/KNOWN_LIMITATIONS.md"]#1` — Limitations — **scheduled**
 - ⬜ `a[href="./CONTRIBUTING.md"]#1` — Contribute — **scheduled**
+
 ### Documents
 
 - ⬜ `a[href="../../index.html"]#1` — Return to InkDesk home — **scheduled**
@@ -29,10 +30,6 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `#redoBtn` — Redo — **scheduled**
 - ⬜ `#sidebarBtn` — Toggle sidebar — **scheduled**
 - ⬜ `#titleText` — Document name — **scheduled**
-- ⬜ `#zoomOut` — Zoom out — **scheduled**
-- ⬜ `#zoomLabel` — Reset zoom — **scheduled**
-- ⬜ `#zoomIn` — Zoom in — **scheduled**
-- ⬜ `#fitWidth` — Fit width — **scheduled**
 - ✅ `#saveBtn` — Save — **automated** — tests/browser/revalidate_docx_three_eras.py; tests/browser/revalidate_v0202_local_recovery.py
 - ⬜ `#styleSelect` — Paragraph style — **scheduled**
 - ⬜ `#fontSelect` — Font — **scheduled**
@@ -60,6 +57,12 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `#nextHit` — ↓ — **scheduled**
 - ✅ `#newWelcomeBtn` — + New document — **automated** — tests/browser/revalidate_docx_three_eras.py; tests/browser/revalidate_v0202_local_recovery.py
 - ⬜ `label[for="fileInput"]` — Open document — **scheduled**
+- ⬜ `#zoomOut` — Zoom out — **scheduled**
+- ⬜ `#zoomSlider` — Zoom level — **scheduled**
+- ⬜ `#zoomIn` — Zoom in — **scheduled**
+- ⬜ `#fitWidth` — Fit width — **scheduled**
+- ⬜ `#zoomLabel` — Reset zoom — **scheduled**
+
 ### Spreadsheets
 
 - ⬜ `a[href="../../index.html"]#1` — Return to InkDesk home — **scheduled**
@@ -97,6 +100,7 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `#fitWidth` — Fit width — **scheduled**
 - ⬜ `#downloadBtn` — Save XLSX copy — **scheduled**
 - ⬜ `#closeSaveBtn` — Cancel — **scheduled**
+
 ### Presentations
 
 - ✅ `a[href="../../index.html"]#1` — Return to InkDesk home — **automated** — tests/browser/revalidate_presentations_controls.py
@@ -162,7 +166,8 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ✅ `#bottomFitBtn` — Fit slide — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#exitPresentBtn` — Exit presentation — **automated** — tests/browser/revalidate_presentations_slideshow.py
 - ✅ `#closeTemplateBtn` — Close — **automated** — tests/browser/revalidate_presentations_controls.py
-### Pdf
+
+### PDF
 
 - ⬜ `a[href="../../index.html"]#1` — Return to InkDesk home — **scheduled**
 - ⬜ `#openBtn` — Open PDF — **scheduled**
@@ -172,12 +177,6 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `#saveModifiedPdfBtn` — Save annotated PDF — **scheduled**
 - ⬜ `#fullscreenBtn` — Full screen — **scheduled**
 - ⬜ `#systemOpenBtn` — Open in system viewer — **scheduled**
-- ⬜ `#prevPage` — Previous page — **scheduled**
-- ⬜ `#pageNumber` — Page number — **scheduled**
-- ⬜ `#nextPage` — Next page — **scheduled**
-- ⬜ `#zoomOut` — Zoom out — **scheduled**
-- ⬜ `#zoomSelect` — Zoom — **scheduled**
-- ⬜ `#zoomIn` — Zoom in — **scheduled**
 - ⬜ `#verticalScroll` — Continuous vertical scrolling — **scheduled**
 - ⬜ `#horizontalScroll` — Horizontal document scrolling — **scheduled**
 - ⬜ `[data-tool="select"]` — Select PDF text or fill AcroForm fields — **scheduled**
@@ -192,11 +191,19 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `[data-tab="outline"]` — Index — **scheduled**
 - ⬜ `[data-tab="bookmarks"]` — Bookmarks — **scheduled**
 - ⬜ `[data-tab="comments"]` — Comments — **scheduled**
+- ⬜ `#prevPage` — Previous page — **scheduled**
+- ⬜ `#pageNumber` — Page number — **scheduled**
+- ⬜ `#nextPage` — Next page — **scheduled**
+- ⬜ `#zoomOut` — Zoom out — **scheduled**
+- ⬜ `#pdfZoomSlider` — Zoom level — **scheduled**
+- ⬜ `#zoomIn` — Zoom in — **scheduled**
+- ⬜ `#pdfFitWidth` — Fit width — **scheduled**
 - ⬜ `#immersiveExit` — Exit full screen — **scheduled**
 - ⬜ `#textDialogValue` — textDialogValue — **scheduled**
 - ⬜ `#dialogCancel` — Cancel — **scheduled**
 - ⬜ `button:insert#1` — Insert — **scheduled**
-### Txt
+
+### TXT
 
 - ⬜ `a[href="../../index.html"]#1` — InkDesk home — **scheduled**
 - ✅ `#newBtn` — New text file — **automated** — tests/test_txt_module.py; tests/browser/revalidate_cross_workspace_isolation.py
@@ -215,7 +222,12 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `#newStartBtn` — New text file — **scheduled**
 - ⬜ `#openStartBtn` — Open text file — **scheduled**
 - ⬜ `#editor` — Plain text editor — **scheduled**
-### Epub
+- ⬜ `#txtZoomOut` — Zoom out — **scheduled**
+- ⬜ `#txtZoomSlider` — Zoom level — **scheduled**
+- ⬜ `#txtZoomIn` — Zoom in — **scheduled**
+- ⬜ `#txtFit` — Fit editor — **scheduled**
+
+### EPUB
 
 - ⬜ `a[href="../../index.html"]#1` — InkDesk home — **scheduled**
 - ✅ `#openBtn` — Open EPUB — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
@@ -232,23 +244,27 @@ Visible controls: **212** · Automated: **88** · Scheduled: **124** · Manual: 
 - ⬜ `#openStartBtn` — Open EPUB — **scheduled**
 - ✅ `#previousPage` — Previous page — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
 - ✅ `#nextPage` — Next page — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
+- ⬜ `#epubZoomOut` — Zoom out — **scheduled**
+- ⬜ `#epubZoomSlider` — Zoom level — **scheduled**
+- ⬜ `#epubZoomIn` — Zoom in — **scheduled**
+- ⬜ `#epubFit` — Fit page — **scheduled**
 
-## Non-control capabilities
+## Capabilities
 
-- ✅ `global.version-integrity` — **automated** — tests/test_v0201_consistency.py; tests/browser/revalidate_v0201_consistency.py; scripts/verify_checksums.py
-- ✅ `global.offline-launch` — **automated** — tests/browser/revalidate_launch_and_offline_modes.py
-- ✅ `global.cross-workspace-isolation` — **automated** — tests/browser/revalidate_cross_workspace_isolation.py
-- ✅ `global.interactive-dom-contracts` — **automated** — tests/test_interactive_dom_contracts.py
-- ✅ `documents.recovery` — **automated** — tests/test_local_recovery.py; tests/browser/revalidate_v0202_local_recovery.py
-- ✅ `spreadsheets.recovery` — **automated** — tests/test_local_recovery.py; tests/browser/revalidate_v0202_local_recovery.py
-- ✅ `presentations.recovery` — **automated** — tests/test_local_recovery.py; tests/browser/revalidate_v0202_local_recovery.py
-- ✅ `presentations.format-panel-responsive` — **automated** — tests/browser/revalidate_presentations_controls.py
-- ✅ `spreadsheets.multi-cell-selection` — **automated** — tests/test_spreadsheet_formula_references.py; tests/browser/revalidate_v0201_consistency.py
-- ✅ `pdf.unified-save` — **automated** — tests/test_pdf_unified_save.py
-- 🧭 `manual.safari-ipad` — **manual** — manual device matrix
-- 🧭 `manual.edge-windows` — **manual** — manual device matrix
-- ✅ `home.compact-release-copy` — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
-- ✅ `spreadsheets.editable-title` — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
-- ✅ `presentations.editable-title` — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
-- ✅ `pdf.obsolete-forms-note-removed` — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
-- ✅ `txt-epub.primary-titlebar-44px` — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
+- ✅ `global.version-integrity` — Version/cache/release metadata are synchronized — **automated** — tests/test_v0201_consistency.py; tests/browser/revalidate_v0201_consistency.py; scripts/verify_checksums.py
+- ✅ `global.offline-launch` — Application shell launches from service-worker cache with versioned URLs — **automated** — tests/browser/revalidate_launch_and_offline_modes.py
+- ✅ `global.cross-workspace-isolation` — Workspace state and file handoff do not leak across modules — **automated** — tests/browser/revalidate_cross_workspace_isolation.py
+- ✅ `global.interactive-dom-contracts` — Workspace DOM ids and direct app control references resolve without duplicates or orphan targets — **automated** — tests/test_interactive_dom_contracts.py
+- ✅ `documents.recovery` — IndexedDB recovery: Restore / Open normally / Discard — **automated** — tests/test_local_recovery.py; tests/browser/revalidate_v0202_local_recovery.py
+- ✅ `spreadsheets.recovery` — IndexedDB recovery: Restore / Open normally / Discard — **automated** — tests/test_local_recovery.py; tests/browser/revalidate_v0202_local_recovery.py
+- ✅ `presentations.recovery` — IndexedDB recovery: Restore / Open normally / Discard — **automated** — tests/test_local_recovery.py; tests/browser/revalidate_v0202_local_recovery.py
+- ✅ `presentations.format-panel-responsive` — Format panel has one open/closed state across desktop and compact/iPad-width layouts and edits selected objects — **automated** — tests/browser/revalidate_presentations_controls.py
+- ✅ `spreadsheets.multi-cell-selection` — Multi-cell selection remains separate from formula reference mode — **automated** — tests/test_spreadsheet_formula_references.py; tests/browser/revalidate_v0201_consistency.py
+- ✅ `pdf.unified-save` — Single PDF Save action preserves supported annotations/forms — **automated** — tests/test_pdf_unified_save.py
+- 🟨 `manual.safari-ipad` — Native Safari/iPadOS touch, file picker, download and installed-PWA behavior — **manual** — manual device matrix
+- 🟨 `manual.edge-windows` — Native Edge/Windows file picker, download and clipboard behavior — **manual** — manual device matrix
+- ✅ `home.compact-release-copy` — home.compact-release-copy — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
+- ✅ `spreadsheets.editable-title` — spreadsheets.editable-title — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
+- ✅ `presentations.editable-title` — presentations.editable-title — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
+- ✅ `pdf.obsolete-forms-note-removed` — pdf.obsolete-forms-note-removed — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py
+- ✅ `txt-epub.primary-titlebar-44px` — txt-epub.primary-titlebar-44px — **automated** — tests/test_v02021_functional_corrections.py; tests/browser/revalidate_v02021_functional_corrections.py

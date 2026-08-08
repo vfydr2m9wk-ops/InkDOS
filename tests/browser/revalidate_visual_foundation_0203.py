@@ -15,7 +15,7 @@ def read_css(*relatives: str) -> str:
     return "\n".join((ROOT / relative).read_text(encoding="utf-8") for relative in relatives)
 
 
-OVERLAY = read_css("shared/ui/visual-foundation-v0203.css")
+OVERLAY = read_css("shared/ui/visual-foundation-v0203.css", "shared/ui/workspace-unification-v02031.css")
 HOME_CSS = read_css("shared/hub.css") + "\n" + OVERLAY
 WORKSPACE_SHARED_CSS = read_css(
     "shared/office-shell.css",

@@ -25,7 +25,7 @@ const E = Object.fromEntries(
     'pageCount',
     'zoomOut',
     'zoomIn',
-    'zoomSelect',
+    'zoomSelect', 'pdfZoomSlider', 'pdfFitWidth', 'pdfZoomLabel',
     'verticalScroll',
     'horizontalScroll',
     'pageList',
@@ -243,6 +243,7 @@ async function openFile(file) {
   renderOutline();
 
   await navigateToPage(1);
+  syncZoomUi();
 
   saveController.setAvailable(true);
 
@@ -287,7 +288,12 @@ async function closeDocument() {
   E.dirtyMark.hidden = true;
   saveController.setAvailable(false);
 }
-
+function syncZoomUi() {
+  const current = typeof state.zoom === 'number' ? state.zoom : state.scale || 1;
+  const percent = Math.round(current * 100);
+  if (E.pdfZoomSlider) E.pdfZoomSlider.value = String(clamp(percent, 50, 200));
+  if (E.pdfZoomLabel) E.pdfZoomLabel.textContent = percent + '%';
+}
 function setZoom(value) {
   if (!state.doc) return;
 
@@ -300,9 +306,15 @@ function setZoom(value) {
       ? String(Math.round(state.zoom * 100))
       : state.zoom;
 
+  syncZoomUi();
   rerender();
 }
-
+async function fitWidth() {
+  if (!state.doc) return;
+  const page = await state.doc.getPage(state.page), base = page.getViewport({ scale: 1 });
+  setZoom(Math.round(clamp(Math.max(260, E.viewerStage.clientWidth - 48) / base.width, 0.5, 4) * 100));
+  page.cleanup();
+}
 function zoomStep(delta) {
   const current =
     typeof state.zoom === 'number'
@@ -363,6 +375,8 @@ E.fileInput.onchange = () => {
 
 E.zoomSelect.onchange = () =>
   setZoom(E.zoomSelect.value);
+E.pdfZoomSlider.oninput = () => setZoom(E.pdfZoomSlider.value);
+E.pdfFitWidth.onclick = () => fitWidth().catch(console.error);
 
 E.zoomOut.onclick = () => zoomStep(-0.1);
 E.zoomIn.onclick = () => zoomStep(0.1);

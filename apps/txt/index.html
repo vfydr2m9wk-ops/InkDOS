@@ -200,11 +200,18 @@
 
   <footer class="txt-statusbar">
     <span id="statusText" role="status" aria-live="polite">Ready</span>
-    <span class="status-spacer"></span>
     <span id="lineCount">1 line</span>
     <span id="wordCount">0 words</span>
     <span id="characterCount">0 characters</span>
     <span id="encodingLabel">UTF-8</span>
+    <span class="status-spacer"></span>
+    <div class="workspace-zoom" aria-label="Text workspace zoom">
+      <button id="txtZoomOut" type="button" aria-label="Zoom out">−</button>
+      <input id="txtZoomSlider" type="range" min="50" max="160" step="5" value="100" aria-label="Zoom level">
+      <button id="txtZoomIn" type="button" aria-label="Zoom in">+</button>
+      <button id="txtFit" type="button" aria-label="Fit editor">Fit</button>
+      <span id="txtZoomLabel" class="zoom-percent">100%</span>
+    </div>
   </footer>
 
   <input

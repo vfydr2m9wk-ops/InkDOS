@@ -23,6 +23,7 @@ SHARED = read_css(
     "shared/ui/visual-foundation.css",
     "shared/ui/visual-foundation-v0203.css",
     "shared/ui/content-workspaces-v02031.css",
+    "shared/ui/workspace-unification-v02031.css",
 )
 DOCUMENTS = read_css("apps/documents/styles.css") + "\n" + SHARED
 TXT = read_css("apps/txt/styles.css") + "\n" + SHARED
@@ -134,7 +135,7 @@ def main() -> int:
     assert txt_editor_radius == "12px", result
     assert txt_mobile_radius == "12px", result
     assert result["txt_editor_shadow_present"], result
-    assert epub_toolbar_height == "36px", result
+    assert epub_toolbar_height == "40px", result
     assert epub_status_height == "34px", result
     assert epub_surface_radius == "12px", result
     assert epub_mobile_radius == "12px", result
