@@ -1,3 +1,11 @@
+## v0.20.2.24 Spreadsheet history safety hardening
+
+The v0.20.2.24 gate binds Spreadsheet Undo/Redo actions to their originating worksheet, recalculates the workbook after history restoration, blocks history mutation while formula drafts are pending, and preserves bounded Undo/Redo history in private recovery snapshots. Deterministic Node tests cover sheet scope, clone safety, limits and recovery round-trip; the existing Chromium functional-corrections scenario adds cross-sheet Undo/Redo and post-recovery Undo assertions.
+
+The hosted workflow remains the final checksum and 17/17 Chromium gate.
+
+Local reconstruction result: **304/305** tests pass; the single hold is the authoritative checksum test because the three hosted PDF.js publication files are absent locally. Hosted target: **305/305 + 17/17 Chromium**.
+
 ## v0.20.2.23 Spreadsheet formula recovery hardening
 
 The v0.20.2.23 gate extends the existing private-recovery regression so an uncommitted formula draft must survive a close/reopen/Restore cycle and resume in its original worksheet/cell. Deterministic tests cover draft export/import, lifecycle notifications, confirmed replacement cleanup and the shared recovery document-generation write barrier.

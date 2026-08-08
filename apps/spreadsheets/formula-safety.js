@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.23';
+  const VERSION = '0.20.2.24';
 
   function create(options) {
     const settings = options || {};
@@ -45,12 +45,21 @@
       return true;
     }
 
+    function guardHistory(notify) {
+      if (!hasDrafts()) return false;
+      if (typeof notify === 'function') {
+        notify('Confirm or cancel formula drafts before using Undo or Redo.');
+      }
+      return true;
+    }
+
     return Object.freeze({
       version: VERSION,
       hasDrafts,
       hasUnsaved,
       reset,
-      guardSave
+      guardSave,
+      guardHistory
     });
   }
 

@@ -1,3 +1,11 @@
+## 0.20.2.24 — Spreadsheet History Safety Hardening (2026-08-07)
+
+- Bind Spreadsheet Undo/Redo actions to their originating worksheet to prevent cross-sheet state corruption.
+- Recalculate the workbook after history restoration so formula-dependent displays remain coherent.
+- Block Undo/Redo while uncommitted formula drafts are pending.
+- Persist bounded Spreadsheet Undo/Redo stacks inside private recovery snapshots and restore them with the workbook.
+- Add a DOM-free history controller, deterministic history tests and cross-sheet/recovery browser assertions.
+
 ## 0.20.2.23 — Spreadsheet Formula Recovery Hardening (2026-08-07)
 
 - Persist pending Spreadsheet formula drafts inside private IndexedDB recovery snapshots and restore them as resumable drafts.

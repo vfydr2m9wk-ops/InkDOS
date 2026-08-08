@@ -1,4 +1,4 @@
-"""Behavioral regression for InkDesk v0.20.2.23 functional corrections."""
+"""Behavioral regression for InkDesk v0.20.2.24 functional corrections."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.2.23"
+VERSION = "0.20.2.24"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -90,6 +90,46 @@ def test_spreadsheet_rename(page, base_url, checks):
     checks.append("Spreadsheets editable filename updates model/recovery state")
 
 
+
+def test_spreadsheet_history_safety(page, base_url, checks):
+    goto(page, f"{base_url}/apps/spreadsheets/index.html")
+    fixture = ROOT / "tests/compatibility-fixtures/spreadsheets/era2_office_2007_2013_baseline.xlsx"
+    page.set_input_files("#fileInput", str(fixture))
+    page.wait_for_function("() => !document.querySelector('#gridViewport').hidden && document.querySelectorAll('#sheetTabs button').length >= 2")
+    summary_a1 = page.locator('.cell[data-r="0"][data-c="0"]').inner_text()
+    formula = page.locator("#formulaInput")
+    formula.fill("History Sheet A")
+    formula.press("Enter")
+    page.locator("#sheetTabs button", has_text="Data").click()
+    data_a1 = page.locator('.cell[data-r="0"][data-c="0"]').inner_text()
+    page.click("#undoBtn")
+    assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == data_a1, "Undo from another tab mutated the active worksheet")
+    page.locator("#sheetTabs button", has_text="Summary").click()
+    assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == summary_a1, "Undo did not restore the worksheet where the action originated")
+    page.locator("#sheetTabs button", has_text="Data").click()
+    page.click("#redoBtn")
+    assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == data_a1, "Redo from another tab mutated the active worksheet")
+    page.locator("#sheetTabs button", has_text="Summary").click()
+    assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == "History Sheet A", "Redo did not reapply the action to its original worksheet")
+
+    goto(page, f"{base_url}/apps/spreadsheets/index.html")
+    page.click("#newEmptyBtn")
+    formula = page.locator("#formulaInput")
+    formula.fill("one")
+    formula.press("Enter")
+    formula.fill("two")
+    formula.press("Enter")
+    recovered = page.evaluate("async () => await window.__InkDeskSpreadsheetsRecovery.capture()")
+    history = recovered.get("history") if recovered else None
+    assert_true(history and len(history.get("undo", [])) >= 2, f"Recovery snapshot did not preserve Undo history: {history}")
+    formula.fill("three")
+    formula.press("Enter")
+    page.evaluate("async payload => await window.__InkDeskSpreadsheetsRecovery.restore({snapshot:{payload},source:null})", recovered)
+    assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == "two", "Recovery did not restore the captured workbook state")
+    page.click("#undoBtn")
+    assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == "one", "Undo history was lost after recovery restore")
+    checks.append("Spreadsheet Undo/Redo stays sheet-scoped and survives recovery restore")
+
 def test_presentation_rename(page, base_url, checks):
     goto(page, f"{base_url}/apps/presentations/index.html")
     page.click("#newBtn")
@@ -163,6 +203,7 @@ def main():
                 try:
                     test_home_and_pdf(page, base_url, report["checks"])
                     test_spreadsheet_rename(page, base_url, report["checks"])
+                    test_spreadsheet_history_safety(page, base_url, report["checks"])
                     test_presentation_rename(page, base_url, report["checks"])
                     test_txt_interactions(page, base_url, report["checks"])
                 except Exception as error:

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.23",
+  "version": "0.20.2.24",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.23"
+    "nextPatch": "0.20.2.24"
   },
   "capabilities": {
     "documents": [
@@ -244,7 +244,7 @@
       },
       "originMilestone": "0.19.4.7",
       "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.2.23"
+      "architectureRelease": "0.20.2.24"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -507,9 +507,9 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.23",
+    "version": "0.20.2.24",
     "channel": "beta",
-    "name": "Spreadsheet Formula Recovery Hardening",
+    "name": "Spreadsheet History Safety Hardening",
     "date": "2026-08-07",
     "consolidated": true,
     "sourceDevelopmentLine": "0.19.4",
@@ -535,7 +535,7 @@
   },
   "localRecoverySystem": {
     "schemaVersion": 2,
-    "version": "0.20.2.23",
+    "version": "0.20.2.24",
     "runtime": "shared/local-recovery.js",
     "storage": "IndexedDB",
     "workspaces": [

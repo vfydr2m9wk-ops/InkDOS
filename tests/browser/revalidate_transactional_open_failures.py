@@ -78,6 +78,7 @@ def verify_xlsx(browser):
         "apps/spreadsheets/xlsx-engine.js",
         "shared/office-shell.js",
         "apps/spreadsheets/formula-safety.js",
+        "apps/spreadsheets/history-controller.js",
         "apps/spreadsheets/app.js",
     ))
     page.set_input_files("#fileInput", str(fixture))

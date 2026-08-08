@@ -22,7 +22,7 @@ def inject(page,workspace):
     elif workspace=='spreadsheets':
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-reference.css'))
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-editor.css'))
-        scripts=('shared/office-runtime.js','shared/file-lifecycle.js','shared/file-router.js','shared/formula-engine.js','shared/vendor/jszip.min.js','apps/spreadsheets/xls-biff8-engine.js','apps/spreadsheets/xlsx-engine.js','shared/office-shell.js','apps/spreadsheets/formula-safety.js','apps/spreadsheets/app.js','apps/spreadsheets/formula-model.js','apps/spreadsheets/formula-session.js','apps/spreadsheets/formula-reference.js','apps/spreadsheets/formula-editor.js')
+        scripts=('shared/office-runtime.js','shared/file-lifecycle.js','shared/file-router.js','shared/formula-engine.js','shared/vendor/jszip.min.js','apps/spreadsheets/xls-biff8-engine.js','apps/spreadsheets/xlsx-engine.js','shared/office-shell.js','apps/spreadsheets/formula-safety.js',"apps/spreadsheets/history-controller.js",'apps/spreadsheets/app.js','apps/spreadsheets/formula-model.js','apps/spreadsheets/formula-session.js','apps/spreadsheets/formula-reference.js','apps/spreadsheets/formula-editor.js')
     else:
         scripts=()
     for script in scripts: page.add_script_tag(path=str(ROOT/script))
@@ -78,6 +78,29 @@ def main():
         page.wait_for_function("window.InkDeskSpreadsheetFormulaEditor && !window.InkDeskSpreadsheetFormulaEditor.hasPendingDrafts()")
         if page.locator('.cell.has-formula-draft').count(): raise RuntimeError('New workbook inherited a stale formula draft')
         result['formula_draft_cleared_on_confirmed_new_workbook']=True
+        page.close()
+
+        # Undo/Redo is workbook-wide but each action must stay bound to the
+        # worksheet where it originated. Triggering history from Data must not
+        # write Summary's cell snapshot into Data.
+        page=browser.new_page(viewport={'width':1500,'height':1000})
+        inject(page,'spreadsheets')
+        fixture=ROOT/'tests/compatibility-fixtures/spreadsheets/era2_office_2007_2013_baseline.xlsx'
+        page.set_input_files('#fileInput',str(fixture))
+        page.wait_for_function("document.querySelectorAll('#sheetTabs button').length >= 2")
+        original_summary=page.locator('.cell[data-r="0"][data-c="0"]').inner_text()
+        formula=page.locator('#formulaInput'); formula.fill('History Sheet A'); formula.press('Enter')
+        page.locator('#sheetTabs button',has_text='Data').click()
+        data_a1=page.locator('.cell[data-r="0"][data-c="0"]').inner_text()
+        page.click('#undoBtn')
+        if page.locator('.cell[data-r="0"][data-c="0"]').inner_text()!=data_a1: raise RuntimeError('Undo mutated the active worksheet instead of its origin sheet')
+        page.locator('#sheetTabs button',has_text='Summary').click()
+        if page.locator('.cell[data-r="0"][data-c="0"]').inner_text()!=original_summary: raise RuntimeError('Undo did not restore the originating worksheet')
+        page.locator('#sheetTabs button',has_text='Data').click(); page.click('#redoBtn')
+        if page.locator('.cell[data-r="0"][data-c="0"]').inner_text()!=data_a1: raise RuntimeError('Redo mutated the active worksheet instead of its origin sheet')
+        page.locator('#sheetTabs button',has_text='Summary').click()
+        if page.locator('.cell[data-r="0"][data-c="0"]').inner_text()!='History Sheet A': raise RuntimeError('Redo did not reapply the originating worksheet action')
+        result['spreadsheet_history_sheet_isolation']=True
         page.close(); browser.close()
     (OUT/'v0201_consistency.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result,indent=2))

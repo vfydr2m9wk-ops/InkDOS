@@ -4,11 +4,11 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.23
+## InkDesk v0.20.2.24
 
-Version 0.20.2.23 hardens private local recovery around Spreadsheet formula drafts. A formula draft that is visible but not yet committed to the workbook model is now included in IndexedDB recovery snapshots and can be restored after a reload or accidental close as a resumable draft.
+Version 0.20.2.24 hardens Spreadsheet Undo/Redo and recovery history. History actions are bound to the worksheet where they originated, so Undo or Redo from another tab cannot apply cell or merge state to the wrong sheet. Workbook recalculation follows every history restore so dependent formula displays stay coherent.
 
-The shared recovery runtime also fences asynchronous writes by document generation, preventing an older in-flight snapshot from being attached to a newly opened workbook. Confirmed workbook replacement discards the previous recovery state only after the replacement file has parsed successfully. No formula syntax, grid-selection behavior or visual layout is intentionally changed.
+Pending formula drafts now block Undo/Redo until confirmed or cancelled, and private recovery snapshots preserve the bounded Undo/Redo stacks together with the workbook. No formula syntax, XLS/XLSX serialization or visual layout is intentionally changed.
 
 ## Refactoring policy
 
@@ -46,7 +46,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.23 remains a beta. Real-device validation is still required for critical
+v0.20.2.24 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

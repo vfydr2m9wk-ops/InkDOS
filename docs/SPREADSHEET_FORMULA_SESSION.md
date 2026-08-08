@@ -77,3 +77,9 @@ The session module has no DOM dependency and is tested directly in Node. A suspe
 Formula drafts are serializable recovery state. `formula-session.js` exports normalized draft records keyed by worksheet/cell and imports them without activating or committing a cell. `formula-editor.js` reapplies restored drafts to the rendered grid and emits lifecycle notifications that allow the workbook recovery manager to schedule or clear snapshots.
 
 The recovery payload uses schema version 2 and includes `formulaDrafts`. Restoring a snapshot reconstructs the workbook first and then reapplies pending formula drafts as suspended/resumable drafts. Confirmed workbook replacement discards the prior recovery record only after the replacement file parses successfully.
+
+## v0.20.2.24 history safety boundary
+
+Spreadsheet history is now workbook-scoped rather than implicitly bound to whichever worksheet is visible when Undo or Redo is requested. Each history action carries its originating worksheet index; applying the action targets that worksheet and recalculates the workbook before the visible grid is refreshed.
+
+Pending formula drafts block history mutation until they are confirmed or cancelled, preventing Undo/Redo from changing the committed workbook underneath draft text that exists only in the formula session. Recovery payload schema version 3 also carries bounded Undo/Redo stacks, so a restored session retains its usable committed-edit history rather than reopening with empty history buttons.

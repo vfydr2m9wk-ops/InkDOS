@@ -1,3 +1,9 @@
+## v0.20.2.24 Spreadsheet history safety gate
+
+This gate verifies that Undo/Redo never applies cell or merge state to the wrong worksheet, that formula drafts block workbook-history mutation, that history restoration recalculates dependent formulas, and that recovery schema version 3 retains bounded Undo/Redo stacks. The existing functional-corrections Chromium scenario exercises cross-sheet Undo/Redo with a manually injected Spreadsheet runtime, while deterministic tests verify recovery-history import/export.
+
+Local reconstruction result: **304/305** tests pass; the hosted target is **305/305 + 17/17 Chromium**.
+
 ## v0.20.2.23 formula recovery and write-barrier gate
 
 This gate verifies that Spreadsheet formula drafts participate in IndexedDB recovery without being silently committed, and that an in-flight recovery write cannot cross into a newer document identity. The existing local-recovery Chromium scenario now restores both committed workbook content and a suspended formula draft.
@@ -10,7 +16,7 @@ The release gate adds `tests.test_spreadsheet_formula_safety` plus browser asser
 
 The package must pass the complete Python suite, architecture/source checks, checksum verification and all 17 Chromium scripts. Additional tests exercise the DOM-free formula-session lifecycle: start, normalized update, suspend, resume, commit cleanup and cancel cleanup.
 
-# Testing guide — InkDesk v0.20.2.23
+# Testing guide — InkDesk v0.20.2.24
 
 ## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
 

@@ -15,7 +15,7 @@ class SpreadsheetFormulaSafetyTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-safety.js');
-if (!api || api.version !== '0.20.2.23') process.exit(10);
+if (!api || api.version !== '0.20.2.24') process.exit(10);
 let pending = false;
 let resets = 0;
 const coordinator = api.create({editor:()=>({
@@ -29,17 +29,20 @@ if (!coordinator.hasDrafts() || !coordinator.hasUnsaved(false)) process.exit(13)
 let message = '';
 if (!coordinator.guardSave(value=>{message=value;})) process.exit(14);
 if (!message.includes('Confirm or cancel formula drafts')) process.exit(15);
+message = '';
+if (!coordinator.guardHistory(value=>{message=value;})) process.exit(16);
+if (!message.includes('Undo or Redo')) process.exit(17);
 coordinator.reset();
-if (pending || resets !== 1 || coordinator.hasDrafts()) process.exit(16);
-if (coordinator.guardSave(()=>{})) process.exit(17);
+if (pending || resets !== 1 || coordinator.hasDrafts()) process.exit(18);
+if (coordinator.guardSave(()=>{}) || coordinator.guardHistory(()=>{})) process.exit(19);
 """
         result = subprocess.run([node, "-e", script], cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_safety_runtime_loads_before_spreadsheet_app_and_is_precached(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        safety = "formula-safety.js?v=0.20.2.23"
-        app = "app.js?v=0.20.2.23"
+        safety = "formula-safety.js?v=0.20.2.24"
+        app = "app.js?v=0.20.2.24"
         self.assertIn(safety, html)
         self.assertIn(app, html)
         self.assertLess(html.index(safety), html.index(app))
@@ -63,7 +66,7 @@ if (coordinator.guardSave(()=>{})) process.exit(17);
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-session.js');
-if (!api || api.version !== '0.20.2.23') process.exit(10);
+if (!api || api.version !== '0.20.2.24') process.exit(10);
 const session = api.createSession();
 const first = { id: 'A1' };
 const second = { id: 'B2' };

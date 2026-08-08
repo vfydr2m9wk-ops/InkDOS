@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 25,
-  "currentPackage": "0.20.2.23",
+  "appliedSequence": 26,
+  "currentPackage": "0.20.2.24",
   "status": "in-progress",
   "history": [
     {
@@ -130,6 +130,11 @@
       "sequence": 25,
       "packageLabel": "0.20.2.23",
       "description": "Spreadsheet formula recovery hardening: uncommitted formula drafts are serialized into private recovery snapshots and restored as resumable drafts; confirmed workbook replacement discards prior recovery only after parsing succeeds; shared local-recovery writes are fenced by document generation so stale asynchronous writes cannot cross document boundaries."
+    },
+    {
+      "sequence": 26,
+      "packageLabel": "0.20.2.24",
+      "description": "Spreadsheet history safety hardening: Undo/Redo actions are bound to their originating worksheet, workbook recalculation follows history restoration, pending formula drafts guard history mutation, and private recovery schema v3 preserves bounded Undo/Redo state across restored sessions."
     }
   ]
 }

@@ -15,7 +15,7 @@ class SpreadsheetFormulaRecoveryTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-session.js');
-if (!api || api.version !== '0.20.2.23') process.exit(10);
+if (!api || api.version !== '0.20.2.24') process.exit(10);
 const session = api.createSession();
 session.start({cell:{}, reference:'B2', key:'Sheet1!B2', value:'=SU\n', caret:99});
 session.suspend();
@@ -50,9 +50,11 @@ if (!draft || draft.value !== '=SU' || draft.caret !== 3) process.exit(15);
 
     def test_spreadsheet_recovery_schema_carries_formula_drafts(self):
         text = (ROOT / "apps/spreadsheets/app.js").read_text(encoding="utf-8")
-        self.assertIn("schemaVersion:2", text)
+        self.assertIn("schemaVersion:3", text)
         self.assertIn("snapshotDrafts", text)
         self.assertIn("formulaDrafts", text)
+        self.assertIn("history:history.exportState()", text)
+        self.assertIn("history.importState(payload.history||{})", text)
         self.assertIn("editor.restoreDrafts(payload.formulaDrafts||[])", text)
         self.assertIn("inkdesk:formula-session-change", text)
         self.assertIn("recovery.clearSnapshots()", text)

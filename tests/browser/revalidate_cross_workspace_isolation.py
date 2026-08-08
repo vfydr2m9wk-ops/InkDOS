@@ -40,6 +40,7 @@ SCRIPTS = {
         "apps/spreadsheets/xlsx-engine.js",
         "shared/office-shell.js",
         "apps/spreadsheets/formula-safety.js",
+        "apps/spreadsheets/history-controller.js",
         "apps/spreadsheets/app.js",
     ),
     "presentations": (

@@ -110,7 +110,7 @@ def main():
                         raise
 
                     version = page.evaluate("() => window.InkDeskPdfNavigationController?.version")
-                    assert_true(version == "0.20.2.23", f"Unexpected navigation controller version: {version}")
+                    assert_true(version == "0.20.2.24", f"Unexpected navigation controller version: {version}")
                     report["checks"].append("navigation controller loaded")
 
                     page.set_input_files("#fileInput", str(pdf_path))

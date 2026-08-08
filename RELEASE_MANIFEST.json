@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.23",
-  "releaseName": "Spreadsheet Formula Recovery Hardening",
+  "version": "0.20.2.24",
+  "releaseName": "Spreadsheet History Safety Hardening",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,7 +37,7 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "287 configured tests; local reconstruction 286/287 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
+    "structuralUnitTests": "305 configured tests; local reconstruction 304/305 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
@@ -52,7 +52,7 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: Spreadsheet formula syntax/model logic remains isolated in formula-model.js and persistent draft lifecycle is isolated in formula-session.js; formula-editor.js ratchet shrinks from 616 to 586 lines while retaining DOM/caret and interaction ownership",
+    "architectureGuardrails": "required: Spreadsheet formula syntax/model and draft lifecycle remain isolated; new history-controller.js is DOM-free and below the normal 500-line ceiling; app.js remains at its 295-line ratchet",
     "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point",
     "pdfRenderingModularization": "page virtualization, canvas/text/AcroForm rendering, render-window disposal and resize rerender remain isolated in apps/pdf/viewer/page-renderer.js",
     "pdfNavigationModularization": "page navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state are isolated in apps/pdf/viewer/navigation-controller.js",
@@ -66,7 +66,8 @@
     "txtInteractionModularization": "Undo/Redo snapshot history and find-bar behavior are isolated in apps/txt/history-controller.js and apps/txt/find-controller.js while app.js retains TXT file lifecycle, encoding, save, counts and display controls",
     "spreadsheetFormulaModelModularization": "function catalog, cell/reference encoding, parenthesis tracking, formula balancing, suggestion matching/insertion and reference/commit predicates are isolated in apps/spreadsheets/formula-model.js; InkDeskFormulaEditor helper API remains compatible",
     "spreadsheetFormulaSessionModularization": "persistent draft Map plus start/update/suspend/resume/commit-preparation/cancel-preparation transitions are isolated in apps/spreadsheets/formula-session.js and covered by DOM-free lifecycle tests",
-    "spreadsheetFormulaDraftSafety": "pending formula drafts are guarded across Save/New/Open/before-unload; confirmed replacement resets drafts only after a replacement workbook parses successfully"
+    "spreadsheetFormulaDraftSafety": "pending formula drafts are guarded across Save/New/Open/before-unload; confirmed replacement resets drafts only after a replacement workbook parses successfully",
+    "spreadsheetHistorySafety": "Undo/Redo actions retain their originating worksheet, workbook recalculation follows history restore, pending formula drafts guard history mutation, and recovery schema v3 preserves bounded Undo/Redo state"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"
