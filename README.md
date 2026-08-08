@@ -4,13 +4,11 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.21
+## InkDesk v0.20.2.22
 
-Version 0.20.2.21 isolates the persistent Spreadsheet formula-draft lifecycle from DOM interaction. `apps/spreadsheets/formula-session.js` now owns draft storage plus the start, update, suspend, resume, commit-preparation and cancel-preparation transitions used by the in-cell editor.
+Version 0.20.2.22 hardens Spreadsheet formula drafts at workbook boundaries. Incomplete or suspended formula drafts now count as unsaved work for New/Open/before-unload decisions, Save refuses to serialize a copy that would silently omit pending drafts, and confirmed workbook replacement clears the draft session before the new workbook becomes active.
 
-`formula-editor.js` keeps the visible and browser-facing behavior: real-cell `contenteditable`, caret mirroring, suggestions, keyboard handling and range-reference integration. The public `InkDeskFormulaEditor` surface is unchanged. The new session boundary is independently testable without a DOM, so interrupted/incomplete drafts can be regression-tested as state transitions instead of only through browser interaction.
-
-The pure syntax/model boundary from v0.20.2.20, TXT interaction decomposition from v0.20.2.19 and shared workspace cleanup through v0.20.2.18 remain unchanged. The hardened updater and the same 17 isolated Chromium scripts continue to protect behavior-neutral refactoring.
+The guard is isolated in `apps/spreadsheets/formula-safety.js`. Failed imports remain transactional: an existing formula draft is not cleared until the replacement XLS/XLSX has parsed successfully. This release intentionally changes no formula syntax, grid selection behavior or visual layout.
 
 ## Refactoring policy
 
@@ -48,7 +46,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.21 remains a beta. Real-device validation is still required for critical
+v0.20.2.22 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

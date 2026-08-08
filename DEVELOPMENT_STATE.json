@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 23,
-  "currentPackage": "0.20.2.21",
+  "appliedSequence": 24,
+  "currentPackage": "0.20.2.22",
   "status": "in-progress",
   "history": [
     {
@@ -120,6 +120,11 @@
       "sequence": 23,
       "packageLabel": "0.20.2.21",
       "description": "Spreadsheet formula session lifecycle decomposition: move persistent draft storage and start/update/suspend/resume/commit/cancel state transitions into apps/spreadsheets/formula-session.js. formula-editor.js retains DOM/caret synchronization, suggestion rendering, keyboard routing and formula-reference integration. No visible behavior is intentionally changed."
+    },
+    {
+      "sequence": 24,
+      "packageLabel": "0.20.2.22",
+      "description": "Spreadsheet formula draft safety hardening: pending formula drafts participate in workbook safety guards, Save cannot silently omit a pending draft, confirmed workbook replacement clears draft state only after replacement parsing succeeds, and the behavior is covered by deterministic plus Chromium regressions."
     }
   ]
 }

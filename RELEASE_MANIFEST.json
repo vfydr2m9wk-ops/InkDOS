@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.21",
-  "releaseName": "Spreadsheet Formula Session Lifecycle Decomposition",
+  "version": "0.20.2.22",
+  "releaseName": "Spreadsheet Formula Draft Safety Hardening",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -65,7 +65,8 @@
     "workspaceLayoutContractConsolidation": "workspace-layout.js delegates shared workspace contract helpers to workspace-panel-controller.js while preserving InkDeskWorkspaceLayout moduleId/resolvedPreference/defaults compatibility and Documents ruler behavior",
     "txtInteractionModularization": "Undo/Redo snapshot history and find-bar behavior are isolated in apps/txt/history-controller.js and apps/txt/find-controller.js while app.js retains TXT file lifecycle, encoding, save, counts and display controls",
     "spreadsheetFormulaModelModularization": "function catalog, cell/reference encoding, parenthesis tracking, formula balancing, suggestion matching/insertion and reference/commit predicates are isolated in apps/spreadsheets/formula-model.js; InkDeskFormulaEditor helper API remains compatible",
-    "spreadsheetFormulaSessionModularization": "persistent draft Map plus start/update/suspend/resume/commit-preparation/cancel-preparation transitions are isolated in apps/spreadsheets/formula-session.js and covered by DOM-free lifecycle tests"
+    "spreadsheetFormulaSessionModularization": "persistent draft Map plus start/update/suspend/resume/commit-preparation/cancel-preparation transitions are isolated in apps/spreadsheets/formula-session.js and covered by DOM-free lifecycle tests",
+    "spreadsheetFormulaDraftSafety": "pending formula drafts are guarded across Save/New/Open/before-unload; confirmed replacement resets drafts only after a replacement workbook parses successfully"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

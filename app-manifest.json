@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.21",
+  "version": "0.20.2.22",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.21"
+    "nextPatch": "0.20.2.22"
   },
   "capabilities": {
     "documents": [
@@ -244,7 +244,7 @@
       },
       "originMilestone": "0.19.4.7",
       "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.2.21"
+      "architectureRelease": "0.20.2.22"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -334,7 +334,12 @@
     "documentation": "docs/SPREADSHEET_FORMULA_SESSION.md",
     "originMilestone": "0.19.4.10",
     "model": "apps/spreadsheets/formula-model.js",
-    "session": "apps/spreadsheets/formula-session.js"
+    "session": "apps/spreadsheets/formula-session.js",
+    "safety": "apps/spreadsheets/formula-safety.js",
+    "pendingDraftsCountAsUnsaved": true,
+    "saveBlockedWhileDraftsPending": true,
+    "draftResetOnConfirmedWorkbookReplacement": true,
+    "failedOpenPreservesExistingDrafts": true
   },
   "updateWorkflowObservability": {
     "schemaVersion": 1,
@@ -499,7 +504,7 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.21",
+    "version": "0.20.2.22",
     "channel": "beta",
     "name": "Spreadsheet Formula Session Lifecycle Decomposition",
     "date": "2026-08-07",

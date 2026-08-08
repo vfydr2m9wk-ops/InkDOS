@@ -22,7 +22,7 @@ def inject(page,workspace):
     elif workspace=='spreadsheets':
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-reference.css'))
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-editor.css'))
-        scripts=('shared/office-runtime.js','shared/file-lifecycle.js','shared/file-router.js','shared/formula-engine.js','shared/vendor/jszip.min.js','apps/spreadsheets/xls-biff8-engine.js','apps/spreadsheets/xlsx-engine.js','shared/office-shell.js','apps/spreadsheets/app.js','apps/spreadsheets/formula-model.js','apps/spreadsheets/formula-session.js','apps/spreadsheets/formula-reference.js','apps/spreadsheets/formula-editor.js')
+        scripts=('shared/office-runtime.js','shared/file-lifecycle.js','shared/file-router.js','shared/formula-engine.js','shared/vendor/jszip.min.js','apps/spreadsheets/xls-biff8-engine.js','apps/spreadsheets/xlsx-engine.js','shared/office-shell.js','apps/spreadsheets/formula-safety.js','apps/spreadsheets/app.js','apps/spreadsheets/formula-model.js','apps/spreadsheets/formula-session.js','apps/spreadsheets/formula-reference.js','apps/spreadsheets/formula-editor.js')
     else:
         scripts=()
     for script in scripts: page.add_script_tag(path=str(ROOT/script))
@@ -60,6 +60,24 @@ def main():
         page.click('.cell[data-r="5"][data-c="5"]')
         if page.locator('.cell[data-r="5"][data-c="5"]').get_attribute('class').find('selected')<0: raise RuntimeError('Formula standby blocked normal selection')
         result['formula_standby_releases_grid']=True
+
+        # An incomplete formula draft is unsaved work even before it enters the
+        # workbook model. Save must not serialize a copy that silently omits it.
+        page.click('.cell[data-r="0"][data-c="0"]')
+        page.keyboard.type('=S')
+        page.wait_for_function("window.InkDeskSpreadsheetFormulaEditor && window.InkDeskSpreadsheetFormulaEditor.hasPendingDrafts()")
+        page.click('#saveBtn')
+        if not page.locator('#savePanel').is_hidden(): raise RuntimeError('Save panel opened while a formula draft was pending')
+        if 'Confirm or cancel formula drafts' not in page.locator('#toast').inner_text(): raise RuntimeError('Pending formula draft save guard did not explain the block')
+        result['formula_draft_blocks_save']=True
+
+        # The same draft must trigger the normal discard confirmation and must
+        # not leak into the next workbook after the user accepts that discard.
+        page.once('dialog', lambda dialog: dialog.accept())
+        page.click('#newBtn')
+        page.wait_for_function("window.InkDeskSpreadsheetFormulaEditor && !window.InkDeskSpreadsheetFormulaEditor.hasPendingDrafts()")
+        if page.locator('.cell.has-formula-draft').count(): raise RuntimeError('New workbook inherited a stale formula draft')
+        result['formula_draft_cleared_on_confirmed_new_workbook']=True
         page.close(); browser.close()
     (OUT/'v0201_consistency.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result,indent=2))

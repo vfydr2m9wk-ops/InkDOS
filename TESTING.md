@@ -1,3 +1,9 @@
+## v0.20.2.22 Spreadsheet formula draft safety hardening
+
+The v0.20.2.22 gate adds deterministic tests for the formula safety coordinator and session reset contract, while extending the existing Spreadsheet Chromium consistency script. Pending drafts must block Save, participate in New/Open/before-unload protection, clear after a confirmed workbook replacement, and survive a failed replacement-file parse.
+
+The hosted workflow remains the final checksum and 17/17 Chromium gate.
+
 ## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
 
 The v0.20.2.21 gate keeps the complete suite and the existing 17 Chromium scripts, and adds a DOM-free state-transition suite for persistent formula drafts. It verifies create/update/suspend/resume/commit/cancel semantics, draft cleanup, formula-session load order and offline precache registration.

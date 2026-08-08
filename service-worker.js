@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.20.2.21';
+const CACHE_NAME='inkdesk-shell-v0.20.2.22';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -69,6 +69,7 @@ const APP_SHELL=[
   './apps/spreadsheets/app.js',
   './apps/spreadsheets/formula-model.js',
   './apps/spreadsheets/formula-session.js',
+  './apps/spreadsheets/formula-safety.js',
   './apps/spreadsheets/formula-reference.css',
   './apps/spreadsheets/formula-reference.js',
   './apps/spreadsheets/formula-editor.css',

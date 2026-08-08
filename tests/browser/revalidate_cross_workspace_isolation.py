@@ -39,6 +39,7 @@ SCRIPTS = {
         "apps/spreadsheets/xls-biff8-engine.js",
         "apps/spreadsheets/xlsx-engine.js",
         "shared/office-shell.js",
+        "apps/spreadsheets/formula-safety.js",
         "apps/spreadsheets/app.js",
     ),
     "presentations": (

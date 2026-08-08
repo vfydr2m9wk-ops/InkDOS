@@ -38,6 +38,7 @@ def load_app(page):
         ROOT / "apps/spreadsheets/xls-biff8-engine.js",
         ROOT / "apps/spreadsheets/xlsx-engine.js",
         ROOT / "shared/office-shell.js",
+        ROOT / "apps/spreadsheets/formula-safety.js",
         ROOT / "apps/spreadsheets/app.js",
     ):
         page.add_script_tag(path=str(js))

@@ -66,3 +66,7 @@ stateful session extraction.
 Persistent draft storage and state transitions now live in `formula-session.js`. The module owns the draft Map and the active-session fields required to start, update, suspend, resume, prepare a commit, prepare a cancellation and clear the active target. `formula-editor.js` retains DOM/caret synchronization, suggestion UI, keyboard event routing and reference-controller integration.
 
 The session module has no DOM dependency and is tested directly in Node. A suspended draft is keyed by worksheet and cell reference, resuming the same key restores its saved value/caret, commit removes the saved draft, and cancellation exposes the original display value before clearing the active target.
+
+## v0.20.2.22 safety boundary
+
+`formula-safety.js` now coordinates formula drafts with workbook lifecycle operations. A draft may remain in the editor/session without entering the workbook model, so Save must not claim success while such a draft is pending. New/Open and before-unload include the draft state in their unsaved-work checks, and a replacement workbook clears the draft session only after parsing succeeds. `formula-session.js` exposes deterministic `hasDrafts()` and `reset()` operations for this boundary.

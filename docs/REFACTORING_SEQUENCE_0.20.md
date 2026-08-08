@@ -172,3 +172,7 @@ split. No cell-editing, formula, selection, Save or visual behavior changes.
 Persistent formula draft state moves from `formula-editor.js` to `apps/spreadsheets/formula-session.js`. The new module owns draft storage and the start/update/suspend/resume/commit/cancel state transitions without depending on the DOM. The editor remains responsible for caret/DOM synchronization, suggestions, keyboard routing and reference-controller integration.
 
 This is a stability-driven cut rather than a line-count exercise: formula drafts can now be regression-tested as deterministic state transitions before the remaining suggestion/interaction UI is considered for a later bounded extraction.
+
+### v0.20.2.22 — Spreadsheet formula draft safety hardening
+
+A dedicated `formula-safety.js` coordinator makes pending formula drafts part of the workbook safety contract. Save is blocked until drafts are confirmed or cancelled; New/Open/before-unload treat drafts as unsaved work; confirmed workbook replacement resets the formula session; and parse failures keep the existing draft untouched. This is a stability hardening step rather than another size-driven decomposition.

@@ -1,3 +1,11 @@
+## 0.20.2.22 — Spreadsheet Formula Draft Safety Hardening (2026-08-07)
+
+- Added `apps/spreadsheets/formula-safety.js` as the workbook-level guard for pending formula drafts.
+- Prevented Save from creating an XLSX copy while a formula draft is still pending, avoiding silent omission of visible draft text.
+- Made New, Open and before-unload treat pending formula drafts as unsaved work.
+- Reset formula drafts after a confirmed workbook replacement, while preserving the current draft when a replacement file fails to parse.
+- Added deterministic session/safety tests and extended the Spreadsheet Chromium consistency regression without changing the browser-script count.
+
 ## 0.20.2.21 — Spreadsheet Formula Session Lifecycle Decomposition (2026-08-07)
 
 - Moved persistent formula draft storage and lifecycle transitions into `apps/spreadsheets/formula-session.js`.

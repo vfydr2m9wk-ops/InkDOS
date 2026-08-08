@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.21';
+  const VERSION = '0.20.2.22';
 
   function fallbackClamp(value, minimum, maximum) {
     return Math.max(
@@ -143,6 +143,24 @@
       return drafts.delete(String(key || ''));
     }
 
+    function hasDrafts() {
+      return drafts.size > 0;
+    }
+
+    function reset() {
+      const current = snapshot();
+      drafts.clear();
+      state.active = false;
+      state.cell = null;
+      state.targetReference = '';
+      state.targetKey = '';
+      state.value = '';
+      state.caret = 0;
+      state.originalDisplay = '';
+      state.originalFormulaValue = '';
+      return current;
+    }
+
     return Object.freeze({
       version: VERSION,
       drafts,
@@ -157,6 +175,8 @@
       prepareCommit,
       prepareCancel,
       removeDraft,
+      hasDrafts,
+      reset,
       snapshot
     });
   }

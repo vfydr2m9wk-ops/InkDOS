@@ -35,7 +35,7 @@ class WorkspaceContractConsolidationTests(unittest.TestCase):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
         layout = ROOT / "shared/ui/workspace-layout.js"
         controller = ROOT / "shared/ui/workspace-panel-controller.js"
-        self.assertEqual(policy["release"], "0.20.2.21")
+        self.assertEqual(policy["release"], "0.20.2.22")
         self.assertLessEqual(len(layout.read_text(encoding="utf-8").splitlines()), 500)
         self.assertLessEqual(len(controller.read_text(encoding="utf-8").splitlines()), 500)
         self.assertNotIn("shared/ui/workspace-layout.js", policy["grandfatheredDebt"])
@@ -51,7 +51,7 @@ require('./shared/ui/workspace-panel-controller.js');
 require('./shared/ui/workspace-layout.js');
 const panel = globalThis.InkDeskWorkspacePanelController;
 const layout = globalThis.InkDeskWorkspaceLayout;
-if (!panel || panel.version !== '0.20.2.21') process.exit(10);
+if (!panel || panel.version !== '0.20.2.22') process.exit(10);
 if (!layout || layout.version !== '0.20.0') process.exit(11);
 const classes = { contains(name) { return name === 'office-documents'; } };
 let event = null;

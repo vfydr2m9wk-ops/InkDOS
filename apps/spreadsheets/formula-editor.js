@@ -1,6 +1,5 @@
 (function (global) {
   'use strict';
-
   const VERSION = '0.20.0';
   const DRAFT_CLASS = 'formula-draft-editing';
   const SAVED_DRAFT_CLASS = 'has-formula-draft';
@@ -20,7 +19,6 @@
     }
     return;
   }
-
   const {
     functions: FUNCTIONS,
     clamp,
@@ -35,7 +33,6 @@
     shouldAppendReference,
     formulaIsComplete
   } = FormulaModel;
-
   function caretOffset(element) {
     const selection = global.getSelection && global.getSelection();
     if (!selection || !selection.rangeCount || !element.contains(selection.anchorNode)) {
@@ -46,7 +43,6 @@
     range.setEnd(selection.anchorNode, selection.anchorOffset);
     return range.toString().length;
   }
-
   function setCaret(element, offset) {
     const selection = global.getSelection && global.getSelection();
     if (!selection || !global.document.createRange) return;
@@ -76,7 +72,6 @@
     selection.removeAllRanges();
     selection.addRange(range);
   }
-
   function createController(documentObject) {
     const doc = documentObject || global.document;
     if (!doc || !doc.getElementById) return null;
@@ -91,40 +86,33 @@
     if (formula.__inkdeskFormulaEditorController) {
       return formula.__inkdeskFormulaEditorController;
     }
-
     const coreHandlers = {
       focus: formula.onfocus,
       input: formula.oninput,
       keydown: formula.onkeydown
     };
-
     const session = FormulaSession.createSession({ clamp });
     const drafts = session.drafts;
     const state = session.state;
     const suggestionState = { items: [], index: 0, context: null };
     let syncing = false;
     let resumeTimer = 0;
-
     function activeSheetName() {
       return (
         tabs && tabs.querySelector('button.active')?.textContent?.trim()
       ) || 'Sheet';
     }
-
     function keyFor(reference) {
       return activeSheetName() + '!' + String(reference || '').toUpperCase();
     }
-
     function selectedCell() {
       return grid.querySelector('.cell.selected');
     }
-
     function setStatus(message) {
       if (!status) return;
       status.hidden = !message;
       status.textContent = String(message || '');
     }
-
     function closeSuggestions() {
       suggestions.hidden = true;
       suggestions.replaceChildren();
@@ -322,6 +310,16 @@
       if (controller && typeof controller.end === 'function') controller.end('');
       clearActiveState();
       setStatus('');
+    }
+
+    function reset() {
+      closeSuggestions();
+      session.reset();
+      delete doc.body.dataset.formulaEditorMode;
+      const controller = referenceController();
+      if (controller && typeof controller.end === 'function') controller.end('');
+      setStatus('');
+      return true;
     }
 
     function acceptSuggestion(index) {
@@ -527,6 +525,7 @@
       drafts,
       session,
       isActive: function () { return state.active; },
+      hasPendingDrafts: function () { return session.hasDrafts(); },
       getValue: function () { return state.value; },
       getSelection: function () { return { start: state.caret, end: state.caret }; },
       getTargetReference: function () { return state.targetReference; },
@@ -543,6 +542,7 @@
       suspend,
       commit,
       cancel,
+      reset,
       formulaIsComplete: function () { return formulaIsComplete(state.value); }
     });
 
