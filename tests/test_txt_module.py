@@ -61,28 +61,28 @@ class TxtModuleTests(unittest.TestCase):
             self.assertIn(marker, html)
 
         self.assertIn(
-            "../../shared/file-lifecycle.js?v=0.20.2.19",
+            "../../shared/file-lifecycle.js?v=0.20.2.20",
             html,
         )
         self.assertIn(
-            "../../shared/file-router.js?v=0.20.2.19",
+            "../../shared/file-router.js?v=0.20.2.20",
             html,
         )
         self.assertIn(
-            'history-controller.js?v=0.20.2.19',
+            'history-controller.js?v=0.20.2.20',
             html,
         )
         self.assertIn(
-            'find-controller.js?v=0.20.2.19',
+            'find-controller.js?v=0.20.2.20',
             html,
         )
         self.assertLess(
-            html.index('history-controller.js?v=0.20.2.19'),
-            html.index('app.js?v=0.20.2.19'),
+            html.index('history-controller.js?v=0.20.2.20'),
+            html.index('app.js?v=0.20.2.20'),
         )
         self.assertLess(
-            html.index('find-controller.js?v=0.20.2.19'),
-            html.index('app.js?v=0.20.2.19'),
+            html.index('find-controller.js?v=0.20.2.20'),
+            html.index('app.js?v=0.20.2.20'),
         )
 
     def test_runtime_opens_saves_and_warns(self):

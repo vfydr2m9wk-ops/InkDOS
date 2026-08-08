@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaEditorTests(unittest.TestCase):
     def test_required_assets_exist(self):
         for relative in (
+            "apps/spreadsheets/formula-model.js",
             "apps/spreadsheets/formula-editor.js",
             "apps/spreadsheets/formula-editor.css",
             "apps/spreadsheets/formula-reference.js",
@@ -22,8 +23,8 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
 
     def test_entry_page_has_no_visible_formula_help_or_overlay(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        self.assertIn("formula-editor.js?v=0.20.2.19", html)
-        self.assertIn("formula-reference.js?v=0.20.2.19", html)
+        self.assertIn("formula-editor.js?v=0.20.2.20", html)
+        self.assertIn("formula-reference.js?v=0.20.2.20", html)
         self.assertIn('id="formulaHint" hidden', html)
         self.assertNotIn('id="cellFormulaEditor"', html)
 
@@ -46,7 +47,8 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
 
     def test_suggestions_wait_for_two_letters_and_enter_confirms(self):
         runtime = (ROOT / "apps/spreadsheets/formula-editor.js").read_text(encoding="utf-8")
-        self.assertIn("match[1].length < 2", runtime)
+        model = (ROOT / "apps/spreadsheets/formula-model.js").read_text(encoding="utf-8")
+        self.assertIn("match[1].length < 2", model)
         self.assertIn("event.key === 'Tab'", runtime)
         self.assertIn("event.key === 'Enter'", runtime)
         self.assertIn("commit();", runtime)

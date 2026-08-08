@@ -1,3 +1,10 @@
+## 0.20.2.20 — Spreadsheet Formula Model Decomposition (2026-08-07)
+
+- Moved deterministic Spreadsheet formula-session helpers and function metadata into `apps/spreadsheets/formula-model.js`.
+- Preserved the existing `InkDeskFormulaEditor` helper API while reducing `formula-editor.js` from 756 to 616 lines.
+- Added independent formula-model invariants and load-order/offline-cache regression checks.
+- Preserved visible Spreadsheet behavior and the existing 17 Chromium regression scenarios.
+
 ## 0.20.2.19 — TXT Editor Interaction Decomposition (2026-08-07)
 
 - Extracted TXT Undo/Redo snapshot history to `apps/txt/history-controller.js`.

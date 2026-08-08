@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.20.2.19';
+  const VERSION = '0.20.2.20';
 
   function create(options) {
     const config = options || {};

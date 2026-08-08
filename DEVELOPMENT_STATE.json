@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 21,
-  "currentPackage": "0.20.2.19",
+  "appliedSequence": 22,
+  "currentPackage": "0.20.2.20",
   "status": "in-progress",
   "history": [
     {
@@ -110,6 +110,11 @@
       "sequence": 21,
       "packageLabel": "0.20.2.19",
       "description": "TXT editor interaction decomposition: move Plain Text Undo/Redo snapshot history into apps/txt/history-controller.js and Find bar/search interaction into apps/txt/find-controller.js. apps/txt/app.js retains file lifecycle, encoding, line-ending preservation, Save, counts, wrap and text-size controls and falls below the normal 500-line ceiling. No visible UI, file-format, save, dirty-state or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 22,
+      "packageLabel": "0.20.2.20",
+      "description": "Spreadsheet formula model decomposition: move deterministic formula syntax, function metadata, cell/reference encoding, balancing, suggestion matching/insertion and reference/commit predicates into apps/spreadsheets/formula-model.js. formula-editor.js retains persistent drafts, DOM/caret interaction, suggestion UI and reference-controller integration. Public helper API and visible behavior are preserved."
     }
   ]
 }

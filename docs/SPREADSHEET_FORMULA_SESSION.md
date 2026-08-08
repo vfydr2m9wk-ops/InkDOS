@@ -44,3 +44,18 @@ and the touch `+ Range` control remain available.
 The arithmetic engine supports `+`, `-`, `*`, `/`, `^`, parentheses, and
 postfix percentage. `10%` evaluates to `0.1`; remainder remains available as
 `MOD(number, divisor)`.
+
+## v0.20.2.20 ownership boundary
+
+The formula session is now split between deterministic syntax/model logic and
+stateful editor interaction. `formula-model.js` owns the immutable function
+catalog plus pure helpers for cell/reference encoding, parenthesis depth,
+formula balancing, suggestion matching/insertion, reference-selection
+eligibility and formula completeness. `formula-editor.js` owns the persistent
+draft Map, active-cell state, DOM/caret synchronization, suggestion rendering,
+keyboard handling and reference-controller integration.
+
+`InkDeskFormulaEditor` continues to expose the same pure helper functions by
+delegating to the model, so callers do not need to change. This boundary is
+intended to make formula behavior independently testable before any later
+stateful session extraction.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.19",
+  "release": "0.20.2.20",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -84,9 +84,9 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/spreadsheets/formula-editor.js": {
-      "maxLines": 756,
+      "maxLines": 616,
       "maxLongLines": 0,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Formula syntax/catalog helpers moved to apps/spreadsheets/formula-model.js in v0.20.2.20; remaining editor session/runtime is ratcheted at the smaller boundary."
     },
     "apps/spreadsheets/xls-biff8-engine.js": {
       "maxLines": 149,

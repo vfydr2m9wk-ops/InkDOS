@@ -151,3 +151,17 @@ This closes the current shared workspace-layout debt cycle. Further decompositio
 TXT snapshot-history/Undo/Redo ownership moves to `apps/txt/history-controller.js`; Find bar/search interaction moves to `apps/txt/find-controller.js`. File lifecycle, encoding, line-ending preservation, Save, counts, wrap and text-size behavior remain in `app.js`. This bounded workspace cleanup retires the inherited TXT app.js line-count debt without changing the visible editor.
 
 After this gate, only high-value cleanup should remain in 0.20.2.x. Do not chase every grandfathered file solely to reach zero debt; the transition to 0.20.3 should be based on behavioral stability and a frozen ownership map.
+
+### v0.20.2.20 — Spreadsheet formula model decomposition
+
+The immutable function catalog plus pure formula-session helpers now live in
+`apps/spreadsheets/formula-model.js`: column/cell encoding, parenthesis tracking,
+formula balancing, suggestion matching/insertion and the predicates that decide
+reference selection, successive range insertion and commit completeness.
+`formula-editor.js` keeps DOM/caret handling, persistent drafts, suggestion UI,
+keyboard behavior and integration with the reference controller. Its existing
+`InkDeskFormulaEditor` public helper surface is preserved by delegation.
+
+This is intentionally the low-risk first Spreadsheet cut: pure deterministic
+logic is independently testable before the remaining stateful editor session is
+split. No cell-editing, formula, selection, Save or visual behavior changes.

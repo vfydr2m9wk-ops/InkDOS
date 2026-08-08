@@ -1,4 +1,8 @@
-# Testing guide — InkDesk v0.20.2.19
+# Testing guide — InkDesk v0.20.2.20
+
+## v0.20.2.20 Spreadsheet formula model decomposition
+
+The full release gate now also requires the extracted formula model to load before the reference/editor controllers, remain below the normal source ceiling, preserve the public `InkDeskFormulaEditor` helper API and pass deterministic pure-function edge cases. The existing 17 Chromium regressions remain the behavioral gate; no new visible spreadsheet behavior is claimed.
 
 ## v0.20.2.17 Documents ruler interaction decomposition
 

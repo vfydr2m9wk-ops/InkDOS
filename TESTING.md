@@ -1,6 +1,8 @@
-## v0.20.2.19 TXT editor interaction decomposition
+## v0.20.2.20 Spreadsheet formula model decomposition
 
-The v0.20.2.19 gate keeps the existing full suite and 17 Chromium scripts, and extends the TXT path to verify the extracted history/Find controllers load before `app.js`, Undo/Redo restores text, and Find still selects the expected match.
+The v0.20.2.20 gate keeps the complete suite and the existing 17 Chromium scripts, and adds a deterministic model boundary for Spreadsheet formula syntax. The new tests require `formula-model.js` to load before formula reference/editor interaction, remain below the normal 500-line ceiling, preserve the existing `InkDeskFormulaEditor` helper surface, and pass edge cases for quoted parentheses, formula balancing, suggestion insertion and reference-selection predicates.
+
+Local reconstruction result: **280/281 unit/package tests pass**; the only local hold is the authoritative full checksum test because the three publication-vendored PDF.js files are not present byte-for-byte in this reconstruction. Spreadsheet-specific Chromium regressions for XLSX, XLS zero display and formula-standby selection pass; the hosted workflow remains the final 17/17 gate.
 
 
 The hosted package gate must preserve the complete behavior suite and verify that workspace module detection, session preference resolution and layout-ready notification are owned by `shared/ui/workspace-panel-controller.js`, while `shared/ui/workspace-layout.js` stays below 500 lines and retains its compatibility delegates. Expected unit/package count: 271. Expected Chromium regression count: 17/17.

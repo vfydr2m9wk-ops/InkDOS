@@ -25,21 +25,23 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            'formula-reference.css?v=0.20.2.19',
+            'formula-reference.css?v=0.20.2.20',
             html,
         )
         self.assertIn('id="addFormulaRangeBtn"', html)
         self.assertIn('id="formulaReferenceStatus"', html)
         self.assertIn('id="formulaSuggestions"', html)
 
-        core_position = html.index('<script src="app.js?v=0.20.2.19"></script>')
+        core_position = html.index('<script src="app.js?v=0.20.2.20"></script>')
+        model_position = html.index('formula-model.js?v=0.20.2.20')
         reference_position = html.index(
-            'formula-reference.js?v=0.20.2.19'
+            'formula-reference.js?v=0.20.2.20'
         )
         editor_position = html.index(
-            'formula-editor.js?v=0.20.2.19'
+            'formula-editor.js?v=0.20.2.20'
         )
-        self.assertLess(core_position, reference_position)
+        self.assertLess(core_position, model_position)
+        self.assertLess(model_position, reference_position)
         self.assertLess(reference_position, editor_position)
 
     def test_controller_intercepts_grid_and_uses_persistent_editor(self):

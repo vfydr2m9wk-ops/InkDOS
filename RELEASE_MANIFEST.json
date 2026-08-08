@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.19",
-  "releaseName": "TXT Editor Interaction Decomposition",
+  "version": "0.20.2.20",
+  "releaseName": "Spreadsheet Formula Model Decomposition",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,7 +37,7 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "configured release suite; hosted main remains the authoritative full checksum gate",
+    "structuralUnitTests": "281 configured tests; local reconstruction 280/281 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
@@ -52,7 +52,7 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: TXT history and find interaction ownership are isolated in focused controllers; apps/txt/app.js is below the normal 500-line ceiling and its inherited architecture-debt entry is removed",
+    "architectureGuardrails": "required: pure Spreadsheet formula syntax/model logic is isolated in apps/spreadsheets/formula-model.js; formula-editor.js ratchet shrinks from 756 to 616 lines while retaining stateful draft/DOM interaction",
     "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point",
     "pdfRenderingModularization": "page virtualization, canvas/text/AcroForm rendering, render-window disposal and resize rerender remain isolated in apps/pdf/viewer/page-renderer.js",
     "pdfNavigationModularization": "page navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state are isolated in apps/pdf/viewer/navigation-controller.js",
@@ -63,7 +63,8 @@
     "documentsRulerModelModularization": "pure ruler geometry and indent-state helpers remain isolated in shared/ui/document-ruler-model.js; workspace-layout.js delegates calculations without owning them",
     "documentsRulerDragModularization": "ruler pointerdown/move/up/cancel lifecycle, pointer capture, drag-state transitions and indentation application orchestration live in shared/ui/document-ruler-drag-controller.js; workspace-layout.js retains ruler DOM synchronization and observers",
     "workspaceLayoutContractConsolidation": "workspace-layout.js delegates shared workspace contract helpers to workspace-panel-controller.js while preserving InkDeskWorkspaceLayout moduleId/resolvedPreference/defaults compatibility and Documents ruler behavior",
-    "txtInteractionModularization": "Undo/Redo snapshot history and find-bar behavior are isolated in apps/txt/history-controller.js and apps/txt/find-controller.js while app.js retains TXT file lifecycle, encoding, save, counts and display controls"
+    "txtInteractionModularization": "Undo/Redo snapshot history and find-bar behavior are isolated in apps/txt/history-controller.js and apps/txt/find-controller.js while app.js retains TXT file lifecycle, encoding, save, counts and display controls",
+    "spreadsheetFormulaModelModularization": "function catalog, cell/reference encoding, parenthesis tracking, formula balancing, suggestion matching/insertion and reference/commit predicates are isolated in apps/spreadsheets/formula-model.js; InkDeskFormulaEditor helper API remains compatible"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"
