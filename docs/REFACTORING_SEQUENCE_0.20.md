@@ -176,3 +176,10 @@ This is a stability-driven cut rather than a line-count exercise: formula drafts
 ### v0.20.2.22 — Spreadsheet formula draft safety hardening
 
 A dedicated `formula-safety.js` coordinator makes pending formula drafts part of the workbook safety contract. Save is blocked until drafts are confirmed or cancelled; New/Open/before-unload treat drafts as unsaved work; confirmed workbook replacement resets the formula session; and parse failures keep the existing draft untouched. This is a stability hardening step rather than another size-driven decomposition.
+
+
+### v0.20.2.23 — Spreadsheet formula recovery hardening
+
+Pending formula drafts are now part of the private recovery payload instead of being protected only by Save/New/Open warnings. Draft state is exported/imported through the DOM-free formula session, restored as a resumable draft, and synchronized with recovery scheduling through lifecycle events. The shared recovery runtime also fences asynchronous writes by document generation so a snapshot started for one document cannot complete under a replacement document identity.
+
+This closes a concrete data-loss/race boundary. Further 0.20.2.x work should continue to prioritize measurable state integrity, recovery and round-trip behavior before visual polish.

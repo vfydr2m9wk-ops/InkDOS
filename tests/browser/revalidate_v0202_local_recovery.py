@@ -94,6 +94,7 @@ def documents_case(browser, base_url):
 def spreadsheets_case(browser, base_url):
     context = browser.new_context()
     token = "Recovered workbook value 0202"
+    formula_draft = "=SU"
     page = context.new_page()
     page.set_default_timeout(10000)
     page.set_default_navigation_timeout(15000)
@@ -104,17 +105,75 @@ def spreadsheets_case(browser, base_url):
     page.click('.cell[data-r="0"][data-c="0"]')
     page.fill("#formulaInput", token)
     page.press("#formulaInput", "Enter")
+    page.click('.cell[data-r="1"][data-c="1"]')
+    page.fill("#formulaInput", formula_draft)
+    page.wait_for_function("window.InkDeskSpreadsheetFormulaEditor?.hasPendingDrafts() === true")
     page.evaluate("window.__InkDeskSpreadsheetsRecovery.manager.flush()")
     snapshots = page.evaluate("InkDeskLocalRecovery.listSnapshots('spreadsheets').then(items=>items.length)")
     if snapshots < 1:
         raise RuntimeError("Spreadsheets did not create an IndexedDB recovery snapshot")
     page.close()
     restored, restored_errors = reopen_and_restore(context, f"{base_url}/apps/spreadsheets/index.html")
-    value = restored.evaluate("window.__InkDeskSpreadsheetsRecovery.capture().then(p=>p.book.sheets[0].cells.find(item=>item[0]==='A1')?.[1]?.v)")
+    capture = restored.evaluate("window.__InkDeskSpreadsheetsRecovery.capture()")
+    value = next((item[1].get("v") for item in capture["book"]["sheets"][0]["cells"] if item[0] == "A1"), None)
+    restored_drafts = restored.evaluate("window.InkDeskSpreadsheetFormulaEditor.snapshotDrafts()")
+    draft_visible = restored.locator('.cell[data-r="1"][data-c="1"]').inner_text() == formula_draft
+    restored.click('.cell[data-r="1"][data-c="1"]')
+    restored.wait_for_function("window.InkDeskSpreadsheetFormulaEditor?.isActive() === true")
+    resumed_value = restored.evaluate("window.InkDeskSpreadsheetFormulaEditor.getValue()")
     restored.evaluate("InkDeskLocalRecovery.clearModule('spreadsheets')")
     restored.close()
     context.close()
-    return {"workspace": "spreadsheets", "restored": value == token, "value": value, "snapshots": snapshots, "errors": errors + restored_errors}
+    draft_restored = any(item.get("key") == "Sheet1!B2" and item.get("value") == formula_draft for item in restored_drafts)
+    return {
+        "workspace": "spreadsheets",
+        "restored": value == token and draft_restored and draft_visible and resumed_value == formula_draft,
+        "value": value,
+        "formulaDraft": formula_draft,
+        "draftRestored": draft_restored,
+        "draftVisible": draft_visible,
+        "resumedValue": resumed_value,
+        "snapshots": snapshots,
+        "errors": errors + restored_errors,
+    }
+
+
+def recovery_write_barrier_case(browser, base_url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.set_default_timeout(10000)
+    page.set_default_navigation_timeout(15000)
+    errors = watch_errors(page)
+    page.goto(f"{base_url}/apps/spreadsheets/index.html", wait_until="networkidle")
+    result = page.evaluate("""async () => {
+      await InkDeskLocalRecovery.clearModule('recovery-race');
+      let releaseSerialize;
+      const manager = InkDeskLocalRecovery.create({
+        module: 'recovery-race',
+        appVersion: 'barrier-test',
+        serialize: () => new Promise(resolve => { releaseSerialize = resolve; })
+      });
+      await manager.startDocument({documentKey:'old', fileName:'old.xlsx'});
+      manager.markDirty();
+      const flushing = manager.flush();
+      while (!releaseSerialize) await new Promise(resolve => setTimeout(resolve, 0));
+      await manager.startDocument({documentKey:'new', fileName:'new.xlsx'});
+      releaseSerialize({marker:'old'});
+      await flushing;
+      const snapshots = await InkDeskLocalRecovery.listSnapshots('recovery-race');
+      const state = manager.getState();
+      manager.destroy();
+      await InkDeskLocalRecovery.clearModule('recovery-race');
+      return {snapshots:snapshots.length, documentKey:state.documentKey, generation:state.generation};
+    }""")
+    page.close()
+    context.close()
+    return {
+        "workspace": "recovery-write-barrier",
+        "restored": result["snapshots"] == 0 and result["documentKey"] == "new" and result["generation"] >= 2,
+        "result": result,
+        "errors": errors,
+    }
 
 
 def presentations_case(browser, base_url):
@@ -157,6 +216,7 @@ def main():
                     documents_case(browser, base_url),
                     spreadsheets_case(browser, base_url),
                     presentations_case(browser, base_url),
+                    recovery_write_barrier_case(browser, base_url),
                 ]
             except Exception as error:
                 if "ERR_BLOCKED_BY_ADMINISTRATOR" not in str(error):

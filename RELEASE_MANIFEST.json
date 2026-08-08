@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.22",
-  "releaseName": "Spreadsheet Formula Draft Safety Hardening",
+  "version": "0.20.2.23",
+  "releaseName": "Spreadsheet Formula Recovery Hardening",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {

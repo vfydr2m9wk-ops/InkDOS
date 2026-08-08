@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.22';
+  const VERSION = '0.20.2.23';
 
   function fallbackClamp(value, minimum, maximum) {
     return Math.max(
@@ -143,6 +143,42 @@
       return drafts.delete(String(key || ''));
     }
 
+    function exportDrafts() {
+      return Array.from(drafts.entries()).map(function (entry) {
+        const key = String(entry[0] || '');
+        const draft = entry[1] || {};
+        const value = normalizeDraft(draft.value);
+        return Object.freeze({
+          key,
+          reference: String(draft.reference || ''),
+          value,
+          caret: clamp(draft.caret, 0, value.length)
+        });
+      });
+    }
+
+    function importDrafts(entries) {
+      drafts.clear();
+      clearTarget();
+      state.value = '';
+      state.caret = 0;
+      state.originalDisplay = '';
+      state.originalFormulaValue = '';
+      for (const item of Array.isArray(entries) ? entries : []) {
+        if (!item || typeof item !== 'object') continue;
+        const key = String(item.key || '');
+        const reference = String(item.reference || '').toUpperCase();
+        if (!key || !reference) continue;
+        const value = normalizeDraft(item.value);
+        drafts.set(key, {
+          value,
+          caret: clamp(item.caret, 0, value.length),
+          reference
+        });
+      }
+      return exportDrafts();
+    }
+
     function hasDrafts() {
       return drafts.size > 0;
     }
@@ -175,6 +211,8 @@
       prepareCommit,
       prepareCancel,
       removeDraft,
+      exportDrafts,
+      importDrafts,
       hasDrafts,
       reset,
       snapshot

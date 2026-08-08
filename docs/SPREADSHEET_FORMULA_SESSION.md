@@ -70,3 +70,10 @@ The session module has no DOM dependency and is tested directly in Node. A suspe
 ## v0.20.2.22 safety boundary
 
 `formula-safety.js` now coordinates formula drafts with workbook lifecycle operations. A draft may remain in the editor/session without entering the workbook model, so Save must not claim success while such a draft is pending. New/Open and before-unload include the draft state in their unsaved-work checks, and a replacement workbook clears the draft session only after parsing succeeds. `formula-session.js` exposes deterministic `hasDrafts()` and `reset()` operations for this boundary.
+
+
+## v0.20.2.23 recovery boundary
+
+Formula drafts are serializable recovery state. `formula-session.js` exports normalized draft records keyed by worksheet/cell and imports them without activating or committing a cell. `formula-editor.js` reapplies restored drafts to the rendered grid and emits lifecycle notifications that allow the workbook recovery manager to schedule or clear snapshots.
+
+The recovery payload uses schema version 2 and includes `formulaDrafts`. Restoring a snapshot reconstructs the workbook first and then reapplies pending formula drafts as suspended/resumable drafts. Confirmed workbook replacement discards the prior recovery record only after the replacement file parses successfully.

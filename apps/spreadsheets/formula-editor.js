@@ -113,6 +113,17 @@
       status.hidden = !message;
       status.textContent = String(message || '');
     }
+    function notifySessionChange(reason) {
+      doc.dispatchEvent(new global.CustomEvent('inkdesk:formula-session-change', {
+        detail: {
+          reason: String(reason || 'update'),
+          value: state.value,
+          caret: state.caret,
+          targetReference: state.targetReference,
+          hasDrafts: session.hasDrafts()
+        }
+      }));
+    }
     function closeSuggestions() {
       suggestions.hidden = true;
       suggestions.replaceChildren();
@@ -120,7 +131,6 @@
       suggestionState.index = 0;
       suggestionState.context = null;
     }
-
     function positionSuggestions() {
       if (suggestions.hidden) return;
       const rect = formula.getBoundingClientRect();
@@ -131,7 +141,6 @@
       suggestions.style.top = rect.bottom + 3 + 'px';
       suggestions.style.width = width + 'px';
     }
-
     function renderSuggestions() {
       const context = suggestionContext(state.value, state.caret);
       const items = matchingFunctions(context);
@@ -165,11 +174,9 @@
       suggestions.hidden = false;
       positionSuggestions();
     }
-
     function rememberDraft() {
       session.rememberDraft();
     }
-
     function updateCellText(value, caret) {
       if (!state.cell) return;
       state.cell.textContent = value;
@@ -177,7 +184,6 @@
       state.cell.classList.add(SAVED_DRAFT_CLASS);
       if (state.active && doc.activeElement === state.cell) setCaret(state.cell, caret);
     }
-
     function mirrorFormula(value, caret, dispatch) {
       syncing = true;
       formula.value = value;
@@ -187,7 +193,6 @@
       }
       syncing = false;
     }
-
     function setDraftValue(value, caret, options) {
       const settings = options || {};
       session.update(value, caret);
@@ -197,26 +202,17 @@
       suggestionState.index = 0;
       if (settings.suggestions === false) closeSuggestions();
       else renderSuggestions();
-      doc.dispatchEvent(new global.CustomEvent('inkdesk:formula-session-change', {
-        detail: {
-          value: state.value,
-          caret: state.caret,
-          targetReference: state.targetReference
-        }
-      }));
+      notifySessionChange('update');
     }
-
     function referenceController() {
       return global.InkDeskSpreadsheetFormulaReferences || null;
     }
-
     function beginReferenceMode() {
       const controller = referenceController();
       if (controller && typeof controller.begin === 'function') {
         controller.begin(state.targetReference);
       }
     }
-
     function start(cell, value, caret) {
       if (!cell) return false;
       if (state.active && state.cell !== cell) suspend();
@@ -243,9 +239,9 @@
       renderSuggestions();
       beginReferenceMode();
       setStatus('Draft ' + reference + ' is preserved. Type in the cell; Tab accepts a function and Enter confirms.');
+      notifySessionChange(opened.resumed ? 'resume' : 'start');
       return true;
     }
-
     function suspend() {
       const suspended = session.suspend();
       if (!suspended) return;
@@ -261,8 +257,8 @@
       const controller = referenceController();
       if (controller && typeof controller.pause === 'function') controller.pause();
       setStatus('Formula draft preserved. Return to its cell to continue.');
+      notifySessionChange('suspend');
     }
-
     function clearActiveState() {
       closeSuggestions();
       const cleared = session.clearActive();
@@ -273,7 +269,6 @@
       }
       delete doc.body.dataset.formulaEditorMode;
     }
-
     function callCoreKeydown(key) {
       if (typeof coreHandlers.keydown !== 'function') return;
       coreHandlers.keydown.call(formula, {
@@ -284,7 +279,6 @@
         stopImmediatePropagation: function () {}
       });
     }
-
     function commit() {
       const prepared = session.prepareCommit(balanceFormula);
       if (!prepared) return false;
@@ -298,9 +292,9 @@
       if (controller && typeof controller.end === 'function') controller.end('Formula confirmed.');
       clearActiveState();
       setStatus('Formula confirmed.');
+      notifySessionChange('commit');
       return true;
     }
-
     function cancel() {
       const prepared = session.prepareCancel();
       if (!prepared) return;
@@ -310,8 +304,8 @@
       if (controller && typeof controller.end === 'function') controller.end('');
       clearActiveState();
       setStatus('');
+      notifySessionChange('cancel');
     }
-
     function reset() {
       closeSuggestions();
       session.reset();
@@ -319,9 +313,9 @@
       const controller = referenceController();
       if (controller && typeof controller.end === 'function') controller.end('');
       setStatus('');
+      notifySessionChange('reset');
       return true;
     }
-
     function acceptSuggestion(index) {
       const context = suggestionState.context;
       const item = suggestionState.items[index];
@@ -339,7 +333,6 @@
       setStatus(item[0] + ' inserted. Click or drag cells, type arguments, or press Enter to confirm.');
       return true;
     }
-
     function handleEditingKeydown(event) {
       if (!state.active) return;
       if (!suggestions.hidden && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
@@ -375,14 +368,12 @@
         }
       }
     }
-
     function applyReference(result) {
       if (!state.active || !result) return;
       setDraftValue(result.value, result.caret, { dispatch: false, suggestions: false });
       state.cell.focus({ preventScroll: true });
       setCaret(state.cell, result.caret);
     }
-
     function resumeDraftAfterCoreSelection(cell) {
       clearTimeout(resumeTimer);
       resumeTimer = global.setTimeout(function () {
@@ -391,7 +382,6 @@
         if (saved) start(cell, saved.value, saved.caret);
       }, 0);
     }
-
     function reapplyDrafts() {
       grid.querySelectorAll('.cell').forEach(function (cell) {
         if (state.active && cell === state.cell) return;
@@ -407,7 +397,6 @@
         }
       });
     }
-
     grid.addEventListener('input', function (event) {
       if (!state.active || event.target !== state.cell) return;
       const value = String(state.cell.innerText || '').replace(/[\r\n]+/g, '');
@@ -417,12 +406,11 @@
       suggestionState.index = 0;
       renderSuggestions();
       beginReferenceMode();
+      notifySessionChange('update');
     }, true);
-
     grid.addEventListener('keydown', function (event) {
       if (state.active && event.target === state.cell) handleEditingKeydown(event);
     }, true);
-
     grid.addEventListener('pointerdown', function (event) {
       const cell = event.target?.closest?.('.cell');
       if (!cell) return;
@@ -435,7 +423,6 @@
       }
       if (!state.active && saved) resumeDraftAfterCoreSelection(cell);
     }, true);
-
     formula.onfocus = function (event) {
       if (!state.active && typeof coreHandlers.focus === 'function') {
         coreHandlers.focus.call(formula, event);
@@ -448,7 +435,6 @@
         renderSuggestions();
       }
     };
-
     formula.oninput = function () {
       if (syncing) return;
       if (!state.active) {
@@ -466,13 +452,12 @@
       suggestionState.index = 0;
       renderSuggestions();
       beginReferenceMode();
+      notifySessionChange('update');
     };
-
     formula.onkeydown = function (event) {
       if (state.active) handleEditingKeydown(event);
       else if (typeof coreHandlers.keydown === 'function') coreHandlers.keydown.call(formula, event);
     };
-
     global.addEventListener('keydown', function (event) {
       const target = event.target;
       if (
@@ -498,7 +483,6 @@
         }
       }
     }, true);
-
     global.addEventListener('dblclick', function (event) {
       const cell = event.target?.closest?.('.cell');
       if (!cell || !grid.contains(cell)) return;
@@ -510,22 +494,40 @@
       event.stopImmediatePropagation();
       start(cell, value, saved?.caret ?? value.length);
     }, true);
-
     global.addEventListener('resize', positionSuggestions);
     viewport.addEventListener('scroll', positionSuggestions, { passive: true });
-
     if (typeof global.MutationObserver === 'function') {
       new global.MutationObserver(function () {
         global.setTimeout(reapplyDrafts, 0);
       }).observe(grid, { childList: true });
     }
-
+    function snapshotDrafts() {
+      return session.exportDrafts();
+    }
+    function restoreDrafts(entries) {
+      clearTimeout(resumeTimer);
+      closeSuggestions();
+      if (state.cell) {
+        state.cell.contentEditable = 'false';
+        state.cell.classList.remove(DRAFT_CLASS);
+      }
+      session.importDrafts(entries);
+      delete doc.body.dataset.formulaEditorMode;
+      const controller = referenceController();
+      if (controller && typeof controller.end === 'function') controller.end('');
+      reapplyDrafts();
+      setStatus(session.hasDrafts() ? 'Recovered formula draft preserved. Select its cell to continue.' : '');
+      notifySessionChange('restore');
+      return session.exportDrafts();
+    }
     const controller = Object.freeze({
       version: VERSION,
       drafts,
       session,
       isActive: function () { return state.active; },
       hasPendingDrafts: function () { return session.hasDrafts(); },
+      snapshotDrafts,
+      restoreDrafts,
       getValue: function () { return state.value; },
       getSelection: function () { return { start: state.caret, end: state.caret }; },
       getTargetReference: function () { return state.targetReference; },
@@ -545,7 +547,6 @@
       reset,
       formulaIsComplete: function () { return formulaIsComplete(state.value); }
     });
-
     Object.defineProperty(formula, '__inkdeskFormulaEditorController', {
       value: controller,
       configurable: true
@@ -553,7 +554,6 @@
     global.InkDeskSpreadsheetFormulaEditor = controller;
     return controller;
   }
-
   const api = Object.freeze({
     version: VERSION,
     functions: FUNCTIONS,
@@ -569,13 +569,10 @@
     formulaIsComplete,
     createController
   });
-
   global.InkDeskFormulaEditor = api;
-
   function initialize() {
     createController(global.document);
   }
-
   if (global.document) {
     if (global.document.readyState === 'loading') {
       global.document.addEventListener('DOMContentLoaded', initialize, { once: true });

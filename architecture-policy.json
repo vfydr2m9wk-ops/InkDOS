@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.22",
+  "release": "0.20.2.23",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -84,7 +84,7 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/spreadsheets/formula-editor.js": {
-      "maxLines": 586,
+      "maxLines": 583,
       "maxLongLines": 0,
       "reason": "Persistent formula draft lifecycle moved to apps/spreadsheets/formula-session.js in v0.20.2.21; remaining DOM/caret, suggestion UI and keyboard interaction are ratcheted at the smaller boundary."
     },
@@ -109,7 +109,7 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "shared/local-recovery.js": {
-      "maxLines": 278,
+      "maxLines": 276,
       "maxLongLines": 4,
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },

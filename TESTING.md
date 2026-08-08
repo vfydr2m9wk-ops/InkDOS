@@ -1,3 +1,9 @@
+## v0.20.2.23 Spreadsheet formula recovery hardening
+
+The v0.20.2.23 gate extends the existing private-recovery regression so an uncommitted formula draft must survive a close/reopen/Restore cycle and resume in its original worksheet/cell. Deterministic tests cover draft export/import, lifecycle notifications, confirmed replacement cleanup and the shared recovery document-generation write barrier.
+
+The hosted workflow remains the final checksum and 17/17 Chromium gate.
+
 ## v0.20.2.22 Spreadsheet formula draft safety hardening
 
 The v0.20.2.22 gate adds deterministic tests for the formula safety coordinator and session reset contract, while extending the existing Spreadsheet Chromium consistency script. Pending drafts must block Save, participate in New/Open/before-unload protection, clear after a confirmed workbook replacement, and survive a failed replacement-file parse.

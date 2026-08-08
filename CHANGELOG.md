@@ -1,3 +1,12 @@
+## 0.20.2.23 — Spreadsheet Formula Recovery Hardening (2026-08-07)
+
+- Persist pending Spreadsheet formula drafts inside private IndexedDB recovery snapshots and restore them as resumable drafts.
+- Add lifecycle notifications so formula start/update/suspend/resume/commit/cancel/restore transitions participate in recovery scheduling.
+- Add a document-generation write barrier to prevent in-flight recovery writes from crossing workbook/document boundaries.
+- Make recovery cleanup wait for in-flight writes and add snapshot-only cleanup for cancelled drafts.
+- Discard previous-workbook recovery only after a replacement workbook parses successfully, preserving transactional open behavior.
+- Extend the existing local-recovery Chromium regression and add deterministic formula-recovery coverage.
+
 ## 0.20.2.22 — Spreadsheet Formula Draft Safety Hardening (2026-08-07)
 
 - Added `apps/spreadsheets/formula-safety.js` as the workbook-level guard for pending formula drafts.

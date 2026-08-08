@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 24,
-  "currentPackage": "0.20.2.22",
+  "appliedSequence": 25,
+  "currentPackage": "0.20.2.23",
   "status": "in-progress",
   "history": [
     {
@@ -125,6 +125,11 @@
       "sequence": 24,
       "packageLabel": "0.20.2.22",
       "description": "Spreadsheet formula draft safety hardening: pending formula drafts participate in workbook safety guards, Save cannot silently omit a pending draft, confirmed workbook replacement clears draft state only after replacement parsing succeeds, and the behavior is covered by deterministic plus Chromium regressions."
+    },
+    {
+      "sequence": 25,
+      "packageLabel": "0.20.2.23",
+      "description": "Spreadsheet formula recovery hardening: uncommitted formula drafts are serialized into private recovery snapshots and restored as resumable drafts; confirmed workbook replacement discards prior recovery only after parsing succeeds; shared local-recovery writes are fenced by document generation so stale asynchronous writes cannot cross document boundaries."
     }
   ]
 }

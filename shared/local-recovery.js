@@ -1,6 +1,5 @@
 (function(global){
 'use strict';
-
 const DB_NAME='InkDeskLocalRecovery';
 const DB_VERSION=1;
 const SNAPSHOT_STORE='snapshots';
@@ -9,7 +8,6 @@ const MAX_PER_DOCUMENT=3;
 const MAX_PER_MODULE=12;
 const MAX_AGE_MS=30*24*60*60*1000;
 const DEFAULT_DEBOUNCE_MS=900;
-
 function requestResult(request){
   return new Promise((resolve,reject)=>{
     request.onsuccess=()=>resolve(request.result);
@@ -50,9 +48,6 @@ async function withStore(storeName,mode,callback){
   const db=await openDatabase();
   try{
     const transaction=db.transaction(storeName,mode);
-    // Register completion handlers before awaiting any IndexedDB request. Some
-    // engines can complete a readonly transaction during the callback's await;
-    // installing the handlers afterwards would leave this promise unresolved.
     const done=transactionDone(transaction);
     const result=await callback(transaction.objectStore(storeName),transaction);
     await done;
@@ -167,19 +162,14 @@ function create(options){
   const restoreCallback=typeof options.restore==='function'?options.restore:async()=>{};
   const status=typeof options.status==='function'?options.status:()=>{};
   const debounceMs=Math.max(250,Number(options.debounceMs)||DEFAULT_DEBOUNCE_MS);
-  let documentKey='';
-  let fileName=String(options.defaultFileName||'Untitled');
-  let dirty=false;
-  let revision=0;
-  let timer=null;
-  let writing=null;
-  let destroyed=false;
-
+  let documentKey='',fileName=String(options.defaultFileName||'Untitled');
+  let dirty=false,revision=0,generation=0,destroyed=false;
+  let timer=null,writing=null;
   function report(message,error){
     try{status(message,error)}catch(statusError){console.warn('Recovery status callback failed.',statusError)}
   }
   async function startDocument(config){
-    config=config||{};
+    config=config||{};generation+=1;
     clearTimeout(timer);timer=null;dirty=false;revision=0;
     documentKey=String(config.documentKey||randomKey());
     fileName=String(config.fileName||fileName||'Untitled');
@@ -192,16 +182,22 @@ function create(options){
   async function flush(){
     if(destroyed||!dirty||!documentKey)return null;
     if(writing)return writing.then(()=>dirty?flush():null);
-    const capturedRevision=revision;
+    const capturedRevision=revision,capturedGeneration=generation;
+    const capturedDocumentKey=documentKey,capturedFileName=fileName;
     writing=(async()=>{
       try{
         const payload=await serialize();
         if(payload==null)return null;
+        if(destroyed||capturedGeneration!==generation||capturedDocumentKey!==documentKey)return null;
         const now=Date.now();
-        const record={id:moduleName+':'+documentKey+':'+now+':'+Math.random().toString(36).slice(2,7),module:moduleName,documentKey,fileName,appVersion:String(options.appVersion||'0.20.2.22'),schemaVersion:1,createdAt:now,updatedAt:now,payload};
+        const record={id:moduleName+':'+capturedDocumentKey+':'+now+':'+Math.random().toString(36).slice(2,7),module:moduleName,documentKey:capturedDocumentKey,fileName:capturedFileName,appVersion:String(options.appVersion||'0.20.2.23'),schemaVersion:1,createdAt:now,updatedAt:now,payload};
         await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.put(record)});
-        await prune(moduleName,documentKey);
-        if(revision===capturedRevision)dirty=false;
+        if(capturedGeneration!==generation||capturedDocumentKey!==documentKey){
+          await withStore(SNAPSHOT_STORE,'readwrite',store=>{store.delete(record.id)});
+          return null;
+        }
+        await prune(moduleName,capturedDocumentKey);
+        if(revision===capturedRevision&&capturedGeneration===generation)dirty=false;
         report('Recovery snapshot saved locally');
         return record;
       }catch(error){console.warn('InkDesk could not save a local recovery snapshot.',error);report('Local recovery snapshot failed',error);return null}
@@ -218,15 +214,19 @@ function create(options){
     if(destroyed)return;
     revision+=1;dirty=true;clearTimeout(timer);timer=setTimeout(()=>{timer=null;flush()},debounceMs);
   }
+  async function clearSnapshots(){
+    const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;
+    if(pending)await pending;if(!key)return;
+    try{await deleteSnapshotsOnly(moduleName,key);report('Recovery snapshots cleared')}catch(error){console.warn('InkDesk could not clear recovery snapshots.',error)}
+  }
   async function markClean(){
-    dirty=false;revision=0;clearTimeout(timer);timer=null;
-    if(!documentKey)return;
-    try{await deleteDocument(moduleName,documentKey);report('Recovery snapshot cleared after save')}
-    catch(error){console.warn('InkDesk could not clear the recovery snapshot.',error)}
+    const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;
+    if(pending)await pending;if(!key)return;
+    try{await deleteDocument(moduleName,key);report('Recovery snapshot cleared after save')}catch(error){console.warn('InkDesk could not clear the recovery snapshot.',error)}
   }
   async function discardCurrent(){
-    dirty=false;revision=0;clearTimeout(timer);timer=null;
-    if(documentKey)await deleteDocument(moduleName,documentKey);
+    const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;
+    if(pending)await pending;if(key)await deleteDocument(moduleName,key);
   }
   function updateFileName(value){fileName=String(value||fileName||'Untitled')}
   async function promptLatest(){
@@ -248,17 +248,16 @@ function create(options){
       });
     }catch(error){console.warn('InkDesk could not inspect local recovery snapshots.',error);return null}
   }
-  function getState(){return{module:moduleName,documentKey,fileName,dirty,revision,writing:Boolean(writing)}}
+  function getState(){return{module:moduleName,documentKey,fileName,dirty,revision,generation,writing:Boolean(writing)}}
   function destroy(){
-    destroyed=true;dirty=false;clearTimeout(timer);timer=null;
-    document.removeEventListener('visibilitychange',visibilityHandler);
-    global.removeEventListener('pagehide',pageHideHandler);
+    generation+=1;destroyed=true;dirty=false;clearTimeout(timer);timer=null;
+    document.removeEventListener('visibilitychange',visibilityHandler);global.removeEventListener('pagehide',pageHideHandler);
   }
   const visibilityHandler=()=>{if(document.visibilityState==='hidden')flush()};
   const pageHideHandler=()=>{flush()};
   document.addEventListener('visibilitychange',visibilityHandler);
   global.addEventListener('pagehide',pageHideHandler);
-  return Object.freeze({startDocument,markDirty,flush,markClean,discardCurrent,updateFileName,promptLatest,getState,destroy});
+  return Object.freeze({startDocument,markDirty,flush,clearSnapshots,markClean,discardCurrent,updateFileName,promptLatest,getState,destroy});
 }
 async function clearModule(moduleName){
   const snapshots=await getAllSnapshots(String(moduleName));
@@ -266,9 +265,8 @@ async function clearModule(moduleName){
   const sources=await allFromIndex(SOURCE_STORE,'module',String(moduleName));
   await withStore(SOURCE_STORE,'readwrite',store=>sources.forEach(item=>store.delete(item.id)));
 }
-
 global.InkDeskLocalRecovery=Object.freeze({
-  version:'0.20.2.22',
+  version:'0.20.2.23',
   create,
   openDatabase,
   listSnapshots:getAllSnapshots,

@@ -1,3 +1,7 @@
+## v0.20.2.23 formula recovery and write-barrier gate
+
+This gate verifies that Spreadsheet formula drafts participate in IndexedDB recovery without being silently committed, and that an in-flight recovery write cannot cross into a newer document identity. The existing local-recovery Chromium scenario now restores both committed workbook content and a suspended formula draft.
+
 ## v0.20.2.22 formula draft safety gate
 
 The release gate adds `tests.test_spreadsheet_formula_safety` plus browser assertions that an incomplete formula draft cannot be silently omitted by Save and cannot leak into a newly confirmed workbook. The safety coordinator is tested without a DOM; the existing Spreadsheet browser harness verifies the integration.
@@ -6,7 +10,7 @@ The release gate adds `tests.test_spreadsheet_formula_safety` plus browser asser
 
 The package must pass the complete Python suite, architecture/source checks, checksum verification and all 17 Chromium scripts. Additional tests exercise the DOM-free formula-session lifecycle: start, normalized update, suspend, resume, commit cleanup and cancel cleanup.
 
-# Testing guide — InkDesk v0.20.2.22
+# Testing guide — InkDesk v0.20.2.23
 
 ## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
 
