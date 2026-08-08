@@ -1,5 +1,5 @@
 'use strict';
-// Update sequence 42: worksheet deletion support and cache refresh.
+// Update sequence 43: worksheet deletion integrity, #REF! semantics and orphan cleanup.
 const CACHE_NAME='inkdesk-shell-v0.20.3.1';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
@@ -73,6 +73,7 @@ const APP_SHELL=[
   './apps/spreadsheets/worksheet-package.js',
   './apps/spreadsheets/xlsx-engine.js',
   './apps/spreadsheets/worksheet-tabs.js',
+  './apps/spreadsheets/formula-integrity.js',
   './apps/spreadsheets/app.js',
   './apps/spreadsheets/formula-model.js',
   './apps/spreadsheets/formula-session.js',

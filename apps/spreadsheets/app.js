@@ -79,71 +79,70 @@ function intrinsicLayout(s,bounds){
 function analyzeSheet(s){const b=usedBounds(s);const area=Math.max(1,(b.r2-b.r1+1)*(b.c2-b.c1+1));let populated=0,formulae=0,styled=0;for(const [,cell] of s.cells){if(cell?.v!==''&&cell?.v!=null)populated++;if(cell?.f)formulae++;if(cell?.style&&(cell.style.fill||Object.keys(cell.style.border||{}).length))styled++}const mergeCount=(s.merges||[]).length,density=populated/area;const documentScore=(mergeCount>=6?3:mergeCount>=2?1:0)+(formulae===0?2:0)+(density<0.28?2:0)+(styled>8?1:0)+(area<2500?1:0);return{mode:documentScore>=5?'form':'grid',density,mergeCount,formulae,area,score:documentScore}}
 function applyViewClasses(){document.body.classList.toggle('page-view',viewMode==='form');document.body.classList.toggle('sheet-view',viewMode==='grid');document.body.classList.toggle('show-gridlines',showGridlines);document.body.classList.toggle('no-gridlines',!showGridlines);E.gridMode.classList.toggle('active',viewMode==='grid');E.formMode.classList.toggle('active',viewMode==='form');E.gridlines?.classList.toggle('active',showGridlines)}
 function setView(mode,automatic=false){viewMode=mode==='form'?'form':'grid';applyViewClasses();renderGrid();applyZoom();if(viewMode==='form')requestAnimationFrame(fitWidth);if(!automatic)toast(viewMode==='form'?'Page view':'Sheet view')}
-function parseFormulaRef(token,currentSheet){
-  const raw=String(token||'').trim();
-  const m=/^(?:(?:'((?:[^']|'')+)'|([^'!]+))!)?\$?([A-Z]{1,3})\$?(\d+)$/i.exec(raw);
-  if(!m)return null;
-  const sheetName=(m[1]?m[1].replace(/''/g,"'"):m[2])||currentSheet.name;
-  const target=book.sheets.find(x=>x.name===sheetName)||currentSheet;
-  return{sheet:target,ref:m[3].toUpperCase()+m[4]};
-}
-function parseFormulaRange(token,currentSheet){
-  const raw=String(token||'').trim(),m=/^(?:(?:'((?:[^']|'')+)'|([^'!]+))!)?\$?([A-Z]{1,3})\$?(\d+):\$?([A-Z]{1,3})\$?(\d+)$/i.exec(raw);
-  if(!m)return null;
-  const sheetName=(m[1]?m[1].replace(/''/g,"'"):m[2])||currentSheet.name,target=book.sheets.find(x=>x.name===sheetName)||currentSheet;
-  return{sheet:target,range:LocalXLSX.decodeRange(`${m[3]}${m[4]}:${m[5]}${m[6]}`)};
-}
+const formulaIntegrity=window.InkDeskSpreadsheetFormulaIntegrity;
+function parseFormulaRef(token,currentSheet){return formulaIntegrity.parseRef(token,currentSheet,book.sheets)}
+function parseFormulaRange(token,currentSheet){return formulaIntegrity.parseRange(token,currentSheet,book.sheets,LocalXLSX.decodeRange)}
+function isFormulaError(value){return formulaIntegrity.isError(value)}
+function invalidateDeletedSheetReferences(sheetName){return formulaIntegrity.invalidateDeletedReferences(book.sheets,sheetName)}
+
 function formulaValue(targetSheet,cellRef,stack=new Set(),env={}){
   const identity=targetSheet.name+'!'+cellRef;if(stack.has(identity))return'#CYCLE!';const cell=targetSheet.cells.get(cellRef);if(!cell)return 0;if(!cell.f)return cell.v??0;
   stack.add(identity);const value=evaluateFormula(targetSheet,cell.f,stack,env);stack.delete(identity);return value===null?(cell.v??0):value;
 }
 function splitFormulaArgs(text){const out=[];let q='',depth=0,quote=false;for(const ch of String(text)){if(ch==='"')quote=!quote;if(!quote){if(ch==='(')depth++;else if(ch===')')depth--;else if((ch===','||ch===';')&&depth===0){out.push(q);q='';continue}}q+=ch}out.push(q);return out}
 function formulaRangeMatrix(currentSheet,arg,stack,env={}){
-  const rr=parseFormulaRange(arg,currentSheet);if(!rr)return null;const q=rr.range,rows=[];for(let r=q.r1;r<=q.r2;r++){const row=[];for(let c=q.c1;c<=q.c2;c++)row.push(formulaValue(rr.sheet,ref(r,c),stack,env));rows.push(row)}return rows;
+  const rr=parseFormulaRange(arg,currentSheet);if(!rr)return null;if(rr.error)return rr.error;const q=rr.range,rows=[];
+  for(let r=q.r1;r<=q.r2;r++){const row=[];for(let c=q.c1;c<=q.c2;c++)row.push(formulaValue(rr.sheet,ref(r,c),stack,env));rows.push(row)}return rows;
 }
 function formulaArgValues(currentSheet,arg,stack,env={}){
-  arg=String(arg||'').trim();if(Object.prototype.hasOwnProperty.call(env,arg))return[env[arg]];
-  const matrix=formulaRangeMatrix(currentSheet,arg,stack,env);if(matrix)return matrix.flat();
-  const rr=parseFormulaRef(arg,currentSheet);if(rr)return[formulaValue(rr.sheet,rr.ref,stack,env)];
+  arg=String(arg||'').trim();if(Object.prototype.hasOwnProperty.call(env,arg))return[env[arg]];if(isFormulaError(arg))return[arg];
+  const matrix=formulaRangeMatrix(currentSheet,arg,stack,env);if(isFormulaError(matrix))return[matrix];if(matrix)return matrix.flat();
+  const rr=parseFormulaRef(arg,currentSheet);if(rr)return[rr.error||formulaValue(rr.sheet,rr.ref,stack,env)];
   if(/^".*"$/.test(arg))return[arg.slice(1,-1).replace(/""/g,'"')];
   if(/^(TRUE|FALSE)$/i.test(arg))return[/^TRUE$/i.test(arg)];
   const n=Number(arg.replace(',','.'));return Number.isFinite(n)?[n]:[arg];
 }
 function compareFormulaValues(a,op,b){switch(op){case'=':return a==b;case'<>':return a!=b;case'<':return Number(a)<Number(b);case'>':return Number(a)>Number(b);case'<=':return Number(a)<=Number(b);case'>=':return Number(a)>=Number(b);default:return false}}
 function filterMask(currentSheet,expression,stack,env={}){
-  const m=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(String(expression||'').trim());if(!m)return[];const left=formulaArgValues(currentSheet,m[1],stack,env),right=formulaArgValues(currentSheet,m[3],stack,env);return left.map((v,i)=>compareFormulaValues(v,m[2],right.length>1?right[i]:right[0]));
+  const m=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(String(expression||'').trim());if(!m)return[];const left=formulaArgValues(currentSheet,m[1],stack,env),right=formulaArgValues(currentSheet,m[3],stack,env),error=[...left,...right].find(isFormulaError);if(error)return error;return left.map((v,i)=>compareFormulaValues(v,m[2],right.length>1?right[i]:right[0]));
 }
 function formatFormulaResult(v){if(Array.isArray(v)){if(v.length&&Array.isArray(v[0]))return v.map(row=>row.map(x=>x??'').join(' | ')).join('\n');return v.map(x=>x??'').join(', ')}return v}
 function evaluateFormula(currentSheet,formula,stack=new Set(),env={}){
   let f=String(formula||'').replace(/^=/,'').trim().replace(/^_xlfn\./i,'');
   if(Object.prototype.hasOwnProperty.call(env,f))return env[f];
-  const direct=parseFormulaRef(f,currentSheet);if(direct)return formulaValue(direct.sheet,direct.ref,stack,env);
+  if(isFormulaError(f))return f;
+  const direct=parseFormulaRef(f,currentSheet);if(direct)return direct.error||formulaValue(direct.sheet,direct.ref,stack,env);
   const call=/^([A-Z.]+)\((.*)\)$/i.exec(f);
   if(call){
     const fn=call[1].toUpperCase().replace(/^_XLFN\./,''),args=splitFormulaArgs(call[2]);
     if(fn==='XLOOKUP'){
-      const lookup=formulaArgValues(currentSheet,args[0],stack,env)[0],lookups=formulaArgValues(currentSheet,args[1],stack,env),returns=formulaArgValues(currentSheet,args[2],stack,env),idx=lookups.findIndex(v=>String(v)===String(lookup));return idx>=0?returns[idx]:(args[3]!==undefined?formulaArgValues(currentSheet,args[3],stack,env)[0]:'#N/A');
+      const lookup=formulaArgValues(currentSheet,args[0],stack,env)[0],lookups=formulaArgValues(currentSheet,args[1],stack,env),returns=formulaArgValues(currentSheet,args[2],stack,env);
+      const error=[lookup,...lookups,...returns].find(isFormulaError);if(error)return error;const idx=lookups.findIndex(v=>String(v)===String(lookup));return idx>=0?returns[idx]:(args[3]!==undefined?formulaArgValues(currentSheet,args[3],stack,env)[0]:'#N/A');
     }
     if(fn==='FILTER'){
-      const matrix=formulaRangeMatrix(currentSheet,args[0],stack,env);if(!matrix)return null;const mask=filterMask(currentSheet,args[1],stack,env),filtered=matrix.filter((_,i)=>mask[i]);return filtered.length?filtered:(args[2]!==undefined?[[formulaArgValues(currentSheet,args[2],stack,env)[0]]]:[['#CALC!']]);
+      const matrix=formulaRangeMatrix(currentSheet,args[0],stack,env);if(isFormulaError(matrix))return matrix;if(!matrix)return null;const mask=filterMask(currentSheet,args[1],stack,env);if(isFormulaError(mask))return mask;const filtered=matrix.filter((_,i)=>mask[i]);return filtered.length?filtered:(args[2]!==undefined?[[formulaArgValues(currentSheet,args[2],stack,env)[0]]]:[['#CALC!']]);
     }
     if(fn==='LET'){
       if(args.length<3)return null;const local={...env};for(let i=0;i<args.length-1;i+=2){const name=String(args[i]||'').trim();if(!name)continue;local[name]=evaluateFormula(currentSheet,args[i+1],stack,local);if(local[name]===null)local[name]=formulaArgValues(currentSheet,args[i+1],stack,local)[0]}
       return evaluateFormula(currentSheet,args[args.length-1],stack,local);
     }
-    const vals=args.flatMap(a=>formulaArgValues(currentSheet,a,stack,env)),nums=vals.map(Number).filter(Number.isFinite);
-    switch(fn){case'SUM':return nums.reduce((a,b)=>a+b,0);case'AVERAGE':return nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:'#DIV/0!';case'MIN':return nums.length?Math.min(...nums):0;case'MAX':return nums.length?Math.max(...nums):0;case'COUNT':return nums.length;case'ROUND':{const n=Number(formulaArgValues(currentSheet,args[0],stack,env)[0]),d=Number(formulaArgValues(currentSheet,args[1]||'0',stack,env)[0]);return Math.round(n*10**d)/10**d}case'IF':{const cond=evaluateFormula(currentSheet,args[0],stack,env);return cond?formulaArgValues(currentSheet,args[1],stack,env)[0]:formulaArgValues(currentSheet,args[2]||'0',stack,env)[0]}default:return null}
+    switch(fn){case'ROUND':{const values=formulaArgValues(currentSheet,args[0],stack,env),digits=formulaArgValues(currentSheet,args[1]||'0',stack,env),error=[...values,...digits].find(isFormulaError);if(error)return error;const n=Number(values[0]),d=Number(digits[0]);return Math.round(n*10**d)/10**d}case'IF':{const cond=evaluateFormula(currentSheet,args[0],stack,env);if(isFormulaError(cond))return cond;const selected=cond?formulaArgValues(currentSheet,args[1],stack,env):formulaArgValues(currentSheet,args[2]||'0',stack,env);return selected[0]}}
+    const vals=args.flatMap(a=>formulaArgValues(currentSheet,a,stack,env)),error=vals.find(isFormulaError);if(error)return error;const nums=vals.map(Number).filter(Number.isFinite);
+    switch(fn){case'SUM':return nums.reduce((a,b)=>a+b,0);case'AVERAGE':return nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:'#DIV/0!';case'MIN':return nums.length?Math.min(...nums):0;case'MAX':return nums.length?Math.max(...nums):0;case'COUNT':return nums.length;default:return null}
   }
-  const comparison=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(f);if(comparison){const a=formulaArgValues(currentSheet,comparison[1],stack,env)[0],b=formulaArgValues(currentSheet,comparison[3],stack,env)[0];return compareFormulaValues(a,comparison[2],b)}
-  const arithmetic=f.replace(/(?:(?:'[^']+'|[A-Za-z0-9_ .-]+)!)?\$?[A-Z]{1,3}\$?\d+/g,t=>{const rr=parseFormulaRef(t,currentSheet),v=rr?formulaValue(rr.sheet,rr.ref,stack,env):0;return Number.isFinite(Number(v))?String(Number(v)):'0'}).replace(/\b[A-Za-z_][A-Za-z0-9_.]*\b/g,name=>Object.prototype.hasOwnProperty.call(env,name)&&Number.isFinite(Number(env[name]))?String(Number(env[name])):name);
+  const comparison=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(f);if(comparison){const a=formulaArgValues(currentSheet,comparison[1],stack,env)[0],b=formulaArgValues(currentSheet,comparison[3],stack,env)[0],error=[a,b].find(isFormulaError);return error||compareFormulaValues(a,comparison[2],b)}
+  if(/#REF!/i.test(f))return'#REF!';
+  let arithmeticError='';const arithmetic=f.replace(/(?:(?:'[^']+'|[A-Za-z0-9_ .-]+)!)?\$?[A-Z]{1,3}\$?\d+/g,t=>{const rr=parseFormulaRef(t,currentSheet);if(rr?.error){arithmeticError=rr.error;return'0'}const v=rr?formulaValue(rr.sheet,rr.ref,stack,env):0;if(isFormulaError(v)){arithmeticError=v;return'0'}return Number.isFinite(Number(v))?String(Number(v)):'0'}).replace(/\b[A-Za-z_][A-Za-z0-9_.]*\b/g,name=>Object.prototype.hasOwnProperty.call(env,name)&&Number.isFinite(Number(env[name]))?String(Number(env[name])):name);
+  if(arithmeticError)return arithmeticError;
   if(/^[0-9+\-*/(). %]+$/.test(arithmetic)){try{return Function('"use strict";return ('+arithmetic+')')()}catch(error){console.warn('Arithmetic formula could not be evaluated.',error)}}
   const n=Number(f.replace(',','.'));return Number.isFinite(n)?n:null;
 }
+
 function recalculateWorkbook(){
   for(let pass=0;pass<4;pass++)for(const s of book.sheets)for(const[cellRef,cell]of s.cells){if(!cell?.f)continue;const v=evaluateFormula(s,cell.f,new Set([s.name+'!'+cellRef]),{});if(v!==null&&v!==undefined){cell.calculatedRaw=v;cell.calculated=formatFormulaResult(v);cell.display=String(formatFormulaResult(v))}}
 }
 function renderAll(){const analysis=analyzeSheet(sheet());viewMode=analysis.mode;showGridlines=viewMode==='grid';applyViewClasses();renderTabs();renderGrid();applyZoom();E.empty.hidden=true;E.viewport.hidden=false;E.title.value=book.fileName||'Untitled.xlsx';updateWorkbookDocumentTitle();select(0,0,false);E.save.disabled=!book.loaded;if(viewMode==='form')requestAnimationFrame(fitWidth);toast(viewMode==='form'?(sheet().printArea?'Print area · intrinsic Page view':'Document region · intrinsic Page view'):'Data sheet detected · Sheet view')}
-function renderTabs(){const visibleCount=()=>book.sheets.filter(item=>item.state!=='hidden'&&item.state!=='veryHidden').length;InkDeskSpreadsheetWorksheetTabs.render(E.tabs,book,{createBlank:()=>LocalXLSX.createBlank().sheets[0],canAdd:()=>!formulaSafety.hasDrafts()||(toast('Confirm or cancel formula drafts before adding a worksheet.'),false),canDelete:()=>book.sheets.length>1&&visibleCount()>1,onActivate:i=>{book.active=i;active=anchor={r:0,c:0};normalizeRange();renderAll()},onAdd:(name,i)=>{book.active=i;active=anchor={r:0,c:0};normalizeRange();history.reset();refreshUndoState();renderAll();markDirty(true);toast(name+' added')},onDelete:()=>{if(formulaSafety.hasDrafts()){toast('Confirm or cancel formula drafts before deleting a worksheet.');return}const index=Math.max(0,Math.min(book.active||0,book.sheets.length-1)),current=book.sheets[index];if(!current)return;if(book.sheets.length<=1||visibleCount()<=1){toast('A workbook must keep at least one visible worksheet.');return}if(!confirm(`Delete worksheet "${current.name}"? This cannot be undone.`))return;book.sheets.splice(index,1);book.active=Math.min(index,book.sheets.length-1);active=anchor={r:0,c:0};normalizeRange();history.reset();refreshUndoState();recalculateWorkbook();renderAll();markDirty(true);toast(current.name+' deleted')}})}
+function renderTabs(){const visibleCount=()=>book.sheets.filter(item=>item.state!=='hidden'&&item.state!=='veryHidden').length;InkDeskSpreadsheetWorksheetTabs.render(E.tabs,book,{createBlank:()=>LocalXLSX.createBlank().sheets[0],canAdd:()=>!formulaSafety.hasDrafts()||(toast('Confirm or cancel formula drafts before adding a worksheet.'),false),canDelete:()=>book.sheets.length>1&&visibleCount()>1,onActivate:i=>{book.active=i;active=anchor={r:0,c:0};normalizeRange();renderAll()},onAdd:(name,i)=>{book.active=i;active=anchor={r:0,c:0};normalizeRange();history.reset();refreshUndoState();renderAll();markDirty(true);toast(name+' added')},onDelete:()=>{if(formulaSafety.hasDrafts()){toast('Confirm or cancel formula drafts before deleting a worksheet.');return}const index=Math.max(0,Math.min(book.active||0,book.sheets.length-1)),current=book.sheets[index];if(!current)return;if(book.sheets.length<=1||visibleCount()<=1){toast('A workbook must keep at least one visible worksheet.');return}if(!confirm(`Delete worksheet "${current.name}"? This cannot be undone.`))return;book.sheets.splice(index,1);const invalidated=invalidateDeletedSheetReferences(current.name);book.active=Math.min(index,book.sheets.length-1);active=anchor={r:0,c:0};normalizeRange();history.reset();refreshUndoState();recalculateWorkbook();renderAll();markDirty(true);toast(current.name+' deleted'+(invalidated?` · ${invalidated} formula reference${invalidated===1?'':'s'} set to #REF!`:''))}})}
 function tableCellInfo(s,r,c){for(const t of(s.tables||[])){try{const q=t._range||(t._range=LocalXLSX.decodeRange(t.ref));if(r>=q.r1&&r<=q.r2&&c>=q.c1&&c<=q.c2)return{table:t,range:q,header:r===q.r1,band:(r-q.r1)%2===0}}catch(error){console.warn('Invalid table range ignored.',error)}}return null}
 function borderCss(side){
   if(!side)return'';

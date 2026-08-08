@@ -46,6 +46,74 @@
     return parts.concat('_rels', `${file}.rels`).join('/');
   }
 
+  function ownerPartFromRelsPath(path) {
+    const value = String(path || '').replace(/\\/g, '/');
+    if (value === '_rels/.rels') return '';
+    const marker = '/_rels/';
+    const at = value.lastIndexOf(marker);
+    if (at < 0 || !value.endsWith('.rels')) return '';
+    return value.slice(0, at + 1) + value.slice(at + marker.length, -5);
+  }
+
+  function normalizePartTarget(ownerPath, target) {
+    let value = String(target || '').replace(/\\/g, '/');
+    if (!value) return '';
+    if (value.startsWith('/')) return value.slice(1);
+    const base = String(ownerPath || '').split('/');
+    if (base.length) base.pop();
+    const out = [];
+    for (const part of base.concat(value.split('/'))) {
+      if (!part || part === '.') continue;
+      if (part === '..') out.pop();
+      else out.push(part);
+    }
+    return out.join('/');
+  }
+
+  async function relationshipTargets(zip, relsPath) {
+    const raw = await zip.file(relsPath)?.async('text');
+    if (!raw) return [];
+    const document = parseXml(raw, relsPath);
+    const owner = ownerPartFromRelsPath(relsPath);
+    const targets = [];
+    for (const relationship of localAll(document, 'Relationship')) {
+      if ((relationship.getAttribute('TargetMode') || '').toLowerCase() === 'external') continue;
+      const target = normalizePartTarget(owner, relationship.getAttribute('Target') || '');
+      if (target) targets.push(target);
+    }
+    return targets;
+  }
+
+  async function incomingReferenceCounts(zip) {
+    const counts = new Map();
+    const relsPaths = Object.keys(zip.files).filter(path => path.endsWith('.rels') && zip.file(path));
+    for (const relsPath of relsPaths) {
+      for (const target of await relationshipTargets(zip, relsPath)) {
+        counts.set(target, (counts.get(target) || 0) + 1);
+      }
+    }
+    return counts;
+  }
+
+  async function removeOrphanedDependencies(zip, initialTargets, contentTypes) {
+    const queue = [...new Set(initialTargets)].filter(Boolean);
+    const removed = new Set();
+    while (queue.length) {
+      const part = queue.shift();
+      if (!part || removed.has(part) || !zip.file(part)) continue;
+      const incoming = await incomingReferenceCounts(zip);
+      if ((incoming.get(part) || 0) > 0) continue;
+      const relsPath = worksheetRelsPath(part);
+      const children = await relationshipTargets(zip, relsPath);
+      zip.remove(part);
+      zip.remove(relsPath);
+      removeContentTypeOverride(contentTypes, '/' + part);
+      removed.add(part);
+      for (const child of children) if (!removed.has(child)) queue.push(child);
+    }
+    return removed;
+  }
+
   function removeContentTypeOverride(contentTypes, partName) {
     for (const node of localAll(contentTypes, 'Override')) {
       if (node.getAttribute('PartName') === partName) node.parentNode.removeChild(node);
@@ -68,21 +136,24 @@
     const relationshipById = new Map(localAll(relationships, 'Relationship').map(node => [node.getAttribute('Id') || '', node]));
     const originalSheets = localAll(sheetsNode, 'sheet');
     const deletedIndices = [];
+    const deletedDependencyTargets = [];
     let changed = false;
 
-    originalSheets.forEach((sheetNode, index) => {
+    for (const [index, sheetNode] of originalSheets.entries()) {
       const relationshipId = sheetNode.getAttributeNS(REL_NS, 'id') || sheetNode.getAttribute('r:id') || '';
       const relationship = relationshipById.get(relationshipId);
       const path = normalizeWorkbookTarget(relationship?.getAttribute('Target') || '');
-      if (!path || keptPaths.has(path)) return;
+      if (!path || keptPaths.has(path)) continue;
+      const relsPath = worksheetRelsPath(path);
+      deletedDependencyTargets.push(...await relationshipTargets(zip, relsPath));
       deletedIndices.push(index);
       sheetNode.parentNode.removeChild(sheetNode);
       if (relationship?.parentNode) relationship.parentNode.removeChild(relationship);
       zip.remove(path);
-      zip.remove(worksheetRelsPath(path));
+      zip.remove(relsPath);
       removeContentTypeOverride(contentTypes, '/' + path);
       changed = true;
-    });
+    }
 
     if (!changed) return false;
 
@@ -105,6 +176,8 @@
       if (relationship.parentNode) relationship.parentNode.removeChild(relationship);
       removeContentTypeOverride(contentTypes, '/' + target);
     }
+
+    await removeOrphanedDependencies(zip, deletedDependencyTargets, contentTypes);
 
     const view = localOne(workbook, 'workbookView');
     if (view) {

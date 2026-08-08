@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 42,
+  "appliedSequence": 43,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -215,6 +215,11 @@
       "sequence": 42,
       "packageLabel": "0.20.3.1",
       "description": "Spreadsheet worksheet deletion correction. Adds a compact Delete active worksheet control beside the existing Add worksheet control, requires explicit confirmation, blocks deletion of the last visible worksheet, preserves formula-draft safety, resets sheet-local history after deletion, and keeps a surviving sheet active. Imported XLSX packages are updated in place: deleted worksheet registry entries, workbook relationships, worksheet parts, worksheet relationship parts, local defined-name indices and stale calculation-chain metadata are reconciled without rebuilding unrelated workbook content. Recovery now matches surviving worksheets by package path/name rather than array position so deleting an earlier sheet cannot remap recovered edits onto the wrong worksheet. Existing worksheet-add behavior, formulas, formatting, drawings, tables, hidden sheets, legacy XLS import and the approved sequence-41 Documents/Presentations fidelity fixes remain unchanged."
+    },
+    {
+      "sequence": 43,
+      "packageLabel": "0.20.3.1",
+      "description": "Spreadsheet worksheet deletion integrity correction. Deleted-sheet references no longer silently fall back to the active worksheet: explicit references to a removed worksheet are converted to #REF! and the formula evaluator propagates #REF! through direct references, ranges, arithmetic, comparisons and supported functions while preserving quoted text literals, external-workbook references and lazy IF branches. The XLSX package-preserving writer now traverses relationships from deleted worksheets and removes drawing, image, table, comment and other dependent parts only when they become unreferenced by the surviving package, preventing deleted-sheet content from remaining as orphaned data while preserving shared dependencies. A focused formula-integrity module keeps the spreadsheet app within architecture ratchets. Browser round-trip coverage verifies #REF! before and after save/reopen, literal/external-reference preservation and deletion of orphan drawing/media parts while preserving add/delete sheet behavior and all sequence-42 UI/fidelity work."
     }
   ]
 }

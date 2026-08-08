@@ -209,6 +209,7 @@ def validate_restricted_apis(browser, base_url):
             "shared/vendor/jszip.min.js",
             "apps/spreadsheets/xls-biff8-engine.js",
             "apps/spreadsheets/worksheet-package.js",
+        "apps/spreadsheets/formula-integrity.js",
         "apps/spreadsheets/xlsx-engine.js",
             "shared/office-shell.js",
             "apps/spreadsheets/formula-safety.js",

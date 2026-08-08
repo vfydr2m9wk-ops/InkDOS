@@ -13,6 +13,8 @@ def test_delete_control_and_safety_contract_are_wired():
     assert "A workbook must keep at least one visible worksheet." in app
     assert "This cannot be undone." in app
     assert "formula drafts before deleting a worksheet" in app
+    assert "invalidateDeletedSheetReferences" in app
+    assert "#REF!" in app
     assert "#deleteSheetBtn" in styles
 
 
@@ -23,6 +25,9 @@ def test_xlsx_writer_reconciles_deleted_worksheets_without_rebuilding_package():
     assert "keptPaths" in package
     assert "localSheetId" in package
     assert "calcChain" in package
+    assert "removeOrphanedDependencies" in package
+    assert "incomingReferenceCounts" in package
+    assert "relationshipTargets" in package
     assert "syncSheets(zip,book" in engine
     assert "removeDeletedSheets" in package and "appendNewSheets" in package
 

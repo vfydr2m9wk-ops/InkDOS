@@ -38,6 +38,7 @@ def load_app(page):
                 ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/spreadsheets/xls-biff8-engine.js",
         ROOT / "apps/spreadsheets/worksheet-package.js",
+        "apps/spreadsheets/formula-integrity.js",
         "apps/spreadsheets/xlsx-engine.js",
         ROOT / "shared/office-shell.js",
         ROOT / "apps/spreadsheets/formula-safety.js",

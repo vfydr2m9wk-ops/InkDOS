@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 FIX = ROOT / "tests" / "compatibility-fixtures" / "spreadsheets" / "era2_office_2007_2013_baseline.xlsx"
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main", "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships", "p": "http://schemas.openxmlformats.org/package/2006/relationships"}
 
 
 def load_app(page):
@@ -40,6 +40,7 @@ def load_app(page):
         ROOT / "shared/vendor/jszip.min.js",
         ROOT / "apps/spreadsheets/xls-biff8-engine.js",
         ROOT / "apps/spreadsheets/worksheet-package.js",
+        ROOT / "apps/spreadsheets/formula-integrity.js",
         ROOT / "apps/spreadsheets/xlsx-engine.js",
         ROOT / "shared/office-shell.js",
         ROOT / "apps/spreadsheets/formula-safety.js",
@@ -58,6 +59,34 @@ def sheet_names(path: Path) -> list[str]:
     with ZipFile(path) as z:
         root = ET.fromstring(z.read("xl/workbook.xml"))
         return [node.attrib.get("name", "") for node in root.findall(".//x:sheet", NS)]
+
+
+def sheet_path(path: Path, sheet_name: str) -> str:
+    with ZipFile(path) as z:
+        workbook = ET.fromstring(z.read("xl/workbook.xml"))
+        relationships = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
+        rel_map = {node.attrib.get("Id", ""): node.attrib.get("Target", "") for node in relationships.findall("p:Relationship", NS)}
+        for node in workbook.findall(".//x:sheet", NS):
+            if node.attrib.get("name") != sheet_name:
+                continue
+            rid = node.attrib.get("{%s}id" % NS["r"], "")
+            target = rel_map.get(rid, "")
+            if target.startswith("/"):
+                return target[1:]
+            return "xl/" + target.lstrip("./")
+    raise RuntimeError(f"Worksheet path not found for {sheet_name!r}")
+
+
+def formula_texts(path: Path, sheet_name: str) -> list[str]:
+    part = sheet_path(path, sheet_name)
+    with ZipFile(path) as z:
+        root = ET.fromstring(z.read(part))
+        return [(node.text or "") for node in root.findall(".//x:f", NS)]
+
+
+def package_parts(path: Path) -> set[str]:
+    with ZipFile(path) as z:
+        return set(z.namelist())
 
 
 def save_workbook(page, path: Path):
@@ -128,6 +157,31 @@ def main() -> int:
             raise RuntimeError(f"New worksheet content did not survive round-trip: {marker!r}")
 
         victim = before_names[0]
+        survivor = before_names[1]
+        reopened.locator("#sheetTabs button", has_text=survivor).evaluate("el => el.click()")
+        reopened.click('.cell[data-r="0"][data-c="1"]')
+        reopened.fill("#formulaInput", f"={victim}!A1+1")
+        reopened.press("#formulaInput", "Enter")
+        if reopened.locator('.cell[data-r="0"][data-c="1"]').inner_text() == "#REF!":
+            raise RuntimeError("Valid cross-sheet reference was broken before deletion")
+        reopened.click('.cell[data-r="1"][data-c="1"]')
+        reopened.fill("#formulaInput", f'="{victim}!A1"')
+        reopened.press("#formulaInput", "Enter")
+        reopened.click('.cell[data-r="2"][data-c="1"]')
+        reopened.fill("#formulaInput", f"=[External.xlsx]{victim}!A1")
+        reopened.press("#formulaInput", "Enter")
+        reopened.click('.cell[data-r="3"][data-c="1"]')
+        reopened.fill("#formulaInput", "=NoSuchSheet!A1+1")
+        reopened.press("#formulaInput", "Enter")
+        missing_ref_display = reopened.locator('.cell[data-r="3"][data-c="1"]').inner_text()
+        if missing_ref_display != "#REF!":
+            raise RuntimeError(f"Missing explicit worksheet reference fell back to the active sheet: {missing_ref_display!r}")
+        reopened.click('.cell[data-r="4"][data-c="1"]')
+        reopened.fill("#formulaInput", "=IF(FALSE,NoSuchSheet!A1,7)")
+        reopened.press("#formulaInput", "Enter")
+        lazy_if_display = reopened.locator('.cell[data-r="4"][data-c="1"]').inner_text()
+        if lazy_if_display not in {"7", "7.0"}:
+            raise RuntimeError(f"IF evaluated an unselected broken-reference branch: {lazy_if_display!r}")
         reopened.locator("#sheetTabs button", has_text=victim).evaluate("el => el.click()")
         count_before_cancel = reopened.locator("#sheetTabs button:not(#addSheetBtn):not(#deleteSheetBtn)").count()
         delete_active(reopened, accept=False)
@@ -139,12 +193,30 @@ def main() -> int:
         labels_after_delete = reopened.locator("#sheetTabs button:not(#addSheetBtn):not(#deleteSheetBtn)").all_inner_texts()
         if victim in labels_after_delete:
             raise RuntimeError(f"Deleted worksheet remains visible: {labels_after_delete!r}")
+        reopened.locator("#sheetTabs button", has_text=survivor).evaluate("el => el.click()")
+        ref_display = reopened.locator('.cell[data-r="0"][data-c="1"]').inner_text()
+        if ref_display != "#REF!":
+            raise RuntimeError(f"Deleted-sheet reference must become #REF!, got {ref_display!r}")
         save_workbook(reopened, deleted)
         reopened.close()
 
         deleted_names = sheet_names(deleted)
         if victim in deleted_names or active_name not in deleted_names or len(deleted_names) != len(before_names):
             raise RuntimeError(f"Delete worksheet round-trip failed: {deleted_names!r}")
+        formulas = formula_texts(deleted, survivor)
+        if not any("#REF!" in formula for formula in formulas):
+            raise RuntimeError(f"Saved formulas did not preserve deleted-sheet #REF! semantics: {formulas!r}")
+        if f'"{victim}!A1"' not in formulas:
+            raise RuntimeError(f"Text literal containing a sheet-like token was rewritten: {formulas!r}")
+        if f"[External.xlsx]{victim}!A1" not in formulas:
+            raise RuntimeError(f"External workbook reference was rewritten by local sheet deletion: {formulas!r}")
+        unsafe_local_refs = [formula for formula in formulas if victim.lower() in formula.lower() and not formula.startswith('"') and not formula.startswith('[External.xlsx]')]
+        if unsafe_local_refs:
+            raise RuntimeError(f"Deleted local worksheet references remain in formulas: {unsafe_local_refs!r}")
+        parts = package_parts(deleted)
+        stale = sorted(part for part in ("xl/drawings/drawing1.xml", "xl/drawings/_rels/drawing1.xml.rels", "xl/media/image1.png") if part in parts)
+        if stale:
+            raise RuntimeError(f"Deleted worksheet left orphaned package parts: {stale!r}")
 
         final_page = browser.new_page(viewport={"width": 1400, "height": 900})
         final_errors = []
@@ -155,6 +227,10 @@ def main() -> int:
         final_labels = final_page.locator("#sheetTabs button:not(#addSheetBtn):not(#deleteSheetBtn)").all_inner_texts()
         if final_labels != deleted_names:
             raise RuntimeError(f"Reopened worksheet labels differ from package registry: {final_labels!r} vs {deleted_names!r}")
+        final_page.locator("#sheetTabs button", has_text=survivor).evaluate("el => el.click()")
+        reopened_ref_display = final_page.locator('.cell[data-r="0"][data-c="1"]').inner_text()
+        if reopened_ref_display != "#REF!":
+            raise RuntimeError(f"#REF! did not survive save/reopen: {reopened_ref_display!r}")
         final_page.locator("#sheetTabs button", has_text=active_name).evaluate("el => el.click()")
         final_marker = final_page.locator('.cell[data-r="0"][data-c="0"]').inner_text()
         if final_marker != "INKDESK-SECOND-SHEET":
@@ -175,6 +251,11 @@ def main() -> int:
         "deleted": victim,
         "survivor": active_name,
         "marker": final_marker,
+        "deleted_reference_display": ref_display,
+        "reopened_reference_display": reopened_ref_display,
+        "orphan_parts_removed": True,
+        "missing_reference_display": missing_ref_display,
+        "lazy_if_display": lazy_if_display,
         "last_sheet_delete_disabled": True,
     }
     (OUT / "spreadsheet_add_sheet_02031.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
