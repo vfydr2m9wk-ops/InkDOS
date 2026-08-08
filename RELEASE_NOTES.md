@@ -1,3 +1,3 @@
-# InkDesk v0.20.2.17 — Documents Ruler Interaction Decomposition
+# InkDesk v0.20.2.18 — Shared Workspace Contract Consolidation
 
-The Documents ruler pointer-drag lifecycle now lives in `shared/ui/document-ruler-drag-controller.js`; `shared/ui/workspace-layout.js` retains ruler DOM synchronization/rendering and observer wiring, while `shared/ui/document-ruler-model.js` continues to own pure geometry and indent-state calculations. No visible or file-format behavior is intentionally changed. See `RELEASE_NOTES_0.20.2.17.md`.
+Workspace module detection, persisted panel-preference resolution and the workspace-layout-ready notification now live with the existing `shared/ui/workspace-panel-controller.js`. `shared/ui/workspace-layout.js` keeps Documents ruler DOM synchronization and remains API-compatible while dropping below the normal 500-line ceiling. No visible or file-format behavior is intentionally changed. See `RELEASE_NOTES_0.20.2.18.md`.

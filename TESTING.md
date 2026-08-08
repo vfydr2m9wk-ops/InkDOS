@@ -1,6 +1,6 @@
-## v0.20.2.17 Documents ruler interaction decomposition
+## v0.20.2.18 shared workspace contract consolidation
 
-The hosted package gate must preserve the complete existing behavior suite and additionally verify that ruler pointer-drag ownership is isolated in `shared/ui/document-ruler-drag-controller.js`, the model loads before the drag controller, the drag controller loads before `workspace-layout.js`, offline precache includes all three assets and the architecture ratchet is lowered without changing indentation behavior. Expected unit/package count: 267. Expected Chromium regression count: 17/17.
+The hosted package gate must preserve the complete behavior suite and verify that workspace module detection, session preference resolution and layout-ready notification are owned by `shared/ui/workspace-panel-controller.js`, while `shared/ui/workspace-layout.js` stays below 500 lines and retains its compatibility delegates. Expected unit/package count: 271. Expected Chromium regression count: 17/17.
 
 ## v0.20.2.14 shared document-session decomposition
 

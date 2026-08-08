@@ -1,8 +1,8 @@
-# Testing guide — InkDesk v0.20.2.17
+# Testing guide — InkDesk v0.20.2.18
 
 ## v0.20.2.17 Documents ruler interaction decomposition
 
-The hosted package gate must preserve the complete existing behavior suite and additionally verify that ruler pointer-drag ownership is isolated in `shared/ui/document-ruler-drag-controller.js`, the model loads before the drag controller, the drag controller loads before `workspace-layout.js`, offline precache includes all three assets and the architecture ratchet is lowered without changing indentation behavior. Expected unit/package count: 267. Expected Chromium regression count: 17/17.
+The hosted package gate must preserve the complete existing behavior suite and additionally verify that ruler pointer-drag ownership is isolated in `shared/ui/document-ruler-drag-controller.js`, the model loads before the drag controller, the drag controller loads before `workspace-layout.js`, offline precache includes all three assets and the architecture ratchet is lowered without changing indentation behavior. Expected unit/package count: 267. Expected unit/package count: 271. Expected Chromium regression count: 17/17.
 
 Every meaningful change requires static validation, targeted tests, and broader
 regression. Data corruption, silent save failure, stale export, and
@@ -40,7 +40,7 @@ replacement.
 ## Current evidence
 
 - Architecture guardrails now also retire `shared/office-shell.js` from inherited debt: the shell is 315 physical lines after document-session behavior moved to `shared/ui/document-session-controller.js`; both files are below the normal 500-line ceiling.
-- The Python suite contains 267 tests after the Documents ruler-interaction boundary regression was added. The reconstructed local tree may retain the checksum-manifest hold because hosted-only publication/workflow files are not byte-identical locally; the hosted repository remains the authoritative checksum gate.
+- The Python suite contains 271 tests after the Documents ruler-interaction boundary regression was added. The reconstructed local tree may retain the checksum-manifest hold because hosted-only publication/workflow files are not byte-identical locally; the hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.

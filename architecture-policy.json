@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.2.17",
+  "release": "0.20.2.18",
   "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
   "runtimeRoots": [
     "apps",
@@ -132,11 +132,6 @@
       "maxLines": 23,
       "maxLongLines": 5,
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
-    },
-    "shared/ui/workspace-layout.js": {
-      "maxLines": 541,
-      "maxLongLines": 0,
-      "reason": "Documents ruler pointer-drag lifecycle moved to shared/ui/document-ruler-drag-controller.js in v0.20.2.17; remaining debt is ruler DOM synchronization, rendering and observer wiring."
     },
     "shared/ui/workspace-layout.css": {
       "maxLines": 982,

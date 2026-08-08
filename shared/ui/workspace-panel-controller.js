@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '0.20.2.17';
+  const VERSION = '0.20.2.18';
   const WORKSPACE_LAYOUT_VERSION = '0.20.0';
   const STORAGE_PREFIX = 'inkdesk.ui.session.';
 
@@ -44,6 +44,49 @@
   function resolvedPreference(key, defaultValue) {
     const stored = safeSessionGet(key);
     return stored === null ? Boolean(defaultValue) : stored;
+  }
+
+  function moduleId(documentObject) {
+    if (!documentObject || !documentObject.body) return '';
+
+    const declared = String(
+      documentObject.body.dataset &&
+      documentObject.body.dataset.inkdeskModule ||
+      ''
+    );
+
+    if (declared) return declared;
+
+    const classes = documentObject.body.classList;
+    if (!classes) return '';
+    if (classes.contains('office-documents')) return 'documents';
+    if (classes.contains('office-spreadsheets')) return 'spreadsheets';
+    if (classes.contains('office-presentations')) return 'presentations';
+    if (classes.contains('office-pdf')) return 'pdf';
+    return '';
+  }
+
+  function notifyLayoutReady(documentObject, moduleName) {
+    if (!documentObject || typeof documentObject.dispatchEvent !== 'function') {
+      return;
+    }
+
+    let event = null;
+    if (typeof global.CustomEvent === 'function') {
+      event = new global.CustomEvent('inkdesk:workspace-layout-ready', {
+        detail: { version: WORKSPACE_LAYOUT_VERSION, moduleId: moduleName }
+      });
+    } else if (typeof documentObject.createEvent === 'function') {
+      event = documentObject.createEvent('CustomEvent');
+      event.initCustomEvent(
+        'inkdesk:workspace-layout-ready',
+        false,
+        false,
+        { version: WORKSPACE_LAYOUT_VERSION, moduleId: moduleName }
+      );
+    }
+
+    if (event) documentObject.dispatchEvent(event);
   }
 
   function setExpanded(control, expanded) {
@@ -322,6 +365,8 @@
     version: VERSION,
     defaults: MODULE_DEFAULTS,
     resolvedPreference,
+    moduleId,
+    notifyLayoutReady,
     apply
   });
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -185,7 +185,7 @@
   }
 
   global.InkDeskPdfAnnotationLayer = Object.freeze({
-    version: '0.20.2.17',
+    version: '0.20.2.18',
     createAnnotationLayer
   });
 })(globalThis);

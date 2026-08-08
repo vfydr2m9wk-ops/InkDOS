@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 19,
-  "currentPackage": "0.20.2.17",
+  "appliedSequence": 20,
+  "currentPackage": "0.20.2.18",
   "status": "in-progress",
   "history": [
     {
@@ -100,6 +100,11 @@
       "sequence": 19,
       "packageLabel": "0.20.2.17",
       "description": "Documents ruler interaction decomposition: move the existing pointer-drag lifecycle, pointer capture, drag-state transitions and indentation-application orchestration from shared/ui/workspace-layout.js into shared/ui/document-ruler-drag-controller.js. Ruler DOM synchronization/rendering and observers remain in workspace-layout.js; pure ruler geometry remains in document-ruler-model.js. No visible control, DOCX behavior, save behavior, panel behavior or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 20,
+      "packageLabel": "0.20.2.18",
+      "description": "Shared workspace contract consolidation: move workspace module detection, session-backed panel preference resolution and workspace-layout-ready notification ownership into shared/ui/workspace-panel-controller.js. shared/ui/workspace-layout.js preserves its compatibility API through delegation and remains responsible for Documents ruler DOM synchronization; it drops below the normal 500-line ceiling and leaves grandfathered architecture debt. No visible UI, file-format, save, recovery or workflow behavior is intentionally changed."
     }
   ]
 }

@@ -2,8 +2,6 @@
   'use strict';
 
   const VERSION = '0.20.0';
-  const STORAGE_PREFIX = 'inkdesk.ui.session.';
-
   const MODULE_DEFAULTS = Object.freeze({
     documents: Object.freeze({
       sidebar: false
@@ -17,67 +15,6 @@
       sidebar: false
     })
   });
-
-  function safeSessionGet(key) {
-    try {
-      const value = global.sessionStorage.getItem(STORAGE_PREFIX + key);
-      if (value === 'true') return true;
-      if (value === 'false') return false;
-    } catch (error) {
-      return null;
-    }
-    return null;
-  }
-
-
-  function resolvedPreference(key, defaultValue) {
-    const stored = safeSessionGet(key);
-    return stored === null ? Boolean(defaultValue) : stored;
-  }
-
-
-  function notify(documentObject, moduleId) {
-    if (!documentObject || typeof documentObject.dispatchEvent !== 'function') {
-      return;
-    }
-
-    let event = null;
-    if (typeof global.CustomEvent === 'function') {
-      event = new global.CustomEvent('inkdesk:workspace-layout-ready', {
-        detail: { version: VERSION, moduleId }
-      });
-    } else if (typeof documentObject.createEvent === 'function') {
-      event = documentObject.createEvent('CustomEvent');
-      event.initCustomEvent(
-        'inkdesk:workspace-layout-ready',
-        false,
-        false,
-        { version: VERSION, moduleId }
-      );
-    }
-
-    if (event) documentObject.dispatchEvent(event);
-  }
-
-  function moduleId(documentObject) {
-    if (!documentObject || !documentObject.body) return '';
-
-    const declared = String(
-      documentObject.body.dataset &&
-      documentObject.body.dataset.inkdeskModule ||
-      ''
-    );
-
-    if (declared) return declared;
-
-    const classes = documentObject.body.classList;
-    if (!classes) return '';
-    if (classes.contains('office-documents')) return 'documents';
-    if (classes.contains('office-spreadsheets')) return 'spreadsheets';
-    if (classes.contains('office-presentations')) return 'presentations';
-    if (classes.contains('office-pdf')) return 'pdf';
-    return '';
-  }
 
 
   function documentRulerModel() {
@@ -449,10 +386,12 @@ function installDocumentsRuler(documentObject) {
     if (!doc || !doc.body || !doc.querySelector) return false;
     if (doc.body.dataset.inkdeskWorkspaceLayout === VERSION) return true;
 
-    const currentModule = moduleId(doc);
+    const panelController = global.InkDeskWorkspacePanelController;
+    const currentModule = panelController && typeof panelController.moduleId === 'function'
+      ? panelController.moduleId(doc)
+      : '';
     let applied = false;
 
-    const panelController = global.InkDeskWorkspacePanelController;
     if (panelController && typeof panelController.apply === 'function') {
       applied = Boolean(panelController.apply(doc, currentModule));
     }
@@ -462,7 +401,9 @@ function installDocumentsRuler(documentObject) {
     }
 
     doc.body.dataset.inkdeskWorkspaceLayout = VERSION;
-    notify(doc, currentModule);
+    if (panelController && typeof panelController.notifyLayoutReady === 'function') {
+      panelController.notifyLayoutReady(doc, currentModule);
+    }
 
     global.setTimeout(function () {
       try {
@@ -492,8 +433,18 @@ function installDocumentsRuler(documentObject) {
     version: VERSION,
     defaults: MODULE_DEFAULTS,
     apply,
-    moduleId,
-    resolvedPreference,
+    moduleId: function (documentObject) {
+      const controller = global.InkDeskWorkspacePanelController;
+      return controller && typeof controller.moduleId === 'function'
+        ? controller.moduleId(documentObject)
+        : '';
+    },
+    resolvedPreference: function (key, defaultValue) {
+      const controller = global.InkDeskWorkspacePanelController;
+      return controller && typeof controller.resolvedPreference === 'function'
+        ? controller.resolvedPreference(key, defaultValue)
+        : Boolean(defaultValue);
+    },
     rulerTickModel: function () {
       const model = documentRulerModel();
       return model && model.rulerTickModel.apply(model, arguments);

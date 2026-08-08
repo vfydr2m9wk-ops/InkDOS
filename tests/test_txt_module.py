@@ -59,11 +59,11 @@ class TxtModuleTests(unittest.TestCase):
             self.assertIn(marker, html)
 
         self.assertIn(
-            "../../shared/file-lifecycle.js?v=0.20.2.17",
+            "../../shared/file-lifecycle.js?v=0.20.2.18",
             html,
         )
         self.assertIn(
-            "../../shared/file-router.js?v=0.20.2.17",
+            "../../shared/file-router.js?v=0.20.2.18",
             html,
         )
 

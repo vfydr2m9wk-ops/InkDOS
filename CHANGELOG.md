@@ -1,3 +1,11 @@
+## 0.20.2.18 — Shared Workspace Contract Consolidation (2026-08-07)
+
+- Consolidated workspace module detection, session-backed panel preference resolution and layout-ready notification into `shared/ui/workspace-panel-controller.js`.
+- Preserved the existing `InkDeskWorkspaceLayout` helper API through delegation.
+- Reduced `shared/ui/workspace-layout.js` from 541 to 492 physical lines and removed its final grandfathered architecture-debt entry.
+- Kept Documents ruler DOM synchronization, model and drag behavior unchanged.
+- No visible UI, file-format, save, recovery or workflow behavior change is intended.
+
 ## 0.20.2.17 — Documents Ruler Interaction Decomposition (2026-08-07)
 
 - Extracted Documents ruler pointer-drag lifecycle to `shared/ui/document-ruler-drag-controller.js`.

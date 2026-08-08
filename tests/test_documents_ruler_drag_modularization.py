@@ -57,9 +57,9 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
             shell.index("loadWorkspaceLayoutRuntime();"),
         )
 
-        model_tag = "document-ruler-model.js?v=0.20.2.17"
-        drag_tag = "document-ruler-drag-controller.js?v=0.20.2.17"
-        layout_tag = "workspace-layout.js?v=0.20.2.17"
+        model_tag = "document-ruler-model.js?v=0.20.2.18"
+        drag_tag = "document-ruler-drag-controller.js?v=0.20.2.18"
+        layout_tag = "workspace-layout.js?v=0.20.2.18"
         self.assertIn(model_tag, documents)
         self.assertIn(drag_tag, documents)
         self.assertIn(layout_tag, documents)
@@ -76,14 +76,11 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
         controller_lines = len(controller.read_text(encoding="utf-8").splitlines())
         shell_lines = len(shell.read_text(encoding="utf-8").splitlines())
 
-        self.assertEqual(policy["release"], "0.20.2.17")
-        self.assertLess(layout_lines, 710)
+        self.assertEqual(policy["release"], "0.20.2.18")
+        self.assertLessEqual(layout_lines, 500)
         self.assertLessEqual(controller_lines, 500)
         self.assertLessEqual(shell_lines, 500)
-        self.assertEqual(
-            policy["grandfatheredDebt"]["shared/ui/workspace-layout.js"]["maxLines"],
-            layout_lines,
-        )
+        self.assertNotIn("shared/ui/workspace-layout.js", policy["grandfatheredDebt"])
 
     def test_node_drag_lifecycle_preserves_indent_application(self):
         node = shutil.which("node")
@@ -98,7 +95,7 @@ globalThis.removeEventListener = (name, fn) => {
 };
 require('./shared/ui/document-ruler-drag-controller.js');
 const factory = globalThis.InkDeskDocumentRulerDragController;
-if (!factory || factory.version !== '0.20.2.17') process.exit(10);
+if (!factory || factory.version !== '0.20.2.18') process.exit(10);
 
 const rulerListeners = {};
 const ruler = {
@@ -151,7 +148,7 @@ const controller = factory.create({
   setMetrics(value) { metrics = value; },
   getActivePage() { return {}; }
 });
-if (!controller || controller.version !== '0.20.2.17') process.exit(12);
+if (!controller || controller.version !== '0.20.2.18') process.exit(12);
 
 const down = {
   target,

@@ -139,3 +139,9 @@ The next shared-UI cut should keep the same boundary discipline: do not combine 
 Pointer-drag lifecycle moves from `workspace-layout.js` to `shared/ui/document-ruler-drag-controller.js`: pointer capture, pointerdown/move/up/cancel handling, drag-state transitions and indentation-application orchestration. Ruler DOM synchronization, rendering and observers stay in `workspace-layout.js`, while pure geometry remains in `document-ruler-model.js`. No visible ruler behavior is intentionally changed.
 
 The next shared-UI cut should finish the remaining ruler DOM synchronization/observer debt or stop shared-UI decomposition if the resulting boundary would become less clear.
+
+### v0.20.2.18 — Shared workspace contract consolidation
+
+Workspace module detection, session-backed panel preference resolution and the `inkdesk:workspace-layout-ready` notification move into the existing `workspace-panel-controller.js`. `workspace-layout.js` retains the Documents ruler DOM synchronization/observer boundary and keeps its compatibility helper API through delegation. The file is now below 500 physical lines and its grandfathered debt entry is retired.
+
+This closes the current shared workspace-layout debt cycle. Further decomposition should be driven by a concrete maintenance or regression need rather than line count alone.
