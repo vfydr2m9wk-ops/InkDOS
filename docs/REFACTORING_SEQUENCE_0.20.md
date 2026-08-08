@@ -235,3 +235,7 @@ This is a direct data-loss prevention fix discovered by audit. Further 0.20.2.x 
 - Deliberately leave PDF and EPUB unchanged because their demonstrated loss risk is lower and does not justify widening this patch.
 
 This patch continues the risk/benefit gate: no additional 0.20.2.x change is justified solely for cross-module symmetry.
+
+### v0.20.2.30 — recovery session isolation hardening
+
+Recovery ownership now distinguishes the document identity from the active browser-session identity. Snapshot deletion and rolling history are session-scoped; Documents and Presentations can therefore clean the recovery they intentionally replace without risking snapshots owned by another tab. The change is deliberately bounded to data-safety lifecycle behavior.

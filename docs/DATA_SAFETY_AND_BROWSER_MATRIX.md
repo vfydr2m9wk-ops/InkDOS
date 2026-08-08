@@ -4,9 +4,9 @@
 
 InkDesk 0.20.2 stores unsaved recovery snapshots only in the browser IndexedDB database `InkDeskLocalRecovery`. Documents, Spreadsheets and Presentations use separate workspace namespaces. The source file is retained only as local browser data when it is needed to reconstruct a package-preserving copy. No recovery data is sent to an InkDesk server.
 
-Recovery never overwrites the selected source file. On startup, the user chooses **Restore**, **Open normally**, or **Discard recovery**. A successful copy-download request clears the active document's snapshots and retained source.
+Recovery never overwrites the selected source file. On startup, the user chooses **Restore**, **Open normally**, or **Discard recovery**. A browser download request is deliberately treated as unverified: editable Office workspaces keep dirty/recovery protection until the user explicitly replaces or discards that work. Shared OOXML source data is retained locally when needed for package-preserving recovery and can be rehydrated by an active session.
 
-Retention is bounded to three snapshots per document, twelve per workspace and thirty days.
+New recovery snapshots are isolated by both document identity and a per-tab/session identifier. Reset, clean and discard operations therefore affect only the current recovery session, not another tab editing the same file. Retention keeps up to three snapshots per document session and targets twelve snapshots per workspace while preserving at least one recovery point per independent session; records expire after thirty days. Legacy snapshots created before session isolation remain discoverable and restorable.
 
 ## Browser validation
 

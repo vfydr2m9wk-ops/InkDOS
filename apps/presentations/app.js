@@ -53,7 +53,7 @@ function makeSlide(layout='title'){
 }
 function basePresentation(name='Untitled presentation',layout='title'){activeTheme={fonts:{majorLatin:'Arial',minorLatin:'Arial'},colors:{accent1:'#d64a24',dk1:'#000000',lt1:'#ffffff'}};return {name,width:12192000,height:6858000,source:'new',theme:activeTheme,compatibility:{engine:'0.19.0-beta-generated',presenterNotesEditor:true,presenterNotesExport:false},slides:[makeSlide(layout)]};}
 function showTemplateDialog(mode='presentation'){templateMode=mode;ui.templateGrid.innerHTML='';LAYOUTS.forEach(l=>{const b=document.createElement('button');b.className='template-option';b.innerHTML='<div class="template-preview '+(l.id==='twoColumn'?'two ':l.id==='blank'?'blank ':'')+'"><span class="pv-title"></span><span class="pv-sub"></span></div><div class="template-name"></div><div class="template-desc"></div>';b.querySelector('.template-name').textContent=l.name;b.querySelector('.template-desc').textContent=l.desc;b.onclick=()=>chooseTemplate(l.id);ui.templateGrid.appendChild(b)});ui.template.classList.remove('hidden');}
-function chooseTemplate(layout){ui.template.classList.add('hidden');if(templateMode==='presentation'){if(fileController)fileController.clearSource();pres=basePresentation('Untitled presentation',layout);currentSlide=0;selectionController.clear({render:false});historyController.reset();if(recoveryController)recoveryController.startNewDocument();showApp();renderAll();markDirty();}else{historyController.action(()=>{const created=makeSlide(layout);created.sourcePath='';created.sourcePresentationRid='';created.sourceSlideId='';pres.slides.splice(currentSlide+1,0,created);currentSlide++;selectionController.clear({render:false});markDirty();renderAll();});}}
+async function chooseTemplate(layout){if(templateMode==='presentation'){if(recoveryController)await recoveryController.startNewDocument();ui.template.classList.add('hidden');if(fileController)fileController.clearSource();pres=basePresentation('Untitled presentation',layout);currentSlide=0;selectionController.clear({render:false});historyController.reset();showApp();renderAll();markDirty();}else{ui.template.classList.add('hidden');historyController.action(()=>{const created=makeSlide(layout);created.sourcePath='';created.sourcePresentationRid='';created.sourceSlideId='';pres.slides.splice(currentSlide+1,0,created);currentSlide++;selectionController.clear({render:false});markDirty();renderAll();});}}
 function newPresentation(){if(!confirmIfDirty())return;showTemplateDialog('presentation');}
 $('closeTemplateBtn').onclick=()=>ui.template.classList.add('hidden');ui.template.onclick=e=>{if(e.target===ui.template)ui.template.classList.add('hidden')};
 function openDialog(){if(!confirmIfDirty())return;ui.file.value='';ui.file.click()}
@@ -674,7 +674,7 @@ fileController=InkDeskPresentationsFileIO.create({
 });
 if(!window.InkDeskPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
 recoveryController=InkDeskPresentationsRecovery.create({
-  appVersion:'0.20.2.29',
+  appVersion:'0.20.2.30',
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},
   getCurrentSlide:()=>currentSlide,

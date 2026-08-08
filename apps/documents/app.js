@@ -36,21 +36,21 @@ async function openFile(file){
   if(window.InkDeskRuntime)InkDeskRuntime.validateInputSize(file.size,file.name);
   const nextBuffer=await file.arrayBuffer();parsed=await LocalDocxParser.parse(nextBuffer);
   currentFile=file;currentFileName=file.name;documentActive=true;currentBuffer=nextBuffer;sourceContext=parsed.sourceContext||null;currentPageSpec=parsed.pageSpec||null;mediaUrls=parsed.mediaUrls||{};
-  setTitleValue(file.name);welcome.classList.add('hidden');pagesHost.innerHTML='';await paginate(parsed.blocks,currentPageSpec);buildOutline(parsed.outline);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);if(recovery)await recovery.startDocument({documentKey:fileRecoveryKey(file),fileName:file.name,sourceData:nextBuffer,sourceMeta:{kind:'docx'},resetSnapshots:true});revokeMediaUrls(previous.mediaUrls);status(file.name+' opened');parsed=null;
+  setTitleValue(file.name);welcome.classList.add('hidden');pagesHost.innerHTML='';await paginate(parsed.blocks,currentPageSpec);buildOutline(parsed.outline);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);if(recovery){await recovery.discardCurrent();await recovery.startDocument({documentKey:fileRecoveryKey(file),fileName:file.name,sourceData:nextBuffer,sourceMeta:{kind:'docx'},resetSnapshots:true})}revokeMediaUrls(previous.mediaUrls);status(file.name+' opened');parsed=null;
  }catch(e){
   console.error(e);if(parsed&&parsed.mediaUrls)revokeMediaUrls(parsed.mediaUrls);
   currentFile=previous.currentFile;currentFileName=previous.currentFileName;currentBuffer=previous.currentBuffer;sourceContext=previous.sourceContext;zoom=previous.zoom;pages=previous.pages;currentPage=previous.currentPage;currentPageSpec=previous.currentPageSpec;dirty=previous.dirty;documentActive=previous.documentActive;history=previous.history;historyIndex=previous.historyIndex;mediaUrls=previous.mediaUrls;pagesHost.innerHTML=previous.content;Array.from(pagesHost.querySelectorAll('.page')).forEach((page,index)=>{page._pageSpec=previous.pages[index]?.spec||previous.currentPageSpec});buildOutline(previous.outlineItems);buildPageList();$('titleText').value=previous.title;welcome.classList.toggle('hidden',previous.welcomeHidden);setDirty(previous.dirty);if(previous.documentActive){bindPageObserver();applyZoom()}else $('saveBtn').disabled=true;showOpenError(e,file);status('Open failed; previous document preserved');
  }finally{clearLoading();fileInput.value=''}
 }
-function createBlankDocument(){
- revokeMedia();clearSearch();savedRange=null;currentBuffer=null;sourceContext=null;currentFile=null;currentFileName='Untitled.docx';documentActive=true;
+async function createBlankDocument(){
+ if(recovery)await recovery.discardCurrent();revokeMedia();clearSearch();savedRange=null;currentBuffer=null;sourceContext=null;currentFile=null;currentFileName='Untitled.docx';documentActive=true;
  setTitleValue(currentFileName);welcome.classList.add('hidden');pagesHost.innerHTML='';
  currentPageSpec=defaultPageSpec();
  const page=document.createElement('section');page.className='page';page.dataset.page='1';page.dataset.pageLabel='1 / 1';applyPageSpec(page,currentPageSpec);
  const pc=document.createElement('div');pc.className='page-content';applyContentSpec(pc,currentPageSpec);pc.contentEditable='true';pc.spellcheck=true;
  const p=document.createElement('p');p.innerHTML='<br>';pc.appendChild(p);page.appendChild(pc);pagesHost.appendChild(page);
  pages=[[{index:0,html:'<p><br></p>',text:''}]];currentPage=1;
- buildOutline([]);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);if(recovery)recovery.startDocument({fileName:currentFileName,resetSnapshots:true});updateStats();status('New document created');
+ buildOutline([]);buildPageList();bindPageObserver();$('saveBtn').disabled=false;zoom=1;applyZoom();resetHistory();setDirty(false);if(recovery)await recovery.startDocument({fileName:currentFileName,resetSnapshots:true});updateStats();status('New document created');
  requestAnimationFrame(()=>{pc.focus();const r=document.createRange();r.selectNodeContents(p);r.collapse(true);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);rememberSelection()});
 }
 function closeNewDocumentDialog(){const panel=$('newDocumentPanel');if(panel)panel.remove()}
@@ -60,11 +60,11 @@ function showNewDocumentDialog(){
  panel.innerHTML='<div class="error-card new-document-card"><div class="word-badge" style="margin:0 auto 14px;width:38px;height:38px">W</div><h2>New document</h2><p>The current unsaved changes will be discarded.</p><div class="error-actions"><button id="cancelNewDocument" type="button">Cancel</button><button id="confirmNewDocument" type="button" class="primary-dialog-button">Create document</button></div></div>';
  document.body.appendChild(panel);
  panel.querySelector('#cancelNewDocument').addEventListener('click',closeNewDocumentDialog);
- panel.querySelector('#confirmNewDocument').addEventListener('click',()=>{closeNewDocumentDialog();createBlankDocument()});
+ panel.querySelector('#confirmNewDocument').addEventListener('click',async()=>{await createBlankDocument();closeNewDocumentDialog()});
 }
-function newDocument(){
+async function newDocument(){
  if(dirty){showNewDocumentDialog();return}
- createBlankDocument();
+ await createBlankDocument();
 }
 function commitTitleRename(){
  if(!documentActive){$('titleText').value='Untitled.docx';return}
@@ -179,7 +179,7 @@ function updateRulerVisual(){
 }
 function applyRulerToSelection(rect){const b=selectionBlock();if(!b)return;const left=rulerPixelsToDocument(rulerState.left,rect),first=rulerPixelsToDocument(rulerState.first,rect),right=rulerPixelsToDocument(rulerState.right,rect);b.style.marginLeft=left+'px';b.style.textIndent=(first-left)+'px';b.style.marginRight=right+'px';setDirty(true);queueHistory()}
 function bindRuler(id,kind){const h=$(id),track=$('ruler').querySelector('.ruler-track');let down=false,startX=0,startLeft=0,startFirst=0;h.onpointerdown=e=>{down=true;startX=e.clientX;startLeft=rulerState.left;startFirst=rulerState.first;h.setPointerCapture(e.pointerId);e.preventDefault()};h.onpointermove=e=>{if(!down)return;const rect=track.getBoundingClientRect(),max=Math.max(0,rect.width),local=Math.max(0,Math.min(max,e.clientX-rect.left));if(kind==='first')rulerState.first=local;else if(kind==='hanging')rulerState.left=local;else if(kind==='left'){const delta=e.clientX-startX;rulerState.left=Math.max(0,Math.min(max,startLeft+delta));rulerState.first=Math.max(0,Math.min(max,startFirst+delta))}else if(kind==='right')rulerState.right=Math.max(0,Math.min(max,rect.right-e.clientX));updateRulerVisual();applyRulerToSelection(rect)};h.onpointerup=h.onpointercancel=()=>down=false}
-recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'documents',appVersion:'0.20.2.29',defaultFileName:'Untitled.docx',serialize:captureDocumentRecovery,restore:restoreDocumentRecovery,status:message=>{if(message&&/restored|failed/i.test(message))status(message)}}):null;
+recovery=window.InkDeskLocalRecovery?InkDeskLocalRecovery.create({module:'documents',appVersion:'0.20.2.30',defaultFileName:'Untitled.docx',serialize:captureDocumentRecovery,restore:restoreDocumentRecovery,status:message=>{if(message&&/restored|failed/i.test(message))status(message)}}):null;
 if(recovery){window.__InkDeskDocumentsRecovery={manager:recovery,capture:captureDocumentRecovery,restore:restoreDocumentRecovery};recovery.promptLatest()}
 updateRulerVisual()
 fileInput.addEventListener('change',e=>openFile(e.target.files[0]));$('newBtn').addEventListener('click',newDocument);$('newWelcomeBtn').addEventListener('click',newDocument);$('sidebarBtn').onclick=()=>document.querySelector('.workspace').classList.toggle('sidebar-hidden');$('zoomIn').onclick=()=>{zoom=Math.min(1.8,zoom+.1);applyZoom()};$('zoomOut').onclick=()=>{zoom=Math.max(.45,zoom-.1);applyZoom()};$('zoomLabel').onclick=()=>{zoom=1;applyZoom()};$('fitWidth').onclick=fitWidth;$('saveBtn').onclick=save;

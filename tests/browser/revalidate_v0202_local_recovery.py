@@ -276,6 +276,70 @@ def recovery_write_barrier_case(browser, base_url):
 
 
 
+def recovery_session_isolation_case(browser, base_url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.set_default_timeout(12000)
+    page.set_default_navigation_timeout(15000)
+    errors = watch_errors(page)
+    page.goto(f"{base_url}/apps/spreadsheets/index.html", wait_until="networkidle")
+    result = page.evaluate("""async () => {
+      const moduleName = 'recovery-session-isolation';
+      await InkDeskLocalRecovery.clearModule(moduleName);
+      let markerA = 'A1', markerB = 'B1';
+      const a = InkDeskLocalRecovery.create({
+        module: moduleName, sessionId: 'session-a', appVersion: 'session-test',
+        serialize: async () => ({marker: markerA})
+      });
+      const b = InkDeskLocalRecovery.create({
+        module: moduleName, sessionId: 'session-b', appVersion: 'session-test',
+        serialize: async () => ({marker: markerB})
+      });
+      await a.startDocument({documentKey:'same.xlsx', fileName:'same.xlsx'});
+      await b.startDocument({documentKey:'same.xlsx', fileName:'same.xlsx'});
+      a.markDirty(); b.markDirty();
+      await a.flush(); await b.flush();
+      const before = await InkDeskLocalRecovery.listSnapshots(moduleName);
+      await b.discardCurrent();
+      const afterDiscard = await InkDeskLocalRecovery.listSnapshots(moduleName);
+      await b.startDocument({documentKey:'same.xlsx', fileName:'same.xlsx', resetSnapshots:true});
+      markerB = 'B2'; b.markDirty(); await b.flush();
+      const afterRestart = await InkDeskLocalRecovery.listSnapshots(moduleName);
+      await b.clearSnapshots();
+      const afterClear = await InkDeskLocalRecovery.listSnapshots(moduleName);
+      const otherSessionPreserved = afterDiscard.length === 1
+        && afterDiscard[0].sessionId === 'session-a'
+        && afterClear.length === 1
+        && afterClear[0].sessionId === 'session-a'
+        && afterClear[0].payload?.marker === 'A1';
+      const independentBefore = new Set(before.map(item => item.sessionId)).size === 2;
+      const independentRestart = new Set(afterRestart.map(item => item.sessionId)).size === 2;
+      const stateA = a.getState(), stateB = b.getState();
+      a.destroy(); b.destroy();
+      await InkDeskLocalRecovery.clearModule(moduleName);
+      return {independentBefore, independentRestart, otherSessionPreserved,
+        before: before.map(item => item.sessionId),
+        afterDiscard: afterDiscard.map(item => item.sessionId),
+        afterRestart: afterRestart.map(item => item.sessionId),
+        afterClear: afterClear.map(item => item.sessionId),
+        stateA: stateA.sessionId, stateB: stateB.sessionId};
+    }""")
+    page.close()
+    context.close()
+    return {
+        "workspace": "recovery-session-isolation",
+        "restored": (
+            result["independentBefore"]
+            and result["independentRestart"]
+            and result["otherSessionPreserved"]
+            and result["stateA"] == "session-a"
+            and result["stateB"] == "session-b"
+        ),
+        "result": result,
+        "errors": errors,
+    }
+
+
 def recovery_source_rehydration_case(browser, base_url):
     context = browser.new_context()
     page = context.new_page()
@@ -392,6 +456,10 @@ def presentations_case(browser, base_url):
     page.click("#newBtn")
     page.wait_for_selector("#templateDialog:not(.hidden)")
     page.locator("#templateGrid .template-option").first.click()
+    # v0.20.2.30 makes New transactional/async while the prior recovery
+    # session is discarded. Wait until the editor is active before injecting
+    # notes, otherwise the input event can race presentation creation.
+    page.wait_for_selector("#app:not(.hidden)", state="visible")
     page.locator("#presenterNotes").evaluate(
         "(node, value) => { node.value=value; node.dispatchEvent(new Event('input',{bubbles:true})); }",
         token,
@@ -423,6 +491,7 @@ def main():
                     spreadsheets_post_save_edit_recovery_case(browser, base_url),
                     presentations_case(browser, base_url),
                     recovery_write_barrier_case(browser, base_url),
+                    recovery_session_isolation_case(browser, base_url),
                     recovery_source_rehydration_case(browser, base_url),
                 ]
             except Exception as error:

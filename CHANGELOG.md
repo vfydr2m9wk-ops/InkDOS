@@ -1,3 +1,12 @@
+## 0.20.2.30 — Recovery Session Isolation Hardening (2026-08-08)
+
+- Isolate IndexedDB recovery snapshots by `documentKey + sessionId`, preventing one tab from clearing another tab's recovery for the same Office file.
+- Scope reset/clean/discard operations and the rolling three-snapshot history to the active recovery session.
+- Re-home restored recovery into the restoring session and preserve legacy sessionless snapshots.
+- Documents and Presentations discard only their own replaced recovery session after successful replacement; failed opens remain transactional.
+- Spreadsheet New now awaits the recovery document transition.
+- No parser, writer or visual changes.
+
 ## 0.20.2.29 — Cross-Workspace Unverified Export Safety Hardening (2026-08-08)
 
 - Treat browser download dispatch as unverified in Documents, Presentations and TXT instead of immediately clearing unsaved-work protection.

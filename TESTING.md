@@ -180,3 +180,7 @@ cross-workspace coupling fails validation.
 - The same test proves the shared `InkDeskFileLifecycle` remains warning-active in `download-requested-unverified` when revisions are still unverified.
 - `tests/browser/revalidate_v02021_functional_corrections.py` now exercises DOCX, PPTX and TXT download dispatch and verifies the visible unsaved state remains protected, without increasing the browser-script count.
 - Spreadsheet export safety remains a regression invariant; PDF/EPUB are explicitly out of scope because this audit did not demonstrate an equivalent high-severity loss path.
+
+## v0.20.2.30 recovery session isolation
+
+The local-recovery browser harness creates two independent recovery managers with the same document key but different session IDs. It verifies that discard, reset and clear operations in one session do not remove the other session's snapshot. Static regressions also require Documents and Presentations to discard their previous recovery only on committed replacement transitions.

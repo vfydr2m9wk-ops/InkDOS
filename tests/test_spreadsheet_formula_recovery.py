@@ -15,7 +15,7 @@ class SpreadsheetFormulaRecoveryTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-session.js');
-if (!api || api.version !== '0.20.2.29') process.exit(10);
+if (!api || api.version !== '0.20.2.30') process.exit(10);
 const session = api.createSession();
 session.start({cell:{}, reference:'B2', key:'Sheet1!B2', value:'=SU\n', caret:99});
 session.suspend();
@@ -82,7 +82,7 @@ if (!draft || draft.value !== '=SU' || draft.caret !== 3) process.exit(15);
             "capturedGeneration!==generation",
             "capturedDocumentKey!==documentKey",
             "async function clearSnapshots()",
-            "deleteSnapshotsOnly(moduleName,key)",
+            "deleteSnapshotsOnly(moduleName,key,sessionId)",
             "const key=documentKey,pending=writing;generation+=1",
             "clearSnapshots,markClean,discardCurrent",
         ):

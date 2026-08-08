@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 31,
-  "currentPackage": "0.20.2.29",
+  "appliedSequence": 32,
+  "currentPackage": "0.20.2.30",
   "status": "in-progress",
   "history": [
     {
@@ -160,6 +160,11 @@
       "sequence": 31,
       "packageLabel": "0.20.2.29",
       "description": "Cross-workspace unverified export safety hardening v0.20.2.29 correction 2. Application runtime is unchanged. Hosted validation again passed repository validation, source audit, architecture guardrails and all 330 unit/package tests, with 16/17 Chromium scripts passing. The remaining failure was traced to an invalid aggregate-harness selector: Documents renders editor pages under #pagesHost, while the harness waited for #pages .page-content, an element tree that does not exist. Correction 2 changes the aggregate harness to synchronize on statusText containing opened, then waits for #pagesHost .page-content to be attached and edits the first paragraph through the same #pagesHost root. No application runtime file changes."
+    },
+    {
+      "sequence": 32,
+      "packageLabel": "0.20.2.30",
+      "description": "Recovery session isolation hardening. IndexedDB recovery snapshots are owned by documentKey plus per-manager sessionId, so discard/reset/clean in one tab cannot remove another tab's unsaved recovery for the same Office file. Documents and Presentations discard only their own prior recovery after a committed replacement; restored snapshots are re-homed into the restoring session. Parsers, writers and visual behavior are unchanged. Correction 1 synchronizes Chromium regressions with the transactional asynchronous New flows introduced by this release; runtime files are unchanged."
     }
   ]
 }

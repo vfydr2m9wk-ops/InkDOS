@@ -1,16 +1,19 @@
-# InkDesk v0.20.2.29 — Cross-Workspace Unverified Export Safety Hardening
+# InkDesk v0.20.2.30 — Recovery Session Isolation Hardening
 
-This maintenance release prevents a browser download request from being mistaken for a verified save in the editable workspaces where that mistake could remove the user's last unsaved-work protection.
+This maintenance release prevents one browser tab from deleting another tab's local recovery snapshots when both tabs work with the same Office file identity.
 
 ## Current release
 
-- Documents flushes pending recovery before the DOCX copy is offered and no longer clears dirty/recovery state when the download link is clicked.
-- Presentations flushes pending recovery before PPTX download dispatch and no longer marks the presentation saved or clears recovery merely because the browser accepted the request.
-- TXT now transitions through the shared `export-preparing` and `download-requested-unverified` lifecycle states instead of calling `resetClean()` after download dispatch.
-- Spreadsheet keeps its existing unverified-download protection unchanged.
-- PDF and EPUB are deliberately not changed in this patch because the demonstrated data-loss risk is materially lower, keeping the patch bounded to cases where benefit exceeds regression risk.
-- Existing visual layout and file-format behavior are intentionally unchanged.
+- Recovery snapshots now carry a per-manager `sessionId` in addition to the existing document identity.
+- `clearSnapshots()`, `markClean()`, `discardCurrent()` and `resetSnapshots` operate only on the current recovery session.
+- The three-snapshot retention limit is applied per document session, so snapshots from another tab are not mixed into the current tab's rolling history.
+- Restoring a recovery removes the recovered session's old snapshots and immediately writes a fresh snapshot owned by the restoring session.
+- Documents discards its prior recovery session only after a replacement DOCX has parsed successfully; failed opens still preserve the current document and its recovery.
+- Presentations performs the same bounded cleanup when a new presentation or successfully opened PPTX replaces the current one.
+- Spreadsheet keeps its existing explicit discard-before-replacement flow, now made safe by session-scoped recovery deletion.
+- Legacy snapshots without `sessionId` remain discoverable and restorable.
+- Parsers, writers and visual layout are intentionally unchanged.
 
-Full notes: [`docs/releases/RELEASE_NOTES_0.20.2.29.md`](docs/releases/RELEASE_NOTES_0.20.2.29.md)
+Full notes: [`docs/releases/RELEASE_NOTES_0.20.2.30.md`](docs/releases/RELEASE_NOTES_0.20.2.30.md)
 
 Historical notes: [`docs/releases/`](docs/releases/)

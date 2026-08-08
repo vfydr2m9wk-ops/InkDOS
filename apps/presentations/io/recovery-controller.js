@@ -136,20 +136,22 @@
       return this.manager ? this.manager.flush() : Promise.resolve();
     }
 
-    startNewDocument() {
+    async startNewDocument() {
       if (!this.manager) {
-        return Promise.resolve();
+        return;
       }
+      await this.manager.discardCurrent();
       return this.manager.startDocument({
         fileName: 'Untitled presentation.pptx',
         resetSnapshots: true,
       });
     }
 
-    startOpenedFile(file, buffer) {
+    async startOpenedFile(file, buffer) {
       if (!this.manager) {
-        return Promise.resolve();
+        return;
       }
+      await this.manager.discardCurrent();
       return this.manager.startDocument({
         documentKey: this.documentKey(file),
         fileName: file.name,

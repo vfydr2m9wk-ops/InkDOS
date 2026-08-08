@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.29",
+  "version": "0.20.2.30",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.29"
+    "nextPatch": "0.20.2.30"
   },
   "capabilities": {
     "documents": [
@@ -244,7 +244,7 @@
       },
       "originMilestone": "0.19.4.7",
       "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.2.29"
+      "architectureRelease": "0.20.2.30"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -507,9 +507,9 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.29",
+    "version": "0.20.2.30",
     "channel": "beta",
-    "name": "Documents Replacement Transaction Safety Hardening",
+    "name": "Recovery Session Isolation Hardening",
     "date": "2026-08-08",
     "consolidated": true,
     "sourceDevelopmentLine": "0.19.4",
@@ -534,8 +534,8 @@
     "browserRegression": "tests/browser/revalidate_v0201_consistency.py"
   },
   "localRecoverySystem": {
-    "schemaVersion": 2,
-    "version": "0.20.2.29",
+    "schemaVersion": 3,
+    "version": "0.20.2.30",
     "runtime": "shared/local-recovery.js",
     "storage": "IndexedDB",
     "workspaces": [
@@ -558,7 +558,12 @@
     "documentGenerationWriteBarrier": true,
     "snapshotOnlyClear": true,
     "downloadRequestRetainsSnapshotsUntilDiscardOrReplacement": true,
-    "downloadRequestVerification": "browser dispatch is unverified; user must confirm the copy before discarding the workbook"
+    "downloadRequestVerification": "browser dispatch is unverified; user must confirm the copy before discarding the workbook",
+    "snapshotIsolation": "document+session",
+    "legacySnapshotsSupported": true,
+    "maximumSnapshotsPerDocumentSession": 3,
+    "sessionScopedDiscard": true,
+    "workspaceSnapshotLimitPolicy": "target cap; preserve at least one recovery point per independent session"
   },
   "browserMatrix": {
     "schemaVersion": 1,

@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.29",
-  "releaseName": "Cross-Workspace Unverified Export Safety Hardening",
+  "version": "0.20.2.30",
+  "releaseName": "Recovery Session Isolation Hardening",
   "releaseType": "Beta Stability Hardening Patch",
   "releaseDate": "2026-08-08",
   "entryPoints": {
