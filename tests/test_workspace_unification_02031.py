@@ -76,6 +76,21 @@ class WorkspaceUnification02031Tests(unittest.TestCase):
         self.assertIn("min-width:820px!important", text)
         self.assertIn("display:inline-grid!important", text)
 
+    def test_shell_fidelity_pass_keeps_documents_geometry_and_wide_rules(self):
+        text = CSS.read_text(encoding="utf-8")
+        self.assertIn("UI shell fidelity pass 5", text)
+        self.assertIn("grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important", text)
+        self.assertIn("body.office-spreadsheets .viewer-label{display:none!important}", text)
+        self.assertIn("body.office-presentations .present-top-action span{display:none!important}", text)
+        self.assertIn("--ink-workspace-sidebar:238px", text)
+        self.assertIn("body.office-documents .sidebar{width:238px!important}", text)
+        self.assertNotIn("body.office-documents .workspace{grid-template-columns:250px minmax(0,1fr)!important}", text)
+        self.assertIn("body.office-presentations .workspace{--slides-w:188px!important}", text)
+        self.assertIn("body.office-pdf .workspace-body{grid-template-columns:220px minmax(0,1fr)!important}", text)
+        self.assertNotIn("--slides-w:210px", text)
+        self.assertNotIn("grid-template-columns:244px minmax(0,1fr)", text)
+        self.assertIn("body.office-documents .viewport{padding-inline:clamp(28px,2vw,42px)!important}", text)
+
     def test_overlay_contains_no_data_or_storage_logic(self):
         text = CSS.read_text(encoding="utf-8").lower()
         for forbidden in ("indexeddb", "localstorage", "formulaengine", "undostack", "fetch("):

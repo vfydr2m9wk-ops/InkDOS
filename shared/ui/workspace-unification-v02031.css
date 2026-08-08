@@ -278,19 +278,12 @@ body.office-pdf .pdf-bottom-zoom{margin-left:8px!important}
  * modules do not switch to a phone-specific shell in this phase. */
 @media(min-width:1180px){
   body.office-documents .sidebar{width:238px!important}
-  body.office-presentations .workspace{--slides-w:196px!important}
-  body.office-pdf .workspace-body{grid-template-columns:230px minmax(0,1fr)!important}
+  body.office-presentations .workspace{--slides-w:188px!important}
+  body.office-pdf .workspace-body{grid-template-columns:220px minmax(0,1fr)!important}
   body.office-txt .txt-main,body.office-epub .reader-main{padding-inline:clamp(18px,2.5vw,44px)!important}
 }
 @media(min-width:1700px){
-  body.office-spreadsheets .titlebar,
-  body.office-presentations .titlebar,
-  body.office-txt .txt-titlebar,
-  body.office-epub .epub-titlebar,
-  body.office-pdf .titlebar{padding-inline:24px!important}
-  body.office-presentations .workspace{--slides-w:210px!important}
-  body.office-pdf .workspace-body{grid-template-columns:244px minmax(0,1fr)!important}
-  body.office-product :where(.document-zoom,.zoom-controls,.bottom-zoom,.workspace-zoom,.pdf-bottom-zoom) input[type="range"]{width:132px!important}
+  body.office-spreadsheets .titlebar,body.office-presentations .titlebar,body.office-txt .txt-titlebar,body.office-epub .epub-titlebar,body.office-pdf .titlebar{padding-inline:18px!important}
 }
 @media(max-width:1000px){
   body.office-presentations .workspace{--slides-w:150px!important;--inspector-w:0px!important}
@@ -311,4 +304,66 @@ body.office-pdf .pdf-bottom-zoom{margin-left:8px!important}
   body.office-pdf .workspace-body{grid-template-columns:178px minmax(0,1fr)!important}
   body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
   body.office-pdf .sidebar{display:grid!important;position:relative!important;transform:none!important}
+}
+
+/* UI shell fidelity pass 5: match the Documents chrome more literally while
+ * keeping each workspace's own tools. Extra width is spent on workspace air,
+ * never on oversized controls. */
+body.office-spreadsheets .titlebar,body.office-presentations .titlebar,body.office-txt .txt-titlebar,body.office-epub .epub-titlebar,body.office-pdf .titlebar{
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;gap:0!important;padding:0 10px!important;border-bottom:1px solid var(--ink-edge)!important
+}
+body.office-spreadsheets .titlebar .left,body.office-presentations .titlebar-left,body.office-txt .title-actions-left,body.office-epub .title-actions:first-child,body.office-pdf .left-tools,
+body.office-spreadsheets .titlebar .right,body.office-presentations .titlebar-right,body.office-txt .title-actions-right,body.office-epub .title-actions-right,body.office-pdf .right-tools{gap:4px!important}
+body.office-spreadsheets .document-title,body.office-txt .title-center,body.office-epub .title-center,body.office-pdf .document-title{display:flex!important;align-items:center!important;gap:8px!important}
+body.office-spreadsheets .title-input,body.office-presentations .presentation-title-input,body.office-txt .file-title-input,body.office-epub .file-title-input{
+  width:220px!important;max-width:38vw!important;padding:4px 6px!important;border-radius:6px!important
+}
+body.office-spreadsheets .titlebar .icon-btn,body.office-presentations .titlebar .top-action,body.office-txt .txt-titlebar .icon-btn,
+body.office-epub .epub-titlebar .icon-btn,body.office-pdf .titlebar .icon-btn{border:0!important;border-radius:7px!important}
+body.office-spreadsheets .titlebar .icon-btn:hover,body.office-presentations .titlebar .top-action:hover,body.office-txt .txt-titlebar .icon-btn:hover,
+body.office-epub .epub-titlebar .icon-btn:hover,body.office-pdf .titlebar .icon-btn:hover{background:color-mix(in srgb,var(--ink-text) 9%,transparent)!important}
+body.office-presentations .present-top-action{width:32px!important;min-width:32px!important;padding:0!important}body.office-presentations .present-top-action span{display:none!important}
+
+/* Documents-like control rhythm in every non-PDF secondary toolbar. PDF keeps
+ * the same control sizing but remains the sole centered command bar. */
+body.office-spreadsheets .toolbar,body.office-presentations .tools,body.office-txt .txt-toolbar,body.office-epub .reader-toolbar{
+  min-height:40px!important;height:40px!important;gap:5px!important;padding:4px 9px!important;white-space:nowrap!important
+}
+body.office-spreadsheets .toolbar button,body.office-spreadsheets .toolbar select,body.office-presentations .tools button,body.office-presentations .tools select,
+body.office-txt .txt-toolbar button,body.office-txt .txt-toolbar select,body.office-epub .reader-toolbar button,body.office-pdf .commandbar .tool-btn{
+  height:30px!important;min-height:30px!important;border-radius:7px!important;font-size:12px!important
+}
+body.office-epub .reader-toolbar .theme-dot{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important}
+body.office-spreadsheets .toolbar .separator,body.office-presentations .tools .sep,body.office-pdf .command-separator{height:22px!important;margin-inline:2px!important}
+body.office-spreadsheets .view-switch{margin-left:4px!important}body.office-spreadsheets .viewer-label{display:none!important}
+body.office-presentations .toolbar{height:32px!important;min-height:32px!important;padding:0 9px!important}body.office-presentations .toolbar .tab{height:31px!important;padding-inline:11px!important}
+body.office-pdf .commandbar{padding-inline:9px!important}
+
+/* Sidebars retain a stable editing width. Wide screens expand the canvas,
+ * not the navigation rails. */
+body.office-presentations .workspace{--slides-w:188px!important}
+body.office-pdf .workspace-body{grid-template-columns:220px minmax(0,1fr)!important}body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
+
+/* Status bars stay quiet and pinned; Spreadsheets keeps its sheet tabs intact. */
+body.office-product :where(.statusbar,.txt-statusbar,.reader-statusbar,footer){
+  box-sizing:border-box!important;display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+  border-top:1px solid var(--ink-edge)!important;position:relative!important;z-index:20!important
+}
+body.office-spreadsheets footer{overflow:hidden!important}body.office-spreadsheets #sheetTabs{min-width:0!important;overflow-x:auto!important}
+body.office-spreadsheets .status{margin-left:auto!important;gap:10px!important;min-width:0!important}
+
+/* iPad landscape is the composition baseline. From 16:9 through ultrawide,
+ * only spacing around the working surface grows. */
+@media(min-width:1180px){
+  body.office-documents .viewport{padding-inline:clamp(28px,2vw,42px)!important}body.office-presentations .stage-wrap{padding-inline:clamp(28px,2.3vw,52px)!important}
+  body.office-pdf .pdf-pages{padding-inline:clamp(24px,2.3vw,52px)!important}body.office-txt .txt-main,body.office-epub .reader-main{padding-inline:clamp(18px,2.4vw,44px)!important}
+}
+@media(min-width:1700px){
+  body.office-documents .topbar,body.office-spreadsheets .titlebar,body.office-presentations .titlebar,body.office-txt .txt-titlebar,body.office-epub .epub-titlebar,body.office-pdf .titlebar{padding-inline:18px!important}
+  body.office-documents .formatbar,body.office-spreadsheets .toolbar,body.office-presentations .tools,body.office-txt .txt-toolbar,body.office-epub .reader-toolbar{padding-inline:18px!important}
+}
+@media(max-width:1000px){
+  body.office-presentations .workspace{--slides-w:150px!important}
+  body.office-pdf .workspace-body{grid-template-columns:198px minmax(0,1fr)!important}
+  body.office-pdf .workspace-body.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
 }

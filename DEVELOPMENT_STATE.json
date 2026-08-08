@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 38,
+  "appliedSequence": 39,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -195,6 +195,11 @@
       "sequence": 38,
       "packageLabel": "0.20.3.1",
       "description": "UI unification pass 4. Makes Documents the visual shell reference across editing workspaces while leaving the Launcher responsive behavior unchanged; reserves a stable Spreadsheets footer; standardizes bottom zoom controls as minus, slider, plus, Fit and percentage across Documents, Spreadsheets, Presentations, PDF, TXT and EPUB; keeps only the PDF command toolbar centered; makes Presentations thumbnails and the PDF navigation rail consume real layout columns so they push content instead of overlaying it; turns EPUB page-theme choices into small toolbar-integrated circles; and adopts an iPad-landscape baseline that expands workspace area and spacing on 16:9, 20:9 and ultrawide displays without scaling controls. Spreadsheet formula/grid/sheet-tab logic, parsers, writers, recovery, history, storage, export formats and transactional document state are unchanged."
+    },
+    {
+      "sequence": 39,
+      "packageLabel": "0.20.3.1",
+      "description": "UI shell fidelity pass 5 correction 1. Replaces the failed sequence-39 candidate without consuming a new sequence. The hosted run passed 365/365 unit/package tests and 19/20 Chromium regressions; the sole failure showed that the fidelity overlay had inadvertently changed the Documents reference sidebar from its established 238 px (200 px at narrow viewport) to 250 px. This correction restores the validated Documents geometry and keeps Documents as the untouched visual reference while retaining the intended titlebar, toolbar, fixed sidebar, statusbar and wide-workspace refinements in Spreadsheets, Presentations, PDF, TXT and EPUB. PDF remains the only centered command bar. No parser, writer, recovery, formula, history, storage, export-format, transactional document-state, launcher, or workflow logic is changed."
     }
   ]
 }

@@ -45,22 +45,24 @@ def main() -> int:
         sheets_css = read_css("apps/spreadsheets/styles.css") + "\n" + SHARED
         page.set_content(f"""<!doctype html><style>{sheets_css}</style><body class='office-product office-spreadsheets'>
           <header class='titlebar'><div class='left'><button class='icon-btn'>H</button></div><div class='document-title'><input class='title-input' value='Book.xlsx'></div><div class='right'><button class='icon-btn'>S</button></div></header>
-          <section class='toolbar'></section><section class='formula-row'></section><main></main>
+          <section class='toolbar'><span class='viewer-label'>InkDesk 0.20.3.1</span></section><section class='formula-row'></section><main></main>
           <footer><div id='sheetTabs'></div><div class='status'><span>Ready</span><div class='zoom-controls'><button>−</button><input type='range'><button>+</button><button id='fitWidth'>Fit</button><span id='zoomLabel'>100%</span></div></div></footer>
         </body>""")
         sheets_footer = rect(page, "footer")
         sheets_title = rect(page, ".titlebar")
         sheets_slider = rect(page, ".zoom-controls input")
+        sheets_viewer_label = page.locator('.viewer-label').evaluate("el => getComputedStyle(el).display")
 
         pres_css = read_css("apps/presentations/styles.css") + "\n" + SHARED
         page.set_content(f"""<!doctype html><style>{pres_css}</style><body class='office-product office-presentations'>
-          <main class='app hide-notes'><header class='titlebar'><div class='titlebar-left'></div><input class='presentation-title-input'><div class='titlebar-right'></div></header><nav class='toolbar'></nav><section class='tools'></section>
+          <main class='app hide-notes'><header class='titlebar'><div class='titlebar-left'></div><input class='presentation-title-input'><div class='titlebar-right'><button class='top-action present-top-action'><span>Current</span></button></div></header><nav class='toolbar'></nav><section class='tools'></section>
           <section class='workspace hide-inspector'><aside class='slide-list'></aside><section class='stage-wrap'></section><aside class='inspector'></aside></section><section class='notes-panel'></section>
           <footer class='statusbar'><span>Slide 1</span><span class='grow'></span><div class='bottom-zoom'><button>−</button><input type='range'><button>+</button><button>Fit</button><span id='zoomText'>100%</span></div></footer></main>
         </body>""")
         slide_edge = rect(page, ".slide-list")[2]
         stage_edge = rect(page, ".stage-wrap")[0]
         pres_footer = rect(page, ".statusbar")
+        pres_top_label = page.locator('.present-top-action span').evaluate("el => getComputedStyle(el).display")
 
         pdf_css = read_css("apps/pdf/styles.css") + "\n" + SHARED
         page.set_content(f"""<!doctype html><style>{pdf_css}</style><body class='office-product office-pdf'>
@@ -95,8 +97,10 @@ def main() -> int:
         "sheets_footer": sheets_footer,
         "sheets_title": sheets_title,
         "sheets_slider": sheets_slider,
+        "sheets_viewer_label": sheets_viewer_label,
         "presentation_edges": [slide_edge, stage_edge],
         "presentation_footer": pres_footer,
+        "presentation_top_label": pres_top_label,
         "pdf_edges": [pdf_sidebar_edge, pdf_stage_edge],
         "pdf_sidebar_style": pdf_sidebar_style,
         "pdf_toolbar": pdf_toolbar,
@@ -114,9 +118,11 @@ def main() -> int:
     assert abs(sheets_footer[3] - 720) < 0.5 and abs(sheets_footer[5] - 34) < 0.5, result
     assert abs(sheets_title[5] - 44) < 0.5, result
     assert sheets_slider[4] >= 100, result
-    assert abs(slide_edge - stage_edge) < 0.5, result
+    assert sheets_viewer_label == 'none', result
+    assert abs(slide_edge - stage_edge) < 0.5 and abs(slide_edge - 188) < 0.5, result
+    assert pres_top_label == 'none', result
     assert abs(pres_footer[3] - 720) < 0.5 and abs(pres_footer[5] - 34) < 0.5, result
-    assert abs(pdf_sidebar_edge - pdf_stage_edge) < 0.5, result
+    assert abs(pdf_sidebar_edge - pdf_stage_edge) < 0.5 and pdf_sidebar_style['width'] == '220px', result
     assert abs((pdf_group[0] + pdf_group[2]) / 2 - 512) < 2, result
     assert abs(pdf_footer[3] - 720) < 0.5 and abs(pdf_footer[5] - 34) < 0.5, result
     assert abs(epub_toolbar[5] - 40) < 0.5, result
