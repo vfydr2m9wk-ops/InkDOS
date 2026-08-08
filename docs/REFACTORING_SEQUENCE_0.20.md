@@ -207,3 +207,12 @@ This closes a concrete data-loss/race boundary. Further 0.20.2.x work should con
 
 This is a stability/maintenance step, not a visual or feature expansion.
 
+
+### v0.20.2.27 — Recovery source rehydration and metadata continuity hardening
+
+- Keep source-package continuity resilient across multiple tabs and source-store cleanup.
+- Rehydrate missing source records from the active editing-session source before writing new recovery snapshots.
+- Make snapshot cleanup race-aware when a new edit arrives during asynchronous cleanup.
+- Add release metadata consistency as a permanent validation invariant.
+
+This remains stability hardening; visual polish stays frozen until the data-safety pass is complete.

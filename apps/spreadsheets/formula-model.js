@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  const VERSION = '0.20.2.26';
+  const VERSION = '0.20.2.27';
   const MAX_SUGGESTIONS = 4;
 
   const FUNCTIONS = Object.freeze([

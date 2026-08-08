@@ -3,7 +3,7 @@
   "id": "documents",
   "name": "Documents",
   "description": "Basic DOCX creation, editing and copy export.",
-  "version": "0.20.2.26",
+  "version": "0.20.2.27",
   "enabled": true,
   "optional": false,
   "order": 10,

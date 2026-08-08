@@ -275,6 +275,112 @@ def recovery_write_barrier_case(browser, base_url):
     }
 
 
+
+def recovery_source_rehydration_case(browser, base_url):
+    context = browser.new_context()
+    page = context.new_page()
+    page.set_default_timeout(12000)
+    page.set_default_navigation_timeout(15000)
+    errors = watch_errors(page)
+    page.goto(f"{base_url}/apps/spreadsheets/index.html", wait_until="networkidle")
+    setup = page.evaluate("""async () => {
+      const moduleName = 'recovery-source-rehydrate';
+      const sourceBytes = [73,78,75,68,69,83,75,45,83,79,85,82,67,69];
+      await InkDeskLocalRecovery.clearModule(moduleName);
+      let marker = 'clean';
+      const manager = InkDeskLocalRecovery.create({
+        module: moduleName,
+        appVersion: 'source-rehydrate-test',
+        serialize: async () => ({marker})
+      });
+      await manager.startDocument({
+        documentKey: 'active.xlsx',
+        fileName: 'active.xlsx',
+        sourceData: Uint8Array.from(sourceBytes).buffer,
+        sourceMeta: {kind:'xlsx'}
+      });
+      await manager.markClean();
+
+      const inspector = InkDeskLocalRecovery.create({
+        module: moduleName,
+        appVersion: 'source-rehydrate-test',
+        serialize: async () => null
+      });
+      await inspector.promptLatest();
+      inspector.destroy();
+
+      const db1 = await InkDeskLocalRecovery.openDatabase();
+      const freshSourcePreserved = await new Promise((resolve, reject) => {
+        const tx = db1.transaction('sources', 'readonly');
+        const req = tx.objectStore('sources').get(moduleName + ':active.xlsx');
+        req.onsuccess = () => resolve(Boolean(req.result));
+        req.onerror = () => reject(req.error);
+      });
+      db1.close();
+
+      const db2 = await InkDeskLocalRecovery.openDatabase();
+      await new Promise((resolve, reject) => {
+        const tx = db2.transaction('sources', 'readwrite');
+        tx.objectStore('sources').delete(moduleName + ':active.xlsx');
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+      db2.close();
+
+      marker = 'edited-after-source-loss';
+      manager.markDirty();
+      await manager.flush();
+      manager.destroy();
+
+      window.__rehydratedSource = null;
+      window.__rehydratedPayload = null;
+      window.__rehydrationManager = InkDeskLocalRecovery.create({
+        module: moduleName,
+        appVersion: 'source-rehydrate-test',
+        serialize: async () => null,
+        restore: async context => {
+          window.__rehydratedSource = context.source
+            ? Array.from(new Uint8Array(context.source.data))
+            : null;
+          window.__rehydratedPayload = context.snapshot?.payload || null;
+        }
+      });
+      await window.__rehydrationManager.promptLatest();
+      return {
+        sourceBytes,
+        freshSourcePreserved,
+        snapshots: (await InkDeskLocalRecovery.listSnapshots(moduleName)).length
+      };
+    }""")
+    page.wait_for_selector(".inkdesk-recovery-overlay", state="visible", timeout=10000)
+    page.get_by_role("button", name="Restore", exact=True).click()
+    page.wait_for_selector(".inkdesk-recovery-overlay", state="detached", timeout=10000)
+    restored = page.evaluate("""async () => {
+      const result = {
+        rehydratedSource: window.__rehydratedSource,
+        payload: window.__rehydratedPayload
+      };
+      window.__rehydrationManager?.destroy();
+      await InkDeskLocalRecovery.clearModule('recovery-source-rehydrate');
+      return result;
+    }""")
+    page.close()
+    context.close()
+    return {
+        "workspace": "recovery-source-rehydration",
+        "restored": (
+            setup["freshSourcePreserved"]
+            and setup["snapshots"] >= 1
+            and restored["rehydratedSource"] == setup["sourceBytes"]
+            and (restored["payload"] or {}).get("marker") == "edited-after-source-loss"
+        ),
+        "freshSourcePreserved": setup["freshSourcePreserved"],
+        "rehydratedSource": restored["rehydratedSource"],
+        "snapshots": setup["snapshots"],
+        "errors": errors,
+    }
+
 def presentations_case(browser, base_url):
     context = browser.new_context()
     token = "Recovered presenter notes 0202"
@@ -317,6 +423,7 @@ def main():
                     spreadsheets_post_save_edit_recovery_case(browser, base_url),
                     presentations_case(browser, base_url),
                     recovery_write_barrier_case(browser, base_url),
+                    recovery_source_rehydration_case(browser, base_url),
                 ]
             except Exception as error:
                 if "ERR_BLOCKED_BY_ADMINISTRATOR" not in str(error):

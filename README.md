@@ -4,11 +4,11 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.2.26
+## InkDesk v0.20.2.27
 
-Version 0.20.2.26 hardens Spreadsheet Save-copy at the browser download boundary. InkDesk now flushes private recovery before dispatching a generated XLSX copy and keeps the workbook marked as unsaved after the download request, because a browser click does not prove that the user actually retained the file.
+Version 0.20.2.27 hardens private recovery-source continuity across browser tabs and long-lived editing sessions. If the IndexedDB source record for an imported Office file disappears while the editor is still open, the next recovery snapshot can rehydrate that source from the active session before recording unsaved work.
 
-Historical per-version release notes are now organized under `docs/releases/`; the repository root keeps only `RELEASE_NOTES.md` as the current-release/index entry point. No visual layout, formula syntax or workbook editing command is intentionally changed.
+The release also adds a permanent consistency gate tying `README.md`, `RELEASE_NOTES.md`, the release-history index and `CHANGELOG.md` to `VERSION.json`, preventing the public repository metadata from silently lagging behind the runtime version. No visual layout or editing behavior is intentionally changed.
 
 ## Refactoring policy
 
@@ -46,7 +46,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.2.26 remains a beta. Real-device validation is still required for critical
+v0.20.2.27 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

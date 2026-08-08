@@ -34,7 +34,7 @@ class LocalRecoveryTests(unittest.TestCase):
         disabled = ("pdf", "txt", "epub")
         for module in enabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
-            self.assertIn("../../shared/local-recovery.js?v=0.20.2.26", html)
+            self.assertIn("../../shared/local-recovery.js?v=0.20.2.27", html)
             self.assertLess(html.index("local-recovery.js"), html.index("app.js"))
         for module in disabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
@@ -83,7 +83,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_service_worker_caches_recovery_runtime(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("./shared/local-recovery.js", text)
-        self.assertIn("inkdesk-shell-v0.20.2.26", text)
+        self.assertIn("inkdesk-shell-v0.20.2.27", text)
 
     def test_service_worker_canonicalizes_versioned_shell_assets(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -91,7 +91,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("canonical.hash=''", text)
         self.assertIn("APP_SHELL_URLS.has(canonical.href)", text)
         hub = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("module-registry.js?v=0.20.2.26", hub)
+        self.assertIn("module-registry.js?v=0.20.2.27", hub)
 
     def test_local_recovery_browser_waits_use_playwright_keyword_arg(self):
         text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
@@ -134,13 +134,54 @@ class LocalRecoveryTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
+
+    def test_fresh_source_only_records_have_an_orphan_grace_period(self):
+        text = (ROOT / "shared/local-recovery.js").read_text(encoding="utf-8")
+        self.assertIn("SOURCE_ORPHAN_GRACE_MS=MAX_AGE_MS", text)
+        self.assertIn("now-Number(item.updatedAt||0)>SOURCE_ORPHAN_GRACE_MS", text)
+        self.assertIn("SOURCE_ORPHAN_GRACE_MS", text[text.index("constants:Object.freeze"):])
+
+    def test_active_session_can_rehydrate_a_missing_source_before_snapshot(self):
+        text = (ROOT / "shared/local-recovery.js").read_text(encoding="utf-8")
+        for marker in (
+            "let sourceData=null,sourceMeta={}",
+            "capturedSourceData=sourceData",
+            "if(capturedSourceData!=null)",
+            "if(!existing)await putSource",
+            "could not rehydrate the recovery source package",
+            "sourceData=source&&Object.prototype.hasOwnProperty.call(source,'data')?source.data:null",
+        ):
+            self.assertIn(marker, text)
+
+    def test_snapshot_cleanup_is_race_aware(self):
+        text = (ROOT / "shared/local-recovery.js").read_text(encoding="utf-8")
+        start = text.index("async function clearSnapshots()")
+        end = text.index("async function markClean()", start)
+        block = text[start:end]
+        self.assertIn("Recovery cleanup deferred because new edits arrived", block)
+        self.assertIn("if(documentKey===key&&(dirty||revision>0))await flush()", block)
+        clean_start = text.index("async function markClean()")
+        clean_end = text.index("async function discardCurrent()", clean_start)
+        clean = text[clean_start:clean_end]
+        self.assertIn("if(documentKey===key&&(dirty||revision>0))await flush()", clean)
+
+    def test_browser_recovery_covers_source_grace_and_rehydration(self):
+        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        for marker in (
+            "recovery_source_rehydration_case",
+            "recovery-source-rehydrate",
+            "freshSourcePreserved",
+            "rehydratedSource",
+        ):
+            self.assertIn(marker, text)
+
     def test_release_identity_is_v0202(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(version["version"], "0.20.2.26")
-        self.assertEqual(version["releaseName"], "Export Confirmation Safety and Release Notes Organization")
-        self.assertEqual(state["appliedSequence"], 28)
-        self.assertEqual(state["currentPackage"], "0.20.2.26")
+        self.assertEqual(version["version"], "0.20.2.27")
+        self.assertEqual(version["releaseName"], "Recovery Source Rehydration and Metadata Continuity Hardening")
+        self.assertEqual(state["appliedSequence"], 29)
+        self.assertEqual(state["currentPackage"], "0.20.2.27")
 
 
 if __name__ == "__main__":

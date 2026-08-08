@@ -186,7 +186,7 @@ def main():
                 assert_true(background in {"rgb(37, 99, 235)", "rgba(37, 99, 235, 1)"}, "Format panel fill did not update the selected object")
                 report["checks"].append("format panel modifies selected object")
 
-                # Selection and history are separate state components in v0.20.2.26.
+                # Selection and history are separate state components in v0.20.2.27.
                 # Verify that clearing/reselecting still drives the visible handles
                 # and that Undo/Redo restores the same selected object state.
                 page.locator("#slideCanvas").evaluate("node => node.click()")

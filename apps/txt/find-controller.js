@@ -87,7 +87,7 @@
   }
 
   global.InkDeskTxtFindController = Object.freeze({
-    version: '0.20.2.26',
+    version: '0.20.2.27',
     createFindController
   });
 })(globalThis);

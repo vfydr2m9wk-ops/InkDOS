@@ -1,11 +1,14 @@
-# InkDesk release notes
+# InkDesk v0.20.2.27 — Recovery Source Rehydration and Metadata Continuity Hardening
 
-## Current release — v0.20.2.26
+This release hardens recovery-source continuity across browser tabs and makes release metadata self-checking.
 
-**Export Confirmation Safety and Release Notes Organization**
+## Current release
 
-Spreadsheet Save-copy now treats browser download dispatch as **unverified**: recovery is flushed before the request, but dirty/recovery protection is not cleared merely because the browser accepted the click. This prevents a canceled or lost download from silently removing the user's in-browser safety net.
+- Recovery snapshots can rehydrate a missing imported source package from the still-active editing session before the snapshot is committed.
+- Fresh clean-session sources are no longer deleted immediately as apparent orphans by another tab.
+- Recovery cleanup defers or rewrites safely when edits race with an in-flight cleanup.
+- Public release entry points are checked against `VERSION.json` so README/release-note drift fails validation.
 
-Historical per-version notes have been moved to [`docs/releases/`](docs/releases/). The complete note for this release is [`docs/releases/RELEASE_NOTES_0.20.2.26.md`](docs/releases/RELEASE_NOTES_0.20.2.26.md).
+Full notes: [`docs/releases/RELEASE_NOTES_0.20.2.27.md`](docs/releases/RELEASE_NOTES_0.20.2.27.md)
 
-The hosted package/checksum suite and **17/17 Chromium regressions** remain the authoritative release gate.
+Historical notes: [`docs/releases/`](docs/releases/)

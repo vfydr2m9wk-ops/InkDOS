@@ -1,11 +1,3 @@
-## v0.20.2.26 export confirmation safety and release-note organization
-
-The v0.20.2.26 gate verifies that a Spreadsheet Save-copy request cannot silently clear the dirty/recovery safety net before the user has verified the downloaded XLSX. Recovery must be flushed before download dispatch, the workbook must remain marked unsaved after the request, and the existing Chromium recovery path must still restore and re-export the workbook.
-
-Repository checks also require every historical `RELEASE_NOTES_*.md` file to live under `docs/releases/`, leaving only `RELEASE_NOTES.md` at the root.
-
-The hosted workflow remains the final checksum and 17/17 Chromium gate. Local reconstruction: **313/314** tests pass; the single hold is the authoritative checksum test because the three hosted PDF.js publication files are absent locally. Hosted target: **314/314 + 17/17 Chromium**.
-
 ## v0.20.2.25 recovery source-continuity hardening
 
 The v0.20.2.25 gate covers a post-save recovery boundary that was previously unsafe: an imported workbook is edited, a copy is saved, editing continues, the page closes, recovery is restored, and a new XLSX copy is generated. The original OOXML preservation context must remain available throughout that sequence.
@@ -90,7 +82,7 @@ replacement.
 ## Current evidence
 
 - Architecture guardrails now include the dedicated PDF page-renderer, navigation and review controllers. The PDF `app.js` ratchet is reduced again after navigation/sidebar extraction; both new viewer controllers remain below the 500-line new-file ceiling.
-- The Python suite contains 252 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
+- The Python suite contains 322 tests. The hosted repository remains the authoritative full checksum gate because the reconstructed local tree does not contain the three pinned PDF.js publication files byte-for-byte.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.
@@ -174,3 +166,9 @@ cross-workspace coupling fails validation.
 
 
 - Browser validation now contains 14 isolated regression scripts, including a dedicated PDF page-rendering/navigation gate.
+
+## v0.20.2.27 recovery-source continuity
+
+- `tests/test_local_recovery.py` enforces source-only orphan grace, active-session source rehydration and race-aware snapshot cleanup.
+- `tests/browser/revalidate_v0202_local_recovery.py` now includes a fresh-source preservation and forced-source-loss/rehydration scenario without increasing the browser-script count.
+- `tests/test_release_metadata_consistency.py` prevents public release metadata and the Home shell from drifting behind `VERSION.json`.

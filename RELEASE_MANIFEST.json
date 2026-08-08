@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.26",
-  "releaseName": "Export Confirmation Safety and Release Notes Organization",
+  "version": "0.20.2.27",
+  "releaseName": "Recovery Source Rehydration and Metadata Continuity Hardening",
   "releaseType": "Beta Stability Hardening Patch",
   "releaseDate": "2026-08-08",
   "entryPoints": {
@@ -37,14 +37,14 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "314 configured tests; local reconstruction 313/314 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
+    "structuralUnitTests": "322 configured tests; local reconstruction 321/322 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "17 configured; hosted Chromium remains authoritative. Local environment blocks loopback HTTP, so the v0.20.2.26 recovery scenario is configured but not performed locally.",
+    "browserRegressionScripts": "17 configured; hosted Chromium remains authoritative. Local environment blocks loopback HTTP, so the v0.20.2.27 recovery scenario is configured but not performed locally.",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "extended: save -> unverified download retains dirty/recovery -> continue editing -> restore -> re-export fidelity",
     "browserMatrixRunner": "chromium, firefox, webkit",

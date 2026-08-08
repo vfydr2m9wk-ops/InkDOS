@@ -1,10 +1,17 @@
-## 0.20.2.26 — Export Confirmation Safety and Release Notes Organization
+## 0.20.2.27 — Recovery Source Rehydration and Metadata Continuity Hardening (2026-08-08)
+
+- Retain imported source data in the active recovery manager and rehydrate a missing IndexedDB source record before the next recovery snapshot.
+- Give fresh source-only records a bounded orphan grace period so another tab cannot immediately erase a still-active clean session's preservation source.
+- Make snapshot cleanup defer or regenerate recovery state when new edits race with cleanup.
+- Retain recovered source data in memory after Restore for later recovery continuity.
+- Add browser/static regressions for source continuity and a permanent release-metadata consistency gate.
+
+## 0.20.2.26 — Export Confirmation Safety and Release Notes Organization (2026-08-08)
 
 - Flush Spreadsheet recovery before dispatching a generated XLSX download.
 - Keep Spreadsheet dirty/recovery protection after an unverified browser download request.
-- Extend the Chromium recovery scenario to assert post-download protection.
-- Move historical `RELEASE_NOTES_*.md` files into `docs/releases/` and add an indexed history.
-- Preserve the frozen visual surface and existing workbook/formula behavior.
+- Move historical per-version release notes from the repository root into `docs/releases/`.
+- Add an enforced release-note organization test.
 
 ## 0.20.2.25 — Local Recovery Source Continuity Hardening
 

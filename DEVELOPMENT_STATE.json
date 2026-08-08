@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 28,
-  "currentPackage": "0.20.2.26",
+  "appliedSequence": 29,
+  "currentPackage": "0.20.2.27",
   "status": "in-progress",
   "history": [
     {
@@ -145,6 +145,11 @@
       "sequence": 28,
       "packageLabel": "0.20.2.26",
       "description": "Spreadsheet export-confirmation safety hardening plus release-note repository organization. Recovery is flushed before XLSX download dispatch, unverified browser download requests retain dirty/recovery protection, and historical RELEASE_NOTES_*.md files move from the repository root into docs/releases/ with an enforced index."
+    },
+    {
+      "sequence": 29,
+      "packageLabel": "0.20.2.27",
+      "description": "Recovery-source continuity hardening across tabs and cleanup races. Active imported source data can rehydrate a missing IndexedDB source before a new recovery snapshot; fresh source-only records receive an orphan grace period; snapshot cleanup is race-aware. Public release metadata and the Home shell are synchronized and permanently checked against VERSION.json."
     }
   ]
 }
