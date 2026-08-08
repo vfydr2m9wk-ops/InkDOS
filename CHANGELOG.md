@@ -1,3 +1,11 @@
+## 0.20.3.1 — Content Workspaces Visual Pass (2026-08-08)
+
+- Added a last-loaded visual layer dedicated to Documents, Plain Text and EPUB.
+- Tightened Documents toolbar/sidebar/page hierarchy while preserving all editor commands and data paths.
+- Refined TXT into a calmer writing surface with compact controls and clearer status hierarchy.
+- Refined EPUB into a book-first reading surface with grouped controls, quieter navigation and a calmer contents drawer.
+- Added structural and Chromium visual regressions; no parser, writer, recovery, history or workflow behavior is intentionally changed.
+
 ## 0.20.3.0 — Visual Foundation (2026-08-08)
 
 - Froze v0.20.2.31 as the structural/data-safety baseline and started the user-visible 0.20.3 UX train.

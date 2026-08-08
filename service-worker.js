@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdesk-shell-v0.20.3.0';
+const CACHE_NAME='inkdesk-shell-v0.20.3.1';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -31,6 +31,7 @@ const APP_SHELL=[
   './shared/ui/document-session-controller.js',
   './shared/ui/visual-foundation.css',
   './shared/ui/visual-foundation-v0203.css',
+  './shared/ui/content-workspaces-v02031.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
   './shared/local-recovery.js',

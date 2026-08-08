@@ -1,0 +1,494 @@
+/* InkDesk v0.20.3.1 — Documents / TXT / EPUB visual pass
+ * Presentation-only refinement for content-centric workspaces.
+ * No document state, file I/O, recovery or editor behavior is owned here.
+ */
+
+/* Shared content-workspace details. */
+body.office-documents,
+body.office-txt,
+body.office-epub{
+  --content-panel:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
+  --content-control:color-mix(in srgb,var(--ink-surface) 92%,var(--ink-bg));
+  --content-control-hover:color-mix(in srgb,var(--ink-accent) 8%,var(--ink-surface));
+  --content-hairline:color-mix(in srgb,var(--ink-text) 11%,transparent);
+  --content-shadow:0 14px 34px rgba(20,28,40,.10);
+}
+
+body.office-documents :where(.title-input),
+body.office-txt :where(.file-title-input),
+body.office-epub :where(.file-title-input){
+  height:30px;
+  padding:4px 9px;
+  border:1px solid transparent;
+  border-radius:8px;
+  background:transparent;
+  font-size:13px;
+  font-weight:650;
+  letter-spacing:-.012em;
+}
+body.office-documents :where(.title-input):hover,
+body.office-txt :where(.file-title-input):hover,
+body.office-epub :where(.file-title-input):hover{
+  background:color-mix(in srgb,var(--ink-text) 5%,transparent);
+}
+body.office-documents :where(.title-input):focus,
+body.office-txt :where(.file-title-input):focus,
+body.office-epub :where(.file-title-input):focus{
+  border-color:color-mix(in srgb,var(--ink-accent) 48%,var(--ink-edge));
+  background:var(--ink-surface);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ink-accent) 12%,transparent);
+}
+
+body.office-documents :where(.welcome-card),
+body.office-txt :where(.txt-start-card),
+body.office-epub :where(.epub-start-card){
+  width:min(520px,calc(100% - 24px));
+  padding:34px 36px 32px!important;
+  border-radius:18px!important;
+  box-shadow:0 18px 48px rgba(20,28,40,.10)!important;
+}
+body.office-documents :where(.welcome-card) h1,
+body.office-txt :where(.txt-start-card) h1,
+body.office-epub :where(.epub-start-card) h1{
+  margin-top:18px;
+  margin-bottom:7px;
+  font-size:27px;
+  line-height:1.08;
+  letter-spacing:-.04em;
+}
+body.office-documents :where(.welcome-card) p,
+body.office-txt :where(.txt-start-card) p,
+body.office-epub :where(.epub-start-card) p{
+  font-size:13px;
+  line-height:1.55;
+}
+
+/* Documents — calmer document chrome with clearer editing hierarchy. */
+body.office-documents .topbar{
+  padding-inline:8px;
+}
+body.office-documents .left-tools,
+body.office-documents .right-tools{
+  gap:2px!important;
+}
+body.office-documents .word-badge{
+  width:24px;
+  height:24px;
+  border-radius:7px;
+  background:linear-gradient(145deg,#3678ee,#245dc7)!important;
+  box-shadow:0 5px 13px rgba(47,111,237,.22);
+  font-size:12px;
+  letter-spacing:-.02em;
+}
+body.office-documents .dirty-dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:var(--ink-accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ink-accent) 11%,transparent);
+}
+body.office-documents #saveBtn:not(:disabled){
+  background:var(--ink-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--ink-accent) 24%,var(--ink-edge))!important;
+  color:var(--ink-accent)!important;
+}
+body.office-documents .formatbar{
+  min-height:40px!important;
+  height:40px!important;
+  gap:4px!important;
+  padding:4px 8px!important;
+  background:var(--content-panel)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.45) inset;
+}
+body.office-documents .formatbar select,
+body.office-documents .fmt-btn{
+  height:30px!important;
+  min-height:30px!important;
+  border-color:transparent!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:12px;
+}
+body.office-documents .formatbar select{
+  background:var(--content-control)!important;
+  border-color:var(--ink-edge)!important;
+}
+body.office-documents .fmt-btn:hover,
+body.office-documents .formatbar select:hover{
+  background:var(--content-control-hover)!important;
+  border-color:color-mix(in srgb,var(--ink-accent) 18%,var(--ink-edge))!important;
+}
+body.office-documents .separator{
+  height:20px!important;
+  margin-inline:3px!important;
+  opacity:.65;
+}
+body.office-documents .ruler{
+  background:color-mix(in srgb,var(--ink-surface-soft) 94%,var(--ink-bg))!important;
+}
+body.office-documents .ruler-track{
+  border-color:color-mix(in srgb,var(--ink-edge) 88%,transparent)!important;
+  border-radius:4px!important;
+  background:var(--ink-surface)!important;
+}
+body.office-documents .workspace{
+  grid-template-columns:238px minmax(0,1fr)!important;
+}
+body.office-documents .workspace.sidebar-hidden{
+  grid-template-columns:0 minmax(0,1fr);
+}
+body.office-documents .sidebar{
+  width:238px!important;
+  background:color-mix(in srgb,var(--ink-surface-soft) 93%,var(--ink-bg))!important;
+  box-shadow:1px 0 0 var(--ink-edge)!important;
+}
+body.office-documents .sidebar-tabs{
+  min-height:42px;
+  align-items:stretch;
+  padding:4px 7px 0;
+  gap:2px;
+  background:transparent;
+}
+body.office-documents .tab{
+  height:37px;
+  border-radius:8px 8px 0 0;
+  font-size:11px;
+  font-weight:620;
+}
+body.office-documents .tab:hover{
+  background:color-mix(in srgb,var(--ink-text) 5%,transparent);
+}
+body.office-documents .tab.active{
+  background:color-mix(in srgb,var(--ink-accent) 8%,transparent);
+  color:var(--ink-accent);
+  font-weight:720;
+}
+body.office-documents .side-panel{
+  padding:11px 10px 16px;
+}
+body.office-documents .page-thumb{
+  margin-bottom:4px;
+  padding:8px;
+  border-radius:10px;
+}
+body.office-documents .page-thumb.active{
+  background:color-mix(in srgb,var(--ink-accent) 10%,var(--ink-surface));
+  border-color:color-mix(in srgb,var(--ink-accent) 28%,var(--ink-edge));
+}
+body.office-documents .thumb-sheet{
+  border-radius:2px;
+  box-shadow:0 3px 10px rgba(20,28,40,.10);
+}
+body.office-documents .search-box{
+  height:36px;
+  border-radius:9px;
+  background:var(--ink-surface);
+  box-shadow:0 1px 2px rgba(20,28,40,.03);
+}
+body.office-documents .viewport{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ink-bg) 95%,white),var(--ink-bg))!important;
+  padding-top:24px!important;
+}
+body.office-documents .pages-host{
+  gap:20px;
+}
+body.office-documents .page{
+  box-shadow:0 8px 24px rgba(20,28,40,.13),0 0 0 1px rgba(20,28,40,.035)!important;
+}
+body.office-documents .welcome-icon{
+  width:64px;
+  height:64px;
+  border-radius:17px;
+  margin-bottom:0;
+  background:linear-gradient(145deg,#3678ee,#245dc7)!important;
+  box-shadow:0 13px 28px rgba(47,111,237,.22);
+}
+body.office-documents .welcome-actions{
+  gap:10px;
+  margin-top:22px;
+}
+body.office-documents .support-note{
+  margin-top:16px!important;
+  font-size:10.5px!important;
+}
+body.office-documents .statusbar{
+  min-height:25px;
+  padding-inline:12px;
+  background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
+  font-variant-numeric:tabular-nums;
+}
+
+body.office-documents .app-shell{
+  grid-template-rows:44px 40px 28px minmax(0,1fr) 25px!important;
+}
+
+/* TXT — focused writing surface with low-noise controls. */
+body.office-txt .txt-titlebar{
+  box-shadow:none;
+}
+body.office-txt .txt-app-icon{
+  width:24px;
+  height:24px;
+  border-radius:7px;
+  box-shadow:0 5px 13px rgba(217,165,20,.20);
+}
+body.office-txt .save-btn:not(:disabled){
+  background:var(--ink-accent)!important;
+  border-color:color-mix(in srgb,var(--ink-accent) 72%,#7d6208)!important;
+  color:#fff!important;
+}
+body.office-txt .txt-toolbar{
+  min-height:42px;
+  gap:6px;
+  padding:4px 10px;
+  background:var(--content-panel);
+}
+body.office-txt .txt-toolbar .tool-btn,
+body.office-txt .font-size-control select,
+body.office-txt .find-bar input{
+  min-height:32px;
+  border-radius:8px;
+  border-color:var(--ink-edge);
+  background:var(--content-control);
+  box-shadow:none;
+}
+body.office-txt .txt-toolbar .tool-btn{
+  padding-inline:11px;
+  font-size:12px;
+  font-weight:650;
+}
+body.office-txt .txt-toolbar .tool-btn.active{
+  border-color:color-mix(in srgb,var(--ink-accent) 26%,var(--ink-edge));
+  background:var(--ink-accent-soft);
+  color:color-mix(in srgb,var(--ink-accent) 74%,#765b00);
+}
+body.office-txt .font-size-control{
+  gap:6px;
+}
+body.office-txt .find-bar{
+  max-width:620px;
+  padding-left:2px;
+}
+body.office-txt #findStatus{
+  min-width:58px;
+  font-variant-numeric:tabular-nums;
+}
+body.office-txt .txt-main{
+  padding:18px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ink-bg) 95%,white),var(--ink-bg));
+}
+body.office-txt .start-icon{
+  width:64px;
+  height:64px;
+  border-radius:17px;
+  box-shadow:0 13px 28px rgba(217,165,20,.20);
+}
+body.office-txt .start-actions{
+  gap:10px;
+  margin-top:22px;
+}
+body.office-txt .editor-shell{
+  width:min(980px,100%);
+  border-radius:14px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(1.68em - 1px),
+      color-mix(in srgb,var(--txt-line) 66%,transparent) calc(1.68em - 1px),
+      color-mix(in srgb,var(--txt-line) 66%,transparent) 1.68em
+    ),
+    var(--txt-paper);
+  box-shadow:0 10px 30px rgba(20,28,40,.10),0 0 0 1px rgba(20,28,40,.025);
+}
+body.office-txt #editor{
+  padding:38px clamp(28px,5vw,58px);
+  line-height:1.68;
+  letter-spacing:.002em;
+}
+body.office-txt .txt-statusbar{
+  min-height:30px;
+  gap:12px;
+  padding-inline:12px;
+  background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
+}
+body.office-txt .txt-statusbar > span:not(.status-spacer) + span:not(.status-spacer){
+  padding-left:12px;
+  border-left:1px solid var(--ink-edge);
+}
+
+/* EPUB — book-first reading surface with quieter navigation. */
+body.office-epub .epub-titlebar{
+  box-shadow:none;
+}
+body.office-epub .epub-app-icon{
+  width:24px;
+  height:24px;
+  border-radius:7px;
+  box-shadow:0 5px 13px rgba(118,85,199,.20);
+}
+body.office-epub .save-btn:not(:disabled){
+  background:var(--ink-accent)!important;
+  border-color:color-mix(in srgb,var(--ink-accent) 74%,#4f388f)!important;
+  color:#fff!important;
+}
+body.office-epub .reader-toolbar{
+  min-height:42px;
+  gap:10px;
+  padding:4px 10px;
+  background:var(--content-panel);
+}
+body.office-epub .size-controls,
+body.office-epub .theme-controls{
+  min-height:32px;
+  display:flex;
+  align-items:center;
+  gap:3px;
+  padding:2px 4px;
+  border:1px solid var(--ink-edge);
+  border-radius:9px;
+  background:var(--content-control);
+}
+body.office-epub .size-controls .tool-btn{
+  min-height:28px;
+  min-width:36px;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+body.office-epub #fontSizeLabel{
+  min-width:44px;
+  color:var(--ink-muted);
+  font-size:11px;
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+}
+body.office-epub .theme-dot{
+  width:24px;
+  height:24px;
+  border-width:1px;
+  box-shadow:0 1px 4px rgba(20,28,40,.10);
+}
+body.office-epub .theme-dot.active{
+  border-color:var(--ink-accent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--ink-accent) 14%,transparent);
+}
+body.office-epub .book-meta{
+  font-size:11px;
+}
+body.office-epub .reader-main{
+  padding:16px 18px 18px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ink-bg) 95%,white),var(--ink-bg));
+}
+body.office-epub .start-icon{
+  width:64px;
+  height:64px;
+  border-radius:17px;
+  box-shadow:0 13px 28px rgba(118,85,199,.20);
+}
+body.office-epub .reader-shell{
+  width:min(1080px,100%);
+  grid-template-columns:44px minmax(0,1fr) 44px;
+  gap:10px;
+}
+body.office-epub .page-surface{
+  border-radius:14px;
+  border-color:color-mix(in srgb,var(--ink-edge) 92%,transparent);
+  box-shadow:0 10px 32px rgba(20,28,40,.11),0 0 0 1px rgba(20,28,40,.02);
+}
+body.office-epub .page-content{
+  max-width:760px;
+  padding:clamp(34px,6vh,62px) clamp(30px,7vw,76px);
+  line-height:1.72;
+}
+body.office-epub .page-content h1,
+body.office-epub .page-content h2,
+body.office-epub .page-content h3{
+  color:color-mix(in srgb,var(--ink) 94%,var(--ink-accent));
+}
+body.office-epub .page-arrow{
+  width:40px;
+  height:40px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--ink-surface) 90%,transparent);
+  color:var(--ink-accent);
+  font-size:30px;
+  box-shadow:0 5px 16px rgba(20,28,40,.09);
+}
+body.office-epub .toc-panel{
+  top:10px;
+  bottom:10px;
+  width:min(320px,86vw);
+  border-radius:0 16px 16px 0;
+  background:var(--ink-surface);
+  box-shadow:14px 0 38px rgba(20,28,40,.16);
+}
+body.office-epub .toc-panel::after{
+  width:3px;
+  height:48px;
+  opacity:.55;
+}
+body.office-epub .toc-header{
+  min-height:48px;
+  padding-inline:14px;
+}
+body.office-epub .toc-list{
+  height:calc(100% - 48px);
+  padding:8px 10px 16px;
+}
+body.office-epub .toc-item{
+  padding:9px 10px;
+  border-radius:8px;
+  font-size:12px;
+}
+body.office-epub .reader-statusbar{
+  min-height:30px;
+  padding-inline:12px;
+  background:color-mix(in srgb,var(--ink-surface) 96%,var(--ink-bg));
+}
+
+/* Narrow refinement: preserve every command while reducing chrome pressure. */
+@media(max-width:760px){
+  body.office-documents .workspace{grid-template-columns:200px minmax(0,1fr)!important}
+  body.office-documents .sidebar{width:200px!important}
+  body.office-documents .workspace.sidebar-hidden{grid-template-columns:0 minmax(0,1fr)}
+  body.office-documents .formatbar{padding-inline:6px!important}
+  body.office-documents .page{box-shadow:0 6px 18px rgba(20,28,40,.12)!important}
+  body.office-txt .txt-main{padding:10px}
+  body.office-txt .editor-shell{border-radius:10px}
+  body.office-txt #editor{padding:28px 22px}
+  body.office-epub .reader-main{padding:8px}
+  body.office-epub .reader-shell{grid-template-columns:38px minmax(0,1fr) 38px;gap:4px}
+  body.office-epub .page-arrow{width:36px;height:36px;font-size:27px}
+  body.office-epub .page-surface{border-radius:10px}
+  body.office-epub .page-content{padding:30px 22px}
+}
+
+@media(max-width:520px){
+  body.office-documents .word-badge{display:none}
+  body.office-documents .document-title{gap:4px}
+  body.office-documents .title-input{width:min(128px,31vw)}
+  body.office-txt .txt-statusbar #characterCount{display:none}
+  body.office-epub .theme-controls{gap:2px}
+}
+
+@media(pointer:coarse){
+  body.office-documents .formatbar select,
+  body.office-documents .fmt-btn,
+  body.office-txt .txt-toolbar .tool-btn,
+  body.office-txt .font-size-control select,
+  body.office-epub .size-controls .tool-btn{
+    min-height:38px;
+  }
+  body.office-epub .theme-dot{width:28px;height:28px}
+  body.office-epub .page-arrow{width:44px;height:44px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.office-documents *,
+  body.office-txt *,
+  body.office-epub *{
+    scroll-behavior:auto!important;
+  }
+}

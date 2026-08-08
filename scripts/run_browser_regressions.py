@@ -31,6 +31,7 @@ SCRIPTS = [
     "revalidate_pdf_save.py",
     "revalidate_v02021_functional_corrections.py",
     "revalidate_visual_foundation_0203.py",
+    "revalidate_content_workspaces_visual_02031.py",
 ]
 
 

@@ -4,11 +4,11 @@ InkDesk is an experimental, local-first browser productivity suite for focused
 DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
 Microsoft Office, a full PDF editor or a complete publishing system.
 
-## InkDesk v0.20.3.0
+## InkDesk v0.20.3.1
 
-Version 0.20.3.0 starts the user-visible visual/UX phase on top of the frozen v0.20.2.31 structural baseline. A new shared presentation layer is loaded last by Home and all six workspaces, giving InkDesk one typography, surface, control-state and spacing system while preserving each workspace color identity.
+Version 0.20.3.1 applies the first workspace-specific visual pass on top of the v0.20.3.0 shared foundation. Documents now uses denser, clearer editor chrome; Plain Text becomes a quieter writing surface; and EPUB shifts toward a book-first reading presentation with less decorative navigation.
 
-The first pass deliberately avoids editor logic: parsers, writers, recovery, formulas, history and document transactions are unchanged. Home receives the largest immediate polish; the six workspaces receive common titlebar, toolbar, start-surface, focus and touch-target refinement without changing their feature set.
+The structural baseline remains frozen at v0.20.2.31. This release adds a last-loaded presentation-only stylesheet for Documents/TXT/EPUB and regression coverage for its geometry and states; parsers, writers, recovery, formulas, history and document transactions remain unchanged.
 
 ## Development policy
 
@@ -43,7 +43,7 @@ matrix mode is requested.
 
 ## Status
 
-v0.20.3.0 remains a beta. Real-device validation is still required for critical
+v0.20.3.1 remains a beta. Real-device validation is still required for critical
 workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
 and installed-PWA behavior.
 

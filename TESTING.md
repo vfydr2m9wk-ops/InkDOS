@@ -198,3 +198,9 @@ The local-recovery browser harness creates two independent recovery managers wit
 - `tests/test_visual_foundation_0203.py` checks that Home and all six workspaces load the new shared visual layer last, that product identities/tokens/compact/reduced-motion rules remain present, and that the service worker precaches the asset.
 - `tests/browser/revalidate_visual_foundation_0203.py` exercises the presentation layer in Chromium without opening user files: desktop Home cards, 44 px workspace chrome, per-app accent identity and compact phone layout.
 - The visual release must keep all existing data-safety and Office round-trip gates green.
+
+## v0.20.3.1 content-workspace visual pass
+
+- `tests/test_content_workspaces_visual_02031.py` verifies the bounded presentation-only layer, load order, service-worker delivery and compact/coarse-pointer rules.
+- `tests/browser/revalidate_content_workspaces_visual_02031.py` checks Documents toolbar/sidebar geometry, TXT writing-surface geometry and EPUB reader/navigation geometry in Chromium.
+- The normal browser gate now contains 19 regression scripts.

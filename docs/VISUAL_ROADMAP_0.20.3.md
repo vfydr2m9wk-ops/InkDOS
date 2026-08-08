@@ -11,9 +11,9 @@
 - Home/launcher hierarchy and responsive cards.
 - Shared start-surface, focus, pressed and coarse-pointer rules.
 
-## Phase 2
+## Phase 2 — v0.20.3.1: content workspaces
 
-Documents, TXT and EPUB consistency: toolbar density, empty states, title editing, reader/editor surfaces and narrow-layout refinement.
+Completed: Documents, TXT and EPUB consistency for toolbar density, empty states, title editing, reader/editor surfaces and narrow-layout refinement. The implementation is a bounded last-loaded presentation layer; data paths remain frozen.
 
 ## Phase 3
 
