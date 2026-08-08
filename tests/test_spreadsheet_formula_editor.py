@@ -13,6 +13,7 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
     def test_required_assets_exist(self):
         for relative in (
             "apps/spreadsheets/formula-model.js",
+            "apps/spreadsheets/formula-session.js",
             "apps/spreadsheets/formula-editor.js",
             "apps/spreadsheets/formula-editor.css",
             "apps/spreadsheets/formula-reference.js",
@@ -23,15 +24,16 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
 
     def test_entry_page_has_no_visible_formula_help_or_overlay(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        self.assertIn("formula-editor.js?v=0.20.2.20", html)
-        self.assertIn("formula-reference.js?v=0.20.2.20", html)
+        self.assertIn("formula-editor.js?v=0.20.2.21", html)
+        self.assertIn("formula-reference.js?v=0.20.2.21", html)
         self.assertIn('id="formulaHint" hidden', html)
         self.assertNotIn('id="cellFormulaEditor"', html)
 
     def test_session_uses_the_real_cell_and_preserves_drafts(self):
         runtime = (ROOT / "apps/spreadsheets/formula-editor.js").read_text(encoding="utf-8")
         for marker in (
-            "const drafts = new Map()",
+            "FormulaSession.createSession({ clamp })",
+            "const drafts = session.drafts",
             "cell.contentEditable = 'true'",
             "formula-draft-editing",
             "Formula draft preserved",

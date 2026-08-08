@@ -22,7 +22,7 @@ def inject(page,workspace):
     elif workspace=='spreadsheets':
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-reference.css'))
         page.add_style_tag(path=str(ROOT/'apps/spreadsheets/formula-editor.css'))
-        scripts=('shared/office-runtime.js','shared/file-lifecycle.js','shared/file-router.js','shared/formula-engine.js','shared/vendor/jszip.min.js','apps/spreadsheets/xls-biff8-engine.js','apps/spreadsheets/xlsx-engine.js','shared/office-shell.js','apps/spreadsheets/app.js','apps/spreadsheets/formula-model.js','apps/spreadsheets/formula-reference.js','apps/spreadsheets/formula-editor.js')
+        scripts=('shared/office-runtime.js','shared/file-lifecycle.js','shared/file-router.js','shared/formula-engine.js','shared/vendor/jszip.min.js','apps/spreadsheets/xls-biff8-engine.js','apps/spreadsheets/xlsx-engine.js','shared/office-shell.js','apps/spreadsheets/app.js','apps/spreadsheets/formula-model.js','apps/spreadsheets/formula-session.js','apps/spreadsheets/formula-reference.js','apps/spreadsheets/formula-editor.js')
     else:
         scripts=()
     for script in scripts: page.add_script_tag(path=str(ROOT/script))

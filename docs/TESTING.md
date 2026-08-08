@@ -1,8 +1,12 @@
-# Testing guide — InkDesk v0.20.2.20
+## v0.20.2.21 formula lifecycle gate
 
-## v0.20.2.20 Spreadsheet formula model decomposition
+The package must pass the complete Python suite, architecture/source checks, checksum verification and all 17 Chromium scripts. Additional tests exercise the DOM-free formula-session lifecycle: start, normalized update, suspend, resume, commit cleanup and cancel cleanup.
 
-The full release gate now also requires the extracted formula model to load before the reference/editor controllers, remain below the normal source ceiling, preserve the public `InkDeskFormulaEditor` helper API and pass deterministic pure-function edge cases. The existing 17 Chromium regressions remain the behavioral gate; no new visible spreadsheet behavior is claimed.
+# Testing guide — InkDesk v0.20.2.21
+
+## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
+
+The release gate requires `formula-model.js` then `formula-session.js` to load before the reference/editor controllers. The DOM-free lifecycle suite covers create/update/suspend/resume/commit/cancel semantics, while the existing formula-model tests continue to protect syntax helpers and the 17 Chromium regressions remain the behavioral gate. No new visible Spreadsheet behavior is claimed.
 
 ## v0.20.2.17 Documents ruler interaction decomposition
 
@@ -44,7 +48,7 @@ replacement.
 ## Current evidence
 
 - Architecture guardrails now also retire `shared/office-shell.js` from inherited debt: the shell is 315 physical lines after document-session behavior moved to `shared/ui/document-session-controller.js`; both files are below the normal 500-line ceiling.
-- The Python suite contains 271 tests after the Documents ruler-interaction boundary regression was added. The reconstructed local tree may retain the checksum-manifest hold because hosted-only publication/workflow files are not byte-identical locally; the hosted repository remains the authoritative checksum gate.
+- The Python suite contains 287 tests after the Spreadsheet formula-session lifecycle boundary was added. The reconstructed local tree may retain the checksum-manifest hold because hosted-only publication/workflow files are not byte-identical locally; the hosted repository remains the authoritative checksum gate.
 - `revalidate_v0201_consistency.py` and the manual-script harnesses load both state controllers plus all three UI controllers before `app.js`.
 - `revalidate_pptx_three_eras.py` passes 18/18 compatibility and round-trip checks.
 - Cross-workspace isolation and transactional-open browser regressions pass with zero Presentations page errors.

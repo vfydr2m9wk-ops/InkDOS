@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "inkdesk",
   "name": "InkDesk",
-  "version": "0.20.2.20",
+  "version": "0.20.2.21",
   "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -73,7 +73,7 @@
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
     "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "0.20.2.20"
+    "nextPatch": "0.20.2.21"
   },
   "capabilities": {
     "documents": [
@@ -244,7 +244,7 @@
       },
       "originMilestone": "0.19.4.7",
       "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.2.20"
+      "architectureRelease": "0.20.2.21"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -333,7 +333,8 @@
     "remainderFunction": "MOD",
     "documentation": "docs/SPREADSHEET_FORMULA_SESSION.md",
     "originMilestone": "0.19.4.10",
-    "model": "apps/spreadsheets/formula-model.js"
+    "model": "apps/spreadsheets/formula-model.js",
+    "session": "apps/spreadsheets/formula-session.js"
   },
   "updateWorkflowObservability": {
     "schemaVersion": 1,
@@ -498,9 +499,9 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.2.20",
+    "version": "0.20.2.21",
     "channel": "beta",
-    "name": "Spreadsheet Formula Model Decomposition",
+    "name": "Spreadsheet Formula Session Lifecycle Decomposition",
     "date": "2026-08-07",
     "consolidated": true,
     "sourceDevelopmentLine": "0.19.4",

@@ -165,3 +165,10 @@ keyboard behavior and integration with the reference controller. Its existing
 This is intentionally the low-risk first Spreadsheet cut: pure deterministic
 logic is independently testable before the remaining stateful editor session is
 split. No cell-editing, formula, selection, Save or visual behavior changes.
+
+
+### v0.20.2.21 — Spreadsheet formula session lifecycle decomposition
+
+Persistent formula draft state moves from `formula-editor.js` to `apps/spreadsheets/formula-session.js`. The new module owns draft storage and the start/update/suspend/resume/commit/cancel state transitions without depending on the DOM. The editor remains responsible for caret/DOM synchronization, suggestions, keyboard routing and reference-controller integration.
+
+This is a stability-driven cut rather than a line-count exercise: formula drafts can now be regression-tested as deterministic state transitions before the remaining suggestion/interaction UI is considered for a later bounded extraction.

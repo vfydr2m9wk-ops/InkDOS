@@ -1,0 +1,169 @@
+(function (global, factory) {
+  'use strict';
+
+  const api = factory();
+  global.InkDeskSpreadsheetFormulaSession = api;
+  if (typeof module === 'object' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+  'use strict';
+
+  const VERSION = '0.20.2.21';
+
+  function fallbackClamp(value, minimum, maximum) {
+    return Math.max(
+      Number(minimum) || 0,
+      Math.min(Number(maximum) || 0, Number(value) || 0)
+    );
+  }
+
+  function normalizeDraft(value) {
+    return String(value ?? '').replace(/[\r\n]+/g, '');
+  }
+
+  function createSession(options) {
+    const settings = options || {};
+    const clamp = typeof settings.clamp === 'function' ? settings.clamp : fallbackClamp;
+    const drafts = new Map();
+    const state = {
+      active: false,
+      cell: null,
+      targetReference: '',
+      targetKey: '',
+      value: '',
+      caret: 0,
+      originalDisplay: '',
+      originalFormulaValue: ''
+    };
+
+    function snapshot() {
+      return Object.freeze({
+        active: state.active,
+        cell: state.cell,
+        targetReference: state.targetReference,
+        targetKey: state.targetKey,
+        value: state.value,
+        caret: state.caret,
+        originalDisplay: state.originalDisplay,
+        originalFormulaValue: state.originalFormulaValue
+      });
+    }
+
+    function rememberDraft() {
+      if (!state.targetKey) return null;
+      const draft = {
+        value: state.value,
+        caret: state.caret,
+        reference: state.targetReference
+      };
+      drafts.set(state.targetKey, draft);
+      return draft;
+    }
+
+    function savedFor(key) {
+      return drafts.get(String(key || '')) || null;
+    }
+
+    function start(input) {
+      const value = input || {};
+      if (!value.cell) return null;
+      const reference = String(value.reference || '').toUpperCase();
+      const key = String(value.key || reference);
+      const saved = savedFor(key);
+      const initial = saved ? saved.value : normalizeDraft(value.value);
+      const position = saved
+        ? saved.caret
+        : clamp(value.caret ?? initial.length, 0, initial.length);
+
+      state.active = true;
+      state.cell = value.cell;
+      state.targetReference = reference;
+      state.targetKey = key;
+      state.value = initial;
+      state.caret = position;
+      state.originalDisplay = String(value.originalDisplay ?? '');
+      state.originalFormulaValue = String(value.originalFormulaValue ?? '');
+      rememberDraft();
+
+      return Object.freeze({
+        reference,
+        key,
+        value: initial,
+        caret: position,
+        resumed: Boolean(saved)
+      });
+    }
+
+    function update(value, caret) {
+      state.value = normalizeDraft(value);
+      state.caret = clamp(caret, 0, state.value.length);
+      rememberDraft();
+      return snapshot();
+    }
+
+    function clearTarget() {
+      state.active = false;
+      state.cell = null;
+      state.targetReference = '';
+      state.targetKey = '';
+    }
+
+    function suspend() {
+      if (!state.active) return null;
+      rememberDraft();
+      const current = snapshot();
+      clearTarget();
+      return current;
+    }
+
+    function clearActive() {
+      const current = snapshot();
+      clearTarget();
+      return current;
+    }
+
+    function prepareCommit(balanceFormula) {
+      if (!state.active) return null;
+      const balance = typeof balanceFormula === 'function'
+        ? balanceFormula
+        : function (value) { return String(value || ''); };
+      const balanced = balance(state.value);
+      state.value = balanced;
+      state.caret = balanced.length;
+      drafts.delete(state.targetKey);
+      return snapshot();
+    }
+
+    function prepareCancel() {
+      if (!state.active) return null;
+      drafts.delete(state.targetKey);
+      return snapshot();
+    }
+
+    function removeDraft(key) {
+      return drafts.delete(String(key || ''));
+    }
+
+    return Object.freeze({
+      version: VERSION,
+      drafts,
+      state,
+      normalizeDraft,
+      rememberDraft,
+      savedFor,
+      start,
+      update,
+      suspend,
+      clearActive,
+      prepareCommit,
+      prepareCancel,
+      removeDraft,
+      snapshot
+    });
+  }
+
+  return Object.freeze({
+    version: VERSION,
+    normalizeDraft,
+    createSession
+  });
+});

@@ -99,7 +99,7 @@
   }
 
   global.InkDeskPresentationsNotes = Object.freeze({
-    version: '0.20.2.20',
+    version: '0.20.2.21',
     create(options) {
       return new PresentationNotesController(options);
     },

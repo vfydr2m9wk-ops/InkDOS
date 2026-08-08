@@ -12,11 +12,13 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
     def test_model_is_loaded_before_formula_interaction_controllers(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        model = 'formula-model.js?v=0.20.2.20'
-        reference = 'formula-reference.js?v=0.20.2.20'
-        editor = 'formula-editor.js?v=0.20.2.20'
+        model = 'formula-model.js?v=0.20.2.21'
+        session = 'formula-session.js?v=0.20.2.21'
+        reference = 'formula-reference.js?v=0.20.2.21'
+        editor = 'formula-editor.js?v=0.20.2.21'
         self.assertIn(model, html)
-        self.assertLess(html.index(model), html.index(reference))
+        self.assertLess(html.index(model), html.index(session))
+        self.assertLess(html.index(session), html.index(reference))
         self.assertLess(html.index(model), html.index(editor))
 
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -44,9 +46,9 @@ class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
         editor_lines = len((ROOT / "apps/spreadsheets/formula-editor.js").read_text(encoding="utf-8").splitlines())
         model_lines = len((ROOT / "apps/spreadsheets/formula-model.js").read_text(encoding="utf-8").splitlines())
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
-        self.assertEqual(editor_lines, 616)
+        self.assertLess(editor_lines, 616)
         self.assertLessEqual(model_lines, policy["extensions"][".js"]["newFileMaxLines"])
-        self.assertEqual(policy["grandfatheredDebt"]["apps/spreadsheets/formula-editor.js"]["maxLines"], 616)
+        self.assertEqual(policy["grandfatheredDebt"]["apps/spreadsheets/formula-editor.js"]["maxLines"], editor_lines)
         self.assertNotIn("apps/spreadsheets/formula-model.js", policy["grandfatheredDebt"])
 
     def test_formula_model_edge_cases_are_deterministic(self):
@@ -55,7 +57,7 @@ class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 const api = require('./apps/spreadsheets/formula-model.js');
-if (!api || api.version !== '0.20.2.20') process.exit(10);
+if (!api || api.version !== '0.20.2.21') process.exit(10);
 if (api.encodeColumn(0) !== 'A' || api.encodeColumn(25) !== 'Z' || api.encodeColumn(26) !== 'AA') process.exit(11);
 if (api.parenthesisDepth('=IF(A1="(",SUM(B1:B2),0') !== 1) process.exit(12);
 if (api.balanceFormula('=SUM(A1:A10') !== '=SUM(A1:A10)') process.exit(13);

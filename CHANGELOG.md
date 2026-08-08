@@ -1,3 +1,10 @@
+## 0.20.2.21 — Spreadsheet Formula Session Lifecycle Decomposition (2026-08-07)
+
+- Moved persistent formula draft storage and lifecycle transitions into `apps/spreadsheets/formula-session.js`.
+- Added DOM-free tests for start, update, suspend, resume, commit cleanup and cancel cleanup.
+- Reduced the `formula-editor.js` architecture ratchet from 616 to 586 lines.
+- Preserved visible Spreadsheet behavior and the existing 17 Chromium regression scenarios.
+
 ## 0.20.2.20 — Spreadsheet Formula Model Decomposition (2026-08-07)
 
 - Moved deterministic Spreadsheet formula-session helpers and function metadata into `apps/spreadsheets/formula-model.js`.

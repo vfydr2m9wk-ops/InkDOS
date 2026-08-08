@@ -59,3 +59,10 @@ keyboard handling and reference-controller integration.
 delegating to the model, so callers do not need to change. This boundary is
 intended to make formula behavior independently testable before any later
 stateful session extraction.
+
+
+## v0.20.2.21 lifecycle boundary
+
+Persistent draft storage and state transitions now live in `formula-session.js`. The module owns the draft Map and the active-session fields required to start, update, suspend, resume, prepare a commit, prepare a cancellation and clear the active target. `formula-editor.js` retains DOM/caret synchronization, suggestion UI, keyboard event routing and reference-controller integration.
+
+The session module has no DOM dependency and is tested directly in Node. A suspended draft is keyed by worksheet and cell reference, resuming the same key restores its saved value/caret, commit removes the saved draft, and cancellation exposes the original display value before clearing the active target.

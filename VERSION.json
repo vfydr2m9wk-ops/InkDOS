@@ -1,9 +1,9 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.2.20",
+  "version": "0.20.2.21",
   "releaseChannel": "beta",
-  "releaseName": "Spreadsheet Formula Model Decomposition",
+  "releaseName": "Spreadsheet Formula Session Lifecycle Decomposition",
   "date": "2026-08-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",

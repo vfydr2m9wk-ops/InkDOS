@@ -1,11 +1,10 @@
-## v0.20.2.20 Spreadsheet formula model decomposition
+## v0.20.2.21 Spreadsheet formula session lifecycle decomposition
 
-The v0.20.2.20 gate keeps the complete suite and the existing 17 Chromium scripts, and adds a deterministic model boundary for Spreadsheet formula syntax. The new tests require `formula-model.js` to load before formula reference/editor interaction, remain below the normal 500-line ceiling, preserve the existing `InkDeskFormulaEditor` helper surface, and pass edge cases for quoted parentheses, formula balancing, suggestion insertion and reference-selection predicates.
+The v0.20.2.21 gate keeps the complete suite and the existing 17 Chromium scripts, and adds a DOM-free state-transition suite for persistent formula drafts. It verifies create/update/suspend/resume/commit/cancel semantics, draft cleanup, formula-session load order and offline precache registration.
 
-Local reconstruction result: **280/281 unit/package tests pass**; the only local hold is the authoritative full checksum test because the three publication-vendored PDF.js files are not present byte-for-byte in this reconstruction. Spreadsheet-specific Chromium regressions for XLSX, XLS zero display and formula-standby selection pass; the hosted workflow remains the final 17/17 gate.
+`formula-editor.js` must delegate lifecycle ownership to `formula-session.js` while preserving the public helper API and browser behavior. The hosted workflow remains the final checksum and 17/17 Chromium gate.
 
-
-The hosted package gate must preserve the complete behavior suite and verify that workspace module detection, session preference resolution and layout-ready notification are owned by `shared/ui/workspace-panel-controller.js`, while `shared/ui/workspace-layout.js` stays below 500 lines and retains its compatibility delegates. Expected unit/package count: 271. Expected Chromium regression count: 17/17.
+Hosted expected unit/package count: **287**. Expected Chromium regression count: **17/17**.
 
 ## v0.20.2.14 shared document-session decomposition
 

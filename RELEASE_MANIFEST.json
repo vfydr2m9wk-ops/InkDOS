@@ -1,7 +1,7 @@
 {
   "project": "InkDesk",
-  "version": "0.20.2.20",
-  "releaseName": "Spreadsheet Formula Model Decomposition",
+  "version": "0.20.2.21",
+  "releaseName": "Spreadsheet Formula Session Lifecycle Decomposition",
   "releaseType": "Beta Architecture Refactor Patch",
   "releaseDate": "2026-08-07",
   "entryPoints": {
@@ -37,7 +37,7 @@
   "license": "MIT for original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
-    "structuralUnitTests": "281 configured tests; local reconstruction 280/281 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
+    "structuralUnitTests": "287 configured tests; local reconstruction 286/287 because hosted-only PDF.js checksum bytes are absent; hosted main is authoritative",
     "strictPublicationValidation": "required for every incremental patch",
     "nativeSafari": false,
     "nativeFirefox": false,
@@ -52,7 +52,7 @@
     "functionalAcceptanceInventory": "212 visible controls retained; no new behavior claim introduced by this refactor-only patch",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: pure Spreadsheet formula syntax/model logic is isolated in apps/spreadsheets/formula-model.js; formula-editor.js ratchet shrinks from 756 to 616 lines while retaining stateful draft/DOM interaction",
+    "architectureGuardrails": "required: Spreadsheet formula syntax/model logic remains isolated in formula-model.js and persistent draft lifecycle is isolated in formula-session.js; formula-editor.js ratchet shrinks from 616 to 586 lines while retaining DOM/caret and interaction ownership",
     "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point",
     "pdfRenderingModularization": "page virtualization, canvas/text/AcroForm rendering, render-window disposal and resize rerender remain isolated in apps/pdf/viewer/page-renderer.js",
     "pdfNavigationModularization": "page navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state are isolated in apps/pdf/viewer/navigation-controller.js",
@@ -64,7 +64,8 @@
     "documentsRulerDragModularization": "ruler pointerdown/move/up/cancel lifecycle, pointer capture, drag-state transitions and indentation application orchestration live in shared/ui/document-ruler-drag-controller.js; workspace-layout.js retains ruler DOM synchronization and observers",
     "workspaceLayoutContractConsolidation": "workspace-layout.js delegates shared workspace contract helpers to workspace-panel-controller.js while preserving InkDeskWorkspaceLayout moduleId/resolvedPreference/defaults compatibility and Documents ruler behavior",
     "txtInteractionModularization": "Undo/Redo snapshot history and find-bar behavior are isolated in apps/txt/history-controller.js and apps/txt/find-controller.js while app.js retains TXT file lifecycle, encoding, save, counts and display controls",
-    "spreadsheetFormulaModelModularization": "function catalog, cell/reference encoding, parenthesis tracking, formula balancing, suggestion matching/insertion and reference/commit predicates are isolated in apps/spreadsheets/formula-model.js; InkDeskFormulaEditor helper API remains compatible"
+    "spreadsheetFormulaModelModularization": "function catalog, cell/reference encoding, parenthesis tracking, formula balancing, suggestion matching/insertion and reference/commit predicates are isolated in apps/spreadsheets/formula-model.js; InkDeskFormulaEditor helper API remains compatible",
+    "spreadsheetFormulaSessionModularization": "persistent draft Map plus start/update/suspend/resume/commit-preparation/cancel-preparation transitions are isolated in apps/spreadsheets/formula-session.js and covered by DOM-free lifecycle tests"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json"

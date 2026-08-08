@@ -9,9 +9,14 @@
       ? require('./formula-model.js')
       : null
   );
-  if (!FormulaModel) {
+  const FormulaSession = global.InkDeskSpreadsheetFormulaSession || (
+    typeof module === 'object' && module.exports && typeof require === 'function'
+      ? require('./formula-session.js')
+      : null
+  );
+  if (!FormulaModel || !FormulaSession) {
     if (global.console && typeof global.console.error === 'function') {
-      global.console.error('InkDesk spreadsheet formula model is unavailable.');
+      global.console.error('InkDesk spreadsheet formula model/session is unavailable.');
     }
     return;
   }
@@ -93,22 +98,12 @@
       keydown: formula.onkeydown
     };
 
-    const drafts = new Map();
-    const state = {
-      active: false,
-      cell: null,
-      targetReference: '',
-      targetKey: '',
-      value: '',
-      caret: 0,
-      originalDisplay: '',
-      originalFormulaValue: '',
-      suggestionItems: [],
-      suggestionIndex: 0,
-      suggestionContext: null,
-      syncing: false,
-      resumeTimer: 0
-    };
+    const session = FormulaSession.createSession({ clamp });
+    const drafts = session.drafts;
+    const state = session.state;
+    const suggestionState = { items: [], index: 0, context: null };
+    let syncing = false;
+    let resumeTimer = 0;
 
     function activeSheetName() {
       return (
@@ -133,9 +128,9 @@
     function closeSuggestions() {
       suggestions.hidden = true;
       suggestions.replaceChildren();
-      state.suggestionItems = [];
-      state.suggestionIndex = 0;
-      state.suggestionContext = null;
+      suggestionState.items = [];
+      suggestionState.index = 0;
+      suggestionState.context = null;
     }
 
     function positionSuggestions() {
@@ -156,16 +151,16 @@
         closeSuggestions();
         return;
       }
-      state.suggestionContext = context;
-      state.suggestionItems = items;
-      state.suggestionIndex = clamp(state.suggestionIndex, 0, items.length - 1);
+      suggestionState.context = context;
+      suggestionState.items = items;
+      suggestionState.index = clamp(suggestionState.index, 0, items.length - 1);
       suggestions.replaceChildren();
       items.forEach(function (item, index) {
         const button = doc.createElement('button');
         button.type = 'button';
-        button.className = 'formula-suggestion' + (index === state.suggestionIndex ? ' active' : '');
+        button.className = 'formula-suggestion' + (index === suggestionState.index ? ' active' : '');
         button.setAttribute('role', 'option');
-        button.setAttribute('aria-selected', index === state.suggestionIndex ? 'true' : 'false');
+        button.setAttribute('aria-selected', index === suggestionState.index ? 'true' : 'false');
         const name = doc.createElement('strong');
         name.textContent = item[0];
         const detail = doc.createElement('span');
@@ -184,12 +179,7 @@
     }
 
     function rememberDraft() {
-      if (!state.targetKey) return;
-      drafts.set(state.targetKey, {
-        value: state.value,
-        caret: state.caret,
-        reference: state.targetReference
-      });
+      session.rememberDraft();
     }
 
     function updateCellText(value, caret) {
@@ -201,23 +191,22 @@
     }
 
     function mirrorFormula(value, caret, dispatch) {
-      state.syncing = true;
+      syncing = true;
       formula.value = value;
       formula.setSelectionRange(caret, caret);
       if (dispatch) {
         formula.dispatchEvent(new global.Event('input', { bubbles: true, cancelable: false }));
       }
-      state.syncing = false;
+      syncing = false;
     }
 
     function setDraftValue(value, caret, options) {
       const settings = options || {};
-      state.value = String(value || '').replace(/[\r\n]+/g, '');
-      state.caret = clamp(caret, 0, state.value.length);
+      session.update(value, caret);
       updateCellText(state.value, state.caret);
       mirrorFormula(state.value, state.caret, settings.dispatch === true);
       rememberDraft();
-      state.suggestionIndex = 0;
+      suggestionState.index = 0;
       if (settings.suggestions === false) closeSuggestions();
       else renderSuggestions();
       doc.dispatchEvent(new global.CustomEvent('inkdesk:formula-session-change', {
@@ -244,28 +233,25 @@
       if (!cell) return false;
       if (state.active && state.cell !== cell) suspend();
       const reference = cellReference(cell) || String(nameBox.value || '').toUpperCase();
-      const key = keyFor(reference);
-      const saved = drafts.get(key);
-      const initial = saved ? saved.value : String(value ?? '');
-      const position = saved ? saved.caret : clamp(caret ?? initial.length, 0, initial.length);
-      state.active = true;
-      state.cell = cell;
-      state.targetReference = reference;
-      state.targetKey = key;
-      state.value = initial;
-      state.caret = position;
-      state.originalDisplay = String(cell.textContent || '');
-      state.originalFormulaValue = String(formula.value || '');
+      const opened = session.start({
+        cell,
+        reference,
+        key: keyFor(reference),
+        value,
+        caret,
+        originalDisplay: cell.textContent,
+        originalFormulaValue: formula.value
+      });
+      if (!opened) return false;
       doc.body.dataset.formulaEditorMode = 'cell-session';
       cell.contentEditable = 'true';
       cell.spellcheck = false;
       cell.classList.add(DRAFT_CLASS, SAVED_DRAFT_CLASS);
-      cell.dataset.formulaDraft = initial;
-      cell.textContent = initial;
-      mirrorFormula(initial, position, false);
+      cell.dataset.formulaDraft = opened.value;
+      cell.textContent = opened.value;
+      mirrorFormula(opened.value, opened.caret, false);
       cell.focus({ preventScroll: true });
-      setCaret(cell, position);
-      rememberDraft();
+      setCaret(cell, opened.caret);
       renderSuggestions();
       beginReferenceMode();
       setStatus('Draft ' + reference + ' is preserved. Type in the cell; Tab accepts a function and Enter confirms.');
@@ -273,20 +259,16 @@
     }
 
     function suspend() {
-      if (!state.active) return;
-      rememberDraft();
+      const suspended = session.suspend();
+      if (!suspended) return;
       closeSuggestions();
-      if (state.cell) {
-        state.cell.contentEditable = 'false';
-        state.cell.classList.remove(DRAFT_CLASS);
-        state.cell.classList.add(SAVED_DRAFT_CLASS);
-        state.cell.dataset.formulaDraft = state.value;
-        state.cell.textContent = state.value;
+      if (suspended.cell) {
+        suspended.cell.contentEditable = 'false';
+        suspended.cell.classList.remove(DRAFT_CLASS);
+        suspended.cell.classList.add(SAVED_DRAFT_CLASS);
+        suspended.cell.dataset.formulaDraft = suspended.value;
+        suspended.cell.textContent = suspended.value;
       }
-      state.active = false;
-      state.cell = null;
-      state.targetReference = '';
-      state.targetKey = '';
       delete doc.body.dataset.formulaEditorMode;
       const controller = referenceController();
       if (controller && typeof controller.pause === 'function') controller.pause();
@@ -295,15 +277,12 @@
 
     function clearActiveState() {
       closeSuggestions();
-      if (state.cell) {
-        state.cell.contentEditable = 'false';
-        state.cell.classList.remove(DRAFT_CLASS, SAVED_DRAFT_CLASS);
-        delete state.cell.dataset.formulaDraft;
+      const cleared = session.clearActive();
+      if (cleared.cell) {
+        cleared.cell.contentEditable = 'false';
+        cleared.cell.classList.remove(DRAFT_CLASS, SAVED_DRAFT_CLASS);
+        delete cleared.cell.dataset.formulaDraft;
       }
-      state.active = false;
-      state.cell = null;
-      state.targetReference = '';
-      state.targetKey = '';
       delete doc.body.dataset.formulaEditorMode;
     }
 
@@ -319,18 +298,14 @@
     }
 
     function commit() {
-      if (!state.active) return false;
-      const targetKey = state.targetKey;
-      const balanced = balanceFormula(state.value);
-      state.value = balanced;
-      state.caret = balanced.length;
-      mirrorFormula(balanced, balanced.length, false);
-      if (state.cell) {
-        state.cell.contentEditable = 'false';
-        state.cell.classList.remove(DRAFT_CLASS);
+      const prepared = session.prepareCommit(balanceFormula);
+      if (!prepared) return false;
+      mirrorFormula(prepared.value, prepared.caret, false);
+      if (prepared.cell) {
+        prepared.cell.contentEditable = 'false';
+        prepared.cell.classList.remove(DRAFT_CLASS);
       }
       callCoreKeydown('Enter');
-      drafts.delete(targetKey);
       const controller = referenceController();
       if (controller && typeof controller.end === 'function') controller.end('Formula confirmed.');
       clearActiveState();
@@ -339,11 +314,9 @@
     }
 
     function cancel() {
-      if (!state.active) return;
-      const targetKey = state.targetKey;
-      const original = state.originalDisplay;
-      drafts.delete(targetKey);
-      if (state.cell) state.cell.textContent = original;
+      const prepared = session.prepareCancel();
+      if (!prepared) return;
+      if (prepared.cell) prepared.cell.textContent = prepared.originalDisplay;
       callCoreKeydown('Escape');
       const controller = referenceController();
       if (controller && typeof controller.end === 'function') controller.end('');
@@ -352,8 +325,8 @@
     }
 
     function acceptSuggestion(index) {
-      const context = state.suggestionContext;
-      const item = state.suggestionItems[index];
+      const context = suggestionState.context;
+      const item = suggestionState.items[index];
       if (!context || !item || !state.active) return false;
       const result = applyFunctionSuggestion(
         state.value,
@@ -375,16 +348,16 @@
         event.preventDefault();
         event.stopImmediatePropagation();
         const direction = event.key === 'ArrowDown' ? 1 : -1;
-        state.suggestionIndex = (
-          state.suggestionIndex + direction + state.suggestionItems.length
-        ) % state.suggestionItems.length;
+        suggestionState.index = (
+          suggestionState.index + direction + suggestionState.items.length
+        ) % suggestionState.items.length;
         renderSuggestions();
         return;
       }
-      if (event.key === 'Tab' && !suggestions.hidden && state.suggestionItems.length) {
+      if (event.key === 'Tab' && !suggestions.hidden && suggestionState.items.length) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        acceptSuggestion(state.suggestionIndex);
+        acceptSuggestion(suggestionState.index);
         return;
       }
       if (event.key === 'Enter' && !event.shiftKey) {
@@ -413,10 +386,10 @@
     }
 
     function resumeDraftAfterCoreSelection(cell) {
-      clearTimeout(state.resumeTimer);
-      state.resumeTimer = global.setTimeout(function () {
+      clearTimeout(resumeTimer);
+      resumeTimer = global.setTimeout(function () {
         const reference = cellReference(cell);
-        const saved = drafts.get(keyFor(reference));
+        const saved = session.savedFor(keyFor(reference));
         if (saved) start(cell, saved.value, saved.caret);
       }, 0);
     }
@@ -425,7 +398,7 @@
       grid.querySelectorAll('.cell').forEach(function (cell) {
         if (state.active && cell === state.cell) return;
         const reference = cellReference(cell);
-        const saved = drafts.get(keyFor(reference));
+        const saved = session.savedFor(keyFor(reference));
         if (saved) {
           cell.textContent = saved.value;
           cell.dataset.formulaDraft = saved.value;
@@ -441,11 +414,9 @@
       if (!state.active || event.target !== state.cell) return;
       const value = String(state.cell.innerText || '').replace(/[\r\n]+/g, '');
       const caret = caretOffset(state.cell);
-      state.value = value;
-      state.caret = caret;
-      mirrorFormula(value, caret, false);
-      rememberDraft();
-      state.suggestionIndex = 0;
+      session.update(value, caret);
+      mirrorFormula(state.value, state.caret, false);
+      suggestionState.index = 0;
       renderSuggestions();
       beginReferenceMode();
     }, true);
@@ -458,7 +429,7 @@
       const cell = event.target?.closest?.('.cell');
       if (!cell) return;
       const reference = cellReference(cell);
-      const saved = drafts.get(keyFor(reference));
+      const saved = session.savedFor(keyFor(reference));
       if (state.active && cell !== state.cell) {
         if (formulaCanSelectReference(state.value, state.caret)) return;
         if (formulaIsComplete(state.value)) commit();
@@ -481,7 +452,7 @@
     };
 
     formula.oninput = function () {
-      if (state.syncing) return;
+      if (syncing) return;
       if (!state.active) {
         if (String(formula.value || '').startsWith('=')) {
           const cell = selectedCell();
@@ -492,11 +463,9 @@
         return;
       }
       const caret = formula.selectionStart ?? formula.value.length;
-      state.value = formula.value;
-      state.caret = caret;
+      session.update(formula.value, caret);
       updateCellText(state.value, state.caret);
-      rememberDraft();
-      state.suggestionIndex = 0;
+      suggestionState.index = 0;
       renderSuggestions();
       beginReferenceMode();
     };
@@ -522,7 +491,7 @@
       }
       if (event.key === 'F2') {
         const reference = cellReference(cell);
-        const saved = drafts.get(keyFor(reference));
+        const saved = session.savedFor(keyFor(reference));
         const value = saved?.value || String(formula.value || '');
         if (saved || value.startsWith('=')) {
           event.preventDefault();
@@ -536,7 +505,7 @@
       const cell = event.target?.closest?.('.cell');
       if (!cell || !grid.contains(cell)) return;
       const reference = cellReference(cell);
-      const saved = drafts.get(keyFor(reference));
+      const saved = session.savedFor(keyFor(reference));
       const value = saved?.value || (cell.classList.contains('selected') ? String(formula.value || '') : '');
       if (!saved && !value.startsWith('=')) return;
       event.preventDefault();
@@ -556,6 +525,7 @@
     const controller = Object.freeze({
       version: VERSION,
       drafts,
+      session,
       isActive: function () { return state.active; },
       getValue: function () { return state.value; },
       getSelection: function () { return { start: state.caret, end: state.caret }; },
