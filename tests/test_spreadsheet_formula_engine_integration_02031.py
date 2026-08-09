@@ -20,9 +20,11 @@ class SpreadsheetFormulaEngineIntegration02031Tests(unittest.TestCase):
 
     def test_shared_engine_keeps_required_semantics(self):
         engine = (ROOT / "shared/formula-engine.js").read_text(encoding="utf-8")
-        self.assertIn("return'#DIV/0!'", engine)
+        self.assertIn("left='#DIV/0!'", engine)
         self.assertIn("current.type==='%'", engine)
         self.assertIn("current.type==='^'", engine)
+        self.assertIn("function errorValue(value)", engine)
+        self.assertIn("errorValue(left)||errorValue(right)", engine)
 
 
 if __name__ == "__main__":

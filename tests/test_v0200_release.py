@@ -56,7 +56,7 @@ class ConsolidatedReleaseTests(unittest.TestCase):
     def test_development_state_is_reset_for_patch_series(self):
         state = json.loads((ROOT / 'DEVELOPMENT_STATE.json').read_text())
         self.assertEqual(state['targetRelease'], '0.20.x')
-        self.assertEqual(state['appliedSequence'], 44)
+        self.assertEqual(state['appliedSequence'], 45)
         self.assertEqual(state['currentPackage'], '0.20.3.1')
 
     def test_complete_release_does_not_require_old_packages(self):

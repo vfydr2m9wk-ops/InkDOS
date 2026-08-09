@@ -143,6 +143,11 @@ def main() -> int:
             (2, 1): ("=2^3", {"8", "8.0"}),
             (3, 1): ("=10/0", {"#DIV/0!"}),
             (4, 1): ("=1+2*3", {"7", "7.0"}),
+            (6, 1): ("=10/0+1", {"#DIV/0!"}),
+            (7, 1): ("=(10/0)+1", {"#DIV/0!"}),
+            (8, 1): ("=10/(5-5)+2", {"#DIV/0!"}),
+            (9, 1): ("=1+10/0", {"#DIV/0!"}),
+            (10, 1): ("=2*(10/0)", {"#DIV/0!"}),
         }
         for (row, col), (formula, expected) in arithmetic_cases.items():
             page.click(f'.cell[data-r="{row}"][data-c="{col}"]')
@@ -188,6 +193,11 @@ def main() -> int:
             (3, 1): {"#DIV/0!"},
             (4, 1): {"7", "7.0"},
             (5, 1): {"10", "10.0"},
+            (6, 1): {"#DIV/0!"},
+            (7, 1): {"#DIV/0!"},
+            (8, 1): {"#DIV/0!"},
+            (9, 1): {"#DIV/0!"},
+            (10, 1): {"#DIV/0!"},
         }
         for (row, col), expected in reopened_arithmetic.items():
             display = reopened.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()

@@ -117,6 +117,13 @@ if (Math.abs(api.evaluateArithmetic('10%') - 0.1) > 1e-12) process.exit(10);
 if (Math.abs(api.evaluateArithmetic('200*10%') - 20) > 1e-12) process.exit(11);
 if (Math.abs(api.evaluateArithmetic('5%+5%') - 0.1) > 1e-12) process.exit(12);
 if (api.evaluateArithmetic('10/0') !== '#DIV/0!') process.exit(13);
+if (api.evaluateArithmetic('10/0+1') !== '#DIV/0!') process.exit(14);
+if (api.evaluateArithmetic('(10/0)+1') !== '#DIV/0!') process.exit(15);
+if (api.evaluateArithmetic('10/(5-5)+2') !== '#DIV/0!') process.exit(16);
+if (api.evaluateArithmetic('1+10/0') !== '#DIV/0!') process.exit(17);
+if (api.evaluateArithmetic('2*(10/0)') !== '#DIV/0!') process.exit(18);
+if (api.evaluateArithmetic('-(10/0)') !== '#DIV/0!') process.exit(19);
+if (api.evaluateArithmetic('X+1',{resolveIdentifier:()=> '#DIV/0!'}) !== '#DIV/0!') process.exit(20);
 """
         result = subprocess.run([node, "-e", script], cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

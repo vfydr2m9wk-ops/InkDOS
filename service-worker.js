@@ -1,5 +1,5 @@
 'use strict';
-// Update sequence 44: safe spreadsheet arithmetic engine integration.
+// Update sequence 45: spreadsheet arithmetic error propagation correction.
 const CACHE_NAME='inkdesk-shell-v0.20.3.1';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 44,
+  "appliedSequence": 45,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -225,6 +225,11 @@
       "sequence": 44,
       "packageLabel": "0.20.3.1",
       "description": "Spreadsheet safe formula-engine integration correction. Replaces the remaining dynamic Function-based arithmetic evaluation in the Spreadsheets runtime with the already-loaded shared InkDeskFormula.evaluateArithmetic parser, restoring supported spreadsheet semantics for postfix percentages, exponentiation, precedence, cell-reference arithmetic and division-by-zero as #DIV/0! while retaining sequence-43 #REF! propagation and worksheet deletion integrity. Browser harnesses that inject the spreadsheet runtime now load the shared formula engine in the same dependency order as the real workspace. Permanent regression coverage verifies safe-engine integration and arithmetic results before save, after save/reopen and after unrelated worksheet deletion. No UI, formatting, OOXML package behavior, Documents, Presentations, PDF, TXT, EPUB, Launcher, recovery, storage or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 45,
+      "packageLabel": "0.20.3.1",
+      "description": "Spreadsheet arithmetic error propagation correction. Ensures the shared safe formula engine treats spreadsheet error values as terminal arithmetic operands and carries #DIV/0! through surrounding unary, percentage, power, product, addition and subtraction operations instead of concatenating the error token or falling back to the original formula. Identifier resolution also preserves existing spreadsheet errors. Regression coverage verifies compound divide-by-zero expressions in the parser and browser save/reopen, while sequence-43 #REF! semantics and sequence-44 safe-engine integration remain unchanged. No UI, workbook-package, recovery, formatting, Documents, Presentations, PDF, TXT, EPUB, Launcher, storage or workflow behavior is intentionally changed."
     }
   ]
 }
