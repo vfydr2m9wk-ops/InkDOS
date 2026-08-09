@@ -1,5 +1,6 @@
 ## 1.0.0-beta.1 — 1.0 Beta 1 (2026-08-09)
 
+- Sequence 49 visual refinement: clarified Spreadsheet formula-bar hierarchy, grid/header selection states, worksheet-tab controls and compact status/zoom behavior without changing workbook data paths.
 - Consolidated the 0.20.2/0.20.3 stabilization train into the first feature-frozen 1.0 beta baseline.
 - Kept the six-workspace local-first architecture and existing editor feature set; no new editing feature is introduced by the version transition.
 - Removed the low-value generic Launcher `Open a supported file` handoff; files are opened through the explicit Open flow of the selected workspace.

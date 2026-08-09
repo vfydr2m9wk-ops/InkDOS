@@ -34,6 +34,7 @@ SCRIPTS = [
     "revalidate_content_workspaces_visual_02031.py",
     "revalidate_workspace_unification_02031.py",
     "revalidate_ui_correction_02031.py",
+    "revalidate_spreadsheet_visual_polish_beta1.py",
     "revalidate_spreadsheet_add_sheet_02031.py",
     "revalidate_format_fidelity_02031.py",
 ]

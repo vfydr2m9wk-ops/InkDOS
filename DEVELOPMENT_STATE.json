@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 48,
+  "appliedSequence": 49,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -245,6 +245,11 @@
       "sequence": 48,
       "packageLabel": "1.0.0-beta.1",
       "description": "InkDesk 1.0 beta release-integrity hardening. Synchronizes the public SBOM and app-manifest release identity from VERSION.json, removes obsolete Launcher-open and self-referential nextPatch metadata, updates the intended publication date, and prevents generated tests/browser/results artifacts from entering deterministic public release ZIPs. Adds permanent regression coverage for release metadata consistency and builder exclusion. No editor runtime, parser/writer, formula, recovery, OOXML, PDF review/save, workspace UI, Launcher behavior, storage, or GitHub workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 49,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Spreadsheet visual refinement rebased on the authoritative 1.0.0-beta.1 sequence-48 main. Adds one last-loaded, spreadsheet-scoped presentation layer for formula-bar hierarchy, grid/header selection clarity, persistent Add/Delete worksheet controls, status/zoom density and compact touch layouts. Formula evaluation, worksheet package integrity, recovery, history, XLS/BIFF8, XLSX preservation, launcher behavior and workflows are unchanged."
     }
   ]
 }

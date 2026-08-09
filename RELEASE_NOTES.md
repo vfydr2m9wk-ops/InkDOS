@@ -37,6 +37,13 @@ guard only.
 - Generated `tests/browser/results/` artifacts are never included in release ZIPs.
 - Release archives remain deterministic when built repeatedly from the same clean tree.
 
+## Beta UI refinement — sequence 49
+
+- Spreadsheet formula editing now has a clearer address / `fx` / expression hierarchy.
+- Grid headers are quieter while active cells, ranges and formatting state carry the green Spreadsheet accent more clearly.
+- Add and Delete worksheet controls remain available at the trailing edge when many sheet tabs are present.
+- Status/zoom and narrow-touch layouts are tightened without changing formula, recovery, history or XLS/XLSX package behavior.
+
 ## Release gate
 
 Before publication, the repository must pass checksum verification, repository

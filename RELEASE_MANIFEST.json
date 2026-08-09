@@ -44,7 +44,7 @@
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "23 configured Chromium regressions; optional Firefox/WebKit matrix remains available; native Safari/iPadOS requires physical-device validation",
+    "browserRegressionScripts": "24 configured Chromium regressions; optional Firefox/WebKit matrix remains available; native Safari/iPadOS requires physical-device validation",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "extended: save -> unverified download retains dirty/recovery -> continue editing -> restore -> re-export fidelity",
     "browserMatrixRunner": "chromium, firefox, webkit",
@@ -73,7 +73,8 @@
     "documentsReplacementSafety": "dirty Documents Open requires explicit confirmation; cancellation and parse failure preserve the active unsaved DOCX",
     "crossWorkspaceExportSafety": "Documents and Presentations flush pending recovery before download dispatch and retain dirty/recovery state; TXT uses the shared download-requested-unverified lifecycle; Spreadsheet strict policy remains unchanged",
     "visualFoundation": "shared/ui/visual-foundation-v0203.css is loaded last by Home and all six workspaces; runtime/editor logic remains unchanged apart from release identity/cache metadata",
-    "contentWorkspacesVisual": "shared/ui/content-workspaces-v02031.css is loaded after the v0.20.3.0 visual foundation and targets only Documents, TXT and EPUB; editor/runtime logic remains unchanged apart from release/cache metadata"
+    "contentWorkspacesVisual": "shared/ui/content-workspaces-v02031.css is loaded after the v0.20.3.0 visual foundation and targets only Documents, TXT and EPUB; editor/runtime logic remains unchanged apart from release/cache metadata",
+    "spreadsheetVisualRefinement": "last-loaded spreadsheet-only visual overlay refines formula-bar hierarchy, grid/header selection emphasis, persistent worksheet Add/Delete controls and compact status/zoom treatment without changing formula, recovery, history or package-preserving XLS/XLSX behavior"
   },
   "publicationVendorBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json",

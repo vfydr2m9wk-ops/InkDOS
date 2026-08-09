@@ -1,0 +1,164 @@
+/* InkDesk 1.0 Beta 1 — Spreadsheet visual refinement (sequence 49)
+ * Presentation-only overlay. Formula semantics, workbook model, history,
+ * recovery, XLS/XLSX package paths and transactional document state are not
+ * owned here. Loaded after workspace-unification-v02031.css.
+ */
+body.office-spreadsheets{
+  --sheet-control:color-mix(in srgb,var(--ink-surface-soft) 90%,var(--ink-surface));
+  --sheet-header:color-mix(in srgb,var(--ink-surface-soft) 82%,var(--ink-bg));
+  --sheet-grid-line:color-mix(in srgb,var(--ink-edge) 86%,transparent);
+  --sheet-selection-soft:color-mix(in srgb,var(--ink-accent) 9%,var(--ink-surface));
+  --sheet-selection-mid:color-mix(in srgb,var(--ink-accent) 18%,var(--ink-surface));
+}
+
+/* Formula bar: make address, function context and editable expression read as
+ * three deliberate controls instead of one legacy strip. */
+body.office-spreadsheets .formula-row{
+  height:40px!important;
+  min-height:40px!important;
+  gap:6px!important;
+  padding:4px 8px!important;
+  background:var(--ink-surface)!important;
+  border-bottom:1px solid var(--ink-edge)!important;
+  box-shadow:none!important;
+}
+body.office-spreadsheets #nameBox{
+  width:74px!important;
+  height:30px!important;
+  flex:0 0 74px!important;
+  border:1px solid var(--ink-edge)!important;
+  border-radius:7px!important;
+  background:var(--sheet-control)!important;
+  color:var(--ink-text)!important;
+  font-size:11.5px!important;
+  font-weight:700!important;
+  font-variant-numeric:tabular-nums;
+}
+body.office-spreadsheets .formula-row .fx{
+  width:28px!important;
+  height:28px!important;
+  flex:0 0 28px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:7px!important;
+  background:var(--sheet-selection-soft)!important;
+  color:var(--ink-accent)!important;
+  font:700 13px Georgia,"Times New Roman",serif!important;
+}
+body.office-spreadsheets .formula-editor{
+  min-width:120px!important;
+  height:30px!important;
+  display:flex!important;
+  align-items:center!important;
+  border:1px solid var(--ink-edge)!important;
+  border-radius:7px!important;
+  background:var(--ink-surface)!important;
+  box-shadow:0 1px 2px rgba(20,28,40,.025)!important;
+}
+body.office-spreadsheets .formula-editor:focus-within{
+  border-color:color-mix(in srgb,var(--ink-accent) 55%,var(--ink-edge))!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--ink-accent) 10%,transparent)!important;
+}
+body.office-spreadsheets #formulaInput{
+  height:28px!important;
+  min-height:28px!important;
+  min-width:0!important;
+  padding-inline:9px!important;
+  background:transparent!important;
+  font-family:var(--ink-ui-font)!important;
+  font-size:12px!important;
+}
+body.office-spreadsheets #addFormulaRangeBtn{
+  height:30px!important;
+  padding-inline:9px!important;
+  border:1px solid color-mix(in srgb,var(--ink-accent) 25%,var(--ink-edge))!important;
+  border-radius:7px!important;
+  background:var(--sheet-selection-soft)!important;
+  color:var(--ink-accent)!important;
+  font-size:11px!important;
+  font-weight:700!important;
+}
+
+/* Grid: headers recede; the active/range state carries the green identity. */
+body.office-spreadsheets :where(.corner,.col-header,.row-header){
+  background:var(--sheet-header)!important;
+  color:var(--ink-muted)!important;
+  border-color:var(--sheet-grid-line)!important;
+  font-size:11px!important;
+  font-weight:650!important;
+}
+body.office-spreadsheets .cell{border-color:var(--sheet-grid-line)!important}
+body.office-spreadsheets .cell.in-range:not(.selected){background:var(--sheet-selection-soft)!important}
+body.office-spreadsheets .cell.selected,
+body.office-spreadsheets .cell.editing{
+  outline:2px solid var(--ink-accent)!important;
+  outline-offset:-2px!important;
+  box-shadow:none!important;
+}
+body.office-spreadsheets :where(.col-header,.row-header).header-selected,
+body.office-spreadsheets .axis-active{
+  background:var(--sheet-selection-mid)!important;
+  color:var(--ink-accent)!important;
+}
+body.office-spreadsheets .toolbar button.active-format,
+body.office-spreadsheets .gridlines-toggle.active{
+  background:var(--sheet-selection-mid)!important;
+  color:var(--ink-accent)!important;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink-accent) 18%,transparent)!important;
+}
+
+/* Workbook footer: worksheet names scroll, while Add/Delete remain available at
+ * the trailing edge even in large imported workbooks. */
+body.office-spreadsheets footer{gap:5px!important;background:var(--ink-surface-raised)!important}
+body.office-spreadsheets #sheetTabs{position:relative!important;padding-right:68px!important;scroll-padding-right:68px!important}
+body.office-spreadsheets #sheetTabs > button:not(#addSheetBtn):not(#deleteSheetBtn){
+  min-width:66px!important;
+  padding-inline:13px!important;
+  color:var(--ink-muted)!important;
+}
+body.office-spreadsheets #sheetTabs > button.active{
+  background:var(--ink-surface)!important;
+  color:var(--ink-accent)!important;
+  font-weight:720!important;
+  box-shadow:inset 0 2px 0 var(--ink-accent),0 -1px 0 var(--ink-edge)!important;
+}
+body.office-spreadsheets #sheetTabs > #addSheetBtn,
+body.office-spreadsheets #sheetTabs > #deleteSheetBtn{
+  position:sticky!important;
+  z-index:3!important;
+  width:34px!important;
+  min-width:34px!important;
+  padding:0!important;
+  background:var(--ink-surface-raised)!important;
+  color:var(--ink-muted)!important;
+  border-left:1px solid var(--ink-edge)!important;
+}
+body.office-spreadsheets #sheetTabs > #addSheetBtn{right:34px!important;color:var(--ink-accent)!important}
+body.office-spreadsheets #sheetTabs > #deleteSheetBtn{right:0!important}
+body.office-spreadsheets #sheetTabs > #addSheetBtn:hover,
+body.office-spreadsheets #sheetTabs > #deleteSheetBtn:not(:disabled):hover{
+  background:var(--sheet-selection-soft)!important;
+  color:var(--ink-accent)!important;
+}
+body.office-spreadsheets .status{gap:10px!important}
+body.office-spreadsheets #selectionStats{
+  max-width:240px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums;
+}
+body.office-spreadsheets .zoom-controls{padding-left:8px!important;border-left:1px solid var(--ink-edge)!important}
+
+@media(max-width:760px){
+  body.office-spreadsheets .formula-row{gap:4px!important;padding-inline:6px!important}
+  body.office-spreadsheets #nameBox{width:58px!important;flex-basis:58px!important}
+  body.office-spreadsheets .formula-row .fx{width:26px!important;flex-basis:26px!important}
+  body.office-spreadsheets #selectionStats{max-width:110px!important}
+  body.office-spreadsheets #sheetTabs{padding-right:68px!important}
+}
+
+@media(pointer:coarse){
+  body.office-spreadsheets #sheetTabs > #addSheetBtn,
+  body.office-spreadsheets #sheetTabs > #deleteSheetBtn{min-height:33px!important}
+}
