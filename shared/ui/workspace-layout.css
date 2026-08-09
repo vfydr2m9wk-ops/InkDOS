@@ -506,11 +506,7 @@ body.office-pdf {
   --inkdesk-pdf-sidebar-width: 244px;
 }
 
-@media (prefers-color-scheme: dark) {
-  body.office-pdf {
-    --accent-soft: rgba(238, 104, 91, 0.18) !important;
-  }
-}
+
 
 body.office-pdf .viewer-app {
   grid-template-rows:

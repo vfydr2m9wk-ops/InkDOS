@@ -176,6 +176,26 @@ def main():
             )
             report["checks"].append("presentation real insert/undo/redo runtime")
 
+            # Pointer-driven move must participate in the same history contract.
+            moved_obj = page.locator("#slideCanvas .obj").last
+            box = moved_obj.bounding_box()
+            check(box is not None, "Inserted presentation object has no pointer box")
+            before_left = float(moved_obj.evaluate("el => parseFloat(el.style.left) || 0"))
+            page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+            page.mouse.down()
+            page.mouse.move(box["x"] + box["width"] / 2 + 70, box["y"] + box["height"] / 2 + 30, steps=4)
+            page.mouse.up()
+            after_left = float(page.locator("#slideCanvas .obj").last.evaluate("el => parseFloat(el.style.left) || 0"))
+            check(after_left != before_left, f"Pointer move did not change object position: {before_left} -> {after_left}")
+            check(not page.locator("#undoBtn").is_disabled(), "Undo stayed disabled after pointer move")
+            page.click("#undoBtn")
+            undo_left = float(page.locator("#slideCanvas .obj").last.evaluate("el => parseFloat(el.style.left) || 0"))
+            check(abs(undo_left - before_left) < 1.0, f"Pointer move Undo failed: {before_left} -> {after_left} -> {undo_left}")
+            page.click("#redoBtn")
+            redo_left = float(page.locator("#slideCanvas .obj").last.evaluate("el => parseFloat(el.style.left) || 0"))
+            check(abs(redo_left - after_left) < 1.0, f"Pointer move Redo failed: {after_left} -> {redo_left}")
+            report["checks"].append("presentation pointer move undo/redo runtime")
+
             # Documents toolbar contract.
             page.set_content(text("apps/documents/index.html"))
             check(page.locator("#alignmentSelect").count() == 1, "alignment selector missing")

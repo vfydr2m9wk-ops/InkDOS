@@ -14,6 +14,8 @@
       this.toPixelY = options.toPixelY;
       this.markDirty = options.markDirty;
       this.renderSlide = options.renderSlide;
+      this.captureHistory = options.captureHistory || (() => null);
+      this.pushHistory = options.pushHistory || (() => {});
       this.selectedId = null;
       this.drag = null;
 
@@ -75,6 +77,8 @@
       const object = this.getSelectedObject();
       const point = this.canvasPoint(event);
       this.drag = {
+        before: this.captureHistory(),
+        changed: false,
         mode: 'move',
         id,
         startX: point.x,
@@ -92,6 +96,8 @@
       const point = this.canvasPoint(event);
       const handle = event.currentTarget.dataset.handle;
       this.drag = {
+        before: this.captureHistory(),
+        changed: false,
         mode: 'resize',
         handle,
         id: object.id,
@@ -115,6 +121,8 @@
       };
       const point = this.canvasPoint(event);
       this.drag = {
+        before: this.captureHistory(),
+        changed: false,
         mode: 'rotate',
         id: object.id,
         cx: center.x,
@@ -148,6 +156,7 @@
       } else {
         this.resizeObject(object, point);
       }
+      this.drag.changed = true;
       this.renderSlide();
       this.markDirty();
     }
@@ -183,8 +192,12 @@
     }
 
     onPointerUp() {
+      const drag = this.drag;
       this.drag = null;
       this.clearGuides();
+      if (drag && drag.changed && drag.before) {
+        this.pushHistory(drag.before);
+      }
     }
 
     clearGuides() {

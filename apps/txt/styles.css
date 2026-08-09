@@ -5,12 +5,7 @@
   --txt-line:rgba(133,101,21,.10);
 }
 
-@media(prefers-color-scheme:dark){
-  :root{
-    --txt-paper:#25241e;
-    --txt-line:rgba(255,224,125,.075);
-  }
-}
+
 
 *{box-sizing:border-box}
 

@@ -53,7 +53,7 @@ class V100BetaReleaseTests(unittest.TestCase):
 
     def test_internal_sequence_and_public_version_are_separate(self):
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(state["appliedSequence"], 50)
+        self.assertEqual(state["appliedSequence"], 51)
         self.assertEqual(state["currentPackage"], VERSION)
         # targetRelease is retained as the updater's historical train guard; it is not the public semantic version.
         self.assertEqual(state["targetRelease"], "0.20.x")

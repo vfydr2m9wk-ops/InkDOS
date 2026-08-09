@@ -48,6 +48,25 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
         ]:
             self.assertIn(marker,app)
 
+
+    def test_light_only_has_no_active_dark_media(self):
+        runtime_css = [p for p in ROOT.rglob('*.css') if 'shared/future' not in p.as_posix()]
+        offenders=[]
+        for path in runtime_css:
+            text=path.read_text()
+            if 'prefers-color-scheme:dark' in text.replace(' ','') or 'prefers-color-scheme: dark' in text:
+                offenders.append(str(path.relative_to(ROOT)))
+        self.assertEqual(offenders, [])
+        self.assertIn("inkdesk-shell-v1.0.0-beta.1-light51", (ROOT/'service-worker.js').read_text())
+
+    def test_presentation_pointer_edits_are_undoable(self):
+        selection=(ROOT/'apps/presentations/state/selection-controller.js').read_text()
+        app=(ROOT/'apps/presentations/app.js').read_text()
+        self.assertIn('before: this.captureHistory()', selection)
+        self.assertIn('this.pushHistory(drag.before)', selection)
+        self.assertIn('captureHistory:()=>historyController?historyController.capture():null', app)
+        self.assertIn("event.metaKey||event.ctrlKey", app)
+
     def test_documents_toolbar_contract(self):
         html=(ROOT/'apps/documents/index.html').read_text()
         app=(ROOT/'apps/documents/app.js').read_text()

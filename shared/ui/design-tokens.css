@@ -3,7 +3,7 @@
  * Existing workspace layouts remain authoritative until 0.19.4.4.
  */
 :root {
-  color-scheme: light dark;
+  color-scheme:light;
 
   --inkdesk-font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
   --inkdesk-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
@@ -60,22 +60,7 @@
   --office-edge-strong: var(--inkdesk-edge-strong);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --inkdesk-surface: #20242a;
-    --inkdesk-surface-soft: #181b20;
-    --inkdesk-surface-raised: #292d34;
-    --inkdesk-workspace: #12151a;
-    --inkdesk-text: #f4f6f8;
-    --inkdesk-muted: #aab1bb;
-    --inkdesk-edge: rgba(255, 255, 255, 0.10);
-    --inkdesk-edge-strong: rgba(255, 255, 255, 0.17);
-    --inkdesk-focus: #79a7ff;
-    --inkdesk-shadow-control: 0 1px 2px rgba(0, 0, 0, 0.28);
-    --inkdesk-shadow-panel: 0 16px 38px rgba(0, 0, 0, 0.30);
-    --inkdesk-shadow-document: 0 20px 52px rgba(0, 0, 0, 0.42);
-  }
-}
+
 
 body.office-documents,
 body[data-inkdesk-module="documents"] {

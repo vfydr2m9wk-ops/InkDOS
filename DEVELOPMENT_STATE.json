@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 50,
+  "appliedSequence": 51,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -255,6 +255,11 @@
       "sequence": 50,
       "packageLabel": "1.0.0-beta.1",
       "description": "Stability correction package rebased on the authoritative 1.0.0-beta.1 sequence-49 main. Fixes PDF gray-page/fullscreen rerender lifecycle, Presentation hidden Format-panel layout and Undo/Redo coverage, temporarily enforces light-only application chrome while preserving dark-theme work as isolated future code, simplifies Documents formatting controls with grouped alignment and indent actions, and hardens the cross-window file-router contract. Adds focused permanent regression coverage and advances internal updater sequence assertions to 50 while preserving existing parsers, package-preserving writers, recovery, formulas, storage and workflow behavior."
+    },
+    {
+      "sequence": 51,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Focused physical-device follow-up correction. Removes active runtime dark-mode media overrides so the current product remains light/day only while future dark-theme work stays isolated; bumps the service-worker shell cache to evict stale dark CSS on Safari/iOS; and makes Presentation pointer move, resize and rotate operations participate in Undo/Redo history, with standard keyboard Cmd/Ctrl+Z support. Preserves the already improved PDF lifecycle and Documents toolbar unchanged. Adds permanent source and Chromium regression coverage for the two reported residual defects."
     }
   ]
 }

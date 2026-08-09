@@ -1,6 +1,6 @@
 'use strict';
 // Update sequence 47: InkDesk 1.0 beta release preparation and Launcher simplification.
-const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1';
+const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-light51';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
