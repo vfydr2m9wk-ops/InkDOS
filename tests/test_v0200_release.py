@@ -44,7 +44,7 @@ class ConsolidatedReleaseTests(unittest.TestCase):
 
     def test_service_worker_matches_public_version(self):
         worker = (ROOT / 'service-worker.js').read_text()
-        self.assertIn("const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-pdf52';", worker)
+        self.assertIn("const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-pdf53';", worker)
         for asset in (
             "'./apps/txt/index.html'",
             "'./apps/epub/index.html'",
@@ -57,7 +57,7 @@ class ConsolidatedReleaseTests(unittest.TestCase):
     def test_development_state_is_reset_for_patch_series(self):
         state = json.loads((ROOT / 'DEVELOPMENT_STATE.json').read_text())
         self.assertEqual(state['targetRelease'], '0.20.x')
-        self.assertEqual(state['appliedSequence'], 52)
+        self.assertEqual(state['appliedSequence'], 53)
         self.assertEqual(state['currentPackage'], '1.0.0-beta.1')
 
     def test_complete_release_does_not_require_old_packages(self):

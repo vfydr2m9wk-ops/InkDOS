@@ -1,67 +1,40 @@
 (function (global) {
   'use strict';
 
+  // InkDesk "full screen" is intentionally a content-focus mode rather than
+  // the browser Fullscreen API. This keeps the already-rendered PDF DOM/canvases
+  // in place on WebKit/iOS while hiding InkDesk editing chrome on every device.
   function create({ state, elements, fitWidth, rerender }) {
-    const E = elements;
-    let resizeTimer = 0;
-
-    function mobilePortrait() {
-      return global.innerWidth <= 650 &&
-        global.matchMedia('(orientation: portrait)').matches;
-    }
+    const body = document.body;
 
     function active() {
-      return Boolean(document.fullscreenElement) ||
-        document.body.classList.contains('immersive');
+      return body.classList.contains('immersive') ||
+        body.classList.contains('pdf-fullscreen');
     }
 
-    function afterLayout() {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (active() && mobilePortrait() && state.doc) {
-          fitWidth(12).catch(console.error);
-        } else {
-          rerender();
-        }
-      }));
-    }
-
-    function sync() {
-      document.body.classList.toggle('pdf-fullscreen', active());
-      afterLayout();
+    function sync(activeState) {
+      const enabled = typeof activeState === 'boolean' ? activeState : active();
+      body.classList.toggle('immersive', enabled);
+      body.classList.toggle('pdf-fullscreen', enabled);
+      body.classList.toggle('content-focus-mode', enabled);
     }
 
     function exit() {
-      document.body.classList.remove('immersive');
-      document.body.classList.remove('pdf-fullscreen');
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      } else {
-        afterLayout();
-      }
+      sync(false);
     }
 
-    async function toggle() {
-      if (active()) {
-        exit();
-        return;
-      }
-      try {
-        await E.viewerApp.requestFullscreen();
-        sync();
-      } catch (error) {
-        document.body.classList.add('immersive');
-        sync();
-      }
+    function toggle() {
+      sync(!active());
     }
 
+    // If another host/browser mechanism changes native fullscreen externally,
+    // never tear down the rendered PDF. Only mirror the content-focus chrome.
     document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) document.body.classList.remove('immersive');
-      sync();
+      if (!document.fullscreenElement && active()) return;
+      if (document.fullscreenElement) sync(true);
     });
-
-    global.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = global.setTimeout(sync, 180);
+    document.addEventListener('webkitfullscreenchange', () => {
+      if (document.webkitFullscreenElement) sync(true);
     });
 
     return { toggle, exit, sync };

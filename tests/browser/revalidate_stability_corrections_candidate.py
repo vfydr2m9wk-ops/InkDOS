@@ -281,48 +281,42 @@ def main():
                     )
                 report["checks"].append("PDF.js 20-page rapid navigation without visible gray placeholders")
 
-                # Mobile portrait fullscreen must become a reading surface: the
-                # application chrome disappears and Fit Width uses the narrow
-                # phone viewport rather than leaving a large gray field.
+                # Universal content-focus fullscreen: hide InkDesk editing chrome
+                # without invoking the browser Fullscreen API or replacing canvases.
                 page.set_viewport_size({"width": 390, "height": 844})
-                page.evaluate("() => { document.querySelector('#viewerApp').requestFullscreen = () => Promise.reject(new Error('force fallback')); }")
+                page.locator("#viewerStage canvas").first.evaluate("node => node.dataset.preFullscreen='1'")
+                before_count = page.evaluate("() => window.InkDeskPdfDebug.getState().renderedCanvases")
                 page.evaluate("() => window.InkDeskPdfDebug.toggleFullscreen()")
-                page.wait_for_function("() => document.body.classList.contains('pdf-fullscreen')")
-                page.wait_for_timeout(250)
-                mobile = page.evaluate(
+                page.wait_for_function("() => document.body.classList.contains('pdf-fullscreen') && document.body.classList.contains('immersive')")
+                page.wait_for_timeout(120)
+                focused = page.evaluate(
                     """() => ({
                         command:getComputedStyle(document.querySelector('.commandbar')).display,
                         status:getComputedStyle(document.querySelector('.statusbar')).display,
+                        title:getComputedStyle(document.querySelector('.titlebar')).display,
                         stage:document.querySelector('#viewerStage').getBoundingClientRect().height,
-                        pageWidth:document.querySelector('.pdf-page').getBoundingClientRect().width,
-                        viewport:innerWidth,
-                        zoom:window.InkDeskPdfDebug.getState().zoom
+                        preserved:!!document.querySelector('canvas[data-pre-fullscreen="1"]'),
+                        canvases:window.InkDeskPdfDebug.getState().renderedCanvases,
+                        nativeFullscreen:!!document.fullscreenElement
                     })"""
                 )
-                check(mobile["command"] == "none" and mobile["status"] == "none", f"mobile fullscreen chrome remains: {mobile}")
-                check(mobile["stage"] > 760, f"mobile fullscreen did not use viewport height: {mobile}")
-                check(mobile["pageWidth"] >= 360 and mobile["pageWidth"] <= 390, f"mobile fullscreen page did not fit width: {mobile}")
-                report["checks"].append("PDF mobile portrait fullscreen fit-width reading mode")
+                check(focused["command"] == "none" and focused["status"] == "none" and focused["title"] == "none", f"content-focus chrome remains: {focused}")
+                check(focused["stage"] > 760, f"content-focus mode did not use viewport height: {focused}")
+                check(focused["preserved"], f"content-focus mode replaced the rendered PDF canvas: {focused}")
+                check(focused["canvases"] >= 1 and focused["canvases"] == before_count, f"content-focus mode changed rendered canvas count: {focused}")
+                check(not focused["nativeFullscreen"], f"content-focus mode unexpectedly invoked native fullscreen: {focused}")
+                report["checks"].append("PDF universal non-destructive content-focus fullscreen")
 
-                # Leave the successful fullscreen scenario before forcing the legacy
-                # immersive fallback. toggleFullscreen() exits when fullscreen is
-                # already active, so the fallback must start from a non-fullscreen
-                # state just like the historical guardrail did.
                 page.evaluate("() => window.InkDeskPdfDebug.exitFullscreen()")
-                page.wait_for_function("() => !document.fullscreenElement && !document.body.classList.contains('pdf-fullscreen')")
-
-                page.locator("#viewerStage canvas").first.evaluate("node => node.dataset.preFullscreen='1'")
-                page.evaluate(
-                    "() => { document.querySelector('#viewerApp').requestFullscreen = async () => { throw new Error('forced fallback'); }; }"
+                page.wait_for_function("() => !document.body.classList.contains('pdf-fullscreen') && !document.body.classList.contains('immersive')")
+                restored = page.evaluate(
+                    """() => ({
+                        command:getComputedStyle(document.querySelector('.commandbar')).display,
+                        canvas:!!document.querySelector('canvas[data-pre-fullscreen="1"]')
+                    })"""
                 )
-                page.evaluate("() => window.InkDeskPdfDebug.toggleFullscreen()")
-                page.wait_for_function("() => document.body.classList.contains('immersive')")
-                page.wait_for_function("() => !document.querySelector('canvas[data-pre-fullscreen=\"1\"]')")
-                check(
-                    page.evaluate("() => window.InkDeskPdfDebug.getState().renderedCanvases >= 1"),
-                    "fullscreen fallback rerender left no rendered PDF pages",
-                )
-                report["checks"].append("PDF fullscreen fallback performs post-layout rerender")
+                check(restored["command"] != "none" and restored["canvas"], f"content-focus exit did not restore chrome/preserve canvas: {restored}")
+                report["checks"].append("PDF content-focus exit restores controls without renderer teardown")
 
             report["passed"] = True
             context.close()

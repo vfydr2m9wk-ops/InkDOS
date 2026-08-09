@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 52,
+  "appliedSequence": 53,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -265,6 +265,11 @@
       "sequence": 52,
       "packageLabel": "1.0.0-beta.1",
       "description": "Focused PDF fullscreen portrait patch, correction 1. Preserves the sequence-51 PDF renderer and existing immersive fallback contract, adds narrow-portrait fit-width reading fullscreen, and corrects the browser regression harness so the successful native fullscreen scenario is exited before the legacy immersive fallback is tested. No non-PDF runtime behavior is changed."
+    },
+    {
+      "sequence": 53,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Universal non-destructive PDF content-focus fullscreen. Full screen now hides InkDesk editing chrome on every viewport without invoking native browser fullscreen, fitting/rebuilding the PDF, or replacing existing canvases; exiting restores controls while preserving rendered content. This patch intentionally changes only PDF fullscreen presentation, cache-busting, and its regression contracts."
     }
   ]
 }

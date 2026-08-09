@@ -23,11 +23,13 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
         self.assertIn('state.rendered.get(pageNumber)?.task !== task',renderer)
         self.assertIn('viewportRelevant(pageNumber)',renderer)
 
-    def test_pdf_fullscreen_rerenders_after_layout(self):
+    def test_pdf_fullscreen_does_not_rebuild_renderer(self):
         controller=(ROOT/'apps/pdf/viewer/fullscreen-controller.js').read_text()
         self.assertIn("document.addEventListener('fullscreenchange'",controller)
-        self.assertIn('requestAnimationFrame(() => requestAnimationFrame(() => {',controller)
-        self.assertIn('rerender();',controller)
+        self.assertNotIn('requestAnimationFrame(() => requestAnimationFrame(() => {',controller)
+        self.assertNotIn('rerender();',controller)
+        self.assertNotIn('fitWidth(',controller)
+        self.assertNotIn('requestFullscreen()',controller)
 
     def test_presentation_hidden_format_panel_does_not_reserve_track(self):
         css=(ROOT/'apps/presentations/stability.css').read_text()
@@ -58,7 +60,7 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
             if 'prefers-color-scheme:dark' in text.replace(' ','') or 'prefers-color-scheme: dark' in text:
                 offenders.append(str(path.relative_to(ROOT)))
         self.assertEqual(offenders, [])
-        self.assertIn("inkdesk-shell-v1.0.0-beta.1-pdf52", (ROOT/'service-worker.js').read_text())
+        self.assertIn("inkdesk-shell-v1.0.0-beta.1-pdf53", (ROOT/'service-worker.js').read_text())
 
     def test_presentation_pointer_edits_are_undoable(self):
         selection=(ROOT/'apps/presentations/state/selection-controller.js').read_text()
@@ -69,23 +71,25 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
         self.assertIn("event.metaKey||event.ctrlKey", app)
 
 
-    def test_pdf_mobile_portrait_fullscreen_reading_mode(self):
+    def test_pdf_fullscreen_is_universal_non_destructive_content_focus(self):
         app=(ROOT/'apps/pdf/app.js').read_text()
         html=(ROOT/'apps/pdf/index.html').read_text()
         controller=(ROOT/'apps/pdf/viewer/fullscreen-controller.js').read_text()
         css=(ROOT/'apps/pdf/fullscreen-mobile.css').read_text()
         worker=(ROOT/'service-worker.js').read_text()
-        self.assertIn('async function fitWidth(gutter = 48)', app)
         self.assertIn('InkDeskPdfFullscreen.create', app)
-        self.assertIn("classList.toggle('pdf-fullscreen', active())", controller)
-        self.assertIn("matchMedia('(orientation: portrait)').matches", controller)
-        self.assertIn('fitWidth(12)', controller)
+        self.assertIn("classList.toggle('immersive', enabled)", controller)
+        self.assertIn("classList.toggle('pdf-fullscreen', enabled)", controller)
+        self.assertIn("classList.toggle('content-focus-mode', enabled)", controller)
+        self.assertNotIn('requestFullscreen()', controller)
+        self.assertNotIn('fitWidth(12)', controller)
+        self.assertNotIn("matchMedia('(orientation: portrait)').matches", controller)
         self.assertIn('body.pdf-fullscreen .commandbar', css)
-        self.assertIn('@media(max-width:650px) and (orientation:portrait)', css)
-        self.assertIn('max-width:calc(100vw - 12px)', css)
+        self.assertIn('body.content-focus-mode .commandbar', css)
+        self.assertNotIn('@media(max-width:650px)', css)
         self.assertIn('height:100dvh', css)
-        self.assertIn('fullscreen-mobile.css?v=1.0.0-beta.1-pdf52', html)
-        self.assertIn('viewer/fullscreen-controller.js?v=1.0.0-beta.1-pdf52', html)
+        self.assertIn('fullscreen-mobile.css?v=1.0.0-beta.1-pdf53', html)
+        self.assertIn('viewer/fullscreen-controller.js?v=1.0.0-beta.1-pdf53', html)
         self.assertIn("'./apps/pdf/fullscreen-mobile.css'", worker)
         self.assertIn("'./apps/pdf/viewer/fullscreen-controller.js'", worker)
 
