@@ -1,6 +1,6 @@
 'use strict';
-// Update sequence 46: spreadsheet function-argument composition correction.
-const CACHE_NAME='inkdesk-shell-v0.20.3.1';
+// Update sequence 47: InkDesk 1.0 beta release preparation and Launcher simplification.
+const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -38,7 +38,6 @@ const APP_SHELL=[
   './shared/file-lifecycle.js',
   './shared/local-recovery.js',
   './shared/file-router.js',
-  './shared/hub-open.js',
   './shared/formula-engine.js',
   './shared/safe-dom.js',
   './shared/register-service-worker.js',

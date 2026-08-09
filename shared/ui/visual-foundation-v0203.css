@@ -371,19 +371,6 @@ body:not(.office-product){background:radial-gradient(circle at 15% -8%,rgba(47,1
 .workspace-copy h2,.workspace-copy strong{margin:0;font-size:15.5px!important;letter-spacing:-.025em}
 .workspace-copy p,.workspace-copy small{margin:0;color:var(--ink-muted);font-size:10.5px!important;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .workspace-card .open-arrow{font-size:22px!important;color:color-mix(in srgb,var(--ink-card-accent) 68%,var(--ink-muted));transform:none!important}
-.open-any-panel{
-  margin-top:14px!important;
-  min-height:78px;
-  padding:13px 16px!important;
-  border:1px solid var(--ink-edge)!important;
-  border-radius:15px!important;
-  background:var(--ink-surface)!important;
-  box-shadow:0 3px 12px rgba(20,28,40,.05)!important;
-}
-.open-any-icon{width:40px!important;height:40px!important;border-radius:11px!important;box-shadow:none!important}
-.open-any-copy strong{font-size:14px!important}
-.open-any-copy span{font-size:10.5px!important}
-.open-any-button{min-width:142px!important;min-height:42px!important;border-radius:10px!important;box-shadow:0 5px 14px rgba(47,111,237,.16)!important;font-size:13px!important}
 .hub-footer{margin-top:14px!important;padding-top:8px!important;color:var(--ink-muted)!important;font-size:10px!important}
 .hub-footer nav{gap:12px!important}
 .footer-status{gap:7px!important}
@@ -407,8 +394,6 @@ body.office-pdf #bookmarkBtn span{display:none!important}
 .workspace-grid{grid-template-columns:1fr;gap:9px}
 .workspace-card{min-height:86px;padding:13px 14px;grid-template-columns:42px minmax(0,1fr) auto;border-radius:13px}
 .workspace-card .app-icon{width:42px!important;height:42px!important;border-radius:11px!important}
-.open-any-panel{grid-template-columns:1fr!important}
-.open-any-button{width:100%!important}
 body.office-product :where(.icon-btn){min-width:36px;min-height:36px}
 body.office-product :where(.topbar,.titlebar,.txt-titlebar,.epub-titlebar){padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
 body.office-pdf .workspace-body{grid-template-columns:0 minmax(0,1fr)!important}

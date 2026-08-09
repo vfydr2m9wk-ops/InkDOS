@@ -53,9 +53,9 @@ class ModuleRegistryTests(unittest.TestCase):
         html = (ROOT / "index.html").read_text()
         registry_pos = html.index("./modules/module-registry.js")
         loader_pos = html.index("./modules/module-loader.js")
-        router_pos = html.index("./shared/file-router.js")
         self.assertLess(registry_pos, loader_pos)
-        self.assertLess(loader_pos, router_pos)
+        self.assertNotIn("./shared/file-router.js", html)
+        self.assertNotIn("./shared/hub-open.js", html)
         self.assertIn("data-module-grid", html)
         for route in (
             "./apps/documents/index.html",

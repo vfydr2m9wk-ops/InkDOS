@@ -1,3 +1,11 @@
+## 1.0.0-beta.1 — 1.0 Beta 1 (2026-08-08)
+
+- Consolidated the 0.20.2/0.20.3 stabilization train into the first feature-frozen 1.0 beta baseline.
+- Kept the six-workspace local-first architecture and existing editor feature set; no new editing feature is introduced by the version transition.
+- Removed the low-value generic Launcher `Open a supported file` handoff; files are opened through the explicit Open flow of the selected workspace.
+- Synchronized public version metadata, module manifests, cache identity, release notes and release-building metadata for the 1.0 beta line.
+- Retained 0.20.x identifiers as engineering history and internal sequence provenance rather than manufacturing public releases for every intermediate patch.
+
 ## 0.20.3.1 — Content Workspaces Visual Pass (2026-08-08)
 
 - Added a last-loaded visual layer dedicated to Documents, Plain Text and EPUB.

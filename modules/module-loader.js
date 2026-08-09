@@ -148,11 +148,6 @@ function renderLauncher(runtime,root){
   enabled.forEach(module=>fragment.appendChild(createCard(module)));
   grid.replaceChildren(fragment);
   grid.dataset.moduleRegistry='ready';
-  const input=scope.getElementById?scope.getElementById('openAnyInput'):document.getElementById('openAnyInput');
-  if(input){
-    const accept=runtime.buildAccept();
-    if(accept)input.setAttribute('accept',accept);
-  }
   return true;
 }
 

@@ -1,3 +1,15 @@
+# InkDesk testing
+
+## 1.0 beta release gate
+
+The 1.0 beta is feature-frozen. A release candidate must pass repository
+validation, source audit, architecture guardrails, the complete unit/package
+suite, Chromium regressions and checksum verification. Firefox/WebKit/native
+iPadOS evidence is recorded separately and is never inferred from Chromium.
+
+The Launcher generic `Open a supported file` handoff was deliberately removed;
+acceptance coverage now begins from a selected workspace's explicit Open flow.
+
 ## v0.20.2.25 recovery source-continuity hardening
 
 The v0.20.2.25 gate covers a post-save recovery boundary that was previously unsafe: an imported workbook is edited, a copy is saved, editing continues, the page closes, recovery is restored, and a new XLSX copy is generated. The original OOXML preservation context must remain available throughout that sequence.

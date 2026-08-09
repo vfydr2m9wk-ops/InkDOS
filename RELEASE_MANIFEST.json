@@ -1,8 +1,8 @@
 {
   "project": "InkDesk",
-  "version": "0.20.3.1",
-  "releaseName": "Content Workspaces Visual Pass",
-  "releaseType": "Beta Visual Refinement Release",
+  "version": "1.0.0-beta.1",
+  "releaseName": "1.0 Beta 1",
+  "releaseType": "Public Beta Release",
   "releaseDate": "2026-08-08",
   "entryPoints": {
     "InkDesk.html": "index.html",
@@ -44,15 +44,15 @@
     "nativeWebKit": false,
     "nativeIPadOS": false,
     "installedPwaRuntime": false,
-    "browserRegressionScripts": "19 configured; visual-foundation coverage remains active and the added content-workspaces regression checks Documents/TXT/EPUB presentation geometry without changing document logic",
+    "browserRegressionScripts": "23 configured Chromium regressions; optional Firefox/WebKit matrix remains available; native Safari/iPadOS requires physical-device validation",
     "dedicatedV0201BrowserRegression": "passed",
     "dedicatedV0202RecoveryRegression": "extended: save -> unverified download retains dirty/recovery -> continue editing -> restore -> re-export fidelity",
     "browserMatrixRunner": "chromium, firefox, webkit",
     "presentationsControlRegression": "extended: Format/notes/thumbnails plus slideshow current/start entry, keyboard navigation, Escape/Exit and compact drawer behavior",
-    "functionalAcceptanceInventory": "Existing visible controls retained; v0.20.3.1 refines Documents, TXT and EPUB presentation while preserving the frozen v0.20.2.31 data-path baseline",
+    "functionalAcceptanceInventory": "Visible controls are frozen for 1.0 beta; the low-value generic Launcher file handoff has been removed, while each workspace retains its own explicit Open flow.",
     "interactiveDomContracts": "duplicate ids and unresolved direct app control references checked across six workspaces",
     "v02021FunctionalCorrectionsRegression": "configured: Home cleanup, PDF note removal, editable Spreadsheet/Presentation titles, TXT/EPUB 44px titlebars",
-    "architectureGuardrails": "required: Spreadsheet formula syntax/model and draft lifecycle remain isolated; new history-controller.js is DOM-free and below the normal 500-line ceiling; app.js remains at its 295-line ratchet",
+    "architectureGuardrails": "required: no feature expansion during 1.0 beta preparation; data-safety, formula, recovery and package-preservation guardrails remain enforced.",
     "presentationsModularization": "selection/history, Inspector, thumbnails, presenter notes, slideshow, PPTX write adapter, file I/O and recovery lifecycle are isolated in focused components; app.js remains the presentation/editor orchestration entry point",
     "pdfRenderingModularization": "page virtualization, canvas/text/AcroForm rendering, render-window disposal and resize rerender remain isolated in apps/pdf/viewer/page-renderer.js",
     "pdfNavigationModularization": "page navigation, page-list thumbnails, outline destinations, bookmark navigation and sidebar tab state are isolated in apps/pdf/viewer/navigation-controller.js",
@@ -76,5 +76,6 @@
     "contentWorkspacesVisual": "shared/ui/content-workspaces-v02031.css is loaded after the v0.20.3.0 visual foundation and targets only Documents, TXT and EPUB; editor/runtime logic remains unchanged apart from release/cache metadata"
   },
   "publicationVendorBootstrapRequired": false,
-  "vendorLock": "VENDOR_SOURCES.json"
+  "vendorLock": "VENDOR_SOURCES.json",
+  "releasePolicy": "Feature freeze: only reproducible integrity, compatibility or high-value low-risk corrections should change runtime before 1.0 stable."
 }

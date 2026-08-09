@@ -1,8 +1,8 @@
-# Functional acceptance checklist — InkDesk 0.20.3.0
+# Functional acceptance checklist — InkDesk 1.0.0-beta.1
 
 A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.
 
-Visible controls: **222** · Automated: **88** · Scheduled: **134** · Manual: **0**
+Visible controls: **221** · Automated: **87** · Scheduled: **134** · Manual: **0**
 
 ## Controls
 
@@ -15,7 +15,6 @@ Visible controls: **222** · Automated: **88** · Scheduled: **134** · Manual: 
 - ✅ `a[href="./apps/pdf/index.html"]#1` — PDF PDF Workspace PDF › — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
 - ✅ `a[href="./apps/txt/index.html"]#1` — TXT Plain Text TXT › — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
 - ✅ `a[href="./apps/epub/index.html"]#1` — EPUB EPUB Reader EPUB › — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
-- ✅ `#openAnyDocument` — Open file — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
 - ⬜ `a[href="https://github.com/vfydr2m9wk-ops/InkDesk"]#1` — Source — **scheduled**
 - ⬜ `a[href="./docs/PROJECT_STATUS.md"]#1` — Status — **scheduled**
 - ⬜ `a[href="./docs/KNOWN_LIMITATIONS.md"]#1` — Limitations — **scheduled**

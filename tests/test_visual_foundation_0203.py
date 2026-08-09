@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.20.3.1"
+VERSION = "1.0.0-beta.1"
 CSS = ROOT / "shared" / "ui" / "visual-foundation-v0203.css"
 
 

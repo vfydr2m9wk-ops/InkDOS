@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.20.3.1"
+VERSION = "1.0.0-beta.1"
 
 
 class FunctionalCorrectionsV02021Tests(unittest.TestCase):
@@ -31,8 +31,9 @@ class FunctionalCorrectionsV02021Tests(unittest.TestCase):
         self.assertNotIn("Consolidated modular preview", html)
         self.assertNotIn("Open, review and make focused edits", html)
         self.assertNotIn("Beta stabilization · saving creates a new local copy", html)
-        self.assertGreaterEqual(html.count(f"v{VERSION} beta"), 2)
-        self.assertIn("The selected file stays on this device.", html)
+        self.assertGreaterEqual(html.count(f"v{VERSION}"), 2)
+        self.assertNotIn("Open a supported file", html)
+        self.assertNotIn('id="openAnyDocument"', html)
 
     def test_spreadsheet_title_is_editable_and_updates_filename_state(self):
         html = self.read("apps/spreadsheets/index.html")

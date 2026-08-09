@@ -1,32 +1,37 @@
-# Project status — InkDesk v0.20.0
+# Project status — InkDesk v1.0.0-beta.1
 
-InkDesk v0.20.0 is a **consolidated public beta**. It replaces the internal
-`0.19.4.x` package chain with one complete source tree and six workspaces:
-Documents, Spreadsheets, Presentations, PDF, Plain Text, and EPUB Reader.
+InkDesk v1.0.0-beta.1 is the first **1.0 public beta**. The application is feature-frozen
+while the project collects real-device evidence and fixes only defects whose
+reliability benefit clearly exceeds regression risk.
+
+## Beta contract
+
+- six independent local-first workspaces: Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB Reader;
+- explicit workspace-first file opening;
+- focused, partial Office compatibility rather than full Microsoft Office parity;
+- generated-copy saving for browser-safe workflows;
+- private local recovery for supported editing workspaces;
+- automated repository, source, architecture, unit/package and Chromium regression gates.
 
 ## Appropriate uses
 
-- local compatibility experiments;
-- focused personal document work where exported copies are reopened and
-  verified;
-- community development of parsers, rendering, interface consistency, and
-  regression fixtures;
-- non-critical TXT editing and EPUB reading.
+- focused personal document work with exported copies reviewed after saving;
+- compatibility experiments and community development;
+- local-first reading/editing where InkDesk's documented subset is sufficient.
 
 ## Not suitable without independent validation
 
-- regulated, medical, legal, or financial production workflows;
+- regulated or safety-critical production workflows;
 - files requiring exact Microsoft Office fidelity;
-- unattended or bulk conversion;
-- DRM-protected or fixed-layout EPUB workflows;
-- deployments not tested in their target browser, host, and device.
+- unattended/bulk conversion;
+- encrypted Office files or unsupported legacy formats;
+- deployments not tested in their target browser, host and device.
 
-## Current engineering priorities
+## Remaining release evidence
 
-1. Native Safari/WebKit, iPadOS, Firefox, and embedded-host validation.
-2. PDF.js migration to a current module-based release.
-3. Privacy-preserving crash and session recovery.
-4. Refactoring the large PDF and shared layout controllers.
-5. Compatibility improvements backed by redistributable fixtures.
+1. Native Safari/WebKit and iPadOS smoke testing.
+2. Firefox/Edge spot validation when those engines are available.
+3. Installed-PWA/offline behavior on a real target device.
+4. Real-world beta use with representative DOCX/XLSX/PPTX/PDF files.
 
-The project remains beta and is not presented as a stable 1.0 release.
+The next milestone after beta stabilization is `1.0.0-rc.1`, not feature expansion.

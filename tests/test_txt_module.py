@@ -134,7 +134,8 @@ class TxtModuleTests(unittest.TestCase):
         )
 
         self.assertIn("./apps/txt/index.html", home)
-        self.assertIn(".txt", home)
+        self.assertIn("./apps/txt/index.html", home)
+        self.assertNotIn("openAnyInput", home)
         for asset in (
             "./TXT.html",
             "./apps/txt/module.json",

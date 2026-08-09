@@ -23,7 +23,7 @@ class EpubModuleTests(unittest.TestCase):
             self.assertIn(marker,s)
     def test_integration(self):
         router=(ROOT/'shared/file-router.js').read_text();reg=(ROOT/'modules/module-registry.js').read_text();home=(ROOT/'index.html').read_text();sw=(ROOT/'service-worker.js').read_text()
-        self.assertIn("epub:'./apps/epub/index.html'",router);self.assertIn('"id": "epub"',reg);self.assertIn('./apps/epub/index.html',home);self.assertIn('.epub',home)
+        self.assertIn("epub:'./apps/epub/index.html'",router);self.assertIn('"id": "epub"',reg);self.assertIn('./apps/epub/index.html',home);self.assertNotIn('openAnyInput',home)
         for asset in ('./EPUB.html','./apps/epub/module.json','./apps/epub/index.html','./apps/epub/styles.css','./apps/epub/epub-parser.js','./apps/epub/app.js'):self.assertIn(repr(asset),sw)
         self.assertRegex(sw, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
     def test_contract(self):

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 46,
-  "currentPackage": "0.20.3.1",
+  "appliedSequence": 47,
+  "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
     {
@@ -235,6 +235,11 @@
       "sequence": 46,
       "packageLabel": "0.20.3.1",
       "description": "Spreadsheet supported-function composition correction. Formula arguments that are already within InkDesk's supported evaluator are now evaluated before aggregation or scalar conversion, so arithmetic expressions and nested supported functions no longer collapse to misleading cached values in SUM, COUNT, ROUND and related functions. TRUE/FALSE are recognized as direct expressions for IF conditions, and spreadsheet errors stored in LET variables are propagated through surrounding arithmetic instead of falling back to the original formula. Regression coverage verifies these cases before save, after save/reopen and after unrelated worksheet deletion while preserving sequence-43 #REF! integrity, sequence-44 safe arithmetic-engine integration and sequence-45 arithmetic error propagation. No new functions, grammar expansion, UI, formatting, worksheet-package, OOXML, recovery, storage, Documents, Presentations, PDF, TXT, EPUB, Launcher or workflow behavior is intentionally changed."
+    },
+    {
+      "sequence": 47,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "InkDesk 1.0 beta release preparation and Launcher simplification. Consolidates the validated 0.20.2/0.20.3 engineering train into public version 1.0.0-beta.1 without adding editor features; synchronizes public release metadata, module identities, cache identity, acceptance inventory and release documentation; groups 0.20.x notes as development history; and removes the low-value generic Launcher 'Open a supported file' handoff together with its launcher-only runtime and CSS. Each workspace keeps its explicit Open flow. The internal targetRelease remains 0.20.x solely for compatibility with the existing monotonic updater train, while public semantic versioning is now independent from the update sequence. No document parser/writer, formula engine, recovery, OOXML package behavior, PDF editor logic, or workspace editing feature is intentionally changed. Correction revision 1 updates only the legacy Chromium release-identity assertion so the 1.0.0-beta.1 prerelease badge is compared to its canonical SemVer text instead of appending a second 'beta' token. Runtime payload is otherwise unchanged from release-preparation-13."
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
   "name": "InkDesk",
   "displayName": "InkDesk",
-  "version": "0.20.3.1",
+  "version": "1.0.0-beta.1",
   "releaseChannel": "beta",
-  "releaseName": "Content Workspaces Visual Pass",
+  "releaseName": "1.0 Beta 1",
   "date": "2026-08-08",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDesk/",

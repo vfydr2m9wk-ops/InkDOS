@@ -45,6 +45,4 @@ exact typography/layout fidelity, encrypted files and unsupported legacy formats
 remain outside the beta contract. See [`COMPATIBILITY.md`](COMPATIBILITY.md) and
 [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md).
 
-Current archived note: [`docs/releases/RELEASE_NOTES_1.0.0-beta.1.md`](docs/releases/RELEASE_NOTES_1.0.0-beta.1.md)
-
 Full historical notes: [`docs/releases/`](docs/releases/)

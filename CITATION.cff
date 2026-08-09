@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: InkDesk Project
     given-names: Community
-version: 0.20.0
+version: 1.0.0-beta.1
 license: MIT
-repository-code: https://github.com/vfydr2m9wk-ops/inkdesk
-url: https://github.com/vfydr2m9wk-ops/inkdesk
-abstract: InkDesk is an open-source, browser-native, local-first productivity suite for focused DOCX, XLS/XLSX, and PPTX workflows.
+repository-code: https://github.com/vfydr2m9wk-ops/InkDesk
+url: https://github.com/vfydr2m9wk-ops/InkDesk
+abstract: InkDesk is an open-source, browser-native, local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.

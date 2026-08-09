@@ -1,30 +1,45 @@
 # InkDesk
 
-InkDesk is an experimental, local-first browser productivity suite for focused
-DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows. It is not intended to replace
-Microsoft Office, a full PDF editor or a complete publishing system.
+InkDesk is a local-first browser productivity suite for focused DOCX, XLS/XLSX,
+PPTX, PDF, TXT and EPUB workflows. It is not intended to replace Microsoft
+Office, a full publishing system or a specialist PDF editor.
 
-## InkDesk v0.20.3.1
+## InkDesk v1.0.0-beta.1
 
-Version 0.20.3.1 applies the first workspace-specific visual pass on top of the v0.20.3.0 shared foundation. Documents now uses denser, clearer editor chrome; Plain Text becomes a quieter writing surface; and EPUB shifts toward a book-first reading presentation with less decorative navigation.
+`1.0.0-beta.1` is the first public beta on the 1.0 line. It consolidates the long
+0.20.2/0.20.3 stabilization train into a feature-frozen beta baseline: six
+independent workspaces, local-first file handling, recovery and regression
+guards, package-preserving Office round-trips where supported, and a consistent
+landscape-first shell.
 
-The structural baseline remains frozen at v0.20.2.31. This release adds a last-loaded presentation-only stylesheet for Documents/TXT/EPUB and regression coverage for its geometry and states; parsers, writers, recovery, formulas, history and document transactions remain unchanged.
+The 0.20.x sequence numbers remain in repository history as engineering
+provenance; they are not separate public releases that users need to install.
+Internal update sequence numbers are intentionally independent from the public
+semantic version.
 
-## Development policy
+## Beta policy
 
-The v0.20.2.31 structural baseline is frozen. During the 0.20.3 visual train, architecture and data-safety code should change only for a reproducible defect whose benefit clearly exceeds regression risk. Visual work should prefer shared CSS and bounded markup changes over opportunistic refactors.
+The 1.0 beta is feature-frozen. Runtime changes should be limited to reproducible
+data-integrity, compatibility, security or high-value/low-risk defects. New
+features and broad visual refactors should wait until the beta baseline has
+received real-device use.
+
+The generic Launcher **Open a supported file** handoff has been removed because
+it duplicated each workspace's Open flow while adding routing and browser-state
+complexity. Open the target workspace first, then use that workspace's Open
+control.
 
 ## Privacy
 
-The selected file is processed in the browser. InkDesk includes no project-run
-upload server, account system or analytics service. Saving normally downloads a
-new local copy rather than overwriting the source file.
+Selected files are processed in the browser. InkDesk includes no project-run
+upload server, account system or analytics service. Saving normally creates a
+new local copy rather than silently overwriting the selected source file.
 
 ## Run
 
 Open `index.html` directly or serve the directory with a static HTTP server.
-Cross-workspace handoff, service workers, browser recovery and installation are
-more reliable over HTTP or HTTPS.
+HTTP(S) is preferred for service workers, installation and the most predictable
+browser behavior.
 
 ## Validate
 
@@ -36,25 +51,18 @@ npm run test:browser
 npm run test:browser:matrix
 ```
 
-The normal incremental-update workflow remains Chromium-only for predictable
-runtime. `test:browser:matrix` explicitly checks installed Chromium, Firefox and
-WebKit engines; unavailable engines are reported as not performed unless strict
-matrix mode is requested.
+The normal incremental-update gate uses Chromium. The optional matrix checks
+installed Chromium, Firefox and WebKit engines; unavailable engines are reported
+as not performed unless strict matrix mode is requested. Native Safari/iPadOS
+and installed-PWA behavior still require physical-device validation.
 
 ## Status
 
-v0.20.3.1 remains a beta. Real-device validation is still required for critical
-workflows, large files, native Safari/iPadOS, Firefox, Edge, download behavior
-and installed-PWA behavior.
+This is **1.0 beta**, not 1.0 stable. The supported scope is intentionally
+limited and documented in [`COMPATIBILITY.md`](COMPATIBILITY.md) and
+[`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md).
 
 ## License
 
 MIT for InkDesk original code. Bundled third-party components retain their
 upstream licenses; see `docs/THIRD_PARTY_NOTICES.md`.
-
-## PDF.js vendoring during publication
-
-The consolidated source pins `pdfjs-dist` 3.11.174 in `VENDOR_SOURCES.json`.
-The publication process retrieves that exact npm package, commits the local
-display and worker files, regenerates checksums, and runs strict validation.
-The published app does not load PDF.js from a CDN at runtime.

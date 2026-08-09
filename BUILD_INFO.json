@@ -1,10 +1,10 @@
 {
   "product": "InkDesk",
-  "version": "0.20.3.1",
+  "version": "1.0.0-beta.1",
   "buildDate": "2026-08-08",
   "channel": "beta",
-  "buildType": "complete-refined-source",
-  "sourceDevelopmentLine": "0.20.3",
+  "buildType": "public-beta-source",
+  "sourceDevelopmentLine": "0.20.x stabilization -> 1.0 beta",
   "modules": [
     "documents",
     "spreadsheets",

@@ -3,7 +3,7 @@
   "id": "spreadsheets",
   "name": "Spreadsheets",
   "description": "Edit XLSX files locally and open legacy XLS workbooks.",
-  "version": "0.20.3.1",
+  "version": "1.0.0-beta.1",
   "enabled": true,
   "optional": false,
   "order": 20,

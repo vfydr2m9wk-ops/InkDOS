@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "0.20.3.1"
+VERSION = "1.0.0-beta.1"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -67,8 +67,8 @@ def test_home_and_pdf(page, base_url, checks):
     body = page.locator("body").inner_text()
     assert_true("Consolidated modular preview" not in body, "Obsolete Home eyebrow remains visible")
     assert_true("Open, review and make focused edits" not in body, "Obsolete Home description remains visible")
-    assert_true(page.locator(".release-badge").inner_text().strip() == f"v{VERSION} beta", "Home release badge mismatch")
-    assert_true(page.locator(".footer-status").inner_text().strip() == f"v{VERSION} beta", "Home footer version mismatch")
+    assert_true(page.locator(".release-badge").inner_text().strip() == f"v{VERSION}", "Home release badge mismatch")
+    assert_true(page.locator(".footer-status").inner_text().strip() == f"v{VERSION}", "Home footer version mismatch")
     checks.append("Home compact copy and release identity")
 
     goto(page, f"{base_url}/apps/pdf/index.html")

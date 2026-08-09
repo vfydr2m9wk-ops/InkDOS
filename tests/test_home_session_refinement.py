@@ -14,12 +14,13 @@ class HomeSessionRefinementTests(unittest.TestCase):
             html.index('class="hub-topbar"'),
             html.index('class="hub-intro"'),
             html.index('class="workspace-grid"'),
-            html.index('class="open-any-panel"'),
             html.index('class="hub-footer"'),
         ]
         self.assertEqual(positions, sorted(positions))
-        self.assertIn("The selected file stays on this device.", html)
-        self.assertIn("v0.20.3.1 beta", html)
+        self.assertNotIn("Open a supported file", html)
+        self.assertNotIn('id="openAnyDocument"', html)
+        self.assertNotIn('shared/hub-open.js', html)
+        self.assertIn("v1.0.0-beta.1", html)
         self.assertNotIn("Choose a DOCX, XLS, XLSX, PPTX or PDF file.", html)
 
     def test_document_session_controller_contains_non_invasive_title_adapter(self):

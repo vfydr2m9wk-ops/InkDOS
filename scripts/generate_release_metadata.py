@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synchronize deterministic v0.20 release metadata from VERSION.json."""
+"""Synchronize deterministic InkDesk release metadata from VERSION.json."""
 from __future__ import annotations
 
 import json
