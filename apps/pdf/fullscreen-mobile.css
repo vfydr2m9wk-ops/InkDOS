@@ -1,25 +1,73 @@
-/* Universal PDF content-focus mode.
-   "Full screen" hides InkDesk editing chrome without rebuilding or replacing
-   the PDF renderer. This is intentionally device-agnostic and WebKit-safe. */
-body.pdf-fullscreen,
-body.content-focus-mode{overflow:hidden}
-body.pdf-fullscreen .titlebar,
-body.pdf-fullscreen .commandbar,
-body.pdf-fullscreen .statusbar,
-body.pdf-fullscreen .sidebar,
-body.content-focus-mode .titlebar,
-body.content-focus-mode .commandbar,
-body.content-focus-mode .statusbar,
-body.content-focus-mode .sidebar{display:none!important}
-body.pdf-fullscreen .viewer-app,
-body.content-focus-mode .viewer-app{grid-template-rows:minmax(0,1fr)!important;height:100dvh;min-height:100dvh}
-body.pdf-fullscreen .workspace-body,
-body.content-focus-mode .workspace-body{grid-template-columns:minmax(0,1fr)!important;min-height:0;height:100%}
-body.pdf-fullscreen .viewer-stage,
-body.content-focus-mode .viewer-stage{height:100dvh;min-height:0}
-body.pdf-fullscreen .pdf-host,
-body.content-focus-mode .pdf-host{height:100dvh;min-height:0}
-body.pdf-fullscreen .pdf-pages,
-body.content-focus-mode .pdf-pages{padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}
-body.pdf-fullscreen .immersive-exit,
-body.content-focus-mode .immersive-exit{display:block;right:max(8px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));padding:8px 11px;font-size:11px;opacity:.88}
+/* Universal PDF content-focus mode — sequence 54.
+   Full screen is an InkDesk viewport-focus state: it hides editing chrome and
+   overlays the existing viewer across the full visual viewport. The PDF DOM,
+   canvases, cache and zoom are intentionally left untouched. */
+body.office-pdf.pdf-fullscreen,
+body.office-pdf.content-focus-mode{
+  overflow:hidden!important;
+  width:100vw!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  margin:0!important;
+}
+body.office-pdf.pdf-fullscreen :is(.titlebar,.commandbar,.statusbar,.sidebar),
+body.office-pdf.content-focus-mode :is(.titlebar,.commandbar,.statusbar,.sidebar){
+  display:none!important;
+}
+body.office-pdf.pdf-fullscreen #viewerApp.viewer-app,
+body.office-pdf.content-focus-mode #viewerApp.viewer-app{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483000!important;
+  display:block!important;
+  width:100vw!important;
+  max-width:none!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  overflow:hidden!important;
+  background:#6b7077!important;
+}
+body.office-pdf.pdf-fullscreen #workspaceBody.workspace-body,
+body.office-pdf.content-focus-mode #workspaceBody.workspace-body{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+body.office-pdf.pdf-fullscreen #viewerStage.viewer-stage,
+body.office-pdf.content-focus-mode #viewerStage.viewer-stage{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important;
+}
+body.office-pdf.pdf-fullscreen #pdfHost.pdf-host,
+body.office-pdf.content-focus-mode #pdfHost.pdf-host{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+}
+body.office-pdf.pdf-fullscreen #pdfPages.pdf-pages,
+body.office-pdf.content-focus-mode #pdfPages.pdf-pages{
+  min-width:100%!important;
+  min-height:100%!important;
+  box-sizing:border-box!important;
+  padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))!important;
+}
+body.office-pdf.pdf-fullscreen #immersiveExit.immersive-exit,
+body.office-pdf.content-focus-mode #immersiveExit.immersive-exit{
+  display:block!important;
+  position:fixed!important;
+  z-index:2147483640!important;
+  right:max(8px,env(safe-area-inset-right))!important;
+  top:max(8px,env(safe-area-inset-top))!important;
+  padding:8px 11px!important;
+  font-size:11px!important;
+  opacity:.88!important;
+}

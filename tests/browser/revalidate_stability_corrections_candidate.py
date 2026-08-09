@@ -231,9 +231,9 @@ def main():
                     page,
                     [
                         "apps/pdf/styles.css",
-                        "apps/pdf/fullscreen-mobile.css",
                         "shared/office-shell.css",
                         "shared/ui/light-only.css",
+                        "apps/pdf/fullscreen-mobile.css",
                     ],
                 )
                 add_scripts(
@@ -297,7 +297,11 @@ def main():
                         stage:document.querySelector('#viewerStage').getBoundingClientRect().height,
                         preserved:!!document.querySelector('canvas[data-pre-fullscreen="1"]'),
                         canvases:window.InkDeskPdfDebug.getState().renderedCanvases,
-                        nativeFullscreen:!!document.fullscreenElement
+                        nativeFullscreen:!!document.fullscreenElement,
+                        appPosition:getComputedStyle(document.querySelector('#viewerApp')).position,
+                        appTop:document.querySelector('#viewerApp').getBoundingClientRect().top,
+                        appLeft:document.querySelector('#viewerApp').getBoundingClientRect().left,
+                        appWidth:document.querySelector('#viewerApp').getBoundingClientRect().width
                     })"""
                 )
                 check(focused["command"] == "none" and focused["status"] == "none" and focused["title"] == "none", f"content-focus chrome remains: {focused}")
@@ -305,6 +309,7 @@ def main():
                 check(focused["preserved"], f"content-focus mode replaced the rendered PDF canvas: {focused}")
                 check(focused["canvases"] >= 1 and focused["canvases"] == before_count, f"content-focus mode changed rendered canvas count: {focused}")
                 check(not focused["nativeFullscreen"], f"content-focus mode unexpectedly invoked native fullscreen: {focused}")
+                check(focused["appPosition"] == "fixed" and abs(focused["appTop"]) < 1 and abs(focused["appLeft"]) < 1 and focused["appWidth"] >= 389, f"content-focus viewer is not pinned to viewport: {focused}")
                 report["checks"].append("PDF universal non-destructive content-focus fullscreen")
 
                 page.evaluate("() => window.InkDeskPdfDebug.exitFullscreen()")

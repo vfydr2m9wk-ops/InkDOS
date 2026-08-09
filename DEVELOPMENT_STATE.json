@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 53,
+  "appliedSequence": 54,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -270,6 +270,11 @@
       "sequence": 53,
       "packageLabel": "1.0.0-beta.1",
       "description": "Universal non-destructive PDF content-focus fullscreen. Full screen now hides InkDesk editing chrome on every viewport without invoking native browser fullscreen, fitting/rebuilding the PDF, or replacing existing canvases; exiting restores controls while preserving rendered content. This patch intentionally changes only PDF fullscreen presentation, cache-busting, and its regression contracts."
+    },
+    {
+      "sequence": 54,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "PDF fullscreen focus visibility correction. Keeps the existing PDF renderer/canvases untouched while pinning the viewer to the full visual viewport, hiding InkDesk editing chrome with dominant post-shell CSS, and preserving the content-focus fullscreen contract on all viewports."
     }
   ]
 }
