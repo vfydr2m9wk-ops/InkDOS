@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 51,
+  "appliedSequence": 52,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -260,6 +260,11 @@
       "sequence": 51,
       "packageLabel": "1.0.0-beta.1",
       "description": "Focused physical-device follow-up correction. Removes active runtime dark-mode media overrides so the current product remains light/day only while future dark-theme work stays isolated; bumps the service-worker shell cache to evict stale dark CSS on Safari/iOS; and makes Presentation pointer move, resize and rotate operations participate in Undo/Redo history, with standard keyboard Cmd/Ctrl+Z support. Preserves the already improved PDF lifecycle and Documents toolbar unchanged. Adds permanent source and Chromium regression coverage for the two reported residual defects."
+    },
+    {
+      "sequence": 52,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Focused PDF fullscreen portrait patch, correction 1. Preserves the sequence-51 PDF renderer and existing immersive fallback contract, adds narrow-portrait fit-width reading fullscreen, and corrects the browser regression harness so the successful native fullscreen scenario is exited before the legacy immersive fallback is tested. No non-PDF runtime behavior is changed."
     }
   ]
 }

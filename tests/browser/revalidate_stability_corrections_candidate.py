@@ -231,6 +231,7 @@ def main():
                     page,
                     [
                         "apps/pdf/styles.css",
+                        "apps/pdf/fullscreen-mobile.css",
                         "shared/office-shell.css",
                         "shared/ui/light-only.css",
                     ],
@@ -248,6 +249,7 @@ def main():
                         "apps/pdf/review/review-controller.js",
                         "apps/pdf/viewer/navigation-controller.js",
                         "apps/pdf/viewer/page-renderer.js",
+                        "apps/pdf/viewer/fullscreen-controller.js",
                         "apps/pdf/app.js",
                     ],
                 )
@@ -279,11 +281,41 @@ def main():
                     )
                 report["checks"].append("PDF.js 20-page rapid navigation without visible gray placeholders")
 
+                # Mobile portrait fullscreen must become a reading surface: the
+                # application chrome disappears and Fit Width uses the narrow
+                # phone viewport rather than leaving a large gray field.
+                page.set_viewport_size({"width": 390, "height": 844})
+                page.evaluate("() => { document.querySelector('#viewerApp').requestFullscreen = () => Promise.reject(new Error('force fallback')); }")
+                page.evaluate("() => window.InkDeskPdfDebug.toggleFullscreen()")
+                page.wait_for_function("() => document.body.classList.contains('pdf-fullscreen')")
+                page.wait_for_timeout(250)
+                mobile = page.evaluate(
+                    """() => ({
+                        command:getComputedStyle(document.querySelector('.commandbar')).display,
+                        status:getComputedStyle(document.querySelector('.statusbar')).display,
+                        stage:document.querySelector('#viewerStage').getBoundingClientRect().height,
+                        pageWidth:document.querySelector('.pdf-page').getBoundingClientRect().width,
+                        viewport:innerWidth,
+                        zoom:window.InkDeskPdfDebug.getState().zoom
+                    })"""
+                )
+                check(mobile["command"] == "none" and mobile["status"] == "none", f"mobile fullscreen chrome remains: {mobile}")
+                check(mobile["stage"] > 760, f"mobile fullscreen did not use viewport height: {mobile}")
+                check(mobile["pageWidth"] >= 360 and mobile["pageWidth"] <= 390, f"mobile fullscreen page did not fit width: {mobile}")
+                report["checks"].append("PDF mobile portrait fullscreen fit-width reading mode")
+
+                # Leave the successful fullscreen scenario before forcing the legacy
+                # immersive fallback. toggleFullscreen() exits when fullscreen is
+                # already active, so the fallback must start from a non-fullscreen
+                # state just like the historical guardrail did.
+                page.evaluate("() => window.InkDeskPdfDebug.exitFullscreen()")
+                page.wait_for_function("() => !document.fullscreenElement && !document.body.classList.contains('pdf-fullscreen')")
+
                 page.locator("#viewerStage canvas").first.evaluate("node => node.dataset.preFullscreen='1'")
                 page.evaluate(
                     "() => { document.querySelector('#viewerApp').requestFullscreen = async () => { throw new Error('forced fallback'); }; }"
                 )
-                page.click("#fullscreenBtn")
+                page.evaluate("() => window.InkDeskPdfDebug.toggleFullscreen()")
                 page.wait_for_function("() => document.body.classList.contains('immersive')")
                 page.wait_for_function("() => !document.querySelector('canvas[data-pre-fullscreen=\"1\"]')")
                 check(

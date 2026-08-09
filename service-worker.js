@@ -1,6 +1,6 @@
 'use strict';
 // Update sequence 47: InkDesk 1.0 beta release preparation and Launcher simplification.
-const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-light51';
+const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-pdf52';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -103,6 +103,7 @@ const APP_SHELL=[
   './apps/pdf/module.json',
   './apps/pdf/index.html',
   './apps/pdf/styles.css',
+  './apps/pdf/fullscreen-mobile.css',
   './apps/pdf/text-selection-review.js',
   './apps/pdf/flatten-export.css',
   './apps/pdf/flatten-export.js',
@@ -111,6 +112,7 @@ const APP_SHELL=[
   './apps/pdf/review/review-controller.js',
   './apps/pdf/viewer/navigation-controller.js',
   './apps/pdf/viewer/page-renderer.js',
+  './apps/pdf/viewer/fullscreen-controller.js',
   './apps/pdf/app.js',
   './apps/txt/module.json',
   './apps/txt/index.html',

@@ -1,0 +1,16 @@
+/* Mobile portrait PDF reading fullscreen. Kept separate to preserve PDF core CSS ratchets. */
+body.pdf-fullscreen .titlebar,
+body.pdf-fullscreen .commandbar,
+body.pdf-fullscreen .statusbar,
+body.pdf-fullscreen .sidebar{display:none!important}
+body.pdf-fullscreen .viewer-app{grid-template-rows:minmax(0,1fr)!important;height:100dvh}
+body.pdf-fullscreen .workspace-body{grid-template-columns:minmax(0,1fr)!important;min-height:0}
+body.pdf-fullscreen .viewer-stage{height:100dvh;min-height:0;background:#e9edf3}
+body.pdf-fullscreen .pdf-host{height:100dvh;min-height:0;background:#e9edf3}
+body.pdf-fullscreen .immersive-exit{display:block}
+@media(max-width:650px) and (orientation:portrait){
+  body.pdf-fullscreen .pdf-pages{gap:10px;padding:max(6px,env(safe-area-inset-top)) 6px max(6px,env(safe-area-inset-bottom));background:#e9edf3}
+  body.pdf-fullscreen .pdf-page-shell{min-width:0;scroll-margin:6px}
+  body.pdf-fullscreen .pdf-page{max-width:calc(100vw - 12px)}
+  body.pdf-fullscreen .immersive-exit{right:max(8px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));padding:8px 11px;font-size:11px;opacity:.88}
+}

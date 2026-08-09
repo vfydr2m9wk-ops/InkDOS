@@ -309,10 +309,10 @@ function setZoom(value) {
   syncZoomUi();
   rerender();
 }
-async function fitWidth() {
+async function fitWidth(gutter = 48) {
   if (!state.doc) return;
   const page = await state.doc.getPage(state.page), base = page.getViewport({ scale: 1 });
-  setZoom(Math.round(clamp(Math.max(260, E.viewerStage.clientWidth - 48) / base.width, 0.5, 4) * 100));
+  setZoom(Math.round(clamp(Math.max(260, E.viewerStage.clientWidth - gutter) / base.width, 0.5, 4) * 100));
   page.cleanup();
 }
 function zoomStep(delta) {
@@ -406,45 +406,11 @@ E.bookmarkBtn.onclick = () => {
 };
 
 
-function exitImmersive() {
-  document.body.classList.remove('immersive');
-
-  if (document.fullscreenElement) {
-    document.exitFullscreen().catch(() => {});
-  }
-}
-
-E.fullscreenBtn.onclick = async () => {
-  if (
-    document.fullscreenElement ||
-    document.body.classList.contains('immersive')
-  ) {
-    exitImmersive();
-    return;
-  }
-
-  try {
-    await E.viewerApp.requestFullscreen();
-  } catch (error) {
-    document.body.classList.add('immersive');
-    requestAnimationFrame(() => requestAnimationFrame(rerender));
-  }
-};
-
-E.immersiveExit.onclick = exitImmersive;
-
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) document.body.classList.remove('immersive');
-  requestAnimationFrame(() => requestAnimationFrame(rerender));
+const fullscreenController = window.InkDeskPdfFullscreen.create({
+  state, elements:E, fitWidth, rerender
 });
-
-window.addEventListener('resize', () => {
-  clearTimeout(window.__pdfResize);
-  window.__pdfResize = setTimeout(
-    rerender,
-    180
-  );
-});
+E.fullscreenBtn.onclick = () => fullscreenController.toggle();
+E.immersiveExit.onclick = () => fullscreenController.exit();
 
 window.addEventListener(
   'pagehide',
@@ -493,5 +459,5 @@ window.InkDeskPdfDebug = {
     reviewController.addSyntheticAnnotation(type),
   toggleFullscreen: () =>
     E.fullscreenBtn.click(),
-  exitFullscreen: exitImmersive
+  exitFullscreen: () => fullscreenController.exit()
 };
