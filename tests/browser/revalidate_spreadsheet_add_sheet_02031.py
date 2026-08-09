@@ -46,6 +46,7 @@ def load_app(page):
         ROOT / "apps/spreadsheets/formula-safety.js",
         ROOT / "apps/spreadsheets/history-controller.js",
         ROOT / "apps/spreadsheets/worksheet-tabs.js",
+        ROOT / "shared/formula-engine.js",
         ROOT / "apps/spreadsheets/app.js",
     ):
         page.add_script_tag(path=str(js))
@@ -135,6 +136,31 @@ def main() -> int:
         page.click('.cell[data-r="0"][data-c="0"]')
         page.fill("#formulaInput", "INKDESK-SECOND-SHEET")
         page.press("#formulaInput", "Enter")
+
+        arithmetic_cases = {
+            (0, 1): ("=10%", {"0.1"}),
+            (1, 1): ("=200*10%", {"20", "20.0"}),
+            (2, 1): ("=2^3", {"8", "8.0"}),
+            (3, 1): ("=10/0", {"#DIV/0!"}),
+            (4, 1): ("=1+2*3", {"7", "7.0"}),
+        }
+        for (row, col), (formula, expected) in arithmetic_cases.items():
+            page.click(f'.cell[data-r="{row}"][data-c="{col}"]')
+            page.fill("#formulaInput", formula)
+            page.press("#formulaInput", "Enter")
+            display = page.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
+            if display not in expected:
+                raise RuntimeError(f"Safe arithmetic integration failed for {formula}: {display!r}")
+        page.click('.cell[data-r="5"][data-c="0"]')
+        page.fill("#formulaInput", "5")
+        page.press("#formulaInput", "Enter")
+        page.click('.cell[data-r="5"][data-c="1"]')
+        page.fill("#formulaInput", "=A6*2")
+        page.press("#formulaInput", "Enter")
+        ref_arithmetic_display = page.locator('.cell[data-r="5"][data-c="1"]').inner_text()
+        if ref_arithmetic_display not in {"10", "10.0"}:
+            raise RuntimeError(f"Cell-reference arithmetic did not use the safe engine: {ref_arithmetic_display!r}")
+
         save_workbook(page, added)
         page.close()
 
@@ -155,6 +181,18 @@ def main() -> int:
         marker = reopened.locator('.cell[data-r="0"][data-c="0"]').inner_text()
         if marker != "INKDESK-SECOND-SHEET":
             raise RuntimeError(f"New worksheet content did not survive round-trip: {marker!r}")
+        reopened_arithmetic = {
+            (0, 1): {"0.1"},
+            (1, 1): {"20", "20.0"},
+            (2, 1): {"8", "8.0"},
+            (3, 1): {"#DIV/0!"},
+            (4, 1): {"7", "7.0"},
+            (5, 1): {"10", "10.0"},
+        }
+        for (row, col), expected in reopened_arithmetic.items():
+            display = reopened.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
+            if display not in expected:
+                raise RuntimeError(f"Safe arithmetic result did not survive save/reopen at {row},{col}: {display!r}")
 
         victim = before_names[0]
         survivor = before_names[1]
@@ -235,6 +273,10 @@ def main() -> int:
         final_marker = final_page.locator('.cell[data-r="0"][data-c="0"]').inner_text()
         if final_marker != "INKDESK-SECOND-SHEET":
             raise RuntimeError(f"Surviving worksheet content was damaged by deletion: {final_marker!r}")
+        for (row, col), expected in reopened_arithmetic.items():
+            display = final_page.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
+            if display not in expected:
+                raise RuntimeError(f"Safe arithmetic result was damaged by unrelated sheet deletion at {row},{col}: {display!r}")
         # Delete the added sheet in-memory; the final visible sheet must become protected from deletion.
         delete_active(final_page, accept=True)
         if not final_page.locator("#deleteSheetBtn").is_disabled():
@@ -256,6 +298,7 @@ def main() -> int:
         "orphan_parts_removed": True,
         "missing_reference_display": missing_ref_display,
         "lazy_if_display": lazy_if_display,
+        "safe_arithmetic": {"percentage": "0.1", "power": "8", "division_by_zero": "#DIV/0!", "reference": ref_arithmetic_display},
         "last_sheet_delete_disabled": True,
     }
     (OUT / "spreadsheet_add_sheet_02031.json").write_text(json.dumps(result, indent=2), encoding="utf-8")

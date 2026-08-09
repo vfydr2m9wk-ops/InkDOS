@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 43,
+  "appliedSequence": 44,
   "currentPackage": "0.20.3.1",
   "status": "in-progress",
   "history": [
@@ -220,6 +220,11 @@
       "sequence": 43,
       "packageLabel": "0.20.3.1",
       "description": "Spreadsheet worksheet deletion integrity correction. Deleted-sheet references no longer silently fall back to the active worksheet: explicit references to a removed worksheet are converted to #REF! and the formula evaluator propagates #REF! through direct references, ranges, arithmetic, comparisons and supported functions while preserving quoted text literals, external-workbook references and lazy IF branches. The XLSX package-preserving writer now traverses relationships from deleted worksheets and removes drawing, image, table, comment and other dependent parts only when they become unreferenced by the surviving package, preventing deleted-sheet content from remaining as orphaned data while preserving shared dependencies. A focused formula-integrity module keeps the spreadsheet app within architecture ratchets. Browser round-trip coverage verifies #REF! before and after save/reopen, literal/external-reference preservation and deletion of orphan drawing/media parts while preserving add/delete sheet behavior and all sequence-42 UI/fidelity work."
+    },
+    {
+      "sequence": 44,
+      "packageLabel": "0.20.3.1",
+      "description": "Spreadsheet safe formula-engine integration correction. Replaces the remaining dynamic Function-based arithmetic evaluation in the Spreadsheets runtime with the already-loaded shared InkDeskFormula.evaluateArithmetic parser, restoring supported spreadsheet semantics for postfix percentages, exponentiation, precedence, cell-reference arithmetic and division-by-zero as #DIV/0! while retaining sequence-43 #REF! propagation and worksheet deletion integrity. Browser harnesses that inject the spreadsheet runtime now load the shared formula engine in the same dependency order as the real workspace. Permanent regression coverage verifies safe-engine integration and arithmetic results before save, after save/reopen and after unrelated worksheet deletion. No UI, formatting, OOXML package behavior, Documents, Presentations, PDF, TXT, EPUB, Launcher, recovery, storage or workflow behavior is intentionally changed."
     }
   ]
 }

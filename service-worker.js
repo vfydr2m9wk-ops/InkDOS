@@ -1,5 +1,5 @@
 'use strict';
-// Update sequence 43: worksheet deletion integrity, #REF! semantics and orphan cleanup.
+// Update sequence 44: safe spreadsheet arithmetic engine integration.
 const CACHE_NAME='inkdesk-shell-v0.20.3.1';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[

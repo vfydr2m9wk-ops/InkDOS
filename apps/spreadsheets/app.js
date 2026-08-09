@@ -134,7 +134,7 @@ function evaluateFormula(currentSheet,formula,stack=new Set(),env={}){
   if(/#REF!/i.test(f))return'#REF!';
   let arithmeticError='';const arithmetic=f.replace(/(?:(?:'[^']+'|[A-Za-z0-9_ .-]+)!)?\$?[A-Z]{1,3}\$?\d+/g,t=>{const rr=parseFormulaRef(t,currentSheet);if(rr?.error){arithmeticError=rr.error;return'0'}const v=rr?formulaValue(rr.sheet,rr.ref,stack,env):0;if(isFormulaError(v)){arithmeticError=v;return'0'}return Number.isFinite(Number(v))?String(Number(v)):'0'}).replace(/\b[A-Za-z_][A-Za-z0-9_.]*\b/g,name=>Object.prototype.hasOwnProperty.call(env,name)&&Number.isFinite(Number(env[name]))?String(Number(env[name])):name);
   if(arithmeticError)return arithmeticError;
-  if(/^[0-9+\-*/(). %]+$/.test(arithmetic)){try{return Function('"use strict";return ('+arithmetic+')')()}catch(error){console.warn('Arithmetic formula could not be evaluated.',error)}}
+  if(/^[0-9+\-*/%^(). %]+$/.test(arithmetic)){try{return InkDeskFormula.evaluateArithmetic(arithmetic)}catch(error){console.warn('Arithmetic formula could not be evaluated safely.',error)}}
   const n=Number(f.replace(',','.'));return Number.isFinite(n)?n:null;
 }
 

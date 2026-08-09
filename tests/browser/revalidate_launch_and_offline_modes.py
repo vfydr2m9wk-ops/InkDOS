@@ -215,6 +215,7 @@ def validate_restricted_apis(browser, base_url):
             "apps/spreadsheets/formula-safety.js",
             "apps/spreadsheets/history-controller.js",
             "apps/spreadsheets/worksheet-tabs.js",
+        "shared/formula-engine.js",
         "apps/spreadsheets/app.js",
             "shared/register-service-worker.js",
         ),

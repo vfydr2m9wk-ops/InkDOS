@@ -43,6 +43,7 @@ def load_app(page):
         ROOT / "apps/spreadsheets/formula-safety.js",
         ROOT / "apps/spreadsheets/history-controller.js",
         ROOT / "apps/spreadsheets/worksheet-tabs.js",
+        "shared/formula-engine.js",
         "apps/spreadsheets/app.js",
     ):
         page.add_script_tag(path=str(js))

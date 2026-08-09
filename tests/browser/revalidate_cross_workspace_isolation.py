@@ -45,6 +45,7 @@ SCRIPTS = {
         "apps/spreadsheets/formula-safety.js",
         "apps/spreadsheets/history-controller.js",
         "apps/spreadsheets/worksheet-tabs.js",
+        "shared/formula-engine.js",
         "apps/spreadsheets/app.js",
     ),
     "presentations": (
