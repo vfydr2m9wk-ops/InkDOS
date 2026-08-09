@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 54,
+  "appliedSequence": 55,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -275,6 +275,11 @@
       "sequence": 54,
       "packageLabel": "1.0.0-beta.1",
       "description": "PDF fullscreen focus visibility correction. Keeps the existing PDF renderer/canvases untouched while pinning the viewer to the full visual viewport, hiding InkDesk editing chrome with dominant post-shell CSS, and preserving the content-focus fullscreen contract on all viewports."
+    },
+    {
+      "sequence": 55,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "PDF fullscreen adaptive correction. Keeps fullscreen as a universal InkDesk content-focus mode (no native Fullscreen API), hides editor chrome, then fits the current PDF page to the newly available viewport after layout stabilization. This addresses the physical-device result where controls hid but the PDF itself did not visibly adapt. Normal PDF scrolling/cache behavior and all non-PDF workspaces remain unchanged."
     }
   ]
 }

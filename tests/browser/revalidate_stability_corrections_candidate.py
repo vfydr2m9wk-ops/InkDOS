@@ -281,47 +281,54 @@ def main():
                     )
                 report["checks"].append("PDF.js 20-page rapid navigation without visible gray placeholders")
 
-                # Universal content-focus fullscreen: hide InkDesk editing chrome
-                # without invoking the browser Fullscreen API or replacing canvases.
+                # Universal content-focus fullscreen: hide InkDesk editing chrome,
+                # avoid native fullscreen and adapt the current page to the viewport.
                 page.set_viewport_size({"width": 390, "height": 844})
-                page.locator("#viewerStage canvas").first.evaluate("node => node.dataset.preFullscreen='1'")
-                before_count = page.evaluate("() => window.InkDeskPdfDebug.getState().renderedCanvases")
-                page.evaluate("() => window.InkDeskPdfDebug.toggleFullscreen()")
+                page.locator("#fullscreenBtn").click()
                 page.wait_for_function("() => document.body.classList.contains('pdf-fullscreen') && document.body.classList.contains('immersive')")
-                page.wait_for_timeout(120)
+                page.wait_for_function("() => window.InkDeskPdfDebug.getState().renderedCanvases >= 1")
+                page.wait_for_timeout(160)
                 focused = page.evaluate(
                     """() => ({
                         command:getComputedStyle(document.querySelector('.commandbar')).display,
                         status:getComputedStyle(document.querySelector('.statusbar')).display,
                         title:getComputedStyle(document.querySelector('.titlebar')).display,
                         stage:document.querySelector('#viewerStage').getBoundingClientRect().height,
-                        preserved:!!document.querySelector('canvas[data-pre-fullscreen="1"]'),
                         canvases:window.InkDeskPdfDebug.getState().renderedCanvases,
                         nativeFullscreen:!!document.fullscreenElement,
                         appPosition:getComputedStyle(document.querySelector('#viewerApp')).position,
                         appTop:document.querySelector('#viewerApp').getBoundingClientRect().top,
                         appLeft:document.querySelector('#viewerApp').getBoundingClientRect().left,
-                        appWidth:document.querySelector('#viewerApp').getBoundingClientRect().width
+                        appWidth:document.querySelector('#viewerApp').getBoundingClientRect().width,
+                        pageWidth:(() => {
+                          const current=window.InkDeskPdfDebug.getState().page;
+                          return document.querySelector(`#viewerStage .pdf-page-shell[data-page="${current}"]`)?.getBoundingClientRect().width || 0;
+                        })(),
+                        stageWidth:document.querySelector('#viewerStage').getBoundingClientRect().width,
+                        pressed:document.querySelector('#fullscreenBtn').getAttribute('aria-pressed')
                     })"""
                 )
                 check(focused["command"] == "none" and focused["status"] == "none" and focused["title"] == "none", f"content-focus chrome remains: {focused}")
                 check(focused["stage"] > 760, f"content-focus mode did not use viewport height: {focused}")
-                check(focused["preserved"], f"content-focus mode replaced the rendered PDF canvas: {focused}")
-                check(focused["canvases"] >= 1 and focused["canvases"] == before_count, f"content-focus mode changed rendered canvas count: {focused}")
+                check(focused["canvases"] >= 1, f"content-focus mode lost rendered PDF canvases: {focused}")
                 check(not focused["nativeFullscreen"], f"content-focus mode unexpectedly invoked native fullscreen: {focused}")
                 check(focused["appPosition"] == "fixed" and abs(focused["appTop"]) < 1 and abs(focused["appLeft"]) < 1 and focused["appWidth"] >= 389, f"content-focus viewer is not pinned to viewport: {focused}")
-                report["checks"].append("PDF universal non-destructive content-focus fullscreen")
+                check(focused["pageWidth"] >= focused["stageWidth"] * 0.85 and focused["pageWidth"] <= focused["stageWidth"], f"fullscreen page did not adapt to viewport width: {focused}")
+                check(focused["pressed"] == "true", f"fullscreen button did not expose active state: {focused}")
+                report["checks"].append("PDF fullscreen hides chrome and adapts current page to viewport")
 
                 page.evaluate("() => window.InkDeskPdfDebug.exitFullscreen()")
                 page.wait_for_function("() => !document.body.classList.contains('pdf-fullscreen') && !document.body.classList.contains('immersive')")
+                page.wait_for_function("() => window.InkDeskPdfDebug.getState().renderedCanvases >= 1")
                 restored = page.evaluate(
                     """() => ({
                         command:getComputedStyle(document.querySelector('.commandbar')).display,
-                        canvas:!!document.querySelector('canvas[data-pre-fullscreen="1"]')
+                        canvases:window.InkDeskPdfDebug.getState().renderedCanvases,
+                        pressed:document.querySelector('#fullscreenBtn').getAttribute('aria-pressed')
                     })"""
                 )
-                check(restored["command"] != "none" and restored["canvas"], f"content-focus exit did not restore chrome/preserve canvas: {restored}")
-                report["checks"].append("PDF content-focus exit restores controls without renderer teardown")
+                check(restored["command"] != "none" and restored["canvases"] >= 1 and restored["pressed"] == "false", f"content-focus exit did not restore chrome/PDF state: {restored}")
+                report["checks"].append("PDF content-focus exit restores controls and PDF rendering")
 
             report["passed"] = True
             context.close()

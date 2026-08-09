@@ -309,10 +309,15 @@ function setZoom(value) {
   syncZoomUi();
   rerender();
 }
-async function fitWidth(gutter = 48) {
+async function fitWidth(gutter = 48, minimumScale = 0.5) {
   if (!state.doc) return;
   const page = await state.doc.getPage(state.page), base = page.getViewport({ scale: 1 });
-  setZoom(Math.round(clamp(Math.max(260, E.viewerStage.clientWidth - gutter) / base.width, 0.5, 4) * 100));
+  const available = Math.max(80, E.viewerStage.clientWidth - gutter);
+  const fitted = clamp(available / base.width, minimumScale, 4);
+  state.zoom = fitted;
+  E.zoomSelect.value = fitted >= 0.5 ? String(Math.round(fitted * 100)) : 'page-width';
+  syncZoomUi();
+  rerender();
   page.cleanup();
 }
 function zoomStep(delta) {

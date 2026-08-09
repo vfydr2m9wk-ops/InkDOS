@@ -23,13 +23,15 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
         self.assertIn('state.rendered.get(pageNumber)?.task !== task',renderer)
         self.assertIn('viewportRelevant(pageNumber)',renderer)
 
-    def test_pdf_fullscreen_does_not_rebuild_renderer(self):
+    def test_pdf_fullscreen_adapts_content_without_native_fullscreen(self):
         controller=(ROOT/'apps/pdf/viewer/fullscreen-controller.js').read_text()
-        self.assertIn("document.addEventListener('fullscreenchange'",controller)
-        self.assertNotIn('requestAnimationFrame(() => requestAnimationFrame(() => {',controller)
-        self.assertNotIn('rerender();',controller)
-        self.assertNotIn('fitWidth(',controller)
+        app=(ROOT/'apps/pdf/app.js').read_text()
+        renderer=(ROOT/'apps/pdf/viewer/page-renderer.js').read_text()
         self.assertNotIn('requestFullscreen()',controller)
+        self.assertIn('fitWidth?.(12, 0.10)',controller)
+        self.assertIn('state.fullscreenFit = true',controller)
+        self.assertIn('minimumScale = 0.5',app)
+        self.assertIn('state.fullscreenFit ? 0.10 : 0.5',renderer)
 
     def test_presentation_hidden_format_panel_does_not_reserve_track(self):
         css=(ROOT/'apps/presentations/stability.css').read_text()
@@ -60,7 +62,7 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
             if 'prefers-color-scheme:dark' in text.replace(' ','') or 'prefers-color-scheme: dark' in text:
                 offenders.append(str(path.relative_to(ROOT)))
         self.assertEqual(offenders, [])
-        self.assertIn("inkdesk-shell-v1.0.0-beta.1-pdf54", (ROOT/'service-worker.js').read_text())
+        self.assertIn("inkdesk-shell-v1.0.0-beta.1-pdf55", (ROOT/'service-worker.js').read_text())
 
     def test_presentation_pointer_edits_are_undoable(self):
         selection=(ROOT/'apps/presentations/state/selection-controller.js').read_text()
@@ -93,7 +95,7 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
         self.assertIn('position:fixed!important', css)
         self.assertIn('inset:0!important', css)
         self.assertIn('height:100dvh!important', css)
-        self.assertIn('viewer/fullscreen-controller.js?v=1.0.0-beta.1-pdf54', html)
+        self.assertIn('viewer/fullscreen-controller.js?v=1.0.0-beta.1-pdf55', html)
         self.assertIn("'./apps/pdf/fullscreen-mobile.css'", worker)
         self.assertIn("'./apps/pdf/viewer/fullscreen-controller.js'", worker)
 

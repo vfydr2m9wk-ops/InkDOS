@@ -204,7 +204,7 @@
       }
 
       const base = page.getViewport({ scale: 1 });
-      const scale = clamp(pageScale(base), 0.5, 4);
+      const scale = clamp(pageScale(base), state.fullscreenFit ? 0.10 : 0.5, 4);
       state.scale = scale;
 
       const viewport = page.getViewport({ scale });
