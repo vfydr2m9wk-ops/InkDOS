@@ -107,6 +107,15 @@ function appendQuery(path,values){
   const separator=path.includes('?')?'&':'?';
   return path+separator+Object.entries(values).map(([key,value])=>encodeURIComponent(key)+'='+encodeURIComponent(value)).join('&');
 }
+function messageOrigin(){
+  const origin=String(global.location&&global.location.origin||'');
+  return origin&&origin!=='null'?origin:null;
+}
+function trustedMessage(event,source){
+  if(event.source!==source)return false;
+  const origin=messageOrigin();
+  return origin?event.origin===origin:event.origin==='null';
+}
 function createEmbeddedWorkspace(file,path){
   const token=randomToken();
   let frame=document.getElementById('workspaceFrame');
@@ -119,10 +128,10 @@ function createEmbeddedWorkspace(file,path){
   document.body.appendChild(frame);
   document.body.classList.add('workspace-active');
   const onMessage=event=>{
-    if(event.source!==frame.contentWindow)return;
+    if(!trustedMessage(event,frame.contentWindow))return;
     const data=event.data||{};
     if(data.type!=='inkdesk:workspace-ready'||data.token!==token)return;
-    frame.contentWindow.postMessage({type:'inkdesk:open-file',token,file},'*');
+    frame.contentWindow.postMessage({type:'inkdesk:open-file',token,file},messageOrigin()||'*');
     global.removeEventListener('message',onMessage);
   };
   global.addEventListener('message',onMessage);
@@ -160,7 +169,7 @@ function attachWorkspace(options){
   const embedded=params.get('embedded')==='1'&&bridgeToken&&global.parent!==global;
   if(embedded){
     const listener=event=>{
-      if(event.source!==global.parent)return;
+      if(!trustedMessage(event,global.parent))return;
       const data=event.data||{};
       if(data.type!=='inkdesk:open-file'||data.token!==bridgeToken)return;
       const file=data.file;
@@ -174,7 +183,7 @@ function attachWorkspace(options){
       });
     };
     global.addEventListener('message',listener);
-    global.parent.postMessage({type:'inkdesk:workspace-ready',token:bridgeToken},'*');
+    global.parent.postMessage({type:'inkdesk:workspace-ready',token:bridgeToken},messageOrigin()||'*');
   }
   const handoffToken=params.get('openToken');
   if(handoffToken){

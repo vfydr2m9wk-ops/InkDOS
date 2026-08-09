@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <link rel="icon" href="../../assets/icons/documents.png">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <title>Documents — InkDesk 1.0.0-beta.1</title>
   <link rel="stylesheet" href="styles.css?v=0.20.3.0">
   <link rel="stylesheet" href="../../shared/office-shell.css?v=0.20.3.0">
@@ -58,12 +58,12 @@
       <span class="separator"></span>
       <button class="fmt-btn" data-cmd="bold" title="Bold"><b>B</b></button><button class="fmt-btn" data-cmd="italic"><i>I</i></button><button class="fmt-btn" data-cmd="underline"><u>U</u></button>
       <span class="separator"></span>
-      <button class="fmt-btn" data-cmd="justifyLeft">≡</button><button class="fmt-btn" data-cmd="justifyCenter">≣</button><button class="fmt-btn" data-cmd="justifyRight">≡</button><button class="fmt-btn" data-cmd="justifyFull">☰</button>
+      <select id="alignmentSelect" class="fmt-select" title="Alignment" aria-label="Alignment"><option value="" selected>Align</option><option value="justifyLeft">☰ Left</option><option value="justifyCenter">☰ Center</option><option value="justifyRight">☰ Right</option><option value="justifyFull">☰ Justify</option></select><button class="fmt-btn" data-cmd="outdent" title="Decrease indent" aria-label="Decrease indent">⇤</button><button class="fmt-btn" data-cmd="indent" title="Increase indent" aria-label="Increase indent">⇥</button>
       <span class="separator"></span>
-      <button class="fmt-btn" data-cmd="insertUnorderedList">• List</button><button class="fmt-btn" data-cmd="insertOrderedList">1. List</button>
-      <button id="alphaList" class="fmt-btn">A. List</button>
+      <button class="fmt-btn" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list">•≡</button><button class="fmt-btn" data-cmd="insertOrderedList" title="Numbered list" aria-label="Numbered list">1≡</button>
+      <button id="alphaList" class="fmt-btn" title="Alphabetic list" aria-label="Alphabetic list">A≡</button>
       <span class="separator"></span>
-      <button id="tableBtn" class="fmt-btn">Table</button><button id="rowBtn" class="fmt-btn" title="Add table row">Row +</button><button id="colBtn" class="fmt-btn" title="Add table column">Col +</button><label class="fmt-btn file-label" for="imageInput">Image</label><input id="imageInput" type="file" accept="image/*" hidden>
+      <button id="tableBtn" class="fmt-btn" title="Insert table" aria-label="Insert table">▦</button><button id="rowBtn" class="fmt-btn" title="Add table row" aria-label="Add table row">▦↧</button><button id="colBtn" class="fmt-btn" title="Add table column" aria-label="Add table column">▦↦</button><label class="fmt-btn file-label" for="imageInput" title="Insert image">Insert</label><input id="imageInput" type="file" accept="image/*" hidden>
     </div>
     <div id="ruler" class="ruler" aria-label="Paragraph ruler"><div class="ruler-track">
       <div id="firstIndent" class="ruler-handle first-line" title="First line indent"></div>

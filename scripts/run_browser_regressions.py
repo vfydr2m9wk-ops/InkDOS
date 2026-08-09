@@ -37,6 +37,7 @@ SCRIPTS = [
     "revalidate_spreadsheet_visual_polish_beta1.py",
     "revalidate_spreadsheet_add_sheet_02031.py",
     "revalidate_format_fidelity_02031.py",
+    "revalidate_stability_corrections_candidate.py",
 ]
 
 

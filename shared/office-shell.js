@@ -325,6 +325,7 @@
   addStylesheet('content-workspaces-v02031.css');
   addStylesheet('workspace-unification-v02031.css');
   addStylesheet('spreadsheets-beta1-polish.css');
+  addStylesheet('light-only.css');
 
   global.InkDeskUIReady = loadApplicationShell()
     .then(function (ui) {

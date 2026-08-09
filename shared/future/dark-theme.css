@@ -1,0 +1,15 @@
+/* FUTURE FEATURE — intentionally not loaded by the current application.
+ * Re-enable only after PDF/Office fidelity passes Chromium + Firefox +
+ * WebKit/iPadOS without recoloring document-authored content.
+ */
+:root[data-inkdesk-dark-future="enabled"] {
+  color-scheme: dark;
+  --inkdesk-surface:#20242a;
+  --inkdesk-surface-soft:#181b20;
+  --inkdesk-surface-raised:#292d34;
+  --inkdesk-workspace:#12151a;
+  --inkdesk-text:#f4f6f8;
+  --inkdesk-muted:#aab1bb;
+  --inkdesk-edge:rgba(255,255,255,.10);
+  --inkdesk-edge-strong:rgba(255,255,255,.17);
+}

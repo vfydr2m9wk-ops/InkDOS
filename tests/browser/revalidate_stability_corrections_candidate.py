@@ -1,0 +1,289 @@
+"""Browser-level stabilization gate that avoids localhost/file navigation.
+
+The test builds each relevant workspace with set_content and injects repository
+assets directly. That keeps the regression executable in locked-down runners
+while still exercising real DOM/runtime behavior in Chromium.
+"""
+from __future__ import annotations
+
+import json
+import tempfile
+from pathlib import Path
+
+from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
+from pypdf import PdfWriter
+
+from browser_support import launch_browser, requested_browser_name
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "tests" / "browser" / "results"
+OUT.mkdir(parents=True, exist_ok=True)
+
+
+def text(relative: str) -> str:
+    return (ROOT / relative).read_text(encoding="utf-8")
+
+
+def shell_html(relative: str) -> str:
+    soup = BeautifulSoup(text(relative), "html.parser")
+    for node in soup.find_all("script"):
+        node.decompose()
+    for node in soup.find_all("link"):
+        node.decompose()
+    return str(soup)
+
+
+def add_styles(page, relatives):
+    for relative in relatives:
+        page.add_style_tag(content=text(relative))
+
+
+def add_scripts(page, relatives):
+    for relative in relatives:
+        page.add_script_tag(content=text(relative))
+
+
+def check(value, message):
+    if not value:
+        raise RuntimeError(message)
+
+
+def make_long_pdf(path: Path, pages: int = 20):
+    writer = PdfWriter()
+    for index in range(pages):
+        portrait = index % 2 == 0
+        writer.add_blank_page(
+            width=612 if portrait else 792,
+            height=792 if portrait else 612,
+        )
+    with path.open("wb") as handle:
+        writer.write(handle)
+
+
+def main():
+    report = {"browser": requested_browser_name(), "passed": False, "checks": []}
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        try:
+            context = browser.new_context(
+                viewport={"width": 1280, "height": 820}, color_scheme="dark"
+            )
+            page = context.new_page()
+            page.set_default_timeout(30000)
+
+            # Light-only must win after the retained Spreadsheet beta-1 polish.
+            page.set_content(
+                '<html><body class="office-product office-spreadsheets"><div>x</div></body></html>'
+            )
+            add_styles(
+                page,
+                [
+                    "apps/spreadsheets/styles.css",
+                    "shared/ui/spreadsheets-beta1-polish.css",
+                    "shared/ui/light-only.css",
+                ],
+            )
+            sheet = page.evaluate(
+                """() => ({
+                    scheme:getComputedStyle(document.documentElement).colorScheme,
+                    cell:getComputedStyle(document.body).getPropertyValue('--cell').trim(),
+                    text:getComputedStyle(document.body).getPropertyValue('--text').trim(),
+                    bg:getComputedStyle(document.body).getPropertyValue('--bg').trim()
+                })"""
+            )
+            check(
+                "light" in sheet["scheme"]
+                and sheet["cell"] == "#fff"
+                and sheet["text"] == "#20242a"
+                and sheet["bg"] == "#edf0f4",
+                f"light-only spreadsheet contract failed: {sheet}",
+            )
+            report["checks"].append("spreadsheet light-only palette under dark host")
+
+            # Collapsed desktop Format panel must physically leave the grid.
+            page.set_content(
+                '<html><body class="office-product office-presentations">'
+                '<section class="workspace hide-inspector"><aside class="slide-list"></aside>'
+                '<section class="stage-wrap"></section><aside id="inspector" class="inspector">Format</aside>'
+                "</section></body></html>"
+            )
+            add_styles(page, ["apps/presentations/styles.css", "apps/presentations/stability.css"])
+            layout = page.evaluate(
+                """() => {
+                    const w=document.querySelector('.workspace'),i=document.querySelector('#inspector');
+                    return {columns:getComputedStyle(w).gridTemplateColumns,
+                            width:i.getBoundingClientRect().width,
+                            display:getComputedStyle(i).display};
+                }"""
+            )
+            check(
+                layout["display"] == "none" and layout["width"] == 0,
+                f"inspector still occupies space: {layout}",
+            )
+            check(
+                len(layout["columns"].split()) == 2,
+                f"third presentation grid track remains: {layout}",
+            )
+            report["checks"].append("presentation hidden format panel occupies zero desktop space")
+
+            # Run the actual Presentation runtime without network navigation and
+            # verify that a common editing operation now enables Undo/Redo.
+            page.set_content(shell_html("apps/presentations/index.html"))
+            add_styles(
+                page,
+                [
+                    "apps/presentations/styles.css",
+                    "shared/ui/light-only.css",
+                    "apps/presentations/stability.css",
+                ],
+            )
+            add_scripts(
+                page,
+                [
+                    "shared/office-runtime.js",
+                    "shared/vendor/jszip.min.js",
+                    "apps/presentations/engine/compatibility.js",
+                    "apps/presentations/engine/background-resolver.js",
+                    "shared/local-recovery.js",
+                    "apps/presentations/state/selection-controller.js",
+                    "apps/presentations/state/history-controller.js",
+                    "apps/presentations/ui/inspector-controller.js",
+                    "apps/presentations/ui/thumbnails-controller.js",
+                    "apps/presentations/ui/presenter-notes-controller.js",
+                    "apps/presentations/presentation/slideshow-controller.js",
+                    "apps/presentations/io/pptx-write-adapter.js",
+                    "apps/presentations/io/file-controller.js",
+                    "apps/presentations/io/recovery-controller.js",
+                    "apps/presentations/app.js",
+                ],
+            )
+            page.click("#newBtn")
+            page.locator("#templateGrid .template-option").first.click()
+            page.wait_for_selector("#app:not(.hidden)")
+            initial = page.locator("#slideCanvas .obj").count()
+            page.click('[data-tab="insert"]')
+            page.click("#insertTextBtn")
+            inserted = page.locator("#slideCanvas .obj").count()
+            check(not page.locator("#undoBtn").is_disabled(), "Undo stayed disabled after inserting text")
+            page.click("#undoBtn")
+            undone = page.locator("#slideCanvas .obj").count()
+            page.click("#redoBtn")
+            redone = page.locator("#slideCanvas .obj").count()
+            check(
+                inserted == initial + 1 and undone == initial and redone == inserted,
+                f"Presentation insert/undo/redo mismatch: {initial}, {inserted}, {undone}, {redone}",
+            )
+            report["checks"].append("presentation real insert/undo/redo runtime")
+
+            # Documents toolbar contract.
+            page.set_content(text("apps/documents/index.html"))
+            check(page.locator("#alignmentSelect").count() == 1, "alignment selector missing")
+            check(
+                page.locator('[data-cmd="indent"]').count() == 1
+                and page.locator('[data-cmd="outdent"]').count() == 1,
+                "indent controls missing",
+            )
+            check(
+                page.locator('[data-cmd="insertUnorderedList"]').inner_text() == "•≡",
+                "bulleted list not compact",
+            )
+            check(
+                page.locator("#rowBtn").inner_text() == "▦↧"
+                and page.locator("#colBtn").inner_text() == "▦↦",
+                "row/column symbols incorrect",
+            )
+            check(
+                page.locator('label[for="imageInput"]').inner_text() == "Insert",
+                "insert image affordance incorrect",
+            )
+            report["checks"].append("Documents compact toolbar contract")
+
+            # Real local PDF.js rendering: rapid jumps through a longer document
+            # must leave every visible page backed by a canvas rather than a gray
+            # loading placeholder. Also force the fullscreen fallback and prove
+            # that it performs the scheduled post-layout rerender.
+            with tempfile.TemporaryDirectory(prefix="inkdesk-stability-pdf-") as temp_name:
+                pdf_path = Path(temp_name) / "long-rendering.pdf"
+                make_long_pdf(pdf_path)
+                page.set_content(shell_html("apps/pdf/index.html"))
+                add_styles(
+                    page,
+                    [
+                        "apps/pdf/styles.css",
+                        "shared/office-shell.css",
+                        "shared/ui/light-only.css",
+                    ],
+                )
+                add_scripts(
+                    page,
+                    [
+                        "shared/office-runtime.js",
+                        "shared/file-router.js",
+                        "shared/vendor/pdfjs/pdf.min.js",
+                        "apps/pdf/text-selection-review.js",
+                        "apps/pdf/flatten-export.js",
+                        "apps/pdf/io/save-controller.js",
+                        "apps/pdf/review/annotation-layer.js",
+                        "apps/pdf/review/review-controller.js",
+                        "apps/pdf/viewer/navigation-controller.js",
+                        "apps/pdf/viewer/page-renderer.js",
+                        "apps/pdf/app.js",
+                    ],
+                )
+                worker = text("shared/vendor/pdfjs/pdf.worker.min.js")
+                page.evaluate(
+                    "code => { pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([code], {type:'text/javascript'})); }",
+                    worker,
+                )
+                page.set_input_files("#fileInput", str(pdf_path))
+                page.wait_for_function("() => window.InkDeskPdfDebug?.getState().pageCount === 20")
+                page.wait_for_function("() => window.InkDeskPdfDebug.getState().renderedCanvases >= 1")
+                for target in (5, 10, 15, 20, 1, 12, 3, 18):
+                    page.evaluate("n => window.InkDeskPdfDebug.goToPage(n)", target)
+                    page.wait_for_function(
+                        "n => window.InkDeskPdfDebug.getState().page === n", arg=target
+                    )
+                    page.wait_for_timeout(120)
+                    visible = page.evaluate(
+                        """() => {
+                            const stage=document.querySelector('#viewerStage').getBoundingClientRect();
+                            return [...document.querySelectorAll('.pdf-page-shell')]
+                              .filter(node => { const r=node.getBoundingClientRect(); return r.bottom>stage.top && r.top<stage.bottom; })
+                              .map(node => ({page:node.dataset.page, canvas:!!node.querySelector('canvas'), loading:!!node.querySelector('.page-loading')}));
+                        }"""
+                    )
+                    check(
+                        visible and all(item["canvas"] and not item["loading"] for item in visible),
+                        f"visible gray PDF placeholder after jump to {target}: {visible}",
+                    )
+                report["checks"].append("PDF.js 20-page rapid navigation without visible gray placeholders")
+
+                page.locator("#viewerStage canvas").first.evaluate("node => node.dataset.preFullscreen='1'")
+                page.evaluate(
+                    "() => { document.querySelector('#viewerApp').requestFullscreen = async () => { throw new Error('forced fallback'); }; }"
+                )
+                page.click("#fullscreenBtn")
+                page.wait_for_function("() => document.body.classList.contains('immersive')")
+                page.wait_for_function("() => !document.querySelector('canvas[data-pre-fullscreen=\"1\"]')")
+                check(
+                    page.evaluate("() => window.InkDeskPdfDebug.getState().renderedCanvases >= 1"),
+                    "fullscreen fallback rerender left no rendered PDF pages",
+                )
+                report["checks"].append("PDF fullscreen fallback performs post-layout rerender")
+
+            report["passed"] = True
+            context.close()
+        finally:
+            browser.close()
+
+    (OUT / f"stability_corrections_candidate_{requested_browser_name()}.json").write_text(
+        json.dumps(report, indent=2), encoding="utf-8"
+    )
+    print(json.dumps(report, indent=2))
+    if not report["passed"]:
+        raise RuntimeError("Stability corrections browser validation failed")
+
+
+if __name__ == "__main__":
+    main()

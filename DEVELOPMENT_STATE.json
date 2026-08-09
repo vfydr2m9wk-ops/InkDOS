@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 49,
+  "appliedSequence": 50,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -250,6 +250,11 @@
       "sequence": 49,
       "packageLabel": "1.0.0-beta.1",
       "description": "Spreadsheet visual refinement rebased on the authoritative 1.0.0-beta.1 sequence-48 main. Adds one last-loaded, spreadsheet-scoped presentation layer for formula-bar hierarchy, grid/header selection clarity, persistent Add/Delete worksheet controls, status/zoom density and compact touch layouts. Formula evaluation, worksheet package integrity, recovery, history, XLS/BIFF8, XLSX preservation, launcher behavior and workflows are unchanged."
+    },
+    {
+      "sequence": 50,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Stability correction package rebased on the authoritative 1.0.0-beta.1 sequence-49 main. Fixes PDF gray-page/fullscreen rerender lifecycle, Presentation hidden Format-panel layout and Undo/Redo coverage, temporarily enforces light-only application chrome while preserving dark-theme work as isolated future code, simplifies Documents formatting controls with grouped alignment and indent actions, and hardens the cross-window file-router contract. Adds focused permanent regression coverage and advances internal updater sequence assertions to 50 while preserving existing parsers, package-preserving writers, recovery, formulas, storage and workflow behavior."
     }
   ]
 }

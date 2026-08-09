@@ -8,10 +8,10 @@
     "manualPolicy": "Platform-specific behavior that cannot be automated is marked manual/not-performed, never inferred from Chromium."
   },
   "summary": {
-    "visibleControls": 221,
+    "visibleControls": 219,
     "coverageCounts": {
-      "scheduled": 134,
-      "automated": 87
+      "automated": 90,
+      "scheduled": 129
     },
     "capabilities": 17
   },
@@ -168,7 +168,7 @@
       ]
     },
     {
-      "key": "documents.open-document-2",
+      "key": "documents.open-document-2-2",
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "label[for=\"fileInput\"]",
@@ -301,51 +301,50 @@
       "evidence": []
     },
     {
-      "key": "documents.justifyleft",
+      "key": "documents.alignment",
       "module": "documents",
       "source": "apps/documents/index.html",
-      "selector": "[data-cmd=\"justifyLeft\"]",
-      "label": "≡",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
+      "selector": "#alignmentSelect",
+      "label": "Alignment",
+      "element": "select",
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_stability_corrections_candidate.py",
+        "tests/browser/revalidate_stability_corrections_candidate.py"
+      ]
     },
     {
-      "key": "documents.justifycenter",
+      "key": "documents.decrease-indent",
       "module": "documents",
       "source": "apps/documents/index.html",
-      "selector": "[data-cmd=\"justifyCenter\"]",
-      "label": "≣",
+      "selector": "[data-cmd=\"outdent\"]",
+      "label": "Decrease indent",
       "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_stability_corrections_candidate.py",
+        "tests/browser/revalidate_stability_corrections_candidate.py"
+      ]
     },
     {
-      "key": "documents.justifyright",
+      "key": "documents.increase-indent",
       "module": "documents",
       "source": "apps/documents/index.html",
-      "selector": "[data-cmd=\"justifyRight\"]",
-      "label": "≡",
+      "selector": "[data-cmd=\"indent\"]",
+      "label": "Increase indent",
       "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "documents.justifyfull",
-      "module": "documents",
-      "source": "apps/documents/index.html",
-      "selector": "[data-cmd=\"justifyFull\"]",
-      "label": "☰",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
+      "coverage": "automated",
+      "evidence": [
+        "tests/test_stability_corrections_candidate.py",
+        "tests/browser/revalidate_stability_corrections_candidate.py"
+      ]
     },
     {
       "key": "documents.insertunorderedlist",
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"insertUnorderedList\"]",
-      "label": "• List",
+      "label": "Bulleted list",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -355,7 +354,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "[data-cmd=\"insertOrderedList\"]",
-      "label": "1. List",
+      "label": "Numbered list",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -365,7 +364,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "#alphaList",
-      "label": "A. List",
+      "label": "Alphabetic list",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -375,7 +374,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "#tableBtn",
-      "label": "Table",
+      "label": "Insert table",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -405,7 +404,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "label[for=\"imageInput\"]",
-      "label": "Image",
+      "label": "Insert image",
       "element": "label",
       "coverage": "scheduled",
       "evidence": []
@@ -484,7 +483,7 @@
       ]
     },
     {
-      "key": "documents.open-document-2-2",
+      "key": "documents.open-document-2-2-2",
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "label[for=\"fileInput\"]",
@@ -2330,16 +2329,6 @@
       "source": "apps/epub/index.html",
       "selector": "[data-theme=\"sage\"]",
       "label": "Sage theme",
-      "element": "button",
-      "coverage": "scheduled",
-      "evidence": []
-    },
-    {
-      "key": "epub.night",
-      "module": "epub",
-      "source": "apps/epub/index.html",
-      "selector": "[data-theme=\"night\"]",
-      "label": "Night theme",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []

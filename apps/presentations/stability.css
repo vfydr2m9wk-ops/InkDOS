@@ -1,0 +1,9 @@
+/* Presentation stabilization overrides. */
+@media (min-width:1001px) {
+  body.office-presentations .workspace.hide-inspector {
+    grid-template-columns:var(--slides-w) minmax(0,1fr) !important;
+  }
+  body.office-presentations .workspace.hide-inspector .inspector {
+    display:none !important;
+  }
+}

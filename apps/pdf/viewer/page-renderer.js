@@ -121,6 +121,18 @@
       state.pages.forEach(shell => state.observer.observe(shell));
     }
 
+    function viewportRelevant(pageNumber) {
+      const shell = state.pages.get(pageNumber);
+      if (!shell || !E.viewerStage) return false;
+      const pageRect = shell.getBoundingClientRect();
+      const stageRect = E.viewerStage.getBoundingClientRect();
+      const margin = Math.max(stageRect.height, 300);
+      return (
+        pageRect.bottom >= stageRect.top - margin &&
+        pageRect.top <= stageRect.bottom + margin
+      );
+    }
+
     async function ensureWindow(center) {
       const wanted = new Set();
 
@@ -137,18 +149,18 @@
 
       state.wanted = wanted;
 
-      for (const [pageNumber, record] of [...state.rendered]) {
-        if (!wanted.has(pageNumber)) {
-          destroyRendered(pageNumber, record);
-        }
-      }
-
+      // Keep the previous visible window alive until the incoming window has
+      // rendered. This prevents gray placeholders during fast WebKit scrolls
+      // while preserving the bounded CACHE_RADIUS memory policy.
       await Promise.all(
         [...wanted].map(pageNumber => renderPage(pageNumber))
       );
 
       for (const [pageNumber, record] of [...state.rendered]) {
-        if (!state.wanted.has(pageNumber)) {
+        if (
+          !state.wanted.has(pageNumber) &&
+          !viewportRelevant(pageNumber)
+        ) {
           destroyRendered(pageNumber, record);
         }
       }
@@ -184,7 +196,8 @@
 
       if (
         epoch !== state.renderEpoch ||
-        !state.wanted.has(pageNumber)
+        (!state.wanted.has(pageNumber) &&
+          !viewportRelevant(pageNumber))
       ) {
         page.cleanup();
         return;
@@ -249,7 +262,16 @@
         }
       });
 
-      if (epoch !== state.renderEpoch) return;
+      if (
+        epoch !== state.renderEpoch ||
+        (!state.wanted.has(pageNumber) &&
+          !viewportRelevant(pageNumber)) ||
+        state.rendered.get(pageNumber)?.task !== task
+      ) {
+        const record = state.rendered.get(pageNumber);
+        if (record?.task === task) destroyRendered(pageNumber, record);
+        return;
+      }
 
       const textLayer = document.createElement('div');
       textLayer.className = 'textLayer';

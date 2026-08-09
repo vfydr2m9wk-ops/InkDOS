@@ -427,19 +427,16 @@ E.fullscreenBtn.onclick = async () => {
     await E.viewerApp.requestFullscreen();
   } catch (error) {
     document.body.classList.add('immersive');
+    requestAnimationFrame(() => requestAnimationFrame(rerender));
   }
 };
 
 E.immersiveExit.onclick = exitImmersive;
 
-document.addEventListener(
-  'fullscreenchange',
-  () => {
-    if (!document.fullscreenElement) {
-      document.body.classList.remove('immersive');
-    }
-  }
-);
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) document.body.classList.remove('immersive');
+  requestAnimationFrame(() => requestAnimationFrame(rerender));
+});
 
 window.addEventListener('resize', () => {
   clearTimeout(window.__pdfResize);
