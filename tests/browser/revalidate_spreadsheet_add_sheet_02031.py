@@ -166,6 +166,26 @@ def main() -> int:
         if ref_arithmetic_display not in {"10", "10.0"}:
             raise RuntimeError(f"Cell-reference arithmetic did not use the safe engine: {ref_arithmetic_display!r}")
 
+        function_cases = {
+            (0, 2): ("=SUM(1+2,3)", {"6", "6.0"}),
+            (1, 2): ("=SUM(SUM(1,2),3)", {"6", "6.0"}),
+            (2, 2): ("=COUNT(1+2,4+5)", {"2", "2.0"}),
+            (3, 2): ("=ROUND(1+2,0)", {"3", "3.0"}),
+            (4, 2): ("=ROUND(10/0,2)", {"#DIV/0!"}),
+            (5, 2): ("=IF(TRUE,1,7)", {"1", "1.0"}),
+            (6, 2): ("=IF(FALSE,1,7)", {"7", "7.0"}),
+            (7, 2): ("=IF(TRUE,10/0+1,7)", {"#DIV/0!"}),
+            (8, 2): ("=LET(x,10/0,x+1)", {"#DIV/0!"}),
+            (9, 2): ("=LET(x,1+2,x+3)", {"6", "6.0"}),
+        }
+        for (row, col), (formula, expected) in function_cases.items():
+            page.click(f'.cell[data-r="{row}"][data-c="{col}"]')
+            page.fill("#formulaInput", formula)
+            page.press("#formulaInput", "Enter")
+            display = page.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
+            if display not in expected:
+                raise RuntimeError(f"Formula function composition failed for {formula}: {display!r}")
+
         save_workbook(page, added)
         page.close()
 
@@ -203,6 +223,10 @@ def main() -> int:
             display = reopened.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
             if display not in expected:
                 raise RuntimeError(f"Safe arithmetic result did not survive save/reopen at {row},{col}: {display!r}")
+        for (row, col), (_, expected) in function_cases.items():
+            display = reopened.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
+            if display not in expected:
+                raise RuntimeError(f"Formula function result did not survive save/reopen at {row},{col}: {display!r}")
 
         victim = before_names[0]
         survivor = before_names[1]
@@ -287,6 +311,10 @@ def main() -> int:
             display = final_page.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
             if display not in expected:
                 raise RuntimeError(f"Safe arithmetic result was damaged by unrelated sheet deletion at {row},{col}: {display!r}")
+        for (row, col), (_, expected) in function_cases.items():
+            display = final_page.locator(f'.cell[data-r="{row}"][data-c="{col}"]').inner_text()
+            if display not in expected:
+                raise RuntimeError(f"Formula function result was damaged by unrelated sheet deletion at {row},{col}: {display!r}")
         # Delete the added sheet in-memory; the final visible sheet must become protected from deletion.
         delete_active(final_page, accept=True)
         if not final_page.locator("#deleteSheetBtn").is_disabled():
@@ -309,6 +337,7 @@ def main() -> int:
         "missing_reference_display": missing_ref_display,
         "lazy_if_display": lazy_if_display,
         "safe_arithmetic": {"percentage": "0.1", "power": "8", "division_by_zero": "#DIV/0!", "reference": ref_arithmetic_display},
+        "function_composition": {"sum_expression": "6", "nested_sum": "6", "if_true": "1", "let_error": "#DIV/0!"},
         "last_sheet_delete_disabled": True,
     }
     (OUT / "spreadsheet_add_sheet_02031.json").write_text(json.dumps(result, indent=2), encoding="utf-8")

@@ -11,6 +11,9 @@ class SpreadsheetFormulaEngineIntegration02031Tests(unittest.TestCase):
         self.assertNotIn("Function" + "(", app)
         self.assertNotIn("eval" + "(", app)
         self.assertIn("^[0-9+\\-*/%^(). %]+$", app)
+        self.assertIn("const evaluated=evaluateFormula(currentSheet,arg,stack,env)", app)
+        self.assertIn("if(/^(TRUE|FALSE)$/i.test(f))return/^TRUE$/i.test(f)", app)
+        self.assertIn("if(isFormulaError(value)){arithmeticError=value;return'0'}", app)
 
     def test_formula_engine_is_loaded_before_spreadsheet_app(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")

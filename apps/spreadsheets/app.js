@@ -100,7 +100,7 @@ function formulaArgValues(currentSheet,arg,stack,env={}){
   const rr=parseFormulaRef(arg,currentSheet);if(rr)return[rr.error||formulaValue(rr.sheet,rr.ref,stack,env)];
   if(/^".*"$/.test(arg))return[arg.slice(1,-1).replace(/""/g,'"')];
   if(/^(TRUE|FALSE)$/i.test(arg))return[/^TRUE$/i.test(arg)];
-  const n=Number(arg.replace(',','.'));return Number.isFinite(n)?[n]:[arg];
+  const n=Number(arg.replace(',','.'));if(Number.isFinite(n))return[n];const evaluated=evaluateFormula(currentSheet,arg,stack,env);return evaluated===null||evaluated===undefined?[arg]:[evaluated];
 }
 function compareFormulaValues(a,op,b){switch(op){case'=':return a==b;case'<>':return a!=b;case'<':return Number(a)<Number(b);case'>':return Number(a)>Number(b);case'<=':return Number(a)<=Number(b);case'>=':return Number(a)>=Number(b);default:return false}}
 function filterMask(currentSheet,expression,stack,env={}){
@@ -110,7 +110,7 @@ function formatFormulaResult(v){if(Array.isArray(v)){if(v.length&&Array.isArray(
 function evaluateFormula(currentSheet,formula,stack=new Set(),env={}){
   let f=String(formula||'').replace(/^=/,'').trim().replace(/^_xlfn\./i,'');
   if(Object.prototype.hasOwnProperty.call(env,f))return env[f];
-  if(isFormulaError(f))return f;
+  if(isFormulaError(f))return f;if(/^(TRUE|FALSE)$/i.test(f))return/^TRUE$/i.test(f);
   const direct=parseFormulaRef(f,currentSheet);if(direct)return direct.error||formulaValue(direct.sheet,direct.ref,stack,env);
   const call=/^([A-Z.]+)\((.*)\)$/i.exec(f);
   if(call){
@@ -132,7 +132,7 @@ function evaluateFormula(currentSheet,formula,stack=new Set(),env={}){
   }
   const comparison=/^(.+?)(<=|>=|<>|=|<|>)(.+)$/.exec(f);if(comparison){const a=formulaArgValues(currentSheet,comparison[1],stack,env)[0],b=formulaArgValues(currentSheet,comparison[3],stack,env)[0],error=[a,b].find(isFormulaError);return error||compareFormulaValues(a,comparison[2],b)}
   if(/#REF!/i.test(f))return'#REF!';
-  let arithmeticError='';const arithmetic=f.replace(/(?:(?:'[^']+'|[A-Za-z0-9_ .-]+)!)?\$?[A-Z]{1,3}\$?\d+/g,t=>{const rr=parseFormulaRef(t,currentSheet);if(rr?.error){arithmeticError=rr.error;return'0'}const v=rr?formulaValue(rr.sheet,rr.ref,stack,env):0;if(isFormulaError(v)){arithmeticError=v;return'0'}return Number.isFinite(Number(v))?String(Number(v)):'0'}).replace(/\b[A-Za-z_][A-Za-z0-9_.]*\b/g,name=>Object.prototype.hasOwnProperty.call(env,name)&&Number.isFinite(Number(env[name]))?String(Number(env[name])):name);
+  let arithmeticError='';const arithmetic=f.replace(/(?:(?:'[^']+'|[A-Za-z0-9_ .-]+)!)?\$?[A-Z]{1,3}\$?\d+/g,t=>{const rr=parseFormulaRef(t,currentSheet);if(rr?.error){arithmeticError=rr.error;return'0'}const v=rr?formulaValue(rr.sheet,rr.ref,stack,env):0;if(isFormulaError(v)){arithmeticError=v;return'0'}return Number.isFinite(Number(v))?String(Number(v)):'0'}).replace(/\b[A-Za-z_][A-Za-z0-9_.]*\b/g,name=>{if(!Object.prototype.hasOwnProperty.call(env,name))return name;const value=env[name];if(isFormulaError(value)){arithmeticError=value;return'0'}return Number.isFinite(Number(value))?String(Number(value)):name});
   if(arithmeticError)return arithmeticError;
   if(/^[0-9+\-*/%^(). %]+$/.test(arithmetic)){try{return InkDeskFormula.evaluateArithmetic(arithmetic)}catch(error){console.warn('Arithmetic formula could not be evaluated safely.',error)}}
   const n=Number(f.replace(',','.'));return Number.isFinite(n)?n:null;
