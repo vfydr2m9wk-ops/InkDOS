@@ -13,6 +13,15 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_PARTS = {".git", "__pycache__", "test-results", "dist"}
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip"}
+EXCLUDED_PATH_PREFIXES = {("tests", "browser", "results")}
+
+
+def is_excluded(relative: Path) -> bool:
+    if any(part in EXCLUDED_PARTS for part in relative.parts):
+        return True
+    if any(relative.parts[: len(prefix)] == prefix for prefix in EXCLUDED_PATH_PREFIXES):
+        return True
+    return relative.suffix.lower() in EXCLUDED_SUFFIXES
 
 
 def included_files() -> list[Path]:
@@ -21,9 +30,7 @@ def included_files() -> list[Path]:
         if not path.is_file():
             continue
         relative = path.relative_to(ROOT)
-        if any(part in EXCLUDED_PARTS for part in relative.parts):
-            continue
-        if relative.suffix.lower() in EXCLUDED_SUFFIXES:
+        if is_excluded(relative):
             continue
         result.append(path)
     return sorted(result, key=lambda p: p.relative_to(ROOT).as_posix())

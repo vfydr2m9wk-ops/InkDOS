@@ -1,7 +1,7 @@
 {
   "product": "InkDesk",
   "version": "1.0.0-beta.1",
-  "buildDate": "2026-08-08",
+  "buildDate": "2026-08-09",
   "channel": "beta",
   "buildType": "public-beta-source",
   "sourceDevelopmentLine": "0.20.x stabilization -> 1.0 beta",

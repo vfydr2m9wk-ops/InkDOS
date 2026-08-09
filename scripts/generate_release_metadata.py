@@ -54,6 +54,37 @@ def main() -> None:
     })
     dump("RELEASE_MANIFEST.json", release_manifest)
 
+    app_manifest = load("app-manifest.json")
+    app_manifest["version"] = release
+    app_manifest["release"] = {
+        "version": release,
+        "channel": version.get("releaseChannel", "beta"),
+        "name": version.get("releaseName", ""),
+        "date": date,
+        "consolidated": True,
+        "sourceDevelopmentLine": "0.20.x stabilization",
+        "publicVersioning": (
+            "Semantic prereleases on the 1.0 line; internal update sequence is independent."
+        ),
+    }
+    if isinstance(app_manifest.get("homeRefinement"), dict):
+        app_manifest["homeRefinement"].pop("universalOpenCopy", None)
+        app_manifest["homeRefinement"].pop("moduleCardsBeforeUniversalOpen", None)
+    if isinstance(app_manifest.get("update"), dict):
+        app_manifest["update"].pop("nextPatch", None)
+    dump("app-manifest.json", app_manifest)
+
+    sbom = load("SBOM.spdx.json")
+    sbom["name"] = f"InkDesk-v{release}"
+    sbom["documentNamespace"] = (
+        f"https://github.com/vfydr2m9wk-ops/InkDesk/releases/tag/v{release}"
+    )
+    sbom.setdefault("creationInfo", {})["created"] = f"{date}T00:00:00Z" if date else ""
+    for package in sbom.get("packages", []):
+        if package.get("SPDXID") == "SPDXRef-Package-InkDesk" or package.get("name") == "InkDesk":
+            package["versionInfo"] = release
+    dump("SBOM.spdx.json", sbom)
+
     print(f"Release metadata synchronized for InkDesk {release}.")
 
 

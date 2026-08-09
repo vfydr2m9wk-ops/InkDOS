@@ -31,6 +31,12 @@ now use semantic prerelease versions (`1.0.0-beta.1`, later beta/RC builds),
 while the monotonically increasing internal sequence remains an update-order
 guard only.
 
+## Release packaging integrity
+
+- Public SBOM and release identity are synchronized from `VERSION.json`.
+- Generated `tests/browser/results/` artifacts are never included in release ZIPs.
+- Release archives remain deterministic when built repeatedly from the same clean tree.
+
 ## Release gate
 
 Before publication, the repository must pass checksum verification, repository

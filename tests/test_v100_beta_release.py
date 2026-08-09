@@ -53,10 +53,38 @@ class V100BetaReleaseTests(unittest.TestCase):
 
     def test_internal_sequence_and_public_version_are_separate(self):
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(state["appliedSequence"], 47)
+        self.assertEqual(state["appliedSequence"], 48)
         self.assertEqual(state["currentPackage"], VERSION)
         # targetRelease is retained as the updater's historical train guard; it is not the public semantic version.
         self.assertEqual(state["targetRelease"], "0.20.x")
+
+    def test_release_integrity_metadata_is_current(self):
+        version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
+        release = version["version"]
+        release_date = version["date"]
+        manifest = json.loads((ROOT / "app-manifest.json").read_text(encoding="utf-8"))
+        sbom = json.loads((ROOT / "SBOM.spdx.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["release"]["version"], release)
+        self.assertEqual(manifest["release"]["date"], release_date)
+        self.assertNotIn("nextPatch", manifest["update"])
+        self.assertNotIn("universalOpenCopy", manifest["homeRefinement"])
+        self.assertNotIn("moduleCardsBeforeUniversalOpen", manifest["homeRefinement"])
+        self.assertEqual(sbom["name"], f"InkDesk-v{release}")
+        self.assertTrue(sbom["documentNamespace"].endswith(f"/tag/v{release}"))
+        inkdesk = next(package for package in sbom["packages"] if package["name"] == "InkDesk")
+        self.assertEqual(inkdesk["versionInfo"], release)
+
+    def test_release_builder_excludes_generated_browser_results(self):
+        import importlib.util
+
+        path = ROOT / "scripts" / "build_release.py"
+        spec = importlib.util.spec_from_file_location("inkdesk_build_release", path)
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+        self.assertTrue(module.is_excluded(Path("tests/browser/results/example.json")))
+        self.assertFalse(module.is_excluded(Path("tests/browser/revalidate_v0201_consistency.py")))
 
 
 if __name__ == "__main__":

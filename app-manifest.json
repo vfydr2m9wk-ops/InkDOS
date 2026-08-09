@@ -72,8 +72,7 @@
   "update": {
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
-    "assetPattern": "InkDesk_v*.zip",
-    "nextPatch": "1.0.0-beta.1"
+    "assetPattern": "InkDesk_v*.zip"
   },
   "capabilities": {
     "documents": [
@@ -438,10 +437,8 @@
   },
   "homeRefinement": {
     "version": "0.20.0",
-    "moduleCardsBeforeUniversalOpen": true,
     "compactStatusNearFooter": true,
     "buildInFooter": true,
-    "universalOpenCopy": "The selected file stays on this device.",
     "originMilestone": "0.19.4.13"
   },
   "documentSessionSystem": {
@@ -525,13 +522,13 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "0.20.3.0",
+    "version": "1.0.0-beta.1",
     "channel": "beta",
-    "name": "Visual Foundation",
-    "date": "2026-08-08",
+    "name": "1.0 Beta 1",
+    "date": "2026-08-09",
     "consolidated": true,
-    "sourceDevelopmentLine": "0.20.3",
-    "publicVersioning": "0.20.3 visual/UX train (four-part correction releases allowed)"
+    "sourceDevelopmentLine": "0.20.x stabilization",
+    "publicVersioning": "Semantic prereleases on the 1.0 line; internal update sequence is independent."
   },
   "consistencyRefinement": {
     "schemaVersion": 1,
