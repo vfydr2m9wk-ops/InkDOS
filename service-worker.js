@@ -1,6 +1,6 @@
 'use strict';
 // Update sequence 47: InkDesk 1.0 beta release preparation and Launcher simplification.
-const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-pdf55';
+const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui56';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -36,6 +36,7 @@ const APP_SHELL=[
   './shared/ui/workspace-unification-v02031.css',
   './shared/ui/spreadsheets-beta1-polish.css',
   './shared/ui/light-only.css',
+  './shared/ui/start-actions-unified.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
   './shared/local-recovery.js',

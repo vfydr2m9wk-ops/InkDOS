@@ -10,6 +10,7 @@
   <title>Untitled.epub — EPUB Reader</title>
 <link rel="stylesheet" href="../../shared/office-shell.css">
   <link rel="stylesheet" href="styles.css?v=0.20.3.0">
+  <link rel="stylesheet" href="../../shared/ui/start-actions-unified.css?v=1.0.0-beta.1-ui56">
 </head>
 <body class="office-product office-epub" data-reader-theme="paper">
   <header class="epub-titlebar" data-inkdesk-shell-region="titlebar" aria-label="EPUB Reader title bar">
@@ -54,7 +55,7 @@
       <img src="../../assets/icons/epub.svg" class="start-icon" alt="" aria-hidden="true">
       <h1>EPUB Reader</h1>
       <p>Read local EPUB books with lateral pages, adjustable text and calm page themes.</p>
-      <button id="openStartBtn" class="start-btn" type="button">Open EPUB</button>
+      <div class="start-actions inkdesk-start-actions inkdesk-start-actions-single"><button id="openStartBtn" class="start-btn inkdesk-start-button inkdesk-start-open" type="button"><span class="inkdesk-start-icon inkdesk-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span></button></div>
     </section>
 
     <section id="readerShell" class="reader-shell" hidden>

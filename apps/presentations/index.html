@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="../../shared/office-shell.css" />
   <link rel="stylesheet" href="stability.css?v=stability-1" />
+  <link rel="stylesheet" href="../../shared/ui/start-actions-unified.css?v=1.0.0-beta.1-ui56">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
 </head>
@@ -21,9 +22,9 @@
       <div class="app-badge">P</div>
       <h1>Presentations</h1>
       <p>Create, open and present PowerPoint files locally.</p>
-      <div class="start-actions">
-        <button id="newBtn" class="start-btn primary"><span class="ico">+</span><span>New Presentation</span></button>
-        <button id="openBtn" class="start-btn secondary"><span class="ico folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/></svg></span><span>Open Presentation</span></button>
+      <div class="start-actions inkdesk-start-actions">
+        <button id="newBtn" class="start-btn inkdesk-start-button inkdesk-start-new"><span class="inkdesk-start-icon inkdesk-plus" aria-hidden="true">+</span><span>New document</span></button>
+        <button id="openBtn" class="start-btn inkdesk-start-button inkdesk-start-open"><span class="inkdesk-start-icon inkdesk-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span></button>
       </div>
       <small>PPTX · Local editing · Saving creates a new copy</small>
     </div>

@@ -824,7 +824,7 @@
       "module": "spreadsheets",
       "source": "apps/spreadsheets/index.html",
       "selector": "#newEmptyBtn",
-      "label": "+ New Spreadsheet",
+      "label": "+ New document",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -834,7 +834,7 @@
       "module": "spreadsheets",
       "source": "apps/spreadsheets/index.html",
       "selector": "#openEmptyBtn",
-      "label": "Open Spreadsheet",
+      "label": "Open document",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -916,7 +916,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#newBtn",
-      "label": "+ New Presentation",
+      "label": "+ New document",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -928,7 +928,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "#openBtn",
-      "label": "Open Presentation",
+      "label": "Open document",
       "element": "button",
       "coverage": "automated",
       "evidence": [
@@ -1675,7 +1675,7 @@
       "module": "pdf",
       "source": "apps/pdf/index.html",
       "selector": "#openBtn",
-      "label": "Open PDF",
+      "label": "Open document",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -2156,7 +2156,7 @@
       "module": "txt",
       "source": "apps/txt/index.html",
       "selector": "#newStartBtn",
-      "label": "New text file",
+      "label": "+ New document",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -2166,7 +2166,7 @@
       "module": "txt",
       "source": "apps/txt/index.html",
       "selector": "#openStartBtn",
-      "label": "Open text file",
+      "label": "Open document",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []
@@ -2348,7 +2348,7 @@
       "module": "epub",
       "source": "apps/epub/index.html",
       "selector": "#openStartBtn",
-      "label": "Open EPUB",
+      "label": "Open document",
       "element": "button",
       "coverage": "scheduled",
       "evidence": []

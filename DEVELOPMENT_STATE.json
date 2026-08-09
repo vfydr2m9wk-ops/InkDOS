@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 55,
+  "appliedSequence": 56,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -280,6 +280,11 @@
       "sequence": 55,
       "packageLabel": "1.0.0-beta.1",
       "description": "PDF fullscreen adaptive correction. Keeps fullscreen as a universal InkDesk content-focus mode (no native Fullscreen API), hides editor chrome, then fits the current PDF page to the newly available viewport after layout stabilization. This addresses the physical-device result where controls hid but the PDF itself did not visibly adapt. Normal PDF scrolling/cache behavior and all non-PDF workspaces remain unchanged."
+    },
+    {
+      "sequence": 56,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Unify start-screen action buttons across Documents, Spreadsheets, Presentations, PDF, TXT and EPUB while preserving the current app accent colors. Open document uses the existing app color with white text and one folder icon; New document uses white background, black text and one plus icon. Preserves the already-applied PDF fullscreen sequence 55 behavior and changes no editor, renderer, parser, writer, formula, recovery or document-content behavior."
     }
   ]
 }

@@ -16,6 +16,7 @@
   <title>Untitled.txt — Plain Text</title>
 <link rel="stylesheet" href="../../shared/office-shell.css">
   <link rel="stylesheet" href="styles.css?v=0.20.3.0">
+  <link rel="stylesheet" href="../../shared/ui/start-actions-unified.css?v=1.0.0-beta.1-ui56">
 </head>
 <body class="office-product office-txt">
   <header
@@ -176,12 +177,12 @@
       <p>
         Create or open a local TXT file. Text stays on this device.
       </p>
-      <div class="start-actions">
-        <button id="newStartBtn" class="start-btn secondary" type="button">
-          New text file
+      <div class="start-actions inkdesk-start-actions">
+        <button id="newStartBtn" class="start-btn inkdesk-start-button inkdesk-start-new" type="button">
+          <span class="inkdesk-start-icon inkdesk-plus" aria-hidden="true">+</span><span>New document</span>
         </button>
-        <button id="openStartBtn" class="start-btn primary" type="button">
-          Open text file
+        <button id="openStartBtn" class="start-btn inkdesk-start-button inkdesk-start-open" type="button">
+          <span class="inkdesk-start-icon inkdesk-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span>
         </button>
       </div>
     </section>

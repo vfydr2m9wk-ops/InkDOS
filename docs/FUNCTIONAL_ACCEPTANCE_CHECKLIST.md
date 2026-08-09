@@ -91,8 +91,8 @@ Visible controls: **221** · Automated: **87** · Scheduled: **134** · Manual: 
 - ⬜ `#gridlinesBtn` — Show or hide gridlines — **scheduled**
 - ⬜ `#nameBox` — Cell reference — **scheduled**
 - ✅ `#formulaInput` — Formula bar — **automated** — tests/test_spreadsheet_formula_editor.py; tests/test_spreadsheet_formula_references.py; tests/browser/revalidate_v0201_consistency.py
-- ⬜ `#newEmptyBtn` — + New Spreadsheet — **scheduled**
-- ⬜ `#openEmptyBtn` — Open Spreadsheet — **scheduled**
+- ⬜ `#newEmptyBtn` — + New document — **scheduled**
+- ⬜ `#openEmptyBtn` — Open document — **scheduled**
 - ⬜ `#zoomOut` — Zoom out — **scheduled**
 - ⬜ `#zoomSlider` — Zoom — **scheduled**
 - ⬜ `#zoomIn` — Zoom in — **scheduled**
@@ -103,8 +103,8 @@ Visible controls: **221** · Automated: **87** · Scheduled: **134** · Manual: 
 ### Presentations
 
 - ✅ `a[href="../../index.html"]#1` — Return to InkDesk home — **automated** — tests/browser/revalidate_presentations_controls.py
-- ✅ `#newBtn` — + New Presentation — **automated** — tests/browser/revalidate_presentations_controls.py
-- ✅ `#openBtn` — Open Presentation — **automated** — tests/browser/revalidate_presentations_controls.py
+- ✅ `#newBtn` — + New document — **automated** — tests/browser/revalidate_presentations_controls.py
+- ✅ `#openBtn` — Open document — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `a[href="../../index.html"]#2` — Return to InkDesk home — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#newSmall` — New Presentation — **automated** — tests/browser/revalidate_presentations_controls.py
 - ✅ `#openSmall` — Open Presentation — **automated** — tests/browser/revalidate_presentations_controls.py
@@ -169,7 +169,7 @@ Visible controls: **221** · Automated: **87** · Scheduled: **134** · Manual: 
 ### PDF
 
 - ⬜ `a[href="../../index.html"]#1` — Return to InkDesk home — **scheduled**
-- ⬜ `#openBtn` — Open PDF — **scheduled**
+- ⬜ `#openBtn` — Open document — **scheduled**
 - ⬜ `a[href="../../index.html"]#2` — InkDesk home — **scheduled**
 - ⬜ `#openSmall` — Open PDF — **scheduled**
 - ⬜ `#sidebarToggle` — Toggle navigation panel — **scheduled**
@@ -218,8 +218,8 @@ Visible controls: **221** · Automated: **87** · Scheduled: **134** · Manual: 
 - ✅ `#findPrevious` — Previous result — **automated** — tests/test_txt_module.py; tests/browser/revalidate_cross_workspace_isolation.py
 - ✅ `#findNext` — Next result — **automated** — tests/test_txt_module.py; tests/browser/revalidate_cross_workspace_isolation.py
 - ⬜ `#findClose` — Close find — **scheduled**
-- ⬜ `#newStartBtn` — New text file — **scheduled**
-- ⬜ `#openStartBtn` — Open text file — **scheduled**
+- ⬜ `#newStartBtn` — + New document — **scheduled**
+- ⬜ `#openStartBtn` — Open document — **scheduled**
 - ⬜ `#editor` — Plain text editor — **scheduled**
 - ⬜ `#txtZoomOut` — Zoom out — **scheduled**
 - ⬜ `#txtZoomSlider` — Zoom level — **scheduled**
@@ -240,7 +240,7 @@ Visible controls: **221** · Automated: **87** · Scheduled: **134** · Manual: 
 - ⬜ `[data-theme="sage"]` — Sage theme — **scheduled**
 - ⬜ `[data-theme="night"]` — Night theme — **scheduled**
 - ⬜ `#tocClose` — Close contents — **scheduled**
-- ⬜ `#openStartBtn` — Open EPUB — **scheduled**
+- ⬜ `#openStartBtn` — Open document — **scheduled**
 - ✅ `#previousPage` — Previous page — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
 - ✅ `#nextPage` — Next page — **automated** — tests/browser/revalidate_cross_workspace_isolation.py; tests/browser/revalidate_launch_and_offline_modes.py
 - ⬜ `#epubZoomOut` — Zoom out — **scheduled**

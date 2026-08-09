@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../../shared/office-shell.css?v=0.20.3.0">
   <link rel="stylesheet" href="fullscreen-mobile.css?v=1.0.0-beta.1-pdf54">
   <link rel="stylesheet" href="flatten-export.css?v=0.20.3.0">
+  <link rel="stylesheet" href="../../shared/ui/start-actions-unified.css?v=1.0.0-beta.1-ui56">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
 </head>
@@ -24,10 +25,10 @@
       <div class="app-badge">PDF</div>
       <h1>PDF Workspace</h1>
       <p>Open PDFs locally, review them with highlights, comments and text, then save one annotated PDF copy.</p>
-      <div class="start-actions">
-        <button id="openBtn" class="start-btn primary" type="button">
-          <span class="ico folder"><svg viewBox="0 0 24 24"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/></svg></span>
-          <span>Open PDF</span>
+      <div class="start-actions inkdesk-start-actions inkdesk-start-actions-single">
+        <button id="openBtn" class="start-btn inkdesk-start-button inkdesk-start-open" type="button">
+          <span class="inkdesk-start-icon inkdesk-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span>
+          <span>Open document</span>
         </button>
       </div>
       <small>PDF · Local review · Saving creates an annotated copy</small>

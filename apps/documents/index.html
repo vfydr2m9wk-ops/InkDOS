@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css?v=0.20.3.0">
   <link rel="stylesheet" href="../../shared/office-shell.css?v=0.20.3.0">
   <link rel="stylesheet" href="../../shared/ui/workspace-layout.css?v=0.20.3.0" data-inkdesk-ui="inkdesk-ui-workspace-layout-css">
+  <link rel="stylesheet" href="../../shared/ui/start-actions-unified.css?v=1.0.0-beta.1-ui56">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
 </head>
@@ -96,9 +97,9 @@
           <div class="welcome-icon">W</div>
           <h1>Documents</h1>
           <p>A focused DOCX workspace that runs locally in a browser.</p>
-          <div class="welcome-actions">
-            <button id="newWelcomeBtn" class="open-primary new-primary" type="button"><span class="new-plus" aria-hidden="true">+</span><span>New document</span></button>
-            <label class="open-primary open-document-primary" for="fileInput"><span class="open-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3z"/><path d="M3 9h18"/></svg></span><span>Open document</span></label>
+          <div class="welcome-actions inkdesk-start-actions">
+            <button id="newWelcomeBtn" class="open-primary new-primary inkdesk-start-button inkdesk-start-new" type="button"><span class="inkdesk-start-icon inkdesk-plus" aria-hidden="true">+</span><span>New document</span></button>
+            <label class="open-primary open-document-primary inkdesk-start-button inkdesk-start-open" for="fileInput"><span class="inkdesk-start-icon inkdesk-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span></label>
           </div>
           <p class="support-note">DOCX · Local editing · Saving creates a new copy</p>
         </div>
