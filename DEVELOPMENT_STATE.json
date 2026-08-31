@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 56,
+  "appliedSequence": 57,
   "currentPackage": "1.0.0-beta.1",
   "status": "in-progress",
   "history": [
@@ -285,6 +285,11 @@
       "sequence": 56,
       "packageLabel": "1.0.0-beta.1",
       "description": "Unify start-screen action buttons across Documents, Spreadsheets, Presentations, PDF, TXT and EPUB while preserving the current app accent colors. Open document uses the existing app color with white text and one folder icon; New document uses white background, black text and one plus icon. Preserves the already-applied PDF fullscreen sequence 55 behavior and changes no editor, renderer, parser, writer, formula, recovery or document-content behavior."
+    },
+    {
+      "sequence": 57,
+      "packageLabel": "1.0.0-beta.1",
+      "description": "Release-hygiene correction for the 1.0.0-beta.1 baseline. Repairs the malformed CHANGELOG history around 0.20.2.10/0.20.2.9/0.20.2.8, removes the stray duplicate changelog header, and points the Spreadsheet formula-session npm test alias at the existing session modularization test. No application runtime, editor, parser, writer, formula behavior, recovery, PDF rendering, UI, storage or workflow behavior is changed."
     }
   ]
 }

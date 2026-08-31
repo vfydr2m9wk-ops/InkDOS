@@ -132,7 +132,7 @@ if (api.evaluateArithmetic('X+1',{resolveIdentifier:()=> '#DIV/0!'}) !== '#DIV/0
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertEqual(
             package["scripts"]["test:spreadsheet-formula-session"],
-            "python3 -m unittest tests.test_spreadsheet_formula_editor",
+            "python3 -m unittest tests.test_spreadsheet_formula_session_modularization",
         )
 
 

@@ -7,6 +7,7 @@
 - Synchronized public version metadata, module manifests, cache identity, release notes and release-building metadata for the 1.0 beta line.
 - Retained 0.20.x identifiers as engineering history and internal sequence provenance rather than manufacturing public releases for every intermediate patch.
 - Hardened release packaging so generated browser-test results are excluded from public archives and SBOM/release metadata are synchronized from `VERSION.json`.
+- Sequence 57 release-hygiene correction: repaired the malformed 0.20.2.10/0.20.2.9/0.20.2.8 history block, removed the stray duplicate changelog header, and corrected the Spreadsheet formula-session npm test target. No application runtime behavior is changed.
 
 ## 0.20.3.1 — Content Workspaces Visual Pass (2026-08-08)
 
@@ -180,29 +181,26 @@
 - Add an isolated PDF navigation browser regression and permanent architecture-boundary test.
 - Tighten the PDF `app.js` ratchet again without changing visible behavior.
 
-## 0.20.2.10 — 2026-08-07
+## 0.20.2.10 — PDF Page Rendering Decomposition (2026-08-07)
 
 - Extract PDF page rendering/virtualization into `apps/pdf/viewer/page-renderer.js`.
 - Add isolated PDF rendering/navigation browser regression and architecture boundary test.
 - Tighten the PDF `app.js` ratchet without changing visible behavior.
 
-## 0.20.2.8 — Presentations I/O and Recovery Decomposition (2026-08-07)
-
-## 0.20.2.10 — Presentations Architecture Consolidation
+## 0.20.2.9 — Presentations Architecture Consolidation (2026-08-07)
 
 - Extracted package-preserving PPTX write/patch logic from the Presentations entry point into `apps/presentations/io/pptx-write-adapter.js`.
 - Kept imported PPTX slide patching, notes patching, new shape/image serialization and source-order checks behaviorally unchanged behind the new adapter.
 - Tightened the Presentations `app.js` architecture ratchet and added permanent modular-boundary tests.
 - No visual redesign, new editor feature or deliberate PPTX behavior change.
 
+## 0.20.2.8 — Presentations I/O and Recovery Decomposition (2026-08-07)
 
 - Extracted PPTX open/save orchestration and imported source-buffer ownership to `apps/presentations/io/file-controller.js`.
 - Extracted local recovery capture/restore and recovery-manager lifecycle to `apps/presentations/io/recovery-controller.js`.
 - Lowered the Presentations `app.js` architecture ratchet to 714 physical lines / 70 long lines.
 - Updated offline precache, browser harnesses and structural tests for the new ownership boundary.
 - No visual or intentional file-format behavior change.
-
-# Changelog
 
 ## 0.20.2.7 — Update Flow Hardening (2026-08-07)
 
