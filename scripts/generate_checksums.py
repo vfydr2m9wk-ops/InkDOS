@@ -18,6 +18,8 @@ def included_files() -> list[Path]:
         if not path.is_file():
             continue
         relative = path.relative_to(ROOT)
+        if relative.parts[:1] == ("assets",) and relative.suffix.lower() == ".ppt":
+            continue
         if any(part in EXCLUDED_PARTS for part in relative.parts):
             continue
         if relative.parts[:3] == ("tests", "browser", "results"):
