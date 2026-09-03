@@ -37,6 +37,7 @@ function init(){
   const root=document.documentElement;document.title=product.name+' — '+product.longName;
   document.querySelectorAll('[data-product-name]').forEach(node=>node.textContent=product.name);
   document.querySelectorAll('[data-product-long-name]').forEach(node=>node.textContent=product.longName);
+  document.querySelectorAll('[data-release-badge],[data-release-version]').forEach(node=>node.textContent='v'+product.version);
   const input=document.querySelector('#suiteOpenInput');const openButton=document.querySelector('[data-suite-action="open"]');const createButton=document.querySelector('[data-suite-action="create"]');
   if(input){input.accept=global.InkDeskModules?global.InkDeskModules.buildAccept():'';input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file)return;try{open(file)}catch(error){global.alert(error.message)}})}
   if(openButton&&input)openButton.addEventListener('click',()=>input.click());

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "product": "InkDesk",
+  "product": "InkDOS",
   "version": "1.0.0-beta.1",
   "distribution": "complete source tree",
   "entryPoint": "index.html",

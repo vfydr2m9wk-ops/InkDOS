@@ -74,7 +74,7 @@
   "update": {
     "type": "github-release",
     "repository": "vfydr2m9wk-ops/InkDesk",
-    "assetPattern": "InkDesk_v*.zip"
+    "assetPattern": "InkDOS_v*.zip"
   },
   "capabilities": {
     "documents": [

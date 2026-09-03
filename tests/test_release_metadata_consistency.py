@@ -20,7 +20,7 @@ class ReleaseMetadataConsistencyTests(unittest.TestCase):
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         home = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn("# InkDOS — Ink Desk Offline Suite", readme)
-        self.assertTrue(release_notes.startswith(f"# InkDesk v{self.version}"))
+        self.assertTrue(release_notes.startswith(f"# InkDOS v{self.version}"))
         self.assertIn("<title>InkDOS — Ink Desk Offline Suite</title>", home)
         self.assertIn(f"module-registry.js?v={self.version}", home)
         first_heading = next(line for line in changelog.splitlines() if line.startswith("## "))
@@ -45,6 +45,11 @@ class ReleaseMetadataConsistencyTests(unittest.TestCase):
             self.assertEqual(data[key], self.version, name)
         manifest = json.loads((ROOT / "RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["releaseName"], self.release_name)
+
+    def test_public_product_metadata_uses_inkdos(self):
+        for name, key in (("BUILD_INFO.json", "product"), ("SOURCE_MANIFEST.json", "product"), ("RELEASE_MANIFEST.json", "project")):
+            self.assertEqual(json.loads((ROOT / name).read_text(encoding="utf-8"))[key], "InkDOS")
+        self.assertEqual(json.loads((ROOT / "app-manifest.json").read_text(encoding="utf-8"))["update"]["assetPattern"], "InkDOS_v*.zip")
 
     def test_release_history_index_starts_with_current_release(self):
         text = (ROOT / "docs" / "releases" / "README.md").read_text(encoding="utf-8")

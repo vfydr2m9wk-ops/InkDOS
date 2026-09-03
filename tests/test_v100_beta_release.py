@@ -72,10 +72,10 @@ class V100BetaReleaseTests(unittest.TestCase):
         self.assertNotIn("nextPatch", manifest["update"])
         self.assertNotIn("universalOpenCopy", manifest["homeRefinement"])
         self.assertNotIn("moduleCardsBeforeUniversalOpen", manifest["homeRefinement"])
-        self.assertEqual(sbom["name"], f"InkDesk-v{release}")
+        self.assertEqual(sbom["name"], f"InkDOS-v{release}")
         self.assertTrue(sbom["documentNamespace"].endswith(f"/tag/v{release}"))
-        inkdesk = next(package for package in sbom["packages"] if package["name"] == "InkDesk")
-        self.assertEqual(inkdesk["versionInfo"], release)
+        inkdos = next(package for package in sbom["packages"] if package["name"] == "InkDOS")
+        self.assertEqual(inkdos["versionInfo"], release)
 
     def test_release_builder_excludes_generated_browser_results(self):
         import importlib.util
