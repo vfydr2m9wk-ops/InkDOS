@@ -1,6 +1,6 @@
 # Architecture
 
-InkDesk is a static, client-side application with a hub and three independent workspaces. No compilation step or backend is required.
+InkDOS is a static, client-side application with a hub and six independent workspaces. No compilation step or backend is required.
 
 ## Entry points
 
@@ -46,7 +46,7 @@ Each workspace runs in its own page/global scope. Cross-workspace state is not s
 4. The current document is replaced only after parsing and rendering succeed.
 5. On failure, temporary URLs/resources are released and the previous document remains active.
 
-Imported Office packages are untrusted. InkDesk does not execute macros, ActiveX, embedded scripts, or remote document instructions.
+Imported Office packages are untrusted. InkDOS does not execute macros, ActiveX, embedded scripts, or remote document instructions.
 
 ## Export flow
 

@@ -45,20 +45,29 @@ function init(){
   const theme=applyTheme(storedTheme());document.querySelectorAll('[data-theme-choice]').forEach(control=>{control.value=theme;control.addEventListener('change',()=>applyTheme(control.value))});
   const menu=document.querySelector('#suiteSidebar');const menuButton=document.querySelector('[data-suite-action="menu"]');const closeButton=document.querySelector('[data-suite-action="close-menu"]');
   if(menu&&menuButton){
+    const backdrop=document.createElement('button');backdrop.type='button';backdrop.className='suite-backdrop';backdrop.setAttribute('aria-label','Close suite navigation');backdrop.hidden=true;document.body.appendChild(backdrop);
+    let previousFocus=null;
+    const close=()=>{menu.classList.remove('is-open');menu.hidden=true;backdrop.hidden=true;menuButton.setAttribute('aria-expanded','false');if(previousFocus)previousFocus.focus()};
     menuButton.addEventListener('click',()=>{
+      previousFocus=document.activeElement;
       menu.hidden=false;menu.classList.add('is-open');
+      backdrop.hidden=false;
       menuButton.setAttribute('aria-expanded','true');
+      if(closeButton)closeButton.focus();
     });
-    const close=()=>{menu.classList.remove('is-open');menu.hidden=true;menuButton.setAttribute('aria-expanded','false')};
     if(closeButton)closeButton.addEventListener('click',close);
+    backdrop.addEventListener('click',close);
     menu.addEventListener('click',event=>{if(event.target===menu)close()});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!menu.hidden)close()});
   }
   const clear=document.querySelector('[data-suite-action="clear-recent"]');if(clear)clear.addEventListener('click',()=>{writeRecent([]);renderRecent()});renderRecent();
 }
   function renderRecent(){
     const target=document.querySelector('[data-recent-list]');if(!target)return;
     target.replaceChildren();
-    readRecent().slice(0,5).forEach(item=>{
+    const items=readRecent().slice(0,5);
+    if(!items.length){const empty=document.createElement('li');empty.className='recent-empty';empty.textContent='No recent files yet';target.appendChild(empty)}
+    items.forEach(item=>{
       const node=document.createElement('li');node.textContent=item.name;
       target.appendChild(node);
     });

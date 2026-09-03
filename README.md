@@ -4,7 +4,7 @@ InkDOS is a local-first, offline and private browser productivity suite for focu
 PPTX, PDF, TXT and EPUB workflows. It is not intended to replace Microsoft
 Office, a full publishing system or a specialist PDF editor.
 
-## InkDesk v1.0.0-beta.1
+## InkDOS v1.0.0-beta.1
 
 `1.0.0-beta.1` is the first public beta on the 1.0 line. It consolidates the long
 0.20.2/0.20.3 stabilization train into a feature-frozen beta baseline: six
@@ -31,7 +31,7 @@ control.
 
 ## Privacy
 
-Selected files are processed in the browser. InkDesk includes no project-run
+Selected files are processed in the browser. InkDOS includes no project-run
 upload server, account system or analytics service. Saving normally creates a
 new local copy rather than silently overwriting the selected source file.
 
