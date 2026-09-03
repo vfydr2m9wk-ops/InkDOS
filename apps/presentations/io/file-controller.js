@@ -34,6 +34,7 @@
       this.patchImportedSlide = options.patchImportedSlide;
       this.shapeObjectXml = options.shapeObjectXml;
       this.pictureObjectXml = options.pictureObjectXml;
+      this.importLegacyPpt = options.importLegacyPpt;
       this.onOpenedSource = options.onOpenedSource;
       this.isRecoveryRestore = options.isRecoveryRestore;
       this.markRecoveryClean = options.markRecoveryClean;
@@ -55,11 +56,9 @@
 
     async load(file) {
       this.setReady('Opening…');
-      if (!/\.pptx$/i.test(file.name || '')) {
-        throw new Error(
-          'Legacy PPT files are outside the focused offline scope. ' +
-          'Please convert the file to PPTX first.'
-        );
+      const isLegacyPpt = /\.ppt$/i.test(file.name || '');
+      if (!isLegacyPpt && !/\.pptx$/i.test(file.name || '')) {
+        throw new Error('Please choose a PPT or PPTX presentation file.');
       }
 
       const previous = {
@@ -73,6 +72,23 @@
           global.InkDeskRuntime.validateInputSize(file.size, file.name);
         }
         const buffer = await file.arrayBuffer();
+        if (isLegacyPpt) {
+          if (!this.importLegacyPpt) throw new Error('Legacy PPT import is unavailable.');
+          const imported = this.importLegacyPpt(buffer, file.name);
+          this.sourceBuffer = null;
+          this.setPresentation(imported);
+          this.setActiveTheme(imported.theme || null);
+          this.setCurrentSlide(0);
+          this.resetSelection();
+          this.resetHistory();
+          this.showApp();
+          this.renderAll();
+          this.markSaved();
+          if (!this.isRecoveryRestore() && this.onOpenedSource) await this.onOpenedSource(file, buffer);
+          this.setReady('Opened legacy PPT');
+          this.installDebugHandle(imported.slides.length);
+          return imported;
+        }
         if (global.InkDeskRuntime) {
           global.InkDeskRuntime.validateZipPackage(buffer, file.name);
         }

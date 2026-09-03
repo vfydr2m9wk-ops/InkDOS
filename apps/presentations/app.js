@@ -664,6 +664,7 @@ fileController=InkDeskPresentationsFileIO.create({
   resetHistory:()=>historyController.reset(),
   showApp,renderAll,markSaved,setReady,parseXml,relMap,normalizePath,first,all,attr,
   loadTheme,parseDefaultTextStyle,parseSlide,
+  importLegacyPpt:(buffer,fileName)=>window.InkDeskPresentationsPptImport.importLegacyPpt(buffer,fileName),
   orderMatchesSource:()=>pptxWriteAdapter.orderMatchesSource(),
   patchImportedSlide:(zip,slideData)=>pptxWriteAdapter.patchImportedSlide(zip,slideData),
   shapeObjectXml:object=>pptxWriteAdapter.shapeObjectXml(object),

@@ -1,6 +1,6 @@
 'use strict';
 // Update sequence 47: InkDesk 1.0 beta release preparation and Launcher simplification.
-const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui56';
+const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui57';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -98,6 +98,7 @@ const APP_SHELL=[
   './apps/presentations/ui/presenter-notes-controller.js',
   './apps/presentations/presentation/slideshow-controller.js',
   './apps/presentations/io/pptx-write-adapter.js',
+  './apps/presentations/io/ppt-import-adapter.js',
   './apps/presentations/io/file-controller.js',
   './apps/presentations/io/recovery-controller.js',
   './apps/presentations/app.js',

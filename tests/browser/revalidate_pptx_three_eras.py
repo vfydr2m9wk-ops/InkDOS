@@ -46,6 +46,7 @@ def load_app(page) -> None:
         ROOT / "apps/presentations/ui/presenter-notes-controller.js",
         ROOT / "apps/presentations/presentation/slideshow-controller.js",
         ROOT / "apps/presentations/io/pptx-write-adapter.js",
+        ROOT / "apps/presentations/io/ppt-import-adapter.js",
         ROOT / "apps/presentations/io/file-controller.js",
         ROOT / "apps/presentations/io/recovery-controller.js",
         ROOT / "apps/presentations/app.js",
@@ -117,11 +118,18 @@ def main() -> int:
 
         page = browser.new_page()
         dialogs: list[str] = []
+        errors: list[str] = []
         page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.accept()))
+        page.on("pageerror", lambda error: errors.append(str(error)))
         load_app(page)
         page.set_input_files("#fileInput", str(FIXTURES / "era1_office_97_2003_legacy.ppt"))
-        page.wait_for_timeout(400)
-        check("legacy PPT rejection", any("Legacy PPT files" in message for message in dialogs), dialogs)
+        page.wait_for_function("window.__LocalPresentationsDebug && window.__LocalPresentationsDebug.getPresentation()")
+        legacy = page.evaluate("() => window.__LocalPresentationsDebug.getPresentation()")
+        check("legacy PPT opens", not any("Legacy PPT files" in message for message in dialogs), dialogs)
+        check("legacy PPT source", legacy["source"] == "ppt", legacy)
+        check("legacy PPT has slides", len(legacy["slides"]) > 0, legacy)
+        check("legacy PPT has editable text", any(o["type"] == "text" and o["text"].strip() for s in legacy["slides"] for o in s["objects"]), legacy)
+        check("legacy PPT has no fatal page errors", not errors and not page.locator("#stateBadge").inner_text().lower().startswith("open error"), errors or dialogs)
         page.close()
 
         for era in ("era2_office_2007_2013_baseline.pptx", "era3_office_2016_365_modern.pptx"):
