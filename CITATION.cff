@@ -1,12 +1,12 @@
 cff-version: 1.2.0
-title: InkDesk
-message: If you use InkDesk in academic work, cite the project using this metadata.
+title: InkDOS
+message: If you use InkDOS in academic work, cite the project using this metadata.
 type: software
 authors:
-  - family-names: InkDesk Project
+  - family-names: InkDOS Project
     given-names: Community
 version: 1.0.0-beta.1
 license: MIT
 repository-code: https://github.com/vfydr2m9wk-ops/InkDesk
 url: https://github.com/vfydr2m9wk-ops/InkDesk
-abstract: InkDesk is an open-source, browser-native, local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.
+abstract: InkDOS is an open-source, browser-native, local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.

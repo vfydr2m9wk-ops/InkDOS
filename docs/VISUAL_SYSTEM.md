@@ -1,10 +1,10 @@
-# InkDesk visual system
+# InkDOS visual system
 
 Development sequence `0.19.4.4` applies the first visible shared layout across
 Documents, Spreadsheets, Presentations, and PDF.
 
 The supplied Word, Excel, and PowerPoint screenshots are used as references for
-hierarchy and placement. InkDesk does not copy Microsoft logos, proprietary
+hierarchy and placement. InkDOS does not copy Microsoft logos, proprietary
 icons, trademarks, or visual assets.
 
 ## Common structure
