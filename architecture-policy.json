@@ -39,7 +39,7 @@
       "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
     },
     "apps/presentations/app.js": {
-      "maxLines": 699,
+      "maxLines": 698,
       "maxLongLines": 56,
       "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.13."
     },

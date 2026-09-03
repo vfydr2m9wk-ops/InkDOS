@@ -73,8 +73,11 @@
         }
         const buffer = await file.arrayBuffer();
         if (isLegacyPpt) {
-          if (!this.importLegacyPpt) throw new Error('Legacy PPT import is unavailable.');
-          const imported = this.importLegacyPpt(buffer, file.name);
+          const importer = this.importLegacyPpt || global.InkDeskPresentationsPptImport;
+          if (!importer || typeof importer.importLegacyPpt !== 'function') {
+            throw new Error('Legacy PPT import is unavailable.');
+          }
+          const imported = importer.importLegacyPpt(buffer, file.name);
           this.sourceBuffer = null;
           this.setPresentation(imported);
           this.setActiveTheme(imported.theme || null);

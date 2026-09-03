@@ -44,7 +44,7 @@ class ConsolidatedReleaseTests(unittest.TestCase):
 
     def test_service_worker_matches_public_version(self):
         worker = (ROOT / 'service-worker.js').read_text()
-        self.assertIn("const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui56';", worker)
+        self.assertIn("const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui57';", worker)
         for asset in (
             "'./apps/txt/index.html'",
             "'./apps/epub/index.html'",
