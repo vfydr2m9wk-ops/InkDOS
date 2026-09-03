@@ -1,4 +1,4 @@
-# InkDesk v1.0.0-beta.1 — 1.0 Beta 1
+# InkDOS v1.0.0-beta.1 — 1.0 Beta 1
 
 This release consolidates the validated 0.20.x engineering train into the first
 feature-frozen beta on the 1.0 line. The goal is not feature parity with

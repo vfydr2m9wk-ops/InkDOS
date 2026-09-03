@@ -72,7 +72,7 @@ def main() -> int:
     version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))["version"]
     output_dir = (ROOT / args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
-    archive_path = output_dir / f"InkDesk_v{version}.zip"
+    archive_path = output_dir / f"InkDOS_v{version}.zip"
 
     with zipfile.ZipFile(
         archive_path,

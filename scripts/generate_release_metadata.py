@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,15 +20,26 @@ def dump(name: str, value: dict) -> None:
     )
 
 
+def sync_product_config(release: str) -> None:
+    path = ROOT / "shared/product-config.js"
+    source = path.read_text(encoding="utf-8")
+    source = re.sub(r"name:'[^']+'", "name:'InkDOS'", source, count=1)
+    source = re.sub(r"longName:'[^']+'", "longName:'Ink Desk Offline Suite'", source, count=1)
+    source = re.sub(r"tagline:'[^']+'", "tagline:'Local. Offline. Private.'", source, count=1)
+    source = re.sub(r"version:'[^']+'", f"version:'{release}'", source, count=1)
+    path.write_text(source, encoding="utf-8")
+
+
 def main() -> None:
     version = load("VERSION.json")
     release = version["version"]
     date = version.get("date", "")
     modules = list(version.get("components", {}).keys())
+    sync_product_config(release)
 
     build = load("BUILD_INFO.json")
     build.update({
-        "product": "InkDesk",
+        "product": "InkDOS",
         "version": release,
         "buildDate": date,
         "channel": version.get("releaseChannel", "beta"),
@@ -38,7 +50,7 @@ def main() -> None:
 
     source = load("SOURCE_MANIFEST.json")
     source.update({
-        "product": "InkDesk",
+        "product": "InkDOS",
         "version": release,
         "generatedAt": date,
         "entryPoint": "index.html",
@@ -47,7 +59,7 @@ def main() -> None:
 
     release_manifest = load("RELEASE_MANIFEST.json")
     release_manifest.update({
-        "project": "InkDesk",
+        "project": "InkDOS",
         "version": release,
         "releaseName": version.get("releaseName", ""),
         "releaseDate": date,
@@ -75,17 +87,18 @@ def main() -> None:
     dump("app-manifest.json", app_manifest)
 
     sbom = load("SBOM.spdx.json")
-    sbom["name"] = f"InkDesk-v{release}"
+    sbom["name"] = f"InkDOS-v{release}"
     sbom["documentNamespace"] = (
         f"https://github.com/vfydr2m9wk-ops/InkDesk/releases/tag/v{release}"
     )
     sbom.setdefault("creationInfo", {})["created"] = f"{date}T00:00:00Z" if date else ""
     for package in sbom.get("packages", []):
         if package.get("SPDXID") == "SPDXRef-Package-InkDesk" or package.get("name") == "InkDesk":
+            package["name"] = "InkDOS"
             package["versionInfo"] = release
     dump("SBOM.spdx.json", sbom)
 
-    print(f"Release metadata synchronized for InkDesk {release}.")
+    print(f"Release metadata synchronized for InkDOS {release}.")
 
 
 if __name__ == "__main__":

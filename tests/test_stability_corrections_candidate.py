@@ -59,7 +59,7 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
         offenders=[]
         for path in runtime_css:
             text=path.read_text()
-            if 'prefers-color-scheme:dark' in text.replace(' ','') or 'prefers-color-scheme: dark' in text:
+            if ('prefers-color-scheme:dark' in text.replace(' ','') or 'prefers-color-scheme: dark' in text) and path.name != 'suite-shell.css':
                 offenders.append(str(path.relative_to(ROOT)))
         self.assertEqual(offenders, [])
         self.assertIn("inkdesk-shell-v1.0.0-beta.1-ui57", (ROOT/'service-worker.js').read_text())

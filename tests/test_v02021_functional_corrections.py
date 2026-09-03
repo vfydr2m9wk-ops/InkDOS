@@ -23,7 +23,8 @@ class FunctionalCorrectionsV02021Tests(unittest.TestCase):
         self.assertEqual(package["version"], VERSION)
         self.assertEqual(app_manifest["version"], VERSION)
         self.assertEqual(release["version"], VERSION)
-        self.assertEqual(web["name"], f"InkDesk {VERSION}")
+        self.assertEqual(web["short_name"], "InkDOS")
+        self.assertEqual(web["name"], "InkDOS — Ink Desk Offline Suite")
         self.assertIn(f"inkdesk-shell-v{VERSION}", self.read("service-worker.js"))
 
     def test_home_copy_is_the_requested_compact_form(self):
@@ -31,8 +32,8 @@ class FunctionalCorrectionsV02021Tests(unittest.TestCase):
         self.assertNotIn("Consolidated modular preview", html)
         self.assertNotIn("Open, review and make focused edits", html)
         self.assertNotIn("Beta stabilization · saving creates a new local copy", html)
-        self.assertGreaterEqual(html.count(f"v{VERSION}"), 2)
-        self.assertNotIn("Open a supported file", html)
+        self.assertIn("InkDOS", html)
+        self.assertIn('data-suite-action="create"', html)
         self.assertNotIn('id="openAnyDocument"', html)
 
     def test_spreadsheet_title_is_editable_and_updates_filename_state(self):

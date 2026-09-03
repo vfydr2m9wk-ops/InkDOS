@@ -43,7 +43,7 @@ class V0201ConsistencyTests(unittest.TestCase):
         self.assertEqual(json.loads((ROOT/'package.json').read_text())['version'],version)
         self.assertEqual(json.loads((ROOT/'app-manifest.json').read_text())['version'],version)
         self.assertIn(f"inkdesk-shell-v{version}",(ROOT/'service-worker.js').read_text())
-        self.assertIn('InkDesk v1.0.0-beta.1',(ROOT/'index.html').read_text())
+        self.assertIn('InkDOS — Ink Desk Offline Suite',(ROOT/'index.html').read_text())
 
     def test_critical_existing_functions_remain_present(self):
         documents=(ROOT/'apps/documents/app.js').read_text()

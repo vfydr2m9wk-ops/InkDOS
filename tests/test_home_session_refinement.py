@@ -17,11 +17,12 @@ class HomeSessionRefinementTests(unittest.TestCase):
             html.index('class="hub-footer"'),
         ]
         self.assertEqual(positions, sorted(positions))
-        self.assertNotIn("Open a supported file", html)
-        self.assertNotIn('id="openAnyDocument"', html)
-        self.assertNotIn('shared/hub-open.js', html)
-        self.assertIn("v1.0.0-beta.1", html)
-        self.assertNotIn("Choose a DOCX, XLS, XLSX, PPTX or PDF file.", html)
+        self.assertIn('data-suite-action="open"', html)
+        self.assertIn('data-suite-action="create"', html)
+        self.assertIn('id="suiteSidebar"', html)
+        self.assertIn("InkDOS", html)
+        self.assertIn("Ink Desk Offline Suite", html)
+        self.assertIn("Local. Offline. Private.", html)
 
     def test_document_session_controller_contains_non_invasive_title_adapter(self):
         controller = (

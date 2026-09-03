@@ -1,6 +1,6 @@
-# InkDesk
+# InkDOS — Ink Desk Offline Suite
 
-InkDesk is a local-first browser productivity suite for focused DOCX, XLS/XLSX,
+InkDOS is a local-first, offline and private browser productivity suite for focused DOCX, XLS/XLSX,
 PPTX, PDF, TXT and EPUB workflows. It is not intended to replace Microsoft
 Office, a full publishing system or a specialist PDF editor.
 

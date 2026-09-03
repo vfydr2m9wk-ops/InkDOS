@@ -1,8 +1,8 @@
 {
   "id": "./index.html",
-  "name": "InkDesk 1.0.0-beta.1",
-  "short_name": "InkDesk",
-  "description": "Local-first DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workspaces.",
+  "name": "InkDOS — Ink Desk Offline Suite",
+  "short_name": "InkDOS",
+  "description": "Local. Offline. Private. DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workspaces.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

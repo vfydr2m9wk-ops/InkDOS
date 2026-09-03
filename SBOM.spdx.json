@@ -2,7 +2,7 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "InkDesk-v1.0.0-beta.1",
+  "name": "InkDOS-v1.0.0-beta.1",
   "documentNamespace": "https://github.com/vfydr2m9wk-ops/InkDesk/releases/tag/v1.0.0-beta.1",
   "creationInfo": {
     "created": "2026-08-09T00:00:00Z",
@@ -12,7 +12,7 @@
   },
   "packages": [
     {
-      "name": "InkDesk",
+      "name": "InkDOS",
       "SPDXID": "SPDXRef-Package-InkDesk",
       "versionInfo": "1.0.0-beta.1",
       "downloadLocation": "NOASSERTION",

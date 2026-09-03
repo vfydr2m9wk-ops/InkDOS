@@ -31,8 +31,8 @@ class ConsolidatedReleaseTests(unittest.TestCase):
     def test_home_has_clean_six_workspace_layout(self):
         html = (ROOT / 'index.html').read_text()
         self.assertIn('class="workspace-grid"', html)
-        self.assertIn('InkDesk v1.0.0-beta.1', html)
-        self.assertNotIn('Open a supported file', html)
+        self.assertIn('InkDOS', html)
+        self.assertIn('data-suite-action="open"', html)
         self.assertNotIn('id="openAnyDocument"', html)
         self.assertNotIn('Choose a DOCX, XLS, XLSX', html)
         self.assertNotIn('0.19.4.15', html)
