@@ -47,7 +47,7 @@ class ModuleRegistryTests(unittest.TestCase):
             for extension in manifest["extensions"]:
                 self.assertNotIn(extension, extensions)
                 extensions.add(extension)
-        self.assertEqual(extensions, {"docx", "xls", "xlsx", "pptx", "pdf", "txt", "epub"})
+        self.assertEqual(extensions, {"docx", "xls", "xlsx", "ppt", "pptx", "pdf", "txt", "epub"})
 
     def test_launcher_uses_registry_with_static_fallbacks(self):
         html = (ROOT / "index.html").read_text()

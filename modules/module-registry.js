@@ -71,7 +71,7 @@ const registry={
       "schemaVersion": 1,
       "id": "presentations",
       "name": "Presentations",
-      "description": "Create, edit and present PPTX files locally.",
+      "description": "Create, edit and present PPT and PPTX files locally.",
       "version": "1.0.0-beta.1",
       "enabled": true,
       "optional": false,
@@ -82,9 +82,11 @@ const registry={
       "themeClass": "presentations",
       "accent": "#d64a24",
       "extensions": [
+        "ppt",
         "pptx"
       ],
       "mimeTypes": [
+        "application/vnd.ms-powerpoint",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation"
       ],
       "capabilities": [

@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
 </head>
 <body class="office-product office-presentations">
-  <input id="fileInput" type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden />
+  <input id="fileInput" type="file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden />
   <input id="imageInput" type="file" accept="image/*" hidden />
 
   <section id="startScreen" class="start-screen">
@@ -26,7 +26,7 @@
         <button id="newBtn" class="start-btn inkdesk-start-button inkdesk-start-new"><span class="inkdesk-start-icon inkdesk-plus" aria-hidden="true">+</span><span>New document</span></button>
         <button id="openBtn" class="start-btn inkdesk-start-button inkdesk-start-open"><span class="inkdesk-start-icon inkdesk-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span></button>
       </div>
-      <small>PPTX · Local editing · Saving creates a new copy</small>
+      <small>PPT / PPTX · Local editing · Saving creates a new PPTX copy</small>
     </div>
   </section>
 
@@ -176,6 +176,7 @@
   <script src="ui/presenter-notes-controller.js?v=0.20.3.0"></script>
   <script src="presentation/slideshow-controller.js?v=0.20.3.0"></script>
   <script src="io/pptx-write-adapter.js?v=0.20.3.0"></script>
+  <script src="io/ppt-import-adapter.js?v=0.20.3.0"></script>
   <script src="io/file-controller.js?v=0.20.3.0"></script>
   <script src="io/recovery-controller.js?v=0.20.3.0"></script>
   <script src="app.js?v=0.20.3.0"></script>
