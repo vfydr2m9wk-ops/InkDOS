@@ -4,6 +4,9 @@ const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui57';
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
+  './shared/product-config.js',
+  './shared/suite-shell.js',
+  './shared/suite-shell.css',
   './index.html',
   './manifest.webmanifest',
   './InkDesk.html',
@@ -162,7 +165,7 @@ async function installAppShell(){
     await cache.addAll(APP_SHELL);
   }catch(error){
     await caches.delete(CACHE_NAME);
-    console.error('InkDesk app-shell installation failed; the incomplete cache was removed.',error);
+    console.error('InkDOS app-shell installation failed; the incomplete cache was removed.',error);
     throw error;
   }
 }

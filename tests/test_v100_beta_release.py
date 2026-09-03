@@ -24,8 +24,10 @@ class V100BetaReleaseTests(unittest.TestCase):
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         css = (ROOT / "shared/hub.css").read_text(encoding="utf-8")
         visual = (ROOT / "shared/ui/visual-foundation-v0203.css").read_text(encoding="utf-8")
-        for marker in ("Open a supported file", "openAnyDocument", "openAnyInput", "openAnyStatus", "open-any-panel", "shared/hub-open.js"):
+        for marker in ("openAnyDocument", "openAnyInput", "openAnyStatus", "open-any-panel", "shared/hub-open.js"):
             self.assertNotIn(marker, home)
+        self.assertIn('data-suite-action="open"', home)
+        self.assertIn('data-suite-action="create"', home)
         self.assertFalse((ROOT / "shared/hub-open.js").exists())
         self.assertNotIn("openAnyInput", loader)
         self.assertNotIn("./shared/hub-open.js", worker)

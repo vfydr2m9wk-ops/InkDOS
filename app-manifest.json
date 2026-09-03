@@ -1,9 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "inkdesk",
-  "name": "InkDesk",
+  "id": "inkdos",
+  "name": "InkDOS",
+  "longName": "Ink Desk Offline Suite",
+  "tagline": "Local. Offline. Private.",
   "version": "1.0.0-beta.1",
-  "description": "A lightweight local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
+  "description": "A local-first, offline and private productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
   "homepage": "https://vfydr2m9wk-ops.github.io/InkDesk/",
@@ -24,7 +26,7 @@
   "launchers": [
     {
       "id": "suite",
-      "name": "InkDesk",
+      "name": "InkDOS",
       "entryPoint": "index.html",
       "icon": "assets/icons/office.png"
     },

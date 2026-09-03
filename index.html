@@ -3,40 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f6f8">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#171a20">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="InkDesk v1.0.0-beta.1 local-first workspaces for DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB.">
-  <meta property="og:title" content="InkDesk v1.0.0-beta.1">
-  <meta property="og:description" content="A consolidated local-first productivity suite.">
+  <meta name="description" content="InkDOS — Ink Desk Offline Suite. Local. Offline. Private.">
+  <meta property="og:title" content="InkDOS — Ink Desk Offline Suite">
+  <meta property="og:description" content="A consolidated local-first, offline productivity suite.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://vfydr2m9wk-ops.github.io/InkDesk/docs/images/social-preview.png">
   <meta name="twitter:card" content="summary_large_image">
-  <title>InkDesk v1.0.0-beta.1</title>
+  <title>InkDOS — Ink Desk Offline Suite</title>
   <link rel="icon" href="./assets/icons/office.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./assets/icons/office.png">
   <link rel="stylesheet" href="./shared/hub.css?v=1.0.0-beta.1">
   <link rel="stylesheet" href="./shared/ui/visual-foundation-v0203.css?v=1.0.0-beta.1">
   <link rel="stylesheet" href="./shared/ui/light-only.css?v=stability-1">
+  <link rel="stylesheet" href="./shared/suite-shell.css?v=inkdos-1">
 </head>
 <body>
   <main class="hub-shell">
     <header class="hub-topbar">
-      <a class="brand-lockup" href="./index.html" aria-label="InkDesk home">
+      <a class="brand-lockup" href="./index.html" aria-label="InkDOS home">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-copy"><strong>InkDesk</strong><small>Local-first workspace</small></span>
+        <span class="brand-copy"><strong data-product-name>InkDOS</strong><small data-product-long-name>Ink Desk Offline Suite</small></span>
       </a>
-      <span class="release-badge">v1.0.0-beta.1</span>
+      <button class="suite-menu" type="button" data-suite-action="menu" aria-controls="suiteSidebar" aria-expanded="false" aria-label="Open suite navigation">☰</button>
     </header>
 
     <section class="hub-intro" aria-labelledby="hubTitle">
-      <h1 id="hubTitle">Choose a workspace</h1>
+      <p class="eyebrow">Local. Offline. Private.</p>
+      <h1 id="hubTitle">Your work, on this device.</h1>
+      <p>Open a supported file or create a new workspace.</p>
+      <div class="suite-actions" aria-label="Suite actions">
+        <button class="suite-action primary" type="button" data-suite-action="open">Open</button>
+        <button class="suite-action" type="button" data-suite-action="create">Create</button>
+        <input id="suiteOpenInput" type="file" hidden>
+      </div>
     </section>
 
     <p id="moduleRegistryStatus" class="module-registry-status" role="status" aria-live="polite" hidden></p>
+    <section class="recent-section" aria-labelledby="recentTitle"><h2 id="recentTitle">Recent</h2><ul data-recent-list></ul><button type="button" data-suite-action="clear-recent">Clear recent</button></section>
 
     <section class="workspace-grid" data-module-grid aria-label="InkDesk workspaces">
       <a class="workspace-card documents" href="./apps/documents/index.html"><span class="app-icon">D</span><span class="workspace-copy"><strong>Documents</strong><small>DOCX</small></span><span class="open-arrow">›</span></a>
@@ -52,9 +62,20 @@
       <nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDesk">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav>
     </footer>
   </main>
-  <noscript><p class="noscript-message">InkDesk requires JavaScript.</p></noscript>
+  <aside id="suiteSidebar" class="suite-sidebar" hidden aria-label="InkDOS navigation">
+    <button class="suite-menu" type="button" data-suite-action="close-menu" aria-label="Close suite navigation">×</button>
+    <nav class="suite-nav" aria-label="Suite navigation">
+      <a href="./index.html">Home</a><a href="./apps/documents/index.html">Documents</a><a href="./apps/spreadsheets/index.html">Spreadsheets</a><a href="./apps/presentations/index.html">Presentations</a><a href="./apps/pdf/index.html">PDF</a><a href="./apps/epub/index.html">EPUB / Reader</a><a href="./apps/txt/index.html">Text / Notes</a><a href="#recentTitle">Recent</a><a href="#theme">Settings</a><a href="#about">About</a>
+    </nav>
+    <section id="theme"><label for="themeChoice">Theme</label><select id="themeChoice" data-theme-choice><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></section>
+    <section id="about"><strong data-product-name>InkDOS</strong><p data-product-long-name>Ink Desk Offline Suite</p><p>Local. Offline. Private.</p></section>
+  </aside>
+  <noscript><p class="noscript-message">InkDOS requires JavaScript.</p></noscript>
+  <script src="./shared/product-config.js?v=inkdos-1"></script>
   <script src="./modules/module-registry.js?v=1.0.0-beta.1"></script>
   <script src="./modules/module-loader.js?v=1.0.0-beta.1"></script>
+  <script src="./shared/file-router.js?v=0.20.0"></script>
+  <script src="./shared/suite-shell.js?v=inkdos-1"></script>
   <script defer src="./shared/register-service-worker.js?v=1.0.0-beta.1"></script>
 </body>
 </html>
