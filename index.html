@@ -47,9 +47,9 @@
     </section>
 
     <p id="moduleRegistryStatus" class="module-registry-status" role="status" aria-live="polite" hidden></p>
-    <section class="recent-section" aria-labelledby="recentTitle"><h2 id="recentTitle">Recent</h2><ul data-recent-list></ul><button type="button" data-suite-action="clear-recent">Clear recent</button></section>
+    <section class="recent-section" aria-labelledby="recentTitle"><div class="section-heading"><h2 id="recentTitle">Recent</h2><button type="button" data-suite-action="clear-recent">Clear recent</button></div><ul data-recent-list><li class="recent-empty" data-recent-empty>No recent files yet</li></ul></section>
 
-    <section class="workspace-grid" data-module-grid aria-label="InkDesk workspaces">
+    <section class="workspace-grid" data-module-grid aria-label="InkDOS workspaces">
       <a class="workspace-card documents" href="./apps/documents/index.html"><span class="app-icon">D</span><span class="workspace-copy"><strong>Documents</strong><small>DOCX</small></span><span class="open-arrow">›</span></a>
       <a class="workspace-card spreadsheets" href="./apps/spreadsheets/index.html"><span class="app-icon">S</span><span class="workspace-copy"><strong>Spreadsheets</strong><small>XLS · XLSX</small></span><span class="open-arrow">›</span></a>
       <a class="workspace-card presentations" href="./apps/presentations/index.html"><span class="app-icon">P</span><span class="workspace-copy"><strong>Presentations</strong><small>PPTX</small></span><span class="open-arrow">›</span></a>
@@ -63,10 +63,10 @@
       <nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDesk">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav>
     </footer>
   </main>
-  <aside id="suiteSidebar" class="suite-sidebar" hidden aria-label="InkDOS navigation">
+  <aside id="suiteSidebar" class="suite-sidebar" hidden role="dialog" aria-modal="true" aria-label="InkDOS navigation">
     <button class="suite-menu" type="button" data-suite-action="close-menu" aria-label="Close suite navigation">×</button>
     <nav class="suite-nav" aria-label="Suite navigation">
-      <a href="./index.html">Home</a><a href="./apps/documents/index.html">Documents</a><a href="./apps/spreadsheets/index.html">Spreadsheets</a><a href="./apps/presentations/index.html">Presentations</a><a href="./apps/pdf/index.html">PDF</a><a href="./apps/epub/index.html">EPUB / Reader</a><a href="./apps/txt/index.html">Text / Notes</a><a href="#recentTitle">Recent</a><a href="#theme">Settings</a><a href="#about">About</a>
+      <a href="./index.html" aria-current="page">Home</a><a href="./apps/documents/index.html">Documents</a><a href="./apps/spreadsheets/index.html">Spreadsheets</a><a href="./apps/presentations/index.html">Presentations</a><a href="./apps/pdf/index.html">PDF Workspace</a><a href="./apps/epub/index.html">EPUB Reader</a><a href="./apps/txt/index.html">Plain Text</a><a href="#recentTitle">Recent</a><a href="#theme">Settings</a><a href="#about">About</a>
     </nav>
     <section id="theme"><label for="themeChoice">Theme</label><select id="themeChoice" data-theme-choice><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></section>
     <section id="about"><strong data-product-name>InkDOS</strong><p data-product-long-name>Ink Desk Offline Suite</p><p>Local. Offline. Private.</p></section>
