@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "1.0.0-beta.2",
+  "release": "1.0.0-beta.3",
   "policy": {
     "rule": "A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.",
     "newControlGate": "Every new visible control must appear in this inventory before release.",
@@ -129,10 +129,10 @@
     {
       "module": "home",
       "source": "index.html",
-      "selector": "a[href=\"https://github.com/vfydr2m9wk-ops/InkDesk\"]#1",
+      "selector": "a[href=\"https://github.com/vfydr2m9wk-ops/InkDOS\"]#1",
       "label": "Source",
       "element": "a",
-      "key": "home.a[href=\"https://github.com/vfydr2m9wk-ops/InkDesk\"]#1",
+      "key": "home.a[href=\"https://github.com/vfydr2m9wk-ops/InkDOS\"]#1",
       "coverage": "scheduled",
       "evidence": []
     },
@@ -300,7 +300,7 @@
       "module": "documents",
       "source": "apps/documents/index.html",
       "selector": "a[href=\"../../index.html\"]#1",
-      "label": "Return to InkDesk home",
+      "label": "Return to InkDOS home",
       "element": "a",
       "key": "documents.a[href=\"../../index.html\"]#1",
       "coverage": "scheduled",
@@ -680,7 +680,7 @@
       "module": "spreadsheets",
       "source": "apps/spreadsheets/index.html",
       "selector": "a[href=\"../../index.html\"]#1",
-      "label": "Return to InkDesk home",
+      "label": "Return to InkDOS home",
       "element": "a",
       "key": "spreadsheets.a[href=\"../../index.html\"]#1",
       "coverage": "scheduled",
@@ -1030,7 +1030,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "a[href=\"../../index.html\"]#1",
-      "label": "Return to InkDesk home",
+      "label": "Return to InkDOS home",
       "element": "a",
       "key": "presentations.a[href=\"../../index.html\"]#1",
       "coverage": "scheduled",
@@ -1060,7 +1060,7 @@
       "module": "presentations",
       "source": "apps/presentations/index.html",
       "selector": "a[href=\"../../index.html\"]#2",
-      "label": "Return to InkDesk home",
+      "label": "Return to InkDOS home",
       "element": "a",
       "key": "presentations.a[href=\"../../index.html\"]#2",
       "coverage": "scheduled",
@@ -1660,7 +1660,7 @@
       "module": "pdf",
       "source": "apps/pdf/index.html",
       "selector": "a[href=\"../../index.html\"]#1",
-      "label": "Return to InkDesk home",
+      "label": "Return to InkDOS home",
       "element": "a",
       "key": "pdf.a[href=\"../../index.html\"]#1",
       "coverage": "scheduled",
@@ -1680,7 +1680,7 @@
       "module": "pdf",
       "source": "apps/pdf/index.html",
       "selector": "a[href=\"../../index.html\"]#2",
-      "label": "InkDesk home",
+      "label": "InkDOS home",
       "element": "a",
       "key": "pdf.a[href=\"../../index.html\"]#2",
       "coverage": "scheduled",
@@ -1990,7 +1990,7 @@
       "module": "txt",
       "source": "apps/txt/index.html",
       "selector": "a[href=\"../../index.html\"]#1",
-      "label": "InkDesk home",
+      "label": "InkDOS home",
       "element": "a",
       "key": "txt.a[href=\"../../index.html\"]#1",
       "coverage": "scheduled",
@@ -2200,7 +2200,7 @@
       "module": "epub",
       "source": "apps/epub/index.html",
       "selector": "a[href=\"../../index.html\"]#1",
-      "label": "InkDesk home",
+      "label": "InkDOS home",
       "element": "a",
       "key": "epub.a[href=\"../../index.html\"]#1",
       "coverage": "scheduled",
@@ -2384,8 +2384,8 @@
       "label": "Version/cache/release metadata are synchronized",
       "coverage": "automated",
       "evidence": [
-        "tests/test_v0201_consistency.py",
-        "tests/browser/revalidate_v0201_consistency.py",
+        "tests/test_workspace_consistency.py",
+        "tests/browser/revalidate_workspace_consistency.py",
         "scripts/verify_checksums.py"
       ]
     },
@@ -2423,7 +2423,7 @@
       "coverage": "automated",
       "evidence": [
         "tests/test_local_recovery.py",
-        "tests/browser/revalidate_v0202_local_recovery.py"
+        "tests/browser/revalidate_local_recovery.py"
       ]
     },
     {
@@ -2433,7 +2433,7 @@
       "coverage": "automated",
       "evidence": [
         "tests/test_local_recovery.py",
-        "tests/browser/revalidate_v0202_local_recovery.py"
+        "tests/browser/revalidate_local_recovery.py"
       ]
     },
     {
@@ -2443,7 +2443,7 @@
       "coverage": "automated",
       "evidence": [
         "tests/test_local_recovery.py",
-        "tests/browser/revalidate_v0202_local_recovery.py"
+        "tests/browser/revalidate_local_recovery.py"
       ]
     },
     {
@@ -2462,7 +2462,7 @@
       "coverage": "automated",
       "evidence": [
         "tests/test_spreadsheet_formula_references.py",
-        "tests/browser/revalidate_v0201_consistency.py"
+        "tests/browser/revalidate_workspace_consistency.py"
       ]
     },
     {
@@ -2497,8 +2497,8 @@
       "module": "home",
       "coverage": "automated",
       "evidence": [
-        "tests/test_v02021_functional_corrections.py",
-        "tests/browser/revalidate_v02021_functional_corrections.py"
+        "tests/test_functional_regressions.py",
+        "tests/browser/revalidate_functional_regressions.py"
       ]
     },
     {
@@ -2506,8 +2506,8 @@
       "module": "spreadsheets",
       "coverage": "automated",
       "evidence": [
-        "tests/test_v02021_functional_corrections.py",
-        "tests/browser/revalidate_v02021_functional_corrections.py"
+        "tests/test_functional_regressions.py",
+        "tests/browser/revalidate_functional_regressions.py"
       ]
     },
     {
@@ -2515,8 +2515,8 @@
       "module": "presentations",
       "coverage": "automated",
       "evidence": [
-        "tests/test_v02021_functional_corrections.py",
-        "tests/browser/revalidate_v02021_functional_corrections.py"
+        "tests/test_functional_regressions.py",
+        "tests/browser/revalidate_functional_regressions.py"
       ]
     },
     {
@@ -2524,8 +2524,8 @@
       "module": "pdf",
       "coverage": "automated",
       "evidence": [
-        "tests/test_v02021_functional_corrections.py",
-        "tests/browser/revalidate_v02021_functional_corrections.py"
+        "tests/test_functional_regressions.py",
+        "tests/browser/revalidate_functional_regressions.py"
       ]
     },
     {
@@ -2533,8 +2533,8 @@
       "module": "global",
       "coverage": "automated",
       "evidence": [
-        "tests/test_v02021_functional_corrections.py",
-        "tests/browser/revalidate_v02021_functional_corrections.py"
+        "tests/test_functional_regressions.py",
+        "tests/browser/revalidate_functional_regressions.py"
       ]
     }
   ]

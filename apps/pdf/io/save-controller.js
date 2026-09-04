@@ -20,7 +20,7 @@
       typeof saveReview !== 'function'
     ) {
       throw new Error(
-        'InkDesk PDF save controller requires state, elements, pdfjs, cleanName, status, toast and saveReview.'
+        'InkDOS PDF save controller requires state, elements, pdfjs, cleanName, status, toast and saveReview.'
       );
     }
 
@@ -80,7 +80,7 @@
     }
 
     async function saveAnnotatedPdf() {
-      const exporter = global.InkDeskPdfFlattenExport;
+      const exporter = global.InkDOSPdfFlattenExport;
       if (!exporter || typeof exporter.exportDocument !== 'function') {
         throw new Error('The local annotated-PDF exporter is unavailable.');
       }
@@ -125,7 +125,7 @@
           : await saveUnannotatedPdf();
       } catch (error) {
         global.alert(
-          'InkDesk could not create the PDF copy. ' +
+          'InkDOS could not create the PDF copy. ' +
           'The original file and the local review were not changed.'
         );
         console.error(error);
@@ -144,7 +144,7 @@
     });
   }
 
-  global.InkDeskPdfSaveController = Object.freeze({
+  global.InkDOSPdfSaveController = Object.freeze({
     version: '0.20.3.0',
     createSaveController
   });

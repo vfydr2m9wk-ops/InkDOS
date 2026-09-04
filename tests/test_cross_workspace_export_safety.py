@@ -62,7 +62,7 @@ const window={
 window.window=window;
 const context=vm.createContext({window,console,globalThis:window});
 vm.runInContext(fs.readFileSync('shared/file-lifecycle.js','utf8'),context);
-const lifecycle=window.InkDeskFileLifecycle.create();
+const lifecycle=window.InkDOSFileLifecycle.create();
 lifecycle.sourceOpened();
 lifecycle.markDirty();
 if(!lifecycle.shouldWarnBeforeUnload()) throw new Error('dirty state did not warn');

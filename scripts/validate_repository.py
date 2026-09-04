@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static repository checks for InkDesk."""
+"""Static repository checks for InkDOS."""
 from __future__ import annotations
 
 import json
@@ -158,7 +158,7 @@ def validate_service_worker(errors: list[str], version: str | None) -> None:
     missing = sorted(required_entries.difference(shell))
     if missing:
         errors.append("Service-worker app shell is missing required entries: " + ", ".join(missing))
-    if version and f"inkdesk-shell-v{version}" not in text:
+    if version and f"inkdos-shell-v{version}" not in text:
         errors.append("Service-worker cache version does not match VERSION.json")
     if re.search(r"\b(?:importScripts|fetch)\s*\(\s*['\"]https?://", text):
         errors.append("Service worker contains an automatic remote dependency")

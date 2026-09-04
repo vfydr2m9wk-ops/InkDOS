@@ -37,7 +37,7 @@ class PdfShellPolishTests(unittest.TestCase):
             ROOT / "shared" / "ui" / "workspace-layout.css"
         ).read_text(encoding="utf-8")
         self.assertIn("--accent: #b42318 !important", layout)
-        self.assertIn("--inkdesk-accent: #b42318", layout)
+        self.assertIn("--inkdos-accent: #b42318", layout)
 
     def test_pdf_sidebar_defaults_closed_and_owns_toggle(self):
         runtime = (
@@ -50,7 +50,7 @@ class PdfShellPolishTests(unittest.TestCase):
             "'pdf.sidebar'",
             "sidebar-collapsed",
             "stopImmediatePropagation",
-            "inkdeskPdfSidebarController",
+            "inkdosPdfSidebarController",
             "setSidebarOpen(initialOpen, false)",
         ):
             self.assertIn(expected, runtime)
@@ -106,7 +106,7 @@ function classList(initial) {
 }
 
 const body = {
-  dataset: { inkdeskModule: 'pdf' },
+  dataset: { inkdosModule: 'pdf' },
   classList: classList(['office-product', 'office-pdf'])
 };
 
@@ -157,7 +157,7 @@ globalThis.sessionStorage = {
   setItem() {}
 };
 
-const api = globalThis.InkDeskWorkspaceLayout;
+const api = globalThis.InkDOSWorkspaceLayout;
 if (!api || api.version !== '0.20.0') process.exit(10);
 if (!api.apply(documentObject)) process.exit(11);
 if (!workspace.classList.contains('sidebar-collapsed')) process.exit(12);

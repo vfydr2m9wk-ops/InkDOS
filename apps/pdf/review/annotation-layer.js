@@ -18,7 +18,7 @@
       !renderSideLists
     ) {
       throw new Error(
-        'InkDesk PDF annotation layer requires state and review callbacks.'
+        'InkDOS PDF annotation layer requires state and review callbacks.'
       );
     }
 
@@ -184,7 +184,7 @@
     });
   }
 
-  global.InkDeskPdfAnnotationLayer = Object.freeze({
+  global.InkDOSPdfAnnotationLayer = Object.freeze({
     version: '0.20.3.0',
     createAnnotationLayer
   });

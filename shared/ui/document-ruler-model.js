@@ -330,7 +330,7 @@ function applyDocumentIndent(block, state, pagesHost) {
   return true;
 }
 
-  global.InkDeskDocumentRulerModel = Object.freeze({
+  global.InkDOSDocumentRulerModel = Object.freeze({
     version: VERSION,
     finiteNumber,
     clampNumber,

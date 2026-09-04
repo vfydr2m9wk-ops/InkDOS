@@ -19,5 +19,5 @@ function copyNode(node,doc){if(node.nodeType===Node.TEXT_NODE)return doc.createT
 }
 function fragmentFromHtml(html,doc=document){const template=doc.createElement('template');template.innerHTML=String(html||'');const fragment=doc.createDocumentFragment();for(const child of Array.from(template.content.childNodes))fragment.appendChild(copyNode(child,doc));return fragment}
 function appendSanitizedHtml(target,html){target.appendChild(fragmentFromHtml(html,target.ownerDocument||document));return target}
-global.InkDeskSafeDOM=Object.freeze({appendSanitizedHtml,fragmentFromHtml,safeImageUrl,safeStyle});
+global.InkDOSSafeDOM=Object.freeze({appendSanitizedHtml,fragmentFromHtml,safeImageUrl,safeStyle});
 })(window);

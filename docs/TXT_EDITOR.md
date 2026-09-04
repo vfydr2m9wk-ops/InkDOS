@@ -1,7 +1,7 @@
 # Plain Text module
 
 Development sequence `0.19.4.14` adds the first new workspace built directly
-on the InkDesk modular and visual foundations.
+on the InkDOS modular and visual foundations.
 
 ## Scope
 

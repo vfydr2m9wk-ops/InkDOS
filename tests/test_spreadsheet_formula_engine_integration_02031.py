@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaEngineIntegration02031Tests(unittest.TestCase):
     def test_spreadsheet_runtime_uses_shared_safe_arithmetic_engine(self):
         app = (ROOT / "apps/spreadsheets/app.js").read_text(encoding="utf-8")
-        self.assertIn("InkDeskFormula.evaluateArithmetic(arithmetic)", app)
+        self.assertIn("InkDOSFormula.evaluateArithmetic(arithmetic)", app)
         self.assertNotIn("Function" + "(", app)
         self.assertNotIn("eval" + "(", app)
         self.assertIn("^[0-9+\\-*/%^(). %]+$", app)

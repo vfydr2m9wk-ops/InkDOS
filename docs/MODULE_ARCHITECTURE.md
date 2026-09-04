@@ -1,6 +1,6 @@
-# InkDesk module architecture
+# InkDOS module architecture
 
-InkDesk 0.19.4.2 introduces the module-discovery foundation without rewriting
+InkDOS 0.19.4.2 introduces the module-discovery foundation without rewriting
 the existing workspaces. Documents, Spreadsheets, Presentations, and PDF retain
 their direct HTML entry pages and current internal behavior.
 
@@ -21,7 +21,7 @@ script can still load. This preserves the direct-file workflow.
 
 ## Runtime API
 
-`window.InkDeskModules` provides:
+`window.InkDOSModules` provides:
 
 - `list()` — all valid registered modules.
 - `listEnabled()` — enabled modules in display order.

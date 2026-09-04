@@ -16,7 +16,7 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         cls.html = (ROOT / "apps/presentations/index.html").read_text(encoding="utf-8")
         cls.recovery_test = (
-            ROOT / "tests/browser/revalidate_v0202_local_recovery.py"
+            ROOT / "tests/browser/revalidate_local_recovery.py"
         ).read_text(encoding="utf-8")
         cls.shell_css = (ROOT / "shared/office-shell.css").read_text(encoding="utf-8")
 
@@ -58,7 +58,7 @@ class PresentationsResponsiveControlsTests(unittest.TestCase):
         self.assertIn("dataset.inspectorOpen = String(this.open)", self.inspector)
         self.assertNotIn("lastInspectorCompactMode", self.inspector)
         self.assertNotIn("inspectorResizeFrame", self.inspector)
-        self.assertIn("InkDeskPresentationsInspector.create", self.app)
+        self.assertIn("InkDOSPresentationsInspector.create", self.app)
 
     def test_format_toggle_exposes_accessibility_state_from_same_source(self):
         self.assertIn('aria-controls="inspector"', self.html)

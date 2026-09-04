@@ -15,7 +15,7 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
             encoding="utf-8"
         )
         for marker in (
-            "InkDeskDocumentRulerDragController",
+            "InkDOSDocumentRulerDragController",
             "function startDrag(",
             "function moveDrag(",
             "function endDrag(",
@@ -30,7 +30,7 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
 
     def test_workspace_layout_delegates_drag_but_keeps_dom_sync(self):
         layout = (ROOT / "shared/ui/workspace-layout.js").read_text(encoding="utf-8")
-        self.assertIn("InkDeskDocumentRulerDragController", layout)
+        self.assertIn("InkDOSDocumentRulerDragController", layout)
         self.assertIn("dragControllerFactory.create({", layout)
         self.assertIn("function renderTicks(", layout)
         self.assertIn("function updateHandles(", layout)
@@ -53,8 +53,8 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
         self.assertIn("function loadDocumentRulerDragController()", shell)
         self.assertIn("document-ruler-drag-controller.js", shell)
         self.assertLess(
-            shell.index("loadDocumentRulerDragController();"),
-            shell.index("loadWorkspaceLayoutRuntime();"),
+            shell.index(".then(loadDocumentRulerDragController)"),
+            shell.index(".then(loadWorkspaceLayoutRuntime)"),
         )
 
         model_tag = "document-ruler-model.js?v=0.20.3.0"
@@ -94,7 +94,7 @@ globalThis.removeEventListener = (name, fn) => {
   if (globalListeners[name] === fn) delete globalListeners[name];
 };
 require('./shared/ui/document-ruler-drag-controller.js');
-const factory = globalThis.InkDeskDocumentRulerDragController;
+const factory = globalThis.InkDOSDocumentRulerDragController;
 if (!factory || factory.version !== '0.20.3.0') process.exit(10);
 
 const rulerListeners = {};

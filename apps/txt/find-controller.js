@@ -86,7 +86,7 @@
     return Object.freeze({ show, hide, find });
   }
 
-  global.InkDeskTxtFindController = Object.freeze({
+  global.InkDOSTxtFindController = Object.freeze({
     version: '0.20.3.0',
     createFindController
   });

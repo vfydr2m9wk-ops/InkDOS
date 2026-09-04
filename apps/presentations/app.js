@@ -25,10 +25,10 @@ function confirmIfDirty(){return !dirty || confirm('This presentation has unsave
 function resetOptionalPanelsForOpen(){setInspectorOpen(false,{relayout:false});if(presenterNotesController)presenterNotesController.resetClosed({relayout:false});else{ui.app.classList.add('hide-notes');const notes=$('toggleNotesBtn');if(notes)notes.textContent='Show presenter notes'}}
 function showApp(){ui.start.classList.add('hidden');ui.app.classList.remove('hidden');resetOptionalPanelsForOpen()}
 
-if(!window.InkDeskPresentationsSelection)throw new Error('Presentations selection controller is unavailable.');
-selectionController=InkDeskPresentationsSelection.create({canvas:ui.canvas,getPresentation:()=>pres,getCurrentSlideData:()=>pres&&pres.slides.length?pres.slides[currentSlide]:null,getEditingId:()=>editingId,getZoom:()=>zoom,scaleX:sx,scaleY:sy,toPixelX:pxX,toPixelY:pxY,markDirty,renderSlide,captureHistory:()=>historyController?historyController.capture():null,pushHistory:before=>historyController&&historyController.push(before)});
-if(!window.InkDeskPresentationsHistory)throw new Error('Presentations history controller is unavailable.');
-historyController=InkDeskPresentationsHistory.create({
+if(!window.InkDOSPresentationsSelection)throw new Error('Presentations selection controller is unavailable.');
+selectionController=InkDOSPresentationsSelection.create({canvas:ui.canvas,getPresentation:()=>pres,getCurrentSlideData:()=>pres&&pres.slides.length?pres.slides[currentSlide]:null,getEditingId:()=>editingId,getZoom:()=>zoom,scaleX:sx,scaleY:sy,toPixelX:pxX,toPixelY:pxY,markDirty,renderSlide,captureHistory:()=>historyController?historyController.capture():null,pushHistory:before=>historyController&&historyController.push(before)});
+if(!window.InkDOSPresentationsHistory)throw new Error('Presentations history controller is unavailable.');
+historyController=InkDOSPresentationsHistory.create({
   getState:()=>pres?{pres,currentSlide,selectedId:selectionController.getId()}:null,
   applyState:state=>{pres=state.pres;activeTheme=pres.theme||null;currentSlide=Math.min(state.currentSlide,pres.slides.length-1);selectionController.reset(state.selectedId,{render:false});editingId=null;markDirty();renderAll();},
   undoButton:$('undoBtn'),redoButton:$('redoBtn'),limit:80,
@@ -59,7 +59,7 @@ $('closeTemplateBtn').onclick=()=>ui.template.classList.add('hidden');ui.templat
 function openDialog(){if(!confirmIfDirty())return;ui.file.value='';ui.file.click()}
 function leaveTextEdit(){if(editingId){const ed=ui.canvas.querySelector('[data-id="'+editingId+'"] .editable');if(ed)ed.blur();editingId=null}}
 ui.title.addEventListener('focus',event=>event.target.select());ui.title.addEventListener('blur',commitPresentationRename);ui.title.addEventListener('keydown',event=>{event.stopPropagation();if(event.key==='Enter'){event.preventDefault();event.target.blur()}else if(event.key==='Escape'){event.preventDefault();event.target.value=presentationDisplayName();event.target.blur()}});$('newBtn').onclick=newPresentation;$('newSmall').onclick=()=>{leaveTextEdit();newPresentation()};$('openBtn').onclick=openDialog;$('openSmall').onclick=()=>{leaveTextEdit();openDialog()};$('undoBtn').onclick=()=>historyController.undo();$('redoBtn').onclick=()=>historyController.redo();window.addEventListener('keydown',event=>{if(!(event.metaKey||event.ctrlKey)||String(event.key).toLowerCase()!=='z'||editingId)return;event.preventDefault();if(event.shiftKey)historyController.redo();else historyController.undo()});
-function parseXml(s,context='PPTX package part'){if(window.InkDeskRuntime)return InkDeskRuntime.parseXml(s,context);const doc=xmlParser.parseFromString(s,'application/xml');if(doc.querySelector('parsererror'))throw new Error('Invalid XML in '+context);return doc}
+function parseXml(s,context='PPTX package part'){if(window.InkDOSRuntime)return InkDOSRuntime.parseXml(s,context);const doc=xmlParser.parseFromString(s,'application/xml');if(doc.querySelector('parsererror'))throw new Error('Invalid XML in '+context);return doc}
 function all(el,name){if(!el)return [];return Array.from(el.getElementsByTagName('*')).filter(n=>n.localName===name)}
 function first(el,name){return all(el,name)[0]||null}
 function attr(el,n,d=''){return el?el.getAttribute(n)||d:d}
@@ -129,7 +129,7 @@ function addMissingPlaceholders(slide,slideXml,phMap,layoutXml){
   }
 }
 async function loadSlideInheritance(zip,slidePath,rmap){let layoutXml=null,masterXml=null,layoutPath=null,masterPath=null,layoutRmap={},masterRmap={};const layoutRid=Object.keys(rmap).find(k=>/(^|\/)slideLayouts?\/slideLayout\d*\.xml(?:$|[?#])/i.test(String(rmap[k]))||/slideLayout/i.test(String(rmap[k])));if(layoutRid){layoutPath=normalizePath(slidePath.split('/').slice(0,-1).join('/'),rmap[layoutRid]);if(zip.file(layoutPath)){layoutXml=parseXml(await zip.file(layoutPath).async('text'));const lr=relationshipPartPath(layoutPath);if(zip.file(lr)){layoutRmap=relMap(parseXml(await zip.file(lr).async('text')));const masterRid=Object.keys(layoutRmap).find(k=>/(^|\/)slideMasters?\/slideMaster\d*\.xml(?:$|[?#])/i.test(String(layoutRmap[k]))||/slideMaster/i.test(String(layoutRmap[k])));if(masterRid){masterPath=normalizePath(layoutPath.split('/').slice(0,-1).join('/'),layoutRmap[masterRid]);if(zip.file(masterPath)){masterXml=parseXml(await zip.file(masterPath).async('text'));const mr=relationshipPartPath(masterPath);if(zip.file(mr))masterRmap=relMap(parseXml(await zip.file(mr).async('text')));}}}}}return {layoutXml,masterXml,layoutPath,masterPath,layoutRmap,masterRmap};}
-async function resolveSlideBackground(zip,path,rmap,slideXml,inheritance){return window.InkDeskPresentationsBackground.resolve({zip,theme:activeTheme,colorFromNode,rgbaColor,sources:[{xml:slideXml,path,rmap},{xml:inheritance.layoutXml,path:inheritance.layoutPath,rmap:inheritance.layoutRmap},{xml:inheritance.masterXml,path:inheritance.masterPath,rmap:inheritance.masterRmap}]})}
+async function resolveSlideBackground(zip,path,rmap,slideXml,inheritance){return window.InkDOSPresentationsBackground.resolve({zip,theme:activeTheme,colorFromNode,rgbaColor,sources:[{xml:slideXml,path,rmap},{xml:inheritance.layoutXml,path:inheritance.layoutPath,rmap:inheritance.layoutRmap},{xml:inheritance.masterXml,path:inheritance.masterPath,rmap:inheritance.masterRmap}]})}
 async function parseTreeObjects(zip,path,tree,rmap,out,phMap,parentGroup,warnings,options={}){
   const children=Array.from(tree.children||[]).filter(n=>['sp','pic','graphicFrame','grpSp','cxnSp'].includes(n.localName));
   for(const n of children){
@@ -570,10 +570,10 @@ function relayoutWorkspace(){
   }));
 }
 const presentationWorkspace=document.querySelector('.workspace');
-if(!window.InkDeskPresentationsThumbnails){
+if(!window.InkDOSPresentationsThumbnails){
   throw new Error('Presentations thumbnails controller is unavailable.');
 }
-thumbnailsController=InkDeskPresentationsThumbnails.create({
+thumbnailsController=InkDOSPresentationsThumbnails.create({
   list:ui.list,
   workspace:presentationWorkspace,
   button:$('togglePresentationsBtn'),
@@ -583,10 +583,10 @@ thumbnailsController=InkDeskPresentationsThumbnails.create({
   safeFont,
   relayout:relayoutWorkspace,
 });
-if(!window.InkDeskPresentationsNotes){
+if(!window.InkDOSPresentationsNotes){
   throw new Error('Presentations presenter notes controller is unavailable.');
 }
-presenterNotesController=InkDeskPresentationsNotes.create({
+presenterNotesController=InkDOSPresentationsNotes.create({
   app:ui.app,
   textarea:ui.notes,
   count:ui.notesCount,
@@ -600,10 +600,10 @@ presenterNotesController=InkDeskPresentationsNotes.create({
 function setInspectorOpen(open,options={}){
   if(inspectorController)inspectorController.setOpen(open,options);
 }
-if(!window.InkDeskPresentationsInspector){
+if(!window.InkDOSPresentationsInspector){
   throw new Error('Presentations inspector controller is unavailable.');
 }
-inspectorController=InkDeskPresentationsInspector.create({
+inspectorController=InkDOSPresentationsInspector.create({
   workspace:presentationWorkspace,
   button:$('toggleInspectorBtn'),
   canvas:ui.canvas,
@@ -617,10 +617,10 @@ inspectorController=InkDeskPresentationsInspector.create({
 });
 function syncTransitionControl(){const control=$('transitionType');if(!control||!pres)return;const type=(slide().transition&&slide().transition.type)||'none';control.value=['none','fade','slide','zoom'].includes(type)?type:'fade'}
 $('transitionType').onchange=()=>{if(!pres)return;const value=$('transitionType').value;historyController.action(()=>{slide().transition={type:value,rawType:value==='slide'?'push':value,duration:500,advanceAfter:null};markDirty()})};
-if(!window.InkDeskPresentationsSlideshow){
+if(!window.InkDOSPresentationsSlideshow){
   throw new Error('Presentations slideshow controller is unavailable.');
 }
-slideshowController=InkDeskPresentationsSlideshow.create({
+slideshowController=InkDOSPresentationsSlideshow.create({
   overlay:ui.present,
   slideTarget:ui.presentSlide,
   exitButton:ui.exitPresent,
@@ -642,14 +642,14 @@ slideshowController=InkDeskPresentationsSlideshow.create({
   renderAll,
 });
 async function savePptx(){return fileController.save()}
-if(!window.InkDeskPresentationsPptxWriter)throw new Error('Presentations PPTX write adapter is unavailable.');
-pptxWriteAdapter=InkDeskPresentationsPptxWriter.create({
+if(!window.InkDOSPresentationsPptxWriter)throw new Error('Presentations PPTX write adapter is unavailable.');
+pptxWriteAdapter=InkDOSPresentationsPptxWriter.create({
   ns:NS,
   getPresentation:()=>pres,
   parseXml,all,first,attr,relationshipPartPath,serializeXml,
 });
-if(!window.InkDeskPresentationsFileIO)throw new Error('Presentations file controller is unavailable.');
-fileController=InkDeskPresentationsFileIO.create({
+if(!window.InkDOSPresentationsFileIO)throw new Error('Presentations file controller is unavailable.');
+fileController=InkDOSPresentationsFileIO.create({
   ns:NS,
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},
@@ -672,8 +672,8 @@ fileController=InkDeskPresentationsFileIO.create({
   isRecoveryRestore:()=>Boolean(recoveryController&&recoveryController.isRestoring()),
   markRecoveryClean:()=>{if(recoveryController)recoveryController.markClean()},flushRecovery:()=>recoveryController?recoveryController.flush():Promise.resolve(),
 });
-if(!window.InkDeskPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
-recoveryController=InkDeskPresentationsRecovery.create({
+if(!window.InkDOSPresentationsRecovery)throw new Error('Presentations recovery controller is unavailable.');
+recoveryController=InkDOSPresentationsRecovery.create({
   appVersion:'0.20.3.0',
   getPresentation:()=>pres,
   setPresentation:value=>{pres=value},

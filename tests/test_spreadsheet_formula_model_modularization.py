@@ -38,7 +38,7 @@ class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
         ):
             self.assertIn(marker, model)
             self.assertNotIn(marker, editor)
-        self.assertIn("global.InkDeskSpreadsheetFormulaModel", model)
+        self.assertIn("global.InkDOSSpreadsheetFormulaModel", model)
         self.assertIn("require('./formula-model.js')", editor)
         self.assertIn("functions: FUNCTIONS", editor)
 
@@ -83,7 +83,7 @@ if (api.formulaIsComplete('=SUM(A1:A2')) process.exit(22);
             self.skipTest("Node.js is unavailable")
         script = r"""
 require('./apps/spreadsheets/formula-editor.js');
-const api = globalThis.InkDeskFormulaEditor;
+const api = globalThis.InkDOSFormulaEditor;
 if (!api || api.version !== '0.20.0') process.exit(10);
 if (api.encodeColumn(26) !== 'AA') process.exit(11);
 if (api.balanceFormula('=SUM(A1:A2') !== '=SUM(A1:A2)') process.exit(12);

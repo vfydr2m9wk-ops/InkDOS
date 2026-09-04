@@ -42,7 +42,7 @@ class InteractiveDomContractTests(unittest.TestCase):
         component = (
             ROOT / "apps/presentations/ui/inspector-controller.js"
         ).read_text(encoding="utf-8")
-        self.assertIn("InkDeskPresentationsInspector.create", app)
+        self.assertIn("InkDOSPresentationsInspector.create", app)
         self.assertIn("this.open = false", component)
         self.assertIn("this.setOpen(!this.open)", component)
         self.assertNotIn("classList.toggle('inspector-open');", app + component)

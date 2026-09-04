@@ -77,7 +77,7 @@
     return changed;
   }
 
-  global.InkDeskSpreadsheetFormulaIntegrity = Object.freeze({
+  global.InkDOSSpreadsheetFormulaIntegrity = Object.freeze({
     invalidateDeletedReferences,
     isError,
     parseRange,

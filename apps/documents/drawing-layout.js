@@ -160,9 +160,9 @@ function partSpec(sect,kind,rels,root,files,mediaUrls){
   return{text,artwork};
 }
 function installStyles(){
-  if(document.getElementById('inkdesk-docx-floating-layout'))return;
+  if(document.getElementById('inkdos-docx-floating-layout'))return;
   const style=document.createElement('style');
-  style.id='inkdesk-docx-floating-layout';
+  style.id='inkdos-docx-floating-layout';
   style.textContent=[
     '.page{isolation:isolate}',
     '.page-content{position:relative;z-index:1}',
@@ -195,7 +195,7 @@ function appendPageArtwork(page,spec){
   }
 }
 installStyles();
-global.InkDeskDocumentDrawingLayout={
+global.InkDOSDocumentDrawingLayout={
   appendPageArtwork,
   emuToPx,
   imageLayout,

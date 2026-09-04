@@ -74,7 +74,7 @@ const state = {
 let pageRenderer = null;
 
 const navigationController =
-  window.InkDeskPdfNavigationController.createNavigationController({
+  window.InkDOSPdfNavigationController.createNavigationController({
     state,
     elements: E,
     clamp,
@@ -92,7 +92,7 @@ const {
 } = navigationController;
 
 const reviewController =
-  window.InkDeskPdfReviewController.createReviewController({
+  window.InkDOSPdfReviewController.createReviewController({
     state,
     elements: E,
     clamp,
@@ -115,7 +115,7 @@ const {
 } = reviewController;
 
 const saveController =
-  window.InkDeskPdfSaveController.createSaveController({
+  window.InkDOSPdfSaveController.createSaveController({
     state,
     elements: E,
     pdfjs: pdfjsLib,
@@ -125,7 +125,7 @@ const saveController =
     saveReview
   });
 
-pageRenderer = window.InkDeskPdfPageRenderer.createPageRenderer({
+pageRenderer = window.InkDOSPdfPageRenderer.createPageRenderer({
   state,
   elements: E,
   pdfjs: pdfjsLib,
@@ -213,7 +213,23 @@ async function openFile(file) {
   state.file = file;
   state.fingerprint = await fingerprint(file);
   state.storageKey =
-    'inkdesk.pdf.review.' + state.fingerprint;
+    'inkdos.pdf.review.' + state.fingerprint;
+  const previousReviewKey = 'ink' + 'desk.pdf.review.' + state.fingerprint;
+  try {
+    if (localStorage.getItem(state.storageKey) == null) {
+      const previousReview = localStorage.getItem(previousReviewKey);
+      if (previousReview != null) {
+        const migratedReview = JSON.parse(previousReview);
+        if (migratedReview && migratedReview.schema === ('ink' + 'desk-pdf-review/2')) {
+          migratedReview.schema = 'inkdos-pdf-review/2';
+        }
+        localStorage.setItem(state.storageKey, JSON.stringify(migratedReview));
+        localStorage.removeItem(previousReviewKey);
+      }
+    }
+  } catch (error) {
+    console.warn('InkDOS could not migrate previous PDF review data.', error);
+  }
   state.url = URL.createObjectURL(file);
 
   E.systemOpenBtn.href = state.url;
@@ -411,7 +427,7 @@ E.bookmarkBtn.onclick = () => {
 };
 
 
-const fullscreenController = window.InkDeskPdfFullscreen.create({
+const fullscreenController = window.InkDOSPdfFullscreen.create({
   state, elements:E, fitWidth, rerender
 });
 E.fullscreenBtn.onclick = () => fullscreenController.toggle();
@@ -423,16 +439,16 @@ window.addEventListener(
   { once: true }
 );
 
-window.InkDeskWorkspaceOpenFile = openFile;
+window.InkDOSWorkspaceOpenFile = openFile;
 
-if (window.InkDeskFileRouter) {
-  InkDeskFileRouter.attachWorkspace({
+if (window.InkDOSFileRouter) {
+  InkDOSFileRouter.attachWorkspace({
     extensions: ['pdf'],
     openFile
   });
 }
 
-window.InkDeskPdfDebug = {
+window.InkDOSPdfDebug = {
   getState: () => ({
     page: state.page,
     pageCount: state.doc?.numPages || 0,

@@ -55,7 +55,7 @@ eligibility and formula completeness. `formula-editor.js` owns the persistent
 draft Map, active-cell state, DOM/caret synchronization, suggestion rendering,
 keyboard handling and reference-controller integration.
 
-`InkDeskFormulaEditor` continues to expose the same pure helper functions by
+`InkDOSFormulaEditor` continues to expose the same pure helper functions by
 delegating to the model, so callers do not need to change. This boundary is
 intended to make formula behavior independently testable before any later
 stateful session extraction.

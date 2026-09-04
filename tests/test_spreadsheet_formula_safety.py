@@ -52,7 +52,7 @@ if (coordinator.guardSave(()=>{}) || coordinator.guardHistory(()=>{})) process.e
             "tests/browser/revalidate_cross_workspace_isolation.py",
             "tests/browser/revalidate_launch_and_offline_modes.py",
             "tests/browser/revalidate_transactional_open_failures.py",
-            "tests/browser/revalidate_v0201_consistency.py",
+            "tests/browser/revalidate_workspace_consistency.py",
             "tests/browser/revalidate_xls_zero_formula_display.py",
             "tests/browser/revalidate_xlsx_three_eras.py",
         ):
@@ -93,7 +93,7 @@ if (session.state.targetReference || session.state.targetKey || session.state.va
     def test_app_guards_save_open_new_and_beforeunload(self):
         text = (ROOT / "apps/spreadsheets/app.js").read_text(encoding="utf-8")
         for marker in (
-            "InkDeskSpreadsheetFormulaSafety.create",
+            "InkDOSSpreadsheetFormulaSafety.create",
             "formulaSafety.hasUnsaved(dirty)",
             "formulaSafety.guardSave(toast)",
             "formulaSafety.reset();revokeWorkbookObjectUrls(book);book=nextBook",

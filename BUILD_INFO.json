@@ -1,10 +1,9 @@
 {
   "product": "InkDOS",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "buildDate": "2026-09-04",
   "channel": "beta",
   "buildType": "public-beta-source",
-  "sourceDevelopmentLine": "0.20.x stabilization -> 1.0 beta",
   "modules": [
     "documents",
     "spreadsheets",

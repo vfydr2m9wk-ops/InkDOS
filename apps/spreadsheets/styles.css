@@ -129,7 +129,7 @@ body.resizing-column .col-header.resize-active,body.resizing-row .row-header.res
 .start-action-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
 
 
-/* 0.10.3 unified InkDesk start actions */
+/* 0.10.3 unified InkDOS start actions */
 .start-action.new-sheet{background:#fff!important;color:#1f2328!important;border-color:color-mix(in srgb,var(--text) 18%,transparent)!important;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .start-action.new-sheet:hover{background:#f5f6f8!important;border-color:color-mix(in srgb,var(--text) 28%,transparent)!important}
 .start-action.new-sheet small{color:#68707a!important}

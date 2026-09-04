@@ -18,7 +18,7 @@
 
 
   function documentRulerModel() {
-    return global.InkDeskDocumentRulerModel || null;
+    return global.InkDOSDocumentRulerModel || null;
   }
 
 function installDocumentsRuler(documentObject) {
@@ -41,12 +41,12 @@ function installDocumentsRuler(documentObject) {
     return null;
   }
 
-  if (ruler.__inkdeskPageRuler) {
-    return ruler.__inkdeskPageRuler;
+  if (ruler.__inkdosPageRuler) {
+    return ruler.__inkdosPageRuler;
   }
 
-  ruler.dataset.inkdeskRuler = 'page-linked';
-  track.dataset.inkdeskRulerTrack = 'active-page';
+  ruler.dataset.inkdosRuler = 'page-linked';
+  track.dataset.inkdosRulerTrack = 'active-page';
 
   let activePage = null;
   let metrics = null;
@@ -82,15 +82,15 @@ function installDocumentsRuler(documentObject) {
       function (tick) {
         const mark = documentObject.createElement('span');
         mark.className =
-          'inkdesk-ruler-tick ' +
-          'inkdesk-ruler-tick-' +
+          'inkdos-ruler-tick ' +
+          'inkdos-ruler-tick-' +
           tick.kind;
         mark.style.left = (tick.ratio * 100) + '%';
         mark.dataset.kind = tick.kind;
 
         if (tick.label) {
           const label = documentObject.createElement('span');
-          label.className = 'inkdesk-ruler-number';
+          label.className = 'inkdos-ruler-number';
           label.textContent = tick.label;
           mark.appendChild(label);
         }
@@ -104,23 +104,23 @@ function installDocumentsRuler(documentObject) {
 
   function ensureMarginZones() {
     let left = track.querySelector(
-      '.inkdesk-ruler-margin-left'
+      '.inkdos-ruler-margin-left'
     );
     let right = track.querySelector(
-      '.inkdesk-ruler-margin-right'
+      '.inkdos-ruler-margin-right'
     );
 
     if (!left) {
       left = documentObject.createElement('span');
       left.className =
-        'inkdesk-ruler-margin inkdesk-ruler-margin-left';
+        'inkdos-ruler-margin inkdos-ruler-margin-left';
       track.prepend(left);
     }
 
     if (!right) {
       right = documentObject.createElement('span');
       right.className =
-        'inkdesk-ruler-margin inkdesk-ruler-margin-right';
+        'inkdos-ruler-margin inkdos-ruler-margin-right';
       track.prepend(right);
     }
 
@@ -220,17 +220,17 @@ function installDocumentsRuler(documentObject) {
       'translate3d(' + offset + 'px,0,0)';
 
     track.style.setProperty(
-      '--inkdesk-ruler-page-width',
+      '--inkdos-ruler-page-width',
       metrics.displayWidth + 'px'
     );
 
     track.style.setProperty(
-      '--inkdesk-ruler-left-margin',
+      '--inkdos-ruler-left-margin',
       metrics.contentStartDisplay + 'px'
     );
 
     track.style.setProperty(
-      '--inkdesk-ruler-right-margin',
+      '--inkdos-ruler-right-margin',
       (
         metrics.displayWidth -
         metrics.contentEndDisplay
@@ -260,7 +260,7 @@ function installDocumentsRuler(documentObject) {
   }
 
   const dragControllerFactory =
-    global.InkDeskDocumentRulerDragController;
+    global.InkDOSDocumentRulerDragController;
 
   const dragController =
     dragControllerFactory &&
@@ -367,7 +367,7 @@ function installDocumentsRuler(documentObject) {
 
   Object.defineProperty(
     ruler,
-    '__inkdeskPageRuler',
+    '__inkdosPageRuler',
     {
       value: controller,
       configurable: true
@@ -384,9 +384,9 @@ function installDocumentsRuler(documentObject) {
   function apply(documentObject) {
     const doc = documentObject || global.document;
     if (!doc || !doc.body || !doc.querySelector) return false;
-    if (doc.body.dataset.inkdeskWorkspaceLayout === VERSION) return true;
+    if (doc.body.dataset.inkdosWorkspaceLayout === VERSION) return true;
 
-    const panelController = global.InkDeskWorkspacePanelController;
+    const panelController = global.InkDOSWorkspacePanelController;
     const currentModule = panelController && typeof panelController.moduleId === 'function'
       ? panelController.moduleId(doc)
       : '';
@@ -400,7 +400,7 @@ function installDocumentsRuler(documentObject) {
       applied = applyDocumentRuler(doc) || applied;
     }
 
-    doc.body.dataset.inkdeskWorkspaceLayout = VERSION;
+    doc.body.dataset.inkdosWorkspaceLayout = VERSION;
     if (panelController && typeof panelController.notifyLayoutReady === 'function') {
       panelController.notifyLayoutReady(doc, currentModule);
     }
@@ -419,8 +419,8 @@ function installDocumentsRuler(documentObject) {
   function autoInitialize() {
     if (!global.document) return false;
 
-    if (global.InkDeskUIReady && typeof global.InkDeskUIReady.then === 'function') {
-      global.InkDeskUIReady.then(function () {
+    if (global.InkDOSUIReady && typeof global.InkDOSUIReady.then === 'function') {
+      global.InkDOSUIReady.then(function () {
         apply(global.document);
       });
       return true;
@@ -434,13 +434,13 @@ function installDocumentsRuler(documentObject) {
     defaults: MODULE_DEFAULTS,
     apply,
     moduleId: function (documentObject) {
-      const controller = global.InkDeskWorkspacePanelController;
+      const controller = global.InkDOSWorkspacePanelController;
       return controller && typeof controller.moduleId === 'function'
         ? controller.moduleId(documentObject)
         : '';
     },
     resolvedPreference: function (key, defaultValue) {
-      const controller = global.InkDeskWorkspacePanelController;
+      const controller = global.InkDOSWorkspacePanelController;
       return controller && typeof controller.resolvedPreference === 'function'
         ? controller.resolvedPreference(key, defaultValue)
         : Boolean(defaultValue);
@@ -476,7 +476,7 @@ function installDocumentsRuler(documentObject) {
     installDocumentsRuler
   });
 
-  global.InkDeskWorkspaceLayout = api;
+  global.InkDOSWorkspaceLayout = api;
 
   if (global.document) {
     if (global.document.readyState === 'loading') {

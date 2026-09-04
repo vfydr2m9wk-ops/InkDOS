@@ -42,7 +42,7 @@ class PdfTextSelectionTests(unittest.TestCase):
             ROOT / "apps" / "pdf" / "review" / "annotation-layer.js"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("window.InkDeskPdfReviewController.createReviewController", app)
+        self.assertIn("window.InkDOSPdfReviewController.createReviewController", app)
         for expected in (
             "TEXT_SELECTION_TOOLS",
             "FREE_ANNOTATION_TOOLS",
@@ -83,7 +83,7 @@ class PdfTextSelectionTests(unittest.TestCase):
         )
         self.assertRegex(
             worker,
-            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+            r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];",
         )
 
     def test_manifest_exposes_selected_text_capabilities(self):
@@ -141,7 +141,7 @@ class PdfTextSelectionTests(unittest.TestCase):
 
         script = r"""
 require('./apps/pdf/text-selection-review.js');
-const api = globalThis.InkDeskPdfTextSelection;
+const api = globalThis.InkDOSPdfTextSelection;
 
 if (!api || api.version !== '0.20.0') process.exit(10);
 
@@ -234,13 +234,13 @@ if (annotations[0].pageSegmentCount !== 2) process.exit(21);
             "pdfjsLib.GlobalWorkerOptions.workerSrc = "
             "'../../shared/vendor/pdfjs/pdf.worker.min.js'",
             "pdfjsLib.getDocument(",
-            "window.InkDeskPdfPageRenderer.createPageRenderer",
-            "window.InkDeskPdfReviewController.createReviewController",
-            "window.InkDeskPdfSaveController.createSaveController",
+            "window.InkDOSPdfPageRenderer.createPageRenderer",
+            "window.InkDOSPdfReviewController.createReviewController",
+            "window.InkDOSPdfSaveController.createSaveController",
         ):
             self.assertIn(marker, app)
         self.assertIn("state.doc.saveDocument()", save)
-        self.assertIn("schema: 'inkdesk-pdf-review/2'", review)
+        self.assertIn("schema: 'inkdos-pdf-review/2'", review)
 
         for marker in (
             "pdfjs.renderTextLayer(",

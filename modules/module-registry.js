@@ -2,7 +2,7 @@
 'use strict';
 const registry={
   "schemaVersion": 1,
-  "registryVersion": "1.0.0-beta.2",
+  "registryVersion": "1.0.0-beta.3",
   "modules": [
     {
       "schemaVersion": 1,
@@ -198,5 +198,5 @@ const registry={
   ],
   "missingModules": []
 };
-global.InkDeskModuleRegistry=Object.freeze(registry);
+global.InkDOSModuleRegistry=Object.freeze(registry);
 })(typeof window!=='undefined'?window:globalThis);

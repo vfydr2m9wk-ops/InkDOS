@@ -1,4 +1,4 @@
-# Validation report — InkDesk v0.20.0 source package
+# Validation report — InkDOS v0.20.0 source package
 
 Review date: 2026-08-06
 

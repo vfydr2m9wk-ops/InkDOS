@@ -5,7 +5,7 @@ shared contract for names and unsaved work.
 
 ## Launcher order
 
-The launcher now presents the InkDesk identity, enabled workspace cards,
+The launcher now presents the InkDOS identity, enabled workspace cards,
 universal local Open action, product principles, a compact stabilization note,
 and finally build information with project links.
 
@@ -27,4 +27,4 @@ leave or reload confirmation.
 
 PDF joins the same lifecycle after a review annotation, bookmark, inserted
 text, or filename change. Future TXT and editable EPUB modules must use
-`InkDeskFileLifecycle.create()` to receive the same protection.
+`InkDOSFileLifecycle.create()` to receive the same protection.

@@ -56,7 +56,7 @@ if (!draft || draft.value !== '=SU' || draft.caret !== 3) process.exit(15);
         self.assertIn("history:history.exportState()", text)
         self.assertIn("history.importState(payload.history||{})", text)
         self.assertIn("editor.restoreDrafts(payload.formulaDrafts||[])", text)
-        self.assertIn("inkdesk:formula-session-change", text)
+        self.assertIn("inkdos:formula-session-change", text)
         self.assertIn("recovery.clearSnapshots()", text)
 
     def test_confirmed_workbook_replacement_discards_old_recovery_only_after_parse(self):
@@ -89,7 +89,7 @@ if (!draft || draft.value !== '=SU' || draft.caret !== 3) process.exit(15);
             self.assertIn(marker, text)
 
     def test_browser_recovery_regression_covers_uncommitted_formula_and_write_barrier(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         for marker in (
             'formula_draft = "=SU"',
             "snapshotDrafts()",

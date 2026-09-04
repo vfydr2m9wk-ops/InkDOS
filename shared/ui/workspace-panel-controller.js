@@ -3,7 +3,7 @@
 
   const VERSION = '0.20.3.0';
   const WORKSPACE_LAYOUT_VERSION = '0.20.0';
-  const STORAGE_PREFIX = 'inkdesk.ui.session.';
+  const STORAGE_PREFIX = 'inkdos.ui.session.';
 
   const MODULE_DEFAULTS = Object.freeze({
     documents: Object.freeze({
@@ -51,7 +51,7 @@
 
     const declared = String(
       documentObject.body.dataset &&
-      documentObject.body.dataset.inkdeskModule ||
+      documentObject.body.dataset.inkdosModule ||
       ''
     );
 
@@ -73,13 +73,13 @@
 
     let event = null;
     if (typeof global.CustomEvent === 'function') {
-      event = new global.CustomEvent('inkdesk:workspace-layout-ready', {
+      event = new global.CustomEvent('inkdos:workspace-layout-ready', {
         detail: { version: WORKSPACE_LAYOUT_VERSION, moduleId: moduleName }
       });
     } else if (typeof documentObject.createEvent === 'function') {
       event = documentObject.createEvent('CustomEvent');
       event.initCustomEvent(
-        'inkdesk:workspace-layout-ready',
+        'inkdos:workspace-layout-ready',
         false,
         false,
         { version: WORKSPACE_LAYOUT_VERSION, moduleId: moduleName }
@@ -240,11 +240,11 @@
     const toggle = documentObject.getElementById('sidebarToggle');
 
     if (startScreen) {
-      startScreen.dataset.inkdeskEmptyState = 'centered';
+      startScreen.dataset.inkdosEmptyState = 'centered';
     }
 
     if (openButton) {
-      openButton.dataset.inkdeskPrimaryAction = 'open-document';
+      openButton.dataset.inkdosPrimaryAction = 'open-document';
     }
 
     function setSidebarOpen(open, persist) {
@@ -252,7 +252,7 @@
 
       const shouldOpen = Boolean(open);
       workspace.classList.toggle('sidebar-collapsed', !shouldOpen);
-      workspace.dataset.inkdeskPdfSidebar = shouldOpen ? 'open' : 'closed';
+      workspace.dataset.inkdosPdfSidebar = shouldOpen ? 'open' : 'closed';
 
       if (sidebar) {
         sidebar.setAttribute(
@@ -299,9 +299,9 @@
 
     if (
       toggle &&
-      toggle.dataset.inkdeskPdfSidebarController !== WORKSPACE_LAYOUT_VERSION
+      toggle.dataset.inkdosPdfSidebarController !== WORKSPACE_LAYOUT_VERSION
     ) {
-      toggle.dataset.inkdeskPdfSidebarController = WORKSPACE_LAYOUT_VERSION;
+      toggle.dataset.inkdosPdfSidebarController = WORKSPACE_LAYOUT_VERSION;
 
       toggle.addEventListener(
         'click',
@@ -333,11 +333,11 @@
     const footer = documentObject.querySelector('body > footer');
 
     if (formulaRow) {
-      formulaRow.dataset.inkdeskFormulaBar = 'primary';
+      formulaRow.dataset.inkdosFormulaBar = 'primary';
     }
 
     if (footer) {
-      footer.dataset.inkdeskStatusLayout = 'sheets-left-zoom-right';
+      footer.dataset.inkdosStatusLayout = 'sheets-left-zoom-right';
     }
 
     return Boolean(formulaRow || footer);
@@ -361,7 +361,7 @@
     return false;
   }
 
-  global.InkDeskWorkspacePanelController = Object.freeze({
+  global.InkDOSWorkspacePanelController = Object.freeze({
     version: VERSION,
     defaults: MODULE_DEFAULTS,
     resolvedPreference,

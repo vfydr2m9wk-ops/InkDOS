@@ -16,7 +16,7 @@ class WorkspaceContractConsolidationTests(unittest.TestCase):
             "function moduleId(",
             "function resolvedPreference(",
             "function notifyLayoutReady(",
-            "inkdesk:workspace-layout-ready",
+            "inkdos:workspace-layout-ready",
             "moduleId,",
             "notifyLayoutReady,",
         ):
@@ -29,7 +29,7 @@ class WorkspaceContractConsolidationTests(unittest.TestCase):
         self.assertIn("controller.resolvedPreference(key, defaultValue)", layout)
         self.assertNotIn("function safeSessionGet(", layout)
         self.assertNotIn("function moduleId(documentObject)", layout)
-        self.assertNotIn("inkdesk:workspace-layout-ready", layout)
+        self.assertNotIn("inkdos:workspace-layout-ready", layout)
 
     def test_workspace_layout_leaves_grandfathered_debt(self):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
@@ -49,8 +49,8 @@ globalThis.sessionStorage = { getItem() { return null; }, setItem() {} };
 globalThis.CustomEvent = function(name, init) { this.type=name; this.detail=init.detail; };
 require('./shared/ui/workspace-panel-controller.js');
 require('./shared/ui/workspace-layout.js');
-const panel = globalThis.InkDeskWorkspacePanelController;
-const layout = globalThis.InkDeskWorkspaceLayout;
+const panel = globalThis.InkDOSWorkspacePanelController;
+const layout = globalThis.InkDOSWorkspaceLayout;
 if (!panel || panel.version !== '0.20.3.0') process.exit(10);
 if (!layout || layout.version !== '0.20.0') process.exit(11);
 const classes = { contains(name) { return name === 'office-documents'; } };
@@ -59,7 +59,7 @@ const doc = { body: { dataset: {}, classList: classes }, dispatchEvent(value) { 
 if (panel.moduleId(doc) !== 'documents' || layout.moduleId(doc) !== 'documents') process.exit(12);
 if (layout.resolvedPreference('documents.sidebar', false) !== false) process.exit(13);
 panel.notifyLayoutReady(doc, 'documents');
-if (!event || event.type !== 'inkdesk:workspace-layout-ready') process.exit(14);
+if (!event || event.type !== 'inkdos:workspace-layout-ready') process.exit(14);
 if (!event.detail || event.detail.version !== '0.20.0' || event.detail.moduleId !== 'documents') process.exit(15);
 """
         result = subprocess.run([node, "-e", script], cwd=ROOT, capture_output=True, text=True)

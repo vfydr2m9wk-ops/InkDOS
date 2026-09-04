@@ -95,7 +95,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
         )
         self.assertRegex(
             worker,
-            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+            r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];",
         )
 
     def test_manifest_exposes_reference_contract(self):
@@ -121,7 +121,7 @@ class SpreadsheetFormulaReferenceTests(unittest.TestCase):
 
         script = r"""
 require('./apps/spreadsheets/formula-reference.js');
-const api = globalThis.InkDeskFormulaReferences;
+const api = globalThis.InkDOSFormulaReferences;
 if (!api || api.version !== '0.20.1') process.exit(10);
 if (api.encodeColumn(0) !== 'A') process.exit(11);
 if (api.encodeColumn(25) !== 'Z') process.exit(12);

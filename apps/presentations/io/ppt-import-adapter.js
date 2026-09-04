@@ -342,7 +342,7 @@
       compatibilityWarnings: ['Legacy drawing fidelity is partial; unsupported records were skipped.'] };
   }
   function importLegacyPpt(buffer, fileName) {
-    if (global.InkDeskRuntime) global.InkDeskRuntime.validateInputSize(buffer.byteLength, fileName);
+    if (global.InkDOSRuntime) global.InkDOSRuntime.validateInputSize(buffer.byteLength, fileName);
     const documentStream = new CompoundFileReader(buffer).stream(PPT_DOCUMENT);
     if (!documentStream) throw new Error('The legacy PowerPoint document stream is missing.');
     const records = parseRecords(documentStream);
@@ -393,5 +393,5 @@
     };
   }
 
-  global.InkDeskPresentationsPptImport = { importLegacyPpt };
+  global.InkDOSPresentationsPptImport = { importLegacyPpt };
 })(window);

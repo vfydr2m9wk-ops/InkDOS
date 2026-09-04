@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Safely apply an incremental InkDOS update package.
+"""Apply a validated InkDOS update to a disposable candidate, then commit its diff.
 
-Package layout:
+Package format (schema 2):
 
     patch-manifest.json
     files/<repository-relative files>
     DELETE.txt                     # optional
 
-The updater performs archive/path validation, product/version/sequence checks,
-per-file SHA-256 verification, candidate-tree validation, transactional apply,
-and rollback. Stable update packages cannot create, modify, or delete GitHub
-workflow files; they are permanently excluded from ZIP updates.
+The manifest may also declare tree-wide text replacements, file merges and path
+moves. All operations run only inside a disposable repository candidate before
+validation. Git metadata and GitHub workflow files are permanently protected.
+Stable update packages cannot create, modify, or delete GitHub workflow files.
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ import sys
 import tempfile
 import zipfile
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 PRODUCT = "InkDOS"
 STATE_FILE = "DEVELOPMENT_STATE.json"
 VERSION_FILE = "VERSION.json"
@@ -33,7 +33,14 @@ MAX_ENTRIES = 10_000
 MAX_TOTAL_UNCOMPRESSED = 512 * 1024 * 1024
 MAX_SINGLE_FILE = 128 * 1024 * 1024
 MAX_COMPRESSION_RATIO = 250
-IGNORED_PARTS = {".git", "__pycache__", ".mobile-import", "_site", "test-results", "node_modules", ".venv", "dist"}
+IGNORED_PARTS = {
+    ".git", "__pycache__", ".mobile-import", "_site", "test-results",
+    "node_modules", ".venv", "dist",
+}
+TEXT_EXTENSIONS = {
+    ".html", ".css", ".js", ".json", ".md", ".py", ".txt", ".cff",
+    ".yml", ".yaml", ".webmanifest",
+}
 
 VALIDATION_PROFILES: dict[str, list[list[str]]] = {
     "none": [],
@@ -87,24 +94,35 @@ def safe_relative_path(raw: str, *, allow_directory: bool = False) -> PurePosixP
     if normalized == ".git" or normalized.startswith(".git/"):
         raise UpdateError(f"Protected Git path is not allowed: {raw!r}")
     if normalized == ".github/workflows" or normalized.startswith(WORKFLOW_PREFIX):
-        raise UpdateError(f"Update packages cannot create, modify, or delete GitHub workflow files: {raw!r}")
+        raise UpdateError(
+            f"Update packages cannot create, modify, or delete GitHub workflow files: {raw!r}"
+        )
     if not allow_directory and raw.endswith("/"):
         raise UpdateError(f"Expected a file path, got a directory: {raw!r}")
     return path
 
 
+def repo_target(repo: Path, rel: PurePosixPath) -> Path:
+    target = repo.joinpath(*rel.parts)
+    root = repo.resolve()
+    try:
+        target.parent.resolve().relative_to(root)
+    except ValueError as exc:
+        raise UpdateError(f"Target escapes repository: {rel}") from exc
+    return target
+
+
 def validate_zip_info(info: zipfile.ZipInfo) -> None:
     raw = info.filename.rstrip("/")
     if raw:
-        # package container paths are allowed; workflow protection is checked on repository payload paths.
-        if "\\" in raw or PurePosixPath(raw).is_absolute() or any(p in {"", ".", ".."} for p in PurePosixPath(raw).parts):
+        path = PurePosixPath(raw)
+        if "\\" in raw or path.is_absolute() or any(p in {"", ".", ".."} for p in path.parts):
             raise UpdateError(f"Unsafe ZIP path: {info.filename}")
-    file_type = (info.external_attr >> 16) & 0o170000
-    if file_type == 0o120000:
+    if ((info.external_attr >> 16) & 0o170000) == 0o120000:
         raise UpdateError(f"Symbolic links are not allowed: {info.filename}")
     if info.file_size > MAX_SINGLE_FILE:
         raise UpdateError(f"Package member exceeds per-file size limit: {info.filename}")
-    ratio = (info.file_size / info.compress_size) if info.compress_size else (float("inf") if info.file_size else 1.0)
+    ratio = info.file_size / info.compress_size if info.compress_size else (float("inf") if info.file_size else 1)
     if ratio > MAX_COMPRESSION_RATIO:
         raise UpdateError(f"Suspicious compression ratio: {info.filename}")
 
@@ -129,22 +147,24 @@ def inspect_archive(zf: zipfile.ZipFile) -> None:
 
 def extract_package(package: Path, destination: Path) -> None:
     try:
-        with zipfile.ZipFile(package) as zf:
-            inspect_archive(zf)
-            for info in zf.infolist():
+        with zipfile.ZipFile(package) as archive:
+            inspect_archive(archive)
+            for info in archive.infolist():
                 if info.is_dir():
                     continue
-                rel = PurePosixPath(info.filename)
-                target = destination.joinpath(*rel.parts)
+                target = destination.joinpath(*PurePosixPath(info.filename).parts)
                 target.parent.mkdir(parents=True, exist_ok=True)
-                with zf.open(info, "r") as src, target.open("wb") as dst:
+                with archive.open(info) as src, target.open("wb") as dst:
                     shutil.copyfileobj(src, dst)
     except zipfile.BadZipFile as exc:
         raise UpdateError(f"Invalid ZIP package: {package}") from exc
 
 
 def validate_manifest(manifest: dict) -> None:
-    required = {"schemaVersion", "product", "targetRelease", "packageLabel", "sequence", "requires", "description", "validationProfile"}
+    required = {
+        "schemaVersion", "product", "packageLabel", "sequence", "requires",
+        "description", "validationProfile",
+    }
     missing = sorted(required - set(manifest))
     if missing:
         raise UpdateError(f"Patch manifest is missing fields: {', '.join(missing)}")
@@ -163,6 +183,12 @@ def validate_manifest(manifest: dict) -> None:
     for field in ("files", "deletions", "textReplacements"):
         if field in manifest and not isinstance(manifest[field], dict):
             raise UpdateError(f"Manifest field {field!r} must be an object")
+    operations = manifest.get("operations", {})
+    if not isinstance(operations, dict):
+        raise UpdateError("Manifest operations must be an object")
+    for field, kind in (("treeReplacements", list), ("fileMerges", list), ("moves", dict)):
+        if field in operations and not isinstance(operations[field], kind):
+            raise UpdateError(f"operations.{field} has the wrong type")
 
 
 def current_app_version(repo: Path) -> str:
@@ -171,80 +197,78 @@ def current_app_version(repo: Path) -> str:
 
 def validate_sequence(repo: Path, manifest: dict) -> None:
     requirements = manifest["requires"]
-    expected_previous = requirements.get("previousSequence")
-    allowed_versions = requirements.get("appVersions", [])
     state = load_json(repo / STATE_FILE) if (repo / STATE_FILE).exists() else {}
-    if state and state.get("targetRelease") != manifest["targetRelease"]:
-        raise UpdateError(f"Repository targetRelease {state.get('targetRelease')!r} does not match package {manifest['targetRelease']!r}")
     actual_previous = state.get("appliedSequence", 0)
+    expected_previous = requirements.get("previousSequence")
     if expected_previous is not None and actual_previous != expected_previous:
-        raise UpdateError(f"Patch order mismatch: expected previous sequence {expected_previous}, repository reports {actual_previous}")
+        raise UpdateError(
+            f"Patch order mismatch: expected previous sequence {expected_previous}, "
+            f"repository reports {actual_previous}"
+        )
     if manifest["sequence"] != actual_previous + 1:
         raise UpdateError(f"Patch sequence {manifest['sequence']} is not next after {actual_previous}")
-    app_version = current_app_version(repo)
-    if allowed_versions and app_version not in allowed_versions:
-        raise UpdateError(f"Base application version {app_version!r} is not supported; allowed: {', '.join(map(str, allowed_versions))}")
+    allowed_versions = requirements.get("appVersions", [])
+    version = current_app_version(repo)
+    if allowed_versions and version not in allowed_versions:
+        raise UpdateError(
+            f"Base application version {version!r} is not supported; allowed: "
+            + ", ".join(map(str, allowed_versions))
+        )
 
 
 def parse_delete_list(path: Path) -> list[PurePosixPath]:
     if not path.exists():
         return []
-    out: list[PurePosixPath] = []
+    result: list[PurePosixPath] = []
     for number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         value = raw.strip()
         if not value or value.startswith("#"):
             continue
         try:
-            out.append(safe_relative_path(value, allow_directory=True))
+            result.append(safe_relative_path(value, allow_directory=True))
         except UpdateError as exc:
             raise UpdateError(f"DELETE.txt line {number}: {exc}") from exc
-    return out
+    return result
 
 
 def iter_payload_files(payload_root: Path) -> list[tuple[Path, PurePosixPath]]:
     if not payload_root.is_dir():
         raise UpdateError("Update package does not contain files/ directory")
-    out: list[tuple[Path, PurePosixPath]] = []
-    folded: set[str] = set()
+    result: list[tuple[Path, PurePosixPath]] = []
+    seen: set[str] = set()
     for source in sorted(payload_root.rglob("*")):
         if not source.is_file():
             continue
         rel = safe_relative_path(source.relative_to(payload_root).as_posix())
         key = rel.as_posix().casefold()
-        if key in folded:
+        if key in seen:
             raise UpdateError(f"Payload contains a case-colliding path: {rel}")
-        folded.add(key)
-        out.append((source, rel))
-    if not out:
+        seen.add(key)
+        result.append((source, rel))
+    if not result:
         raise UpdateError("Update package files/ directory is empty")
-    return out
+    return result
 
 
-def repo_target(repo: Path, rel: PurePosixPath) -> Path:
-    target = repo.joinpath(*rel.parts)
-    parent = target.parent.resolve()
-    root = repo.resolve()
-    try:
-        parent.relative_to(root)
-    except ValueError as exc:
-        raise UpdateError(f"Target escapes repository: {rel}") from exc
-    return target
-
-
-def verify_payload_contract(repo: Path, payload: list[tuple[Path, PurePosixPath]], deletions: list[PurePosixPath], manifest: dict) -> None:
-    file_contract = manifest.get("files", {})
+def verify_payload_contract(
+    repo: Path,
+    payload: list[tuple[Path, PurePosixPath]],
+    deletions: list[PurePosixPath],
+    manifest: dict,
+) -> None:
+    files = manifest.get("files", {})
     delete_contract = manifest.get("deletions", {})
     payload_names = {rel.as_posix() for _, rel in payload}
-    delete_names = {rel.as_posix() for rel in deletions}
-    if file_contract and set(file_contract) != payload_names:
+    deletion_names = {rel.as_posix() for rel in deletions}
+    if files and set(files) != payload_names:
         raise UpdateError("Manifest files map does not exactly match files/ payload")
-    if delete_contract and set(delete_contract) != delete_names:
+    if delete_contract and set(delete_contract) != deletion_names:
         raise UpdateError("Manifest deletions map does not exactly match DELETE.txt")
-    overlap = sorted(payload_names & delete_names)
+    overlap = sorted(payload_names & deletion_names)
     if overlap:
         raise UpdateError(f"Paths cannot be both copied and deleted: {', '.join(overlap)}")
     for source, rel in payload:
-        meta = file_contract.get(rel.as_posix(), {})
+        meta = files.get(rel.as_posix(), {})
         expected = meta.get("sha256")
         if expected and sha256_file(source) != expected:
             raise UpdateError(f"Payload SHA-256 mismatch: {rel}")
@@ -253,62 +277,6 @@ def verify_payload_contract(repo: Path, payload: list[tuple[Path, PurePosixPath]
             target = repo_target(repo, rel)
             if not target.is_file() or sha256_file(target) != before:
                 raise UpdateError(f"Base file SHA-256 mismatch: {rel}")
-    for rel in deletions:
-        before = delete_contract.get(rel.as_posix(), {}).get("beforeSha256")
-        if before:
-            target = repo_target(repo, rel)
-            if not target.is_file() or sha256_file(target) != before:
-                raise UpdateError(f"Base deletion SHA-256 mismatch: {rel}")
-
-
-def apply_text_replacements(repo: Path, manifest: dict) -> None:
-    """Apply deterministic exact-string migrations declared by the package.
-
-    Each replacement must match the expected count before any write occurs for
-    that file. Workflow paths remain protected by safe_relative_path().
-    """
-    specs = manifest.get("textReplacements", {})
-    for rel_text, replacements in specs.items():
-        rel = safe_relative_path(rel_text)
-        if not isinstance(replacements, list) or not replacements:
-            raise UpdateError(f"textReplacements[{rel_text!r}] must be a non-empty array")
-        target = repo_target(repo, rel)
-        if not target.is_file():
-            raise UpdateError(f"Text replacement target is missing: {rel}")
-        text = target.read_text(encoding="utf-8")
-        updated = text
-        for index, item in enumerate(replacements, 1):
-            if not isinstance(item, dict):
-                raise UpdateError(f"Invalid text replacement #{index} for {rel}")
-            old = item.get("old")
-            new = item.get("new")
-            expected = item.get("count", 1)
-            if not isinstance(old, str) or not old or not isinstance(new, str):
-                raise UpdateError(f"Invalid text replacement #{index} for {rel}")
-            if not isinstance(expected, int) or expected < 1:
-                raise UpdateError(f"Invalid replacement count for {rel}: {expected!r}")
-            actual = updated.count(old)
-            if actual != expected:
-                raise UpdateError(
-                    f"Text replacement base mismatch for {rel}: expected {expected} occurrence(s), found {actual}"
-                )
-            updated = updated.replace(old, new, expected)
-        target.write_text(updated, encoding="utf-8")
-
-
-def build_state(repo: Path, manifest: dict, prior: dict | None) -> dict:
-    prior = prior or {}
-    history = list(prior.get("history", []))
-    history.append({"sequence": manifest["sequence"], "packageLabel": manifest["packageLabel"], "description": manifest["description"]})
-    return {
-        "schemaVersion": 1,
-        "targetRelease": manifest["targetRelease"],
-        "baseVersion": prior.get("baseVersion") or current_app_version(repo),
-        "appliedSequence": manifest["sequence"],
-        "currentPackage": manifest["packageLabel"],
-        "status": "complete",
-        "history": history,
-    }
 
 
 def should_ignore(rel: Path) -> bool:
@@ -333,28 +301,171 @@ def copy_candidate(repo: Path, destination: Path) -> None:
     shutil.copytree(repo, destination, ignore=ignore)
 
 
-def apply_to_tree(repo: Path, payload: list[tuple[Path, PurePosixPath]], deletions: list[PurePosixPath], state: dict) -> None:
-    for rel in deletions:
-        target = repo_target(repo, rel)
-        if target.is_dir():
-            shutil.rmtree(target)
-        elif target.exists():
-            target.unlink()
+def overlay_payload(repo: Path, payload: list[tuple[Path, PurePosixPath]]) -> None:
     for source, rel in payload:
         target = repo_target(repo, rel)
         if target.exists() and target.is_dir():
             shutil.rmtree(target)
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
-    (repo / STATE_FILE).write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def apply_file_merges(repo: Path, manifest: dict) -> dict[str, int]:
+    metrics: dict[str, int] = {}
+    for index, spec in enumerate(manifest.get("operations", {}).get("fileMerges", []), 1):
+        if not isinstance(spec, dict):
+            raise UpdateError(f"Invalid file merge #{index}")
+        target_rel = safe_relative_path(spec.get("target", ""))
+        raw_sources = spec.get("sources")
+        if not isinstance(raw_sources, list) or len(raw_sources) < 2:
+            raise UpdateError(f"fileMerges[{index}] requires at least two sources")
+        sources = [safe_relative_path(item) for item in raw_sources]
+        separator = spec.get("separator", "\n")
+        if not isinstance(separator, str):
+            raise UpdateError(f"fileMerges[{index}].separator must be a string")
+        chunks: list[str] = []
+        for rel in sources:
+            path = repo_target(repo, rel)
+            if not path.is_file():
+                raise UpdateError(f"Merge source is missing: {rel}")
+            chunks.append(path.read_text(encoding="utf-8").rstrip() + "\n")
+        target = repo_target(repo, target_rel)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(separator.join(chunks), encoding="utf-8")
+        metrics[target_rel.as_posix()] = len(sources)
+        if spec.get("deleteSources", False):
+            for rel in sources:
+                source = repo_target(repo, rel)
+                if source.resolve() != target.resolve() and source.exists():
+                    source.unlink()
+    return metrics
+
+
+def iter_text_targets(repo: Path, spec: dict):
+    extensions = spec.get("extensions", sorted(TEXT_EXTENSIONS))
+    if not isinstance(extensions, list) or not extensions:
+        raise UpdateError("treeReplacements extensions must be a non-empty array")
+    normalized = {item if str(item).startswith(".") else "." + str(item) for item in extensions}
+    excluded_prefixes = [safe_relative_path(value, allow_directory=True).as_posix().rstrip("/") for value in spec.get("excludePrefixes", [])]
+    excluded_paths = {safe_relative_path(value, allow_directory=True).as_posix() for value in spec.get("excludePaths", [])}
+    for path in sorted(repo.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(repo)
+        text = rel.as_posix()
+        if should_ignore(rel) or text.startswith(".github/") or "vendor" in rel.parts:
+            continue
+        if text in excluded_paths or any(text == prefix or text.startswith(prefix + "/") for prefix in excluded_prefixes):
+            continue
+        if path.suffix.lower() not in normalized:
+            continue
+        yield path, text
+
+
+def apply_tree_replacements(repo: Path, manifest: dict) -> dict[str, int]:
+    metrics: dict[str, int] = {}
+    specs = manifest.get("operations", {}).get("treeReplacements", [])
+    for index, spec in enumerate(specs, 1):
+        if not isinstance(spec, dict):
+            raise UpdateError(f"Invalid tree replacement #{index}")
+        old, new = spec.get("old"), spec.get("new")
+        if not isinstance(old, str) or not old or not isinstance(new, str):
+            raise UpdateError(f"Invalid tree replacement #{index}")
+        count = 0
+        files = 0
+        for path, _ in iter_text_targets(repo, spec):
+            try:
+                original = path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                continue
+            occurrences = original.count(old)
+            if not occurrences:
+                continue
+            path.write_text(original.replace(old, new), encoding="utf-8")
+            count += occurrences
+            files += 1
+        minimum = spec.get("minMatches", 1)
+        maximum = spec.get("maxMatches")
+        if not isinstance(minimum, int) or minimum < 0:
+            raise UpdateError(f"Invalid minMatches in tree replacement #{index}")
+        if count < minimum:
+            raise UpdateError(
+                f"Tree replacement #{index} base mismatch: expected at least {minimum}, found {count}"
+            )
+        if maximum is not None and (not isinstance(maximum, int) or count > maximum):
+            raise UpdateError(
+                f"Tree replacement #{index} exceeded maxMatches {maximum}: found {count}"
+            )
+        metrics[f"{old}->{new}"] = count
+        print(f"Tree replacement {old!r} -> {new!r}: {count} occurrence(s) in {files} file(s).")
+    return metrics
+
+
+def apply_text_replacements(repo: Path, manifest: dict) -> None:
+    for rel_text, replacements in manifest.get("textReplacements", {}).items():
+        rel = safe_relative_path(rel_text)
+        if not isinstance(replacements, list) or not replacements:
+            raise UpdateError(f"textReplacements[{rel_text!r}] must be a non-empty array")
+        target = repo_target(repo, rel)
+        if not target.is_file():
+            raise UpdateError(f"Text replacement target is missing: {rel}")
+        text = target.read_text(encoding="utf-8")
+        for index, item in enumerate(replacements, 1):
+            if not isinstance(item, dict):
+                raise UpdateError(f"Invalid text replacement #{index} for {rel}")
+            old, new, expected = item.get("old"), item.get("new"), item.get("count", 1)
+            if not isinstance(old, str) or not old or not isinstance(new, str) or not isinstance(expected, int) or expected < 1:
+                raise UpdateError(f"Invalid text replacement #{index} for {rel}")
+            actual = text.count(old)
+            if actual != expected:
+                raise UpdateError(
+                    f"Text replacement base mismatch for {rel}: expected {expected}, found {actual}"
+                )
+            text = text.replace(old, new, expected)
+        target.write_text(text, encoding="utf-8")
+
+
+def apply_moves(repo: Path, manifest: dict) -> dict[str, str]:
+    moves = manifest.get("operations", {}).get("moves", {})
+    result: dict[str, str] = {}
+    for raw_source, raw_target in moves.items():
+        source_rel = safe_relative_path(raw_source)
+        target_rel = safe_relative_path(raw_target)
+        source = repo_target(repo, source_rel)
+        target = repo_target(repo, target_rel)
+        if not source.is_file():
+            raise UpdateError(f"Move source is missing: {source_rel}")
+        if target.exists():
+            raise UpdateError(f"Move target already exists: {target_rel}")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        source.replace(target)
+        result[source_rel.as_posix()] = target_rel.as_posix()
+    return result
+
+
+def apply_deletions(repo: Path, deletions: list[PurePosixPath]) -> None:
+    for rel in deletions:
+        target = repo_target(repo, rel)
+        if target.is_dir():
+            shutil.rmtree(target)
+        elif target.exists():
+            target.unlink()
+
+
+def build_state(manifest: dict) -> dict:
+    return {
+        "schemaVersion": 2,
+        "appliedSequence": manifest["sequence"],
+        "currentPackage": manifest["packageLabel"],
+        "status": "complete",
+    }
 
 
 def prepare_generated_metadata(repo: Path, profile: str) -> None:
     if profile == "none":
         return
     for script in ("scripts/generate_release_metadata.py", "scripts/generate_checksums.py"):
-        path = repo / script
-        if path.is_file():
+        if (repo / script).is_file():
             subprocess.run([sys.executable, script], cwd=repo, check=True)
 
 
@@ -368,20 +479,17 @@ def run_validation(repo: Path, profile: str) -> None:
 
 
 def file_map(root: Path) -> dict[str, str]:
-    out: dict[str, str] = {}
+    result: dict[str, str] = {}
     for path in root.rglob("*"):
-        if not path.is_file():
-            continue
-        rel = path.relative_to(root)
-        if should_ignore(rel):
-            continue
-        out[rel.as_posix()] = sha256_file(path)
-    return out
+        if path.is_file():
+            rel = path.relative_to(root)
+            if not should_ignore(rel):
+                result[rel.as_posix()] = sha256_file(path)
+    return result
 
 
 def apply_candidate_diff(repo: Path, candidate: Path) -> tuple[list[str], list[str], list[str]]:
-    before = file_map(repo)
-    after = file_map(candidate)
+    before, after = file_map(repo), file_map(candidate)
     changed = sorted(path for path, digest in after.items() if before.get(path) != digest)
     deleted = sorted(path for path in before if path not in after)
     if any(path.startswith(WORKFLOW_PREFIX) for path in changed + deleted):
@@ -424,9 +532,14 @@ def apply_candidate_diff(repo: Path, candidate: Path) -> tuple[list[str], list[s
     return added, replaced, deleted
 
 
-def apply_package(package: Path, repo: Path, *, dry_run: bool = False, validation_override: str | None = None) -> dict:
-    package = package.resolve()
-    repo = repo.resolve()
+def apply_package(
+    package: Path,
+    repo: Path,
+    *,
+    dry_run: bool = False,
+    validation_override: str | None = None,
+) -> dict:
+    package, repo = package.resolve(), repo.resolve()
     if not package.is_file():
         raise UpdateError(f"Update package not found: {package}")
     if not (repo / VERSION_FILE).is_file():
@@ -444,30 +557,34 @@ def apply_package(package: Path, repo: Path, *, dry_run: bool = False, validatio
         payload = iter_payload_files(stage / "files")
         deletions = parse_delete_list(stage / "DELETE.txt")
         verify_payload_contract(repo, payload, deletions, manifest)
-        prior = load_json(repo / STATE_FILE) if (repo / STATE_FILE).exists() else {}
-        state = build_state(repo, manifest, prior)
         with tempfile.TemporaryDirectory(prefix="inkdos-update-candidate-") as candidate_name:
             candidate = Path(candidate_name) / "repository"
             copy_candidate(repo, candidate)
-            apply_to_tree(candidate, payload, deletions, state)
+            overlay_payload(candidate, payload)
+            merge_metrics = apply_file_merges(candidate, manifest)
+            replacement_metrics = apply_tree_replacements(candidate, manifest)
             apply_text_replacements(candidate, manifest)
+            move_metrics = apply_moves(candidate, manifest)
+            apply_deletions(candidate, deletions)
+            (candidate / STATE_FILE).write_text(
+                json.dumps(build_state(manifest), indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
             prepare_generated_metadata(candidate, manifest["validationProfile"])
             run_validation(candidate, manifest["validationProfile"])
-            if dry_run:
-                added, replaced, removed = [], [], []
-                before, after = file_map(repo), file_map(candidate)
-                changed = sorted(path for path, digest in after.items() if before.get(path) != digest)
-                added = [p for p in changed if p not in before]
-                replaced = [p for p in changed if p in before]
-                removed = sorted(path for path in before if path not in after)
-            else:
+            before, after = file_map(repo), file_map(candidate)
+            changed = sorted(path for path, digest in after.items() if before.get(path) != digest)
+            added = [path for path in changed if path not in before]
+            replaced = [path for path in changed if path in before]
+            removed = sorted(path for path in before if path not in after)
+            if not dry_run:
                 added, replaced, removed = apply_candidate_diff(repo, candidate)
         return {
             "status": "validated" if dry_run else "applied",
             "rollback": False,
             "dryRun": dry_run,
             "packageLabel": manifest["packageLabel"],
-            "targetRelease": manifest["targetRelease"],
+            "targetRelease": manifest.get("targetRelease", "1.0"),
             "sequence": manifest["sequence"],
             "validationProfile": manifest["validationProfile"],
             "packageSha256": sha256_file(package),
@@ -476,13 +593,16 @@ def apply_package(package: Path, repo: Path, *, dry_run: bool = False, validatio
             "deleted": removed,
             "copied": sorted(added + replaced),
             "validatedCandidate": True,
+            "treeReplacements": replacement_metrics,
+            "fileMerges": merge_metrics,
+            "moves": move_metrics,
         }
 
 
 def package_manifest_summary(package: Path) -> dict:
     try:
-        with zipfile.ZipFile(package) as zf:
-            value = json.loads(zf.read("patch-manifest.json").decode("utf-8"))
+        with zipfile.ZipFile(package) as archive:
+            value = json.loads(archive.read("patch-manifest.json").decode("utf-8"))
             return value if isinstance(value, dict) else {}
     except Exception:
         return {}
@@ -500,7 +620,7 @@ def write_failure_report(path: Path, package: Path, repo: Path, error: Exception
         "rollback": not dry_run,
         "error": str(error),
         "packageLabel": manifest.get("packageLabel", package.name),
-        "targetRelease": manifest.get("targetRelease", ""),
+        "targetRelease": manifest.get("targetRelease", "1.0"),
         "sequence": manifest.get("sequence"),
         "validationProfile": manifest.get("validationProfile", ""),
         "dryRun": dry_run,
@@ -523,7 +643,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     try:
-        plan = apply_package(args.package, args.repo, dry_run=args.dry_run, validation_override=args.validation_profile)
+        plan = apply_package(
+            args.package,
+            args.repo,
+            dry_run=args.dry_run,
+            validation_override=args.validation_profile,
+        )
     except (UpdateError, subprocess.CalledProcessError, OSError) as exc:
         if args.report:
             try:

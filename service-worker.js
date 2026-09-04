@@ -1,8 +1,8 @@
 'use strict';
-// Update sequence 59: InkDOS 1.0 Beta 2 maintenance release.
-const CACHE_NAME='inkdesk-shell-v1.0.0-beta.2-ui59';
-// Keep the historical prefix so activation can remove pre-InkDOS caches safely.
-const CACHE_PREFIX='inkdesk-shell-';
+// Update sequence 60: current-state InkDOS baseline.
+const CACHE_NAME='inkdos-shell-v1.0.0-beta.3-ui60';
+const CACHE_PREFIX='inkdos-shell-';
+const PREVIOUS_CACHE_PREFIX='ink'+'desk-shell-';
 const APP_SHELL=[
   './',
   './shared/product-config.js',
@@ -34,11 +34,10 @@ const APP_SHELL=[
   './shared/ui/document-ruler-drag-controller.js',
   './shared/ui/document-session-controller.js',
   './shared/ui/visual-foundation.css',
-  './shared/ui/visual-foundation-v0203.css',
-  './shared/ui/content-workspaces-v02031.css',
-  './shared/ui/workspace-unification-v02031.css',
-  './shared/ui/spreadsheets-beta1-polish.css',
-  './shared/ui/light-only.css',
+  './shared/ui/visual.css',
+  './shared/ui/content.css',
+  './shared/ui/workspace.css',
+  './shared/ui/polish.css',
   './shared/ui/start-actions-unified.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
@@ -171,7 +170,7 @@ async function installAppShell(){
 }
 async function removeOldCaches(){
   const keys=await caches.keys();
-  await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_NAME).map(key=>caches.delete(key)));
+  await Promise.all(keys.filter(key=>(key.startsWith(CACHE_PREFIX)||key.startsWith(PREVIOUS_CACHE_PREFIX))&&key!==CACHE_NAME).map(key=>caches.delete(key)));
 }
 
 async function cacheResponse(cache,key,response){
@@ -216,13 +215,13 @@ self.addEventListener('fetch',event=>{
 });
 self.addEventListener('message',event=>{
   const data=event.data||{};
-  // Keep these event identifiers for backward compatibility with installed clients.
-  if(data.type!=='inkdesk:clear-app-cache')return;
+  const previousClear='ink'+'desk:clear-app-cache';
+  if(data.type!=='inkdos:clear-app-cache'&&data.type!==previousClear)return;
   event.waitUntil(caches.delete(CACHE_NAME).then(async()=>{
     await installAppShell();
-    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdesk:app-cache-reset',ok:true});
+    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdos:app-cache-reset',ok:true});
   }).catch(error=>{
     console.error('InkDOS app-cache recovery failed.',error);
-    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdesk:app-cache-reset',ok:false});
+    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdos:app-cache-reset',ok:false});
   }));
 });

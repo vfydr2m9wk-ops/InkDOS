@@ -1,6 +1,6 @@
 # Refactoring plan for the 0.20 line
 
-InkDesk v0.20.0 consolidates the working beta without rewriting mature runtime
+InkDOS v0.20.0 consolidates the working beta without rewriting mature runtime
 paths during the release transition. Two inherited files remain above the
 repository's preferred 1,000-line source limit and have explicit extraction
 plans.

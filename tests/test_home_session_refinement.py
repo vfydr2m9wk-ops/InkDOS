@@ -43,7 +43,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
             "office-txt",
             "office-epub",
             "rewriteDownloadName",
-            "requestDownload.__inkdeskDocumentSessionWrapped",
+            "requestDownload.__inkdosDocumentSessionWrapped",
         ):
             self.assertIn(marker, controller)
 
@@ -119,7 +119,7 @@ class HomeSessionRefinementTests(unittest.TestCase):
             (ROOT / "package.json").read_text(encoding="utf-8")
         )
 
-        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
         self.assertEqual(package["version"], json.loads((ROOT / "VERSION.json").read_text())["version"])
 
 

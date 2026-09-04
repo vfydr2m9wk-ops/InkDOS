@@ -1,109 +1,38 @@
-# InkDesk agent and contributor guardrails
+# InkDOS engineering policy
 
-These rules apply to AI-assisted and human changes in this repository. They are
-intended to keep InkDesk local-first, build-free at runtime, modular, visually
-consistent, and safe to refactor without silently changing behavior.
+These rules apply to human and AI-assisted changes.
 
-## 1. Scope first
+## Current-state first
 
-- Make the smallest change that owns the behavior.
-- Do not edit unrelated workspaces to solve a local defect.
-- Do not combine a refactor with a feature addition unless the behavior change
-  has its own regression test and its own clearly identified commit/package.
-- During the 0.20.x refactoring sequence, moving code does **not** authorize a
-  UI redesign, a new format, or a new editing command.
+Git and GitHub own project history. The active tree should contain only code, tests and documentation that serve the current product. Do not keep obsolete wrappers, aliases, migration notes, dormant features or version-specific patch layers merely because they existed before.
 
-## 2. Behavioral preservation
+When a rewrite is smaller, clearer or safer than preserving inherited implementation, rewrite it. Compatibility means preserving supported user behavior, file fidelity and recoverable local data — not preserving internal names or architecture.
 
-Before extracting or moving runtime code:
+## Optimize for value per complexity
 
-1. identify the current user-visible behavior;
-2. ensure a behavioral regression test exists for it;
-3. perform the extraction;
-4. rerun the same test and the full release gate;
-5. treat any unexplained difference as a regression.
+Prefer solutions that increase useful format coverage, reliability, accessibility or interaction quality while reducing files, requests, duplicate logic and special cases. One authoritative implementation is better than several correction overlays. New abstraction is justified only when it removes more complexity than it adds.
 
-Open, Save/export, rename, dirty state, Undo/Redo, selection, recovery, Home,
-presentation mode and offline launch are release-blocking behaviors.
+## Patch policy
 
-## 3. Module ownership
+Prefer fewer, broader fixes that remove root causes and adjacent debt. Every substantial patch must be exercised first against a disposable candidate tree. The publication workflow is the final independent gate, not the primary debugging environment.
 
-Use feature-oriented modules rather than new catch-all files.
+A patch may refactor aggressively when validation covers the affected behavior. Do not mix speculative features into a stabilization change.
 
-- `apps/<workspace>/` owns behavior specific to one workspace.
-- `shared/` owns behavior genuinely reused by multiple workspaces.
-- `modules/` owns application registration/loading metadata, not editor state.
-- A workspace must not import runtime code from another workspace.
-- Shared code must not depend on a workspace implementation.
-- Avoid circular imports.
+## Product invariants
 
-Prefer a small composition/controller entry point plus focused modules such as
-`state/`, `ui/`, `editing/`, `io/`, or another name that describes a real
-responsibility. Do not create empty abstraction layers or placeholder bridges.
+- local-first, offline-capable and private by design;
+- no telemetry, account or cloud dependency for core workflows;
+- imported files are untrusted input;
+- supported DOCX/XLS/XLSX/PPT/PPTX/PDF/TXT/EPUB behavior must not regress silently;
+- saving must not silently overwrite a selected source;
+- recoverable unsaved work and transactional document replacement take precedence over convenience;
+- UI must remain visually coherent, keyboard-accessible and predictable across supported viewport classes;
+- runtime stays build-free: source is directly serveable as static files.
 
-## 4. File-size and readability ratchet
+## Tests
 
-`architecture-policy.json` is enforced by
-`scripts/check_architecture_guardrails.py`.
+Tests should express current behavior and safety contracts. Remove tests that only freeze historical implementation details, and replace them with direct behavior or architecture assertions. Keep browser regressions for interactions that cannot be proved statically.
 
-- New runtime JS/CSS files should stay at or below 500 physical lines.
-- New/refactored runtime source should not contain physical lines over 240
-  characters. Split generated-looking one-line functions into readable code.
-- Existing oversized/compressed files are grandfathered only at their recorded
-  baseline. They may shrink, but they may not grow beyond that baseline.
-- Do not add a new exception merely to make CI green. A new exception requires
-  an explicit architectural reason in documentation and review.
+## Documentation
 
-## 5. JavaScript style and object orientation
-
-InkDesk does not require React or a framework migration. The runtime remains
-plain HTML/CSS/JavaScript unless a future architecture decision explicitly
-changes that.
-
-Use classes when an object has meaningful state and lifecycle (for example a
-document session, history manager, recovery store, renderer or controller).
-Use small modules and pure functions for transformations and stateless logic.
-Do not introduce inheritance or manager/factory classes only to claim OOP.
-
-## 6. Visual contract
-
-Preserve the established InkDesk visual system:
-
-- native Apple/system font stack; no bundled font files;
-- professional dark/light-capable desktop-style surfaces with rounded controls;
-- 44 px shared title-bar baseline where the workspace uses the common shell;
-- Documents blue, Spreadsheets green, Presentations orange, PDF red,
-  EPUB purple and TXT yellow identities;
-- existing button names, functions and application-specific controls;
-- content-first default panel states documented in `docs/VISUAL_SYSTEM.md`.
-
-Do not add decorative controls, invented operating-system window chrome, or
-Microsoft/Apple proprietary assets. A refactor must not move controls unless the
-task explicitly calls for a UI change.
-
-## 7. Local-first and file safety
-
-- User documents remain local unless a future explicit integration says
-  otherwise.
-- Do not introduce a backend, telemetry, automatic remote runtime dependency or
-  mandatory build service.
-- Preserve package-preserving OOXML behavior where supported.
-- Never clear dirty state or recovery data before a save/export has succeeded.
-- Failed replacement opens must leave the active document intact.
-
-## 8. Tests are evidence
-
-A button existing in HTML or having an event listener is not proof that it
-works. Prefer behavioral tests that verify the resulting state or exported
-file. Keep the functional acceptance matrix honest: unverified controls stay
-scheduled rather than being assumed functional.
-
-Every fixed regression receives a permanent test when technically feasible.
-The release gate includes repository validation, architecture guardrails,
-source audit, unit/package tests, browser regressions and checksums.
-
-## 9. Update-package safety
-
-Incremental update ZIPs must never create, modify or delete
-`.github/workflows`. The stable workflow is bootstrapped separately. Preserve
-transactional rollback, sequence checks and checksum verification.
+Document the current product. Historical rationale belongs in Git commits, pull requests and releases. Avoid duplicating the same contract across several documents.

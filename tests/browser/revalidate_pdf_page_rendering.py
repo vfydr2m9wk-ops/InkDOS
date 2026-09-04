@@ -78,7 +78,7 @@ def main():
         "errors": [],
     }
     try:
-        with tempfile.TemporaryDirectory(prefix="inkdesk-pdf-render-") as temp_name:
+        with tempfile.TemporaryDirectory(prefix="inkdos-pdf-render-") as temp_name:
             pdf_path = Path(temp_name) / "rendering-smoke.pdf"
             make_pdf(pdf_path)
             with sync_playwright() as playwright:
@@ -107,33 +107,33 @@ def main():
                             return
                         raise
 
-                    version = page.evaluate("() => window.InkDeskPdfPageRenderer?.version")
+                    version = page.evaluate("() => window.InkDOSPdfPageRenderer?.version")
                     assert_true(version == "0.20.3.0", f"Unexpected page renderer version: {version}")
                     report["checks"].append("page renderer component loaded")
 
                     page.set_input_files("#fileInput", str(pdf_path))
-                    page.wait_for_function("() => window.InkDeskPdfDebug?.getState().pageCount === 3")
-                    state = page.evaluate("() => window.InkDeskPdfDebug.getState()")
+                    page.wait_for_function("() => window.InkDOSPdfDebug?.getState().pageCount === 3")
+                    state = page.evaluate("() => window.InkDOSPdfDebug.getState()")
                     assert_true(state["pagePlaceholders"] == 3, f"Expected 3 placeholders: {state}")
                     assert_true(state["renderedCanvases"] >= 1, f"No rendered PDF canvas: {state}")
                     report["checks"].append("three-page document rendered")
 
-                    page.evaluate("() => window.InkDeskPdfDebug.goToPage(3)")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 3")
+                    page.evaluate("() => window.InkDOSPdfDebug.goToPage(3)")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 3")
                     assert_true(page.locator("#pageNumber").input_value() == "3", "Page input did not sync to page 3")
                     report["checks"].append("navigation delegates through rendering window")
 
-                    page.evaluate("() => window.InkDeskPdfDebug.setZoom('100')")
+                    page.evaluate("() => window.InkDOSPdfDebug.setZoom('100')")
                     page.wait_for_timeout(250)
-                    state = page.evaluate("() => window.InkDeskPdfDebug.getState()")
+                    state = page.evaluate("() => window.InkDOSPdfDebug.getState()")
                     assert_true(state["zoom"] == "100", f"100% zoom did not persist: {state}")
                     assert_true(state["renderedCanvases"] >= 1, "Zoom rerender removed every visible canvas")
                     report["checks"].append("zoom rerender")
 
                     page.click("#horizontalScroll")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().direction === 'horizontal'")
-                    page.evaluate("() => window.InkDeskPdfDebug.goToPage(2)")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 2")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().direction === 'horizontal'")
+                    page.evaluate("() => window.InkDOSPdfDebug.goToPage(2)")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 2")
                     report["checks"].append("horizontal navigation")
 
                     page.set_viewport_size({"width": 1100, "height": 760})

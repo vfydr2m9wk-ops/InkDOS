@@ -1,37 +1,17 @@
-# Development Guide
+# Development guide
 
-InkDesk intentionally avoids a mandatory build system. Source files are served directly.
+InkDOS is a static, build-free browser application. Serve the repository root or open `index.html` directly; HTTP(S) is recommended for service-worker and PWA testing.
 
-## Setup
+## Change discipline
 
-```bash
-python3 -m http.server 8080
-```
+Work from the current behavior contract, not from historical implementation. Prefer deleting, consolidating or rewriting over adding compatibility layers. Changes that affect file handling, recovery, save semantics or UI interaction require targeted regression coverage.
 
-## Principles
-
-Keep changes small, preserve offline operation, avoid unnecessary dependencies, maintain workspace isolation, and update tests and documentation together with behavior changes. All source code, comments, identifiers, filenames, and developer-facing messages must remain in English.
-
-## Commands
+Before publication run the complete release validator:
 
 ```bash
-npm run validate
-npm run audit
-npm test
-npm run test:browser
-npm run test:release
+python3 scripts/run_release_validation.py
 ```
 
-Use focused commits such as `fix:`, `docs:`, `test:`, `refactor:`, and `chore:`. Do not rename persisted storage keys without migration or a backward-compatible fallback. The current application has no persisted document schema.
+Incremental update packages are applied to a disposable candidate tree first. Only a fully validated candidate is copied into the working tree.
 
-## Architecture guardrail
-
-Before extracting runtime code, run:
-
-```bash
-python3 scripts/check_architecture_guardrails.py
-```
-
-The command enforces the v0.20.2.1 source-debt ratchet, workspace dependency
-boundaries and relative-import cycle checks. See `AGENTS.md` and
-`docs/ARCHITECTURE_GUARDRAILS.md`.
+See `AGENTS.md` for the engineering policy and `docs/ARCHITECTURE.md` for the current component boundaries.

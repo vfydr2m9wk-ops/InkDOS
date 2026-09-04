@@ -245,7 +245,7 @@
     });
   }
 
-  global.InkDeskDocumentRulerDragController = Object.freeze({
+  global.InkDOSDocumentRulerDragController = Object.freeze({
     version: VERSION,
     create
   });

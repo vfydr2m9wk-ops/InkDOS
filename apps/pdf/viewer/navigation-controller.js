@@ -11,7 +11,7 @@
   }) {
     if (!state || !elements || !clamp || !ensureWindow) {
       throw new Error(
-        'InkDesk PDF navigation controller requires state, elements, clamp and ensureWindow.'
+        'InkDOS PDF navigation controller requires state, elements, clamp and ensureWindow.'
       );
     }
 
@@ -289,7 +289,7 @@
     });
   }
 
-  global.InkDeskPdfNavigationController = Object.freeze({
+  global.InkDOSPdfNavigationController = Object.freeze({
     version: '0.20.3.0',
     createNavigationController
   });

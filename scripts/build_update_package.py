@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build deterministic InkDOS incremental update ZIPs."""
+"""Build deterministic schema-2 InkDOS update ZIPs."""
 from __future__ import annotations
 
 import argparse
@@ -14,11 +14,11 @@ WORKFLOW_PREFIX = ".github/workflows/"
 
 
 def sha256(path: Path) -> str:
-    h = hashlib.sha256()
+    digest = hashlib.sha256()
     with path.open("rb") as stream:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
-            h.update(block)
-    return h.hexdigest()
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def safe_path(raw: str) -> str:
@@ -35,12 +35,12 @@ def safe_path(raw: str) -> str:
     return value
 
 
-def write_member(zf: zipfile.ZipFile, name: str, data: bytes, mode: int = 0o644) -> None:
+def write_member(archive: zipfile.ZipFile, name: str, data: bytes, mode: int = 0o644) -> None:
     info = zipfile.ZipInfo(name, FIXED_TIME)
     info.create_system = 3
     info.external_attr = (stat.S_IFREG | mode) << 16
     info.compress_type = zipfile.ZIP_DEFLATED
-    zf.writestr(info, data, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+    archive.writestr(info, data, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 
 
 def main() -> int:
@@ -49,34 +49,34 @@ def main() -> int:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--delete", type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument("--file", action="append", default=[], help="Repository-relative payload path; repeat as needed")
+    parser.add_argument("--file", action="append", default=[])
     args = parser.parse_args()
 
     repo = args.repo.resolve()
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
-    if manifest.get("product") != "InkDOS":
-        raise SystemExit("Manifest product must be InkDOS")
+    if manifest.get("schemaVersion") != 2 or manifest.get("product") != "InkDOS":
+        raise SystemExit("Manifest must use schema 2 and product InkDOS")
     if manifest.get("allowWorkflowChanges"):
         raise SystemExit("allowWorkflowChanges is forbidden")
 
-    file_contract = manifest.setdefault("files", {})
-    requested = list(args.file) or list(file_contract)
-    if "scripts/apply_update_package.py" not in requested:
-        requested.append("scripts/apply_update_package.py")
+    contract = manifest.setdefault("files", {})
+    requested = list(args.file) or list(contract)
+    for required in ("scripts/apply_update_package.py", "scripts/build_update_package.py"):
+        if required not in requested:
+            requested.append(required)
 
     payload: list[tuple[str, Path]] = []
     seen: set[str] = set()
     for raw in requested:
         rel = safe_path(raw)
-        folded = rel.casefold()
-        if folded in seen:
+        if rel.casefold() in seen:
             raise SystemExit(f"Duplicate/case-colliding payload path: {rel}")
-        seen.add(folded)
+        seen.add(rel.casefold())
         path = repo / rel
         if not path.is_file():
             raise SystemExit(f"Payload file does not exist: {rel}")
         digest = sha256(path)
-        meta = file_contract.setdefault(rel, {})
+        meta = contract.setdefault(rel, {})
         if not isinstance(meta, dict):
             raise SystemExit(f"Manifest files[{rel!r}] must be an object")
         if meta.get("sha256") and meta["sha256"] != digest:
@@ -84,34 +84,30 @@ def main() -> int:
         meta["sha256"] = digest
         payload.append((rel, path))
 
-    delete_lines: list[str] = []
+    deletions: list[str] = []
     if args.delete and args.delete.exists():
-        for line in args.delete.read_text(encoding="utf-8").splitlines():
-            value = line.strip()
-            if not value or value.startswith("#"):
-                continue
-            delete_lines.append(safe_path(value))
+        for raw in args.delete.read_text(encoding="utf-8").splitlines():
+            value = raw.strip()
+            if value and not value.startswith("#"):
+                deletions.append(safe_path(value))
     deletion_contract = manifest.setdefault("deletions", {})
-    if deletion_contract and set(deletion_contract) != set(delete_lines):
+    if deletion_contract and set(deletion_contract) != set(deletions):
         raise SystemExit("Manifest deletions map must exactly match DELETE.txt")
-    for rel in delete_lines:
+    for rel in deletions:
         deletion_contract.setdefault(rel, {})
 
-    manifest_bytes = (json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
-    delete_bytes = (("\n".join(delete_lines) + "\n") if delete_lines else "").encode("utf-8")
-
+    manifest_bytes = (json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n").encode()
+    delete_bytes = (("\n".join(deletions) + "\n") if deletions else "").encode()
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
-    if output.exists():
-        output.unlink()
-    with zipfile.ZipFile(output, "w") as zf:
-        write_member(zf, "patch-manifest.json", manifest_bytes)
-        if delete_lines:
-            write_member(zf, "DELETE.txt", delete_bytes)
+    output.unlink(missing_ok=True)
+    with zipfile.ZipFile(output, "w") as archive:
+        write_member(archive, "patch-manifest.json", manifest_bytes)
+        if deletions:
+            write_member(archive, "DELETE.txt", delete_bytes)
         for rel, path in sorted(payload):
-            mode = 0o755 if (path.stat().st_mode & 0o111) else 0o644
-            write_member(zf, f"files/{rel}", path.read_bytes(), mode=mode)
-
+            mode = 0o755 if path.stat().st_mode & 0o111 else 0o644
+            write_member(archive, f"files/{rel}", path.read_bytes(), mode)
     print(f"{output}  {sha256(output)}")
     return 0
 

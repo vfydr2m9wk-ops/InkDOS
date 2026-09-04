@@ -1,44 +1,25 @@
 # InkDOS — Ink Desk Offline Suite
 
-InkDOS is a local-first, offline and private browser productivity suite for focused DOCX, XLS/XLSX,
-PPTX, PDF, TXT and EPUB workflows. It is not intended to replace Microsoft
-Office, a full publishing system or a specialist PDF editor.
+InkDOS is a local-first, offline and private browser productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.
 
-## InkDOS v1.0.0-beta.2
+## 1.0.0-beta.3
 
-`1.0.0-beta.2` consolidates the permanent InkDOS incremental-update contract on
-top of the feature-frozen 1.0 beta baseline. The six independent workspaces,
-local-first file handling, recovery model and supported package-preserving Office
-round-trips remain the product baseline.
+Beta 3 is the current-state baseline. It completes the product-identity transition, removes historical implementation baggage from the active tree, compacts the update state, consolidates visual layers, and keeps the six workspace contracts intact.
 
-The 0.20.x sequence numbers remain in repository history as engineering
-provenance; they are not separate public releases that users need to install.
-Internal update sequence numbers are intentionally independent from the public
-semantic version.
+The engineering rule is simple: Git preserves history; `main` preserves the best current implementation. Compatibility is defined by user-visible behavior and data fidelity, not by preserving old internal names, wrappers or patch layers.
 
-## Beta policy
+## Product priorities
 
-The 1.0 beta is feature-frozen. Runtime changes should be limited to reproducible
-data-integrity, compatibility, security or high-value/low-risk defects. New
-features and broad visual refactors should wait until the beta baseline has
-received real-device use.
-
-The generic Launcher **Open a supported file** handoff remains removed because
-it duplicated each workspace's Open flow while adding routing and browser-state
-complexity. Open the target workspace first, then use that workspace's Open
-control.
-
-## Privacy
-
-Selected files are processed in the browser. InkDOS includes no project-run
-upload server, account system or analytics service. Saving normally creates a
-new local copy rather than silently overwriting the selected source file.
+- local-first and offline operation;
+- broad, explicit document-format support without pretending to full Office parity;
+- safe local recovery and generated-copy saving;
+- stable visual hierarchy and predictable interaction;
+- small, cohesive runtime modules with no unnecessary compatibility layers;
+- aggressive refactoring only behind reproducible tests and candidate-tree validation.
 
 ## Run
 
-Open `index.html` directly or serve the directory with a static HTTP server.
-HTTP(S) is preferred for service workers, installation and the most predictable
-browser behavior.
+Open `index.html` directly or use GitHub Pages. HTTP(S) is preferred for service workers, PWA installation and predictable browser behavior.
 
 ## Validate
 
@@ -47,21 +28,15 @@ npm run validate
 npm run audit
 npm test
 npm run test:browser
-npm run test:browser:matrix
+npm run test:release
 ```
 
-The normal incremental-update gate uses Chromium. The optional matrix checks
-installed Chromium, Firefox and WebKit engines; unavailable engines are reported
-as not performed unless strict matrix mode is requested. Native Safari/iPadOS
-and installed-PWA behavior still require physical-device validation.
+The GitHub update workflow applies packages only after a disposable candidate tree passes the configured validation profile.
 
 ## Status
 
-This is **1.0 beta**, not 1.0 stable. The supported scope is intentionally
-limited and documented in [`COMPATIBILITY.md`](COMPATIBILITY.md) and
-[`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md).
+This is **1.0 beta**. Supported behavior and known limits are documented in [`COMPATIBILITY.md`](COMPATIBILITY.md) and [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md).
 
 ## License
 
-InkDOS original code is licensed under the MIT License. Bundled third-party
-components retain their upstream licenses; see `docs/THIRD_PARTY_NOTICES.md`.
+InkDOS original code is licensed under the MIT License. Bundled third-party components retain their upstream licenses; see `docs/THIRD_PARTY_NOTICES.md`.

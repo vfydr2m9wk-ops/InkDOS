@@ -1,34 +1,34 @@
 {
   "schemaVersion": 1,
   "version": "0.20.0",
-  "description": "Stable shared interface regions exposed by the InkDesk application shell.",
+  "description": "Stable shared interface regions exposed by the InkDOS application shell.",
   "regions": {
     "titlebar": {
       "required": true,
       "purpose": "File identity and global commands",
-      "dataAttribute": "data-inkdesk-shell-region=titlebar"
+      "dataAttribute": "data-inkdos-shell-region=titlebar"
     },
     "command-tabs": {
       "required": false,
       "purpose": "Workspace command categories",
-      "dataAttribute": "data-inkdesk-shell-region=command-tabs"
+      "dataAttribute": "data-inkdos-shell-region=command-tabs"
     },
     "commandbar": {
       "required": false,
       "multiple": true,
       "purpose": "Commands for the active category",
-      "dataAttribute": "data-inkdesk-shell-region=commandbar"
+      "dataAttribute": "data-inkdos-shell-region=commandbar"
     },
     "workspace": {
       "required": true,
       "multiple": true,
       "purpose": "Primary document content",
-      "dataAttribute": "data-inkdesk-shell-region=workspace"
+      "dataAttribute": "data-inkdos-shell-region=workspace"
     },
     "statusbar": {
       "required": true,
       "purpose": "Selection, progress, navigation, and zoom status",
-      "dataAttribute": "data-inkdesk-shell-region=statusbar"
+      "dataAttribute": "data-inkdos-shell-region=statusbar"
     }
   },
   "panelSides": [
@@ -37,11 +37,11 @@
     "bottom"
   ],
   "events": [
-    "inkdesk:shell-ready",
-    "inkdesk:panel-change",
-    "inkdesk:command-registered",
-    "inkdesk:command-executed",
-    "inkdesk:status-change",
-    "inkdesk:file-state-change"
+    "inkdos:shell-ready",
+    "inkdos:panel-change",
+    "inkdos:command-registered",
+    "inkdos:command-executed",
+    "inkdos:status-change",
+    "inkdos:file-state-change"
   ]
 }

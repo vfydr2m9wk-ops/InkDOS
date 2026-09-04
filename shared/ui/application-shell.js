@@ -37,7 +37,7 @@
     for (const className of Object.keys(MODULE_CLASSES)) {
       if (body.classList.contains(className)) return MODULE_CLASSES[className];
     }
-    return String(body.dataset && body.dataset.inkdeskModule || '');
+    return String(body.dataset && body.dataset.inkdosModule || '');
   }
 
   function dispatch(target, name, detail) {
@@ -60,7 +60,7 @@
   function visibleByMarkup(element) {
     if (!element || element.hidden) return false;
     if (element.classList && element.classList.contains('hidden')) return false;
-    if (element.classList && element.classList.contains('inkdesk-panel-collapsed')) return false;
+    if (element.classList && element.classList.contains('inkdos-panel-collapsed')) return false;
     return true;
   }
 
@@ -70,7 +70,7 @@
     function register(id, handler, options) {
       const commandId = String(id || '').trim();
       if (!/^[a-z][a-z0-9.-]*$/.test(commandId)) {
-        throw new Error('Invalid InkDesk command ID.');
+        throw new Error('Invalid InkDOS command ID.');
       }
       if (typeof handler !== 'function') {
         throw new TypeError('Command handlers must be functions.');
@@ -87,7 +87,7 @@
       });
 
       commands.set(commandId, definition);
-      dispatch(eventTarget, 'inkdesk:command-registered', { command: definition });
+      dispatch(eventTarget, 'inkdos:command-registered', { command: definition });
 
       return function unregister() {
         commands.delete(commandId);
@@ -96,10 +96,10 @@
 
     function execute(id, context) {
       const command = commands.get(String(id || ''));
-      if (!command) throw new Error('Unknown InkDesk command: ' + id);
+      if (!command) throw new Error('Unknown InkDOS command: ' + id);
       if (!command.enabled) return false;
       const result = command.handler(context || {});
-      dispatch(eventTarget, 'inkdesk:command-executed', { id: command.id });
+      dispatch(eventTarget, 'inkdos:command-executed', { id: command.id });
       return result;
     }
 
@@ -117,7 +117,7 @@
     function register(id, element, options) {
       const panelId = String(id || '').trim();
       if (!/^[a-z][a-z0-9-]*$/.test(panelId)) {
-        throw new Error('Invalid InkDesk panel ID.');
+        throw new Error('Invalid InkDOS panel ID.');
       }
       if (!element || !element.classList) {
         throw new TypeError('A panel requires a DOM element.');
@@ -125,8 +125,8 @@
       if (panels.has(panelId)) return panels.get(panelId);
 
       const side = String(options && options.side || 'left');
-      element.dataset.inkdeskPanel = panelId;
-      element.dataset.inkdeskPanelSide = side;
+      element.dataset.inkdosPanel = panelId;
+      element.dataset.inkdosPanelSide = side;
       setAttributeIfMissing(
         element,
         'aria-label',
@@ -148,7 +148,7 @@
       if (!panel) return false;
 
       const shouldOpen = Boolean(open);
-      panel.element.classList.toggle('inkdesk-panel-collapsed', !shouldOpen);
+      panel.element.classList.toggle('inkdos-panel-collapsed', !shouldOpen);
       panel.element.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
 
       const controls = eventTarget && eventTarget.querySelectorAll
@@ -173,7 +173,7 @@
         }
       }
 
-      dispatch(eventTarget, 'inkdesk:panel-change', {
+      dispatch(eventTarget, 'inkdos:panel-change', {
         id: panel.id,
         open: shouldOpen,
         side: panel.side
@@ -210,14 +210,14 @@
 
     const titlebar = first(REGION_SELECTORS.titlebar);
     if (titlebar) {
-      titlebar.dataset.inkdeskShellRegion = 'titlebar';
+      titlebar.dataset.inkdosShellRegion = 'titlebar';
       setAttributeIfMissing(titlebar, 'aria-label', 'Application title bar');
       regions.titlebar = titlebar;
     }
 
     const commandTabs = first(REGION_SELECTORS.commandTabs);
     if (commandTabs) {
-      commandTabs.dataset.inkdeskShellRegion = 'command-tabs';
+      commandTabs.dataset.inkdosShellRegion = 'command-tabs';
       setAttributeIfMissing(commandTabs, 'aria-label', 'Command categories');
       regions.commandTabs = commandTabs;
     }
@@ -228,7 +228,7 @@
 
     commandBars.forEach(function (element) {
       if (element === commandTabs) return;
-      element.dataset.inkdeskShellRegion = 'commandbar';
+      element.dataset.inkdosShellRegion = 'commandbar';
       setAttributeIfMissing(element, 'aria-label', 'Workspace commands');
     });
     regions.commandBars = commandBars;
@@ -238,13 +238,13 @@
       : [];
 
     workspaces.forEach(function (element) {
-      element.dataset.inkdeskShellRegion = 'workspace';
+      element.dataset.inkdosShellRegion = 'workspace';
     });
     regions.workspaces = workspaces;
 
     const statusbar = first(REGION_SELECTORS.statusbar);
     if (statusbar) {
-      statusbar.dataset.inkdeskShellRegion = 'statusbar';
+      statusbar.dataset.inkdosShellRegion = 'statusbar';
       setAttributeIfMissing(statusbar, 'aria-label', 'Workspace status');
       regions.statusbar = statusbar;
     }
@@ -278,11 +278,11 @@
   function ensureAnnouncer(documentObject) {
     if (!documentObject || !documentObject.body) return null;
 
-    let announcer = documentObject.querySelector('.inkdesk-shell-announcer');
+    let announcer = documentObject.querySelector('.inkdos-shell-announcer');
     if (announcer) return announcer;
 
     announcer = documentObject.createElement('div');
-    announcer.className = 'inkdesk-shell-announcer';
+    announcer.className = 'inkdos-shell-announcer';
     announcer.setAttribute('role', 'status');
     announcer.setAttribute('aria-live', 'polite');
     announcer.setAttribute('aria-atomic', 'true');
@@ -293,8 +293,8 @@
   function createApplicationShell(documentObject, options) {
     const doc = documentObject || global.document;
     if (!doc || !doc.body || !doc.querySelector) return null;
-    if (doc.body.__inkdeskApplicationShell) {
-      return doc.body.__inkdeskApplicationShell;
+    if (doc.body.__inkdosApplicationShell) {
+      return doc.body.__inkdosApplicationShell;
     }
 
     const moduleId = String(
@@ -309,9 +309,9 @@
     const commands = createCommandRegistry(doc);
     const announcer = ensureAnnouncer(doc);
 
-    doc.documentElement.classList.add('inkdesk');
-    doc.body.dataset.inkdeskModule = moduleId;
-    doc.body.dataset.inkdeskShell = 'ready';
+    doc.documentElement.classList.add('inkdos');
+    doc.body.dataset.inkdosModule = moduleId;
+    doc.body.dataset.inkdosShell = 'ready';
 
     function announce(message) {
       if (!announcer) return;
@@ -331,21 +331,21 @@
 
       if (candidates[0]) candidates[0].textContent = text;
       announce(text);
-      dispatch(doc, 'inkdesk:status-change', { message: text });
+      dispatch(doc, 'inkdos:status-change', { message: text });
     }
 
     function setFileState(state) {
       const value = state || {};
 
       if (Object.prototype.hasOwnProperty.call(value, 'dirty')) {
-        doc.body.dataset.inkdeskDirty = value.dirty ? 'true' : 'false';
+        doc.body.dataset.inkdosDirty = value.dirty ? 'true' : 'false';
       }
 
       if (Object.prototype.hasOwnProperty.call(value, 'canSave')) {
-        doc.body.dataset.inkdeskCanSave = value.canSave ? 'true' : 'false';
+        doc.body.dataset.inkdosCanSave = value.canSave ? 'true' : 'false';
       }
 
-      dispatch(doc, 'inkdesk:file-state-change', {
+      dispatch(doc, 'inkdos:file-state-change', {
         name: String(value.name || ''),
         dirty: value.dirty === true,
         canSave: value.canSave === true
@@ -363,13 +363,13 @@
       setFileState
     });
 
-    Object.defineProperty(doc.body, '__inkdeskApplicationShell', {
+    Object.defineProperty(doc.body, '__inkdosApplicationShell', {
       value: shell,
       configurable: true
     });
 
-    global.InkDeskShell = shell;
-    dispatch(doc, 'inkdesk:shell-ready', {
+    global.InkDOSShell = shell;
+    dispatch(doc, 'inkdos:shell-ready', {
       shell,
       moduleId,
       version: VERSION
@@ -385,11 +385,11 @@
       return createApplicationShell(global.document);
     } catch (error) {
       if (global.document && global.document.body) {
-        global.document.body.dataset.inkdeskShellError = 'true';
+        global.document.body.dataset.inkdosShellError = 'true';
       }
       if (global.console && typeof global.console.error === 'function') {
         global.console.error(
-          'InkDesk application shell initialization failed.',
+          'InkDOS application shell initialization failed.',
           error
         );
       }
@@ -407,8 +407,8 @@
     autoInitialize
   });
 
-  global.InkDeskUI = api;
-  global.InkDeskCreateApplicationShell = createApplicationShell;
+  global.InkDOSUI = api;
+  global.InkDOSCreateApplicationShell = createApplicationShell;
 
   if (global.document) {
     if (global.document.readyState === 'loading') {

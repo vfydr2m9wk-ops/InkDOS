@@ -6,8 +6,8 @@ const themes=new Set(['system','light','dark']);
 function readRecent(){try{return JSON.parse(global.localStorage.getItem(recentKey)||'[]')}catch(error){return []}}
   function writeRecent(items){try{global.localStorage.setItem(recentKey,JSON.stringify(items.slice(0,12)))}catch(error){console.debug('InkDOS recent metadata is unavailable.',error)}}
 function addRecent(file,module){if(!file||!file.name)return;const items=readRecent().filter(item=>item.name!==file.name);items.unshift({name:file.name,size:Number(file.size||0),module,module,openedAt:Date.now()});writeRecent(items)}
-function route(file){return global.InkDeskFileRouter.routeForFile(file)}
-function open(file){const resolved=route(file);addRecent(file,resolved.extension);return global.InkDeskFileRouter.openFromHub(file)}
+function route(file){return global.InkDOSFileRouter.routeForFile(file)}
+function open(file){const resolved=route(file);addRecent(file,resolved.extension);return global.InkDOSFileRouter.openFromHub(file)}
   function applyTheme(value){
     const theme=themes.has(value)?value:'system';
     document.documentElement.dataset.theme=theme;
@@ -16,7 +16,7 @@ function open(file){const resolved=route(file);addRecent(file,resolved.extension
     return theme;
   }
 function storedTheme(){try{return global.localStorage.getItem('inkdos.theme')||'system'}catch(error){return 'system'}}
-function moduleOptions(){return global.InkDeskModules?global.InkDeskModules.listEnabled().filter(module=>module.capabilities.includes('new')):[]}
+function moduleOptions(){return global.InkDOSModules?global.InkDOSModules.listEnabled().filter(module=>module.capabilities.includes('new')):[]}
 function makeDialog(){
   const dialog=document.createElement('dialog');dialog.className='suite-dialog';dialog.setAttribute('aria-labelledby','createTitle');
   dialog.innerHTML='<form method="dialog" class="suite-dialog-card">'
@@ -39,7 +39,7 @@ function init(){
   document.querySelectorAll('[data-product-long-name]').forEach(node=>node.textContent=product.longName);
   document.querySelectorAll('[data-release-badge],[data-release-version]').forEach(node=>node.textContent='v'+product.version);
   const input=document.querySelector('#suiteOpenInput');const openButton=document.querySelector('[data-suite-action="open"]');const createButton=document.querySelector('[data-suite-action="create"]');
-  if(input){input.accept=global.InkDeskModules?global.InkDeskModules.buildAccept():'';input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file)return;try{open(file)}catch(error){global.alert(error.message)}})}
+  if(input){input.accept=global.InkDOSModules?global.InkDOSModules.buildAccept():'';input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file)return;try{open(file)}catch(error){global.alert(error.message)}})}
   if(openButton&&input)openButton.addEventListener('click',()=>input.click());
   if(createButton){const dialog=makeDialog();document.body.appendChild(dialog);createButton.addEventListener('click',()=>dialog.showModal())}
   const theme=applyTheme(storedTheme());document.querySelectorAll('[data-theme-choice]').forEach(control=>{control.value=theme;control.addEventListener('change',()=>applyTheme(control.value))});

@@ -28,7 +28,8 @@ class WorkspaceLayoutTests(unittest.TestCase):
             (ROOT / "app-manifest.json").read_text(encoding="utf-8")
         )
         expected = manifest["uiSystem"]["workspaceLayout"]["version"]
-        self.assertIn(expected, bootstrap)
+        self.assertEqual(expected, "0.20.0")
+        self.assertIn("function loadWorkspaceLayout()", bootstrap)
 
     def test_default_panel_contract(self):
         runtime = (ROOT / "shared" / "ui" / "workspace-panel-controller.js").read_text(
@@ -67,7 +68,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
         self.assertIn("'./shared/ui/workspace-panel-controller.js'", worker)
         self.assertRegex(
             worker,
-            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+            r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];",
         )
 
     def test_package_and_manifest_expose_visual_system(self):
@@ -100,7 +101,7 @@ class WorkspaceLayoutTests(unittest.TestCase):
 
         script = """
 require('./shared/ui/workspace-layout.js');
-const api = globalThis.InkDeskWorkspaceLayout;
+const api = globalThis.InkDOSWorkspaceLayout;
 if (!api) process.exit(10);
 if (api.version !== '0.20.0') process.exit(11);
 if (api.defaults.documents.sidebar !== false) process.exit(12);

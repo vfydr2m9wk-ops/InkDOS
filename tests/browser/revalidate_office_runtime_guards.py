@@ -37,7 +37,7 @@ def validate(page, data: bytes, label: str, limits=None):
     return page.evaluate(
         """({bytes,label,limits}) => {
           try {
-            const value=InkDeskRuntime.validateZipPackage(new Uint8Array(bytes),label,limits);
+            const value=InkDOSRuntime.validateZipPackage(new Uint8Array(bytes),label,limits);
             return {ok:true,value};
           } catch(error) {
             return {ok:false,message:error.message};
@@ -71,9 +71,9 @@ def main():
             "entry_size_limit": validate(page, safe, "Size-limited package", {"maxEntryUncompressedBytes": 1}),
         }
         invalid_xml = page.evaluate(
-            """() => {try{InkDeskRuntime.parseXml('<root>','test XML');return {ok:true}}catch(error){return {ok:false,message:error.message}}}"""
+            """() => {try{InkDOSRuntime.parseXml('<root>','test XML');return {ok:true}}catch(error){return {ok:false,message:error.message}}}"""
         )
-        filename = page.evaluate("InkDeskRuntime.sanitizeFileName('  bad<>:\"/\\\\|?* name.docx  ')")
+        filename = page.evaluate("InkDOSRuntime.sanitizeFileName('  bad<>:\"/\\\\|?* name.docx  ')")
         browser.close()
 
     expected_failures = [

@@ -14,7 +14,7 @@
    */
   function initializeDocumentSessionAdapter() {
     const body = documentObject.body;
-    if (!body || body.dataset.inkdeskDocumentSession === 'ready') {
+    if (!body || body.dataset.inkdosDocumentSession === 'ready') {
       return null;
     }
 
@@ -66,7 +66,7 @@
     const title = documentObject.querySelector(configuration.selector);
     if (!title) return null;
 
-    body.dataset.inkdeskDocumentSession = 'ready';
+    body.dataset.inkdosDocumentSession = 'ready';
 
     let titleDirty = false;
     let contentDirty = false;
@@ -75,10 +75,10 @@
     let lifecycle = null;
 
     if (
-      global.InkDeskFileLifecycle &&
-      typeof global.InkDeskFileLifecycle.create === 'function'
+      global.InkDOSFileLifecycle &&
+      typeof global.InkDOSFileLifecycle.create === 'function'
     ) {
-      lifecycle = global.InkDeskFileLifecycle.create();
+      lifecycle = global.InkDOSFileLifecycle.create();
     }
 
     function readTitle() {
@@ -101,7 +101,7 @@
       } else {
         title.textContent = value;
       }
-      title.dataset.inkdeskFileName = value;
+      title.dataset.inkdosFileName = value;
       suppressTitleObserver = false;
     }
 
@@ -151,7 +151,7 @@
       documentObject.title =
         next +
         ((titleDirty || contentDirty) ? ' •' : '') +
-        ' — InkDesk';
+        ' — InkDOS';
     }
 
     function restoreTitle() {
@@ -218,7 +218,7 @@
         if (!applicationValue) return;
 
         lastApplicationTitle = normalizeName(applicationValue);
-        title.dataset.inkdeskFileName = lastApplicationTitle;
+        title.dataset.inkdosFileName = lastApplicationTitle;
         titleDirty = false;
         syncLifecycle();
       });
@@ -273,14 +273,14 @@
     }
 
     if (
-      global.InkDeskRuntime &&
-      typeof global.InkDeskRuntime.requestDownload === 'function' &&
-      !global.InkDeskRuntime.requestDownload
-        .__inkdeskDocumentSessionWrapped
+      global.InkDOSRuntime &&
+      typeof global.InkDOSRuntime.requestDownload === 'function' &&
+      !global.InkDOSRuntime.requestDownload
+        .__inkdosDocumentSessionWrapped
     ) {
       const originalRequestDownload =
-        global.InkDeskRuntime.requestDownload.bind(
-          global.InkDeskRuntime
+        global.InkDOSRuntime.requestDownload.bind(
+          global.InkDOSRuntime
         );
 
       function requestDownload(blob, fileName) {
@@ -295,11 +295,11 @@
         return receipt;
       }
 
-      requestDownload.__inkdeskDocumentSessionWrapped = true;
-      requestDownload.__inkdeskOriginal = originalRequestDownload;
-      global.InkDeskRuntime = Object.freeze(Object.assign(
+      requestDownload.__inkdosDocumentSessionWrapped = true;
+      requestDownload.__inkdosOriginal = originalRequestDownload;
+      global.InkDOSRuntime = Object.freeze(Object.assign(
         {},
-        global.InkDeskRuntime,
+        global.InkDOSRuntime,
         { requestDownload }
       ));
     }
@@ -376,7 +376,7 @@
     });
   }
 
-  global.InkDeskDocumentSessionController = Object.freeze({
+  global.InkDOSDocumentSessionController = Object.freeze({
     version: VERSION,
     initialize: initializeDocumentSessionAdapter
   });

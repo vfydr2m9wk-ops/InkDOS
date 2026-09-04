@@ -70,7 +70,7 @@ function create(options={}){
   return Object.freeze(controller);
 }
 installUnloadGuard();
-global.InkDeskFileLifecycle=Object.freeze({
+global.InkDOSFileLifecycle=Object.freeze({
   version:'0.20.0',
   STATES,
   LABELS,

@@ -1,4 +1,4 @@
-"""Shared Playwright browser selection for InkDesk browser regressions."""
+"""Shared Playwright browser selection for InkDOS browser regressions."""
 from __future__ import annotations
 
 import os
@@ -8,9 +8,9 @@ SUPPORTED_BROWSERS = ("chromium", "firefox", "webkit")
 
 
 def requested_browser_name() -> str:
-    name = os.environ.get("INKDESK_BROWSER", "chromium").strip().lower()
+    name = os.environ.get("INKDOS_BROWSER", "chromium").strip().lower()
     if name not in SUPPORTED_BROWSERS:
-        raise RuntimeError(f"Unsupported INKDESK_BROWSER={name!r}; choose one of {SUPPORTED_BROWSERS}")
+        raise RuntimeError(f"Unsupported INKDOS_BROWSER={name!r}; choose one of {SUPPORTED_BROWSERS}")
     return name
 
 

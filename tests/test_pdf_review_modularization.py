@@ -24,7 +24,7 @@ class PdfReviewModularizationTests(unittest.TestCase):
         self.assertLessEqual(len(layer.splitlines()), 500)
         self.assertTrue(all(len(line) <= 240 for line in controller.splitlines()))
         self.assertTrue(all(len(line) <= 240 for line in layer.splitlines()))
-        self.assertIn("window.InkDeskPdfReviewController.createReviewController", app)
+        self.assertIn("window.InkDOSPdfReviewController.createReviewController", app)
         self.assertNotIn("function applyTextSelection(", app)
         self.assertNotIn("function renderPageReview(", app)
         self.assertNotIn("function wireReviewLayer(", app)

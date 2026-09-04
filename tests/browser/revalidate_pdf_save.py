@@ -89,7 +89,7 @@ def main():
         "errors": [],
     }
     try:
-        with tempfile.TemporaryDirectory(prefix="inkdesk-pdf-save-") as temp_name:
+        with tempfile.TemporaryDirectory(prefix="inkdos-pdf-save-") as temp_name:
             temp = Path(temp_name)
             pdf_path = temp / "save-smoke.pdf"
             make_pdf(pdf_path)
@@ -117,13 +117,13 @@ def main():
                             return
                         raise
 
-                    version = page.evaluate("() => window.InkDeskPdfSaveController?.version")
+                    version = page.evaluate("() => window.InkDOSPdfSaveController?.version")
                     assert_true(version == "0.20.3.0", f"Unexpected save-controller version: {version}")
                     assert_true(page.locator("#saveModifiedPdfBtn").is_disabled(), "Save must start disabled without a document")
                     report["checks"].append("save controller loaded and starts unavailable")
 
                     page.set_input_files("#fileInput", str(pdf_path))
-                    page.wait_for_function("() => window.InkDeskPdfDebug?.getState().pageCount === 1")
+                    page.wait_for_function("() => window.InkDOSPdfDebug?.getState().pageCount === 1")
 
                     # pageCount becomes available as soon as PDF.js resolves the document,
                     # but openFile intentionally enables Save only after placeholders,
@@ -149,8 +149,8 @@ def main():
                     assert_true(page.locator("#saveModifiedPdfBtn").get_attribute("aria-busy") is None, "Save button stayed busy after PDF.js save")
                     report["checks"].append("PDF.js structure-preserving save path")
 
-                    page.evaluate("() => window.InkDeskPdfDebug.addSyntheticAnnotation('highlight')")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().annotations === 1")
+                    page.evaluate("() => window.InkDOSPdfDebug.addSyntheticAnnotation('highlight')")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().annotations === 1")
                     with page.expect_download(timeout=30000) as download_info:
                         page.click("#saveModifiedPdfBtn")
                     second_download = download_info.value

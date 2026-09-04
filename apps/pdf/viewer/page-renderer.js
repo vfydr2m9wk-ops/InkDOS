@@ -16,7 +16,7 @@
     syncNavigation
   }) {
     if (!state || !elements || !pdfjs) {
-      throw new Error('InkDesk PDF page renderer requires state, elements and PDF.js.');
+      throw new Error('InkDOS PDF page renderer requires state, elements and PDF.js.');
     }
 
     const E = elements;
@@ -359,7 +359,7 @@
     });
   }
 
-  global.InkDeskPdfPageRenderer = Object.freeze({
+  global.InkDOSPdfPageRenderer = Object.freeze({
     version: '0.20.3.0',
     createPageRenderer
   });

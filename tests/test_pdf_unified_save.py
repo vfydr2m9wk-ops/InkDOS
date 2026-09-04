@@ -71,9 +71,9 @@ class PdfUnifiedSaveTests(unittest.TestCase):
         app = (ROOT / "apps/pdf/app.js").read_text(encoding="utf-8")
         controller = (ROOT / "apps/pdf/io/save-controller.js").read_text(encoding="utf-8")
 
-        self.assertIn("window.InkDeskPdfSaveController.createSaveController", app)
+        self.assertIn("window.InkDOSPdfSaveController.createSaveController", app)
         for marker in (
-            "global.InkDeskPdfFlattenExport",
+            "global.InkDOSPdfFlattenExport",
             "state.annotations.length > 0",
             "state.doc.saveDocument()",
             "exporter.exportDocument",
@@ -114,11 +114,11 @@ class PdfUnifiedSaveTests(unittest.TestCase):
         )
         self.assertIn(
             "saveDocument",
-            contract["saveModes"]["withoutInkDeskAnnotations"],
+            contract["saveModes"]["withoutInkDOSAnnotations"],
         )
         self.assertIn(
             "flattened",
-            contract["saveModes"]["withInkDeskAnnotations"],
+            contract["saveModes"]["withInkDOSAnnotations"],
         )
 
         capabilities = set(manifest["capabilities"]["pdf"])
@@ -146,7 +146,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             "'./apps/pdf/flatten-export.js'",
             worker,
         )
-        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
 
     def test_pure_pdf_builder_and_geometry(self):
         node = shutil.which("node")
@@ -154,14 +154,14 @@ class PdfUnifiedSaveTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
 
         with tempfile.TemporaryDirectory(
-            prefix="inkdesk-pdf-builder-"
+            prefix="inkdos-pdf-builder-"
         ) as temp_name:
             output = Path(temp_name) / "flattened.pdf"
 
             script = r"""
 const fs = require('fs');
 require('./apps/pdf/flatten-export.js');
-const api = globalThis.InkDeskPdfFlattenExport;
+const api = globalThis.InkDOSPdfFlattenExport;
 
 if (!api || api.version !== '0.20.0') process.exit(10);
 

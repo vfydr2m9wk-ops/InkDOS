@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  document.body.dataset.inkdeskDocumentSession = 'ready';
+  document.body.dataset.inkdosDocumentSession = 'ready';
 
   const MAX_FILE_BYTES = 20 * 1024 * 1024;
   const E = {
@@ -47,7 +47,7 @@
     workspaceZoom: 100
   };
 
-  const lifecycle = global.InkDeskFileLifecycle.create({
+  const lifecycle = global.InkDOSFileLifecycle.create({
     onChange(value) {
       const dirty = value.shouldWarnBeforeUnload;
       E.dirtyMark.hidden = !dirty;
@@ -126,7 +126,7 @@
       (text.length === 1 ? ' character' : ' characters');
   }
 
-  const historyController = global.InkDeskTxtHistoryController.createHistoryController({
+  const historyController = global.InkDOSTxtHistoryController.createHistoryController({
     editor: E.editor,
     undoButton: E.undoBtn,
     redoButton: E.redoBtn,
@@ -305,9 +305,9 @@
     try {
       const blob = encodeForSave();
       const receipt =
-        global.InkDeskRuntime &&
-        typeof global.InkDeskRuntime.requestDownload === 'function'
-          ? global.InkDeskRuntime.requestDownload(
+        global.InkDOSRuntime &&
+        typeof global.InkDOSRuntime.requestDownload === 'function'
+          ? global.InkDOSRuntime.requestDownload(
               blob,
               state.fileName
             )
@@ -324,7 +324,7 @@
       console.error(error);
       setStatus('Save failed');
       global.alert(
-        'InkDesk could not save the TXT copy.\n\n' +
+        'InkDOS could not save the TXT copy.\n\n' +
         (error && error.message ? error.message : error)
       );
     }
@@ -358,7 +358,7 @@
   }
 
 
-  const findController = global.InkDeskTxtFindController.createFindController({
+  const findController = global.InkDOSTxtFindController.createFindController({
     editor: E.editor,
     button: E.findBtn,
     bar: E.findBar,
@@ -385,7 +385,7 @@
       console.error(error);
       setStatus('Open failed');
       global.alert(
-        'InkDesk could not open this TXT file.\n\n' +
+        'InkDOS could not open this TXT file.\n\n' +
         (error && error.message ? error.message : error)
       );
     });
@@ -444,10 +444,10 @@
     }
   });
 
-  global.InkDeskWorkspaceOpenFile = openFile;
+  global.InkDOSWorkspaceOpenFile = openFile;
 
-  if (global.InkDeskFileRouter) {
-    global.InkDeskFileRouter.attachWorkspace({
+  if (global.InkDOSFileRouter) {
+    global.InkDOSFileRouter.attachWorkspace({
       extensions: ['txt'],
       openFile
     });
@@ -461,7 +461,7 @@
   updateCounts();
 
 
-  global.InkDeskTxtDebug = Object.freeze({
+  global.InkDOSTxtDebug = Object.freeze({
     version: '0.20.0',
     openFile,
     newDocument,

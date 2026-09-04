@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Synchronize deterministic InkDOS release metadata from VERSION.json."""
+"""Synchronize current InkDOS release metadata from VERSION.json.
+
+This generator writes only present-state metadata. Historical milestones belong to
+Git history and release records, not to the active application manifests.
+"""
 from __future__ import annotations
 
 import json
@@ -7,6 +11,16 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY = "https://github.com/vfydr2m9wk-ops/InkDOS"
+DEMO = "https://vfydr2m9wk-ops.github.io/InkDOS/"
+HISTORICAL_KEYS = {
+    "originMilestone",
+    "modelRelease",
+    "dragControllerRelease",
+    "architectureRelease",
+    "sourceDevelopmentLine",
+    "releaseNotesOrganization",
+}
 
 
 def load(name: str) -> dict:
@@ -18,6 +32,18 @@ def dump(name: str, value: dict) -> None:
         json.dumps(value, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
+
+
+def prune_history(value):
+    if isinstance(value, dict):
+        return {
+            key: prune_history(item)
+            for key, item in value.items()
+            if key not in HISTORICAL_KEYS
+        }
+    if isinstance(value, list):
+        return [prune_history(item) for item in value]
+    return value
 
 
 def sync_product_config(release: str) -> None:
@@ -37,7 +63,7 @@ def main() -> None:
     modules = list(version.get("components", {}).keys())
     sync_product_config(release)
 
-    build = load("BUILD_INFO.json")
+    build = prune_history(load("BUILD_INFO.json"))
     build.update({
         "product": "InkDOS",
         "version": release,
@@ -48,58 +74,82 @@ def main() -> None:
     })
     dump("BUILD_INFO.json", build)
 
-    source = load("SOURCE_MANIFEST.json")
+    source = prune_history(load("SOURCE_MANIFEST.json"))
     source.update({
         "product": "InkDOS",
         "version": release,
         "generatedAt": date,
         "entryPoint": "index.html",
         "updateWorkflow": ".github/workflows/apply-inkdos-update.yml",
-        "workflowPolicy": "manual bootstrap; update ZIPs cannot modify .github/workflows",
+        "workflowPolicy": "validated candidate; update ZIPs cannot modify GitHub workflows",
     })
     dump("SOURCE_MANIFEST.json", source)
 
-    release_manifest = load("RELEASE_MANIFEST.json")
+    release_manifest = prune_history(load("RELEASE_MANIFEST.json"))
     release_manifest.update({
         "project": "InkDOS",
         "version": release,
         "releaseName": version.get("releaseName", ""),
         "releaseDate": date,
+        "repository": REPOSITORY,
+        "homepage": DEMO,
         "license": "MIT for InkDOS original code; bundled third-party components retain upstream licenses.",
     })
     if isinstance(release_manifest.get("entryPoints"), dict):
-        release_manifest["entryPoints"].pop("InkDesk.html", None)
+        release_manifest["entryPoints"].pop("InkDOS.html", None)
     dump("RELEASE_MANIFEST.json", release_manifest)
 
-    app_manifest = load("app-manifest.json")
-    app_manifest["version"] = release
+    app_manifest = prune_history(load("app-manifest.json"))
+    app_manifest.update({
+        "id": "inkdos",
+        "name": "InkDOS",
+        "longName": "Ink Desk Offline Suite",
+        "tagline": "Local. Offline. Private.",
+        "version": release,
+        "source": REPOSITORY,
+        "homepage": DEMO,
+    })
     app_manifest["release"] = {
         "version": release,
         "channel": version.get("releaseChannel", "beta"),
         "name": version.get("releaseName", ""),
         "date": date,
         "consolidated": True,
-        "sourceDevelopmentLine": "0.20.x stabilization",
-        "publicVersioning": (
-            "Semantic prereleases on the 1.0 line; internal update sequence is independent."
-        ),
     }
+    if isinstance(app_manifest.get("update"), dict):
+        app_manifest["update"].update({
+            "repository": "vfydr2m9wk-ops/InkDOS",
+            "assetPattern": "InkDOS_v*.zip",
+        })
+        app_manifest["update"].pop("nextPatch", None)
     if isinstance(app_manifest.get("homeRefinement"), dict):
         app_manifest["homeRefinement"].pop("universalOpenCopy", None)
         app_manifest["homeRefinement"].pop("moduleCardsBeforeUniversalOpen", None)
-    if isinstance(app_manifest.get("update"), dict):
-        app_manifest["update"].pop("nextPatch", None)
+    ui = app_manifest.get("uiSystem")
+    if isinstance(ui, dict):
+        visual = ui.pop("visualRefresh0203", None)
+        if isinstance(visual, dict):
+            visual = prune_history(visual)
+            visual.pop("stylesheet", None)
+            visual["stylesheets"] = [
+                "shared/ui/visual.css",
+                "shared/ui/content.css",
+                "shared/ui/workspace.css",
+                "shared/ui/polish.css",
+            ]
+            visual["documentation"] = "docs/VISUAL_SYSTEM.md"
+            visual["version"] = release
+            ui["currentVisualLayer"] = visual
+    if isinstance(app_manifest.get("pdfReviewSystem"), dict):
+        app_manifest["pdfReviewSystem"]["storageSchema"] = "inkdos-pdf-review/2"
     dump("app-manifest.json", app_manifest)
 
-    sbom = load("SBOM.spdx.json")
+    sbom = prune_history(load("SBOM.spdx.json"))
     sbom["name"] = f"InkDOS-v{release}"
-    sbom["documentNamespace"] = (
-        f"https://github.com/vfydr2m9wk-ops/InkDOS/releases/tag/v{release}"
-    )
+    sbom["documentNamespace"] = f"{REPOSITORY}/releases/tag/v{release}"
     sbom.setdefault("creationInfo", {})["created"] = f"{date}T00:00:00Z" if date else ""
     for package in sbom.get("packages", []):
-        if package.get("SPDXID") == "SPDXRef-Package-InkDesk" or package.get("name") == "InkDesk":
-            package["name"] = "InkDOS"
+        if package.get("name") == "InkDOS":
             package["versionInfo"] = release
     dump("SBOM.spdx.json", sbom)
 

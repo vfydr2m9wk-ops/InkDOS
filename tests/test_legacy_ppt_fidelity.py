@@ -42,7 +42,7 @@ context.window = context;
 vm.runInNewContext(source, context);
 const bytes = fs.readFileSync(process.argv[2]);
 const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
-const result = context.InkDeskPresentationsPptImport.importLegacyPpt(buffer, 'fixture.ppt');
+const result = context.InkDOSPresentationsPptImport.importLegacyPpt(buffer, 'fixture.ppt');
 const objects = result.slides.flatMap(slide => slide.objects);
 process.stdout.write(JSON.stringify({ source: result.source, slides: result.slides.length, text: objects.filter(object => object.type === 'text').length, images: objects.filter(object => object.type === 'image').length, notes: result.legacyDiagnostics.notesCount, persisted: result.compatibility.persistedVersionSelection, persistMap: Object.keys(result.legacyDiagnostics.persistMap).length }));
 """
@@ -65,7 +65,7 @@ const source = fs.readFileSync(process.argv[1], 'utf8');
 const context = { TextDecoder, Uint8Array, DataView, ArrayBuffer, Set, Math, String, Number, Object, console };
 context.window = context;
 vm.runInNewContext(source, context);
-try { context.InkDeskPresentationsPptImport.importLegacyPpt(new Uint8Array(512).buffer, 'bad.ppt'); process.exit(1); }
+try { context.InkDOSPresentationsPptImport.importLegacyPpt(new Uint8Array(512).buffer, 'bad.ppt'); process.exit(1); }
 catch (error) { if (!/valid legacy PowerPoint/i.test(error.message)) process.exit(2); }
 """
         subprocess.run(["node", "-e", script, str(IMPORTER)], check=True)

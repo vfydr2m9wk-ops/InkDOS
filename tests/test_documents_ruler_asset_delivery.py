@@ -27,11 +27,11 @@ class DocumentsRulerAssetDeliveryTests(unittest.TestCase):
             encoding="utf-8"
         )
         for marker in (
-            "addStylesheet('design-tokens.css')",
-            "addStylesheet('components.css')",
-            "addStylesheet('workspace-layout.css')",
-            "addStylesheet('visual-foundation.css')",
-            "InkDeskWorkspaceLayout",
+            "'design-tokens.css'",
+            "'components.css'",
+            "'workspace-layout.css'",
+            "'visual-foundation.css'",
+            "InkDOSWorkspaceLayout",
         ):
             self.assertIn(marker, shell)
 
@@ -39,7 +39,7 @@ class DocumentsRulerAssetDeliveryTests(unittest.TestCase):
         worker = (ROOT / "service-worker.js").read_text(
             encoding="utf-8"
         )
-        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
         self.assertIn("'./shared/ui/workspace-layout.css'", worker)
         self.assertIn("'./shared/ui/workspace-layout.js'", worker)
         self.assertIn("const APP_SHELL_URLS=", worker)
@@ -49,7 +49,7 @@ class DocumentsRulerAssetDeliveryTests(unittest.TestCase):
         styles = (ROOT / "apps/documents/styles.css").read_text(
             encoding="utf-8"
         )
-        self.assertIn("InkDesk 0.20.0 ruler delivery fallback", styles)
+        self.assertIn("InkDOS 0.20.0 ruler delivery fallback", styles)
         self.assertIn("body.office-documents .ruler-track::after", styles)
         self.assertIn("content: none !important", styles)
 

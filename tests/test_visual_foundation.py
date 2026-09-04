@@ -23,8 +23,8 @@ class VisualFoundationTests(unittest.TestCase):
 
     def test_bootstrap_loads_foundation_after_workspace_layout(self):
         script = (ROOT / 'shared/office-shell.js').read_text(encoding='utf-8')
-        layout = script.index("addStylesheet('workspace-layout.css')")
-        foundation = script.index("addStylesheet('visual-foundation.css')")
+        layout = script.index("'workspace-layout.css'")
+        foundation = script.index("'visual-foundation.css'")
         self.assertLess(layout, foundation)
 
     def test_native_apple_like_font_stack_and_rounded_tokens(self):
@@ -34,16 +34,16 @@ class VisualFoundationTests(unittest.TestCase):
             'BlinkMacSystemFont',
             'SF Pro Text',
             'Segoe UI Variable Text',
-            '--inkdesk-control-height: 36px',
-            '--inkdesk-touch-target: 44px',
-            '--inkdesk-radius-large: 22px',
+            '--inkdos-control-height: 36px',
+            '--inkdos-touch-target: 44px',
+            '--inkdos-radius-large: 22px',
         ):
             self.assertIn(marker, tokens)
 
     def test_tactile_states_and_three_dimensional_panels(self):
         css = (ROOT / 'shared/ui/visual-foundation.css').read_text(encoding='utf-8')
         for marker in (
-            'translateY(var(--inkdesk-press-offset)) scale(.975)',
+            'translateY(var(--inkdos-press-offset)) scale(.975)',
             'button[aria-pressed="true"]',
             'button[aria-selected="true"]',
             'min-height: 50px !important',
@@ -51,7 +51,7 @@ class VisualFoundationTests(unittest.TestCase):
             '.sidebar::after',
             '.slide-list::after',
             '.inspector::before',
-            'var(--inkdesk-shadow-panel)',
+            'var(--inkdos-shadow-panel)',
         ):
             self.assertIn(marker, css)
 
@@ -74,7 +74,7 @@ class VisualFoundationTests(unittest.TestCase):
         self.assertEqual(catalog['version'], '0.20.0')
         self.assertEqual(catalog['icons']['epub']['status'], 'active')
         self.assertEqual(catalog['icons']['txt']['status'], 'active')
-        self.assertEqual(catalog['icons']['inkdesk']['symbol'], 'quill-and-inkwell')
+        self.assertEqual(catalog['icons']['inkdos']['symbol'], 'quill-and-inkwell')
 
     def test_launcher_uses_real_module_icon_files(self):
         loader = (ROOT / 'modules/module-loader.js').read_text(encoding='utf-8')
@@ -104,7 +104,7 @@ class VisualFoundationTests(unittest.TestCase):
             self.assertIn(repr(asset), worker)
         self.assertRegex(
             worker,
-            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+            r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];",
         )
 
     def test_module_loader_javascript_syntax(self):

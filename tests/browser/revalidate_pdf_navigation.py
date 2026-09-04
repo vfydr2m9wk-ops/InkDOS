@@ -80,7 +80,7 @@ def main():
         "errors": [],
     }
     try:
-        with tempfile.TemporaryDirectory(prefix="inkdesk-pdf-nav-") as temp_name:
+        with tempfile.TemporaryDirectory(prefix="inkdos-pdf-nav-") as temp_name:
             pdf_path = Path(temp_name) / "navigation-smoke.pdf"
             make_pdf(pdf_path)
             with sync_playwright() as playwright:
@@ -109,12 +109,12 @@ def main():
                             return
                         raise
 
-                    version = page.evaluate("() => window.InkDeskPdfNavigationController?.version")
+                    version = page.evaluate("() => window.InkDOSPdfNavigationController?.version")
                     assert_true(version == "0.20.3.0", f"Unexpected navigation controller version: {version}")
                     report["checks"].append("navigation controller loaded")
 
                     page.set_input_files("#fileInput", str(pdf_path))
-                    page.wait_for_function("() => window.InkDeskPdfDebug?.getState().pageCount === 3")
+                    page.wait_for_function("() => window.InkDOSPdfDebug?.getState().pageCount === 3")
                     assert_true(page.locator("#pageList .page-item").count() == 3, "Page list did not render three entries")
                     page.wait_for_function("() => document.querySelectorAll('#pageList canvas.page-thumb').length >= 1")
                     report["checks"].append("page list and thumbnail window rendered")
@@ -147,10 +147,10 @@ def main():
                     report["checks"].append("sidebar default-closed state and explicit open")
 
                     page.click("#nextPage")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 2")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 2")
                     assert_true(page.locator("#pageNumber").input_value() == "2", "Next-page control did not synchronize page input")
                     page.click("#prevPage")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 1")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 1")
                     report["checks"].append("previous/next controls delegate to navigation controller")
 
                     page.click('.sidebar-tab[data-tab="outline"]')
@@ -158,17 +158,17 @@ def main():
                     outline = page.locator("#outlineList .outline-item", has_text="Second section")
                     assert_true(outline.count() == 1, "Second-section outline item missing")
                     outline.click()
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 2")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 2")
                     report["checks"].append("outline destination navigation")
 
                     page.click("#bookmarkBtn")
                     page.click('.sidebar-tab[data-tab="bookmarks"]')
                     bookmark = page.locator("#bookmarkList .bookmark-item", has_text="Page 2")
                     assert_true(bookmark.count() == 1, "Current-page bookmark was not rendered")
-                    page.evaluate("() => window.InkDeskPdfDebug.goToPage(1)")
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 1")
+                    page.evaluate("() => window.InkDOSPdfDebug.goToPage(1)")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 1")
                     bookmark.click()
-                    page.wait_for_function("() => window.InkDeskPdfDebug.getState().page === 2")
+                    page.wait_for_function("() => window.InkDOSPdfDebug.getState().page === 2")
                     report["checks"].append("bookmark list navigation")
 
                     page.click('.sidebar-tab[data-tab="pages"]')

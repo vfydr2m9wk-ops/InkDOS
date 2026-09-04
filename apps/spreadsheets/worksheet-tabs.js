@@ -62,5 +62,5 @@
     container.appendChild(remove);
   }
 
-  global.InkDeskSpreadsheetWorksheetTabs = Object.freeze({ render, nextSheetName });
+  global.InkDOSSpreadsheetWorksheetTabs = Object.freeze({ render, nextSheetName });
 })(typeof window !== 'undefined' ? window : globalThis);

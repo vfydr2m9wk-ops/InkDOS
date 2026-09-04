@@ -123,7 +123,7 @@
     });
   }
 
-  global.InkDeskTxtHistoryController = Object.freeze({
+  global.InkDOSTxtHistoryController = Object.freeze({
     version: '0.20.3.0',
     createHistoryController
   });

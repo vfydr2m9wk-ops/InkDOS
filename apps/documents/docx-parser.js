@@ -19,7 +19,7 @@ async function inflateRaw(bytes){
   throw new Error('The local DOCX decompression engine did not load. Re-extract the complete application folder and reopen Documents.html.');
 }
 async function unzip(buffer){
-  if(global.InkDeskRuntime)global.InkDeskRuntime.validateZipPackage(buffer,'DOCX file');
+  if(global.InkDOSRuntime)global.InkDOSRuntime.validateZipPackage(buffer,'DOCX file');
   const a=new Uint8Array(buffer);let eocd=-1;
   for(let i=a.length-22;i>=Math.max(0,a.length-65557);i--){if(u32(a,i)===0x06054b50){eocd=i;break}}
   if(eocd<0)throw new Error('Invalid DOCX package: central directory was not found.');
@@ -36,7 +36,7 @@ async function unzip(buffer){
   }
   return map;
 }
-function xml(bytes,context='DOCX package part'){const text=decode(bytes);return global.InkDeskRuntime?global.InkDeskRuntime.parseXml(text,context):new DOMParser().parseFromString(text,'application/xml')}
+function xml(bytes,context='DOCX package part'){const text=decode(bytes);return global.InkDOSRuntime?global.InkDOSRuntime.parseXml(text,context):new DOMParser().parseFromString(text,'application/xml')}
 function all(el,name){return Array.from(el.getElementsByTagNameNS('*',name))}
 function first(el,name){return el?el.getElementsByTagNameNS('*',name)[0]||null:null}
 function attr(el,name){if(!el)return'';return el.getAttributeNS(R_NS,name)||el.getAttribute('r:'+name)||el.getAttribute(name)||''}
@@ -103,7 +103,7 @@ function textOf(node){return all(node,'t').map(t=>t.textContent||'').join('')}
 function pageSpecFromSect(sect,styles,files,root,rels,mediaUrls){
   const pgSz=first(sect,'pgSz'),pgMar=first(sect,'pgMar');
   const w=num(val(pgSz,'w'),12240),h=num(val(pgSz,'h'),15840),top=num(val(pgMar,'top'),1440),right=num(val(pgMar,'right'),1440),bottom=num(val(pgMar,'bottom'),1440),left=num(val(pgMar,'left'),1440);const px=t=>t/15;
-  function relatedText(kind){const ref=all(sect,kind+'Reference').find(x=>(val(x,'type')||'default')==='default')||first(sect,kind+'Reference');const rid=attr(ref,'id'),target=rid&&rels[rid];if(!target)return'';const path=normalPath(root,target),bytes=files.get(path);return bytes?textOf(xml(bytes)).trim():''}const layout=global.InkDeskDocumentDrawingLayout,header=layout?layout.partSpec(sect,'header',rels,root,files,mediaUrls):{text:relatedText('header'),artwork:[]},footer=layout?layout.partSpec(sect,'footer',rels,root,files,mediaUrls):{text:relatedText('footer'),artwork:[]};
+  function relatedText(kind){const ref=all(sect,kind+'Reference').find(x=>(val(x,'type')||'default')==='default')||first(sect,kind+'Reference');const rid=attr(ref,'id'),target=rid&&rels[rid];if(!target)return'';const path=normalPath(root,target),bytes=files.get(path);return bytes?textOf(xml(bytes)).trim():''}const layout=global.InkDOSDocumentDrawingLayout,header=layout?layout.partSpec(sect,'header',rels,root,files,mediaUrls):{text:relatedText('header'),artwork:[]},footer=layout?layout.partSpec(sect,'footer',rels,root,files,mediaUrls):{text:relatedText('footer'),artwork:[]};
   return{widthPx:px(w),heightPx:px(h),marginTopPx:px(top),marginRightPx:px(right),marginBottomPx:px(bottom),marginLeftPx:px(left),contentWidthPx:px(Math.max(1440,w-left-right)),contentHeightPx:px(Math.max(1440,h-top-bottom)),fontFamily:styles.defaults.run.fontFamily||'Calibri',fontSizePt:styles.defaults.run.fontSizePt||11,lineHeight:(styles.defaults.paragraph.line||259)/240,orientation:val(pgSz,'orient')||((w>h)?'landscape':'portrait'),headerText:header.text,footerText:footer.text,headerArtwork:header.artwork,footerArtwork:footer.artwork};
 }
 function paragraphInfo(p,numbering,styles){
@@ -113,7 +113,7 @@ function paragraphInfo(p,numbering,styles){
   return{tag,level,styleId,props,baseRun,listInfo,style:cssParagraph(props,baseRun),pageBreakBefore:!!props.pageBreakBefore};
 }
 function renderRun(run,info,mediaUrls,state){
-  const drawing=first(run,'drawing')||first(run,'pict');if(drawing){const blip=first(drawing,'blip'),rid=attr(blip,'embed');if(rid&&mediaUrls[rid]){const layout=global.InkDeskDocumentDrawingLayout?global.InkDeskDocumentDrawingLayout.imageLayout(drawing,{paragraphLeftPx:(Number(info.props&&info.props.left)||0)/15}):{style:'',anchored:false};if(layout.anchored)state.anchored=true;state.visible=true;return'<img'+(layout.anchored?' class="docx-anchored-image"':'')+' src="'+mediaUrls[rid]+'" data-docx-rel-id="'+esc(rid)+'"'+(layout.style?' style="'+layout.style+'"':'')+' alt="Embedded image">'}return''}
+  const drawing=first(run,'drawing')||first(run,'pict');if(drawing){const blip=first(drawing,'blip'),rid=attr(blip,'embed');if(rid&&mediaUrls[rid]){const layout=global.InkDOSDocumentDrawingLayout?global.InkDOSDocumentDrawingLayout.imageLayout(drawing,{paragraphLeftPx:(Number(info.props&&info.props.left)||0)/15}):{style:'',anchored:false};if(layout.anchored)state.anchored=true;state.visible=true;return'<img'+(layout.anchored?' class="docx-anchored-image"':'')+' src="'+mediaUrls[rid]+'" data-docx-rel-id="'+esc(rid)+'"'+(layout.style?' style="'+layout.style+'"':'')+' alt="Embedded image">'}return''}
   const parts=[];for(const rc of Array.from(run.children)){
     if(rc.localName==='lastRenderedPageBreak'&&!state.visible&&!parts.length)state.softPageBreakBefore=true;
     else if(rc.localName==='t'){parts.push(esc(rc.textContent));if(rc.textContent)state.visible=true;}
@@ -163,7 +163,7 @@ async function parse(buffer){
     let inheritedHeader='',inheritedFooter='';for(const block of blocks){const spec=block.pageSpec||finalSpec;if(spec.headerText)inheritedHeader=spec.headerText;else spec.headerText=inheritedHeader;if(spec.footerText)inheritedFooter=spec.footerText;else spec.footerText=inheritedFooter;}
     return{blocks,outline,mediaUrls,pageSpec:blocks[0]&&blocks[0].pageSpec?blocks[0].pageSpec:finalSpec,sourceContext:{mainPath,root,renderedSourceIndexes:Array.from(new Set(renderedSourceIndexes)),originalBlockCount:bodyChildren.length}};
   }catch(error){
-    if(global.InkDeskRuntime)global.InkDeskRuntime.revokeObjectUrls(Object.values(mediaUrls));else Object.values(mediaUrls).forEach(url=>URL.revokeObjectURL(url));
+    if(global.InkDOSRuntime)global.InkDOSRuntime.revokeObjectUrls(Object.values(mediaUrls));else Object.values(mediaUrls).forEach(url=>URL.revokeObjectURL(url));
     throw error;
   }
 }

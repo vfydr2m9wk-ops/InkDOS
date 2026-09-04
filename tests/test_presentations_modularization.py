@@ -65,15 +65,15 @@ class PresentationsModularizationTests(unittest.TestCase):
         recovery_io = RECOVERY_IO.read_text(encoding="utf-8")
         writer = PPTX_WRITER.read_text(encoding="utf-8")
 
-        self.assertIn("InkDeskPresentationsSelection.create", app)
-        self.assertIn("InkDeskPresentationsHistory.create", app)
-        self.assertIn("InkDeskPresentationsInspector.create", app)
-        self.assertIn("InkDeskPresentationsThumbnails.create", app)
-        self.assertIn("InkDeskPresentationsNotes.create", app)
-        self.assertIn("InkDeskPresentationsSlideshow.create", app)
-        self.assertIn("InkDeskPresentationsPptxWriter.create", app)
-        self.assertIn("InkDeskPresentationsFileIO.create", app)
-        self.assertIn("InkDeskPresentationsRecovery.create", app)
+        self.assertIn("InkDOSPresentationsSelection.create", app)
+        self.assertIn("InkDOSPresentationsHistory.create", app)
+        self.assertIn("InkDOSPresentationsInspector.create", app)
+        self.assertIn("InkDOSPresentationsThumbnails.create", app)
+        self.assertIn("InkDOSPresentationsNotes.create", app)
+        self.assertIn("InkDOSPresentationsSlideshow.create", app)
+        self.assertIn("InkDOSPresentationsPptxWriter.create", app)
+        self.assertIn("InkDOSPresentationsFileIO.create", app)
+        self.assertIn("InkDOSPresentationsRecovery.create", app)
         self.assertIn("class PresentationSelectionController", selection)
         self.assertIn("class PresentationHistoryController", history)
         self.assertIn("class PresentationInspectorController", inspector)
@@ -209,7 +209,7 @@ class PresentationsModularizationTests(unittest.TestCase):
 
     def test_manual_browser_harnesses_load_components_before_presentations_app(self):
         paths = (
-            "tests/browser/revalidate_v0201_consistency.py",
+            "tests/browser/revalidate_workspace_consistency.py",
             "tests/browser/revalidate_pptx_three_eras.py",
             "tests/browser/revalidate_cross_workspace_isolation.py",
             "tests/browser/revalidate_transactional_open_failures.py",

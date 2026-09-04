@@ -22,5 +22,5 @@ class FormulaError extends Error{constructor(code,message){super(message);this.n
   function expression(depth){let left=product(depth);while(current.type==='+'||current.type==='-'){const op=current.type;next();
     const right=product(depth),error=errorValue(left)||errorValue(right);left=error||finite(op==='+'?left+right:left-right)}return left}
   next();if(current.type==='eof')throw new FormulaError('EMPTY','Formula is empty.');const result=expression(0);if(current.type!=='eof')throw new FormulaError('MALFORMED','Unexpected trailing formula input.');return result;
-}global.InkDeskFormula=Object.freeze({DEFAULT_LIMITS,FormulaError,evaluateArithmetic});
+}global.InkDOSFormula=Object.freeze({DEFAULT_LIMITS,FormulaError,evaluateArithmetic});
 })(typeof window!=='undefined'?window:globalThis);

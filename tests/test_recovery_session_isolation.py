@@ -70,7 +70,7 @@ class RecoverySessionIsolationTests(unittest.TestCase):
         self.assertIn("await recovery.startDocument", block)
 
     def test_browser_recovery_suite_contains_multi_session_case(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         for token in (
             "recovery_session_isolation_case",
             "recovery-session-isolation",

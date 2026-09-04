@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def load_generator():
     path = ROOT / "scripts" / "generate_module_registry.py"
-    spec = importlib.util.spec_from_file_location("inkdesk_module_generator", path)
+    spec = importlib.util.spec_from_file_location("inkdos_module_generator", path)
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
     spec.loader.exec_module(module)
@@ -132,8 +132,8 @@ class ModuleRegistryTests(unittest.TestCase):
         script = """
 require('./modules/module-registry.js');
 require('./modules/module-loader.js');
-if(globalThis.InkDeskModules.listEnabled().length!==6)process.exit(10);
-const create=globalThis.InkDeskCreateModuleRuntime;
+if(globalThis.InkDOSModules.listEnabled().length!==6)process.exit(10);
+const create=globalThis.InkDOSCreateModuleRuntime;
 const runtime=create({registryVersion:'test',modules:[{
   schemaVersion:1,id:'sample',name:'Sample',description:'Sample module',
   version:'test',enabled:false,optional:true,order:1,

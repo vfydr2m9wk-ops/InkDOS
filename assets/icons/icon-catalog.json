@@ -3,7 +3,7 @@
   "version": "0.20.0",
   "style": "minimal rounded-square symbols with consistent optical weight",
   "icons": {
-    "inkdesk": {
+    "inkdos": {
       "file": "assets/icons/office.svg",
       "color": "#293548",
       "symbol": "quill-and-inkwell",

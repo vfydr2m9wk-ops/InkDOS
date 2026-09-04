@@ -6,7 +6,7 @@ const REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
 const PKG_REL='http://schemas.openxmlformats.org/package/2006/relationships';
 
 function xml(text,context='XLSX package part'){
-  if(global.InkDeskRuntime)return global.InkDeskRuntime.parseXml(text,context);
+  if(global.InkDOSRuntime)return global.InkDOSRuntime.parseXml(text,context);
   const d=new DOMParser().parseFromString(text,'application/xml');
   if(d.querySelector('parsererror'))throw new Error('Invalid XML in '+context);
   return d;
@@ -146,7 +146,7 @@ async function parseTableParts(read,sheetPath,sheetDoc){
 }
 async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
   if(!global.JSZip)throw new Error('JSZip did not load');
-  if(global.InkDeskRuntime)global.InkDeskRuntime.validateZipPackage(buffer,fileName);
+  if(global.InkDOSRuntime)global.InkDOSRuntime.validateZipPackage(buffer,fileName);
   const zip=await JSZip.loadAsync(buffer),read=async p=>zip.file(p)?zip.file(p).async('text'):'';
   const wbRaw=await read('xl/workbook.xml');if(!wbRaw)throw new Error('This is not a supported XLSX workbook');
   const workbookXml=xml(wbRaw),relsRaw=await read('xl/_rels/workbook.xml.rels');if(!relsRaw)throw new Error('Workbook relationships are missing');
@@ -283,7 +283,7 @@ async function buildNewPackage(book){
 }
 async function saveCopy(book){
   if(!book.loaded)throw new Error('Create or open a workbook before saving a copy');if(!book.zip)return buildNewPackage(book);
-  const source=await book.zip.generateAsync({type:'uint8array'}),zip=await JSZip.loadAsync(source);let changedAny=await global.InkDeskSpreadsheetWorksheetPackage.syncSheets(zip,book,{serializeSheet});
+  const source=await book.zip.generateAsync({type:'uint8array'}),zip=await JSZip.loadAsync(source);let changedAny=await global.InkDOSSpreadsheetWorksheetPackage.syncSheets(zip,book,{serializeSheet});
   for(const s of book.sheets){if(!sheetHasChanges(s))continue;const raw=await zip.file(s.path)?.async('text');if(!raw)continue;zip.file(s.path,patchSheetXml(raw,s),{createFolders:false});changedAny=true}
   const wbRaw=changedAny?await zip.file('xl/workbook.xml')?.async('text'):'';if(wbRaw){const d=xml(wbRaw),root=d.documentElement;let calc=localOne(root,'calcPr');if(!calc){calc=create(d,'calcPr');root.appendChild(calc)}calc.setAttribute('calcMode','auto');calc.setAttribute('fullCalcOnLoad','1');calc.setAttribute('forceFullCalc','1');zip.file('xl/workbook.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+serializeXml(d).replace(/^<\?xml[^>]*>\s*/,''),{createFolders:false})}
   return zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',compression:'DEFLATE',compressionOptions:{level:6}});

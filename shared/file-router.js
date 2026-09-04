@@ -1,7 +1,7 @@
 (function(global){
 'use strict';
 
-const DB_NAME='inkdesk-file-handoff';
+const DB_NAME='inkdos-file-handoff';
 const DB_VERSION=1;
 const STORE_NAME='files';
 const MAX_AGE_MS=15*60*1000;
@@ -44,7 +44,7 @@ function openDatabase(){
     };
     request.onsuccess=()=>resolve(request.result);
     request.onerror=()=>reject(request.error||new Error('Temporary browser storage could not be opened.'));
-    request.onblocked=()=>reject(new Error('Temporary browser storage is blocked by another InkDesk tab.'));
+    request.onblocked=()=>reject(new Error('Temporary browser storage is blocked by another InkDOS tab.'));
   });
 }
 function transactionPromise(transaction){
@@ -123,15 +123,15 @@ function createEmbeddedWorkspace(file,path){
   frame=document.createElement('iframe');
   frame.id='workspaceFrame';
   frame.className='workspace-frame';
-  frame.title='InkDesk document workspace';
+  frame.title='InkDOS document workspace';
   frame.src=appendQuery(path,{embedded:'1',bridge:token});
   document.body.appendChild(frame);
   document.body.classList.add('workspace-active');
   const onMessage=event=>{
     if(!trustedMessage(event,frame.contentWindow))return;
     const data=event.data||{};
-    if(data.type!=='inkdesk:workspace-ready'||data.token!==token)return;
-    frame.contentWindow.postMessage({type:'inkdesk:open-file',token,file},messageOrigin()||'*');
+    if(data.type!=='inkdos:workspace-ready'||data.token!==token)return;
+    frame.contentWindow.postMessage({type:'inkdos:open-file',token,file},messageOrigin()||'*');
     global.removeEventListener('message',onMessage);
   };
   global.addEventListener('message',onMessage);
@@ -171,10 +171,10 @@ function attachWorkspace(options){
     const listener=event=>{
       if(!trustedMessage(event,global.parent))return;
       const data=event.data||{};
-      if(data.type!=='inkdesk:open-file'||data.token!==bridgeToken)return;
+      if(data.type!=='inkdos:open-file'||data.token!==bridgeToken)return;
       const file=data.file;
       if(!(file instanceof Blob)||!validForWorkspace(file,extensions)){
-        global.alert('The selected file does not match this InkDesk workspace.');
+        global.alert('The selected file does not match this InkDOS workspace.');
         return;
       }
       Promise.resolve(openFile(file)).catch(error=>{
@@ -183,21 +183,21 @@ function attachWorkspace(options){
       });
     };
     global.addEventListener('message',listener);
-    global.parent.postMessage({type:'inkdesk:workspace-ready',token:bridgeToken},messageOrigin()||'*');
+    global.parent.postMessage({type:'inkdos:workspace-ready',token:bridgeToken},messageOrigin()||'*');
   }
   const handoffToken=params.get('openToken');
   if(handoffToken){
     cleanHandoffQuery();
     Promise.resolve().then(()=>takeFile(handoffToken)).then(file=>{
-      if(!validForWorkspace(file,extensions))throw new Error('The selected file does not match this InkDesk workspace.');
+      if(!validForWorkspace(file,extensions))throw new Error('The selected file does not match this InkDOS workspace.');
       return openFile(file);
     }).catch(error=>{
       console.error('The selected document could not be transferred to the workspace.',error);
-      global.alert('InkDesk opened the correct workspace, but the selected file could not be transferred automatically. Use the Open button and choose it again.\n\n'+(error&&error.message?error.message:error));
+      global.alert('InkDOS opened the correct workspace, but the selected file could not be transferred automatically. Use the Open button and choose it again.\n\n'+(error&&error.message?error.message:error));
     });
   }
 }
-global.InkDeskFileRouter=Object.freeze({
+global.InkDOSFileRouter=Object.freeze({
   version:'0.20.0',
   extensionOf,
   routeForFile,

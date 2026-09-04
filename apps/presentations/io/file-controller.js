@@ -68,12 +68,12 @@
       };
 
       try {
-        if (global.InkDeskRuntime) {
-          global.InkDeskRuntime.validateInputSize(file.size, file.name);
+        if (global.InkDOSRuntime) {
+          global.InkDOSRuntime.validateInputSize(file.size, file.name);
         }
         const buffer = await file.arrayBuffer();
         if (isLegacyPpt) {
-          const importer = this.importLegacyPpt || global.InkDeskPresentationsPptImport;
+          const importer = this.importLegacyPpt || global.InkDOSPresentationsPptImport;
           if (!importer || typeof importer.importLegacyPpt !== 'function') {
             throw new Error('Legacy PPT import is unavailable.');
           }
@@ -92,8 +92,8 @@
           this.installDebugHandle(imported.slides.length);
           return imported;
         }
-        if (global.InkDeskRuntime) {
-          global.InkDeskRuntime.validateZipPackage(buffer, file.name);
+        if (global.InkDOSRuntime) {
+          global.InkDOSRuntime.validateZipPackage(buffer, file.name);
         }
         const zip = await global.JSZip.loadAsync(buffer);
         const presentationFile = zip.file('ppt/presentation.xml');
@@ -245,7 +245,7 @@
         await this.flushRecovery();
         this.downloadBlob(
           blob,
-          (presentation.name || 'InkDesk Presentation') + '_copy.pptx'
+          (presentation.name || 'InkDOS Presentation') + '_copy.pptx'
         );
         this.sourceBuffer = nextSource;
         this.setReady('Download requested');
@@ -384,7 +384,7 @@
         await this.flushRecovery();
         this.downloadBlob(
           blob,
-          (presentation.name || 'InkDesk Presentation') + '_copy.pptx'
+          (presentation.name || 'InkDOS Presentation') + '_copy.pptx'
         );
         this.setReady('Download requested');
       } catch (error) {
@@ -394,8 +394,8 @@
     }
 
     downloadBlob(blob, name) {
-      if (global.InkDeskRuntime) {
-        return global.InkDeskRuntime.requestDownload(blob, name);
+      if (global.InkDOSRuntime) {
+        return global.InkDOSRuntime.requestDownload(blob, name);
       }
       if (!(blob instanceof Blob) || !blob.size) {
         throw new Error('The generated presentation copy is empty.');
@@ -416,7 +416,7 @@
     }
   }
 
-  global.InkDeskPresentationsFileIO = {
+  global.InkDOSPresentationsFileIO = {
     create(options) {
       return new PresentationFileController(options);
     },

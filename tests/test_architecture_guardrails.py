@@ -23,11 +23,15 @@ class ArchitectureGuardrailsTests(unittest.TestCase):
 
     def test_agent_rules_preserve_behavior_and_visual_contract(self):
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        self.assertIn("smallest change", text)
-        self.assertIn("moving code does **not** authorize", text)
-        self.assertIn("44 px", text)
-        self.assertIn("React", text)
-        self.assertIn(".github/workflows", text)
+        for marker in (
+            "Git and GitHub own project history",
+            "When a rewrite is smaller",
+            "fewer, broader fixes",
+            "disposable candidate tree",
+            "local-first, offline-capable and private by design",
+            "runtime stays build-free",
+        ):
+            self.assertIn(marker, text)
 
     def test_guardrail_command_passes_current_tree(self):
         result = subprocess.run(
@@ -60,7 +64,7 @@ class ArchitectureGuardrailsTests(unittest.TestCase):
         self.assertIn("compilation", text.lower())
 
     def make_fixture_repo(self, files: dict[str, str], *, max_lines: int = 5, max_length: int = 40) -> Path:
-        temp = Path(tempfile.mkdtemp(prefix="inkdesk-guard-test-"))
+        temp = Path(tempfile.mkdtemp(prefix="inkdos-guard-test-"))
         self.addCleanup(shutil.rmtree, temp, True)
         (temp / "scripts").mkdir(parents=True)
         shutil.copy2(ROOT / "scripts/check_architecture_guardrails.py", temp / "scripts/check_architecture_guardrails.py")

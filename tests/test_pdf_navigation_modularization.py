@@ -19,7 +19,7 @@ class PdfNavigationModularizationTests(unittest.TestCase):
         self.assertTrue(controller_path.is_file())
         self.assertLessEqual(len(controller.splitlines()), 500)
         self.assertTrue(all(len(line) <= 240 for line in controller.splitlines()))
-        self.assertIn("window.InkDeskPdfNavigationController.createNavigationController", app)
+        self.assertIn("window.InkDOSPdfNavigationController.createNavigationController", app)
         self.assertNotIn("function renderThumbnailWindow()", app)
         self.assertNotIn("function renderOutline()", app)
         self.assertNotIn("function navigateToPage(", app)

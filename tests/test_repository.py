@@ -55,7 +55,7 @@ class RepositoryTests(unittest.TestCase):
         apply_path = workflow_dir / "apply-inkdos-update.yml"
         self.assertTrue(apply_path.is_file())
         self.assertFalse(
-            (workflow_dir / "publish-inkdesk-v0.20.0.yml").exists()
+            (workflow_dir / "publish-inkdos-v0.20.0.yml").exists()
         )
         workflow = apply_path.read_text(encoding="utf-8")
         for marker in (

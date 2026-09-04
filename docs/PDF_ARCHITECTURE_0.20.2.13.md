@@ -19,4 +19,4 @@ Complete the main PDF decomposition by moving unified Save / flattened export co
 
 ## Behavior contract
 
-No visible PDF command is added or removed. The Save command still chooses the PDF.js path when there are no InkDesk annotations and the flattened exporter when annotations must be embedded into a portable copy.
+No visible PDF command is added or removed. The Save command still chooses the PDF.js path when there are no InkDOS annotations and the flattened exporter when annotations must be embedded into a portable copy.

@@ -1,4 +1,4 @@
-# InkDesk visual foundation
+# InkDOS visual foundation
 
 Development sequence `0.19.4.11` establishes the visual language that current
 and future workspaces share.
@@ -34,7 +34,7 @@ spacing.
 ## Rounded surfaces
 
 Start cards, dialogs, save panels, form fields, dropdowns, tab controls, and
-other interactive surfaces use larger radii to move InkDesk away from rigid
+other interactive surfaces use larger radii to move InkDOS away from rigid
 traditional office chrome.
 
 ## Retractable panels

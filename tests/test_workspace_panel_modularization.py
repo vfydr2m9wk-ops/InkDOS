@@ -15,7 +15,7 @@ class WorkspacePanelModularizationTests(unittest.TestCase):
             encoding="utf-8"
         )
         for marker in (
-            "InkDeskWorkspacePanelController",
+            "InkDOSWorkspacePanelController",
             "function applyDocuments(",
             "function applyPresentations(",
             "function applyPdf(",
@@ -30,15 +30,15 @@ class WorkspacePanelModularizationTests(unittest.TestCase):
             "hide-inspector",
             "hide-notes",
             "sidebar-collapsed",
-            "inkdeskFormulaBar",
-            "inkdeskStatusLayout",
+            "inkdosFormulaBar",
+            "inkdosStatusLayout",
         ):
             self.assertIn(marker, controller)
 
     def test_workspace_layout_keeps_ruler_and_delegates_panel_state(self):
         layout = (ROOT / "shared/ui/workspace-layout.js").read_text(encoding="utf-8")
         self.assertIn("installDocumentsRuler", layout)
-        self.assertIn("InkDeskWorkspacePanelController", layout)
+        self.assertIn("InkDOSWorkspacePanelController", layout)
         self.assertIn("panelController.apply(doc, currentModule)", layout)
         for implementation_detail in (
             "function applyPresentations(",
@@ -53,10 +53,10 @@ class WorkspacePanelModularizationTests(unittest.TestCase):
         shell = (ROOT / "shared/office-shell.js").read_text(encoding="utf-8")
         self.assertIn("function loadWorkspacePanelController()", shell)
         self.assertIn("workspace-panel-controller.js", shell)
-        self.assertIn("return loadWorkspacePanelController().then(function ()", shell)
+        self.assertIn("return loadWorkspacePanelController()", shell)
         self.assertLess(
-            shell.index("loadWorkspacePanelController().then"),
-            shell.index("return loadWorkspaceLayoutRuntime();"),
+            shell.index("return loadWorkspacePanelController()"),
+            shell.index(".then(loadWorkspaceLayoutRuntime)"),
         )
 
     def test_controller_is_precached_and_documents_direct_load_is_ordered(self):

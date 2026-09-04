@@ -1,6 +1,6 @@
 # Security Policy
 
-InkDesk treats imported Office documents as untrusted ZIP/XML input. It does not intentionally execute VBA macros, ActiveX, embedded JavaScript, add-ins, or remote document instructions. Core processing is local, and the project includes no telemetry or document-upload backend.
+InkDOS treats imported Office documents as untrusted ZIP/XML input. It does not intentionally execute VBA macros, ActiveX, embedded JavaScript, add-ins, or remote document instructions. Core processing is local, and the project includes no telemetry or document-upload backend.
 
 The shared runtime rejects encrypted/ZIP64 packages, unsafe paths, malformed offsets, excessive entry counts, unreasonable compressed or expanded sizes, and extreme compression ratios before committing a new document model. These controls reduce risk but do not replace browser sandboxing or fuzz testing.
 

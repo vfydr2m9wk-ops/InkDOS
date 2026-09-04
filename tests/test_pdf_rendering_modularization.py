@@ -19,7 +19,7 @@ class PdfRenderingModularizationTests(unittest.TestCase):
         self.assertTrue(renderer_path.is_file())
         self.assertLessEqual(len(renderer.splitlines()), 500)
         self.assertTrue(all(len(line) <= 240 for line in renderer.splitlines()))
-        self.assertIn("window.InkDeskPdfPageRenderer.createPageRenderer", app)
+        self.assertIn("window.InkDOSPdfPageRenderer.createPageRenderer", app)
         self.assertNotIn("function pageScale(base)", app)
         self.assertNotIn("async function renderPage(pageNumber)", app)
         self.assertNotIn("function observePages()", app)

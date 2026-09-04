@@ -13,7 +13,7 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
     def test_model_owns_pure_ruler_and_indent_helpers(self):
         model = (ROOT / "shared/ui/document-ruler-model.js").read_text(encoding="utf-8")
         for marker in (
-            "InkDeskDocumentRulerModel",
+            "InkDOSDocumentRulerModel",
             "function rulerTickModel(",
             "function rulerMetrics(",
             "function visibleDocumentPage(",
@@ -28,7 +28,7 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
     def test_workspace_layout_keeps_dom_controller_and_delegates_math(self):
         layout = (ROOT / "shared/ui/workspace-layout.js").read_text(encoding="utf-8")
         self.assertIn("function installDocumentsRuler(", layout)
-        self.assertIn("InkDeskDocumentRulerModel", layout)
+        self.assertIn("InkDOSDocumentRulerModel", layout)
         self.assertIn("model.rulerMetrics(", layout)
         drag = (ROOT / "shared/ui/document-ruler-drag-controller.js").read_text(encoding="utf-8")
         self.assertIn("model.pointerToDocumentIndent(", drag)
@@ -52,8 +52,8 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
         self.assertIn("function loadDocumentRulerModel()", shell)
         self.assertIn("document-ruler-model.js", shell)
         self.assertLess(
-            shell.index("loadDocumentRulerModel();"),
-            shell.index("loadWorkspaceLayoutRuntime();"),
+            shell.index(".then(loadDocumentRulerModel)"),
+            shell.index(".then(loadWorkspaceLayoutRuntime)"),
         )
 
         model_tag = "document-ruler-model.js?v=0.20.3.0"
@@ -86,8 +86,8 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
         script = r"""
 require('./shared/ui/document-ruler-model.js');
 require('./shared/ui/workspace-layout.js');
-const model = globalThis.InkDeskDocumentRulerModel;
-const layout = globalThis.InkDeskWorkspaceLayout;
+const model = globalThis.InkDOSDocumentRulerModel;
+const layout = globalThis.InkDOSWorkspaceLayout;
 if (!model || model.version !== '0.20.3.0') process.exit(10);
 if (!layout || layout.version !== '0.20.0') process.exit(11);
 const a = model.rulerTickModel(816, 96);

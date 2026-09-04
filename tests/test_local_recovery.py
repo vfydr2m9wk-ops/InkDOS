@@ -11,7 +11,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_shared_recovery_module_has_private_indexeddb_contract(self):
         text = (ROOT / "shared/local-recovery.js").read_text(encoding="utf-8")
         for token in (
-            "InkDeskLocalRecovery",
+            "InkDOSLocalRecovery",
             "indexedDB.open",
             "snapshots",
             "sources",
@@ -45,12 +45,12 @@ class LocalRecoveryTests(unittest.TestCase):
             "documents": (
                 "captureDocumentRecovery",
                 "restoreDocumentRecovery",
-                "__InkDeskDocumentsRecovery",
+                "__InkDOSDocumentsRecovery",
             ),
             "spreadsheets": (
                 "captureSpreadsheetRecovery",
                 "restoreSpreadsheetRecovery",
-                "__InkDeskSpreadsheetsRecovery",
+                "__InkDOSSpreadsheetsRecovery",
             ),
         }
         for module, tokens in cases.items():
@@ -70,8 +70,8 @@ class LocalRecoveryTests(unittest.TestCase):
 
         app = (ROOT / "apps/presentations/app.js").read_text(encoding="utf-8")
         recovery = (ROOT / "apps/presentations/io/recovery-controller.js").read_text(encoding="utf-8")
-        self.assertIn("InkDeskPresentationsRecovery.create", app)
-        self.assertIn("__InkDeskPresentationsRecovery", recovery)
+        self.assertIn("InkDOSPresentationsRecovery.create", app)
+        self.assertIn("__InkDOSPresentationsRecovery", recovery)
         for token in (
             "async capture()",
             "async restore(context)",
@@ -85,7 +85,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_service_worker_caches_recovery_runtime(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("./shared/local-recovery.js", text)
-        self.assertIn("inkdesk-shell-v1.0.0-beta.2", text)
+        self.assertIn("inkdos-shell-v1.0.0-beta.3", text)
 
     def test_service_worker_canonicalizes_versioned_shell_assets(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -93,10 +93,10 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("canonical.hash=''", text)
         self.assertIn("APP_SHELL_URLS.has(canonical.href)", text)
         hub = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("module-registry.js?v=1.0.0-beta.2", hub)
+        self.assertIn("module-registry.js?v=1.0.0-beta.3", hub)
 
     def test_local_recovery_browser_waits_use_playwright_keyword_arg(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         self.assertIn("arg=token", text)
         self.assertNotIn("innerText.includes(value)\", token)", text)
         self.assertNotIn("value === value\", token)", text)
@@ -108,8 +108,8 @@ class LocalRecoveryTests(unittest.TestCase):
         for engine in ("chromium", "firefox", "webkit"):
             self.assertIn(engine, matrix)
         runner = (ROOT / "scripts/run_browser_regressions.py").read_text(encoding="utf-8")
-        self.assertIn("revalidate_v0202_local_recovery.py", runner)
-        self.assertIn("INKDESK_BROWSER", runner)
+        self.assertIn("revalidate_local_recovery.py", runner)
+        self.assertIn("INKDOS_BROWSER", runner)
 
 
     def test_mark_clean_retains_source_package_for_edits_after_save(self):
@@ -125,7 +125,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("await cleanupOrphanSources(moduleName)", prompt)
 
     def test_browser_recovery_covers_save_then_edit_then_restore_fidelity(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         for marker in (
             "spreadsheets_post_save_edit_recovery_case",
             "RECOVERY-SAVED-BASE-020226",
@@ -168,7 +168,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("if(documentKey===key&&(dirty||revision>0))await flush()", clean)
 
     def test_browser_recovery_covers_source_grace_and_rehydration(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         for marker in (
             "recovery_source_rehydration_case",
             "recovery-source-rehydrate",
@@ -180,10 +180,10 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_release_identity_is_v0202(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(version["version"], "1.0.0-beta.2")
-        self.assertEqual(version["releaseName"], "1.0 Beta 2")
-        self.assertEqual(state["appliedSequence"], 59)
-        self.assertEqual(state["currentPackage"], "1.0.0-beta.2")
+        self.assertEqual(version["version"], "1.0.0-beta.3")
+        self.assertEqual(version["releaseName"], "1.0 Beta 3")
+        self.assertEqual(state["appliedSequence"], 60)
+        self.assertEqual(state["currentPackage"], "1.0.0-beta.3")
 
 
 if __name__ == "__main__":

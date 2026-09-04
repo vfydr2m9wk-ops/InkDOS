@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-InkDesk keeps runtime dependencies local so the editors do not require a CDN or network connection.
+InkDOS keeps runtime dependencies local so the editors do not require a CDN or network connection.
 
 | Component | Version | Purpose | Canonical file | License | SHA-256 |
 |---|---:|---|---|---|---|
@@ -24,5 +24,5 @@ Contributors must document the source, exact version, license, purpose, and offl
 
 The source package records the exact acquisition contract in `VENDOR_SOURCES.json`. The publication workflow downloads `pdfjs-dist@3.11.174` from npm, copies the classic display and worker builds into `shared/vendor/pdfjs/`, preserves the upstream Apache-2.0 license as `LICENSE-PDFJS.txt`, and regenerates repository checksums before strict validation. The published application then uses those local files and does not require a PDF.js CDN at runtime.
 
-InkDesk sets `isEvalSupported: false` when opening PDFs. Version 3.11.174 is retained temporarily for compatibility with the current classic-script PDF workspace; migration to a supported modern PDF.js line is tracked as a v0.20.x hardening task.
+InkDOS sets `isEvalSupported: false` when opening PDFs. Version 3.11.174 is retained temporarily for compatibility with the current classic-script PDF workspace; migration to a supported modern PDF.js line is tracked as a v0.20.x hardening task.
 

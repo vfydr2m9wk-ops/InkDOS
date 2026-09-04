@@ -2,7 +2,7 @@
   'use strict';
 
   const api = factory();
-  global.InkDeskSpreadsheetFormulaModel = api;
+  global.InkDOSSpreadsheetFormulaModel = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';

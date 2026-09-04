@@ -4,11 +4,11 @@
   "name": "InkDOS",
   "longName": "Ink Desk Offline Suite",
   "tagline": "Local. Offline. Private.",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "A local-first, offline and private productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
-  "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
-  "homepage": "https://vfydr2m9wk-ops.github.io/InkDesk/",
+  "source": "https://github.com/vfydr2m9wk-ops/InkDOS",
+  "homepage": "https://vfydr2m9wk-ops.github.io/InkDOS/",
   "icons": {
     "default": "assets/icons/office.png",
     "windows": "assets/icons/office.ico",
@@ -73,7 +73,7 @@
   ],
   "update": {
     "type": "github-release",
-    "repository": "vfydr2m9wk-ops/InkDesk",
+    "repository": "vfydr2m9wk-ops/InkDOS",
     "assetPattern": "InkDOS_v*.zip"
   },
   "capabilities": {
@@ -237,15 +237,10 @@
         "tracksSectionPageWidth": true,
         "marginZones": true,
         "documentation": "docs/DOCUMENTS_RULER.md",
-        "originMilestone": "0.19.4.7",
         "model": "shared/ui/document-ruler-model.js",
-        "modelRelease": "0.20.2.16",
-        "dragController": "shared/ui/document-ruler-drag-controller.js",
-        "dragControllerRelease": "0.20.2.17"
+        "dragController": "shared/ui/document-ruler-drag-controller.js"
       },
-      "originMilestone": "0.19.4.7",
-      "panelController": "shared/ui/workspace-panel-controller.js",
-      "architectureRelease": "0.20.3.0"
+      "panelController": "shared/ui/workspace-panel-controller.js"
     },
     "visualFoundation": {
       "schemaVersion": 1,
@@ -263,14 +258,11 @@
       ],
       "roundedSurfaces": true,
       "raisedRetractablePanels": true,
-      "documentation": "docs/VISUAL_FOUNDATION.md",
-      "originMilestone": "0.19.4.11"
+      "documentation": "docs/VISUAL_FOUNDATION.md"
     },
-    "originMilestone": "0.19.4.3",
-    "visualRefresh0203": {
+    "currentVisualLayer": {
       "schemaVersion": 1,
-      "version": "0.20.3.0",
-      "stylesheet": "shared/ui/visual-foundation-v0203.css",
+      "version": "1.0.0-beta.3",
       "layering": "loaded after existing Home/workspace styles",
       "titlebarMinimum": 44,
       "productAccents": {
@@ -281,15 +273,20 @@
         "txt": "#d9a514",
         "epub": "#7655c7"
       },
-      "documentation": "docs/VISUAL_ROADMAP_0.20.3.md",
-      "originMilestone": "0.20.3.0",
-      "dataPathChanges": false
+      "documentation": "docs/VISUAL_SYSTEM.md",
+      "dataPathChanges": false,
+      "stylesheets": [
+        "shared/ui/visual.css",
+        "shared/ui/content.css",
+        "shared/ui/workspace.css",
+        "shared/ui/polish.css"
+      ]
     }
   },
   "pdfReviewSystem": {
     "schemaVersion": 1,
     "version": "0.20.0",
-    "storageSchema": "inkdesk-pdf-review/2",
+    "storageSchema": "inkdos-pdf-review/2",
     "selectedTextTools": [
       "highlight",
       "underline",
@@ -300,8 +297,7 @@
       "text"
     ],
     "geometry": "normalized page-relative rectangles derived from PDF.js text-layer selection",
-    "documentation": "docs/PDF_TEXT_SELECTION.md",
-    "originMilestone": "0.19.4.6"
+    "documentation": "docs/PDF_TEXT_SELECTION.md"
   },
   "spreadsheetFormulaReferenceSystem": {
     "schemaVersion": 1,
@@ -322,7 +318,6 @@
     "parenthesesBalancedOnCommit": true,
     "formulaEditorIntegration": "apps/spreadsheets/formula-editor.js",
     "successiveClicksAppend": true,
-    "originMilestone": "0.19.4.10",
     "normalGridSelectionIsolation": true,
     "referenceCaptureMode": "armed-only",
     "normalRangeDrag": "global-pointer-hit-testing"
@@ -351,7 +346,6 @@
     "percentageOperator": "postfix percentage",
     "remainderFunction": "MOD",
     "documentation": "docs/SPREADSHEET_FORMULA_SESSION.md",
-    "originMilestone": "0.19.4.10",
     "model": "apps/spreadsheets/formula-model.js",
     "session": "apps/spreadsheets/formula-session.js",
     "safety": "apps/spreadsheets/formula-safety.js",
@@ -370,8 +364,7 @@
     "rollbackStatus": true,
     "automaticDiagnosis": true,
     "failureReportJson": true,
-    "documentation": "docs/UPDATE_WORKFLOW_OBSERVABILITY.md",
-    "originMilestone": "0.19.4.10"
+    "documentation": "docs/UPDATE_WORKFLOW_OBSERVABILITY.md"
   },
   "iconSystem": {
     "schemaVersion": 1,
@@ -391,8 +384,7 @@
       "pdf",
       "txt",
       "epub"
-    ],
-    "originMilestone": "0.19.4.11"
+    ]
   },
   "uiCapabilities": [
     "rounded-tactile-buttons",
@@ -421,8 +413,8 @@
       "parallel-save-pdf-copy"
     ],
     "saveModes": {
-      "withoutInkDeskAnnotations": "PDF.js saveDocument preserves supported form state and selectable source structure",
-      "withInkDeskAnnotations": "flattened rendered-page PDF with portable visible review marks"
+      "withoutInkDOSAnnotations": "PDF.js saveDocument preserves supported form state and selectable source structure",
+      "withInkDOSAnnotations": "flattened rendered-page PDF with portable visible review marks"
     },
     "annotationTypes": [
       "highlight",
@@ -434,14 +426,12 @@
     "editableReviewPersistence": "local sidecar remains available",
     "annotatedExportTextSelectable": false,
     "visualFoundation": "0.20.0",
-    "documentation": "docs/PDF_UNIFIED_SAVE.md",
-    "originMilestone": "0.19.4.12"
+    "documentation": "docs/PDF_UNIFIED_SAVE.md"
   },
   "homeRefinement": {
     "version": "0.20.0",
     "compactStatusNearFooter": true,
-    "buildInFooter": true,
-    "originMilestone": "0.19.4.13"
+    "buildInFooter": true
   },
   "documentSessionSystem": {
     "version": "0.20.0",
@@ -460,9 +450,7 @@
     "replacesCompleteApplicationFiles": false,
     "downloadNameRewriting": true,
     "preservesInstalledApplicationRuntime": true,
-    "originMilestone": "0.19.4.13",
-    "runtime": "shared/ui/document-session-controller.js",
-    "architectureRelease": "0.20.2.14"
+    "runtime": "shared/ui/document-session-controller.js"
   },
   "txtEditorSystem": {
     "schemaVersion": 1,
@@ -492,8 +480,7 @@
       "word-line-character-count"
     ],
     "localProcessing": true,
-    "documentation": "docs/TXT_EDITOR.md",
-    "originMilestone": "0.19.4.14"
+    "documentation": "docs/TXT_EDITOR.md"
   },
   "epubReaderSystem": {
     "schemaVersion": 1,
@@ -520,17 +507,14 @@
     "contentEditing": false,
     "saveMode": "unchanged EPUB copy under edited filename",
     "localProcessing": true,
-    "documentation": "docs/EPUB_READER.md",
-    "originMilestone": "0.19.4.15"
+    "documentation": "docs/EPUB_READER.md"
   },
   "release": {
-    "version": "1.0.0-beta.2",
+    "version": "1.0.0-beta.3",
     "channel": "beta",
-    "name": "1.0 Beta 2",
+    "name": "1.0 Beta 3",
     "date": "2026-09-04",
-    "consolidated": true,
-    "sourceDevelopmentLine": "0.20.x stabilization",
-    "publicVersioning": "Semantic prereleases on the 1.0 line; internal update sequence is independent."
+    "consolidated": true
   },
   "consistencyRefinement": {
     "schemaVersion": 1,
@@ -547,8 +531,8 @@
       "presentations-home-navigation",
       "spreadsheet-normal-drag-range-selection"
     ],
-    "regressionSuite": "tests/test_v0201_consistency.py",
-    "browserRegression": "tests/browser/revalidate_v0201_consistency.py"
+    "regressionSuite": "tests/test_workspace_consistency.py",
+    "browserRegression": "tests/browser/revalidate_workspace_consistency.py"
   },
   "localRecoverySystem": {
     "schemaVersion": 3,
@@ -592,7 +576,7 @@
     ],
     "defaultUpdateValidation": "chromium",
     "explicitMatrixCommand": "python3 scripts/run_browser_matrix.py",
-    "strictEnvironmentVariable": "INKDESK_BROWSER_MATRIX_STRICT=1",
+    "strictEnvironmentVariable": "INKDOS_BROWSER_MATRIX_STRICT=1",
     "documentation": "docs/DATA_SAFETY_AND_BROWSER_MATRIX.md"
   },
   "spreadsheetFormulaEditor": {

@@ -94,12 +94,12 @@ class TxtModuleTests(unittest.TestCase):
             "new TextDecoder('utf-8')",
             "new TextDecoder('utf-16le')",
             "state.lineEnding",
-            "global.InkDeskRuntime.requestDownload",
-            "global.InkDeskFileLifecycle.create",
+            "global.InkDOSRuntime.requestDownload",
+            "global.InkDOSFileLifecycle.create",
             "lifecycle.confirmDiscard",
-            "global.InkDeskWorkspaceOpenFile = openFile",
+            "global.InkDOSWorkspaceOpenFile = openFile",
             "extensions: ['txt']",
-            "global.InkDeskTxtDebug",
+            "global.InkDOSTxtDebug",
         ):
             self.assertIn(marker, script)
 
@@ -146,7 +146,7 @@ class TxtModuleTests(unittest.TestCase):
             "./apps/txt/find-controller.js",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
 
     def test_application_manifest_records_txt_contract(self):
         manifest = json.loads(

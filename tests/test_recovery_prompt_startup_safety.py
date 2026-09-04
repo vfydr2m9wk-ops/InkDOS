@@ -45,7 +45,7 @@ class RecoveryPromptStartupSafetyTests(unittest.TestCase):
         self.assertGreaterEqual(controller.count("this.manager.cancelPrompt();"), 3)
 
     def test_browser_recovery_suite_reproduces_startup_prompt_race(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         self.assertIn("def recovery_prompt_startup_race_case", text)
         self.assertIn("const pendingPrompt = manager.promptLatest();", text)
         self.assertIn("await manager.startDocument({documentKey:'current-doc'", text)

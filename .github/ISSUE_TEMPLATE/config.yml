@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security report
-    url: https://github.com/vfydr2m9wk-ops/inkdesk/security
+    url: https://github.com/vfydr2m9wk-ops/InkDOS/security
     about: Do not publish sensitive vulnerability details in a public issue.

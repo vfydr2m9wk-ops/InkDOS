@@ -1,4 +1,4 @@
-/* InkDesk persistent formula session — 0.19.4.10 */
+/* InkDOS persistent formula session — 0.19.4.10 */
 
 body.office-spreadsheets .formula-row {
   height: 42px !important;
@@ -51,9 +51,9 @@ body.office-spreadsheets .formula-suggestions {
   z-index: 1450 !important;
   max-height: 174px !important;
   overflow: auto;
-  border: 1px solid var(--line, var(--inkdesk-edge));
+  border: 1px solid var(--line, var(--inkdos-edge));
   border-radius: 6px;
-  background: var(--panel, var(--inkdesk-surface));
+  background: var(--panel, var(--inkdos-surface));
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
 }
 
@@ -82,7 +82,7 @@ body.office-spreadsheets > footer .formula-reference-status {
   max-width: min(46vw, 620px);
   margin-left: 10px;
   overflow: hidden;
-  color: var(--muted, var(--inkdesk-muted));
+  color: var(--muted, var(--inkdos-muted));
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;

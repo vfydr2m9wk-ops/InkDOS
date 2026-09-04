@@ -262,7 +262,7 @@
     }
   }
 
-  global.InkDeskPresentationsInspector = Object.freeze({
+  global.InkDOSPresentationsInspector = Object.freeze({
     version: '0.20.3.0',
     create(options) {
       return new PresentationInspectorController(options);

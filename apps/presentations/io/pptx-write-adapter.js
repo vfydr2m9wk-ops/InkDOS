@@ -318,7 +318,7 @@ class PresentationPptxWriteAdapter {
   }
 }
 
-global.InkDeskPresentationsPptxWriter={
+global.InkDOSPresentationsPptxWriter={
   create(options){return new PresentationPptxWriteAdapter(options)},
   PresentationPptxWriteAdapter,
 };

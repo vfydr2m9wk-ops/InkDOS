@@ -1,6 +1,6 @@
 (function(global){
 'use strict';
-const DB_NAME='InkDeskLocalRecovery';
+const DB_NAME='Ink'+'DeskLocalRecovery';
 const DB_VERSION=1;
 const SNAPSHOT_STORE='snapshots';
 const SOURCE_STORE='sources';
@@ -41,7 +41,7 @@ function openDatabase(){
     };
     request.onsuccess=()=>resolve(request.result);
     request.onerror=()=>reject(request.error||new Error('Could not open the recovery database.'));
-    request.onblocked=()=>reject(new Error('The recovery database is blocked by another InkDesk tab.'));
+    request.onblocked=()=>reject(new Error('The recovery database is blocked by another InkDOS tab.'));
   });
 }
 async function withStore(storeName,mode,callback){
@@ -104,39 +104,39 @@ function formatTimestamp(value){
   catch(_){return new Date(value).toLocaleString()}
 }
 function injectStyles(){
-  if(document.querySelector('style[data-inkdesk-local-recovery]'))return;
+  if(document.querySelector('style[data-inkdos-local-recovery]'))return;
   const style=document.createElement('style');
-  style.dataset.inkdeskLocalRecovery='1';
+  style.dataset.inkdosLocalRecovery='1';
   style.textContent=`
-.inkdesk-recovery-overlay{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(7,10,17,.72);backdrop-filter:blur(8px);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eef2ff}
-.inkdesk-recovery-card{width:min(520px,100%);border:1px solid rgba(255,255,255,.18);border-radius:22px;background:linear-gradient(145deg,#202635,#151923);box-shadow:0 24px 80px rgba(0,0,0,.48);padding:24px}
-.inkdesk-recovery-kicker{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#9faafc;margin:0 0 10px}
-.inkdesk-recovery-card h2{font-size:24px;line-height:1.2;margin:0 0 10px;color:#fff}
-.inkdesk-recovery-card p{line-height:1.55;margin:0 0 14px;color:#c9cfdb}
-.inkdesk-recovery-meta{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;margin:16px 0 20px;padding:14px;border-radius:14px;background:rgba(255,255,255,.055);font-size:13px}
-.inkdesk-recovery-meta span:nth-child(odd){color:#929aac}.inkdesk-recovery-meta strong{overflow-wrap:anywhere;color:#f4f6fb}
-.inkdesk-recovery-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
-.inkdesk-recovery-actions button{min-height:42px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:0 15px;background:#252b38;color:#f4f6fb;font:inherit;font-weight:700;cursor:pointer}
-.inkdesk-recovery-actions button:hover{background:#303747}.inkdesk-recovery-actions .primary{border-color:#6f7df2;background:#5363df}.inkdesk-recovery-actions .danger{color:#ffb4b4}
-@media(max-width:560px){.inkdesk-recovery-overlay{align-items:flex-end;padding:12px}.inkdesk-recovery-card{border-radius:22px 22px 14px 14px;padding:20px}.inkdesk-recovery-actions{display:grid;grid-template-columns:1fr}.inkdesk-recovery-actions button{width:100%}}
+.inkdos-recovery-overlay{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(7,10,17,.72);backdrop-filter:blur(8px);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eef2ff}
+.inkdos-recovery-card{width:min(520px,100%);border:1px solid rgba(255,255,255,.18);border-radius:22px;background:linear-gradient(145deg,#202635,#151923);box-shadow:0 24px 80px rgba(0,0,0,.48);padding:24px}
+.inkdos-recovery-kicker{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#9faafc;margin:0 0 10px}
+.inkdos-recovery-card h2{font-size:24px;line-height:1.2;margin:0 0 10px;color:#fff}
+.inkdos-recovery-card p{line-height:1.55;margin:0 0 14px;color:#c9cfdb}
+.inkdos-recovery-meta{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;margin:16px 0 20px;padding:14px;border-radius:14px;background:rgba(255,255,255,.055);font-size:13px}
+.inkdos-recovery-meta span:nth-child(odd){color:#929aac}.inkdos-recovery-meta strong{overflow-wrap:anywhere;color:#f4f6fb}
+.inkdos-recovery-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
+.inkdos-recovery-actions button{min-height:42px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:0 15px;background:#252b38;color:#f4f6fb;font:inherit;font-weight:700;cursor:pointer}
+.inkdos-recovery-actions button:hover{background:#303747}.inkdos-recovery-actions .primary{border-color:#6f7df2;background:#5363df}.inkdos-recovery-actions .danger{color:#ffb4b4}
+@media(max-width:560px){.inkdos-recovery-overlay{align-items:flex-end;padding:12px}.inkdos-recovery-card{border-radius:22px 22px 14px 14px;padding:20px}.inkdos-recovery-actions{display:grid;grid-template-columns:1fr}.inkdos-recovery-actions button{width:100%}}
 `;
   document.head.appendChild(style);
 }
 function makePrompt(record,count,handlers){
   injectStyles();
   const overlay=document.createElement('div');
-  overlay.className='inkdesk-recovery-overlay';
+  overlay.className='inkdos-recovery-overlay';
   overlay.setAttribute('role','dialog');
   overlay.setAttribute('aria-modal','true');
-  overlay.setAttribute('aria-labelledby','inkdeskRecoveryTitle');
-  const card=document.createElement('div');card.className='inkdesk-recovery-card';
-  const kicker=document.createElement('p');kicker.className='inkdesk-recovery-kicker';kicker.textContent='Local recovery';
-  const heading=document.createElement('h2');heading.id='inkdeskRecoveryTitle';heading.textContent='Unsaved work is available';
-  const description=document.createElement('p');description.textContent='InkDesk found a private recovery snapshot stored only in this browser. Restoring it does not replace the original file.';
-  const meta=document.createElement('div');meta.className='inkdesk-recovery-meta';
+  overlay.setAttribute('aria-labelledby','inkdosRecoveryTitle');
+  const card=document.createElement('div');card.className='inkdos-recovery-card';
+  const kicker=document.createElement('p');kicker.className='inkdos-recovery-kicker';kicker.textContent='Local recovery';
+  const heading=document.createElement('h2');heading.id='inkdosRecoveryTitle';heading.textContent='Unsaved work is available';
+  const description=document.createElement('p');description.textContent='InkDOS found a private recovery snapshot stored only in this browser. Restoring it does not replace the original file.';
+  const meta=document.createElement('div');meta.className='inkdos-recovery-meta';
   const add=(label,value)=>{const a=document.createElement('span');a.textContent=label;const b=document.createElement('strong');b.textContent=value;meta.append(a,b)};
   add('File',record.fileName||'Untitled');add('Saved locally',formatTimestamp(record.updatedAt));add('Available versions',String(count));
-  const actions=document.createElement('div');actions.className='inkdesk-recovery-actions';
+  const actions=document.createElement('div');actions.className='inkdos-recovery-actions';
   const discard=document.createElement('button');discard.type='button';discard.className='danger';discard.textContent='Discard recovery';
   const normal=document.createElement('button');normal.type='button';normal.textContent='Open normally';
   const restore=document.createElement('button');restore.type='button';restore.className='primary';restore.textContent='Restore';
@@ -144,7 +144,7 @@ function makePrompt(record,count,handlers){
   const close=()=>overlay.remove();
   discard.onclick=async()=>{discard.disabled=normal.disabled=restore.disabled=true;await handlers.discard();close()};
   normal.onclick=()=>{handlers.normal();close()};
-  restore.onclick=async()=>{discard.disabled=normal.disabled=restore.disabled=true;restore.textContent='Restoring…';try{await handlers.restore();close()}catch(error){console.error('InkDesk recovery restore failed.',error);restore.textContent='Restore';discard.disabled=normal.disabled=restore.disabled=false;alert('The local recovery snapshot could not be restored. The snapshot remains available.') }};
+  restore.onclick=async()=>{discard.disabled=normal.disabled=restore.disabled=true;restore.textContent='Restoring…';try{await handlers.restore();close()}catch(error){console.error('InkDOS recovery restore failed.',error);restore.textContent='Restore';discard.disabled=normal.disabled=restore.disabled=false;alert('The local recovery snapshot could not be restored. The snapshot remains available.') }};
   requestAnimationFrame(()=>restore.focus());
   return overlay;
 }
@@ -169,7 +169,7 @@ function create(options){
     sourceData=Object.prototype.hasOwnProperty.call(config,'sourceData')?config.sourceData:null;sourceMeta=sourceData==null?{}:(config.sourceMeta||{});
     try{if(config.resetSnapshots)await deleteSnapshotsOnly(moduleName,documentKey,sessionId);
       if(sourceData!=null)await putSource(moduleName,documentKey,fileName,sourceData,sourceMeta)
-    }catch(error){console.warn('InkDesk could not initialize local recovery.',error);report('Local recovery unavailable',error)}
+    }catch(error){console.warn('InkDOS could not initialize local recovery.',error);report('Local recovery unavailable',error)}
     return documentKey;
   }
   async function flush(){
@@ -184,7 +184,7 @@ function create(options){
         if(destroyed||capturedGeneration!==generation||capturedDocumentKey!==documentKey||capturedSessionId!==sessionId)return null;
         if(capturedSourceData!=null)try{const existing=await getSource(moduleName,capturedDocumentKey);
           if(!existing)await putSource(moduleName,capturedDocumentKey,capturedFileName,capturedSourceData,capturedSourceMeta)
-        }catch(error){console.warn('InkDesk could not rehydrate the recovery source package.',error)}
+        }catch(error){console.warn('InkDOS could not rehydrate the recovery source package.',error)}
         if(destroyed||capturedGeneration!==generation||capturedDocumentKey!==documentKey||capturedSessionId!==sessionId)return null;
         const now=Date.now();
         const record={id:moduleName+':'+capturedDocumentKey+':'+capturedSessionId+':'+now+':'+Math.random().toString(36).slice(2,7),
@@ -199,7 +199,7 @@ function create(options){
         if(revision===capturedRevision&&capturedGeneration===generation)dirty=false;
         report('Recovery snapshot saved locally');
         return record;
-      }catch(error){console.warn('InkDesk could not save a local recovery snapshot.',error);report('Local recovery snapshot failed',error);return null}
+      }catch(error){console.warn('InkDOS could not save a local recovery snapshot.',error);report('Local recovery snapshot failed',error);return null}
       finally{
         writing=null;
         if(!destroyed&&dirty&&revision>capturedRevision){
@@ -216,17 +216,17 @@ function create(options){
   async function clearSnapshots(){
     const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;if(pending)await pending;if(!key)return;
     if(documentKey===key&&(dirty||revision>0)){report('Recovery cleanup deferred because new edits arrived');return}
-    try{await deleteSnapshotsOnly(moduleName,key,sessionId);report('Recovery snapshots cleared');if(documentKey===key&&(dirty||revision>0))await flush()}catch(error){console.warn('InkDesk could not clear recovery snapshots.',error)}
+    try{await deleteSnapshotsOnly(moduleName,key,sessionId);report('Recovery snapshots cleared');if(documentKey===key&&(dirty||revision>0))await flush()}catch(error){console.warn('InkDOS could not clear recovery snapshots.',error)}
   }
   async function markClean(){
     const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;clearTimeout(timer);timer=null;if(pending)await pending;if(!key)return;
     if(documentKey===key&&(dirty||revision>0)){report('Recovery cleanup deferred because new edits arrived');return}
     try{await deleteSnapshotsOnly(moduleName,key,sessionId);report('Recovery snapshot cleared after save');
-      if(documentKey===key&&(dirty||revision>0))await flush()}catch(error){console.warn('InkDesk could not clear the recovery snapshot.',error)}
+      if(documentKey===key&&(dirty||revision>0))await flush()}catch(error){console.warn('InkDOS could not clear the recovery snapshot.',error)}
   }
   async function discardCurrent(){
     const key=documentKey,pending=writing;generation+=1;dirty=false;revision=0;sourceData=null;sourceMeta={};clearTimeout(timer);timer=null;
-    if(pending)await pending;if(!key)return;try{await deleteSnapshotsOnly(moduleName,key,sessionId);report('Recovery session discarded')}catch(error){console.warn('InkDesk could not discard this recovery session.',error)}
+    if(pending)await pending;if(!key)return;try{await deleteSnapshotsOnly(moduleName,key,sessionId);report('Recovery session discarded')}catch(error){console.warn('InkDOS could not discard this recovery session.',error)}
   }
   function updateFileName(value){fileName=String(value||fileName||'Untitled')}
   function cancelPrompt(){promptEpoch+=1;if(activePrompt){activePrompt.remove();activePrompt=null;report('Recovery prompt deferred because another document action started')}}
@@ -249,7 +249,7 @@ function create(options){
         }
       });
       return activePrompt;
-    }catch(error){console.warn('InkDesk could not inspect local recovery snapshots.',error);return null}
+    }catch(error){console.warn('InkDOS could not inspect local recovery snapshots.',error);return null}
   }
   function getState(){return{module:moduleName,documentKey,sessionId,fileName,dirty,revision,generation,writing:Boolean(writing),hasSourceData:sourceData!=null}}
   function destroy(){generation+=1;destroyed=true;dirty=false;cancelPrompt();clearTimeout(timer);timer=null;document.removeEventListener('visibilitychange',visibilityHandler);global.removeEventListener('pagehide',pageHideHandler)}
@@ -265,7 +265,7 @@ async function clearModule(moduleName){
   const sources=await allFromIndex(SOURCE_STORE,'module',String(moduleName));
   await withStore(SOURCE_STORE,'readwrite',store=>sources.forEach(item=>store.delete(item.id)));
 }
-global.InkDeskLocalRecovery=Object.freeze({
+global.InkDOSLocalRecovery=Object.freeze({
   version:'0.20.3.0',
   create,
   openDatabase,

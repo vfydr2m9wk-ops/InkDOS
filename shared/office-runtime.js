@@ -79,5 +79,5 @@ function revokeObjectUrls(values){
   for(const url of unique)if(typeof url==='string'&&url.startsWith('blob:')){try{URL.revokeObjectURL(url)}catch(error){console.warn('Could not revoke object URL',error)}}
 }
 
-global.InkDeskRuntime=Object.freeze({DEFAULT_LIMITS,parseXml,requestDownload,revokeObjectUrls,sanitizeFileName,validateInputSize,validateZipPackage});
+global.InkDOSRuntime=Object.freeze({DEFAULT_LIMITS,parseXml,requestDownload,revokeObjectUrls,sanitizeFileName,validateInputSize,validateZipPackage});
 })(window);

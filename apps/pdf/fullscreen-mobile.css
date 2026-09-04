@@ -1,5 +1,5 @@
 /* Universal PDF content-focus mode — sequence 54.
-   Full screen is an InkDesk viewport-focus state: it hides editing chrome and
+   Full screen is an InkDOS viewport-focus state: it hides editing chrome and
    overlays the existing viewer across the full visual viewport. The PDF DOM,
    canvases, cache and zoom are intentionally left untouched. */
 body.office-pdf.pdf-fullscreen,

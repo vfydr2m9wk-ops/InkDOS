@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a deterministic complete InkDesk source archive."""
+"""Build a deterministic complete InkDOS source archive."""
 from __future__ import annotations
 
 import argparse

@@ -25,7 +25,7 @@ class SpreadsheetDeleteIntegrity02031Tests(unittest.TestCase):
         self.assertIn("deletedDependencyTargets.push", package)
 
     def test_browser_round_trip_covers_ref_and_orphan_cleanup(self):
-        regression = (ROOT / "tests/browser/revalidate_spreadsheet_add_sheet_02031.py").read_text(encoding="utf-8")
+        regression = (ROOT / "tests/browser/revalidate_spreadsheet_add_sheet.py").read_text(encoding="utf-8")
         self.assertIn('deleted_reference_display', regression)
         self.assertIn('reopened_reference_display', regression)
         self.assertIn('orphan_parts_removed', regression)

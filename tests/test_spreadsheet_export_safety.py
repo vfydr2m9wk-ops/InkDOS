@@ -13,8 +13,8 @@ class SpreadsheetExportSafetyTests(unittest.TestCase):
         end = text.index("async function newWorkbook()", start)
         block = text[start:end]
         self.assertIn("await recovery.flush()", block)
-        self.assertIn("InkDeskRuntime.requestDownload(pendingBlob,fileName)", block)
-        self.assertLess(block.index("await recovery.flush()"), block.index("InkDeskRuntime.requestDownload(pendingBlob,fileName)"))
+        self.assertIn("InkDOSRuntime.requestDownload(pendingBlob,fileName)", block)
+        self.assertLess(block.index("await recovery.flush()"), block.index("InkDOSRuntime.requestDownload(pendingBlob,fileName)"))
 
     def test_unverified_download_does_not_clear_dirty_or_recovery(self):
         text = (ROOT / "apps/spreadsheets/app.js").read_text(encoding="utf-8")
@@ -31,7 +31,7 @@ class SpreadsheetExportSafetyTests(unittest.TestCase):
         self.assertIn("confirm the XLSX in Downloads before discarding this workbook", text)
 
     def test_browser_recovery_asserts_post_download_protection(self):
-        text = (ROOT / "tests/browser/revalidate_v0202_local_recovery.py").read_text(encoding="utf-8")
+        text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
         for marker in (
             "protected_after_download",
             "items.length>=1",

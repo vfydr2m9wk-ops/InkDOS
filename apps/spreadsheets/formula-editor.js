@@ -3,19 +3,19 @@
   const VERSION = '0.20.0';
   const DRAFT_CLASS = 'formula-draft-editing';
   const SAVED_DRAFT_CLASS = 'has-formula-draft';
-  const FormulaModel = global.InkDeskSpreadsheetFormulaModel || (
+  const FormulaModel = global.InkDOSSpreadsheetFormulaModel || (
     typeof module === 'object' && module.exports && typeof require === 'function'
       ? require('./formula-model.js')
       : null
   );
-  const FormulaSession = global.InkDeskSpreadsheetFormulaSession || (
+  const FormulaSession = global.InkDOSSpreadsheetFormulaSession || (
     typeof module === 'object' && module.exports && typeof require === 'function'
       ? require('./formula-session.js')
       : null
   );
   if (!FormulaModel || !FormulaSession) {
     if (global.console && typeof global.console.error === 'function') {
-      global.console.error('InkDesk spreadsheet formula model/session is unavailable.');
+      global.console.error('InkDOS spreadsheet formula model/session is unavailable.');
     }
     return;
   }
@@ -83,8 +83,8 @@
     const status = doc.getElementById('formulaReferenceStatus');
     const tabs = doc.getElementById('sheetTabs');
     if (!formula || !suggestions || !grid || !viewport || !nameBox) return null;
-    if (formula.__inkdeskFormulaEditorController) {
-      return formula.__inkdeskFormulaEditorController;
+    if (formula.__inkdosFormulaEditorController) {
+      return formula.__inkdosFormulaEditorController;
     }
     const coreHandlers = {
       focus: formula.onfocus,
@@ -114,7 +114,7 @@
       status.textContent = String(message || '');
     }
     function notifySessionChange(reason) {
-      doc.dispatchEvent(new global.CustomEvent('inkdesk:formula-session-change', {
+      doc.dispatchEvent(new global.CustomEvent('inkdos:formula-session-change', {
         detail: {
           reason: String(reason || 'update'),
           value: state.value,
@@ -205,7 +205,7 @@
       notifySessionChange('update');
     }
     function referenceController() {
-      return global.InkDeskSpreadsheetFormulaReferences || null;
+      return global.InkDOSSpreadsheetFormulaReferences || null;
     }
     function beginReferenceMode() {
       const controller = referenceController();
@@ -547,11 +547,11 @@
       reset,
       formulaIsComplete: function () { return formulaIsComplete(state.value); }
     });
-    Object.defineProperty(formula, '__inkdeskFormulaEditorController', {
+    Object.defineProperty(formula, '__inkdosFormulaEditorController', {
       value: controller,
       configurable: true
     });
-    global.InkDeskSpreadsheetFormulaEditor = controller;
+    global.InkDOSSpreadsheetFormulaEditor = controller;
     return controller;
   }
   const api = Object.freeze({
@@ -569,7 +569,7 @@
     formulaIsComplete,
     createController
   });
-  global.InkDeskFormulaEditor = api;
+  global.InkDOSFormulaEditor = api;
   function initialize() {
     createController(global.document);
   }

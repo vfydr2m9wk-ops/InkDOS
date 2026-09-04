@@ -1,4 +1,4 @@
-(function registerInkDeskServiceWorker(){
+(function registerInkDOSServiceWorker(){
 'use strict';
 if(!navigator.serviceWorker||!/^https?:$/.test(location.protocol))return;
 const script=document.currentScript;

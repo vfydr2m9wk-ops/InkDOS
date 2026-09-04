@@ -1,15 +1,15 @@
 name: Bug report
-description: Report a reproducible InkDesk defect
+description: Report a reproducible InkDOS defect
 title: "[Bug]: "
 labels: [bug]
 body:
   - type: input
     id: version
-    attributes: {label: InkDesk version, placeholder: "0.19.0-beta"}
+    attributes: {label: InkDOS version, placeholder: "1.0.0-beta.3"}
     validations: {required: true}
   - type: dropdown
     id: workspace
-    attributes: {label: Workspace, options: [Application shell, Documents, Spreadsheets, Presentations, Shared components]}
+    attributes: {label: Workspace, options: [Application shell, Documents, Spreadsheets, Presentations, PDF, Plain Text, EPUB, Shared components]}
     validations: {required: true}
   - type: textarea
     id: environment

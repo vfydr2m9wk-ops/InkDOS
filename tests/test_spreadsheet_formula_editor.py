@@ -90,7 +90,7 @@ class SpreadsheetFormulaEditorTests(unittest.TestCase):
             self.skipTest("Node.js is unavailable")
         script = r"""
 require('./apps/spreadsheets/formula-editor.js');
-const api = globalThis.InkDeskFormulaEditor;
+const api = globalThis.InkDOSFormulaEditor;
 if (!api || api.version !== '0.20.0') process.exit(10);
 if (api.suggestionContext('=', 1) !== null) process.exit(11);
 if (api.suggestionContext('=S', 2) !== null) process.exit(12);
@@ -112,7 +112,7 @@ if (!api.formulaIsComplete('=A1+B1')) process.exit(19);
             self.skipTest("Node.js is unavailable")
         script = r"""
 require('./shared/formula-engine.js');
-const api = globalThis.InkDeskFormula;
+const api = globalThis.InkDOSFormula;
 if (Math.abs(api.evaluateArithmetic('10%') - 0.1) > 1e-12) process.exit(10);
 if (Math.abs(api.evaluateArithmetic('200*10%') - 20) > 1e-12) process.exit(11);
 if (Math.abs(api.evaluateArithmetic('5%+5%') - 0.1) > 1e-12) process.exit(12);

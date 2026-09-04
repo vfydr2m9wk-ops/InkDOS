@@ -1,21 +1,17 @@
-# Roadmap
+# InkDOS roadmap
 
-## 0.19.x — Foundation and rebranding
+## Current: 1.0 beta stabilization
 
-- Establish the InkDesk identity and clean repository baseline.
-- Preserve behavior while synchronizing documentation, metadata, and validation.
-- Expand native browser/device validation.
+- preserve data safety, local recovery and generated-copy semantics;
+- improve practical compatibility where evidence identifies high-value gaps;
+- keep the visual system coherent across desktop, touch and compact viewports;
+- reduce structural complexity while maintaining regression coverage;
+- complete native browser/device evidence.
 
-## 0.20.x — Compatibility and hardening
+## Next: 1.0.0-rc.1
 
-- Improve DOCX, XLSX/BIFF8, and PPTX fidelity.
-- Add hostile-file resource limits and more corrupted-file tests.
-- Incrementally modularize presentation code.
+The release candidate is gated by stability evidence, not by a fixed feature count. New functionality is acceptable only when its value clearly exceeds the added complexity and regression surface.
 
-## 1.0.0 criteria
+## Stable 1.0
 
-- No known critical save, corruption, or workspace-isolation defect.
-- Three consecutive full regression cycles.
-- Verified Chromium, Firefox, and Safari/WebKit behavior.
-- iPadOS and offline/PWA validation documented.
-- Documentation and license notices synchronized.
+Stable 1.0 requires documented format limits, repeatable release validation, reliable offline/PWA behavior on supported targets and no known high-severity data-loss path in the supported workflow set.

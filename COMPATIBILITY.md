@@ -1,6 +1,6 @@
 # Compatibility
 
-InkDesk 1.0 beta provides focused compatibility rather than complete Microsoft Office fidelity.
+InkDOS 1.0 beta provides focused compatibility rather than complete Microsoft Office fidelity.
 
 | Format | Status | Notes |
 |---|---|---|

@@ -1,8 +1,8 @@
 /*
- * InkDesk workspace layout — development sequence 0.19.4.4.
+ * InkDOS workspace layout — development sequence 0.19.4.4.
  *
  * The attached Word, Excel, and PowerPoint screenshots guide hierarchy and
- * control placement. InkDesk keeps its own name, colors, icons, and assets.
+ * control placement. InkDOS keeps its own name, colors, icons, and assets.
  */
 
 /* -------------------------------------------------------------------------- */
@@ -10,23 +10,23 @@
 /* -------------------------------------------------------------------------- */
 
 body.office-product {
-  --inkdesk-chrome: var(--inkdesk-surface);
-  --inkdesk-chrome-soft: var(--inkdesk-surface-soft);
-  --inkdesk-workspace-canvas: var(--inkdesk-workspace);
-  --inkdesk-chrome-border: var(--inkdesk-edge);
-  --inkdesk-control-hover:
-    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 9%, transparent);
-  --inkdesk-control-active:
-    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 15%, transparent);
-  font-family: var(--inkdesk-font-ui);
+  --inkdos-chrome: var(--inkdos-surface);
+  --inkdos-chrome-soft: var(--inkdos-surface-soft);
+  --inkdos-workspace-canvas: var(--inkdos-workspace);
+  --inkdos-chrome-border: var(--inkdos-edge);
+  --inkdos-control-hover:
+    color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 9%, transparent);
+  --inkdos-control-active:
+    color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 15%, transparent);
+  font-family: var(--inkdos-font-ui);
 }
 
 body.office-product .topbar,
 body.office-product .titlebar {
-  min-height: var(--inkdesk-titlebar-height) !important;
-  height: var(--inkdesk-titlebar-height) !important;
-  background: var(--inkdesk-chrome) !important;
-  border-bottom: 1px solid var(--inkdesk-chrome-border) !important;
+  min-height: var(--inkdos-titlebar-height) !important;
+  height: var(--inkdos-titlebar-height) !important;
+  background: var(--inkdos-chrome) !important;
+  border-bottom: 1px solid var(--inkdos-chrome-border) !important;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -35,7 +35,7 @@ body.office-product .titlebar {
 body.office-product .topbar,
 body.office-product .titlebar {
   grid-template-columns: minmax(170px, 1fr) minmax(150px, auto) minmax(170px, 1fr) !important;
-  padding-inline: var(--inkdesk-space-3) !important;
+  padding-inline: var(--inkdos-space-3) !important;
 }
 
 body.office-product .left-tools,
@@ -46,7 +46,7 @@ body.office-product .left,
 body.office-product .right {
   display: flex;
   align-items: center;
-  gap: var(--inkdesk-space-1) !important;
+  gap: var(--inkdos-space-1) !important;
   min-width: 0;
 }
 
@@ -62,7 +62,7 @@ body.office-product .doc-title {
   min-width: 0;
   max-width: min(48vw, 560px) !important;
   text-align: center;
-  color: var(--inkdesk-text);
+  color: var(--inkdos-text);
   font-size: 13px !important;
   font-weight: 650 !important;
 }
@@ -70,16 +70,16 @@ body.office-product .doc-title {
 body.office-product .icon-btn,
 body.office-product .top-action,
 body.office-product .save-btn {
-  width: var(--inkdesk-control-height);
-  min-width: var(--inkdesk-control-height);
-  height: var(--inkdesk-control-height);
-  min-height: var(--inkdesk-control-height);
+  width: var(--inkdos-control-height);
+  min-width: var(--inkdos-control-height);
+  height: var(--inkdos-control-height);
+  min-height: var(--inkdos-control-height);
   padding: 0 !important;
   border: 1px solid transparent !important;
-  border-radius: var(--inkdesk-radius-small) !important;
+  border-radius: var(--inkdos-radius-small) !important;
   background: transparent !important;
   box-shadow: none !important;
-  color: var(--inkdesk-text) !important;
+  color: var(--inkdos-text) !important;
   display: inline-grid !important;
   place-items: center;
 }
@@ -90,13 +90,13 @@ body.office-product .top-action:hover,
 body.office-product .top-action:focus-visible,
 body.office-product .save-btn:hover,
 body.office-product .save-btn:focus-visible {
-  background: var(--inkdesk-control-hover) !important;
+  background: var(--inkdos-control-hover) !important;
   border-color: color-mix(
     in srgb,
-    var(--inkdesk-accent, var(--inkdesk-focus)) 24%,
-    var(--inkdesk-edge)
+    var(--inkdos-accent, var(--inkdos-focus)) 24%,
+    var(--inkdos-edge)
   ) !important;
-  color: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
+  color: var(--inkdos-accent, var(--inkdos-focus)) !important;
   outline: none;
 }
 
@@ -109,8 +109,8 @@ body.office-product .save-btn:disabled {
 body.office-product .icon-btn svg,
 body.office-product .top-action svg,
 body.office-product .save-btn svg {
-  width: var(--inkdesk-icon-size) !important;
-  height: var(--inkdesk-icon-size) !important;
+  width: var(--inkdos-icon-size) !important;
+  height: var(--inkdos-icon-size) !important;
 }
 
 body.office-product .top-divider,
@@ -120,8 +120,8 @@ body.office-product .command-separator {
   width: 1px !important;
   min-width: 1px;
   height: 22px !important;
-  margin-inline: var(--inkdesk-space-1) !important;
-  background: var(--inkdesk-edge) !important;
+  margin-inline: var(--inkdos-space-1) !important;
+  background: var(--inkdos-edge) !important;
   border: 0 !important;
 }
 
@@ -129,8 +129,8 @@ body.office-product .formatbar,
 body.office-product .toolbar,
 body.office-product .tools,
 body.office-product .commandbar {
-  background: var(--inkdesk-chrome-soft) !important;
-  border-bottom: 1px solid var(--inkdesk-chrome-border) !important;
+  background: var(--inkdos-chrome-soft) !important;
+  border-bottom: 1px solid var(--inkdos-chrome-border) !important;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.30) inset;
 }
 
@@ -139,8 +139,8 @@ body.office-product .tools,
 body.office-product .commandbar {
   min-height: 48px !important;
   height: 48px !important;
-  padding: 6px var(--inkdesk-space-3) !important;
-  gap: var(--inkdesk-space-1) !important;
+  padding: 6px var(--inkdos-space-3) !important;
+  gap: var(--inkdos-space-1) !important;
 }
 
 body.office-product .formatbar button,
@@ -154,17 +154,17 @@ body.office-product .commandbar select {
   min-height: 32px !important;
   height: 32px !important;
   border: 1px solid transparent !important;
-  border-radius: var(--inkdesk-radius-small) !important;
+  border-radius: var(--inkdos-radius-small) !important;
   background: transparent !important;
-  color: var(--inkdesk-text) !important;
+  color: var(--inkdos-text) !important;
   box-shadow: none !important;
 }
 
 body.office-product .formatbar select,
 body.office-product .tools select,
 body.office-product .commandbar select {
-  border-color: var(--inkdesk-edge) !important;
-  background: var(--inkdesk-surface) !important;
+  border-color: var(--inkdos-edge) !important;
+  background: var(--inkdos-surface) !important;
 }
 
 body.office-product .formatbar button:hover,
@@ -175,19 +175,19 @@ body.office-product .tools button:hover,
 body.office-product .tools button:focus-visible,
 body.office-product .commandbar button:hover,
 body.office-product .commandbar button:focus-visible {
-  background: var(--inkdesk-control-hover) !important;
-  border-color: var(--inkdesk-edge) !important;
+  background: var(--inkdos-control-hover) !important;
+  border-color: var(--inkdos-edge) !important;
   outline: none;
 }
 
 body.office-product .statusbar,
 body.office-product > footer,
 body.office-product main.app > footer {
-  min-height: var(--inkdesk-statusbar-height) !important;
-  height: var(--inkdesk-statusbar-height) !important;
-  background: var(--inkdesk-chrome) !important;
-  border-top: 1px solid var(--inkdesk-chrome-border) !important;
-  color: var(--inkdesk-muted) !important;
+  min-height: var(--inkdos-statusbar-height) !important;
+  height: var(--inkdos-statusbar-height) !important;
+  background: var(--inkdos-chrome) !important;
+  border-top: 1px solid var(--inkdos-chrome-border) !important;
+  color: var(--inkdos-muted) !important;
   box-shadow: none !important;
 }
 
@@ -196,10 +196,10 @@ body.office-documents .welcome-card {
   width: min(620px, calc(100% - 32px)) !important;
   max-width: 620px !important;
   padding: 36px !important;
-  border: 1px solid var(--inkdesk-edge) !important;
-  border-radius: var(--inkdesk-radius-large) !important;
-  background: var(--inkdesk-surface) !important;
-  box-shadow: var(--inkdesk-shadow-panel) !important;
+  border: 1px solid var(--inkdos-edge) !important;
+  border-radius: var(--inkdos-radius-large) !important;
+  background: var(--inkdos-surface) !important;
+  box-shadow: var(--inkdos-shadow-panel) !important;
 }
 
 body.office-product .start-actions,
@@ -211,7 +211,7 @@ body.office-documents .welcome-actions {
 body.office-product .start-btn,
 body.office-documents .open-primary {
   min-height: 44px;
-  border-radius: var(--inkdesk-radius-medium) !important;
+  border-radius: var(--inkdos-radius-medium) !important;
 }
 
 body.office-product button:focus-visible,
@@ -221,7 +221,7 @@ body.office-product a:focus-visible {
   outline: 2px solid
     color-mix(
       in srgb,
-      var(--inkdesk-accent, var(--inkdesk-focus)) 72%,
+      var(--inkdos-accent, var(--inkdos-focus)) 72%,
       white
     ) !important;
   outline-offset: 2px;
@@ -233,16 +233,16 @@ body.office-product a:focus-visible {
 
 body.office-documents .app-shell {
   grid-template-rows:
-    var(--inkdesk-titlebar-height)
+    var(--inkdos-titlebar-height)
     48px
     28px
     minmax(0, 1fr)
-    var(--inkdesk-statusbar-height) !important;
+    var(--inkdos-statusbar-height) !important;
 }
 
 body.office-documents .workspace {
-  grid-template-columns: var(--inkdesk-sidebar-width) minmax(0, 1fr);
-  background: var(--inkdesk-workspace-canvas);
+  grid-template-columns: var(--inkdos-sidebar-width) minmax(0, 1fr);
+  background: var(--inkdos-workspace-canvas);
 }
 
 body.office-documents .workspace.sidebar-hidden {
@@ -250,9 +250,9 @@ body.office-documents .workspace.sidebar-hidden {
 }
 
 body.office-documents .sidebar {
-  width: var(--inkdesk-sidebar-width);
-  background: var(--inkdesk-chrome-soft) !important;
-  border-right: 1px solid var(--inkdesk-edge) !important;
+  width: var(--inkdos-sidebar-width);
+  background: var(--inkdos-chrome-soft) !important;
+  border-right: 1px solid var(--inkdos-edge) !important;
 }
 
 body.office-documents .workspace.sidebar-hidden .sidebar {
@@ -263,7 +263,7 @@ body.office-documents .workspace.sidebar-hidden .sidebar {
 }
 
 body.office-documents .viewport {
-  background: var(--inkdesk-workspace-canvas) !important;
+  background: var(--inkdos-workspace-canvas) !important;
   padding: 28px 28px 72px !important;
 }
 
@@ -273,12 +273,12 @@ body.office-documents .pages-host {
 }
 
 body.office-documents .page {
-  box-shadow: var(--inkdesk-shadow-document) !important;
+  box-shadow: var(--inkdos-shadow-document) !important;
 }
 
 body.office-documents .ruler {
-  background: var(--inkdesk-chrome-soft) !important;
-  border-bottom-color: var(--inkdesk-edge) !important;
+  background: var(--inkdos-chrome-soft) !important;
+  border-bottom-color: var(--inkdos-edge) !important;
 }
 
 body.office-documents .welcome-card {
@@ -287,7 +287,7 @@ body.office-documents .welcome-card {
 
 body.office-documents .word-badge,
 body.office-documents .welcome-icon {
-  background: var(--inkdesk-accent) !important;
+  background: var(--inkdos-accent) !important;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -295,49 +295,49 @@ body.office-documents .welcome-icon {
 /* -------------------------------------------------------------------------- */
 
 body.office-spreadsheets .titlebar {
-  height: var(--inkdesk-titlebar-height) !important;
+  height: var(--inkdos-titlebar-height) !important;
 }
 
 body.office-spreadsheets .toolbar {
   min-height: 48px !important;
   height: 48px !important;
-  padding: 6px var(--inkdesk-space-3) !important;
+  padding: 6px var(--inkdos-space-3) !important;
 }
 
 body.office-spreadsheets .formula-row {
   height: 42px !important;
   min-height: 42px !important;
-  background: var(--inkdesk-surface) !important;
-  border-bottom: 1px solid var(--inkdesk-edge) !important;
+  background: var(--inkdos-surface) !important;
+  border-bottom: 1px solid var(--inkdos-edge) !important;
 }
 
 body.office-spreadsheets #nameBox {
   width: 84px !important;
-  border-right: 1px solid var(--inkdesk-edge) !important;
-  background: var(--inkdesk-surface-soft) !important;
+  border-right: 1px solid var(--inkdos-edge) !important;
+  background: var(--inkdos-surface-soft) !important;
 }
 
 body.office-spreadsheets .fx {
   width: 38px !important;
-  color: var(--inkdesk-muted) !important;
+  color: var(--inkdos-muted) !important;
 }
 
 body.office-spreadsheets #formulaInput {
-  background: var(--inkdesk-surface) !important;
+  background: var(--inkdos-surface) !important;
 }
 
 body.office-spreadsheets main {
   height: calc(
     100% -
-    var(--inkdesk-titlebar-height) -
+    var(--inkdos-titlebar-height) -
     48px -
     42px -
-    var(--inkdesk-statusbar-height)
+    var(--inkdos-statusbar-height)
   ) !important;
 }
 
 body.office-spreadsheets > footer {
-  padding-inline: var(--inkdesk-space-2) !important;
+  padding-inline: var(--inkdos-space-2) !important;
 }
 
 body.office-spreadsheets .status {
@@ -352,8 +352,8 @@ body.office-spreadsheets .zoom-controls {
 body.office-spreadsheets .zoom-controls button {
   height: 24px !important;
   min-height: 24px !important;
-  border-color: var(--inkdesk-edge) !important;
-  background: var(--inkdesk-surface-soft) !important;
+  border-color: var(--inkdos-edge) !important;
+  background: var(--inkdos-surface-soft) !important;
 }
 
 body.office-spreadsheets .start-card {
@@ -363,7 +363,7 @@ body.office-spreadsheets .start-card {
 body.office-spreadsheets .start-actions {
   display: flex !important;
   flex-wrap: wrap;
-  gap: var(--inkdesk-space-3) !important;
+  gap: var(--inkdos-space-3) !important;
 }
 
 body.office-spreadsheets .start-btn {
@@ -377,22 +377,22 @@ body.office-spreadsheets .start-btn {
 
 body.office-presentations .app {
   grid-template-rows:
-    var(--inkdesk-titlebar-height)
-    var(--inkdesk-command-tabs-height)
+    var(--inkdos-titlebar-height)
+    var(--inkdos-command-tabs-height)
     48px
     minmax(0, 1fr)
     minmax(112px, 20vh)
-    var(--inkdesk-statusbar-height) !important;
+    var(--inkdos-statusbar-height) !important;
 }
 
 body.office-presentations .app.hide-notes {
   grid-template-rows:
-    var(--inkdesk-titlebar-height)
-    var(--inkdesk-command-tabs-height)
+    var(--inkdos-titlebar-height)
+    var(--inkdos-command-tabs-height)
     48px
     minmax(0, 1fr)
     0
-    var(--inkdesk-statusbar-height) !important;
+    var(--inkdos-statusbar-height) !important;
 }
 
 body.office-presentations .titlebar-left,
@@ -401,40 +401,40 @@ body.office-presentations .titlebar-right {
 }
 
 body.office-presentations .titlebar-right {
-  gap: var(--inkdesk-space-1);
+  gap: var(--inkdos-space-1);
 }
 
 body.office-presentations .present-top-action {
   width: auto !important;
   min-width: 34px !important;
-  padding-inline: var(--inkdesk-space-2) !important;
+  padding-inline: var(--inkdos-space-2) !important;
   display: inline-flex !important;
-  gap: var(--inkdesk-space-1);
+  gap: var(--inkdos-space-1);
 }
 
 body.office-presentations .toolbar {
-  min-height: var(--inkdesk-command-tabs-height) !important;
-  height: var(--inkdesk-command-tabs-height) !important;
-  padding: 0 var(--inkdesk-space-3) !important;
-  gap: var(--inkdesk-space-2) !important;
-  background: var(--inkdesk-surface) !important;
+  min-height: var(--inkdos-command-tabs-height) !important;
+  height: var(--inkdos-command-tabs-height) !important;
+  padding: 0 var(--inkdos-space-3) !important;
+  gap: var(--inkdos-space-2) !important;
+  background: var(--inkdos-surface) !important;
 }
 
 body.office-presentations .toolbar .tab {
   height: 100% !important;
   min-height: 100% !important;
-  padding: 0 var(--inkdesk-space-3) !important;
+  padding: 0 var(--inkdos-space-3) !important;
   border: 0 !important;
   border-bottom: 2px solid transparent !important;
   border-radius: 0 !important;
   background: transparent !important;
-  color: var(--inkdesk-muted) !important;
+  color: var(--inkdos-muted) !important;
 }
 
 body.office-presentations .toolbar .tab.active {
-  border-bottom-color: var(--inkdesk-accent) !important;
+  border-bottom-color: var(--inkdos-accent) !important;
   background: transparent !important;
-  color: var(--inkdesk-accent) !important;
+  color: var(--inkdos-accent) !important;
 }
 
 body.office-presentations .workspace {
@@ -444,7 +444,7 @@ body.office-presentations .workspace {
     var(--slides-w)
     minmax(0, 1fr)
     var(--inspector-w) !important;
-  background: var(--inkdesk-workspace-canvas) !important;
+  background: var(--inkdos-workspace-canvas) !important;
 }
 
 body.office-presentations .workspace.hide-slides {
@@ -466,18 +466,18 @@ body.office-presentations .app.hide-notes .notes-panel {
 }
 
 body.office-presentations .slide-list {
-  background: var(--inkdesk-chrome-soft) !important;
-  border-right: 1px solid var(--inkdesk-edge) !important;
+  background: var(--inkdos-chrome-soft) !important;
+  border-right: 1px solid var(--inkdos-edge) !important;
 }
 
 body.office-presentations .stage-wrap {
-  background: var(--inkdesk-workspace-canvas) !important;
+  background: var(--inkdos-workspace-canvas) !important;
 }
 
 body.office-presentations .inspector,
 body.office-presentations .notes-panel {
-  background: var(--inkdesk-surface) !important;
-  border-color: var(--inkdesk-edge) !important;
+  background: var(--inkdos-surface) !important;
+  border-color: var(--inkdos-edge) !important;
 }
 
 body.office-presentations .bottom-zoom {
@@ -497,23 +497,23 @@ body.office-presentations .app-badge {
 /* -------------------------------------------------------------------------- */
 
 body.office-pdf {
-  --title-height: var(--inkdesk-titlebar-height);
+  --title-height: var(--inkdos-titlebar-height);
   --toolbar-height: 48px;
-  --status-height: var(--inkdesk-statusbar-height);
-  --inkdesk-accent: #b42318;
+  --status-height: var(--inkdos-statusbar-height);
+  --inkdos-accent: #b42318;
   --accent: #b42318 !important;
   --accent-soft: rgba(180, 35, 24, 0.12) !important;
-  --inkdesk-pdf-sidebar-width: 244px;
+  --inkdos-pdf-sidebar-width: 244px;
 }
 
 
 
 body.office-pdf .viewer-app {
   grid-template-rows:
-    var(--inkdesk-titlebar-height)
+    var(--inkdos-titlebar-height)
     48px
     minmax(0, 1fr)
-    var(--inkdesk-statusbar-height) !important;
+    var(--inkdos-statusbar-height) !important;
 }
 
 body.office-pdf .start-screen:not(.hidden) {
@@ -552,16 +552,16 @@ body.office-pdf .commandbar {
 }
 
 body.office-pdf .workspace-body {
-  background: var(--inkdesk-workspace-canvas);
+  background: var(--inkdos-workspace-canvas);
 }
 
 body.office-pdf .sidebar {
-  background: var(--inkdesk-chrome-soft) !important;
-  border-right-color: var(--inkdesk-edge) !important;
+  background: var(--inkdos-chrome-soft) !important;
+  border-right-color: var(--inkdos-edge) !important;
 }
 
 body.office-pdf .viewer-stage {
-  background: var(--inkdesk-workspace-canvas) !important;
+  background: var(--inkdos-workspace-canvas) !important;
 }
 
 body.office-pdf .pdf-pages {
@@ -596,7 +596,7 @@ body.office-pdf .pdf-pages {
 @media (max-width: 700px) {
   body.office-product .topbar,
   body.office-product .titlebar {
-    padding-inline: var(--inkdesk-space-2) !important;
+    padding-inline: var(--inkdos-space-2) !important;
   }
 
   body.office-product .document-title,
@@ -608,7 +608,7 @@ body.office-pdf .pdf-pages {
   body.office-product .tools,
   body.office-product .commandbar,
   body.office-spreadsheets .toolbar {
-    padding-inline: var(--inkdesk-space-2) !important;
+    padding-inline: var(--inkdos-space-2) !important;
   }
 
   body.office-documents .viewport {
@@ -628,17 +628,17 @@ body.office-pdf .pdf-pages {
   body.office-product .icon-btn,
   body.office-product .top-action,
   body.office-product .save-btn {
-    min-width: var(--inkdesk-touch-target);
-    width: var(--inkdesk-touch-target);
-    min-height: var(--inkdesk-touch-target);
-    height: var(--inkdesk-touch-target);
+    min-width: var(--inkdos-touch-target);
+    width: var(--inkdos-touch-target);
+    min-height: var(--inkdos-touch-target);
+    height: var(--inkdos-touch-target);
   }
 
   body.office-product .formatbar button,
   body.office-product .toolbar button,
   body.office-product .tools button,
   body.office-product .commandbar button {
-    min-height: var(--inkdesk-touch-target) !important;
+    min-height: var(--inkdos-touch-target) !important;
   }
 }
 
@@ -647,7 +647,7 @@ body.office-pdf .pdf-pages {
 @media (min-width: 651px) {
   body.office-pdf .workspace-body {
     grid-template-columns:
-      var(--inkdesk-pdf-sidebar-width)
+      var(--inkdos-pdf-sidebar-width)
       minmax(0, 1fr) !important;
   }
 
@@ -656,9 +656,9 @@ body.office-pdf .pdf-pages {
   }
 
   body.office-pdf .workspace-body > .sidebar {
-    width: var(--inkdesk-pdf-sidebar-width) !important;
+    width: var(--inkdos-pdf-sidebar-width) !important;
     min-width: 0 !important;
-    max-width: var(--inkdesk-pdf-sidebar-width) !important;
+    max-width: var(--inkdos-pdf-sidebar-width) !important;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
@@ -822,8 +822,8 @@ body.office-documents .ruler {
   min-width: 0;
   overflow: hidden !important;
   padding: 2px 0 !important;
-  background: var(--inkdesk-surface-soft) !important;
-  border-bottom: 1px solid var(--inkdesk-edge) !important;
+  background: var(--inkdos-surface-soft) !important;
+  border-bottom: 1px solid var(--inkdos-edge) !important;
 }
 
 body.office-documents .ruler-track {
@@ -834,13 +834,13 @@ body.office-documents .ruler-track {
   max-width: none !important;
   height: 24px !important;
   overflow: hidden !important;
-  border: 1px solid var(--inkdesk-edge-strong) !important;
+  border: 1px solid var(--inkdos-edge-strong) !important;
   border-radius: 2px;
   background:
     linear-gradient(
       to right,
-      var(--inkdesk-surface-soft),
-      var(--inkdesk-surface-soft)
+      var(--inkdos-surface-soft),
+      var(--inkdos-surface-soft)
     ) !important;
   transform-origin: left center;
   transition: none !important;
@@ -864,7 +864,7 @@ body.office-documents .ruler-track > .ticks {
   z-index: 1;
 }
 
-body.office-documents .inkdesk-ruler-margin {
+body.office-documents .inkdos-ruler-margin {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -874,60 +874,60 @@ body.office-documents .inkdesk-ruler-margin {
       135deg,
       color-mix(
         in srgb,
-        var(--inkdesk-muted) 12%,
+        var(--inkdos-muted) 12%,
         transparent
       ) 0 3px,
       transparent 3px 6px
     );
-  border-color: var(--inkdesk-edge);
+  border-color: var(--inkdos-edge);
   pointer-events: none;
 }
 
-body.office-documents .inkdesk-ruler-margin-left {
+body.office-documents .inkdos-ruler-margin-left {
   left: 0;
-  border-right: 1px solid var(--inkdesk-edge);
+  border-right: 1px solid var(--inkdos-edge);
 }
 
-body.office-documents .inkdesk-ruler-margin-right {
+body.office-documents .inkdos-ruler-margin-right {
   right: 0;
-  border-left: 1px solid var(--inkdesk-edge);
+  border-left: 1px solid var(--inkdos-edge);
 }
 
-body.office-documents .inkdesk-ruler-tick {
+body.office-documents .inkdos-ruler-tick {
   position: absolute;
   bottom: 0;
   width: 1px;
   height: 4px;
-  background: var(--inkdesk-muted);
+  background: var(--inkdos-muted);
   opacity: 0.62;
   transform: translateX(-0.5px);
 }
 
-body.office-documents .inkdesk-ruler-tick-quarter {
+body.office-documents .inkdos-ruler-tick-quarter {
   height: 6px;
 }
 
-body.office-documents .inkdesk-ruler-tick-half {
+body.office-documents .inkdos-ruler-tick-half {
   height: 8px;
 }
 
-body.office-documents .inkdesk-ruler-tick-major {
+body.office-documents .inkdos-ruler-tick-major {
   height: 11px;
   opacity: 0.82;
 }
 
-body.office-documents .inkdesk-ruler-tick-edge {
+body.office-documents .inkdos-ruler-tick-edge {
   height: 100%;
   opacity: 0.35;
 }
 
-body.office-documents .inkdesk-ruler-number {
+body.office-documents .inkdos-ruler-number {
   position: absolute;
   top: 2px;
   left: 50%;
   max-width: 24px;
   overflow: hidden;
-  color: var(--inkdesk-muted);
+  color: var(--inkdos-muted);
   font:
     9px/1
     -apple-system,
@@ -947,7 +947,7 @@ body.office-documents .ruler-handle.first-line,
 body.office-documents .ruler-handle.hanging,
 body.office-documents .ruler-handle.left-block,
 body.office-documents .ruler-handle.right-indent {
-  color: var(--inkdesk-accent);
+  color: var(--inkdos-accent);
 }
 
 @media (max-width: 780px) {

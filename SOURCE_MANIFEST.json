@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "distribution": "complete source tree",
   "entryPoint": "index.html",
   "requiresBuild": false,
@@ -9,5 +9,5 @@
   "publicationBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json",
   "updateWorkflow": ".github/workflows/apply-inkdos-update.yml",
-  "workflowPolicy": "manual bootstrap; update ZIPs cannot modify .github/workflows"
+  "workflowPolicy": "validated candidate; update ZIPs cannot modify GitHub workflows"
 }

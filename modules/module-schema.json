@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://vfydr2m9wk-ops.github.io/InkDesk/schemas/module-v1.json",
-  "title": "InkDesk workspace module manifest",
+  "$id": "https://vfydr2m9wk-ops.github.io/InkDOS/schemas/module-v1.json",
+  "title": "InkDOS workspace module manifest",
   "type": "object",
   "additionalProperties": false,
   "required": [

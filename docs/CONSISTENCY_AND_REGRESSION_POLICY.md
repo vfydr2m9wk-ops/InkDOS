@@ -1,6 +1,6 @@
 # Consistency and regression policy
 
-Starting with InkDesk 0.20.1, the project is in refinement and stabilization.
+Starting with InkDOS 0.20.1, the project is in refinement and stabilization.
 
 A patch is blocked when it removes an existing function, changes an equivalent control inconsistently between workspaces, leaves public versions and cache identifiers out of sync, or fails any inherited or feature-specific regression test.
 

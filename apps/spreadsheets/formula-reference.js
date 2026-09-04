@@ -111,7 +111,7 @@
     };
 
     function editor() {
-      return global.InkDeskSpreadsheetFormulaEditor || null;
+      return global.InkDOSSpreadsheetFormulaEditor || null;
     }
 
     function setStatus(message) {
@@ -352,7 +352,7 @@
       formatRange
     });
 
-    global.InkDeskSpreadsheetFormulaReferences = controller;
+    global.InkDOSSpreadsheetFormulaReferences = controller;
     return controller;
   }
 
@@ -367,7 +367,7 @@
     createController
   });
 
-  global.InkDeskFormulaReferences = api;
+  global.InkDOSFormulaReferences = api;
 
   function initialize() { createController(global.document); }
   if (global.document) {

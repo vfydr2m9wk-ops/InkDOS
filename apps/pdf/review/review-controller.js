@@ -29,7 +29,7 @@
       !navigateToPage || !rerender
     ) {
       throw new Error(
-        'InkDesk PDF review controller requires state, elements and review callbacks.'
+        'InkDOS PDF review controller requires state, elements and review callbacks.'
       );
     }
 
@@ -41,7 +41,7 @@
       localStorage.setItem(
         state.storageKey,
         JSON.stringify({
-          schema: 'inkdesk-pdf-review/2',
+          schema: 'inkdos-pdf-review/2',
           fingerprint: state.fingerprint,
           annotations: state.annotations,
           bookmarks: state.bookmarks
@@ -91,7 +91,7 @@
           localStorage.getItem(state.storageKey) || 'null'
         );
 
-        if (data?.schema === 'inkdesk-pdf-review/2') {
+        if (data?.schema === 'inkdos-pdf-review/2') {
           state.annotations = Array.isArray(data.annotations)
             ? data.annotations
             : [];
@@ -101,7 +101,7 @@
         }
       } catch (error) {
         console.warn(
-          'InkDesk could not load the local PDF review.',
+          'InkDOS could not load the local PDF review.',
           error
         );
       }
@@ -124,7 +124,7 @@
       if (annotationLayer) return annotationLayer;
 
       annotationLayer =
-        global.InkDeskPdfAnnotationLayer.createAnnotationLayer({
+        global.InkDOSPdfAnnotationLayer.createAnnotationLayer({
           state,
           clamp,
           makeId,
@@ -145,7 +145,7 @@
     }
 
     function selectionApi() {
-      return global.InkDeskPdfTextSelection;
+      return global.InkDOSPdfTextSelection;
     }
 
     function captureCurrentTextSelection() {
@@ -409,7 +409,7 @@
     });
   }
 
-  global.InkDeskPdfReviewController = Object.freeze({
+  global.InkDOSPdfReviewController = Object.freeze({
     version: '0.20.3.0',
     createReviewController
   });

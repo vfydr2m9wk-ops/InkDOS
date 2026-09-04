@@ -1,16 +1,16 @@
 /*
- * InkDesk visual foundation — 0.19.4.11.
+ * InkDOS visual foundation — 0.19.4.11.
  * Rounded controls, Apple-like system typography, tactile states, and
  * raised/retractable side panels shared by every current workspace.
  */
 
-html.inkdesk,
+html.inkdos,
 body.office-product,
 body.office-product button,
 body.office-product input,
 body.office-product select,
 body.office-product textarea {
-  font-family: var(--inkdesk-font-ui) !important;
+  font-family: var(--inkdos-font-ui) !important;
   font-kerning: normal;
   font-feature-settings: "kern" 1, "liga" 1;
   -webkit-font-smoothing: antialiased;
@@ -18,10 +18,10 @@ body.office-product textarea {
 }
 
 body.office-product {
-  --inkdesk-button-bg: color-mix(in srgb, var(--inkdesk-surface) 92%, var(--inkdesk-surface-soft));
-  --inkdesk-button-hover: color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 9%, var(--inkdesk-surface));
-  --inkdesk-button-selected: color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 15%, var(--inkdesk-surface));
-  --inkdesk-button-border: color-mix(in srgb, var(--inkdesk-edge-strong) 72%, transparent);
+  --inkdos-button-bg: color-mix(in srgb, var(--inkdos-surface) 92%, var(--inkdos-surface-soft));
+  --inkdos-button-hover: color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 9%, var(--inkdos-surface));
+  --inkdos-button-selected: color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 15%, var(--inkdos-surface));
+  --inkdos-button-border: color-mix(in srgb, var(--inkdos-edge-strong) 72%, transparent);
 }
 
 body.office-product button,
@@ -36,13 +36,13 @@ body.office-product .start-btn,
 body.office-product .open-primary,
 body.office-product .primary-action,
 body.office-product .secondary-action {
-  border-radius: var(--inkdesk-control-radius) !important;
+  border-radius: var(--inkdos-control-radius) !important;
   transition:
-    transform var(--inkdesk-motion-fast) ease,
-    background-color var(--inkdesk-motion-fast) ease,
-    border-color var(--inkdesk-motion-fast) ease,
-    box-shadow var(--inkdesk-motion-fast) ease,
-    color var(--inkdesk-motion-fast) ease !important;
+    transform var(--inkdos-motion-fast) ease,
+    background-color var(--inkdos-motion-fast) ease,
+    border-color var(--inkdos-motion-fast) ease,
+    box-shadow var(--inkdos-motion-fast) ease,
+    color var(--inkdos-motion-fast) ease !important;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -57,7 +57,7 @@ body.office-product button:not(:disabled):active,
 body.office-product .icon-btn:not([aria-disabled="true"]):active,
 body.office-product label.icon-btn:active,
 body.office-product a.icon-btn:active {
-  transform: translateY(var(--inkdesk-press-offset)) scale(.975) !important;
+  transform: translateY(var(--inkdos-press-offset)) scale(.975) !important;
   box-shadow:
     0 1px 1px rgba(15, 23, 42, .10) inset,
     0 1px 2px rgba(15, 23, 42, .06) !important;
@@ -72,21 +72,21 @@ body.office-product .tab.active,
 body.office-product .sidebar-tab.active,
 body.office-product .gridlines-toggle.active,
 body.office-product .view-switch button.active {
-  color: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
-  background: var(--inkdesk-button-selected) !important;
-  border-color: color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 34%, var(--inkdesk-edge)) !important;
+  color: var(--inkdos-accent, var(--inkdos-focus)) !important;
+  background: var(--inkdos-button-selected) !important;
+  border-color: color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 34%, var(--inkdos-edge)) !important;
   box-shadow:
     0 1px 0 rgba(255,255,255,.72) inset,
     0 1px 2px rgba(15,23,42,.10),
-    0 0 0 1px color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 8%, transparent) !important;
+    0 0 0 1px color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 8%, transparent) !important;
 }
 
 body.office-product select,
 body.office-product input:not([type="range"]):not([type="color"]),
 body.office-product textarea {
   border-radius: 10px !important;
-  border-color: var(--inkdesk-edge) !important;
-  background-color: var(--inkdesk-surface) !important;
+  border-color: var(--inkdos-edge) !important;
+  background-color: var(--inkdos-surface) !important;
   box-shadow: 0 1px 0 rgba(255,255,255,.55) inset !important;
 }
 
@@ -97,8 +97,8 @@ body.office-product .modal-card,
 body.office-product .dialog-card,
 body.office-product .presentation-loading-card {
   border-radius: 24px !important;
-  border: 1px solid var(--inkdesk-edge) !important;
-  box-shadow: var(--inkdesk-shadow-panel) !important;
+  border: 1px solid var(--inkdos-edge) !important;
+  box-shadow: var(--inkdos-shadow-panel) !important;
 }
 
 body.office-product .start-actions,
@@ -125,22 +125,22 @@ body.office-documents .welcome-actions button {
   font-size: 14px !important;
   font-weight: 700 !important;
   letter-spacing: -.01em;
-  box-shadow: var(--inkdesk-shadow-control) !important;
+  box-shadow: var(--inkdos-shadow-control) !important;
 }
 
 body.office-product .start-btn.primary,
 body.office-documents .open-primary,
 body.office-product .primary-action {
   color: #fff !important;
-  background: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
-  border-color: var(--inkdesk-accent, var(--inkdesk-focus)) !important;
+  background: var(--inkdos-accent, var(--inkdos-focus)) !important;
+  border-color: var(--inkdos-accent, var(--inkdos-focus)) !important;
 }
 
 body.office-product .start-btn.secondary,
 body.office-product .secondary-action {
-  color: var(--inkdesk-text) !important;
-  background: var(--inkdesk-surface-raised) !important;
-  border-color: var(--inkdesk-edge-strong) !important;
+  color: var(--inkdos-text) !important;
+  background: var(--inkdos-surface-raised) !important;
+  border-color: var(--inkdos-edge-strong) !important;
 }
 
 body.office-product .start-btn .ico,
@@ -162,7 +162,7 @@ body.office-product .sidebar-tabs {
   gap: 4px !important;
   padding: 6px !important;
   border-radius: 14px !important;
-  background: color-mix(in srgb, var(--inkdesk-surface-soft) 86%, transparent) !important;
+  background: color-mix(in srgb, var(--inkdos-surface-soft) 86%, transparent) !important;
 }
 
 /* Raised, tab-like retractable panels. */
@@ -170,23 +170,23 @@ body.office-product .sidebar,
 body.office-product .slide-list,
 body.office-product .inspector {
   isolation: isolate;
-  border-radius: 0 var(--inkdesk-panel-radius) var(--inkdesk-panel-radius) 0 !important;
+  border-radius: 0 var(--inkdos-panel-radius) var(--inkdos-panel-radius) 0 !important;
   box-shadow:
     8px 0 24px -16px rgba(15,23,42,.42),
     0 1px 0 rgba(255,255,255,.72) inset,
-    var(--inkdesk-shadow-panel) !important;
+    var(--inkdos-shadow-panel) !important;
   transition:
-    width var(--inkdesk-motion-medium) ease,
-    transform var(--inkdesk-motion-medium) ease,
-    opacity var(--inkdesk-motion-medium) ease !important;
+    width var(--inkdos-motion-medium) ease,
+    transform var(--inkdos-motion-medium) ease,
+    opacity var(--inkdos-motion-medium) ease !important;
 }
 
 body.office-product .inspector {
-  border-radius: var(--inkdesk-panel-radius) 0 0 var(--inkdesk-panel-radius) !important;
+  border-radius: var(--inkdos-panel-radius) 0 0 var(--inkdos-panel-radius) !important;
   box-shadow:
     -8px 0 24px -16px rgba(15,23,42,.42),
     0 1px 0 rgba(255,255,255,.72) inset,
-    var(--inkdesk-shadow-panel) !important;
+    var(--inkdos-shadow-panel) !important;
 }
 
 body.office-product .sidebar::after,
@@ -200,8 +200,8 @@ body.office-product .inspector::before {
   height: 58px;
   border-radius: 999px;
   background: linear-gradient(180deg,
-    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 24%, var(--inkdesk-surface-raised)),
-    color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 10%, var(--inkdesk-edge-strong))
+    color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 24%, var(--inkdos-surface-raised)),
+    color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 10%, var(--inkdos-edge-strong))
   );
   box-shadow:
     0 1px 0 rgba(255,255,255,.7) inset,
@@ -215,7 +215,7 @@ body.office-product .slide-list::after { right: 4px; }
 body.office-product .inspector::before { left: 4px; }
 
 body.office-presentations .notes-panel {
-  border-radius: var(--inkdesk-panel-radius) var(--inkdesk-panel-radius) 0 0 !important;
+  border-radius: var(--inkdos-panel-radius) var(--inkdos-panel-radius) 0 0 !important;
   box-shadow: 0 -10px 26px -18px rgba(15,23,42,.48), 0 1px 0 rgba(255,255,255,.7) inset !important;
 }
 
@@ -235,7 +235,7 @@ body.office-pdf .app-badge {
   background-repeat: no-repeat !important;
   background-size: cover !important;
   border-radius: 9px !important;
-  box-shadow: 0 3px 10px color-mix(in srgb, var(--inkdesk-accent, var(--inkdesk-focus)) 30%, transparent) !important;
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--inkdos-accent, var(--inkdos-focus)) 30%, transparent) !important;
 }
 body.office-documents .word-badge,
 body.office-documents .welcome-icon,
@@ -252,7 +252,7 @@ body.office-pdf .app-badge { background-image: url("../../assets/icons/pdf.svg")
   body.office-product .icon-btn,
   body.office-product label.icon-btn,
   body.office-product a.icon-btn {
-    min-height: var(--inkdesk-touch-target) !important;
+    min-height: var(--inkdos-touch-target) !important;
   }
 }
 
@@ -283,14 +283,14 @@ body.office-product .file-title-input{
   text-overflow:ellipsis;
 }
 body.office-product .file-title-input:hover{
-  background:var(--inkdesk-button-hover);
+  background:var(--inkdos-button-hover);
 }
 body.office-product .file-title-input:focus{
   outline:none;
   text-align:left;
-  background:var(--inkdesk-surface);
-  border-color:color-mix(in srgb,var(--inkdesk-accent,var(--inkdesk-focus)) 58%,transparent);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--inkdesk-accent,var(--inkdesk-focus)) 14%,transparent);
+  background:var(--inkdos-surface);
+  border-color:color-mix(in srgb,var(--inkdos-accent,var(--inkdos-focus)) 58%,transparent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--inkdos-accent,var(--inkdos-focus)) 14%,transparent);
 }
 body.office-documents .welcome-actions .new-primary{
   background:#fff!important;
@@ -303,9 +303,9 @@ body.office-documents .welcome-actions .new-primary:hover{
   border-color:rgba(31,41,55,.28)!important;
 }
 body.office-documents .welcome-actions .open-document-primary{
-  background:var(--inkdesk-accent,#2f6fed)!important;
+  background:var(--inkdos-accent,#2f6fed)!important;
   color:#fff!important;
-  border-color:var(--inkdesk-accent,#2f6fed)!important;
+  border-color:var(--inkdos-accent,#2f6fed)!important;
 }
 
 /* Sequence 0.19.4.13 corrective integration.
@@ -354,25 +354,25 @@ body.office-product .file-title-editable{
   text-overflow:ellipsis;
   white-space:nowrap;
   transition:
-    background-color var(--inkdesk-motion-fast) ease,
-    border-color var(--inkdesk-motion-fast) ease,
-    box-shadow var(--inkdesk-motion-fast) ease;
+    background-color var(--inkdos-motion-fast) ease,
+    border-color var(--inkdos-motion-fast) ease,
+    box-shadow var(--inkdos-motion-fast) ease;
 }
 body.office-product .file-title-editable:hover{
-  background:var(--inkdesk-button-hover);
+  background:var(--inkdos-button-hover);
 }
 body.office-product .file-title-editable:focus{
   outline:none;
   overflow:auto;
   border-color:color-mix(
     in srgb,
-    var(--inkdesk-accent,var(--inkdesk-focus)) 58%,
+    var(--inkdos-accent,var(--inkdos-focus)) 58%,
     transparent
   );
-  background:var(--inkdesk-surface);
+  background:var(--inkdos-surface);
   box-shadow:0 0 0 3px color-mix(
     in srgb,
-    var(--inkdesk-accent,var(--inkdesk-focus)) 14%,
+    var(--inkdos-accent,var(--inkdos-focus)) 14%,
     transparent
   );
   text-align:left;

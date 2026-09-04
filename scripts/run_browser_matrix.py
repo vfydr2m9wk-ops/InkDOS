@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Run the InkDesk browser suite across installed Playwright engines.
+"""Run the InkDOS browser suite across installed Playwright engines.
 
 The normal update workflow stays fast by running Chromium only. This explicit
 matrix command runs Chromium, Firefox, and WebKit when their Playwright browser
-binaries are installed. Set INKDESK_BROWSER_MATRIX_STRICT=1 to fail when an
+binaries are installed. Set INKDOS_BROWSER_MATRIX_STRICT=1 to fail when an
 engine is unavailable.
 """
 from __future__ import annotations
@@ -34,8 +34,8 @@ with sync_playwright() as p:
 
 
 def main() -> int:
-    requested = tuple(x.strip().lower() for x in os.environ.get("INKDESK_BROWSERS", ",".join(DEFAULT_BROWSERS)).split(",") if x.strip())
-    strict = os.environ.get("INKDESK_BROWSER_MATRIX_STRICT", "0") == "1"
+    requested = tuple(x.strip().lower() for x in os.environ.get("INKDOS_BROWSERS", ",".join(DEFAULT_BROWSERS)).split(",") if x.strip())
+    strict = os.environ.get("INKDOS_BROWSER_MATRIX_STRICT", "0") == "1"
     invalid = [name for name in requested if name not in DEFAULT_BROWSERS]
     if invalid:
         print(f"Unsupported browser engine(s): {', '.join(invalid)}", file=sys.stderr)
@@ -53,7 +53,7 @@ def main() -> int:
             continue
         print(f"[RUN ] Browser matrix: {name}", flush=True)
         env = os.environ.copy()
-        env["INKDESK_BROWSER"] = name
+        env["INKDOS_BROWSER"] = name
         started = time.monotonic()
         result = subprocess.run([sys.executable, "scripts/run_browser_regressions.py"], cwd=ROOT, env=env)
         duration = round(time.monotonic() - started, 3)

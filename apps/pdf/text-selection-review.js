@@ -428,5 +428,5 @@
     buildAnnotations
   });
 
-  global.InkDeskPdfTextSelection = api;
+  global.InkDOSPdfTextSelection = api;
 })(typeof window !== 'undefined' ? window : globalThis);

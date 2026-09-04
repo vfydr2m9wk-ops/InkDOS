@@ -20,12 +20,12 @@ class DocumentsRulerTests(unittest.TestCase):
 
         for marker in (
             "installDocumentsRuler",
-            "dataset.inkdeskRuler",
+            "dataset.inkdosRuler",
             "page-linked",
             "selectionchange",
             "contentStartDisplay",
             "contentEndDisplay",
-            "InkDeskDocumentRulerModel",
+            "InkDOSDocumentRulerModel",
         ):
             self.assertIn(marker, layout)
 
@@ -50,7 +50,7 @@ class DocumentsRulerTests(unittest.TestCase):
             styles,
         )
         self.assertIn("content: none !important", styles)
-        self.assertIn(".inkdesk-ruler-number", styles)
+        self.assertIn(".inkdos-ruler-number", styles)
         self.assertIn("overflow: hidden !important", styles)
 
     def test_manifest_exposes_ruler_contract(self):
@@ -89,9 +89,10 @@ class DocumentsRulerTests(unittest.TestCase):
 
         self.assertRegex(
             worker,
-            r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];",
+            r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];",
         )
-        self.assertIn("0.20.0", bootstrap)
+        self.assertIn("function loadWorkspaceLayout()", bootstrap)
+        self.assertIn("loadDocumentRulerModel", bootstrap)
         self.assertIn("workspace-layout.js", worker)
         self.assertIn("document-ruler-model.js", worker)
         self.assertIn("workspace-layout.css", worker)
@@ -104,7 +105,7 @@ class DocumentsRulerTests(unittest.TestCase):
         script = r"""
 require('./shared/ui/document-ruler-model.js');
 require('./shared/ui/workspace-layout.js');
-const api = globalThis.InkDeskWorkspaceLayout;
+const api = globalThis.InkDOSWorkspaceLayout;
 
 if (!api || api.version !== '0.20.0') process.exit(10);
 

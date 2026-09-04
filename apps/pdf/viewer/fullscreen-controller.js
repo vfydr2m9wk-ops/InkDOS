@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  // Universal InkDesk content-focus mode. Full screen hides editor chrome and
+  // Universal InkDOS content-focus mode. Full screen hides editor chrome and
   // adapts the current PDF page to the available viewport width. Browser native
   // fullscreen is intentionally not required, avoiding WebKit canvas teardown.
   function create({ state, elements, fitWidth, rerender }) {
@@ -64,5 +64,5 @@
     return { toggle, enter, exit, sync };
   }
 
-  global.InkDeskPdfFullscreen = Object.freeze({ create });
+  global.InkDOSPdfFullscreen = Object.freeze({ create });
 })(window);

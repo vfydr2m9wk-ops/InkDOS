@@ -40,8 +40,8 @@ class ApplicationShellTests(unittest.TestCase):
                 "statusbar",
             },
         )
-        self.assertIn("inkdesk:shell-ready", contract["events"])
-        self.assertIn("inkdesk:panel-change", contract["events"])
+        self.assertIn("inkdos:shell-ready", contract["events"])
+        self.assertIn("inkdos:panel-change", contract["events"])
 
     def test_existing_workspaces_load_the_compatibility_bootstrap(self):
         workspaces = [
@@ -70,10 +70,10 @@ class ApplicationShellTests(unittest.TestCase):
             "./shared/ui/shell-contract.json",
         ):
             self.assertIn(repr(asset), worker)
-        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdesk-shell-v[^'\"]+['\"];")
+        self.assertRegex(worker, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
         self.assertRegex(
             worker,
-            r"const CACHE_NAME=[\'\"]inkdesk-shell-v[^\'\"]+[\'\"];",
+            r"const CACHE_NAME=[\'\"]inkdos-shell-v[^\'\"]+[\'\"];",
         )
 
     def test_package_and_application_manifest_expose_shell(self):
@@ -102,11 +102,11 @@ class ApplicationShellTests(unittest.TestCase):
 
         script = """
 require('./shared/ui/application-shell.js');
-if (!globalThis.InkDeskUI) process.exit(10);
-if (globalThis.InkDeskUI.version !== '0.20.0') process.exit(11);
+if (!globalThis.InkDOSUI) process.exit(10);
+if (globalThis.InkDOSUI.version !== '0.20.0') process.exit(11);
 
 let value = 0;
-const commands = globalThis.InkDeskUI.createCommandRegistry(null);
+const commands = globalThis.InkDOSUI.createCommandRegistry(null);
 const unregister = commands.register(
   'test.increment',
   () => { value += 1; return value; }
@@ -150,7 +150,7 @@ const panelTarget = {
   querySelectorAll() { return []; }
 };
 
-const panels = globalThis.InkDeskUI.createPanelController(panelTarget);
+const panels = globalThis.InkDOSUI.createPanelController(panelTarget);
 panels.register('sample-panel', panelElement, { side: 'left' });
 if (!panels.isOpen('sample-panel')) process.exit(15);
 panels.setOpen('sample-panel', false);

@@ -13,12 +13,12 @@ class DocumentSessionModularizationTests(unittest.TestCase):
             encoding="utf-8"
         )
         for marker in (
-            "InkDeskDocumentSessionController",
+            "InkDOSDocumentSessionController",
             "initializeDocumentSessionAdapter",
             "function normalizeName(",
             "function commitTitle(",
             "function rewriteDownloadName(",
-            "requestDownload.__inkdeskDocumentSessionWrapped",
+            "requestDownload.__inkdosDocumentSessionWrapped",
             "replacementActionIds",
             "You have unsaved changes. Continue and discard them?",
         ):
@@ -30,7 +30,7 @@ class DocumentSessionModularizationTests(unittest.TestCase):
             "function loadFileLifecycle()",
             "function loadDocumentSessionController()",
             "document-session-controller.js",
-            "InkDeskDocumentSessionReady = Promise.all([",
+            "InkDOSDocumentSessionReady = Promise.all([",
             "controller.initialize()",
         ):
             self.assertIn(marker, shell)
@@ -38,7 +38,7 @@ class DocumentSessionModularizationTests(unittest.TestCase):
             "function normalizeName(",
             "function rewriteDownloadName(",
             "replacementActionIds",
-            "__inkdeskDocumentSessionWrapped",
+            "__inkdosDocumentSessionWrapped",
         ):
             self.assertNotIn(implementation_detail, shell)
 
@@ -57,7 +57,7 @@ class DocumentSessionModularizationTests(unittest.TestCase):
         contract = manifest["documentSessionSystem"]
         self.assertEqual(contract["version"], "0.20.0")
         self.assertEqual(contract["runtime"], "shared/ui/document-session-controller.js")
-        self.assertEqual(contract["architectureRelease"], "0.20.2.14")
+        self.assertNotIn("architectureRelease", contract)
         self.assertIn("'./shared/ui/document-session-controller.js'", worker)
 
 

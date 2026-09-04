@@ -1,83 +1,83 @@
 /*
- * InkDesk shared design tokens — visual foundation 0.19.4.11.
+ * InkDOS shared design tokens — visual foundation 0.19.4.11.
  * Existing workspace layouts remain authoritative until 0.19.4.4.
  */
 :root {
   color-scheme:light;
 
-  --inkdesk-font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-  --inkdesk-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  --inkdos-font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --inkdos-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
 
-  --inkdesk-titlebar-height: 44px;
-  --inkdesk-command-tabs-height: 36px;
-  --inkdesk-commandbar-min-height: 42px;
-  --inkdesk-statusbar-height: 30px;
+  --inkdos-titlebar-height: 44px;
+  --inkdos-command-tabs-height: 36px;
+  --inkdos-commandbar-min-height: 42px;
+  --inkdos-statusbar-height: 30px;
 
-  --inkdesk-control-height: 36px;
-  --inkdesk-touch-target: 44px;
-  --inkdesk-icon-size: 18px;
-  --inkdesk-sidebar-width: 248px;
+  --inkdos-control-height: 36px;
+  --inkdos-touch-target: 44px;
+  --inkdos-icon-size: 18px;
+  --inkdos-sidebar-width: 248px;
 
-  --inkdesk-space-1: 4px;
-  --inkdesk-space-2: 8px;
-  --inkdesk-space-3: 12px;
-  --inkdesk-space-4: 16px;
-  --inkdesk-space-5: 20px;
-  --inkdesk-space-6: 24px;
+  --inkdos-space-1: 4px;
+  --inkdos-space-2: 8px;
+  --inkdos-space-3: 12px;
+  --inkdos-space-4: 16px;
+  --inkdos-space-5: 20px;
+  --inkdos-space-6: 24px;
 
-  --inkdesk-radius-small: 10px;
-  --inkdesk-radius-medium: 14px;
-  --inkdesk-radius-large: 22px;
+  --inkdos-radius-small: 10px;
+  --inkdos-radius-medium: 14px;
+  --inkdos-radius-large: 22px;
 
-  --inkdesk-surface: #ffffff;
-  --inkdesk-surface-soft: #f6f8fb;
-  --inkdesk-surface-raised: #fbfcfe;
-  --inkdesk-workspace: #eef1f5;
-  --inkdesk-text: #1f2630;
-  --inkdesk-muted: #687180;
-  --inkdesk-edge: rgba(31, 41, 55, 0.12);
-  --inkdesk-edge-strong: rgba(31, 41, 55, 0.18);
-  --inkdesk-focus: #2f6fed;
-  --inkdesk-danger: #b42318;
-  --inkdesk-control-radius: 11px;
-  --inkdesk-card-radius: 22px;
-  --inkdesk-panel-radius: 18px;
-  --inkdesk-press-offset: 1px;
-  --inkdesk-motion-fast: 120ms;
-  --inkdesk-motion-medium: 180ms;
+  --inkdos-surface: #ffffff;
+  --inkdos-surface-soft: #f6f8fb;
+  --inkdos-surface-raised: #fbfcfe;
+  --inkdos-workspace: #eef1f5;
+  --inkdos-text: #1f2630;
+  --inkdos-muted: #687180;
+  --inkdos-edge: rgba(31, 41, 55, 0.12);
+  --inkdos-edge-strong: rgba(31, 41, 55, 0.18);
+  --inkdos-focus: #2f6fed;
+  --inkdos-danger: #b42318;
+  --inkdos-control-radius: 11px;
+  --inkdos-card-radius: 22px;
+  --inkdos-panel-radius: 18px;
+  --inkdos-press-offset: 1px;
+  --inkdos-motion-fast: 120ms;
+  --inkdos-motion-medium: 180ms;
 
-  --inkdesk-shadow-control: 0 1px 2px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.055);
-  --inkdesk-shadow-panel: 0 18px 42px rgba(15, 23, 42, 0.13), 0 1px 0 rgba(255, 255, 255, 0.82) inset;
-  --inkdesk-shadow-document: 0 22px 56px rgba(15, 23, 42, 0.18);
+  --inkdos-shadow-control: 0 1px 2px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.055);
+  --inkdos-shadow-panel: 0 18px 42px rgba(15, 23, 42, 0.13), 0 1px 0 rgba(255, 255, 255, 0.82) inset;
+  --inkdos-shadow-document: 0 22px 56px rgba(15, 23, 42, 0.18);
 
   /* Compatibility aliases retained for existing shared styles. */
-  --office-surface: var(--inkdesk-surface);
-  --office-surface-soft: var(--inkdesk-surface-soft);
-  --office-surface-raised: var(--inkdesk-surface-raised);
-  --office-text: var(--inkdesk-text);
-  --office-muted: var(--inkdesk-muted);
-  --office-edge: var(--inkdesk-edge);
-  --office-edge-strong: var(--inkdesk-edge-strong);
+  --office-surface: var(--inkdos-surface);
+  --office-surface-soft: var(--inkdos-surface-soft);
+  --office-surface-raised: var(--inkdos-surface-raised);
+  --office-text: var(--inkdos-text);
+  --office-muted: var(--inkdos-muted);
+  --office-edge: var(--inkdos-edge);
+  --office-edge-strong: var(--inkdos-edge-strong);
 }
 
 
 
 body.office-documents,
-body[data-inkdesk-module="documents"] {
-  --inkdesk-accent: #2f6fed;
+body[data-inkdos-module="documents"] {
+  --inkdos-accent: #2f6fed;
 }
 
 body.office-spreadsheets,
-body[data-inkdesk-module="spreadsheets"] {
-  --inkdesk-accent: #267a45;
+body[data-inkdos-module="spreadsheets"] {
+  --inkdos-accent: #267a45;
 }
 
 body.office-presentations,
-body[data-inkdesk-module="presentations"] {
-  --inkdesk-accent: #d64a24;
+body[data-inkdos-module="presentations"] {
+  --inkdos-accent: #d64a24;
 }
 
 body.office-pdf,
-body[data-inkdesk-module="pdf"] {
-  --inkdesk-accent: #b42318;
+body[data-inkdos-module="pdf"] {
+  --inkdos-accent: #b42318;
 }

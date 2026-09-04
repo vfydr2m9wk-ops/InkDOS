@@ -1,4 +1,4 @@
-# Contributing to InkDesk
+# Contributing to InkDOS
 
 Contributions are welcome. Keep pull requests focused, preserve offline behavior and workspace isolation, and do not introduce telemetry, cloud requirements, or unnecessary frameworks. Treat imported documents as untrusted input.
 

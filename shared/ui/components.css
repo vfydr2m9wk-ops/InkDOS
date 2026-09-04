@@ -2,92 +2,92 @@
  * Shared shell primitives, rounded control states, and panel surfaces.
  * Program-specific styles remain in place during this milestone.
  */
-html.inkdesk {
-  font-family: var(--inkdesk-font-ui);
+html.inkdos {
+  font-family: var(--inkdos-font-ui);
 }
 
-body[data-inkdesk-shell="ready"] {
-  --accent: var(--inkdesk-accent, #2f6fed);
+body[data-inkdos-shell="ready"] {
+  --accent: var(--inkdos-accent, #2f6fed);
 }
 
-[data-inkdesk-shell-region="titlebar"] {
-  min-height: var(--inkdesk-titlebar-height);
+[data-inkdos-shell-region="titlebar"] {
+  min-height: var(--inkdos-titlebar-height);
   box-sizing: border-box;
 }
 
-[data-inkdesk-shell-region="command-tabs"] {
-  min-height: var(--inkdesk-command-tabs-height);
+[data-inkdos-shell-region="command-tabs"] {
+  min-height: var(--inkdos-command-tabs-height);
   box-sizing: border-box;
 }
 
-[data-inkdesk-shell-region="commandbar"] {
-  min-height: var(--inkdesk-commandbar-min-height);
+[data-inkdos-shell-region="commandbar"] {
+  min-height: var(--inkdos-commandbar-min-height);
   box-sizing: border-box;
 }
 
-[data-inkdesk-shell-region="statusbar"] {
-  min-height: var(--inkdesk-statusbar-height);
+[data-inkdos-shell-region="statusbar"] {
+  min-height: var(--inkdos-statusbar-height);
   box-sizing: border-box;
 }
 
-[data-inkdesk-shell-region="workspace"] {
+[data-inkdos-shell-region="workspace"] {
   min-width: 0;
   min-height: 0;
 }
 
-[data-inkdesk-shell-region="titlebar"] button,
-[data-inkdesk-shell-region="titlebar"] .icon-btn,
-[data-inkdesk-shell-region="commandbar"] button,
-[data-inkdesk-shell-region="commandbar"] select,
-[data-inkdesk-shell-region="commandbar"] input {
+[data-inkdos-shell-region="titlebar"] button,
+[data-inkdos-shell-region="titlebar"] .icon-btn,
+[data-inkdos-shell-region="commandbar"] button,
+[data-inkdos-shell-region="commandbar"] select,
+[data-inkdos-shell-region="commandbar"] input {
   box-sizing: border-box;
 }
 
-[data-inkdesk-shell-region="titlebar"] .icon-btn {
-  min-width: var(--inkdesk-control-height);
-  min-height: var(--inkdesk-control-height);
+[data-inkdos-shell-region="titlebar"] .icon-btn {
+  min-width: var(--inkdos-control-height);
+  min-height: var(--inkdos-control-height);
 }
 
-[data-inkdesk-shell-region="titlebar"] svg,
-[data-inkdesk-shell-region="commandbar"] svg {
-  max-width: var(--inkdesk-icon-size);
-  max-height: var(--inkdesk-icon-size);
+[data-inkdos-shell-region="titlebar"] svg,
+[data-inkdos-shell-region="commandbar"] svg {
+  max-width: var(--inkdos-icon-size);
+  max-height: var(--inkdos-icon-size);
 }
 
-.inkdesk-command-group {
+.inkdos-command-group {
   display: inline-flex;
   align-items: center;
-  gap: var(--inkdesk-space-1);
+  gap: var(--inkdos-space-1);
   min-width: 0;
 }
 
-.inkdesk-command-group + .inkdesk-command-group {
-  border-inline-start: 1px solid var(--inkdesk-edge);
-  padding-inline-start: var(--inkdesk-space-2);
-  margin-inline-start: var(--inkdesk-space-2);
+.inkdos-command-group + .inkdos-command-group {
+  border-inline-start: 1px solid var(--inkdos-edge);
+  padding-inline-start: var(--inkdos-space-2);
+  margin-inline-start: var(--inkdos-space-2);
 }
 
-[data-inkdesk-panel] {
+[data-inkdos-panel] {
   box-sizing: border-box;
   min-width: 0;
   min-height: 0;
 }
 
-[data-inkdesk-panel][data-inkdesk-panel-side="left"],
-[data-inkdesk-panel][data-inkdesk-panel-side="right"] {
-  width: min(var(--inkdesk-sidebar-width), 42vw);
+[data-inkdos-panel][data-inkdos-panel-side="left"],
+[data-inkdos-panel][data-inkdos-panel-side="right"] {
+  width: min(var(--inkdos-sidebar-width), 42vw);
 }
 
-.inkdesk-panel-collapsed {
+.inkdos-panel-collapsed {
   display: none !important;
 }
 
-[data-inkdesk-dirty="true"] [data-inkdesk-file-title]::after {
+[data-inkdos-dirty="true"] [data-inkdos-file-title]::after {
   content: " •";
-  color: var(--inkdesk-accent, var(--inkdesk-focus));
+  color: var(--inkdos-accent, var(--inkdos-focus));
 }
 
-.inkdesk-shell-announcer {
+.inkdos-shell-announcer {
   position: fixed;
   width: 1px;
   height: 1px;
@@ -96,43 +96,43 @@ body[data-inkdesk-shell="ready"] {
   white-space: nowrap;
 }
 
-body[data-inkdesk-shell-error="true"]::before {
-  content: "The shared InkDesk interface layer could not be initialized. Core workspace controls remain available.";
+body[data-inkdos-shell-error="true"]::before {
+  content: "The shared InkDOS interface layer could not be initialized. Core workspace controls remain available.";
   position: fixed;
   z-index: 100000;
   inset: auto 12px 12px 12px;
   padding: 10px 12px;
-  border: 1px solid color-mix(in srgb, var(--inkdesk-danger) 48%, var(--inkdesk-edge));
-  border-radius: var(--inkdesk-radius-medium);
-  background: var(--inkdesk-surface);
-  color: var(--inkdesk-text);
-  box-shadow: var(--inkdesk-shadow-panel);
+  border: 1px solid color-mix(in srgb, var(--inkdos-danger) 48%, var(--inkdos-edge));
+  border-radius: var(--inkdos-radius-medium);
+  background: var(--inkdos-surface);
+  color: var(--inkdos-text);
+  box-shadow: var(--inkdos-shadow-panel);
   font-size: 12px;
 }
 
 @media (max-width: 720px) {
   :root {
-    --inkdesk-control-height: 34px;
-    --inkdesk-sidebar-width: 224px;
+    --inkdos-control-height: 34px;
+    --inkdos-sidebar-width: 224px;
   }
 
-  [data-inkdesk-shell-region="titlebar"] .icon-btn,
-  [data-inkdesk-shell-region="commandbar"] button {
-    min-height: var(--inkdesk-control-height);
+  [data-inkdos-shell-region="titlebar"] .icon-btn,
+  [data-inkdos-shell-region="commandbar"] button {
+    min-height: var(--inkdos-control-height);
   }
 }
 
 @media (pointer: coarse) {
-  [data-inkdesk-shell-region="titlebar"] .icon-btn,
-  [data-inkdesk-shell-region="commandbar"] button,
-  [data-inkdesk-shell-region="commandbar"] select {
-    min-height: var(--inkdesk-touch-target);
+  [data-inkdos-shell-region="titlebar"] .icon-btn,
+  [data-inkdos-shell-region="commandbar"] button,
+  [data-inkdos-shell-region="commandbar"] select {
+    min-height: var(--inkdos-touch-target);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-inkdesk-shell-region] *,
-  [data-inkdesk-panel] {
+  [data-inkdos-shell-region] *,
+  [data-inkdos-panel] {
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
@@ -141,18 +141,18 @@ body[data-inkdesk-shell-error="true"]::before {
 
 
 /* Visual foundation hooks — 0.19.4.11 */
-[data-inkdesk-shell-region] button,
-[data-inkdesk-shell-region] select,
-[data-inkdesk-shell-region] input,
-[data-inkdesk-panel] button,
-[data-inkdesk-panel] select,
-[data-inkdesk-panel] input,
-[data-inkdesk-panel] textarea {
-  font-family: var(--inkdesk-font-ui);
+[data-inkdos-shell-region] button,
+[data-inkdos-shell-region] select,
+[data-inkdos-shell-region] input,
+[data-inkdos-panel] button,
+[data-inkdos-panel] select,
+[data-inkdos-panel] input,
+[data-inkdos-panel] textarea {
+  font-family: var(--inkdos-font-ui);
 }
 
-[data-inkdesk-panel][data-inkdesk-panel-side="left"],
-[data-inkdesk-panel][data-inkdesk-panel-side="right"] {
-  border-radius: var(--inkdesk-panel-radius);
-  box-shadow: var(--inkdesk-shadow-panel);
+[data-inkdos-panel][data-inkdos-panel-side="left"],
+[data-inkdos-panel][data-inkdos-panel-side="right"] {
+  border-radius: var(--inkdos-panel-radius);
+  box-shadow: var(--inkdos-shadow-panel);
 }

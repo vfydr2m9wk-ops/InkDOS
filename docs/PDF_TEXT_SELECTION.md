@@ -21,7 +21,7 @@ selected.
 
 ## Geometry
 
-InkDesk inspects the selected portions of PDF.js text spans, collects their
+InkDOS inspects the selected portions of PDF.js text spans, collects their
 browser rectangles, clips them to the page text layer, merges adjacent
 rectangles on the same line, and converts them to normalized page-relative
 coordinates.
@@ -50,7 +50,7 @@ pointer-down to pointer-up.
 
 ## Persistence and compatibility
 
-The sidecar remains `inkdesk-pdf-review/2`. Older rectangular annotations
+The sidecar remains `inkdos-pdf-review/2`. Older rectangular annotations
 continue to render. New selected-text records add:
 
 - `source: "text-selection"`;

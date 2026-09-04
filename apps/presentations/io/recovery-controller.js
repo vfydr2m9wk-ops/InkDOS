@@ -28,10 +28,10 @@
     }
 
     createManager(appVersion) {
-      if (!global.InkDeskLocalRecovery) {
+      if (!global.InkDOSLocalRecovery) {
         return null;
       }
-      return global.InkDeskLocalRecovery.create({
+      return global.InkDOSLocalRecovery.create({
         module: 'presentations',
         appVersion,
         defaultFileName: 'Untitled presentation.pptx',
@@ -49,7 +49,7 @@
       if (!this.manager) {
         return;
       }
-      global.__InkDeskPresentationsRecovery = {
+      global.__InkDOSPresentationsRecovery = {
         manager: this.manager,
         capture: () => this.capture(),
         restore: (context) => this.restore(context),
@@ -178,7 +178,7 @@
     }
   }
 
-  global.InkDeskPresentationsRecovery = {
+  global.InkDOSPresentationsRecovery = {
     create(options) {
       return new PresentationRecoveryController(options);
     },

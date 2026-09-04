@@ -11,7 +11,7 @@ Development sequence `0.19.4.15` adds a local modular EPUB reader using the purp
 - Open a three-dimensional table-of-contents panel; it is closed by default.
 - View local JPEG, PNG, GIF, WebP, and SVG images.
 
-InkDesk reads `META-INF/container.xml`, locates the package document, follows the spine, sanitizes XHTML, and replaces local image references with temporary object URLs. Scripts, forms, iframes, embedded objects, audio, video, remote URLs, event attributes, and publisher styles are not retained.
+InkDOS reads `META-INF/container.xml`, locates the package document, follows the spine, sanitizes XHTML, and replaces local image references with temporary object URLs. Scripts, forms, iframes, embedded objects, audio, video, remote URLs, event attributes, and publisher styles are not retained.
 
 The filename is editable. Book content is read-only; Save downloads the unchanged original EPUB bytes under the edited filename. Renaming without saving uses the shared unsaved-change warning.
 

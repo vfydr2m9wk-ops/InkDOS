@@ -709,5 +709,5 @@
     exportDocument
   });
 
-  global.InkDeskPdfFlattenExport = api;
+  global.InkDOSPdfFlattenExport = api;
 })(typeof window !== 'undefined' ? window : globalThis);

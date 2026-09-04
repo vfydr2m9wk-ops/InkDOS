@@ -84,5 +84,5 @@ async function resolve(options){
   }
   return{color:'#ffffff'};
 }
-global.InkDeskPresentationsBackground={resolve};
+global.InkDOSPresentationsBackground={resolve};
 })(window);

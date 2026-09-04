@@ -2,7 +2,7 @@
 
 ## Private recovery snapshots
 
-InkDesk 0.20.2 stores unsaved recovery snapshots only in the browser IndexedDB database `InkDeskLocalRecovery`. Documents, Spreadsheets and Presentations use separate workspace namespaces. The source file is retained only as local browser data when it is needed to reconstruct a package-preserving copy. No recovery data is sent to an InkDesk server.
+InkDOS 0.20.2 stores unsaved recovery snapshots only in the browser IndexedDB database `InkDOSLocalRecovery`. Documents, Spreadsheets and Presentations use separate workspace namespaces. The source file is retained only as local browser data when it is needed to reconstruct a package-preserving copy. No recovery data is sent to an InkDOS server.
 
 Recovery never overwrites the selected source file. On startup, the user chooses **Restore**, **Open normally**, or **Discard recovery**. A browser download request is deliberately treated as unverified: editable Office workspaces keep dirty/recovery protection until the user explicitly replaces or discards that work. Shared OOXML source data is retained locally when needed for package-preserving recovery and can be rehydrated by an active session.
 
@@ -25,10 +25,10 @@ python3 scripts/run_browser_matrix.py
 The runner checks Chromium, Firefox and WebKit. Missing engines are reported and skipped by default. To require every requested engine:
 
 ```bash
-INKDESK_BROWSER_MATRIX_STRICT=1 python3 scripts/run_browser_matrix.py
+INKDOS_BROWSER_MATRIX_STRICT=1 python3 scripts/run_browser_matrix.py
 ```
 
-Select engines with `INKDESK_BROWSERS=chromium,firefox,webkit`.
+Select engines with `INKDOS_BROWSERS=chromium,firefox,webkit`.
 ## Functional acceptance inventory
 
 `docs/FUNCTIONAL_ACCEPTANCE_MATRIX.json` is the machine-readable inventory for user-visible controls, while `docs/FUNCTIONAL_ACCEPTANCE_CHECKLIST.md` is the human review view. A rendered control is not counted as confirmed merely because it exists in HTML or JavaScript. Behavioral automation or an explicit manual device check is required.

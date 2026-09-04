@@ -1,7 +1,7 @@
 # PDF unified Save
 
 Development sequence `0.19.4.12` simplifies the PDF workspace to one Save
-command after the InkDesk visual foundation.
+command after the InkDOS visual foundation.
 
 ## Visible document actions
 
@@ -24,19 +24,19 @@ Bookmarks remain available as local review navigation.
 
 ## Two Save paths
 
-### No InkDesk review marks
+### No InkDOS review marks
 
-When the document contains no InkDesk highlight, underline, comment, marker, or
+When the document contains no InkDOS highlight, underline, comment, marker, or
 inserted text, Save uses PDF.js `saveDocument()`. This preserves supported form
 state and keeps the source PDF structure and selectable text.
 
-### InkDesk review marks present
+### InkDOS review marks present
 
-When InkDesk review marks exist, Save:
+When InkDOS review marks exist, Save:
 
 1. renders each page locally with PDF.js;
 2. includes supported form appearances from the current annotation storage;
-3. draws InkDesk highlights, underlines, comments, marker areas, and inserted
+3. draws InkDOS highlights, underlines, comments, marker areas, and inserted
    text;
 4. encodes one page at a time;
 5. builds and downloads `original-name-modified.pdf`.
@@ -54,7 +54,7 @@ The unannotated/form-only Save path does not have this trade-off.
 
 ## Offline and memory behavior
 
-The exporter is bundled and cached in the InkDesk application shell. It does
+The exporter is bundled and cached in the InkDOS application shell. It does
 not upload the document or call an external service.
 
 Pages are rendered and encoded one at a time. The default target is 144 DPI

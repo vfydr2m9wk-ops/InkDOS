@@ -15,7 +15,7 @@ class TxtInteractionModularizationTests(unittest.TestCase):
             "history.length > 80",
             "setTimeout(push, 180)",
             "editor.setSelectionRange(item.start, item.end)",
-            "global.InkDeskTxtHistoryController",
+            "global.InkDOSTxtHistoryController",
         ):
             self.assertIn(marker, controller)
         for marker in ("history.length > 80", "setTimeout(push, 180)"):
@@ -31,7 +31,7 @@ class TxtInteractionModularizationTests(unittest.TestCase):
             "source.lastIndexOf(needle",
             "source.indexOf(needle",
             "editor.setSelectionRange(index, index + query.length)",
-            "global.InkDeskTxtFindController",
+            "global.InkDOSTxtFindController",
         ):
             self.assertIn(marker, controller)
         self.assertNotIn("source.lastIndexOf(needle", app)

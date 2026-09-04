@@ -74,7 +74,7 @@ function createRuntime(source){
   function resolveFile(file){
     const extension=extensionOf(file&&file.name);
     const registered=extensions.get(extension)||null;
-    if(!registered)throw new Error('This file type is not registered in InkDesk.');
+    if(!registered)throw new Error('This file type is not registered in InkDOS.');
     if(!registered.enabled)throw new Error(registered.name+' is currently disabled.');
     return registered;
   }
@@ -162,19 +162,19 @@ function reportStatus(runtime,root){
     return;
   }
   status.hidden=false;
-  status.textContent='Some optional InkDesk modules are unavailable. The remaining workspaces can still be opened.';
+  status.textContent='Some optional InkDOS modules are unavailable. The remaining workspaces can still be opened.';
 }
 
-const runtime=createRuntime(global.InkDeskModuleRegistry||{schemaVersion:1,modules:[]});
-global.InkDeskModules=runtime;
-global.InkDeskCreateModuleRuntime=createRuntime;
+const runtime=createRuntime(global.InkDOSModuleRegistry||{schemaVersion:1,modules:[]});
+global.InkDOSModules=runtime;
+global.InkDOSCreateModuleRuntime=createRuntime;
 
 function initialize(){
   try{
     renderLauncher(runtime,document);
     reportStatus(runtime,document);
   }catch(error){
-    console.error('InkDesk module launcher initialization failed.',error);
+    console.error('InkDOS module launcher initialization failed.',error);
   }
 }
 if(typeof document!=='undefined'){

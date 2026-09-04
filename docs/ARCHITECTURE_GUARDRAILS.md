@@ -1,14 +1,14 @@
-# Architecture guardrails — InkDesk 0.20.x
+# Architecture guardrails — InkDOS 0.20.x
 
 ## Goal
 
 The 0.20.x refactoring phase reduces the amount of code an AI or human must
-understand for a focused change without altering InkDesk's product behavior.
+understand for a focused change without altering InkDOS's product behavior.
 The target is **modularity and confidence**, not framework parity or a rewrite.
 
 ## Runtime architecture
 
-InkDesk remains a build-free local-first web application. Each workspace owns
+InkDOS remains a build-free local-first web application. Each workspace owns
 its document state and domain behavior. Shared modules exist only for behavior
 that is genuinely common.
 

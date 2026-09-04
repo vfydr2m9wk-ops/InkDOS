@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the classic-script InkDesk module registry.
+"""Generate the classic-script InkDOS module registry.
 
 The browser registry is generated instead of fetched at runtime so the same
 module discovery works on HTTPS, ordinary static servers, and direct file://
@@ -197,7 +197,7 @@ def render_registry(registry: dict) -> str:
         "(function(global){\n"
         "'use strict';\n"
         f"const registry={data};\n"
-        "global.InkDeskModuleRegistry=Object.freeze(registry);\n"
+        "global.InkDOSModuleRegistry=Object.freeze(registry);\n"
         "})(typeof window!=='undefined'?window:globalThis);\n"
     )
 

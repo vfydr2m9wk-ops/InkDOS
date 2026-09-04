@@ -22,7 +22,7 @@ class PdfSaveModularizationTests(unittest.TestCase):
         self.assertLessEqual(len(app.splitlines()), 500)
         self.assertTrue(all(len(line) <= 240 for line in app.splitlines()))
 
-        self.assertIn("window.InkDeskPdfSaveController.createSaveController", app)
+        self.assertIn("window.InkDOSPdfSaveController.createSaveController", app)
         self.assertIn("saveController.setAvailable(true)", app)
         self.assertIn("saveController.setAvailable(false)", app)
         for moved in (
@@ -39,7 +39,7 @@ class PdfSaveModularizationTests(unittest.TestCase):
         for marker in (
             "async function saveModifiedPdf()",
             "state.doc.saveDocument()",
-            "global.InkDeskPdfFlattenExport",
+            "global.InkDOSPdfFlattenExport",
             "exporter.exportDocument",
             "maxPagePixels: 8000000",
             "jpegQuality: 0.91",

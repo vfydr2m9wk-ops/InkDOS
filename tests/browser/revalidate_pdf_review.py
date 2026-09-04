@@ -80,7 +80,7 @@ def make_text_pdf(path: Path):
     )
     stream = DecodedStreamObject()
     stream.set_data(
-        b"BT /F1 18 Tf 72 720 Td (Review target phrase for InkDesk) Tj ET"
+        b"BT /F1 18 Tf 72 720 Td (Review target phrase for InkDOS) Tj ET"
     )
     page[NameObject("/Contents")] = writer._add_object(stream)
     with path.open("wb") as handle:
@@ -114,7 +114,7 @@ def main():
         "errors": [],
     }
     try:
-        with tempfile.TemporaryDirectory(prefix="inkdesk-pdf-review-") as temp_name:
+        with tempfile.TemporaryDirectory(prefix="inkdos-pdf-review-") as temp_name:
             pdf_path = Path(temp_name) / "review-smoke.pdf"
             make_text_pdf(pdf_path)
             with sync_playwright() as playwright:
@@ -144,7 +144,7 @@ def main():
                         raise
 
                     versions = page.evaluate(
-                        "() => ({controller: window.InkDeskPdfReviewController?.version, layer: window.InkDeskPdfAnnotationLayer?.version})"
+                        "() => ({controller: window.InkDOSPdfReviewController?.version, layer: window.InkDOSPdfAnnotationLayer?.version})"
                     )
                     assert_true(
                         versions == {"controller": "0.20.3.0", "layer": "0.20.3.0"},
@@ -154,7 +154,7 @@ def main():
 
                     page.set_input_files("#fileInput", str(pdf_path))
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug?.getState().pageCount === 1"
+                        "() => window.InkDOSPdfDebug?.getState().pageCount === 1"
                     )
                     page.wait_for_function(
                         "() => [...document.querySelectorAll('.textLayer span')].some(node => node.textContent.trim().length > 0)"
@@ -163,11 +163,11 @@ def main():
                     assert_true(select_first_text_span(page), "Could not establish PDF text selection")
                     page.wait_for_timeout(120)
                     applied = page.evaluate(
-                        "() => window.InkDeskPdfDebug.applyCapturedSelection('highlight')"
+                        "() => window.InkDOSPdfDebug.applyCapturedSelection('highlight')"
                     )
                     assert_true(applied, "Selected-text highlight was not applied")
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug.getState().selectedTextAnnotations >= 1"
+                        "() => window.InkDOSPdfDebug.getState().selectedTextAnnotations >= 1"
                     )
                     assert_true(
                         page.locator(".page-review-layer .review-annotation.highlight").count() >= 1,
@@ -178,7 +178,7 @@ def main():
 
                     page.click("#undoReview")
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug.getState().annotations === 0"
+                        "() => window.InkDOSPdfDebug.getState().annotations === 0"
                     )
                     report["checks"].append("review undo")
 
@@ -191,7 +191,7 @@ def main():
                     page.mouse.move(bounds["x"] + 180, bounds["y"] + 95)
                     page.mouse.up()
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug.getState().annotations === 1"
+                        "() => window.InkDOSPdfDebug.getState().annotations === 1"
                     )
                     assert_true(
                         page.locator(".page-review-layer .review-annotation.marker").count() == 1,
@@ -199,7 +199,7 @@ def main():
                     )
                     page.click("#undoReview")
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug.getState().annotations === 0"
+                        "() => window.InkDOSPdfDebug.getState().annotations === 0"
                     )
                     report["checks"].append("free marker and undo")
 
@@ -208,11 +208,11 @@ def main():
                     page.wait_for_timeout(120)
                     page.once("dialog", lambda dialog: dialog.accept("Review comment"))
                     commented = page.evaluate(
-                        "() => window.InkDeskPdfDebug.applyCapturedSelection('comment')"
+                        "() => window.InkDOSPdfDebug.applyCapturedSelection('comment')"
                     )
                     assert_true(commented, "Selected-text comment was not applied")
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug.getState().annotations >= 1"
+                        "() => window.InkDOSPdfDebug.getState().annotations >= 1"
                     )
                     page.click("#sidebarToggle")
                     page.wait_for_function(
@@ -223,20 +223,20 @@ def main():
                     assert_true(comment.count() == 1, "Comment sidebar entry was not rendered")
                     comment.click()
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug.getState().page === 1"
+                        "() => window.InkDOSPdfDebug.getState().page === 1"
                     )
                     report["checks"].append("selected-text comment and sidebar navigation")
 
                     persisted_count = page.evaluate(
-                        "() => window.InkDeskPdfDebug.getState().annotations"
+                        "() => window.InkDOSPdfDebug.getState().annotations"
                     )
                     page.reload(wait_until="networkidle")
                     page.set_input_files("#fileInput", str(pdf_path))
                     page.wait_for_function(
-                        "() => window.InkDeskPdfDebug?.getState().pageCount === 1"
+                        "() => window.InkDOSPdfDebug?.getState().pageCount === 1"
                     )
                     page.wait_for_function(
-                        "expected => window.InkDeskPdfDebug.getState().annotations === expected",
+                        "expected => window.InkDOSPdfDebug.getState().annotations === expected",
                         arg=persisted_count,
                     )
                     assert_true(

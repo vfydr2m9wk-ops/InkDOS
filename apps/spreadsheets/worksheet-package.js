@@ -6,7 +6,7 @@
   const PACKAGE_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships';
 
   function parseXml(text, context) {
-    if (global.InkDeskRuntime) return global.InkDeskRuntime.parseXml(text, context);
+    if (global.InkDOSRuntime) return global.InkDOSRuntime.parseXml(text, context);
     const document = new DOMParser().parseFromString(text, 'application/xml');
     if (document.querySelector('parsererror')) throw new Error(`Invalid XML in ${context}`);
     return document;
@@ -222,9 +222,9 @@
       usedPaths.add(path);
       sheetId++;
 
-      let relationshipId = `rIdInkDeskSheet${sheetId}`;
+      let relationshipId = `rIdInkDOSSheet${sheetId}`;
       let suffix = 1;
-      while (usedRelationshipIds.has(relationshipId)) relationshipId = `rIdInkDeskSheet${sheetId}_${suffix++}`;
+      while (usedRelationshipIds.has(relationshipId)) relationshipId = `rIdInkDOSSheet${sheetId}_${suffix++}`;
       usedRelationshipIds.add(relationshipId);
 
       const sheetNode = workbook.createElementNS(MAIN_NS, 'sheet');
@@ -271,5 +271,5 @@
     return removed || added;
   }
 
-  global.InkDeskSpreadsheetWorksheetPackage = Object.freeze({ appendNewSheets, removeDeletedSheets, syncSheets });
+  global.InkDOSSpreadsheetWorksheetPackage = Object.freeze({ appendNewSheets, removeDeletedSheets, syncSheets });
 })(typeof window !== 'undefined' ? window : globalThis);

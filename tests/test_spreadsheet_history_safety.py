@@ -53,7 +53,7 @@ if (limited.undo.length !== 3 || limited.undo[0].sheetIndex !== 2) process.exit(
             "tests/browser/revalidate_cross_workspace_isolation.py",
             "tests/browser/revalidate_launch_and_offline_modes.py",
             "tests/browser/revalidate_transactional_open_failures.py",
-            "tests/browser/revalidate_v0201_consistency.py",
+            "tests/browser/revalidate_workspace_consistency.py",
             "tests/browser/revalidate_xls_zero_formula_display.py",
             "tests/browser/revalidate_xlsx_three_eras.py",
         ):
@@ -68,7 +68,7 @@ if (limited.undo.length !== 3 || limited.undo[0].sheetIndex !== 2) process.exit(
     def test_app_history_is_sheet_scoped_recalculated_and_formula_guarded(self):
         text = (ROOT / "apps/spreadsheets/app.js").read_text(encoding="utf-8")
         for marker in (
-            "InkDeskSpreadsheetHistory.create({limit:80})",
+            "InkDOSSpreadsheetHistory.create({limit:80})",
             "history.push(action,book.active)",
             "Number(action.sheetIndex)",
             "restoreCells(action.entries||[],useAfter,target)",

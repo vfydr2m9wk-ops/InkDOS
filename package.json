@@ -1,6 +1,6 @@
 {
   "name": "inkdos",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "private": true,
   "description": "A lightweight local-first browser productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "scripts": {
@@ -31,7 +31,7 @@
     "test:home-session-refinement": "python3 -m unittest tests.test_home_session_refinement",
     "test:txt": "python3 -m unittest tests.test_txt_module",
     "test:epub": "python3 -m unittest tests.test_epub_module",
-    "test:consolidated-release": "python3 -m unittest tests.test_v0200_release",
+    "test:consolidated-release": "python3 -m unittest tests.test_release_baseline",
     "test:consistency-regressions": "python3 -m unittest tests.test_v0201_consistency",
     "test:browser:matrix": "python3 scripts/run_browser_matrix.py",
     "test:data-safety": "python3 -m unittest tests.test_local_recovery",

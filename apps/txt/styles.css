@@ -18,11 +18,11 @@ body{
 }
 
 body.office-txt{
-  --inkdesk-accent:var(--txt-accent);
+  --inkdos-accent:var(--txt-accent);
   display:grid;
   grid-template-rows:auto auto minmax(0,1fr) auto;
-  background:var(--inkdesk-canvas,#eef1f6);
-  color:var(--inkdesk-text,#1f2630);
+  background:var(--inkdos-canvas,#eef1f6);
+  color:var(--inkdos-text,#1f2630);
 }
 
 button,
@@ -40,8 +40,8 @@ textarea{
   align-items:center;
   gap:8px;
   padding:0 10px;
-  border-bottom:1px solid var(--inkdesk-edge,rgba(31,41,55,.12));
-  background:color-mix(in srgb,var(--inkdesk-surface,#fff) 94%,var(--txt-accent) 6%);
+  border-bottom:1px solid var(--inkdos-edge,rgba(31,41,55,.12));
+  background:color-mix(in srgb,var(--inkdos-surface,#fff) 94%,var(--txt-accent) 6%);
   box-shadow:0 5px 18px rgba(15,23,42,.06);
   z-index:3;
 }
@@ -93,7 +93,7 @@ textarea{
 .file-title-input:focus{
   outline:none;
   border-color:color-mix(in srgb,var(--txt-accent) 55%,transparent);
-  background:var(--inkdesk-surface,#fff);
+  background:var(--inkdos-surface,#fff);
   box-shadow:0 0 0 3px color-mix(in srgb,var(--txt-accent) 15%,transparent);
   text-align:left;
 }
@@ -110,9 +110,9 @@ textarea{
   min-height:38px;
   display:inline-grid;
   place-items:center;
-  border:1px solid var(--inkdesk-edge,rgba(31,41,55,.14));
+  border:1px solid var(--inkdos-edge,rgba(31,41,55,.14));
   border-radius:11px;
-  background:var(--inkdesk-surface,#fff);
+  background:var(--inkdos-surface,#fff);
   color:inherit;
   box-shadow:0 2px 8px rgba(15,23,42,.06);
   cursor:pointer;
@@ -133,7 +133,7 @@ textarea{
 .icon-btn:hover,
 .tool-btn:hover{
   transform:translateY(-1px);
-  background:color-mix(in srgb,var(--txt-accent) 9%,var(--inkdesk-surface,#fff));
+  background:color-mix(in srgb,var(--txt-accent) 9%,var(--inkdos-surface,#fff));
 }
 
 .icon-btn:active,
@@ -157,7 +157,7 @@ textarea{
   width:1px;
   height:25px;
   margin:0 2px;
-  background:var(--inkdesk-edge,rgba(31,41,55,.14));
+  background:var(--inkdos-edge,rgba(31,41,55,.14));
 }
 
 .txt-toolbar{
@@ -166,8 +166,8 @@ textarea{
   align-items:center;
   gap:9px;
   padding:6px 12px;
-  border-bottom:1px solid var(--inkdesk-edge,rgba(31,41,55,.12));
-  background:var(--inkdesk-surface,#fff);
+  border-bottom:1px solid var(--inkdos-edge,rgba(31,41,55,.12));
+  background:var(--inkdos-surface,#fff);
   z-index:2;
 }
 
@@ -182,23 +182,23 @@ textarea{
 .tool-btn[aria-pressed="true"]{
   color:var(--txt-accent-strong);
   border-color:color-mix(in srgb,var(--txt-accent) 42%,transparent);
-  background:color-mix(in srgb,var(--txt-accent) 14%,var(--inkdesk-surface,#fff));
+  background:color-mix(in srgb,var(--txt-accent) 14%,var(--inkdos-surface,#fff));
 }
 
 .font-size-control{
   display:flex;
   align-items:center;
   gap:7px;
-  color:var(--inkdesk-muted,#687180);
+  color:var(--inkdos-muted,#687180);
   font-size:12px;
 }
 
 .font-size-control select{
   min-height:36px;
   padding:0 28px 0 10px;
-  border:1px solid var(--inkdesk-edge,rgba(31,41,55,.14));
+  border:1px solid var(--inkdos-edge,rgba(31,41,55,.14));
   border-radius:10px;
-  background:var(--inkdesk-surface,#fff);
+  background:var(--inkdos-surface,#fff);
   color:inherit;
 }
 
@@ -218,9 +218,9 @@ textarea{
   flex:1;
   min-height:36px;
   padding:0 11px;
-  border:1px solid var(--inkdesk-edge,rgba(31,41,55,.14));
+  border:1px solid var(--inkdos-edge,rgba(31,41,55,.14));
   border-radius:10px;
-  background:var(--inkdesk-surface,#fff);
+  background:var(--inkdos-surface,#fff);
   color:inherit;
 }
 
@@ -232,7 +232,7 @@ textarea{
 
 #findStatus{
   min-width:70px;
-  color:var(--inkdesk-muted,#687180);
+  color:var(--inkdos-muted,#687180);
   font-size:11px;
 }
 
@@ -247,9 +247,9 @@ textarea{
 .txt-start-card{
   width:min(620px,100%);
   padding:38px;
-  border:1px solid var(--inkdesk-edge,rgba(31,41,55,.12));
+  border:1px solid var(--inkdos-edge,rgba(31,41,55,.12));
   border-radius:26px;
-  background:var(--inkdesk-surface,#fff);
+  background:var(--inkdos-surface,#fff);
   box-shadow:0 20px 52px rgba(15,23,42,.13);
   text-align:center;
 }
@@ -270,7 +270,7 @@ textarea{
 .txt-start-card p{
   margin:0 auto;
   max-width:430px;
-  color:var(--inkdesk-muted,#687180);
+  color:var(--inkdos-muted,#687180);
   line-height:1.55;
 }
 
@@ -284,7 +284,7 @@ textarea{
 .start-btn{
   min-height:50px;
   padding:0 18px;
-  border:1px solid var(--inkdesk-edge,rgba(31,41,55,.15));
+  border:1px solid var(--inkdos-edge,rgba(31,41,55,.15));
   border-radius:15px;
   font-weight:750;
   cursor:pointer;
@@ -297,7 +297,7 @@ textarea{
 }
 
 .start-btn.secondary{
-  background:var(--inkdesk-surface,#fff);
+  background:var(--inkdos-surface,#fff);
   color:inherit;
 }
 
@@ -312,7 +312,7 @@ textarea{
   height:100%;
   min-height:0;
   overflow:hidden;
-  border:1px solid var(--inkdesk-edge,rgba(31,41,55,.12));
+  border:1px solid var(--inkdos-edge,rgba(31,41,55,.12));
   border-radius:22px;
   background:
     repeating-linear-gradient(
@@ -338,8 +338,8 @@ textarea{
   border:0;
   outline:0;
   background:transparent;
-  color:var(--inkdesk-text,#1f2630);
-  font-family:var(--inkdesk-font-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif);
+  color:var(--inkdos-text,#1f2630);
+  font-family:var(--inkdos-font-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif);
   font-size:var(--txt-font-size);
   line-height:1.65;
   tab-size:4;
@@ -363,9 +363,9 @@ textarea{
   align-items:center;
   gap:16px;
   padding:0 14px;
-  border-top:1px solid var(--inkdesk-edge,rgba(31,41,55,.12));
-  background:var(--inkdesk-surface,#fff);
-  color:var(--inkdesk-muted,#687180);
+  border-top:1px solid var(--inkdos-edge,rgba(31,41,55,.12));
+  background:var(--inkdos-surface,#fff);
+  color:var(--inkdos-muted,#687180);
   font-size:11px;
   font-variant-numeric:tabular-nums;
 }

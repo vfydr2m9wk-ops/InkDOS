@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enforce the InkDesk refactoring ratchet without rewriting legacy source."""
+"""Enforce the InkDOS refactoring ratchet without rewriting legacy source."""
 from __future__ import annotations
 
 import json

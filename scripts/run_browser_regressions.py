@@ -21,28 +21,28 @@ SCRIPTS = [
     "revalidate_transactional_open_failures.py",
     "revalidate_cross_workspace_isolation.py",
     "revalidate_launch_and_offline_modes.py",
-    "revalidate_v0201_consistency.py",
-    "revalidate_v0202_local_recovery.py",
+    "revalidate_workspace_consistency.py",
+    "revalidate_local_recovery.py",
     "revalidate_presentations_controls.py",
     "revalidate_presentations_slideshow.py",
     "revalidate_pdf_page_rendering.py",
     "revalidate_pdf_navigation.py",
     "revalidate_pdf_review.py",
     "revalidate_pdf_save.py",
-    "revalidate_v02021_functional_corrections.py",
-    "revalidate_visual_foundation_0203.py",
-    "revalidate_content_workspaces_visual_02031.py",
-    "revalidate_workspace_unification_02031.py",
-    "revalidate_ui_correction_02031.py",
-    "revalidate_spreadsheet_visual_polish_beta1.py",
-    "revalidate_spreadsheet_add_sheet_02031.py",
-    "revalidate_format_fidelity_02031.py",
-    "revalidate_stability_corrections_candidate.py",
+    "revalidate_functional_regressions.py",
+    "revalidate_visual_foundation.py",
+    "revalidate_content_workspaces.py",
+    "revalidate_workspace_unification.py",
+    "revalidate_ui_consistency.py",
+    "revalidate_spreadsheet_visual_polish.py",
+    "revalidate_spreadsheet_add_sheet.py",
+    "revalidate_format_fidelity.py",
+    "revalidate_stability.py",
 ]
 
 
 def main() -> int:
-    browser_name = os.environ.get("INKDESK_BROWSER", "chromium").strip().lower()
+    browser_name = os.environ.get("INKDOS_BROWSER", "chromium").strip().lower()
     RESULTS.mkdir(parents=True, exist_ok=True)
     records = []
     failed = False
