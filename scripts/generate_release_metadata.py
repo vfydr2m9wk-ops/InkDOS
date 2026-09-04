@@ -85,18 +85,35 @@ def main() -> None:
     })
     dump("SOURCE_MANIFEST.json", source)
 
-    release_manifest = prune_history(load("RELEASE_MANIFEST.json"))
-    release_manifest.update({
+    release_manifest = {
+        "schemaVersion": 1,
         "project": "InkDOS",
         "version": release,
         "releaseName": version.get("releaseName", ""),
         "releaseDate": date,
+        "releaseType": "Public Beta Release",
+        "entryPoints": {
+            module: details["path"]
+            for module, details in version.get("components", {}).items()
+        },
+        "supportedFormats": [
+            details["format"]
+            for details in version.get("components", {}).values()
+        ],
         "repository": REPOSITORY,
         "homepage": DEMO,
+        "buildRequired": False,
+        "automaticRemoteRuntimeDependencies": False,
         "license": "MIT for InkDOS original code; bundled third-party components retain upstream licenses.",
-    })
-    if isinstance(release_manifest.get("entryPoints"), dict):
-        release_manifest["entryPoints"].pop("InkDOS.html", None)
+        "validation": {
+            "repository": "scripts/validate_repository.py",
+            "sourceAudit": "scripts/audit_source.py",
+            "architecture": "scripts/check_architecture_guardrails.py",
+            "unit": "python3 -m unittest discover -s tests -p test_*.py",
+            "browser": "scripts/run_browser_regressions.py",
+            "checksums": "scripts/verify_checksums.py",
+        },
+    }
     dump("RELEASE_MANIFEST.json", release_manifest)
 
     app_manifest = prune_history(load("app-manifest.json"))
@@ -128,6 +145,8 @@ def main() -> None:
     ui = app_manifest.get("uiSystem")
     if isinstance(ui, dict):
         visual = ui.pop("visualRefresh0203", None)
+        if not isinstance(visual, dict):
+            visual = ui.get("currentVisualLayer")
         if isinstance(visual, dict):
             visual = prune_history(visual)
             visual.pop("stylesheet", None)

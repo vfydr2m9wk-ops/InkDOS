@@ -40,3 +40,7 @@ formatting, images, tables, or document pagination.
 `apps/txt/module.json` declares TXT as an enabled optional module. Removing the
 module from `modules/module-config.json` and regenerating the registry disables
 it without changing Documents, Spreadsheets, Presentations, or PDF.
+
+## Local recovery
+
+Unsaved TXT edits are snapshotted privately in browser IndexedDB using the shared InkDOS recovery manager. Recovery is local-only, preserves filename/line-ending metadata, and never treats a downloaded copy as verified until the user confirms it externally.

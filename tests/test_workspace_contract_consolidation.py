@@ -35,7 +35,7 @@ class WorkspaceContractConsolidationTests(unittest.TestCase):
         policy = json.loads((ROOT / "architecture-policy.json").read_text(encoding="utf-8"))
         layout = ROOT / "shared/ui/workspace-layout.js"
         controller = ROOT / "shared/ui/workspace-panel-controller.js"
-        self.assertEqual(policy["release"], "0.20.3.0")
+        self.assertEqual(policy["release"], "1.0.0-beta.4")
         self.assertLessEqual(len(layout.read_text(encoding="utf-8").splitlines()), 500)
         self.assertLessEqual(len(controller.read_text(encoding="utf-8").splitlines()), 500)
         self.assertNotIn("shared/ui/workspace-layout.js", policy["grandfatheredDebt"])

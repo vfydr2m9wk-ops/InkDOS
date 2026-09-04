@@ -23,6 +23,7 @@ SCRIPTS = [
     "revalidate_launch_and_offline_modes.py",
     "revalidate_workspace_consistency.py",
     "revalidate_local_recovery.py",
+    "revalidate_txt_recovery.py",
     "revalidate_presentations_controls.py",
     "revalidate_presentations_slideshow.py",
     "revalidate_pdf_page_rendering.py",

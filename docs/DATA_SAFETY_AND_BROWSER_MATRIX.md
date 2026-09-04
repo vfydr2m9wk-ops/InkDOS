@@ -2,7 +2,7 @@
 
 ## Private recovery snapshots
 
-InkDOS 0.20.2 stores unsaved recovery snapshots only in the browser IndexedDB database `InkDOSLocalRecovery`. Documents, Spreadsheets and Presentations use separate workspace namespaces. The source file is retained only as local browser data when it is needed to reconstruct a package-preserving copy. No recovery data is sent to an InkDOS server.
+InkDOS stores unsaved recovery snapshots only in browser IndexedDB. Documents, Spreadsheets, Presentations and Plain Text use separate workspace namespaces. The source file is retained only as local browser data when it is needed to reconstruct a package-preserving copy. No recovery data is sent to an InkDOS server.
 
 Recovery never overwrites the selected source file. On startup, the user chooses **Restore**, **Open normally**, or **Discard recovery**. A browser download request is deliberately treated as unverified: editable Office workspaces keep dirty/recovery protection until the user explicitly replaces or discards that work. Shared OOXML source data is retained locally when needed for package-preserving recovery and can be rehydrated by an active session.
 

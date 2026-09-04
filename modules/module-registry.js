@@ -2,14 +2,14 @@
 'use strict';
 const registry={
   "schemaVersion": 1,
-  "registryVersion": "1.0.0-beta.3",
+  "registryVersion": "1.0.0-beta.4",
   "modules": [
     {
       "schemaVersion": 1,
       "id": "documents",
       "name": "Documents",
       "description": "Create, edit and save DOCX copies locally.",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "enabled": true,
       "optional": false,
       "order": 10,
@@ -39,7 +39,7 @@ const registry={
       "id": "spreadsheets",
       "name": "Spreadsheets",
       "description": "Edit XLSX files locally and open legacy XLS workbooks.",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "enabled": true,
       "optional": false,
       "order": 20,
@@ -72,7 +72,7 @@ const registry={
       "id": "presentations",
       "name": "Presentations",
       "description": "Create, edit and present PPT and PPTX files locally.",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "enabled": true,
       "optional": false,
       "order": 30,
@@ -104,7 +104,7 @@ const registry={
       "id": "pdf",
       "name": "PDF Workspace",
       "description": "Read, navigate and review PDF files locally.",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "enabled": true,
       "optional": false,
       "order": 40,
@@ -133,7 +133,7 @@ const registry={
       "id": "txt",
       "name": "Plain Text",
       "description": "Write and edit plain-text files locally.",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "enabled": true,
       "optional": true,
       "order": 50,
@@ -158,7 +158,8 @@ const registry={
         "font-size",
         "editable-file-title",
         "unsaved-change-navigation-warning",
-        "local-processing"
+        "local-processing",
+        "private-local-recovery"
       ]
     },
     {
@@ -166,7 +167,7 @@ const registry={
       "id": "epub",
       "name": "EPUB Reader",
       "description": "Read local EPUB books with pages, themes and contents.",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "enabled": true,
       "optional": true,
       "order": 60,

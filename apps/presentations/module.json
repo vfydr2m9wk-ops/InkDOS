@@ -3,7 +3,7 @@
   "id": "presentations",
   "name": "Presentations",
   "description": "Create, edit and present PPT and PPTX files locally.",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.4",
   "enabled": true,
   "optional": false,
   "order": 30,

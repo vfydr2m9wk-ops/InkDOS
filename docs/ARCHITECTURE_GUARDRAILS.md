@@ -41,7 +41,7 @@ Each extraction should be behavior-neutral and independently reversible.
 
 ## Size/readability ratchet
 
-`architecture-policy.json` records the v0.20.2.1 runtime debt baseline. New
+`architecture-policy.json` records only the current runtime complexity bounds. New
 runtime JS/CSS files are limited to 500 physical lines and 240 characters per
 physical source line. Existing files that already exceed those values are
 explicitly grandfathered at their current metrics and may not grow.

@@ -41,8 +41,8 @@ if (coordinator.guardSave(()=>{}) || coordinator.guardHistory(()=>{})) process.e
 
     def test_safety_runtime_loads_before_spreadsheet_app_and_is_precached(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        safety = "formula-safety.js?v=0.20.3.0"
-        app = "app.js?v=0.20.3.0"
+        safety = "formula-safety.js?v=1.0.0-beta.4"
+        app = "app.js?v=1.0.0-beta.4"
         self.assertIn(safety, html)
         self.assertIn(app, html)
         self.assertLess(html.index(safety), html.index(app))

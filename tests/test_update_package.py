@@ -27,15 +27,15 @@ class UpdatePackageTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.repo = self.root / "repo"
         self.repo.mkdir()
-        (self.repo / "VERSION.json").write_text(json.dumps({"version": "1.0.0-beta.3"}))
+        (self.repo / "VERSION.json").write_text(json.dumps({"version": "1.0.0-test-base"}))
         (self.repo / "DEVELOPMENT_STATE.json").write_text(json.dumps({
             "schemaVersion": 1,
             "targetRelease": "0.20.x",
             "baseVersion": "0.20.0",
-            "appliedSequence": 59,
-            "currentPackage": "1.0.0-beta.3",
+            "appliedSequence": 7,
+            "currentPackage": "1.0.0-test-base",
             "status": "complete",
-            "history": [{"sequence": n} for n in range(1, 60)],
+            "history": [{"sequence": n} for n in range(1, 8)],
         }))
         (self.repo / "scripts").mkdir()
         shutil.copy2(UPDATER, self.repo / "scripts" / "apply_update_package.py")
@@ -66,9 +66,9 @@ class UpdatePackageTests(unittest.TestCase):
         return {
             "schemaVersion": 2,
             "product": "InkDOS",
-            "packageLabel": "1.0.0-beta.3",
-            "sequence": 60,
-            "requires": {"previousSequence": 59, "appVersions": ["1.0.0-beta.3"]},
+            "packageLabel": "1.0.0-test-next",
+            "sequence": 8,
+            "requires": {"previousSequence": 7, "appVersions": ["1.0.0-test-base"]},
             "description": "test",
             "validationProfile": "none",
         }
@@ -83,8 +83,8 @@ class UpdatePackageTests(unittest.TestCase):
         state = json.loads((self.repo / "DEVELOPMENT_STATE.json").read_text())
         self.assertEqual(state, {
             "schemaVersion": 2,
-            "appliedSequence": 60,
-            "currentPackage": "1.0.0-beta.3",
+            "appliedSequence": 8,
+            "currentPackage": "1.0.0-test-next",
             "status": "complete",
         })
         self.assertNotIn("history", state)
@@ -127,11 +127,11 @@ class UpdatePackageTests(unittest.TestCase):
         self.assertEqual(plan["status"], "validated")
         self.assertFalse((self.repo / "new.txt").exists())
         state = json.loads((self.repo / "DEVELOPMENT_STATE.json").read_text())
-        self.assertEqual(state["appliedSequence"], 59)
+        self.assertEqual(state["appliedSequence"], 7)
 
     def test_wrong_sequence_is_rejected(self):
         manifest = self.manifest()
-        manifest["sequence"] = 61
+        manifest["sequence"] = 9
         package = self.package(manifest, {"new.txt": "new"})
         with self.assertRaises(self.updater.UpdateError):
             self.updater.apply_package(package, self.repo, validation_override="none")

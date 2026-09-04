@@ -3,7 +3,7 @@ import json, shutil, subprocess, unittest
 ROOT=Path(__file__).resolve().parents[1]
 class EpubModuleTests(unittest.TestCase):
     def test_assets(self):
-        for rel in ('apps/epub/module.json','apps/epub/index.html','apps/epub/styles.css','apps/epub/epub-parser.js','apps/epub/app.js','docs/EPUB_READER.md','EPUB.html'):
+        for rel in ('apps/epub/module.json','apps/epub/index.html','apps/epub/styles.css','apps/epub/epub-parser.js','apps/epub/app.js','docs/EPUB_READER.md'):
             self.assertTrue((ROOT/rel).is_file(),rel)
     def test_manifest(self):
         m=json.loads((ROOT/'apps/epub/module.json').read_text());self.assertTrue(m['enabled']);self.assertTrue(m['optional']);self.assertEqual(m['extensions'],['epub']);self.assertIn('lateral-pagination',m['capabilities']);self.assertIn('simple-images',m['capabilities'])
@@ -24,7 +24,7 @@ class EpubModuleTests(unittest.TestCase):
     def test_integration(self):
         router=(ROOT/'shared/file-router.js').read_text();reg=(ROOT/'modules/module-registry.js').read_text();home=(ROOT/'index.html').read_text();sw=(ROOT/'service-worker.js').read_text()
         self.assertIn("epub:'./apps/epub/index.html'",router);self.assertIn('"id": "epub"',reg);self.assertIn('./apps/epub/index.html',home);self.assertNotIn('openAnyInput',home)
-        for asset in ('./EPUB.html','./apps/epub/module.json','./apps/epub/index.html','./apps/epub/styles.css','./apps/epub/epub-parser.js','./apps/epub/app.js'):self.assertIn(repr(asset),sw)
+        for asset in ('./apps/epub/module.json','./apps/epub/index.html','./apps/epub/styles.css','./apps/epub/epub-parser.js','./apps/epub/app.js'):self.assertIn(repr(asset),sw)
         self.assertRegex(sw, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
     def test_contract(self):
         m=json.loads((ROOT/'app-manifest.json').read_text());c=m['epubReaderSystem'];self.assertEqual(c['version'],'0.20.0');self.assertTrue(c['localProcessing']);self.assertFalse(c['contentEditing']);self.assertEqual(len(c['themes']),4);self.assertEqual(m['documentSessionSystem']['editableTitles']['epub'],'.epub');self.assertNotIn('epub',m['iconSystem']['plannedModuleIcons'])

@@ -9,9 +9,6 @@ Copy the complete repository to any static web host or embedded browser containe
 The root redirect files provide stable entry points:
 
 - `Office Suite.html`
-- `Documents.html`
-- `Spreadsheets.html`
-- `Presentations.html`
 
 A host product may register these as menu, desktop, dock or application shortcuts. The component entry points under `apps/` may also be opened directly.
 

@@ -22,11 +22,6 @@ DOCUMENT_WRITE = re.compile(r"\bdocument\.write\s*\(")
 REMOTE_CALL = re.compile(r"\b(?:fetch|importScripts|WebSocket)\s*\(\s*['\"]https?://", re.I)
 INSECURE_REMOTE = re.compile(r"\b(?:fetch|importScripts|WebSocket)\s*\(\s*['\"]http://", re.I)
 UNSAFE_POST_MESSAGE = re.compile(r"\.postMessage\s*\([^,]+,\s*['\"]\*['\"]\)")
-LARGE_FILE_PLANS = {
-    Path('apps/pdf/app.js'): Path('docs/REFACTORING_PLAN_0.20.md'),
-    Path('shared/ui/workspace-layout.js'): Path('docs/REFACTORING_PLAN_0.20.md'),
-}
-
 
 class RuntimeReferenceParser(HTMLParser):
     def __init__(self):
@@ -61,11 +56,7 @@ def main() -> int:
         lines = text.count("\n") + 1
         metrics.append((lines, rel))
         if lines > 1000:
-            plan = LARGE_FILE_PLANS.get(rel)
-            if plan and (ROOT / plan).is_file():
-                notes.append(f'Large inherited source has an explicit refactoring plan: {rel} ({lines} lines) -> {plan}')
-            else:
-                errors.append(f"Source file exceeds 1000 lines and needs an explicit refactoring plan: {rel} ({lines})")
+            errors.append(f"Source file exceeds 1000 lines and must be simplified or decomposed: {rel} ({lines})")
         if PROTOTYPE_MARKER.search(text):
             errors.append(f"Prototype marker found in runtime/source file: {rel}")
         if ABSOLUTE_HOST.search(text):

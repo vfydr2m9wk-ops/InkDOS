@@ -1,11 +1,10 @@
 # Changelog
 
-## 1.0.0-beta.3 — 1.0 Beta 3 (2026-09-04)
+## 1.0.0-beta.4 — 1.0 Beta 4 (2026-09-04)
 
-- Completed the active-tree transition to InkDOS naming and repository URLs.
-- Replaced the accumulated update-history state with a compact current sequence contract.
-- Replaced version-named visual correction files with four bounded semantic layers, merging spreadsheet/light polish while preserving cascade order and architecture limits.
-- Simplified the shared Office shell loader and removed inactive future/transition artifacts.
-- Pruned historical migration, audit and per-release documents from `main`; GitHub remains the historical record.
-- Updated tests and validation to enforce current behavior rather than historical implementation details.
-- Preserved the six workspace, local-first, recovery, format and generated-copy safety contracts.
+- Added private IndexedDB recovery to Plain Text and removed the duplicate discard prompt when opening another TXT file.
+- Removed six obsolete root redirect launchers; canonical workspace URLs are now the only launch targets.
+- Merged the standalone start-action correction stylesheet into the canonical visual polish layer, reducing one stylesheet and six page requests.
+- Removed historical migration/refactor reports from the active tree and rebased architecture policy on current limits.
+- Normalized module/release metadata and first-party cache-busting to the current release.
+- Removed the final service-worker compatibility shim for the retired product cache/event namespace.

@@ -6,7 +6,7 @@ import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '1.0.0-beta.3'
+VERSION = '1.0.0-beta.4'
 
 
 class CurrentReleaseTests(unittest.TestCase):
@@ -28,7 +28,7 @@ class CurrentReleaseTests(unittest.TestCase):
 
     def test_service_worker_matches_current_baseline(self):
         worker = (ROOT / 'service-worker.js').read_text()
-        self.assertIn("const CACHE_NAME='inkdos-shell-v1.0.0-beta.3-ui60';", worker)
+        self.assertIn("const CACHE_NAME='inkdos-shell-v1.0.0-beta.4-ui61';", worker)
         for current in ("visual.css", "content.css", "workspace.css", "polish.css"):
             self.assertIn(repr("./shared/ui/" + current), worker)
         for retired in (
@@ -42,7 +42,7 @@ class CurrentReleaseTests(unittest.TestCase):
         state = json.loads((ROOT / 'DEVELOPMENT_STATE.json').read_text())
         self.assertEqual(state, {
             'schemaVersion': 2,
-            'appliedSequence': 60,
+            'appliedSequence': 61,
             'currentPackage': VERSION,
             'status': 'complete',
         })

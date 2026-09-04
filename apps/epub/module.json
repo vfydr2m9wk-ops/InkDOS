@@ -3,7 +3,7 @@
   "id": "epub",
   "name": "EPUB Reader",
   "description": "Read local EPUB books with pages, themes and contents.",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.4",
   "enabled": true,
   "optional": true,
   "order": 60,

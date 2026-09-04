@@ -2,7 +2,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = ROOT / "shared/ui/start-actions-unified.css"
+CSS = ROOT / "shared/ui/polish.css"
 
 TWO = {
     "documents": ("newWelcomeBtn", "open"),
@@ -29,7 +29,8 @@ def text(el):
 def test_all_apps_load_shared_start_action_contract():
     for module in (*TWO, *ONE):
         html=(ROOT / f"apps/{module}/index.html").read_text()
-        assert "../../shared/ui/start-actions-unified.css" in html
+        assert "../../shared/ui/polish.css" not in html
+        assert "polish.css" in (ROOT / "shared/office-shell.js").read_text(encoding="utf-8")
 
 def test_two_action_apps_use_identical_labels_order_and_icons():
     for module,(new_id,open_id) in TWO.items():

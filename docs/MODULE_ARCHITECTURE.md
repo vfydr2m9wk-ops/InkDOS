@@ -31,7 +31,7 @@ script can still load. This preserves the direct-file workflow.
 - `errors` and `missingModules` for isolated discovery failures.
 
 If the generated registry or loader fails, the static launcher cards remain in
-the HTML. Direct pages such as `Documents.html` and
+the HTML. Workspace pages such as `apps/documents/index.html` and
 `apps/documents/index.html` are not removed.
 
 ## Disable a module

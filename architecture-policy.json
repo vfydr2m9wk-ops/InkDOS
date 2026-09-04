@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "release": "0.20.3.0",
-  "purpose": "Refactoring ratchet: preserve current behavior while preventing runtime source files from growing harder to maintain.",
+  "release": "1.0.0-beta.4",
+  "purpose": "Current complexity ratchet: new runtime stays bounded and existing exceptions may shrink but never grow.",
   "runtimeRoots": [
     "apps",
     "shared",
@@ -21,117 +21,117 @@
     "apps/pdf/styles.css": {
       "maxLines": 21,
       "maxLongLines": 14,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/pdf/flatten-export.js": {
       "maxLines": 713,
       "maxLongLines": 0,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/txt/styles.css": {
       "maxLines": 417,
       "maxLongLines": 1,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/presentations/styles.css": {
       "maxLines": 394,
       "maxLongLines": 15,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/presentations/app.js": {
       "maxLines": 698,
       "maxLongLines": 56,
-      "reason": "Final Presentations consolidation ratchet: package-preserving PPTX write/patch helpers moved behind a dedicated I/O adapter in v0.20.2.13."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/documents/styles.css": {
       "maxLines": 65,
       "maxLongLines": 11,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/documents/docx-writer.js": {
       "maxLines": 53,
       "maxLongLines": 20,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/documents/app.js": {
       "maxLines": 194,
       "maxLongLines": 42,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/documents/docx-parser.js": {
       "maxLines": 171,
       "maxLongLines": 22,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/epub/styles.css": {
       "maxLines": 24,
       "maxLongLines": 11,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/epub/epub-parser.js": {
       "maxLines": 16,
       "maxLongLines": 4,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/epub/app.js": {
       "maxLines": 42,
       "maxLongLines": 16,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/spreadsheets/styles.css": {
       "maxLines": 162,
       "maxLongLines": 13,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/spreadsheets/formula-editor.js": {
       "maxLines": 583,
       "maxLongLines": 0,
-      "reason": "Persistent formula draft lifecycle moved to apps/spreadsheets/formula-session.js in v0.20.2.21; remaining DOM/caret, suggestion UI and keyboard interaction are ratcheted at the smaller boundary."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/spreadsheets/xls-biff8-engine.js": {
       "maxLines": 149,
       "maxLongLines": 33,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/spreadsheets/xlsx-engine.js": {
       "maxLines": 292,
       "maxLongLines": 39,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "apps/spreadsheets/app.js": {
       "maxLines": 295,
       "maxLongLines": 72,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "shared/file-lifecycle.js": {
       "maxLines": 80,
       "maxLongLines": 1,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "shared/local-recovery.js": {
       "maxLines": 276,
       "maxLongLines": 4,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "shared/formula-engine.js": {
       "maxLines": 26,
       "maxLongLines": 3,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "shared/hub.css": {
       "maxLines": 45,
       "maxLongLines": 13,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "shared/safe-dom.js": {
       "maxLines": 23,
       "maxLongLines": 5,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     },
     "shared/ui/workspace-layout.css": {
       "maxLines": 982,
       "maxLongLines": 0,
-      "reason": "Inherited pre-refactor source; ratcheted at the v0.20.2.1 baseline."
+      "reason": "Current measured exception; refactor when touched and never increase this bound."
     }
   },
   "rules": {
@@ -139,11 +139,5 @@
     "noSharedImportsFromApps": true,
     "noRelativeImportCycles": true,
     "grandfatheredFilesMayShrinkButNotGrow": true
-  },
-  "baseline": {
-    "release": "0.20.2.1",
-    "acceptedMainCommit": "469f3ee82e4da450d5fe4dcd6c883daa867830a4",
-    "measurement": "Python str.splitlines() physical-line count",
-    "source": "Hosted GitHub Actions checkout observed on 2026-08-07 before applying v0.20.2.2"
   }
 }

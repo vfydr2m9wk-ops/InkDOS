@@ -44,17 +44,21 @@ class TxtInteractionModularizationTests(unittest.TestCase):
         self.assertLessEqual(len((ROOT / "apps/txt/app.js").read_text(encoding="utf-8").splitlines()), 500)
         self.assertLessEqual(len((ROOT / "apps/txt/history-controller.js").read_text(encoding="utf-8").splitlines()), 500)
         self.assertLessEqual(len((ROOT / "apps/txt/find-controller.js").read_text(encoding="utf-8").splitlines()), 500)
+        self.assertLessEqual(len((ROOT / "apps/txt/recovery-controller.js").read_text(encoding="utf-8").splitlines()), 500)
 
     def test_txt_offline_and_load_order_include_controllers(self):
         html = (ROOT / "apps/txt/index.html").read_text(encoding="utf-8")
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
-        history = "history-controller.js?v=0.20.3.0"
-        find = "find-controller.js?v=0.20.3.0"
-        app = "app.js?v=0.20.3.0"
+        history = "history-controller.js?v=1.0.0-beta.4"
+        find = "find-controller.js?v=1.0.0-beta.4"
+        recovery = "recovery-controller.js?v=1.0.0-beta.4"
+        app = "app.js?v=1.0.0-beta.4"
         self.assertLess(html.index(history), html.index(app))
         self.assertLess(html.index(find), html.index(app))
+        self.assertLess(html.index(recovery), html.index(app))
         self.assertIn("'./apps/txt/history-controller.js'", worker)
         self.assertIn("'./apps/txt/find-controller.js'", worker)
+        self.assertIn("'./apps/txt/recovery-controller.js'", worker)
 
 
 if __name__ == "__main__":

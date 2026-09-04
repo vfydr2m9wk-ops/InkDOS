@@ -3,7 +3,7 @@
   "id": "pdf",
   "name": "PDF Workspace",
   "description": "Read, navigate and review PDF files locally.",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.4",
   "enabled": true,
   "optional": false,
   "order": 40,

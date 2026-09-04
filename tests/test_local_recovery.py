@@ -30,11 +30,11 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertNotIn('fetch("http', text)
 
     def test_only_editable_office_workspaces_load_recovery_module(self):
-        enabled = ("documents", "spreadsheets", "presentations")
-        disabled = ("pdf", "txt", "epub")
+        enabled = ("documents", "spreadsheets", "presentations", "txt")
+        disabled = ("pdf", "epub")
         for module in enabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
-            self.assertIn("../../shared/local-recovery.js?v=0.20.3.0", html)
+            self.assertIn("../../shared/local-recovery.js?v=1.0.0-beta.4", html)
             self.assertLess(html.index("local-recovery.js"), html.index("app.js"))
         for module in disabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
@@ -85,7 +85,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_service_worker_caches_recovery_runtime(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("./shared/local-recovery.js", text)
-        self.assertIn("inkdos-shell-v1.0.0-beta.3", text)
+        self.assertIn("inkdos-shell-v1.0.0-beta.4", text)
 
     def test_service_worker_canonicalizes_versioned_shell_assets(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -93,7 +93,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("canonical.hash=''", text)
         self.assertIn("APP_SHELL_URLS.has(canonical.href)", text)
         hub = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("module-registry.js?v=1.0.0-beta.3", hub)
+        self.assertIn("module-registry.js?v=1.0.0-beta.4", hub)
 
     def test_local_recovery_browser_waits_use_playwright_keyword_arg(self):
         text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
@@ -177,13 +177,13 @@ class LocalRecoveryTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
-    def test_release_identity_is_v0202(self):
+    def test_release_identity_is_current(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(version["version"], "1.0.0-beta.3")
-        self.assertEqual(version["releaseName"], "1.0 Beta 3")
-        self.assertEqual(state["appliedSequence"], 60)
-        self.assertEqual(state["currentPackage"], "1.0.0-beta.3")
+        self.assertEqual(version["version"], "1.0.0-beta.4")
+        self.assertEqual(version["releaseName"], "1.0 Beta 4")
+        self.assertEqual(state["appliedSequence"], 61)
+        self.assertEqual(state["currentPackage"], "1.0.0-beta.4")
 
 
 if __name__ == "__main__":

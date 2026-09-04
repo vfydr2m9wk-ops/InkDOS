@@ -9,7 +9,7 @@
 - Private IndexedDB recovery exists for the supported editing workspaces, but it is not a substitute for external backups or verified exported copies.
 - Compressed Office inputs are subject to conservative size, entry-count, expansion, path-safety, encryption, ZIP64 and compression-ratio limits.
 - Password-protected and encrypted Office files are unsupported.
-- The generic Launcher file handoff was intentionally removed; choose a workspace first and use its Open control.
+- The Hub Open action routes supported files locally to the matching workspace; each workspace also keeps an explicit Open control.
 - Native Safari/WebKit, iPadOS and installed-PWA behavior still require physical-device validation for the 1.0 beta.
 
 ## Documents

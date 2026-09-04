@@ -1,8 +1,7 @@
 'use strict';
-// Update sequence 60: current-state InkDOS baseline.
-const CACHE_NAME='inkdos-shell-v1.0.0-beta.3-ui60';
+// Update sequence 61: functional hardening and current-state cleanup.
+const CACHE_NAME='inkdos-shell-v1.0.0-beta.4-ui61';
 const CACHE_PREFIX='inkdos-shell-';
-const PREVIOUS_CACHE_PREFIX='ink'+'desk-shell-';
 const APP_SHELL=[
   './',
   './shared/product-config.js',
@@ -10,12 +9,6 @@ const APP_SHELL=[
   './shared/suite-shell.css',
   './index.html',
   './manifest.webmanifest',
-  './Documents.html',
-  './Spreadsheets.html',
-  './Presentations.html',
-  './PDF.html',
-  './TXT.html',
-  './EPUB.html',
   './modules/module-registry.js',
   './modules/module-loader.js',
   './modules/module-config.json',
@@ -38,7 +31,6 @@ const APP_SHELL=[
   './shared/ui/content.css',
   './shared/ui/workspace.css',
   './shared/ui/polish.css',
-  './shared/ui/start-actions-unified.css',
   './shared/office-runtime.js',
   './shared/file-lifecycle.js',
   './shared/local-recovery.js',
@@ -124,6 +116,7 @@ const APP_SHELL=[
   './apps/txt/app.js',
   './apps/txt/history-controller.js',
   './apps/txt/find-controller.js',
+  './apps/txt/recovery-controller.js',
   './apps/epub/module.json',
   './apps/epub/index.html',
   './apps/epub/styles.css',
@@ -170,7 +163,7 @@ async function installAppShell(){
 }
 async function removeOldCaches(){
   const keys=await caches.keys();
-  await Promise.all(keys.filter(key=>(key.startsWith(CACHE_PREFIX)||key.startsWith(PREVIOUS_CACHE_PREFIX))&&key!==CACHE_NAME).map(key=>caches.delete(key)));
+  await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_NAME).map(key=>caches.delete(key)));
 }
 
 async function cacheResponse(cache,key,response){
@@ -215,8 +208,7 @@ self.addEventListener('fetch',event=>{
 });
 self.addEventListener('message',event=>{
   const data=event.data||{};
-  const previousClear='ink'+'desk:clear-app-cache';
-  if(data.type!=='inkdos:clear-app-cache'&&data.type!==previousClear)return;
+  if(data.type!=='inkdos:clear-app-cache')return;
   event.waitUntil(caches.delete(CACHE_NAME).then(async()=>{
     await installAppShell();
     if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdos:app-cache-reset',ok:true});

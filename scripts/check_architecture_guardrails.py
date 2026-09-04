@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enforce the InkDOS refactoring ratchet without rewriting legacy source."""
+"""Enforce the current InkDOS runtime complexity ratchet."""
 from __future__ import annotations
 
 import json

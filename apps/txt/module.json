@@ -3,7 +3,7 @@
   "id": "txt",
   "name": "Plain Text",
   "description": "Write and edit plain-text files locally.",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.4",
   "enabled": true,
   "optional": true,
   "order": 50,
@@ -28,6 +28,7 @@
     "font-size",
     "editable-file-title",
     "unsaved-change-navigation-warning",
-    "local-processing"
+    "local-processing",
+    "private-local-recovery"
   ]
 }

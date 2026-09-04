@@ -4,7 +4,7 @@
   "name": "InkDOS",
   "longName": "Ink Desk Offline Suite",
   "tagline": "Local. Offline. Private.",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "A local-first, offline and private productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDOS",
@@ -184,7 +184,8 @@
       "txt-font-size",
       "txt-word-line-character-count",
       "editable-file-title",
-      "unsaved-change-navigation-warning"
+      "unsaved-change-navigation-warning",
+      "private-indexeddb-recovery-snapshots"
     ],
     "epub": [
       "epub-local-open",
@@ -262,7 +263,7 @@
     },
     "currentVisualLayer": {
       "schemaVersion": 1,
-      "version": "1.0.0-beta.3",
+      "version": "1.0.0-beta.4",
       "layering": "loaded after existing Home/workspace styles",
       "titlebarMinimum": 44,
       "productAccents": {
@@ -454,7 +455,7 @@
   },
   "txtEditorSystem": {
     "schemaVersion": 1,
-    "version": "0.20.0",
+    "version": "1.0.0-beta.4",
     "module": "apps/txt/module.json",
     "entryPoint": "apps/txt/index.html",
     "runtime": "apps/txt/app.js",
@@ -477,10 +478,12 @@
       "word-wrap",
       "font-size",
       "undo-redo",
-      "word-line-character-count"
+      "word-line-character-count",
+      "private-local-recovery"
     ],
     "localProcessing": true,
-    "documentation": "docs/TXT_EDITOR.md"
+    "documentation": "docs/TXT_EDITOR.md",
+    "recovery": "shared/local-recovery.js"
   },
   "epubReaderSystem": {
     "schemaVersion": 1,
@@ -510,9 +513,9 @@
     "documentation": "docs/EPUB_READER.md"
   },
   "release": {
-    "version": "1.0.0-beta.3",
+    "version": "1.0.0-beta.4",
     "channel": "beta",
-    "name": "1.0 Beta 3",
+    "name": "1.0 Beta 4",
     "date": "2026-09-04",
     "consolidated": true
   },

@@ -21,7 +21,6 @@ class TxtModuleTests(unittest.TestCase):
             "assets/icons/txt.svg",
             "assets/icons/txt.png",
             "docs/TXT_EDITOR.md",
-            "TXT.html",
         ):
             self.assertTrue((ROOT / relative).is_file(), relative)
 
@@ -61,28 +60,32 @@ class TxtModuleTests(unittest.TestCase):
             self.assertIn(marker, html)
 
         self.assertIn(
-            "../../shared/file-lifecycle.js?v=0.20.3.0",
+            "../../shared/file-lifecycle.js?v=1.0.0-beta.4",
             html,
         )
         self.assertIn(
-            "../../shared/file-router.js?v=0.20.3.0",
+            "../../shared/file-router.js?v=1.0.0-beta.4",
             html,
         )
         self.assertIn(
-            'history-controller.js?v=0.20.3.0',
+            'history-controller.js?v=1.0.0-beta.4',
             html,
         )
         self.assertIn(
-            'find-controller.js?v=0.20.3.0',
+            'find-controller.js?v=1.0.0-beta.4',
             html,
         )
         self.assertLess(
-            html.index('history-controller.js?v=0.20.3.0'),
-            html.index('app.js?v=0.20.3.0'),
+            html.index('history-controller.js?v=1.0.0-beta.4'),
+            html.index('app.js?v=1.0.0-beta.4'),
         )
         self.assertLess(
-            html.index('find-controller.js?v=0.20.3.0'),
-            html.index('app.js?v=0.20.3.0'),
+            html.index('find-controller.js?v=1.0.0-beta.4'),
+            html.index('app.js?v=1.0.0-beta.4'),
+        )
+        self.assertLess(
+            html.index('../../shared/local-recovery.js?v=1.0.0-beta.4'),
+            html.index('app.js?v=1.0.0-beta.4'),
         )
 
     def test_runtime_opens_saves_and_warns(self):
@@ -100,8 +103,13 @@ class TxtModuleTests(unittest.TestCase):
             "global.InkDOSWorkspaceOpenFile = openFile",
             "extensions: ['txt']",
             "global.InkDOSTxtDebug",
-        ):
+            "global.InkDOSTxtRecoveryController.create",
+            "await recovery.flush()",
+):
             self.assertIn(marker, script)
+        controller = (ROOT / "apps/txt/recovery-controller.js").read_text(encoding="utf-8")
+        self.assertIn("global.InkDOSLocalRecovery.create", controller)
+        self.assertIn("manager.promptLatest()", controller)
 
     def test_router_and_registry_include_txt(self):
         router = (ROOT / "shared/file-router.js").read_text(
@@ -137,7 +145,6 @@ class TxtModuleTests(unittest.TestCase):
         self.assertIn("./apps/txt/index.html", home)
         self.assertNotIn("openAnyInput", home)
         for asset in (
-            "./TXT.html",
             "./apps/txt/module.json",
             "./apps/txt/index.html",
             "./apps/txt/styles.css",
@@ -156,9 +163,11 @@ class TxtModuleTests(unittest.TestCase):
         )
         contract = manifest["txtEditorSystem"]
 
-        self.assertEqual(contract["version"], "0.20.0")
+        self.assertEqual(contract["version"], "1.0.0-beta.4")
         self.assertTrue(contract["localProcessing"])
         self.assertTrue(contract["preservesDetectedLineEnding"])
+        self.assertEqual(contract["recovery"], "shared/local-recovery.js")
+        self.assertIn("private-indexeddb-recovery-snapshots", manifest["capabilities"]["txt"])
         self.assertIn("txt", manifest["capabilities"])
         self.assertEqual(
             manifest["documentSessionSystem"][

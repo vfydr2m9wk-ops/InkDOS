@@ -1,8 +1,6 @@
 (function (global) {
   'use strict';
-
   document.body.dataset.inkdosDocumentSession = 'ready';
-
   const MAX_FILE_BYTES = 20 * 1024 * 1024;
   const E = {
     newBtn: document.getElementById('newBtn'),
@@ -38,7 +36,6 @@
     txtZoomLabel: document.getElementById('txtZoomLabel'),
     fileInput: document.getElementById('fileInput')
   };
-
   const state = {
     loaded: false,
     fileName: 'Untitled.txt',
@@ -46,7 +43,6 @@
     encoding: 'UTF-8',
     workspaceZoom: 100
   };
-
   const lifecycle = global.InkDOSFileLifecycle.create({
     onChange(value) {
       const dirty = value.shouldWarnBeforeUnload;
@@ -58,18 +54,15 @@
         ' — Plain Text';
     }
   });
-
   function setStatus(message) {
     E.statusText.textContent = String(message || 'Ready');
   }
-
   function normalizeName(value) {
     let name = String(value || '').trim() || 'Untitled.txt';
     name = name.replace(/[\\/:*?"<>|]+/g, '-');
     if (!/\.txt$/i.test(name)) name += '.txt';
     return name;
   }
-
   function setTitle(value) {
     state.fileName = normalizeName(value);
     E.docTitle.value = state.fileName;
@@ -79,30 +72,26 @@
       ' — Plain Text';
     return state.fileName;
   }
-
   function commitTitle() {
     const previous = state.fileName;
     const next = setTitle(E.docTitle.value);
-
     if (state.loaded && next !== previous) {
       if (!lifecycle.shouldWarnBeforeUnload()) lifecycle.markDirty();
+      recovery.rename(next);
       setStatus('File renamed to ' + next);
     }
   }
-
   function confirmDiscard() {
     return lifecycle.confirmDiscard(
       'This text file has unsaved changes. Continue and discard them?'
     );
   }
-
   function showEditor() {
     E.startScreen.hidden = true;
     E.editorShell.hidden = false;
     E.saveBtn.disabled = false;
     state.loaded = true;
   }
-
   function showStart() {
     E.startScreen.hidden = false;
     E.editorShell.hidden = true;
@@ -197,8 +186,11 @@
       .replace(/\r/g, '\n');
   }
 
-  function newDocument() {
+
+
+  async function newDocument() {
     if (!confirmDiscard()) return;
+    await recovery.beforeReplace();
 
     setTitle('Untitled.txt');
     state.lineEnding = '\n';
@@ -209,6 +201,7 @@
     showEditor();
     lifecycle.sourceOpened();
     historyController.reset();
+    await recovery.startNew(state.fileName);
     updateCounts();
     setStatus('New text file');
     E.editor.focus();
@@ -241,6 +234,8 @@
     const buffer = await file.arrayBuffer();
     const decoded = decodeText(buffer);
 
+    await recovery.beforeReplace();
+
     state.lineEnding = detectLineEnding(decoded.text);
     state.encoding = decoded.encoding;
 
@@ -251,6 +246,7 @@
     showEditor();
     lifecycle.sourceOpened();
     historyController.reset();
+    await recovery.startFile(file, state.fileName);
     updateCounts();
 
     setStatus(
@@ -295,7 +291,7 @@
     };
   }
 
-  function saveDocument() {
+  async function saveDocument() {
     if (!state.loaded) return;
 
     commitTitle();
@@ -303,6 +299,7 @@
     lifecycle.beginExport();
 
     try {
+      if (lifecycle.shouldWarnBeforeUnload()) await recovery.flush();
       const blob = encodeForSave();
       const receipt =
         global.InkDOSRuntime &&
@@ -331,7 +328,6 @@
   }
 
   function openPicker() {
-    if (!confirmDiscard()) return;
     E.fileInput.value = '';
     E.fileInput.click();
   }
@@ -369,6 +365,21 @@
     status: E.findStatus
   });
 
+
+  const recovery = global.InkDOSTxtRecoveryController.create({
+    editor: E.editor,
+    encodingLabel: E.encodingLabel,
+    state,
+    lifecycle,
+    history: historyController,
+    setTitle,
+    showEditor,
+    updateCounts,
+    setWorkspaceZoom,
+    setStatus,
+    normalizeText: normalizeEditorText
+  });
+
   E.newBtn.addEventListener('click', newDocument);
   E.newStartBtn.addEventListener('click', newDocument);
   E.openBtn.addEventListener('click', openPicker);
@@ -395,6 +406,7 @@
     if (!lifecycle.shouldWarnBeforeUnload()) {
       lifecycle.markDirty();
     }
+    recovery.markDirty();
     historyController.schedule();
     updateCounts();
   });
@@ -462,7 +474,7 @@
 
 
   global.InkDOSTxtDebug = Object.freeze({
-    version: '0.20.0',
+    version: '1.0.0-beta.4',
     openFile,
     newDocument,
     saveDocument,

@@ -56,8 +56,8 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
             shell.index(".then(loadWorkspaceLayoutRuntime)"),
         )
 
-        model_tag = "document-ruler-model.js?v=0.20.3.0"
-        layout_tag = "workspace-layout.js?v=0.20.3.0"
+        model_tag = "document-ruler-model.js?v=1.0.0-beta.4"
+        layout_tag = "workspace-layout.js?v=1.0.0-beta.4"
         self.assertIn(model_tag, documents)
         self.assertIn(layout_tag, documents)
         self.assertLess(documents.index(model_tag), documents.index(layout_tag))
@@ -72,7 +72,7 @@ class DocumentsRulerModelModularizationTests(unittest.TestCase):
         model_lines = len(model.read_text(encoding="utf-8").splitlines())
         shell_lines = len(shell.read_text(encoding="utf-8").splitlines())
 
-        self.assertEqual(policy["release"], "0.20.3.0")
+        self.assertEqual(policy["release"], "1.0.0-beta.4")
         self.assertLessEqual(layout_lines, 500)
         self.assertLessEqual(model_lines, 500)
         self.assertLessEqual(shell_lines, 500)

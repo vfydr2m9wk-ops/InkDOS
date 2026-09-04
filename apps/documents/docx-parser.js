@@ -16,7 +16,7 @@ async function inflateRaw(bytes){
     try{const ds=new DecompressionStream('deflate-raw');return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer());}
     catch(error){throw new Error('WebKit could not decompress this DOCX: '+(error&&error.message?error.message:error));}
   }
-  throw new Error('The local DOCX decompression engine did not load. Re-extract the complete application folder and reopen Documents.html.');
+  throw new Error('The local DOCX decompression engine did not load. Re-extract the complete application folder and reopen the Documents workspace.');
 }
 async function unzip(buffer){
   if(global.InkDOSRuntime)global.InkDOSRuntime.validateZipPackage(buffer,'DOCX file');
