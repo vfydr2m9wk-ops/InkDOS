@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "documents",
   "name": "Documents",
+  "label": "Documents",
+  "shortLabel": "Docs",
   "description": "Create, edit and save DOCX copies locally.",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "enabled": true,
   "optional": false,
   "order": 10,
   "entryPoint": "apps/documents/index.html",
+  "route": "apps/documents/index.html",
   "icon": "assets/icons/documents.png",
   "badge": "D",
   "themeClass": "documents",
@@ -26,5 +29,9 @@
     "section-aware-layout",
     "local-recovery-snapshots",
     "local-processing"
-  ]
+  ],
+  "createAction": "newBtn",
+  "openAction": "fileInput",
+  "createLabel": "Create blank document",
+  "openLabel": "Open file"
 }

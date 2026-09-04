@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "distribution": "complete source tree",
   "entryPoint": "index.html",
   "requiresBuild": false,

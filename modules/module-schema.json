@@ -97,6 +97,42 @@
         "type": "string",
         "pattern": "^[a-z0-9][a-z0-9-]*$"
       }
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shortLabel": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route": {
+      "type": "string",
+      "minLength": 1
+    },
+    "createAction": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "openAction": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "createLabel": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "openLabel": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   }
 }

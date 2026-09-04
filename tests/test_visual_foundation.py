@@ -77,13 +77,11 @@ class VisualFoundationTests(unittest.TestCase):
         self.assertEqual(catalog['icons']['inkdos']['symbol'], 'quill-and-inkwell')
 
     def test_launcher_uses_real_module_icon_files(self):
-        loader = (ROOT / 'modules/module-loader.js').read_text(encoding='utf-8')
-        self.assertIn("iconWrap.className='app-icon has-image'", loader)
-        self.assertIn("iconImage.src='./'+module.icon", loader)
-        hub = (ROOT / 'shared/hub.css').read_text(encoding='utf-8')
-        self.assertIn('../assets/icons/office.svg', hub)
-        self.assertIn('../assets/icons/documents.svg', hub)
-        self.assertIn('../assets/icons/pdf.svg', hub)
+        launcher = (ROOT / 'shared/app-shell.js').read_text(encoding='utf-8')
+        self.assertIn("image.src=asset(module.icon)", launcher)
+        for app_id in ('documents', 'spreadsheets', 'presentations', 'pdf', 'txt', 'epub'):
+            manifest = json.loads((ROOT / 'apps' / app_id / 'module.json').read_text(encoding='utf-8'))
+            self.assertTrue((ROOT / manifest['icon']).is_file(), app_id)
 
     def test_manifest_and_service_worker_expose_foundation(self):
         manifest = json.loads((ROOT / 'app-manifest.json').read_text(encoding='utf-8'))

@@ -443,7 +443,7 @@ window.InkDOSWorkspaceOpenFile = openFile;
 
 if (window.InkDOSFileRouter) {
   InkDOSFileRouter.attachWorkspace({
-    extensions: ['pdf'],
+    appId: 'pdf',
     openFile
   });
 }

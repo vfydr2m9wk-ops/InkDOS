@@ -239,6 +239,8 @@ def main():
                     page,
                     [
                         "shared/office-runtime.js",
+                        "modules/module-registry.js",
+                        "modules/module-loader.js",
                         "shared/file-router.js",
                         "shared/vendor/pdfjs/pdf.min.js",
                         "apps/pdf/text-selection-review.js",

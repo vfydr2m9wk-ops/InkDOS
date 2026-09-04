@@ -7,15 +7,17 @@
   <title>Presentations — InkDOS</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="../../shared/office-shell.css" />
-  <link rel="stylesheet" href="stability.css?v=1.0.0-beta.4" />
+  <link rel="stylesheet" href="stability.css?v=1.0.0-beta.5" />
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="apple-touch-icon" href="../../assets/icons/office.png">
+  <link rel="stylesheet" href="../../shared/ui/app-shell.css?v=1.0.0-beta.5">
+  <link rel="stylesheet" href="../../shared/ui/app-home.css?v=1.0.0-beta.5">
 </head>
-<body class="office-product office-presentations">
+<body class="office-product office-presentations" data-inkdos-app="presentations">
   <input id="fileInput" type="file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden />
   <input id="imageInput" type="file" accept="image/*" hidden />
 
-  <section id="startScreen" class="start-screen">
+  <section id="startScreen" class="start-screen" data-app-home>
     <a class="start-home-link" href="../../index.html" target="_top" title="InkDOS home" aria-label="Return to InkDOS home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 10.5v9h5v-5h3v5h5v-9"/></svg></a>
     <div class="start-card">
       <div class="app-badge">P</div>
@@ -162,23 +164,30 @@
       <div id="templateGrid" class="template-grid"></div>
     </div>
   </section>
-  <script src="../../shared/office-runtime.js?v=1.0.0-beta.4"></script>
+  <script src="../../shared/office-runtime.js?v=1.0.0-beta.5"></script>
   <script src="../../shared/vendor/jszip.min.js?v=3.10.1"></script>
   <script src="engine/compatibility.js"></script>
-  <script src="engine/background-resolver.js?v=1.0.0-beta.4"></script>
-  <script src="../../shared/office-shell.js?v=1.0.0-beta.4"></script>
-  <script src="../../shared/local-recovery.js?v=1.0.0-beta.4"></script>
-  <script src="state/selection-controller.js?v=1.0.0-beta.4"></script>
-  <script src="state/history-controller.js?v=1.0.0-beta.4"></script>
-  <script src="ui/inspector-controller.js?v=1.0.0-beta.4"></script>
-  <script src="ui/thumbnails-controller.js?v=1.0.0-beta.4"></script>
-  <script src="ui/presenter-notes-controller.js?v=1.0.0-beta.4"></script>
-  <script src="presentation/slideshow-controller.js?v=1.0.0-beta.4"></script>
-  <script src="io/pptx-write-adapter.js?v=1.0.0-beta.4"></script>
-  <script src="io/ppt-import-adapter.js?v=1.0.0-beta.4"></script>
-  <script src="io/file-controller.js?v=1.0.0-beta.4"></script>
-  <script src="io/recovery-controller.js?v=1.0.0-beta.4"></script>
-  <script src="app.js?v=1.0.0-beta.4"></script>
-  <script src="../../shared/register-service-worker.js?v=1.0.0-beta.4"></script>
+  <script src="engine/background-resolver.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/office-shell.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/product-config.js?v=1.0.0-beta.5"></script>
+  <script src="../../modules/module-registry.js?v=1.0.0-beta.5"></script>
+  <script src="../../modules/module-loader.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/recent-files.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/file-router.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/app-shell.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/app-home.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/local-recovery.js?v=1.0.0-beta.5"></script>
+  <script src="state/selection-controller.js?v=1.0.0-beta.5"></script>
+  <script src="state/history-controller.js?v=1.0.0-beta.5"></script>
+  <script src="ui/inspector-controller.js?v=1.0.0-beta.5"></script>
+  <script src="ui/thumbnails-controller.js?v=1.0.0-beta.5"></script>
+  <script src="ui/presenter-notes-controller.js?v=1.0.0-beta.5"></script>
+  <script src="presentation/slideshow-controller.js?v=1.0.0-beta.5"></script>
+  <script src="io/pptx-write-adapter.js?v=1.0.0-beta.5"></script>
+  <script src="io/ppt-import-adapter.js?v=1.0.0-beta.5"></script>
+  <script src="io/file-controller.js?v=1.0.0-beta.5"></script>
+  <script src="io/recovery-controller.js?v=1.0.0-beta.5"></script>
+  <script src="app.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/register-service-worker.js?v=1.0.0-beta.5"></script>
 </body>
 </html>

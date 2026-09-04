@@ -1,0 +1,230 @@
+[data-app-home].inkdos-app-home-host{
+box-sizing:border-box;
+width:100%;
+max-width:none;
+min-width:0;
+min-height:min(100dvh,900px);
+margin:0;
+padding:0;
+border:0;
+border-radius:0;
+background:var(--bg,#f4f6f8);
+box-shadow:none;
+color:var(--text,#1f2937)}
+[data-app-home].inkdos-app-home-host.hidden,[data-app-home].inkdos-app-home-host[hidden]{
+display:none!important}
+.inkdos-app-home-page{
+box-sizing:border-box;
+width:min(1180px,100%);
+min-width:0;
+margin:0 auto;
+padding:max(18px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}
+.inkdos-app-home-topbar{
+min-width:0;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:16px;
+min-height:48px;
+margin-bottom:clamp(28px,6vw,72px)}
+.inkdos-app-home-brand{
+color:inherit;
+font:800 18px/1.2 system-ui,sans-serif;
+text-decoration:none}
+.inkdos-app-home-global-actions{
+display:flex;
+align-items:center;
+gap:6px}
+.inkdos-app-home-icon-button{
+width:44px;
+height:44px;
+display:grid;
+place-items:center;
+border:1px solid transparent;
+border-radius:10px;
+background:transparent;
+color:inherit;
+cursor:pointer}
+.inkdos-app-home-icon-button svg{
+width:20px;
+height:20px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round}
+.inkdos-app-home-icon-button[data-app-launcher-trigger] svg{
+fill:currentColor;
+stroke:none}
+.inkdos-app-home-identity{
+display:flex;
+align-items:center;
+gap:18px;
+min-width:0;
+max-width:760px}
+.inkdos-app-home-app-icon{
+width:64px;
+height:64px;
+flex:0 0 64px;
+display:grid;
+place-items:center;
+border-radius:16px;
+background:color-mix(in srgb,var(--app-accent) 12%,transparent)}
+.inkdos-app-home-app-icon img{
+width:48px;
+height:48px;
+object-fit:contain}
+.inkdos-app-home-identity div{
+min-width:0}
+.inkdos-app-home-identity h1{
+margin:0;
+font:750 clamp(26px,3vw,38px)/1.1 system-ui,sans-serif}
+.inkdos-app-home-identity p{
+margin:8px 0 0;
+max-width:680px;
+color:var(--muted,#687180);
+font:14px/1.5 system-ui,sans-serif}
+.inkdos-app-home-primary-actions{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin:28px 0 44px}
+.inkdos-app-home-action{
+min-height:44px;
+padding:10px 16px;
+border:1px solid var(--edge,#dfe3e8);
+border-radius:10px;
+background:var(--surface,#fff);
+color:inherit;
+font:650 14px/1.2 system-ui,sans-serif;
+cursor:pointer}
+.inkdos-app-home-action-primary{
+border-color:var(--app-accent,#2f6fed);
+background:var(--app-accent,#2f6fed);
+color:#fff}
+.inkdos-app-home-section-heading{
+display:flex;
+align-items:center;
+min-height:44px;
+border-bottom:1px solid var(--edge,#dfe3e8)}
+.inkdos-app-home-section-heading h2{
+margin:0;
+font:700 18px/1.2 system-ui,sans-serif}
+.inkdos-app-home-empty{
+min-height:148px;
+display:grid;
+align-content:center;
+gap:5px;
+color:var(--muted,#687180)}
+.inkdos-app-home-empty strong{
+color:var(--text,#1f2937);
+font:650 14px/1.2 system-ui,sans-serif}
+.inkdos-app-home-empty span{
+font:13px/1.4 system-ui,sans-serif}
+.inkdos-app-home-recent-list{
+display:grid}
+.inkdos-app-home-recent-row{
+width:100%;
+min-width:0;
+min-height:56px;
+display:flex;
+align-items:center;
+gap:12px;
+padding:8px 10px;
+border:0;
+border-bottom:1px solid var(--edge,#dfe3e8);
+background:transparent;
+color:inherit;
+text-align:left;
+cursor:pointer}
+.inkdos-app-home-recent-row img{
+width:30px;
+height:30px;
+flex:0 0 30px;
+object-fit:contain}
+.inkdos-app-home-recent-copy{
+min-width:0;
+display:grid;
+gap:3px}
+.inkdos-app-home-recent-copy strong{
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+font:600 13px/1.25 system-ui,sans-serif}
+.inkdos-app-home-recent-copy small{
+color:var(--muted,#687180);
+font:11px/1.2 system-ui,sans-serif}
+.inkdos-app-home-status{
+min-height:20px;
+margin:12px 0 0;
+color:var(--muted,#687180);
+font:12px/1.4 system-ui,sans-serif}
+@media(max-width:767px){
+[data-app-home].inkdos-app-home-host{
+min-height:100dvh}
+.inkdos-app-home-page{
+width:100%;
+margin:0;
+padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.inkdos-app-home-topbar{
+margin-bottom:28px}
+.inkdos-app-home-identity{
+align-items:flex-start;
+gap:14px}
+.inkdos-app-home-app-icon{
+width:52px;
+height:52px;
+flex-basis:52px;
+border-radius:13px}
+.inkdos-app-home-app-icon img{
+width:40px;
+height:40px}
+.inkdos-app-home-identity h1{
+font-size:26px}
+.inkdos-app-home-primary-actions{
+display:grid;
+grid-template-columns:1fr;
+margin:24px 0 34px}
+.inkdos-app-home-action{
+width:100%;
+min-height:48px}
+.inkdos-app-home-recent-row{
+min-height:60px}
+}
+body.inkdos-app-home-active.office-documents .app-shell>.topbar,
+body.inkdos-app-home-active.office-documents .app-shell>.formatbar,
+body.inkdos-app-home-active.office-documents .app-shell>.ruler,
+body.inkdos-app-home-active.office-documents .app-shell>.statusbar,
+body.inkdos-app-home-active.office-documents .workspace>.sidebar,
+body.inkdos-app-home-active.office-spreadsheets>.titlebar,
+body.inkdos-app-home-active.office-spreadsheets>.toolbar,
+body.inkdos-app-home-active.office-spreadsheets>.formula-row,
+body.inkdos-app-home-active.office-spreadsheets>footer,
+body.inkdos-app-home-active.office-txt>.txt-titlebar,
+body.inkdos-app-home-active.office-txt>.txt-toolbar,
+body.inkdos-app-home-active.office-txt>.txt-statusbar,
+body.inkdos-app-home-active.office-epub>.epub-titlebar,
+body.inkdos-app-home-active.office-epub>.reader-toolbar,
+body.inkdos-app-home-active.office-epub>.reader-statusbar,
+body.inkdos-app-home-active.office-epub .toc-panel{
+display:none!important}
+body.inkdos-app-home-active.office-documents .app-shell,
+body.inkdos-app-home-active.office-documents .workspace,
+body.inkdos-app-home-active.office-documents .viewport,
+body.inkdos-app-home-active.office-spreadsheets #workspace,
+body.inkdos-app-home-active.office-txt .txt-main,
+body.inkdos-app-home-active.office-epub .reader-main{
+box-sizing:border-box;
+width:100%;
+max-width:100vw;
+min-width:0;
+min-height:100dvh;
+margin:0;
+padding:0}
+body.inkdos-app-home-active.office-documents .viewport,body.inkdos-app-home-active.office-spreadsheets #workspace,body.inkdos-app-home-active.office-txt .txt-main,body.inkdos-app-home-active.office-epub .reader-main{
+display:block;
+overflow:auto}
+@media(prefers-reduced-motion:reduce){
+.inkdos-app-home-action,.inkdos-app-home-recent-row,.inkdos-app-home-icon-button{
+transition:none}
+}

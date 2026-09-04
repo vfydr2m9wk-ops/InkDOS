@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "1.0.0-beta.4"
+VERSION = "1.0.0-beta.5"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):
@@ -79,7 +79,7 @@ def test_home_and_pdf(page, base_url, checks):
 
 def test_spreadsheet_rename(page, base_url, checks):
     goto(page, f"{base_url}/apps/spreadsheets/index.html")
-    page.click("#newEmptyBtn")
+    page.click('[data-app-home-action="create"]')
     title = page.locator("#docTitle")
     title.fill("Budget Q3")
     title.press("Enter")
@@ -113,7 +113,7 @@ def test_spreadsheet_history_safety(page, base_url, checks):
     assert_true(page.locator('.cell[data-r="0"][data-c="0"]').inner_text() == "History Sheet A", "Redo did not reapply the action to its original worksheet")
 
     goto(page, f"{base_url}/apps/spreadsheets/index.html")
-    page.click("#newEmptyBtn")
+    page.click('[data-app-home-action="create"]')
     # v0.20.3.1 awaits recovery.startDocument() before New is complete.
     # Use the completion toast as the transaction boundary before building
     # the Undo history used by this recovery regression.
@@ -136,7 +136,7 @@ def test_spreadsheet_history_safety(page, base_url, checks):
 
 def test_presentation_rename(page, base_url, checks):
     goto(page, f"{base_url}/apps/presentations/index.html")
-    page.click("#newBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_selector("#templateDialog:not(.hidden)", state="visible")
     page.locator("#templateGrid .template-option").first.click()
     page.wait_for_selector("#app:not(.hidden)", state="visible")
@@ -155,7 +155,7 @@ def test_txt_interactions(page, base_url, checks):
     goto(page, f"{base_url}/apps/txt/index.html")
     assert_true(page.evaluate("() => !!window.InkDOSTxtHistoryController"), "TXT history controller did not load")
     assert_true(page.evaluate("() => !!window.InkDOSTxtFindController"), "TXT find controller did not load")
-    page.click("#newStartBtn")
+    page.click('[data-app-home-action="create"]')
     editor = page.locator("#editor")
     editor.fill("alpha")
     page.wait_for_timeout(240)
@@ -196,7 +196,7 @@ def test_unverified_export_protection(page, base_url, checks):
 
     # TXT: lifecycle must remain unverified after the browser receives the copy request.
     goto(page, f"{base_url}/apps/txt/index.html")
-    page.click("#newStartBtn")
+    page.click('[data-app-home-action="create"]')
     editor = page.locator("#editor")
     editor.fill("unverified export protection")
     page.wait_for_function("() => !document.querySelector('#dirtyMark').hidden")
@@ -209,7 +209,7 @@ def test_unverified_export_protection(page, base_url, checks):
 
     # Presentations: generated-copy dispatch must not clear presentation dirty state.
     goto(page, f"{base_url}/apps/presentations/index.html")
-    page.click("#newBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_selector("#templateDialog:not(.hidden)", state="visible")
     page.locator("#templateGrid .template-option").first.click()
     page.wait_for_selector("#app:not(.hidden)", state="visible")
@@ -234,10 +234,20 @@ def test_compact_titlebars(browser, base_url, checks):
     page.set_default_timeout(8000)
     try:
         goto(page, f"{base_url}/apps/txt/index.html")
+        assert_true(titlebar_height(page, ".txt-titlebar") == 0, "TXT editor chrome is visible over AppHome")
+        page.click('[data-app-home-action="create"]')
+        page.wait_for_function("() => document.querySelector('.txt-titlebar').getBoundingClientRect().height > 0")
         assert_true(titlebar_height(page, ".txt-titlebar") == 44, f"TXT title bar is not 44px: {titlebar_height(page, '.txt-titlebar')}")
+
         goto(page, f"{base_url}/apps/epub/index.html")
+        assert_true(titlebar_height(page, ".epub-titlebar") == 0, "EPUB reader chrome is visible over AppHome")
+        page.evaluate("""() => {
+            document.querySelector('#startScreen').hidden = true;
+            document.querySelector('#readerShell').hidden = false;
+        }""")
+        page.wait_for_function("() => document.querySelector('.epub-titlebar').getBoundingClientRect().height > 0")
         assert_true(titlebar_height(page, ".epub-titlebar") == 44, f"EPUB title bar is not 44px: {titlebar_height(page, '.epub-titlebar')}")
-        checks.append("TXT and EPUB compact title bars are 44px")
+        checks.append("TXT and EPUB AppHome/editor title-bar states are correct")
     finally:
         context.close()
 

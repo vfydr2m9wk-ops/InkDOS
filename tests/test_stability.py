@@ -43,10 +43,10 @@ class StabilityContractTests(unittest.TestCase):
 
     def test_file_router_validates_message_origin(self):
         router = (ROOT/'shared/file-router.js').read_text()
-        self.assertIn('function trustedMessage(event,source)', router)
-        self.assertIn('event.origin===origin', router)
-        self.assertIn("event.origin==='null'", router)
-        self.assertNotIn("postMessage({type:'inkdos:open-file',token,file},'*')", router)
+        self.assertRegex(router, r'function\s+trustedMessage\(event,\s*source\)')
+        self.assertRegex(router, r'event\.origin\s*===\s*origin')
+        self.assertRegex(router, r"event\.origin\s*===\s*'null'")
+        self.assertNotRegex(router, r"postMessage\([^\n]+,\s*'\*'\)")
 
 
 if __name__ == '__main__':

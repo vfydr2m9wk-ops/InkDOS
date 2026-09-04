@@ -1,0 +1,144 @@
+(function (global) {
+'use strict';
+const doc=global.document;
+if(!doc)return;
+function modules(){return global.InkDOSModules||null;
+}
+function recents(){return global.InkDOSRecentFiles||null;
+}
+function currentModule(){const runtime=modules(),id=String(doc.body&&doc.body.dataset.inkdosApp||'');
+return runtime&&runtime.get(id);
+}
+function rootPrefix(){return /\/apps\/[^/]+\//.test(String(global.location&&global.location.pathname||''))?'../../':'./';
+}
+function asset(path){return rootPrefix()+String(path||'').replace(/^\.\//,'');
+}
+function button(label,className){const node=doc.createElement('button');
+node.type='button';
+node.className=className;
+node.textContent=label;
+return node;
+}
+const GRID_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>';
+const SETTINGS_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>';
+function shellButton(kind,label,svg){const node=button('','inkdos-app-home-icon-button');
+node.dataset[kind==='apps'?'appLauncherTrigger':'settingsTrigger']='';
+node.setAttribute('aria-haspopup','dialog');
+node.setAttribute('aria-expanded','false');
+node.setAttribute('aria-label',label);
+node.innerHTML=svg;
+return node;
+}
+function activate(module,kind){const actionId=kind==='create'?module.createAction:module.openAction,target=actionId&&doc.getElementById(actionId);
+if(!target)return false;
+target.click();
+return true;
+}
+async function reopen(item,module,status){const service=recents(),target=module.openAction&&doc.getElementById(module.openAction);
+if(!service||!target)return;
+status.textContent='Opening '+item.name+'…';
+try{const resolved=await service.resolveFile(item.id);
+if(resolved&&resolved.available&&resolved.file&&typeof global.DataTransfer==='function'&&target.type==='file'){const transfer=new global.DataTransfer();
+transfer.items.add(resolved.file);
+target.files=transfer.files;
+target.dispatchEvent(new Event('change',{bubbles:true}));
+status.textContent=item.name+' opened.';
+return;
+}status.textContent='Select '+item.name+' again to reopen it.';
+target.click();
+}catch(error){status.textContent='This recent file is no longer available. Select it again.';
+target.click();
+}}
+function renderRecents(container,module,status){const service=recents(),section=doc.createElement('section');
+section.className='inkdos-app-home-recents';
+const heading=doc.createElement('div'),title=doc.createElement('h2');
+heading.className='inkdos-app-home-section-heading';
+title.textContent='Recent';
+heading.appendChild(title);
+section.appendChild(heading);
+const items=service?service.filter(module.id).slice(0,12):[];
+if(!items.length){const empty=doc.createElement('div'),strong=doc.createElement('strong'),copy=doc.createElement('span');
+empty.className='inkdos-app-home-empty';
+strong.textContent='No recent files';
+copy.textContent='Files opened in this app will appear here.';
+empty.append(strong,copy);
+section.appendChild(empty);
+}else{const list=doc.createElement('div');
+list.className='inkdos-app-home-recent-list';
+items.forEach(item=>{const row=button('','inkdos-app-home-recent-row'),icon=doc.createElement('img'),text=doc.createElement('span'),name=doc.createElement('strong'),meta=doc.createElement('small');
+row.dataset.recentId=item.id;
+icon.src=asset(module.icon);
+icon.alt='';
+icon.setAttribute('aria-hidden','true');
+text.className='inkdos-app-home-recent-copy';
+name.textContent=item.name;
+meta.textContent=item.extension?item.extension.toUpperCase():module.shortLabel;
+text.append(name,meta);
+row.append(icon,text);
+row.addEventListener('click',()=>reopen(item,module,status));
+list.appendChild(row);
+});
+section.appendChild(list);
+}container.appendChild(section);
+}
+function render(host,module){host.classList.add('inkdos-app-home-host');
+const page=doc.createElement('div');
+page.className='inkdos-app-home-page';
+const top=doc.createElement('header');
+top.className='inkdos-app-home-topbar';
+const home=doc.createElement('a');
+home.className='inkdos-app-home-brand';
+home.href=asset('index.html');
+home.setAttribute('aria-label','InkDOS Home');
+home.textContent='InkDOS';
+const controls=doc.createElement('div');
+controls.className='inkdos-app-home-global-actions';
+controls.append(shellButton('apps','Open apps',GRID_ICON),shellButton('settings','Open settings',SETTINGS_ICON));
+top.append(home,controls);
+const identity=doc.createElement('section');
+identity.className='inkdos-app-home-identity';
+const icon=doc.createElement('span'),image=doc.createElement('img'),copy=doc.createElement('div'),h1=doc.createElement('h1'),description=doc.createElement('p');
+icon.className='inkdos-app-home-app-icon';
+icon.style.setProperty('--app-accent',module.accent);
+image.src=asset(module.icon);
+image.alt='';
+icon.appendChild(image);
+h1.textContent=module.label;
+description.textContent=module.description;
+copy.append(h1,description);
+identity.append(icon,copy);
+const actions=doc.createElement('div');
+actions.className='inkdos-app-home-primary-actions';
+if(module.capabilityFlags.create){const create=button(module.createLabel||'Create','inkdos-app-home-action inkdos-app-home-action-primary');
+create.dataset.appHomeAction='create';
+create.addEventListener('click',()=>activate(module,'create'));
+actions.appendChild(create);
+}if(module.capabilityFlags.open){const open=button(module.openLabel||'Open file','inkdos-app-home-action');
+open.dataset.appHomeAction='open';
+open.addEventListener('click',()=>activate(module,'open'));
+actions.appendChild(open);
+}const status=doc.createElement('p');
+status.className='inkdos-app-home-status';
+status.setAttribute('role','status');
+status.setAttribute('aria-live','polite');
+page.append(top,identity,actions);
+renderRecents(page,module,status);
+page.appendChild(status);
+host.replaceChildren(page);
+if(global.InkDOSAppShell&&global.InkDOSAppShell.refreshTriggers)global.InkDOSAppShell.refreshTriggers();
+}
+function init(){const host=doc.querySelector('[data-app-home]'),module=currentModule();
+if(!host||!module||!module.enabled)return;
+const sync=()=>{const visible=!host.hidden&&!host.classList.contains('hidden');
+doc.body.classList.toggle('inkdos-app-home-active',visible);
+};
+render(host,module);
+sync();
+new MutationObserver(sync).observe(host,{attributes:true,attributeFilter:['class','hidden']});
+global.addEventListener('inkdos:recent-files-changed',()=>{if(!host.hidden&&!host.classList.contains('hidden'))render(host,module);
+});
+}
+global.InkDOSAppHome=Object.freeze({init});
+if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',init,{once:true});
+else init();
+})(typeof window!=='undefined'?window:globalThis);

@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "pdf",
   "name": "PDF Workspace",
+  "label": "PDF",
+  "shortLabel": "PDF",
   "description": "Read, navigate and review PDF files locally.",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "enabled": true,
   "optional": false,
   "order": 40,
   "entryPoint": "apps/pdf/index.html",
+  "route": "apps/pdf/index.html",
   "icon": "assets/icons/pdf.png",
   "badge": "PDF",
   "themeClass": "pdf",
@@ -25,5 +28,9 @@
     "navigation",
     "review-sidecar",
     "local-processing"
-  ]
+  ],
+  "createAction": null,
+  "openAction": "fileInput",
+  "createLabel": null,
+  "openLabel": "Open file"
 }

@@ -74,7 +74,7 @@ def documents_case(browser, base_url):
     page.set_default_navigation_timeout(15000)
     errors = watch_errors(page)
     page.goto(f"{base_url}/apps/documents/index.html", wait_until="networkidle")
-    page.click("#newWelcomeBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_selector(".page-content", state="visible")
     page.locator(".page-content p").first.evaluate(
         "(node, value) => { node.textContent=value; node.dispatchEvent(new InputEvent('input',{bubbles:true,inputType:'insertText',data:value})); }",
@@ -103,7 +103,7 @@ def spreadsheets_case(browser, base_url):
     page.set_default_navigation_timeout(15000)
     errors = watch_errors(page)
     page.goto(f"{base_url}/apps/spreadsheets/index.html", wait_until="networkidle")
-    page.click("#newEmptyBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_function("!document.querySelector('#gridViewport').hidden")
     page.click('.cell[data-r="0"][data-c="0"]')
     page.fill("#formulaInput", token)
@@ -515,7 +515,7 @@ def presentations_case(browser, base_url):
     page.set_default_navigation_timeout(15000)
     errors = watch_errors(page)
     page.goto(f"{base_url}/apps/presentations/index.html", wait_until="networkidle")
-    page.click("#newBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_selector("#templateDialog:not(.hidden)")
     page.locator("#templateGrid .template-option").first.click()
     # v0.20.3.0 makes New transactional/async while the prior recovery

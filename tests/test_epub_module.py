@@ -19,11 +19,11 @@ class EpubModuleTests(unittest.TestCase):
         r=subprocess.run([node,'-e',script],cwd=ROOT,capture_output=True,text=True);self.assertEqual(r.returncode,0,r.stdout+r.stderr)
     def test_runtime(self):
         s=(ROOT/'apps/epub/app.js').read_text()
-        for marker in ('MAX_FILE_BYTES=100*1024*1024','global.JSZip.loadAsync(file)','META-INF/container.xml','sanitize(section,source)','REMOVED','resourceUrl','paginate()','touchstart','ArrowRight','InkDOSFileLifecycle.create','requestDownload(state.file,state.fileName)',"extensions:['epub']",'InkDOSEpubDebug'):
+        for marker in ('MAX_FILE_BYTES=100*1024*1024','global.JSZip.loadAsync(file)','META-INF/container.xml','sanitize(section,source)','REMOVED','resourceUrl','paginate()','touchstart','ArrowRight','InkDOSFileLifecycle.create','requestDownload(state.file,state.fileName)',"appId:'epub'",'InkDOSEpubDebug'):
             self.assertIn(marker,s)
     def test_integration(self):
         router=(ROOT/'shared/file-router.js').read_text();reg=(ROOT/'modules/module-registry.js').read_text();home=(ROOT/'index.html').read_text();sw=(ROOT/'service-worker.js').read_text()
-        self.assertIn("epub:'./apps/epub/index.html'",router);self.assertIn('"id": "epub"',reg);self.assertIn('./apps/epub/index.html',home);self.assertNotIn('openAnyInput',home)
+        self.assertIn("registry().resolveExtension",router);self.assertIn("module.route",router);self.assertIn('"id": "epub"',reg);self.assertIn('shared/app-shell.js',home);self.assertNotIn('openAnyInput',home)
         for asset in ('./apps/epub/module.json','./apps/epub/index.html','./apps/epub/styles.css','./apps/epub/epub-parser.js','./apps/epub/app.js'):self.assertIn(repr(asset),sw)
         self.assertRegex(sw, r"const CACHE_NAME=['\"]inkdos-shell-v[^'\"]+['\"];")
     def test_contract(self):

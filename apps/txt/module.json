@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "txt",
   "name": "Plain Text",
+  "label": "Plain Text",
+  "shortLabel": "Text",
   "description": "Write and edit plain-text files locally.",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "enabled": true,
   "optional": true,
   "order": 50,
   "entryPoint": "apps/txt/index.html",
+  "route": "apps/txt/index.html",
   "icon": "assets/icons/txt.png",
   "badge": "TXT",
   "themeClass": "txt",
@@ -30,5 +33,9 @@
     "unsaved-change-navigation-warning",
     "local-processing",
     "private-local-recovery"
-  ]
+  ],
+  "createAction": "newBtn",
+  "openAction": "fileInput",
+  "createLabel": "Create text file",
+  "openLabel": "Open file"
 }

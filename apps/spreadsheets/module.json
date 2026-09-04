@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "spreadsheets",
   "name": "Spreadsheets",
+  "label": "Spreadsheets",
+  "shortLabel": "Sheets",
   "description": "Edit XLSX files locally and open legacy XLS workbooks.",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "enabled": true,
   "optional": false,
   "order": 20,
   "entryPoint": "apps/spreadsheets/index.html",
+  "route": "apps/spreadsheets/index.html",
   "icon": "assets/icons/spreadsheets.png",
   "badge": "S",
   "themeClass": "spreadsheets",
@@ -29,5 +32,9 @@
     "formula-preview",
     "local-recovery-snapshots",
     "local-processing"
-  ]
+  ],
+  "createAction": "newBtn",
+  "openAction": "fileInput",
+  "createLabel": "Create blank workbook",
+  "openLabel": "Open file"
 }

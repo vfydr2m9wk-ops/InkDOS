@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "epub",
   "name": "EPUB Reader",
+  "label": "EPUB",
+  "shortLabel": "EPUB",
   "description": "Read local EPUB books with pages, themes and contents.",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "enabled": true,
   "optional": true,
   "order": 60,
   "entryPoint": "apps/epub/index.html",
+  "route": "apps/epub/index.html",
   "icon": "assets/icons/epub.png",
   "badge": "EPUB",
   "themeClass": "epub",
@@ -30,5 +33,9 @@
     "editable-file-title",
     "unsaved-change-navigation-warning",
     "local-processing"
-  ]
+  ],
+  "createAction": null,
+  "openAction": "fileInput",
+  "createLabel": null,
+  "openLabel": "Open file"
 }

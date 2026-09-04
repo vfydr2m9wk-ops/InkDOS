@@ -2,12 +2,15 @@
   "schemaVersion": 1,
   "id": "presentations",
   "name": "Presentations",
+  "label": "Presentations",
+  "shortLabel": "Slides",
   "description": "Create, edit and present PPT and PPTX files locally.",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "enabled": true,
   "optional": false,
   "order": 30,
   "entryPoint": "apps/presentations/index.html",
+  "route": "apps/presentations/index.html",
   "icon": "assets/icons/presentations.png",
   "badge": "P",
   "themeClass": "presentations",
@@ -28,5 +31,9 @@
     "presentation-mode",
     "local-recovery-snapshots",
     "local-processing"
-  ]
+  ],
+  "createAction": "newSmall",
+  "openAction": "fileInput",
+  "createLabel": "Create blank presentation",
+  "openLabel": "Open file"
 }

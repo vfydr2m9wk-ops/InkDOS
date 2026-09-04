@@ -102,13 +102,10 @@ class HomeSessionRefinementTests(unittest.TestCase):
             self.assertIn(marker, visual)
 
     def test_home_drawer_has_accessible_close_contract(self):
-        html = (ROOT / "index.html").read_text(encoding="utf-8")
-        shell = (ROOT / "shared/suite-shell.js").read_text(encoding="utf-8")
-        css = (ROOT / "shared/suite-shell.css").read_text(encoding="utf-8")
-        self.assertIn('role="dialog" aria-modal="true"', html)
-        for marker in ("suite-backdrop", "event.key==='Escape'", "previousFocus.focus()"):
+        shell = (ROOT / "shared/app-shell.js").read_text(encoding="utf-8")
+        css = (ROOT / "shared/ui/app-shell.css").read_text(encoding="utf-8")
+        for marker in ("inkdos-global-backdrop", "setAttribute('role','dialog')", "setAttribute('aria-modal','true')", "event.key==='Escape'", "trigger.focus()"):
             self.assertIn(marker, shell)
-        self.assertIn(".suite-nav a[aria-current=\"page\"]", css)
         self.assertIn("prefers-reduced-motion", css)
 
     def test_cache_advances_without_public_version_change(self):

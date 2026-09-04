@@ -106,7 +106,7 @@ def wait_toggle_state(page, expected, label):
         raise RuntimeError(f"{label}; inspector state={state}") from error
 
 def create_presentation(page):
-    page.click("#newBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_selector("#templateDialog:not(.hidden)", state="visible")
     page.locator("#templateGrid .template-option").first.click()
     page.wait_for_selector("#app:not(.hidden)", state="visible")

@@ -9,9 +9,11 @@
   <meta name="description" content="InkDOS local EPUB reader.">
   <title>Untitled.epub — EPUB Reader</title>
 <link rel="stylesheet" href="../../shared/office-shell.css">
-  <link rel="stylesheet" href="styles.css?v=1.0.0-beta.4">
+  <link rel="stylesheet" href="styles.css?v=1.0.0-beta.5">
+  <link rel="stylesheet" href="../../shared/ui/app-shell.css?v=1.0.0-beta.5">
+  <link rel="stylesheet" href="../../shared/ui/app-home.css?v=1.0.0-beta.5">
 </head>
-<body class="office-product office-epub" data-reader-theme="paper">
+<body class="office-product office-epub" data-reader-theme="paper" data-inkdos-app="epub">
   <header class="epub-titlebar" data-inkdos-shell-region="titlebar" aria-label="EPUB Reader title bar">
     <div class="title-actions">
       <a class="icon-btn" href="../../index.html" aria-label="InkDOS home" title="InkDOS home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"/><path d="M9 20v-6h6v6"/></svg></a>
@@ -50,7 +52,7 @@
       <nav id="tocList" class="toc-list"></nav>
     </aside>
 
-    <section id="startScreen" class="epub-start-card">
+    <section id="startScreen" class="epub-start-card" data-app-home>
       <img src="../../assets/icons/epub.svg" class="start-icon" alt="" aria-hidden="true">
       <h1>EPUB Reader</h1>
       <p>Read local EPUB books with lateral pages, adjustable text and calm page themes.</p>
@@ -80,11 +82,18 @@
 
   <input id="fileInput" type="file" accept=".epub,application/epub+zip" hidden>
   <script src="../../shared/vendor/jszip.min.js"></script>
-  <script src="../../shared/office-runtime.js?v=1.0.0-beta.4"></script>
-  <script src="../../shared/file-lifecycle.js?v=1.0.0-beta.4"></script>
-  <script src="../../shared/file-router.js?v=1.0.0-beta.4"></script>
-  <script src="../../shared/office-shell.js?v=1.0.0-beta.4"></script>
-  <script src="epub-parser.js?v=1.0.0-beta.4"></script>
-  <script src="app.js?v=1.0.0-beta.4"></script>
+  <script src="../../shared/office-runtime.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/file-lifecycle.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/file-router.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/office-shell.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/product-config.js?v=1.0.0-beta.5"></script>
+  <script src="../../modules/module-registry.js?v=1.0.0-beta.5"></script>
+  <script src="../../modules/module-loader.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/recent-files.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/file-router.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/app-shell.js?v=1.0.0-beta.5"></script>
+  <script src="../../shared/app-home.js?v=1.0.0-beta.5"></script>
+  <script src="epub-parser.js?v=1.0.0-beta.5"></script>
+  <script src="app.js?v=1.0.0-beta.5"></script>
 </body>
 </html>

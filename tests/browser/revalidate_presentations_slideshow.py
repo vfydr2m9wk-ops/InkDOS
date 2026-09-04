@@ -59,7 +59,7 @@ def assert_true(value, message):
 def create_two_slide_presentation(page):
     # Establish the scenario's own initial UI state instead of depending on a
     # previous control test. This is the browser-test isolation contract.
-    page.click("#newBtn")
+    page.click('[data-app-home-action="create"]')
     page.wait_for_selector("#templateDialog:not(.hidden)", state="visible")
     page.locator("#templateGrid .template-option").first.click()
     page.wait_for_selector("#app:not(.hidden)", state="visible")
