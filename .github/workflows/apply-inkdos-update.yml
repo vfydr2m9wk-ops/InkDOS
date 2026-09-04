@@ -1,10 +1,10 @@
-name: InkDesk integrity and update
+name: InkDOS integrity and update
 
 on:
   workflow_dispatch:
     inputs:
       package_name:
-        description: Root ZIP name. Leave empty when only one InkDesk-update-v*.zip exists.
+        description: Root ZIP name. Leave empty when only one InkDOS-update-v*.zip exists.
         required: false
         type: string
       dry_run:
@@ -25,8 +25,8 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'InkDesk-update-v*.zip'
-      - 'InkDesk-update-v*.zip.sha256'
+      - 'InkDOS-update-v*.zip'
+      - 'InkDOS-update-v*.zip.sha256'
       - '.github/workflows/**'
   pull_request:
     branches:
@@ -36,7 +36,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: inkdesk-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  group: inkdos-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 jobs:
@@ -152,9 +152,9 @@ jobs:
             package="${REQUESTED_PACKAGE}"
             [[ -f "${package}" ]] || { echo "Package not found: ${package}" >&2; exit 1; }
           else
-            mapfile -t packages < <(find . -maxdepth 1 -type f -name 'InkDesk-update-v*.zip' -printf '%f\n' | sort)
+            mapfile -t packages < <(find . -maxdepth 1 -type f -name 'InkDOS-update-v*.zip' -printf '%f\n' | sort)
             if [[ ${#packages[@]} -ne 1 ]]; then
-              echo "Expected exactly one root InkDesk-update-v*.zip, found ${#packages[@]}." >&2
+              echo "Expected exactly one root InkDOS-update-v*.zip, found ${#packages[@]}." >&2
               printf '%s\n' "${packages[@]:-}" >&2
               exit 1
             fi
@@ -204,8 +204,8 @@ jobs:
                           'Install workflow changes manually as a one-time bootstrap.'
                       )
               manifest = json.loads(archive.read('patch-manifest.json').decode('utf-8'))
-              if manifest.get('product') != 'InkDesk':
-                  raise SystemExit('The selected ZIP is not an InkDesk update package.')
+              if manifest.get('product') != 'InkDOS':
+                  raise SystemExit('The selected ZIP is not an InkDOS update package.')
               if manifest.get('allowWorkflowChanges'):
                   raise SystemExit('allowWorkflowChanges is forbidden in stable update packages.')
               if 'DELETE.txt' in names:
@@ -235,7 +235,6 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import zipfile
-
           with zipfile.ZipFile('/tmp/update-package.zip') as archive:
               Path('/tmp/apply_update_package.py').write_bytes(
                   archive.read('files/scripts/apply_update_package.py')
@@ -307,7 +306,7 @@ jobs:
             exit 1
           fi
 
-          git commit -m "Apply InkDesk update ${PACKAGE_LABEL}"
+          git commit -m "Apply InkDOS update ${PACKAGE_LABEL}"
           git push origin HEAD:main
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
@@ -325,13 +324,6 @@ jobs:
       - name: Write final Actions summary
         if: always()
         shell: bash
-        env:
-          APPLY_OUTCOME: ${{ steps.apply.outcome }}
-          COMMIT_OUTCOME: ${{ steps.commit.outcome }}
-          PAGES_OUTCOME: ${{ steps.pages.outcome }}
-          DRY_RUN: ${{ inputs.dry_run }}
-          PACKAGE_SHA: ${{ steps.package.outputs.sha256 }}
-          COMMIT_SHA: ${{ steps.commit.outputs.commit_sha }}
         run: |
           python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           from pathlib import Path
@@ -345,8 +337,6 @@ jobs:
 
           manifest = load('/tmp/update-package-manifest.json')
           report = load('/tmp/update-report.json')
-          transaction_log = Path('/tmp/update-transaction.log')
-          commit_log = Path('/tmp/commit-push.log')
           apply_outcome = '${{ steps.apply.outcome }}'
           commit_outcome = '${{ steps.commit.outcome }}'
           pages_outcome = '${{ steps.pages.outcome }}'
@@ -362,7 +352,7 @@ jobs:
           else:
               status = 'Applied, committed, and pushed successfully'
 
-          print(f'## InkDesk update {label}')
+          print(f'## InkDOS update {label}')
           print()
           print(f'- Status: **{status}**')
           print(f"- Target: `{report.get('targetRelease') or manifest.get('targetRelease', 'unknown')}`")
@@ -376,25 +366,6 @@ jobs:
               print(f'- GitHub Pages rebuild: **{pages_text}**')
           print(f"- Files copied or replaced: `{len(report.get('copied', []))}`")
           print(f"- Paths deleted: `{len(report.get('deleted', []))}`")
-
-          if apply_outcome != 'success':
-              print()
-              print('> The updater restored all touched repository files. The applied sequence remains unchanged.')
-              if report.get('error'):
-                  print(f"- Transaction error: `{report['error']}`")
-          elif not dry_run and commit_outcome != 'success':
-              print()
-              print('> Validation completed locally, but nothing was pushed. The root ZIP remains in the remote repository and can be retried after correcting the push problem.')
-
-          logs = []
-          if apply_outcome != 'success' and transaction_log.exists():
-              logs.append(('Transaction log tail', transaction_log.read_text(encoding='utf-8', errors='replace').splitlines()[-100:]))
-          if not dry_run and commit_outcome == 'failure' and commit_log.exists():
-              logs.append(('Commit/push log', commit_log.read_text(encoding='utf-8', errors='replace').splitlines()[-100:]))
-          for title, lines in logs:
-              print(f'\n<details><summary>{title}</summary>\n')
-              print('```text')
-              print('\n'.join(lines))
-              print('```')
-              print('\n</details>')
+          if report.get('error'):
+              print(f"- Transaction error: `{report['error']}`")
           PY
