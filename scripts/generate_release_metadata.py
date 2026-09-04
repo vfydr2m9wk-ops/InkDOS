@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synchronize deterministic InkDesk release metadata from VERSION.json."""
+"""Synchronize deterministic InkDOS release metadata from VERSION.json."""
 from __future__ import annotations
 
 import json
@@ -54,6 +54,8 @@ def main() -> None:
         "version": release,
         "generatedAt": date,
         "entryPoint": "index.html",
+        "updateWorkflow": ".github/workflows/apply-inkdos-update.yml",
+        "workflowPolicy": "manual bootstrap; update ZIPs cannot modify .github/workflows",
     })
     dump("SOURCE_MANIFEST.json", source)
 
@@ -63,6 +65,7 @@ def main() -> None:
         "version": release,
         "releaseName": version.get("releaseName", ""),
         "releaseDate": date,
+        "license": "MIT for InkDOS original code; bundled third-party components retain upstream licenses.",
     })
     dump("RELEASE_MANIFEST.json", release_manifest)
 

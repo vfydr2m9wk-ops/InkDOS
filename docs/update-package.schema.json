@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://vfydr2m9wk-ops.github.io/InkDesk/schemas/update-package-v1.json",
-  "title": "InkDesk incremental update package manifest",
+  "$id": "https://vfydr2m9wk-ops.github.io/InkDOS/schemas/update-package-v1.json",
+  "title": "InkDOS incremental update package manifest",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,27 +15,123 @@
     "validationProfile"
   ],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "product": { "const": "InkDesk" },
-    "targetRelease": { "type": "string", "minLength": 1 },
-    "packageLabel": { "type": "string", "minLength": 1 },
-    "sequence": { "type": "integer", "minimum": 1 },
+    "schemaVersion": {
+      "const": 1
+    },
+    "product": {
+      "const": "InkDOS"
+    },
+    "targetRelease": {
+      "type": "string",
+      "minLength": 1
+    },
+    "packageLabel": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
     "requires": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["previousSequence", "appVersions"],
+      "required": [
+        "previousSequence",
+        "appVersions"
+      ],
       "properties": {
-        "previousSequence": { "type": "integer", "minimum": 0 },
+        "previousSequence": {
+          "type": "integer",
+          "minimum": 0
+        },
         "appVersions": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string", "minLength": 1 },
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "uniqueItems": true
         }
       }
     },
-    "description": { "type": "string", "minLength": 1 },
-    "validationProfile": { "enum": ["none", "standard", "full"] },
-    "allowWorkflowChanges": { "type": "boolean", "default": false }
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validationProfile": {
+      "enum": [
+        "none",
+        "standard",
+        "full"
+      ]
+    },
+    "allowWorkflowChanges": {
+      "type": "boolean",
+      "const": false,
+      "default": false
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sha256"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "beforeSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "deletions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "beforeSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "textReplacements": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "old",
+            "new"
+          ],
+          "properties": {
+            "old": {
+              "type": "string",
+              "minLength": 1
+            },
+            "new": {
+              "type": "string"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    }
   }
 }

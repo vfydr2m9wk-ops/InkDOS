@@ -8,6 +8,6 @@
   "generatedAt": "2026-08-09",
   "publicationBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json",
-  "updateWorkflow": ".github/workflows/apply-inkdesk-update.yml",
+  "updateWorkflow": ".github/workflows/apply-inkdos-update.yml",
   "workflowPolicy": "manual bootstrap; update ZIPs cannot modify .github/workflows"
 }

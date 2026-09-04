@@ -34,7 +34,7 @@
   ],
   "buildRequired": false,
   "automaticRemoteRuntimeDependencies": false,
-  "license": "MIT for original code; bundled third-party components retain upstream licenses.",
+  "license": "MIT for InkDOS original code; bundled third-party components retain upstream licenses.",
   "validation": {
     "sourceBootstrapValidation": true,
     "structuralUnitTests": "candidate suite includes dedicated cross-workspace unverified-export safety assertions; hosted main remains authoritative for PDF.js checksum bytes",

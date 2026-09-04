@@ -182,8 +182,8 @@ class LocalRecoveryTests(unittest.TestCase):
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
         self.assertEqual(version["version"], "1.0.0-beta.1")
         self.assertEqual(version["releaseName"], "1.0 Beta 1")
-        self.assertEqual(state["appliedSequence"], 57)
-        self.assertEqual(state["currentPackage"], "1.0.0-beta.1")
+        self.assertEqual(state["appliedSequence"], 58)
+        self.assertEqual(state["currentPackage"], "1.0.0-beta.1-updater")
 
 
 if __name__ == "__main__":

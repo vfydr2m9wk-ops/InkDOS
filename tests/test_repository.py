@@ -52,14 +52,14 @@ class RepositoryTests(unittest.TestCase):
 
     def test_stable_incremental_workflow_is_present(self):
         workflow_dir = ROOT / ".github" / "workflows"
-        apply_path = workflow_dir / "apply-inkdesk-update.yml"
+        apply_path = workflow_dir / "apply-inkdos-update.yml"
         self.assertTrue(apply_path.is_file())
         self.assertFalse(
             (workflow_dir / "publish-inkdesk-v0.20.0.yml").exists()
         )
         workflow = apply_path.read_text(encoding="utf-8")
         for marker in (
-            "InkDesk integrity and update",
+            "InkDOS integrity and update",
             "Select and inspect update package",
             "Apply package transaction",
             "Commit and push applied update",

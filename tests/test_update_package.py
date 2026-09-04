@@ -23,7 +23,7 @@ class UpdatePackageTests(unittest.TestCase):
         repo = root / "repo"
         repo.mkdir()
         (repo / "VERSION.json").write_text(
-            json.dumps({"name": "InkDesk", "version": version}) + "\n",
+            json.dumps({"name": "InkDOS", "version": version}) + "\n",
             encoding="utf-8",
         )
         (repo / "keep.txt").write_text("original\n", encoding="utf-8")
@@ -43,7 +43,7 @@ class UpdatePackageTests(unittest.TestCase):
         package = root / archive_name
         manifest = {
             "schemaVersion": 1,
-            "product": "InkDesk",
+            "product": "InkDOS",
             "targetRelease": "0.19.4",
             "packageLabel": f"0.19.4.{sequence}",
             "sequence": sequence,
@@ -229,7 +229,7 @@ class UpdatePackageTests(unittest.TestCase):
         self.assertFalse(any("scripts/audit_source.py" in command for command in commands))
 
     def test_workflow_avoids_privacy_audit_local_paths(self):
-        workflow_path = ROOT / ".github/workflows/apply-inkdesk-update.yml"
+        workflow_path = ROOT / ".github/workflows/apply-inkdos-update.yml"
         text = workflow_path.read_text(encoding="utf-8").lower()
         forbidden_terms = (
             "/mnt/" + "data",

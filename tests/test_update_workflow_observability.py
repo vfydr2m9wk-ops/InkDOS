@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-APPLY_WORKFLOW = ROOT / ".github/workflows/apply-inkdesk-update.yml"
+APPLY_WORKFLOW = ROOT / ".github/workflows/apply-inkdos-update.yml"
 
 
 class UpdateWorkflowObservabilityTests(unittest.TestCase):
