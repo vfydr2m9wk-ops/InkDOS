@@ -4,13 +4,12 @@ InkDOS is a local-first, offline and private browser productivity suite for focu
 PPTX, PDF, TXT and EPUB workflows. It is not intended to replace Microsoft
 Office, a full publishing system or a specialist PDF editor.
 
-## InkDOS v1.0.0-beta.1
+## InkDOS v1.0.0-beta.2
 
-`1.0.0-beta.1` is the first public beta on the 1.0 line. It consolidates the long
-0.20.2/0.20.3 stabilization train into a feature-frozen beta baseline: six
-independent workspaces, local-first file handling, recovery and regression
-guards, package-preserving Office round-trips where supported, and a consistent
-landscape-first shell.
+`1.0.0-beta.2` consolidates the permanent InkDOS incremental-update contract on
+top of the feature-frozen 1.0 beta baseline. The six independent workspaces,
+local-first file handling, recovery model and supported package-preserving Office
+round-trips remain the product baseline.
 
 The 0.20.x sequence numbers remain in repository history as engineering
 provenance; they are not separate public releases that users need to install.
@@ -24,7 +23,7 @@ data-integrity, compatibility, security or high-value/low-risk defects. New
 features and broad visual refactors should wait until the beta baseline has
 received real-device use.
 
-The generic Launcher **Open a supported file** handoff has been removed because
+The generic Launcher **Open a supported file** handoff remains removed because
 it duplicated each workspace's Open flow while adding routing and browser-state
 complexity. Open the target workspace first, then use that workspace's Open
 control.
@@ -64,5 +63,5 @@ limited and documented in [`COMPATIBILITY.md`](COMPATIBILITY.md) and
 
 ## License
 
-MIT for InkDesk original code. Bundled third-party components retain their
-upstream licenses; see `docs/THIRD_PARTY_NOTICES.md`.
+InkDOS original code is licensed under the MIT License. Bundled third-party
+components retain their upstream licenses; see `docs/THIRD_PARTY_NOTICES.md`.

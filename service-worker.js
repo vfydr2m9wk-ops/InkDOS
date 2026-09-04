@@ -1,6 +1,7 @@
 'use strict';
-// Update sequence 47: InkDesk 1.0 beta release preparation and Launcher simplification.
-const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui57';
+// Update sequence 59: InkDOS 1.0 Beta 2 maintenance release.
+const CACHE_NAME='inkdesk-shell-v1.0.0-beta.2-ui59';
+// Keep the historical prefix so activation can remove pre-InkDOS caches safely.
 const CACHE_PREFIX='inkdesk-shell-';
 const APP_SHELL=[
   './',
@@ -9,7 +10,6 @@ const APP_SHELL=[
   './shared/suite-shell.css',
   './index.html',
   './manifest.webmanifest',
-  './InkDesk.html',
   './Documents.html',
   './Spreadsheets.html',
   './Presentations.html',
@@ -178,7 +178,7 @@ async function cacheResponse(cache,key,response){
   try{
     await cache.put(key,response);
   }catch(error){
-    console.error('InkDesk could not update a cached application asset.',{url:key.url,error});
+    console.error('InkDOS could not update a cached application asset.',{url:key.url,error});
   }
 }
 async function respondWithShell(request){
@@ -195,7 +195,7 @@ async function respondWithShell(request){
   }catch(error){
     const fallback=await cache.match(key);
     if(fallback)return fallback;
-    console.error('InkDesk could not load an application asset from the network or cache.',{url:request.url,error});
+    console.error('InkDOS could not load an application asset from the network or cache.',{url:request.url,error});
     throw error;
   }
 }
@@ -216,12 +216,13 @@ self.addEventListener('fetch',event=>{
 });
 self.addEventListener('message',event=>{
   const data=event.data||{};
+  // Keep these event identifiers for backward compatibility with installed clients.
   if(data.type!=='inkdesk:clear-app-cache')return;
   event.waitUntil(caches.delete(CACHE_NAME).then(async()=>{
     await installAppShell();
     if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdesk:app-cache-reset',ok:true});
   }).catch(error=>{
-    console.error('InkDesk app-cache recovery failed.',error);
+    console.error('InkDOS app-cache recovery failed.',error);
     if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdesk:app-cache-reset',ok:false});
   }));
 });

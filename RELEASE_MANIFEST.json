@@ -1,11 +1,10 @@
 {
   "project": "InkDOS",
-  "version": "1.0.0-beta.1",
-  "releaseName": "1.0 Beta 1",
+  "version": "1.0.0-beta.2",
+  "releaseName": "1.0 Beta 2",
   "releaseType": "Public Beta Release",
-  "releaseDate": "2026-08-09",
+  "releaseDate": "2026-09-04",
   "entryPoints": {
-    "InkDesk.html": "index.html",
     "Documents.html": "apps/documents/index.html",
     "Spreadsheets.html": "apps/spreadsheets/index.html",
     "Presentations.html": "apps/presentations/index.html",

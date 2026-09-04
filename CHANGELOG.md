@@ -1,4 +1,4 @@
-## 1.0.0-beta.1 — 1.0 Beta 1 (2026-08-09)
+## 1.0.0-beta.2 — 1.0 Beta 2 (2026-09-04)\n\n- Sequence 59 maintenance beta: promotes the permanent InkDOS updater validated at sequence 58, synchronizes public release identity, updates MIT attribution, and removes the obsolete InkDesk root redirect. No editor feature scope is expanded.\n\n## 1.0.0-beta.1 — 1.0 Beta 1 (2026-08-09)
 
 - Sequence 49 visual refinement: clarified Spreadsheet formula-bar hierarchy, grid/header selection states, worksheet-tab controls and compact status/zoom behavior without changing workbook data paths.
 - Consolidated the 0.20.2/0.20.3 stabilization train into the first feature-frozen 1.0 beta baseline.

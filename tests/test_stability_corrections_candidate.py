@@ -62,7 +62,7 @@ class StabilityCorrectionsCandidateTests(unittest.TestCase):
             if ('prefers-color-scheme:dark' in text.replace(' ','') or 'prefers-color-scheme: dark' in text) and path.name != 'suite-shell.css':
                 offenders.append(str(path.relative_to(ROOT)))
         self.assertEqual(offenders, [])
-        self.assertIn("inkdesk-shell-v1.0.0-beta.1-ui57", (ROOT/'service-worker.js').read_text())
+        self.assertIn("inkdesk-shell-v1.0.0-beta.2-ui59", (ROOT/'service-worker.js').read_text())
 
     def test_presentation_pointer_edits_are_undoable(self):
         selection=(ROOT/'apps/presentations/state/selection-controller.js').read_text()

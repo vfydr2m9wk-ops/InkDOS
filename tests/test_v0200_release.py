@@ -14,10 +14,10 @@ class ConsolidatedReleaseTests(unittest.TestCase):
         package = json.loads((ROOT / 'package.json').read_text())
         manifest = json.loads((ROOT / 'app-manifest.json').read_text())
         release = json.loads((ROOT / 'RELEASE_MANIFEST.json').read_text())
-        self.assertEqual(version['version'], '1.0.0-beta.1')
-        self.assertEqual(package['version'], '1.0.0-beta.1')
-        self.assertEqual(manifest['version'], '1.0.0-beta.1')
-        self.assertEqual(release['version'], '1.0.0-beta.1')
+        self.assertEqual(version['version'], '1.0.0-beta.2')
+        self.assertEqual(package['version'], '1.0.0-beta.2')
+        self.assertEqual(manifest['version'], '1.0.0-beta.2')
+        self.assertEqual(release['version'], '1.0.0-beta.2')
 
     def test_six_modules_are_enabled(self):
         registry = (ROOT / 'modules/module-registry.js').read_text()
@@ -44,7 +44,8 @@ class ConsolidatedReleaseTests(unittest.TestCase):
 
     def test_service_worker_matches_public_version(self):
         worker = (ROOT / 'service-worker.js').read_text()
-        self.assertIn("const CACHE_NAME='inkdesk-shell-v1.0.0-beta.1-ui57';", worker)
+        self.assertIn("const CACHE_NAME='inkdesk-shell-v1.0.0-beta.2-ui59';", worker)
+        self.assertNotIn("'./InkDesk.html'", worker)
         for asset in (
             "'./apps/txt/index.html'",
             "'./apps/epub/index.html'",
@@ -54,11 +55,11 @@ class ConsolidatedReleaseTests(unittest.TestCase):
         ):
             self.assertIn(asset, worker)
 
-    def test_development_state_is_reset_for_patch_series(self):
+    def test_development_state_tracks_inkdos_beta_series(self):
         state = json.loads((ROOT / 'DEVELOPMENT_STATE.json').read_text())
         self.assertEqual(state['targetRelease'], '0.20.x')
-        self.assertEqual(state['appliedSequence'], 58)
-        self.assertEqual(state['currentPackage'], '1.0.0-beta.1-updater')
+        self.assertEqual(state['appliedSequence'], 59)
+        self.assertEqual(state['currentPackage'], '1.0.0-beta.2')
 
     def test_complete_release_does_not_require_old_packages(self):
         build = json.loads((ROOT / 'BUILD_INFO.json').read_text())

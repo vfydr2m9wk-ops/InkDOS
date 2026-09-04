@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "distribution": "complete source tree",
   "entryPoint": "index.html",
   "requiresBuild": false,
-  "generatedAt": "2026-08-09",
+  "generatedAt": "2026-09-04",
   "publicationBootstrapRequired": false,
   "vendorLock": "VENDOR_SOURCES.json",
   "updateWorkflow": ".github/workflows/apply-inkdos-update.yml",

@@ -2,7 +2,7 @@
 'use strict';
 const registry={
   "schemaVersion": 1,
-  "registryVersion": "1.0.0-beta.1",
+  "registryVersion": "1.0.0-beta.2",
   "modules": [
     {
       "schemaVersion": 1,

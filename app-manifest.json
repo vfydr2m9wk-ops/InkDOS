@@ -4,7 +4,7 @@
   "name": "InkDOS",
   "longName": "Ink Desk Offline Suite",
   "tagline": "Local. Offline. Private.",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "A local-first, offline and private productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDesk",
@@ -524,10 +524,10 @@
     "originMilestone": "0.19.4.15"
   },
   "release": {
-    "version": "1.0.0-beta.1",
+    "version": "1.0.0-beta.2",
     "channel": "beta",
-    "name": "1.0 Beta 1",
-    "date": "2026-08-09",
+    "name": "1.0 Beta 2",
+    "date": "2026-09-04",
     "consolidated": true,
     "sourceDevelopmentLine": "0.20.x stabilization",
     "publicVersioning": "Semantic prereleases on the 1.0 line; internal update sequence is independent."

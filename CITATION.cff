@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: InkDOS Project
     given-names: Community
-version: 1.0.0-beta.1
+version: 1.0.0-beta.2
 license: MIT
-repository-code: https://github.com/vfydr2m9wk-ops/InkDesk
-url: https://github.com/vfydr2m9wk-ops/InkDesk
+repository-code: https://github.com/vfydr2m9wk-ops/InkDOS
+url: https://github.com/vfydr2m9wk-ops/InkDOS
 abstract: InkDOS is an open-source, browser-native, local-first productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.

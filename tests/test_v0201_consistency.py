@@ -39,7 +39,7 @@ class V0201ConsistencyTests(unittest.TestCase):
 
     def test_public_version_and_cache_are_synchronized(self):
         version=json.loads((ROOT/'VERSION.json').read_text())['version']
-        self.assertEqual(version,'1.0.0-beta.1')
+        self.assertEqual(version,'1.0.0-beta.2')
         self.assertEqual(json.loads((ROOT/'package.json').read_text())['version'],version)
         self.assertEqual(json.loads((ROOT/'app-manifest.json').read_text())['version'],version)
         self.assertIn(f"inkdesk-shell-v{version}",(ROOT/'service-worker.js').read_text())

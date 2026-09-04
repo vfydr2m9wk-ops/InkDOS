@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "targetRelease": "0.20.x",
   "baseVersion": "0.20.0",
-  "appliedSequence": 58,
-  "currentPackage": "1.0.0-beta.1-updater",
+  "appliedSequence": 59,
+  "currentPackage": "1.0.0-beta.2",
   "status": "complete",
   "history": [
     {
@@ -295,6 +295,11 @@
       "sequence": 58,
       "packageLabel": "1.0.0-beta.1-updater",
       "description": "Permanent InkDOS updater bootstrap: migrate the stable update contract and tests from InkDesk naming while preserving the 1.0.0-beta.1 application baseline."
+    },
+    {
+      "sequence": 59,
+      "packageLabel": "1.0.0-beta.2",
+      "description": "InkDOS 1.0 Beta 2 maintenance release: promote the permanent updater, synchronize release identity with the renamed vfydr2m9wk-ops/InkDOS repository, update MIT attribution, remove the obsolete InkDesk root redirect, and keep the feature-frozen editor scope unchanged."
     }
   ]
 }

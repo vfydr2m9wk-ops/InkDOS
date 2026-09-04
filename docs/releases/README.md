@@ -1,4 +1,4 @@
-# InkDesk historical release notes
+# InkDOS historical release notes
 
 Per-version release notes are kept here so the repository root remains focused on runtime, metadata and contributor entry points.
 
@@ -6,13 +6,13 @@ The root [`RELEASE_NOTES.md`](../../RELEASE_NOTES.md) points to the current rele
 
 ## Public beta line
 
+- [v1.0.0-beta.2](RELEASE_NOTES_1.0.0-beta.2.md)
 - [v1.0.0-beta.1](RELEASE_NOTES_1.0.0-beta.1.md)
 
 ## 0.20 development train
 
 The following notes preserve engineering history. They are not a requirement to
 install intermediate versions before the 1.0 beta.
-
 
 - [v0.20.3.1](RELEASE_NOTES_0.20.3.1.md)
 - [v0.20.3.0](RELEASE_NOTES_0.20.3.0.md)

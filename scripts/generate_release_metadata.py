@@ -67,6 +67,8 @@ def main() -> None:
         "releaseDate": date,
         "license": "MIT for InkDOS original code; bundled third-party components retain upstream licenses.",
     })
+    if isinstance(release_manifest.get("entryPoints"), dict):
+        release_manifest["entryPoints"].pop("InkDesk.html", None)
     dump("RELEASE_MANIFEST.json", release_manifest)
 
     app_manifest = load("app-manifest.json")
@@ -92,7 +94,7 @@ def main() -> None:
     sbom = load("SBOM.spdx.json")
     sbom["name"] = f"InkDOS-v{release}"
     sbom["documentNamespace"] = (
-        f"https://github.com/vfydr2m9wk-ops/InkDesk/releases/tag/v{release}"
+        f"https://github.com/vfydr2m9wk-ops/InkDOS/releases/tag/v{release}"
     )
     sbom.setdefault("creationInfo", {})["created"] = f"{date}T00:00:00Z" if date else ""
     for package in sbom.get("packages", []):

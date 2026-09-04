@@ -1,63 +1,33 @@
-# InkDOS v1.0.0-beta.1 — 1.0 Beta 1
+# InkDOS v1.0.0-beta.2 — 1.0 Beta 2
 
-This release consolidates the validated 0.20.x engineering train into the first
-feature-frozen beta on the 1.0 line. The goal is not feature parity with
-Microsoft Office; it is a stable, explicit contract for InkDesk's supported
-local-first workflows.
+This maintenance beta establishes the permanent InkDOS incremental-update
+contract while preserving the feature-frozen application baseline.
 
-## What is consolidated
+## Update infrastructure
 
-- Documents: focused DOCX editing, pagination, images, headers/footers, ruler, recovery and package-preserving copy export within the supported subset.
-- Spreadsheets: XLS BIFF8 import, XLSX editing/export, multiple worksheets, safe worksheet add/delete, supported formulas, recovery and error propagation.
-- Presentations: focused PPTX editing, backgrounds, thumbnails, notes, slideshow and preservation-aware export.
-- PDF: local viewing, navigation, review/annotations and unified save behavior within the supported subset.
-- Plain Text and EPUB: focused local editing/reading workspaces.
-- Shared shell: local-first lifecycle, recovery isolation, offline app shell, responsive landscape-first workspace geometry and regression guardrails.
+- The stable workflow is `.github/workflows/apply-inkdos-update.yml`.
+- Root packages use `InkDOS-update-v*.zip`.
+- Package manifests identify `product: InkDOS`.
+- Update sequence 59 follows the successful permanent-updater bootstrap at sequence 58.
+- Packages remain unable to create, modify or delete GitHub workflow files.
+- The updater performs archive/path checks, SHA-256 payload verification,
+  sequence/version guards, disposable-candidate validation and transactional
+  application with rollback.
+- `scripts/build_update_package.py` provides deterministic package creation for
+  future incremental updates.
 
-## Deliberate simplification
+## Identity cleanup
 
-The Launcher no longer exposes **Open a supported file**. That generic handoff
-duplicated the explicit Open controls in each workspace and created additional
-routing, temporary-storage and browser-state paths for little practical gain.
-Choose a workspace first, then open the file there.
+- Package metadata now uses the `inkdos` package name.
+- MIT attribution is updated to InkDOS contributors.
+- The obsolete root `InkDesk.html` redirect is removed.
 
-No editor feature replaces the removed Launcher handoff.
+## Scope
 
-## Versioning cleanup
+No new editor feature is introduced by this maintenance release. DOCX,
+XLS/XLSX, PPTX, PDF, TXT and EPUB support remains within the documented 1.0
+beta compatibility envelope.
 
-The numerous 0.20.2.x and 0.20.3.x identifiers remain as development history.
-They are not promoted into a matching set of GitHub Releases. Public releases
-now use semantic prerelease versions (`1.0.0-beta.1`, later beta/RC builds),
-while the monotonically increasing internal sequence remains an update-order
-guard only.
-
-## Release packaging integrity
-
-- Public SBOM and release identity are synchronized from `VERSION.json`.
-- Generated `tests/browser/results/` artifacts are never included in release ZIPs.
-- Release archives remain deterministic when built repeatedly from the same clean tree.
-
-## Beta UI refinement — sequence 49
-
-- Spreadsheet formula editing now has a clearer address / `fx` / expression hierarchy.
-- Grid headers are quieter while active cells, ranges and formatting state carry the green Spreadsheet accent more clearly.
-- Add and Delete worksheet controls remain available at the trailing edge when many sheet tabs are present.
-- Status/zoom and narrow-touch layouts are tightened without changing formula, recovery, history or XLS/XLSX package behavior.
-
-## Release gate
-
-Before publication, the repository must pass checksum verification, repository
-validation, source audit, architecture guardrails, the complete unit/package
-suite and Chromium regression suite. Firefox/WebKit matrix and native iPadOS
-remain additional evidence rather than inferred from Chromium.
-
-## Known limits
-
-Office compatibility remains intentionally partial. Advanced Office features,
-exact typography/layout fidelity, encrypted files and unsupported legacy formats
-remain outside the beta contract. See [`COMPATIBILITY.md`](COMPATIBILITY.md) and
-[`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md).
-
-Current archived note: [`docs/releases/RELEASE_NOTES_1.0.0-beta.1.md`](docs/releases/RELEASE_NOTES_1.0.0-beta.1.md)
+Current archived note: [`docs/releases/RELEASE_NOTES_1.0.0-beta.2.md`](docs/releases/RELEASE_NOTES_1.0.0-beta.2.md)
 
 Full historical notes: [`docs/releases/`](docs/releases/)

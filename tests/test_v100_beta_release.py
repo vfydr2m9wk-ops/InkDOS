@@ -5,14 +5,14 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0-beta.1"
+VERSION = "1.0.0-beta.2"
 
 
 class V100BetaReleaseTests(unittest.TestCase):
     def test_public_beta_identity_is_consistent(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         self.assertEqual(version["version"], VERSION)
-        self.assertEqual(version["releaseName"], "1.0 Beta 1")
+        self.assertEqual(version["releaseName"], "1.0 Beta 2")
         self.assertEqual(version["releaseChannel"], "beta")
         self.assertEqual(json.loads((ROOT / "package.json").read_text())["version"], VERSION)
         self.assertEqual(json.loads((ROOT / "app-manifest.json").read_text())["version"], VERSION)
@@ -35,14 +35,7 @@ class V100BetaReleaseTests(unittest.TestCase):
         self.assertNotIn(".open-any-", visual)
 
     def test_workspace_open_flows_remain_available(self):
-        expected = {
-            "documents": "fileInput",
-            "spreadsheets": "openBtn",
-            "presentations": "openSmall",
-            "pdf": "openBtn",
-            "txt": "openBtn",
-            "epub": "openBtn",
-        }
+        expected = {"documents": "fileInput", "spreadsheets": "openBtn", "presentations": "openSmall", "pdf": "openBtn", "txt": "openBtn", "epub": "openBtn"}
         for module, marker in expected.items():
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
             self.assertIn(marker, html, module)
@@ -55,9 +48,8 @@ class V100BetaReleaseTests(unittest.TestCase):
 
     def test_internal_sequence_and_public_version_are_separate(self):
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(state["appliedSequence"], 58)
-        self.assertEqual(state["currentPackage"], "1.0.0-beta.1-updater")
-        # targetRelease is retained as the updater's historical train guard; it is not the public semantic version.
+        self.assertEqual(state["appliedSequence"], 59)
+        self.assertEqual(state["currentPackage"], VERSION)
         self.assertEqual(state["targetRelease"], "0.20.x")
 
     def test_release_integrity_metadata_is_current(self):
@@ -66,7 +58,6 @@ class V100BetaReleaseTests(unittest.TestCase):
         release_date = version["date"]
         manifest = json.loads((ROOT / "app-manifest.json").read_text(encoding="utf-8"))
         sbom = json.loads((ROOT / "SBOM.spdx.json").read_text(encoding="utf-8"))
-
         self.assertEqual(manifest["release"]["version"], release)
         self.assertEqual(manifest["release"]["date"], release_date)
         self.assertNotIn("nextPatch", manifest["update"])
@@ -79,9 +70,8 @@ class V100BetaReleaseTests(unittest.TestCase):
 
     def test_release_builder_excludes_generated_browser_results(self):
         import importlib.util
-
         path = ROOT / "scripts" / "build_release.py"
-        spec = importlib.util.spec_from_file_location("inkdesk_build_release", path)
+        spec = importlib.util.spec_from_file_location("inkdos_build_release", path)
         module = importlib.util.module_from_spec(spec)
         assert spec.loader is not None
         spec.loader.exec_module(module)
