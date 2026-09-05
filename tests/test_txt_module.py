@@ -60,32 +60,32 @@ class TxtModuleTests(unittest.TestCase):
             self.assertIn(marker, html)
 
         self.assertIn(
-            "../../shared/file-lifecycle.js?v=1.0.0-beta.5",
+            "../../shared/file-lifecycle.js?v=1.0.0-beta.6",
             html,
         )
         self.assertIn(
-            "../../shared/file-router.js?v=1.0.0-beta.5",
+            "../../shared/file-router.js?v=1.0.0-beta.6",
             html,
         )
         self.assertIn(
-            'history-controller.js?v=1.0.0-beta.5',
+            'history-controller.js?v=1.0.0-beta.6',
             html,
         )
         self.assertIn(
-            'find-controller.js?v=1.0.0-beta.5',
+            'find-controller.js?v=1.0.0-beta.6',
             html,
         )
         self.assertLess(
-            html.index('history-controller.js?v=1.0.0-beta.5'),
-            html.index('app.js?v=1.0.0-beta.5'),
+            html.index('history-controller.js?v=1.0.0-beta.6'),
+            html.index('app.js?v=1.0.0-beta.6'),
         )
         self.assertLess(
-            html.index('find-controller.js?v=1.0.0-beta.5'),
-            html.index('app.js?v=1.0.0-beta.5'),
+            html.index('find-controller.js?v=1.0.0-beta.6'),
+            html.index('app.js?v=1.0.0-beta.6'),
         )
         self.assertLess(
-            html.index('../../shared/local-recovery.js?v=1.0.0-beta.5'),
-            html.index('app.js?v=1.0.0-beta.5'),
+            html.index('../../shared/local-recovery.js?v=1.0.0-beta.6'),
+            html.index('app.js?v=1.0.0-beta.6'),
         )
 
     def test_runtime_opens_saves_and_warns(self):
@@ -161,7 +161,7 @@ class TxtModuleTests(unittest.TestCase):
         )
         contract = manifest["txtEditorSystem"]
 
-        self.assertEqual(contract["version"], "1.0.0-beta.5")
+        self.assertEqual(contract["version"], "1.0.0-beta.6")
         self.assertTrue(contract["localProcessing"])
         self.assertTrue(contract["preservesDetectedLineEnding"])
         self.assertEqual(contract["recovery"], "shared/local-recovery.js")

@@ -10,33 +10,16 @@ function recentService(){return global.InkDOSRecentFiles||null;
 }
 function router(){return global.InkDOSFileRouter||null;
 }
-function gridIcon(){return'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>';
-}
-function settingsIcon(){return'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>';
-}
 function prepareHome(){doc.body.dataset.inkdosApp='home';
 doc.querySelector('.hub-intro')?.remove();
 doc.querySelector('.workspace-grid')?.remove();
 doc.querySelector('#suiteSidebar')?.remove();
 doc.querySelector('.hub-footer nav')?.remove();
-const oldMenu=doc.querySelector('[data-suite-action="menu"]');
-if(oldMenu){oldMenu.removeAttribute('data-suite-action');
-oldMenu.removeAttribute('aria-controls');
-oldMenu.dataset.appLauncherTrigger='';
-oldMenu.className='suite-menu app-launcher-trigger';
-oldMenu.setAttribute('aria-haspopup','dialog');
-oldMenu.setAttribute('aria-expanded','false');
-oldMenu.setAttribute('aria-label','Open apps');
-oldMenu.innerHTML=gridIcon();
-const settings=doc.createElement('button');
-settings.type='button';
-settings.className='suite-menu settings-trigger';
-settings.dataset.settingsTrigger='';
-settings.setAttribute('aria-haspopup','dialog');
-settings.setAttribute('aria-expanded','false');
-settings.setAttribute('aria-label','Open settings');
-settings.innerHTML=settingsIcon();
-oldMenu.after(settings);
+const topbar=doc.querySelector('.hub-topbar');
+if(topbar){
+topbar.dataset.inkdosShellRegion='titlebar';
+const oldMenu=topbar.querySelector('[data-suite-action="menu"]');
+if(oldMenu)oldMenu.remove();
 }const section=doc.querySelector('.recent-section');
 if(section){
 section.innerHTML=[
@@ -50,7 +33,7 @@ section.innerHTML=[
 '<ul class="recent-list" data-recent-list aria-live="polite"></ul></div>',
 '<div class="recent-empty-state" data-recent-empty hidden><strong>No recent files</strong>',
 '<p>Files you open or create in InkDOS will appear here.</p>',
-'<button class="recent-open" type="button" data-recent-open>Open file</button></div>',
+'<button class="suite-action primary recent-open" type="button" data-recent-open>Open file</button></div>',
 '<p class="recent-status" data-recent-status role="status" aria-live="polite"></p>',
 '<input id="suiteOpenInput" type="file" hidden>'
 ].join('');

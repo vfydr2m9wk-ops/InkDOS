@@ -94,7 +94,7 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn("pagination-content-measure", app)
         self.assertIn("tolerance=3", app)
         self.assertIn("pagination-measure", css)
-        self.assertIn("docx-parser.js?v=1.0.0-beta.5", html)
+        self.assertIn("docx-parser.js?v=1.0.0-beta.6", html)
 
     def test_export_writers_use_standard_ooxml_part_paths(self):
         docx = (ROOT / "apps/documents/docx-writer.js").read_text(encoding="utf-8")

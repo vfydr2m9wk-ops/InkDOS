@@ -210,3 +210,16 @@ animation:none}
 .inkdos-app-launcher-item,.inkdos-global-close{
 transition:none}
 }
+
+/* Canonical Apps/Settings trigger.
+ * Home and workspaces share the same runtime-generated control.
+ */
+.inkdos-global-trigger{
+appearance:none;
+-webkit-appearance:none;
+box-sizing:border-box;
+background:var(--inkdos-shell-surface)!important;
+color:var(--inkdos-shell-text)!important;
+border:1px solid var(--inkdos-shell-border)!important;
+border-radius:10px;
+transition:transform .09s ease,box-shadow .12s ease!important}

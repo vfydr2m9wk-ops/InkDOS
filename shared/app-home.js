@@ -21,7 +21,7 @@ return node;
 }
 const GRID_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>';
 const SETTINGS_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>';
-function shellButton(kind,label,svg){const node=button('','inkdos-app-home-icon-button');
+function shellButton(kind,label,svg){const node=button('','inkdos-global-trigger inkdos-app-home-icon-button');
 node.dataset[kind==='apps'?'appLauncherTrigger':'settingsTrigger']='';
 node.setAttribute('aria-haspopup','dialog');
 node.setAttribute('aria-expanded','false');
@@ -129,6 +129,8 @@ if(global.InkDOSAppShell&&global.InkDOSAppShell.refreshTriggers)global.InkDOSApp
 }
 function init(){const host=doc.querySelector('[data-app-home]'),module=currentModule();
 if(!host||!module||!module.enabled)return;
+host.classList.add('inkdos-app-home-host');
+if(host.parentElement!==doc.body)doc.body.appendChild(host);
 const sync=()=>{const visible=!host.hidden&&!host.classList.contains('hidden');
 doc.body.classList.toggle('inkdos-app-home-active',visible);
 };

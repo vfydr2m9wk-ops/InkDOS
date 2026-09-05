@@ -57,9 +57,9 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
             shell.index(".then(loadWorkspaceLayoutRuntime)"),
         )
 
-        model_tag = "document-ruler-model.js?v=1.0.0-beta.5"
-        drag_tag = "document-ruler-drag-controller.js?v=1.0.0-beta.5"
-        layout_tag = "workspace-layout.js?v=1.0.0-beta.5"
+        model_tag = "document-ruler-model.js?v=1.0.0-beta.6"
+        drag_tag = "document-ruler-drag-controller.js?v=1.0.0-beta.6"
+        layout_tag = "workspace-layout.js?v=1.0.0-beta.6"
         self.assertIn(model_tag, documents)
         self.assertIn(drag_tag, documents)
         self.assertIn(layout_tag, documents)
@@ -76,7 +76,7 @@ class DocumentsRulerDragModularizationTests(unittest.TestCase):
         controller_lines = len(controller.read_text(encoding="utf-8").splitlines())
         shell_lines = len(shell.read_text(encoding="utf-8").splitlines())
 
-        self.assertEqual(policy["release"], "1.0.0-beta.5")
+        self.assertEqual(policy["release"], "1.0.0-beta.6")
         self.assertLessEqual(layout_lines, 500)
         self.assertLessEqual(controller_lines, 500)
         self.assertLessEqual(shell_lines, 500)

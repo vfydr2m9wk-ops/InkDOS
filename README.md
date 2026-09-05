@@ -2,7 +2,7 @@
 
 InkDOS is a local-first, offline and private browser productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.
 
-## 1.0.0-beta.5
+## 1.0.0-beta.6
 
 Beta 4 is the current functional-hardening baseline. It adds private recovery to Plain Text, removes redundant redirect/visual patch layers, and keeps current code and documentation focused on the product that ships now.
 

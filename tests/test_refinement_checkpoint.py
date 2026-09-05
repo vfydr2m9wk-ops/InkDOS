@@ -19,7 +19,7 @@ class RefinementCheckpointTests(unittest.TestCase):
         registry=(ROOT/'modules/module-registry.js').read_text(encoding='utf-8')
         for marker in ('"label":', '"shortLabel":', '"route":', '"createAction":', '"openAction":', '"openLabel":'):
             self.assertIn(marker,registry)
-        self.assertIn('"registryVersion": "1.0.0-beta.5"',registry)
+        self.assertIn('"registryVersion": "1.0.0-beta.6"',registry)
 
     def test_shared_surfaces_are_present_and_offline(self):
         for path in ('shared/recent-files.js','shared/app-shell.js','shared/app-home.js','shared/ui/app-shell.css','shared/ui/app-home.css','shared/ui/refinement-home.css'):
@@ -42,6 +42,19 @@ class RefinementCheckpointTests(unittest.TestCase):
         self.assertIn("doc.querySelector('.hub-intro')?.remove()",shell)
         self.assertIn("runtime.listEnabled().forEach",shell)
         self.assertIn("data-recent-filters",shell)
+        self.assertIn('class="suite-action primary recent-open"',shell)
+        app_shell=(ROOT/'shared/app-shell.js').read_text(encoding='utf-8')
+        app_shell_css=(ROOT/'shared/ui/app-shell.css').read_text(encoding='utf-8')
+        self.assertIn("topbar.dataset.inkdosShellRegion='titlebar'",shell)
+        self.assertIn("if(oldMenu)oldMenu.remove()",shell)
+        self.assertNotIn("oldMenu.dataset.appLauncherTrigger",shell)
+        self.assertNotIn("settings.className='suite-menu",shell)
+        self.assertIn("button.className='icon-btn inkdos-global-trigger'",app_shell)
+        self.assertIn("global.InkDOSAppShell.refreshTriggers",shell)
+        self.assertIn('.inkdos-global-trigger{',app_shell_css)
+        self.assertIn('transition:transform .09s ease,box-shadow .12s ease!important',app_shell_css)
+        self.assertNotIn("function syncHomeControlTheme()",shell)
+        self.assertNotIn("new MutationObserver(syncHomeControlTheme)",shell)
     def test_recent_service_is_metadata_only(self):
         text=(ROOT/'shared/recent-files.js').read_text(encoding='utf-8')
         for marker in ('registerOpened','registerCreated','touch','remove','clear','resolveFile'):
@@ -52,6 +65,22 @@ class RefinementCheckpointTests(unittest.TestCase):
         shell=(ROOT/'shared/app-shell.js').read_text(encoding='utf-8')
         self.assertIn(".txt-title-actions,.titlebar-left",shell)
         self.assertNotIn(".txt-title-actions')||bar",shell)
+
+    def test_mobile_home_theme_and_gutter_contract(self):
+        css=(ROOT/'shared/ui/refinement-home.css').read_text(encoding='utf-8')
+        for marker in ('--suite-surface:var(--surface)', '--suite-text:var(--text)', '--surface-soft:#20252d', 'padding-left:max(20px,env(safe-area-inset-left))', 'padding-right:max(20px,env(safe-area-inset-right))'):
+            self.assertIn(marker,css)
+        self.assertIn('border:1px solid var(--border)',css)
+        self.assertIn('color:var(--text)',css)
+
+    def test_apphome_is_a_viewport_level_surface(self):
+        shell=(ROOT/'shared/app-home.js').read_text(encoding='utf-8')
+        css=(ROOT/'shared/ui/app-home.css').read_text(encoding='utf-8')
+        self.assertIn("if(host.parentElement!==doc.body)doc.body.appendChild(host)",shell)
+        for marker in ('position:fixed!important', 'inset:0!important', 'width:100vw!important', 'height:100dvh!important', 'overflow:auto!important'):
+            self.assertIn(marker,css)
+        self.assertNotIn('body.inkdos-app-home-active.office-documents .workspace',css)
+        self.assertNotIn('grid-template-columns:minmax(0,1fr)!important',css)
 
     def test_update_pipeline_contract_remains_intact(self):
         updater=(ROOT/'scripts/apply_update_package.py').read_text(encoding='utf-8')

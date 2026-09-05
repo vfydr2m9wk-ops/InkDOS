@@ -42,8 +42,8 @@ if (limited.undo.length !== 3 || limited.undo[0].sheetIndex !== 2) process.exit(
 
     def test_spreadsheet_loads_history_before_app_and_harnesses_match(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        history = "history-controller.js?v=1.0.0-beta.5"
-        app = "app.js?v=1.0.0-beta.5"
+        history = "history-controller.js?v=1.0.0-beta.6"
+        app = "app.js?v=1.0.0-beta.6"
         self.assertIn(history, html)
         self.assertIn(app, html)
         self.assertLess(html.index(history), html.index(app))
