@@ -1,4 +1,4 @@
-# InkDOS v1.0.0-beta.6 — 1.0 Beta 6
+# InkDOS v1.0.0-beta.7 — 1.0 Beta 7
 
 Beta 4 is the functional-hardening release on top of the clean InkDOS baseline. It adds recoverable unsaved TXT editing, removes redundant redirect and stylesheet layers, normalizes current release metadata/cache delivery, and removes transition-only documentation and service-worker compatibility code.
 

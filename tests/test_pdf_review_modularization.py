@@ -30,15 +30,15 @@ class PdfReviewModularizationTests(unittest.TestCase):
         self.assertNotIn("function wireReviewLayer(", app)
         self.assertNotIn("function undoLastReviewAction(", app)
         self.assertNotIn("function saveReview()", app)
-        self.assertIn("review/annotation-layer.js?v=1.0.0-beta.6", html)
-        self.assertIn("review/review-controller.js?v=1.0.0-beta.6", html)
+        self.assertIn("review/annotation-layer.js?v=1.0.0-beta.7", html)
+        self.assertIn("review/review-controller.js?v=1.0.0-beta.7", html)
         self.assertLess(
-            html.index("review/annotation-layer.js?v=1.0.0-beta.6"),
-            html.index("review/review-controller.js?v=1.0.0-beta.6"),
+            html.index("review/annotation-layer.js?v=1.0.0-beta.7"),
+            html.index("review/review-controller.js?v=1.0.0-beta.7"),
         )
         self.assertLess(
-            html.index("review/review-controller.js?v=1.0.0-beta.6"),
-            html.index("viewer/page-renderer.js?v=1.0.0-beta.6"),
+            html.index("review/review-controller.js?v=1.0.0-beta.7"),
+            html.index("viewer/page-renderer.js?v=1.0.0-beta.7"),
         )
         self.assertIn("'./apps/pdf/review/annotation-layer.js'", worker)
         self.assertIn("'./apps/pdf/review/review-controller.js'", worker)

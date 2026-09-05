@@ -5,6 +5,12 @@
  */
 body.office-product > [data-app-home].inkdos-app-home-host{
 box-sizing:border-box!important;
+display:block!important;
+align-items:initial!important;
+align-content:normal!important;
+justify-content:initial!important;
+place-items:initial!important;
+text-align:initial!important;
 position:fixed!important;
 inset:0!important;
 z-index:10000!important;
@@ -78,10 +84,10 @@ margin:8px 0 0;max-width:680px;color:var(--inkdos-shell-muted,var(--text-muted,v
 font:14px/1.5 system-ui,sans-serif}
 .inkdos-app-home-primary-actions{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 44px}
 .inkdos-app-home-action{
-min-height:44px;padding:10px 16px;border:1px solid var(--inkdos-shell-border,var(--border,var(--edge,#dfe3e8)));
-border-radius:10px;background:var(--inkdos-shell-surface,var(--surface,#fff));color:inherit;
+min-height:44px;padding:10px 16px;border:1px solid var(--inkdos-shell-border,var(--border,var(--edge,#dfe3e8)))!important;
+border-radius:10px;background:#fff!important;color:#1f2937!important;
 font:650 14px/1.2 system-ui,sans-serif;cursor:pointer}
-.inkdos-app-home-action-primary{border-color:var(--app-accent,#2f6fed);background:var(--app-accent,#2f6fed);color:#fff}
+.inkdos-app-home-action-primary{border-color:#2f6fed!important;background:#2f6fed!important;color:#fff!important}
 .inkdos-app-home-section-heading{display:flex;align-items:center;min-height:44px;border-bottom:1px solid var(--inkdos-shell-border,var(--border,var(--edge,#dfe3e8)))}
 .inkdos-app-home-section-heading h2{margin:0;font:700 18px/1.2 system-ui,sans-serif}
 .inkdos-app-home-empty{min-height:148px;display:grid;align-content:center;gap:5px;color:var(--inkdos-shell-muted,var(--muted,#687180))}

@@ -14,7 +14,7 @@ from browser_support import launch_browser, requested_browser_name
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "tests" / "browser" / "results"
 OUT.mkdir(parents=True, exist_ok=True)
-VERSION = "1.0.0-beta.6"
+VERSION = "1.0.0-beta.7"
 
 
 class FastThreadingHTTPServer(ThreadingHTTPServer):

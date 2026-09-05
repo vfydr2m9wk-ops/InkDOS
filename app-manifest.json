@@ -4,7 +4,7 @@
   "name": "InkDOS",
   "longName": "Ink Desk Offline Suite",
   "tagline": "Local. Offline. Private.",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "A local-first, offline and private productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.",
   "entryPoint": "index.html",
   "source": "https://github.com/vfydr2m9wk-ops/InkDOS",
@@ -263,7 +263,7 @@
     },
     "currentVisualLayer": {
       "schemaVersion": 1,
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "layering": "loaded after existing Home/workspace styles",
       "titlebarMinimum": 44,
       "productAccents": {
@@ -455,7 +455,7 @@
   },
   "txtEditorSystem": {
     "schemaVersion": 1,
-    "version": "1.0.0-beta.6",
+    "version": "1.0.0-beta.7",
     "module": "apps/txt/module.json",
     "entryPoint": "apps/txt/index.html",
     "runtime": "apps/txt/app.js",
@@ -513,9 +513,9 @@
     "documentation": "docs/EPUB_READER.md"
   },
   "release": {
-    "version": "1.0.0-beta.6",
+    "version": "1.0.0-beta.7",
     "channel": "beta",
-    "name": "1.0 Beta 6",
+    "name": "1.0 Beta 7",
     "date": "2026-09-04",
     "consolidated": true
   },

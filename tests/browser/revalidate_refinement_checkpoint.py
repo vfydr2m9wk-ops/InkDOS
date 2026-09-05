@@ -167,6 +167,19 @@ def main() -> int:
             opens = page.locator('[data-app-home-action="open"]').count()
             assert opens == 1
             assert creates == (0 if app in {'pdf', 'epub'} else 1)
+            open_action = page.locator('[data-app-home-action="open"]')
+            assert open_action.evaluate("el => el.classList.contains('inkdos-app-home-action-primary')"), app
+            open_colors = open_action.evaluate("el => [getComputedStyle(el).color, getComputedStyle(el).backgroundColor]")
+            assert open_colors[1] == 'rgb(47, 111, 237)', (app, open_colors)
+            assert contrast(*open_colors) >= 4.5, (app, open_colors, contrast(*open_colors))
+            if creates:
+                create_action = page.locator('[data-app-home-action="create"]')
+                assert not create_action.evaluate("el => el.classList.contains('inkdos-app-home-action-primary')"), app
+                create_colors = create_action.evaluate("el => [getComputedStyle(el).color, getComputedStyle(el).backgroundColor]")
+                assert create_colors[1] == 'rgb(255, 255, 255)', (app, create_colors)
+                assert contrast(*create_colors) >= 4.5, (app, create_colors, contrast(*create_colors))
+            topbar = page.locator('.inkdos-app-home-topbar').bounding_box()
+            assert topbar and topbar['y'] <= 30, (app, topbar)
             assert page.locator('.inkdos-app-launcher-item').count() == 6
 
             assert page.locator('[data-app-home]').evaluate("el => el.parentElement === document.body"), app

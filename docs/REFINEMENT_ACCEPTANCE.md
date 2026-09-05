@@ -1,7 +1,7 @@
 # InkDOS refinement acceptance matrix — checkpoint 2
 
 Baseline: `1.0.0-beta.5`, sequence 62.
-Checkpoint target: `1.0.0-beta.6`, sequence 63.
+Checkpoint target: `1.0.0-beta.7`, sequence 63.
 
 This checkpoint addresses the mobile Home gutter/theme regressions observed on-device and the Documents AppHome layout failure. PASS means direct evidence exists; PARCIAL means the remaining editor-wide phase still owns part of the criterion.
 

@@ -34,7 +34,7 @@ class LocalRecoveryTests(unittest.TestCase):
         disabled = ("pdf", "epub")
         for module in enabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
-            self.assertIn("../../shared/local-recovery.js?v=1.0.0-beta.6", html)
+            self.assertIn("../../shared/local-recovery.js?v=1.0.0-beta.7", html)
             self.assertLess(html.index("local-recovery.js"), html.index("app.js"))
         for module in disabled:
             html = (ROOT / "apps" / module / "index.html").read_text(encoding="utf-8")
@@ -85,7 +85,7 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_service_worker_caches_recovery_runtime(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn("./shared/local-recovery.js", text)
-        self.assertIn("inkdos-shell-v1.0.0-beta.6", text)
+        self.assertIn("inkdos-shell-v1.0.0-beta.7", text)
 
     def test_service_worker_canonicalizes_versioned_shell_assets(self):
         text = (ROOT / "service-worker.js").read_text(encoding="utf-8")
@@ -93,7 +93,7 @@ class LocalRecoveryTests(unittest.TestCase):
         self.assertIn("canonical.hash=''", text)
         self.assertIn("APP_SHELL_URLS.has(canonical.href)", text)
         hub = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("module-registry.js?v=1.0.0-beta.6", hub)
+        self.assertIn("module-registry.js?v=1.0.0-beta.7", hub)
 
     def test_local_recovery_browser_waits_use_playwright_keyword_arg(self):
         text = (ROOT / "tests/browser/revalidate_local_recovery.py").read_text(encoding="utf-8")
@@ -180,10 +180,10 @@ class LocalRecoveryTests(unittest.TestCase):
     def test_release_identity_is_current(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(version["version"], "1.0.0-beta.6")
-        self.assertEqual(version["releaseName"], "1.0 Beta 6")
-        self.assertEqual(state["appliedSequence"], 63)
-        self.assertEqual(state["currentPackage"], "1.0.0-beta.6")
+        self.assertEqual(version["version"], "1.0.0-beta.7")
+        self.assertEqual(version["releaseName"], "1.0 Beta 7")
+        self.assertEqual(state["appliedSequence"], 64)
+        self.assertEqual(state["currentPackage"], "1.0.0-beta.7")
 
 
 if __name__ == "__main__":

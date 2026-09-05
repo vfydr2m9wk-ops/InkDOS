@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaModelModularizationTests(unittest.TestCase):
     def test_model_is_loaded_before_formula_interaction_controllers(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        model = 'formula-model.js?v=1.0.0-beta.6'
-        session = 'formula-session.js?v=1.0.0-beta.6'
-        reference = 'formula-reference.js?v=1.0.0-beta.6'
-        editor = 'formula-editor.js?v=1.0.0-beta.6'
+        model = 'formula-model.js?v=1.0.0-beta.7'
+        session = 'formula-session.js?v=1.0.0-beta.7'
+        reference = 'formula-reference.js?v=1.0.0-beta.7'
+        editor = 'formula-editor.js?v=1.0.0-beta.7'
         self.assertIn(model, html)
         self.assertLess(html.index(model), html.index(session))
         self.assertLess(html.index(session), html.index(reference))

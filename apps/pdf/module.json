@@ -5,7 +5,7 @@
   "label": "PDF",
   "shortLabel": "PDF",
   "description": "Read, navigate and review PDF files locally.",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "enabled": true,
   "optional": false,
   "order": 40,

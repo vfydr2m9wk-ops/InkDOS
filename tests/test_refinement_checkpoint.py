@@ -19,7 +19,7 @@ class RefinementCheckpointTests(unittest.TestCase):
         registry=(ROOT/'modules/module-registry.js').read_text(encoding='utf-8')
         for marker in ('"label":', '"shortLabel":', '"route":', '"createAction":', '"openAction":', '"openLabel":'):
             self.assertIn(marker,registry)
-        self.assertIn('"registryVersion": "1.0.0-beta.6"',registry)
+        self.assertIn('"registryVersion": "1.0.0-beta.7"',registry)
 
     def test_shared_surfaces_are_present_and_offline(self):
         for path in ('shared/recent-files.js','shared/app-shell.js','shared/app-home.js','shared/ui/app-shell.css','shared/ui/app-home.css','shared/ui/refinement-home.css'):
@@ -81,6 +81,11 @@ class RefinementCheckpointTests(unittest.TestCase):
             self.assertIn(marker,css)
         self.assertNotIn('body.inkdos-app-home-active.office-documents .workspace',css)
         self.assertNotIn('grid-template-columns:minmax(0,1fr)!important',css)
+        self.assertIn('display:block!important',css)
+        self.assertIn("module.createLabel||'Create','inkdos-app-home-action'",shell)
+        self.assertIn("module.openLabel||'Open file','inkdos-app-home-action inkdos-app-home-action-primary'",shell)
+        self.assertIn('background:#fff!important;color:#1f2937!important',css)
+        self.assertIn('.inkdos-app-home-action-primary{border-color:#2f6fed!important;background:#2f6fed!important;color:#fff!important}',css)
 
     def test_update_pipeline_contract_remains_intact(self):
         updater=(ROOT/'scripts/apply_update_package.py').read_text(encoding='utf-8')

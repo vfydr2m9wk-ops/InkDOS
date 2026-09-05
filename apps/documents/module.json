@@ -5,7 +5,7 @@
   "label": "Documents",
   "shortLabel": "Docs",
   "description": "Create, edit and save DOCX copies locally.",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "enabled": true,
   "optional": false,
   "order": 10,

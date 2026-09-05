@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '1.0.0-beta.6';
+  const VERSION = '1.0.0-beta.7';
 
   function documentKey(file) {
     return [
