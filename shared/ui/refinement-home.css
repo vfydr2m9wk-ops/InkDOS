@@ -110,15 +110,15 @@ font-size:12px;
 font-weight:650;
 cursor:pointer}
 .recent-filter[aria-pressed=true]{
-border-color:var(--recent-filter-accent,#757575);
-background:var(--recent-filter-accent,#757575);
-color:#000}
+border-color:var(--recent-filter-accent,#757575)!important;
+background:var(--recent-filter-accent,#757575)!important;
+color:#000!important}
 html[data-theme="dark"] .recent-filter[aria-pressed=true],
 html[data-resolved-theme="dark"] .recent-filter[aria-pressed=true]{
-color:#fff}
+color:#fff!important}
 @media(prefers-color-scheme:dark){
 html[data-theme="system"] .recent-filter[aria-pressed=true]{
-color:#fff}}
+color:#fff!important}}
 .recent-table{
 min-width:0;
 border:1px solid var(--border);

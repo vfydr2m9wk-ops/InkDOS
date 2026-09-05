@@ -25,17 +25,17 @@ class PresentationsModularizationTests(unittest.TestCase):
     def test_feature_components_load_before_app(self):
         html = HTML.read_text(encoding="utf-8")
         components = (
-            "state/selection-controller.js?v=1.0.0-beta.8",
-            "state/history-controller.js?v=1.0.0-beta.8",
-            "ui/inspector-controller.js?v=1.0.0-beta.8",
-            "ui/thumbnails-controller.js?v=1.0.0-beta.8",
-            "ui/presenter-notes-controller.js?v=1.0.0-beta.8",
-            "presentation/slideshow-controller.js?v=1.0.0-beta.8",
-            "io/pptx-write-adapter.js?v=1.0.0-beta.8",
-            "io/file-controller.js?v=1.0.0-beta.8",
-            "io/recovery-controller.js?v=1.0.0-beta.8",
+            "state/selection-controller.js?v=1.0.0-beta.9",
+            "state/history-controller.js?v=1.0.0-beta.9",
+            "ui/inspector-controller.js?v=1.0.0-beta.9",
+            "ui/thumbnails-controller.js?v=1.0.0-beta.9",
+            "ui/presenter-notes-controller.js?v=1.0.0-beta.9",
+            "presentation/slideshow-controller.js?v=1.0.0-beta.9",
+            "io/pptx-write-adapter.js?v=1.0.0-beta.9",
+            "io/file-controller.js?v=1.0.0-beta.9",
+            "io/recovery-controller.js?v=1.0.0-beta.9",
         )
-        app = "app.js?v=1.0.0-beta.8"
+        app = "app.js?v=1.0.0-beta.9"
         for component in components:
             self.assertIn(component, html)
             self.assertLess(html.index(component), html.index(app))

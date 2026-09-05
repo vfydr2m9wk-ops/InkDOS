@@ -129,6 +129,7 @@ if(global.InkDOSAppShell&&global.InkDOSAppShell.refreshTriggers)global.InkDOSApp
 }
 function init(){const host=doc.querySelector('[data-app-home]'),module=currentModule();
 if(!host||!module||!module.enabled)return;
+host.classList.remove('start-screen');
 host.classList.add('inkdos-app-home-host');
 if(host.parentElement!==doc.body)doc.body.appendChild(host);
 const sync=()=>{const visible=!host.hidden&&!host.classList.contains('hidden');

@@ -49,10 +49,10 @@ class TxtInteractionModularizationTests(unittest.TestCase):
     def test_txt_offline_and_load_order_include_controllers(self):
         html = (ROOT / "apps/txt/index.html").read_text(encoding="utf-8")
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
-        history = "history-controller.js?v=1.0.0-beta.8"
-        find = "find-controller.js?v=1.0.0-beta.8"
-        recovery = "recovery-controller.js?v=1.0.0-beta.8"
-        app = "app.js?v=1.0.0-beta.8"
+        history = "history-controller.js?v=1.0.0-beta.9"
+        find = "find-controller.js?v=1.0.0-beta.9"
+        recovery = "recovery-controller.js?v=1.0.0-beta.9"
+        app = "app.js?v=1.0.0-beta.9"
         self.assertLess(html.index(history), html.index(app))
         self.assertLess(html.index(find), html.index(app))
         self.assertLess(html.index(recovery), html.index(app))

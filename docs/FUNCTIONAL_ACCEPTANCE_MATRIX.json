@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "1.0.0-beta.8",
+  "release": "1.0.0-beta.9",
   "policy": {
     "rule": "A visible function is not considered confirmed merely because the control exists. It needs behavioral automation or an explicit manual device check.",
     "newControlGate": "Every new visible control must appear in this inventory before release.",

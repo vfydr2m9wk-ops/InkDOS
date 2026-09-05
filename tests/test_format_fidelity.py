@@ -7,8 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 class FormatFidelityCorrection02031Tests(unittest.TestCase):
     def test_documents_loads_drawing_layout_before_parser(self):
         html = (ROOT / 'apps/documents/index.html').read_text(encoding='utf-8')
-        self.assertIn('drawing-layout.js?v=1.0.0-beta.8', html)
-        self.assertLess(html.index('drawing-layout.js?v=1.0.0-beta.8'), html.index('docx-parser.js?v=1.0.0-beta.8'))
+        self.assertIn('drawing-layout.js?v=1.0.0-beta.9', html)
+        self.assertLess(html.index('drawing-layout.js?v=1.0.0-beta.9'), html.index('docx-parser.js?v=1.0.0-beta.9'))
 
     def test_docx_parser_preserves_drawing_geometry_anchor_and_header_artwork(self):
         parser = (ROOT / 'apps/documents/docx-parser.js').read_text(encoding='utf-8')
@@ -28,8 +28,8 @@ class FormatFidelityCorrection02031Tests(unittest.TestCase):
 
     def test_presentations_loads_background_resolver_before_app(self):
         html = (ROOT / 'apps/presentations/index.html').read_text(encoding='utf-8')
-        self.assertIn('engine/background-resolver.js?v=1.0.0-beta.8', html)
-        self.assertLess(html.index('engine/background-resolver.js?v=1.0.0-beta.8'), html.index('app.js?v=1.0.0-beta.8'))
+        self.assertIn('engine/background-resolver.js?v=1.0.0-beta.9', html)
+        self.assertLess(html.index('engine/background-resolver.js?v=1.0.0-beta.9'), html.index('app.js?v=1.0.0-beta.9'))
 
     def test_presentations_resolves_direct_background_images_without_expanding_main_app(self):
         app = (ROOT / 'apps/presentations/app.js').read_text(encoding='utf-8')

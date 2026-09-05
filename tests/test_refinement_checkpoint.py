@@ -19,7 +19,7 @@ class RefinementCheckpointTests(unittest.TestCase):
         registry=(ROOT/'modules/module-registry.js').read_text(encoding='utf-8')
         for marker in ('"label":', '"shortLabel":', '"route":', '"createAction":', '"openAction":', '"openLabel":'):
             self.assertIn(marker,registry)
-        self.assertIn('"registryVersion": "1.0.0-beta.8"',registry)
+        self.assertIn('"registryVersion": "1.0.0-beta.9"',registry)
 
     def test_shared_surfaces_are_present_and_offline(self):
         for path in ('shared/recent-files.js','shared/app-shell.js','shared/app-home.js','shared/ui/app-shell.css','shared/ui/app-home.css','shared/ui/refinement-home.css'):
@@ -89,6 +89,10 @@ class RefinementCheckpointTests(unittest.TestCase):
         self.assertIn('inkdos-command-trigger',responsive_css)
         self.assertIn('@media(orientation:portrait)',responsive_css)
         self.assertIn('grid-template-rows:minmax(0,1fr) 132px!important',responsive_css)
+        self.assertIn('padding-left:max(12px,env(safe-area-inset-left))!important',responsive_css)
+        self.assertIn('padding-right:max(12px,env(safe-area-inset-right))!important',responsive_css)
+        app_home=(ROOT/'shared/app-home.js').read_text(encoding='utf-8')
+        self.assertIn("host.classList.remove('start-screen')",app_home)
         for command in ('home','save','new','share','undo','redo'):
             self.assertIn("['"+command+"'",responsive_js)
         for app_id in APPS:

@@ -5,7 +5,7 @@
   "label": "Plain Text",
   "shortLabel": "Text",
   "description": "Write and edit plain-text files locally.",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "enabled": true,
   "optional": true,
   "order": 50,

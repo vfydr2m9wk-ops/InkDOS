@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpreadsheetFormulaSessionModularizationTests(unittest.TestCase):
     def test_session_module_is_loaded_between_model_and_interaction(self):
         html = (ROOT / "apps/spreadsheets/index.html").read_text(encoding="utf-8")
-        model = "formula-model.js?v=1.0.0-beta.8"
-        session = "formula-session.js?v=1.0.0-beta.8"
-        reference = "formula-reference.js?v=1.0.0-beta.8"
-        editor = "formula-editor.js?v=1.0.0-beta.8"
+        model = "formula-model.js?v=1.0.0-beta.9"
+        session = "formula-session.js?v=1.0.0-beta.9"
+        reference = "formula-reference.js?v=1.0.0-beta.9"
+        editor = "formula-editor.js?v=1.0.0-beta.9"
         for asset in (model, session, reference, editor):
             self.assertIn(asset, html)
         self.assertLess(html.index(model), html.index(session))

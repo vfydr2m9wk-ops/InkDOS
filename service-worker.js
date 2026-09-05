@@ -1,6 +1,6 @@
 'use strict';
-// Update sequence 65: functional hardening and current-state cleanup.
-const CACHE_NAME='inkdos-shell-v1.0.0-beta.8-ui65';
+// Update sequence 66: functional hardening and current-state cleanup.
+const CACHE_NAME='inkdos-shell-v1.0.0-beta.9-ui66';
 const CACHE_PREFIX='inkdos-shell-';
 const APP_SHELL=[
   './',
