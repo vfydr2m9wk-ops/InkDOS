@@ -19,7 +19,7 @@ class RefinementCheckpointTests(unittest.TestCase):
         registry=(ROOT/'modules/module-registry.js').read_text(encoding='utf-8')
         for marker in ('"label":', '"shortLabel":', '"route":', '"createAction":', '"openAction":', '"openLabel":'):
             self.assertIn(marker,registry)
-        self.assertIn('"registryVersion": "1.0.0-beta.9"',registry)
+        self.assertIn('"registryVersion": "1.0.0-beta.10"',registry)
 
     def test_shared_surfaces_are_present_and_offline(self):
         for path in ('shared/recent-files.js','shared/app-shell.js','shared/app-home.js','shared/ui/app-shell.css','shared/ui/app-home.css','shared/ui/refinement-home.css'):

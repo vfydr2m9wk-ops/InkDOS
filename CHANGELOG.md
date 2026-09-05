@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0-beta.9 — 1.0 Beta 9 (2026-09-04)
+## 1.0.0-beta.10 — 1.0 Beta 10 (2026-09-04)
 
 - Added private IndexedDB recovery to Plain Text and removed the duplicate discard prompt when opening another TXT file.
 - Removed six obsolete root redirect launchers; canonical workspace URLs are now the only launch targets.

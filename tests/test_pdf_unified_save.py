@@ -63,7 +63,7 @@ class PdfUnifiedSaveTests(unittest.TestCase):
         self.assertLess(exporter, save_controller)
         self.assertLess(save_controller, application)
         self.assertIn(
-            "flatten-export.css?v=1.0.0-beta.9",
+            "flatten-export.css?v=1.0.0-beta.10",
             html,
         )
 

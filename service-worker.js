@@ -1,6 +1,6 @@
 'use strict';
-// Update sequence 66: functional hardening and current-state cleanup.
-const CACHE_NAME='inkdos-shell-v1.0.0-beta.9-ui66';
+// Update sequence 67: functional hardening and current-state cleanup.
+const CACHE_NAME='inkdos-shell-v1.0.0-beta.10-ui67';
 const CACHE_PREFIX='inkdos-shell-';
 const APP_SHELL=[
   './',
@@ -107,6 +107,7 @@ const APP_SHELL=[
   './apps/pdf/module.json',
   './apps/pdf/index.html',
   './apps/pdf/styles.css',
+  './apps/pdf/responsive-reflow.css',
   './apps/pdf/fullscreen-mobile.css',
   './apps/pdf/text-selection-review.js',
   './apps/pdf/flatten-export.css',
@@ -116,6 +117,7 @@ const APP_SHELL=[
   './apps/pdf/review/review-controller.js',
   './apps/pdf/viewer/navigation-controller.js',
   './apps/pdf/viewer/page-renderer.js',
+  './apps/pdf/viewer/responsive-controller.js',
   './apps/pdf/viewer/fullscreen-controller.js',
   './apps/pdf/app.js',
   './apps/txt/module.json',

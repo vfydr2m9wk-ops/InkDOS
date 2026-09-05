@@ -1,4 +1,4 @@
-# Project status — InkDOS 1.0.0-beta.9
+# Project status — InkDOS 1.0.0-beta.10
 
 InkDOS is in final 1.0 beta stabilization. The six local-first workspaces are active and the current engineering baseline prioritizes reliability, broad practical format coverage, low structural complexity and stable interaction.
 

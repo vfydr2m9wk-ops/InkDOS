@@ -24,15 +24,22 @@
     function pageScale(base) {
       if (typeof state.zoom === 'number') return state.zoom;
 
+      const pageStyles = getComputedStyle(E.pdfPages);
+      const horizontalPadding =
+        (Number.parseFloat(pageStyles.paddingLeft) || 0) +
+        (Number.parseFloat(pageStyles.paddingRight) || 0);
+      const verticalPadding =
+        (Number.parseFloat(pageStyles.paddingTop) || 0) +
+        (Number.parseFloat(pageStyles.paddingBottom) || 0);
+
       const availableWidth = Math.max(
-        260,
-        E.viewerStage.clientWidth -
-          (state.direction === 'vertical' ? 48 : 24)
+        96,
+        E.viewerStage.clientWidth - horizontalPadding
       );
 
       const availableHeight = Math.max(
-        260,
-        E.viewerStage.clientHeight - 36
+        96,
+        E.viewerStage.clientHeight - verticalPadding
       );
 
       return state.zoom === 'page-fit'

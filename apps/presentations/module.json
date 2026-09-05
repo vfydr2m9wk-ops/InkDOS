@@ -5,7 +5,7 @@
   "label": "Presentations",
   "shortLabel": "Slides",
   "description": "Create, edit and present PPT and PPTX files locally.",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "enabled": true,
   "optional": false,
   "order": 30,

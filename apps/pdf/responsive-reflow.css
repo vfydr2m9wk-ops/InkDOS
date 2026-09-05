@@ -1,0 +1,119 @@
+/* InkDOS PDF responsive reflow — beta.10
+   UI chrome reflows; PDF page geometry remains faithful and scales proportionally. */
+@media (max-width:650px), (orientation:portrait){
+  body.office-pdf:not(.inkdos-app-home-active) .viewer-app{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    grid-template-rows:44px auto minmax(0,1fr) 44px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .commandbar{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:46px!important;
+    padding:4px 6px!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+    align-content:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    overflow:visible!important;
+    white-space:normal!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .commandbar .command-group{
+    flex:0 1 auto!important;
+    min-width:0!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .commandbar .annotation-tools{
+    flex:1 1 auto!important;
+    justify-content:center!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .commandbar .command-separator{
+    display:none!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .workspace-body,
+  body.office-pdf:not(.inkdos-app-home-active) .workspace-body.sidebar-collapsed{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .viewer-stage,
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-host,
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-pages{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-pages{
+    padding:12px!important;
+    gap:14px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-page-shell{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .statusbar{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:4px 6px!important;
+    gap:6px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) #privacyText,
+  body.office-pdf:not(.inkdos-app-home-active) .status-spacer{
+    display:none!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) #statusText{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:32%!important;
+    font-size:10px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-bottom-nav{
+    flex:0 1 auto!important;
+    min-width:0!important;
+    max-width:68%!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:4px!important;
+    overflow:hidden!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-bottom-nav .page-controls,
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-bottom-nav .zoom-controls{
+    min-width:0!important;
+    gap:2px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) #pdfZoomSlider{
+    width:clamp(54px,14vw,92px)!important;
+    min-width:54px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-bottom-nav .tool-btn{
+    min-width:32px!important;
+    width:32px!important;
+    padding-inline:4px!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-bottom-nav #pdfFitWidth{
+    width:auto!important;
+    min-width:36px!important;
+    padding-inline:6px!important;
+  }
+}
+@media (max-width:420px){
+  body.office-pdf:not(.inkdos-app-home-active) #pdfZoomSlider,
+  body.office-pdf:not(.inkdos-app-home-active) #pdfZoomLabel{
+    display:none!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) #statusText{
+    max-width:24%!important;
+  }
+  body.office-pdf:not(.inkdos-app-home-active) .pdf-bottom-nav{
+    max-width:76%!important;
+  }
+}

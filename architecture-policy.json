@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "1.0.0-beta.9",
+  "release": "1.0.0-beta.10",
   "purpose": "Current complexity ratchet: new runtime stays bounded and existing exceptions may shrink but never grow.",
   "runtimeRoots": [
     "apps",
