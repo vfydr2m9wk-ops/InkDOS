@@ -10,9 +10,9 @@ class TxtRecoveryIntegrationTests(unittest.TestCase):
         app = (ROOT / "apps/txt/app.js").read_text(encoding="utf-8")
         controller = (ROOT / "apps/txt/recovery-controller.js").read_text(encoding="utf-8")
 
-        recovery_asset = "../../shared/local-recovery.js?v=1.0.0-beta.7"
-        controller_asset = "recovery-controller.js?v=1.0.0-beta.7"
-        app_asset = "app.js?v=1.0.0-beta.7"
+        recovery_asset = "../../shared/local-recovery.js?v=1.0.0-beta.8"
+        controller_asset = "recovery-controller.js?v=1.0.0-beta.8"
+        app_asset = "app.js?v=1.0.0-beta.8"
         self.assertIn(recovery_asset, html)
         self.assertIn(controller_asset, html)
         self.assertLess(html.index(recovery_asset), html.index(controller_asset))

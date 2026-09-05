@@ -1,6 +1,6 @@
 'use strict';
-// Update sequence 64: functional hardening and current-state cleanup.
-const CACHE_NAME='inkdos-shell-v1.0.0-beta.7-ui64';
+// Update sequence 65: functional hardening and current-state cleanup.
+const CACHE_NAME='inkdos-shell-v1.0.0-beta.8-ui65';
 const CACHE_PREFIX='inkdos-shell-';
 const APP_SHELL=[
   './',
@@ -8,6 +8,7 @@ const APP_SHELL=[
   './shared/suite-shell.js',
   './shared/recent-files.js',
   './shared/app-shell.js',
+  './shared/responsive-command-menu.js',
   './shared/app-home.js',
   './shared/suite-shell.css',
   './index.html',
@@ -27,6 +28,7 @@ const APP_SHELL=[
   './shared/ui/application-shell.js',
   './shared/ui/shell-contract.json',
   './shared/ui/workspace-layout.css',
+  './shared/ui/responsive-workspace.css',
   './shared/ui/workspace-layout.js',
   './shared/ui/workspace-panel-controller.js',
   './shared/ui/document-ruler-model.js',

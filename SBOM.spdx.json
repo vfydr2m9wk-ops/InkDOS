@@ -2,8 +2,8 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "InkDOS-v1.0.0-beta.7",
-  "documentNamespace": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/tag/v1.0.0-beta.7",
+  "name": "InkDOS-v1.0.0-beta.8",
+  "documentNamespace": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/tag/v1.0.0-beta.8",
   "creationInfo": {
     "created": "2026-09-04T00:00:00Z",
     "creators": [
@@ -14,7 +14,7 @@
     {
       "name": "InkDOS",
       "SPDXID": "SPDXRef-Package-InkDOS",
-      "versionInfo": "1.0.0-beta.7",
+      "versionInfo": "1.0.0-beta.8",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",

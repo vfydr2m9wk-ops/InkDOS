@@ -474,7 +474,7 @@
 
 
   global.InkDOSTxtDebug = Object.freeze({
-    version: '1.0.0-beta.7',
+    version: '1.0.0-beta.8',
     openFile,
     newDocument,
     saveDocument,

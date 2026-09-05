@@ -5,14 +5,14 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0-beta.7"
+VERSION = "1.0.0-beta.8"
 
 
 class V100BetaReleaseTests(unittest.TestCase):
     def test_public_beta_identity_is_consistent(self):
         version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
         self.assertEqual(version["version"], VERSION)
-        self.assertEqual(version["releaseName"], "1.0 Beta 7")
+        self.assertEqual(version["releaseName"], "1.0 Beta 8")
         self.assertEqual(version["releaseChannel"], "beta")
         self.assertEqual(version["repository"], "https://github.com/vfydr2m9wk-ops/InkDOS")
         self.assertEqual(version["demo"], "https://vfydr2m9wk-ops.github.io/InkDOS/")
@@ -27,11 +27,11 @@ class V100BetaReleaseTests(unittest.TestCase):
         self.assertFalse((ROOT / "docs" / "releases").exists())
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         headings = [line for line in changelog.splitlines() if line.startswith("## ")]
-        self.assertEqual(headings, ["## 1.0.0-beta.7 — 1.0 Beta 7 (2026-09-04)"])
+        self.assertEqual(headings, ["## 1.0.0-beta.8 — 1.0 Beta 8 (2026-09-04)"])
 
     def test_internal_sequence_is_compact(self):
         state = json.loads((ROOT / "DEVELOPMENT_STATE.json").read_text(encoding="utf-8"))
-        self.assertEqual(state["appliedSequence"], 64)
+        self.assertEqual(state["appliedSequence"], 65)
         self.assertEqual(state["currentPackage"], VERSION)
         self.assertNotIn("history", state)
         self.assertNotIn("targetRelease", state)

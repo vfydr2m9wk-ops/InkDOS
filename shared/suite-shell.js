@@ -53,11 +53,21 @@ if(target)target.textContent=String(message||'');
 function setInputAccept(appId){const input=doc.querySelector('#suiteOpenInput'),runtime=modules();
 if(input&&runtime)input.accept=appId?runtime.buildAcceptFor(appId):runtime.buildAccept();
 }
+const recentFilterAccents=Object.freeze({
+all:'#757575',
+documents:'#2e6fed',
+spreadsheets:'#2a854c',
+presentations:'#cf4723',
+pdf:'#e12c1e',
+txt:'#93700e',
+epub:'#8163cb'
+});
 function makeFilter(id,label){const button=doc.createElement('button');
 button.type='button';
 button.className='recent-filter';
 button.dataset.recentFilter=id;
 button.textContent=label;
+button.style.setProperty('--recent-filter-accent',recentFilterAccents[id]||recentFilterAccents.all);
 button.setAttribute('aria-pressed',id===state.filter?'true':'false');
 button.addEventListener('click',()=>{state.filter=id;
 renderFilters();

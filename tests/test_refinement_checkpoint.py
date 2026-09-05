@@ -19,7 +19,7 @@ class RefinementCheckpointTests(unittest.TestCase):
         registry=(ROOT/'modules/module-registry.js').read_text(encoding='utf-8')
         for marker in ('"label":', '"shortLabel":', '"route":', '"createAction":', '"openAction":', '"openLabel":'):
             self.assertIn(marker,registry)
-        self.assertIn('"registryVersion": "1.0.0-beta.7"',registry)
+        self.assertIn('"registryVersion": "1.0.0-beta.8"',registry)
 
     def test_shared_surfaces_are_present_and_offline(self):
         for path in ('shared/recent-files.js','shared/app-shell.js','shared/app-home.js','shared/ui/app-shell.css','shared/ui/app-home.css','shared/ui/refinement-home.css'):
@@ -71,7 +71,30 @@ class RefinementCheckpointTests(unittest.TestCase):
         for marker in ('--suite-surface:var(--surface)', '--suite-text:var(--text)', '--surface-soft:#20252d', 'padding-left:max(20px,env(safe-area-inset-left))', 'padding-right:max(20px,env(safe-area-inset-right))'):
             self.assertIn(marker,css)
         self.assertIn('border:1px solid var(--border)',css)
-        self.assertIn('color:var(--text)',css)
+        self.assertIn('background:var(--recent-filter-accent,#757575)',css)
+        shell=(ROOT/'shared/suite-shell.js').read_text(encoding='utf-8')
+        self.assertIn("recentFilterAccents=Object.freeze({",shell)
+        for accent in ('#2e6fed','#2a854c','#cf4723','#e12c1e','#93700e','#8163cb'):
+            self.assertIn(accent,shell)
+        self.assertIn("button.style.setProperty('--recent-filter-accent'",shell)
+        neutral_block=css.split('.recent-filter{',1)[1].split('.recent-filter[aria-pressed=true]',1)[0]
+        self.assertNotIn('--recent-filter-accent',neutral_block)
+        self.assertIn('html[data-theme="dark"] .recent-filter[aria-pressed=true]',css)
+        self.assertIn('.brand-mark{width:48px;height:48px}',css)
+        self.assertIn('.brand-copy strong{font-size:20px}',css)
+        self.assertIn('font-size:clamp(23px,2.6vw,28px)',css)
+        self.assertIn('font-size:24px',css)
+        responsive_css=(ROOT/'shared/ui/responsive-workspace.css').read_text(encoding='utf-8')
+        responsive_js=(ROOT/'shared/responsive-command-menu.js').read_text(encoding='utf-8')
+        self.assertIn('inkdos-command-trigger',responsive_css)
+        self.assertIn('@media(orientation:portrait)',responsive_css)
+        self.assertIn('grid-template-rows:minmax(0,1fr) 132px!important',responsive_css)
+        for command in ('home','save','new','share','undo','redo'):
+            self.assertIn("['"+command+"'",responsive_js)
+        for app_id in APPS:
+            html=(ROOT/'apps'/app_id/'index.html').read_text(encoding='utf-8')
+            self.assertIn('../../shared/ui/responsive-workspace.css',html)
+            self.assertIn('../../shared/responsive-command-menu.js',html)
 
     def test_apphome_is_a_viewport_level_surface(self):
         shell=(ROOT/'shared/app-home.js').read_text(encoding='utf-8')

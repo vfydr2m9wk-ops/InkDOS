@@ -14,6 +14,15 @@ ROOT = Path(__file__).resolve().parents[2]
 RESULT = ROOT / 'tests/browser/results/refinement_checkpoint.json'
 APPS = ('documents', 'spreadsheets', 'presentations', 'pdf', 'txt', 'epub')
 WIDTHS = (320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440)
+FILTER_COLORS = {
+    'all': 'rgb(117, 117, 117)',
+    'documents': 'rgb(46, 111, 237)',
+    'spreadsheets': 'rgb(42, 133, 76)',
+    'presentations': 'rgb(207, 71, 35)',
+    'pdf': 'rgb(225, 44, 30)',
+    'txt': 'rgb(147, 112, 14)',
+    'epub': 'rgb(129, 99, 203)',
+}
 
 
 def source(path: str) -> str:
@@ -107,6 +116,31 @@ def main() -> int:
         assert page.locator('.hub-intro').count() == 0
         assert page.locator('.workspace-grid').count() == 0
         assert page.locator('[data-recent-filter]').count() == 7
+
+        # Recent filter colors are semantic only while selected. The selected
+        # background is identical in light/dark; only foreground contrast flips.
+        page.evaluate("() => InkDOSAppShell.applyTheme('light', false)")
+        for filter_id, expected_background in FILTER_COLORS.items():
+            page.locator(f'[data-recent-filter="{filter_id}"]').click()
+            colors = page.locator(f'[data-recent-filter="{filter_id}"]').evaluate(
+                "el => [getComputedStyle(el).color, getComputedStyle(el).backgroundColor]"
+            )
+            assert colors == ['rgb(0, 0, 0)', expected_background], (filter_id, 'light', colors)
+        page.locator('[data-recent-filter="documents"]').click()
+        sheets_unselected = page.locator('[data-recent-filter="spreadsheets"]').evaluate(
+            "el => getComputedStyle(el).backgroundColor"
+        )
+        assert sheets_unselected != FILTER_COLORS['spreadsheets'], sheets_unselected
+
+        page.evaluate("() => InkDOSAppShell.applyTheme('dark', false)")
+        for filter_id, expected_background in FILTER_COLORS.items():
+            page.locator(f'[data-recent-filter="{filter_id}"]').click()
+            colors = page.locator(f'[data-recent-filter="{filter_id}"]').evaluate(
+                "el => [getComputedStyle(el).color, getComputedStyle(el).backgroundColor]"
+            )
+            assert colors == ['rgb(255, 255, 255)', expected_background], (filter_id, 'dark', colors)
+        page.evaluate("() => { InkDOSSuite.setFilter('all'); InkDOSAppShell.applyTheme('light', false); }")
+
         assert page.locator('[data-app-launcher-trigger]').count() == 1
         assert page.locator('[data-settings-trigger]').count() == 1
         assert page.locator('[data-app-launcher-trigger].inkdos-global-trigger').count() == 1

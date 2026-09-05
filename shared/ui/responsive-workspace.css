@@ -1,0 +1,99 @@
+/* InkDOS responsive editor shell — beta.8 */
+html,body{max-width:100%;overflow-x:hidden}
+body.office-product{width:100%;max-width:100vw;margin:0!important}
+body.office-product .app-shell,
+body.office-product .app,
+body.office-product main,
+body.office-product .workspace,
+body.office-product .viewport,
+body.office-product .stage-wrap,
+body.office-product #workspace,
+body.office-product #gridViewport,
+body.office-product .txt-main,
+body.office-product .epub-main{min-width:0;max-width:100%}
+
+.inkdos-command-trigger,
+.inkdos-command-menu,
+.inkdos-command-backdrop{font-family:var(--inkdos-font-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif)}
+.inkdos-command-trigger{display:none}
+.inkdos-command-backdrop{
+position:fixed;inset:0;z-index:2147483500;border:0;background:rgba(15,23,42,.34)}
+.inkdos-command-menu{
+position:fixed;top:max(52px,calc(env(safe-area-inset-top) + 44px));left:max(8px,env(safe-area-inset-left));
+z-index:2147483501;width:min(300px,calc(100vw - 16px));padding:8px;border:1px solid var(--inkdos-edge,rgba(31,41,55,.16));
+border-radius:14px;background:var(--inkdos-surface,#fff);color:var(--inkdos-text,#202633);
+box-shadow:0 18px 48px rgba(15,23,42,.22)}
+.inkdos-command-menu[hidden],.inkdos-command-backdrop[hidden]{display:none!important}
+.inkdos-command-menu-heading{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 6px 4px 12px}
+.inkdos-command-menu-heading strong{font-size:13px}
+.inkdos-command-menu-close{width:36px;height:36px;border:0;border-radius:10px;background:transparent;color:inherit;font-size:24px}
+.inkdos-command-menu-item{
+width:100%;min-height:44px;display:flex;align-items:center;padding:0 12px;border:0;border-radius:10px;
+background:transparent;color:inherit;text-align:left;font-size:14px;font-weight:600}
+.inkdos-command-menu-item:hover,.inkdos-command-menu-item:focus-visible{background:var(--inkdos-surface-soft,#f4f6f8);outline:none}
+.inkdos-command-menu-item:disabled{opacity:.38}
+
+@media(max-width:900px),(orientation:portrait){
+body.office-product:not(.inkdos-app-home-active) .app-shell,
+body.office-product:not(.inkdos-app-home-active) .app,
+body.office-product:not(.inkdos-app-home-active) main,
+body.office-product:not(.inkdos-app-home-active) .workspace{
+width:100%!important;max-width:100vw!important;min-width:0!important;box-sizing:border-box!important}
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar{
+position:relative!important;width:100%!important;max-width:100vw!important;min-height:44px!important;height:44px!important;
+display:flex!important;align-items:center!important;justify-content:center!important;padding:0 54px!important;gap:0!important;overflow:hidden!important;box-sizing:border-box!important}
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.left-tools,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.right-tools,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.titlebar-left,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.titlebar-right,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.left,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.right,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.title-actions{display:none!important}
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.document-title,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>.title-center{
+display:flex!important;min-width:0!important;max-width:calc(100vw - 118px)!important;align-items:center!important;justify-content:center!important}
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar>input.doc-title,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar input.title-input,
+body.office-product:not(.inkdos-app-home-active) .inkdos-compact-titlebar input.file-title-input{
+max-width:calc(100vw - 150px)!important;min-width:0!important;text-overflow:ellipsis}
+body.office-product:not(.inkdos-app-home-active) .inkdos-command-trigger{
+display:grid!important;position:absolute;left:max(8px,env(safe-area-inset-left));top:50%;transform:translateY(-50%);
+width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;padding:8px!important;
+border:1px solid var(--inkdos-edge,rgba(31,41,55,.14))!important;border-radius:11px!important;
+background:var(--inkdos-surface,#fff)!important;color:var(--inkdos-text,#202633)!important;
+place-content:center;gap:4px;z-index:4}
+.inkdos-command-trigger span{display:block;width:18px;height:2px;border-radius:999px;background:currentColor}
+body.office-product:not(.inkdos-app-home-active) .formatbar,
+body.office-product:not(.inkdos-app-home-active) .toolbar,
+body.office-product:not(.inkdos-app-home-active) .tools,
+body.office-product:not(.inkdos-app-home-active) .commandbar,
+body.office-product:not(.inkdos-app-home-active) .txt-toolbar,
+body.office-product:not(.inkdos-app-home-active) .epub-toolbar{
+max-width:100vw!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;overscroll-behavior-inline:contain;
+scrollbar-width:thin;white-space:nowrap}
+body.office-documents:not(.inkdos-app-home-active) .workspace{grid-template-columns:minmax(0,1fr)!important}
+body.office-documents:not(.inkdos-app-home-active) .sidebar{display:none!important}
+body.office-documents:not(.inkdos-app-home-active) .viewport{width:100%!important;max-width:100vw!important;overflow:auto!important;padding-left:12px!important;padding-right:12px!important}
+body.office-spreadsheets:not(.inkdos-app-home-active) main#workspace,
+body.office-spreadsheets:not(.inkdos-app-home-active) #gridViewport{width:100%!important;max-width:100vw!important;overflow:auto!important}
+body.office-txt:not(.inkdos-app-home-active) .txt-main,
+body.office-txt:not(.inkdos-app-home-active) .editor-shell,
+body.office-txt:not(.inkdos-app-home-active) #editor{width:100%!important;max-width:100%!important}
+body.office-epub:not(.inkdos-app-home-active) .epub-main{width:100%!important;max-width:100vw!important}
+}
+
+@media(orientation:portrait){
+body.office-presentations:not(.inkdos-app-home-active) .workspace{
+position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+grid-template-rows:minmax(0,1fr) 132px!important;width:100%!important;max-width:100vw!important;min-width:0!important}
+body.office-presentations:not(.inkdos-app-home-active) .stage-wrap{
+grid-column:1!important;grid-row:1!important;min-width:0!important;min-height:0!important;width:100%!important;max-width:100%!important}
+body.office-presentations:not(.inkdos-app-home-active) .slide-list{
+grid-column:1!important;grid-row:2!important;width:100%!important;max-width:100%!important;height:132px!important;min-height:132px!important;
+display:flex!important;flex-direction:row!important;align-items:stretch!important;gap:8px!important;padding:8px!important;
+overflow-x:auto!important;overflow-y:hidden!important;border-right:0!important;border-top:1px solid var(--inkdos-edge,rgba(31,41,55,.14))!important;box-sizing:border-box!important}
+body.office-presentations:not(.inkdos-app-home-active) .slide-list>*{flex:0 0 116px!important;max-height:116px}
+body.office-presentations:not(.inkdos-app-home-active) .inspector{
+position:absolute!important;right:8px!important;top:8px!important;bottom:8px!important;z-index:20!important;width:min(260px,calc(100vw - 16px))!important;
+max-height:calc(100% - 16px)!important;overflow:auto!important;box-shadow:0 16px 38px rgba(15,23,42,.24)}
+}

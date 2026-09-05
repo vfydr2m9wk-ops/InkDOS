@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "InkDOS",
-  "version": "1.0.0-beta.7",
-  "releaseName": "1.0 Beta 7",
+  "version": "1.0.0-beta.8",
+  "releaseName": "1.0 Beta 8",
   "releaseDate": "2026-09-04",
   "releaseType": "Public Beta Release",
   "entryPoints": {

@@ -61,6 +61,8 @@ padding-left:max(18px,env(safe-area-inset-left));
 padding-right:max(18px,env(safe-area-inset-right))}
 .hub-topbar{
 grid-template-columns:minmax(0,1fr) auto auto}
+.brand-mark{width:48px;height:48px}
+.brand-copy strong{font-size:20px}
 .recent-section{
 min-width:0;
 padding-top:30px}
@@ -72,7 +74,7 @@ gap:16px;
 min-width:0}
 .section-heading h1{
 margin:0;
-font-size:clamp(26px,3vw,34px);
+font-size:clamp(23px,2.6vw,28px);
 letter-spacing:-.03em}
 .recent-clear{
 min-height:44px;
@@ -108,8 +110,15 @@ font-size:12px;
 font-weight:650;
 cursor:pointer}
 .recent-filter[aria-pressed=true]{
-background:var(--selected,#e7efff);
-color:var(--text)}
+border-color:var(--recent-filter-accent,#757575);
+background:var(--recent-filter-accent,#757575);
+color:#000}
+html[data-theme="dark"] .recent-filter[aria-pressed=true],
+html[data-resolved-theme="dark"] .recent-filter[aria-pressed=true]{
+color:#fff}
+@media(prefers-color-scheme:dark){
+html[data-theme="system"] .recent-filter[aria-pressed=true]{
+color:#fff}}
 .recent-table{
 min-width:0;
 border:1px solid var(--border);
@@ -237,7 +246,7 @@ padding-top:22px}
 .section-heading{
 align-items:center}
 .section-heading h1{
-font-size:27px}
+font-size:24px}
 .recent-filter{
 min-height:44px}
 .recent-table-head{
