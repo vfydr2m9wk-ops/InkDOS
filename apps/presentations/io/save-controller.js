@@ -3,6 +3,7 @@ const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,chrome}={}){
   let busy=false;
   async function buildCopy(sharing=false){
+    if(!session.active)throw new Error('No presentation is open.');
     if(session.sourceKind==='ppt')throw new Error('Legacy PPT is read-only. Share and Save Copy are available for new presentations and PPTX files.');
     let bytes,receipt={mode:'generated-pptx'};
     if(session.sourceKind==='pptx'){
@@ -14,7 +15,7 @@ function create({session,chrome}={}){
     return {bytes,receipt,blob:new Blob([bytes],{type:NS.FileDelivery.MIME})};
   }
   async function save(){
-    if(busy)return null;busy=true;
+    if(!session.active||busy)return null;busy=true;
     try{
       const {bytes,receipt,blob}=await buildCopy(false);
       const delivery=await NS.FileDelivery.deliver(blob,session.fileName);
@@ -30,7 +31,7 @@ function create({session,chrome}={}){
     finally{busy=false}
   }
   async function share(){
-    if(busy)return null;busy=true;
+    if(!session.active||busy)return null;busy=true;
     try{
       const {bytes,receipt,blob}=await buildCopy(true);
       const delivery=await NS.FileDelivery.share(blob,session.fileName);
