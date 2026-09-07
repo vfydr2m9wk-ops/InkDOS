@@ -1,6 +1,6 @@
-# InkDOS 2.0.10
+# InkDOS 2.0.11
 
-InkDOS is a local-first, static browser productivity suite. Version 2.0.10 keeps six physically independent applications behind a small Home launcher, preserves horizontal appearance consistency, and aligns the PDF workspace frame with the established InkDOS app-frame visual contract.
+InkDOS is a local-first, static browser productivity suite. Version 2.0.11 keeps six physically independent applications behind a small Home launcher, preserves horizontal appearance consistency, and hardens app-local file delivery so one Save action cannot silently create an empty destination and then export a second copy.
 
 ## Available workspaces
 
@@ -37,7 +37,9 @@ InkDOS 2.0.8 made the PDF and Spreadsheets empty-state controls fail-safe at fir
 
 ## Share and save semantics
 
-Share and Save are intentionally separate operations. Share exports the current file state to the host system Share Sheet when file-based Web Share is supported. It does not confirm persistent storage and therefore does not clear unsaved-state indicators. Save/Save copy retains each app's existing delivery and integrity semantics.
+Share and Save are intentionally separate operations. Share exports the current file state to the host system Share Sheet when file-based Web Share is supported. It does not confirm persistent storage and therefore does not clear unsaved-state indicators.
+
+InkDOS 2.0.11 adds a single-delivery Save invariant to Documents, Spreadsheets, Presentations, Plain Text and PDF. On iPad/iPhone-style touch WebKit hosts, Save prefers the system file Share route when it is available instead of entering a partially supported File System Access path. On other hosts, if the native save picker has already returned a destination handle and writing that destination fails, the error is terminal: the app does not start Share or download as a second delivery attempt. This prevents the observed empty-file + valid-file pair while keeping the delivery implementation private to each workspace.
 
 Legacy PPT remains read-only in Presentations, so Save and Share remain disabled for that source type.
 
@@ -45,7 +47,7 @@ Legacy PPT remains read-only in Presentations, so Save and Share remain disabled
 
 PDF is an app-private, physically modular reader and annotation workspace. Open local PDFs, add text/ink/highlight/underline/comments, save copies, and share the current PDF state. The engine and document state do not depend on Home or another app. Internal test fixtures and inspection hooks are excluded from the distribution.
 
-InkDOS 2.0.10 aligns the PDF top frame with the established app-frame pattern used by Plain Text and the other workspaces: the file name is shown inside a centered framed pill, with the PDF application icon beside it. The PDF app-local icon is an exact copy of the canonical Home PDF icon, preserving standalone extraction while preventing visual drift between Home and the workspace. PDF engine, annotation, file I/O and title-controller behavior remain unchanged.
+InkDOS 2.0.10 aligned the PDF top frame with the established app-frame pattern used by Plain Text and the other workspaces: the file name is shown inside a centered framed pill, with the PDF application icon beside it. The PDF app-local icon is an exact copy of the canonical Home PDF icon, preserving standalone extraction while preventing visual drift between Home and the workspace.
 
 ## Local-first
 
