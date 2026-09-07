@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "InkDOS",
   "release": "2.0.11",
-  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.10 keeps the horizontal appearance-preference contract from 2.0.9 and makes a PDF-only visual frame alignment: the PDF app-local icon must be an exact copy of the canonical Home PDF icon, and the PDF frame CSS must present the current file name in a centered framed title pill with the icon beside it. The PDF title controller, engine, annotations, file I/O and other workspace runtimes remain app-private and unchanged. No shared runtime root is introduced.",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.11 adds the same single-delivery safety contract independently to Documents, Spreadsheets, Presentations, Plain Text and PDF: iPad/iPhone-style touch WebKit hosts may prefer app-local file Web Share for Save, and a native picker write failure after a destination handle exists is terminal so no second Share/download destination is created. EPUB is unchanged. Existing Home, appearance, empty-state and PDF frame contracts remain intact. No shared save runtime or cross-app mutable I/O module is introduced.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -18,7 +18,8 @@
         "io/save-controller.js: export current DOCX to Share without marking the session saved",
         "ui/command-controller.js: add app-local Share menu action after Save copy",
         "2.0.7 contract: preserve existing session.active guards and disabled initial Save/Share state",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "eca82f2fc18629be23337add353aada91cee1afe4e4de53451e0f6ae134479ad"
     },
@@ -39,7 +40,8 @@
         "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true",
         "index.html: in 2.0.8 mark Save disabled in initial markup before runtime synchronization",
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "a0a5a5debfc4fb209ac38496ee05abced0dcdf3596d54a5f8ad09923e4a7a700"
     },
@@ -64,7 +66,8 @@
         "ui/chrome-controller.js: report No presentation for the true empty state",
         "presentation/slideshow-controller.js: refuse slideshow launch without an active presentation",
         "io/save-controller.js: guard Save and Share against an inactive presentation",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "15654c4e421504127400b2049ce7596b50c2e2ff9fe668a52809daa02f2042b4"
     },
@@ -83,7 +86,8 @@
         "io/txt-file-controller.js: prevent delayed recovery from replacing an already activated user document",
         "editor/editor-controller.js: keep Save and Share disabled until state.loaded and hide the start gate only when an editor document becomes active",
         "ui/txt-controls.js: preserve/reinstate the start gate when an Open attempt does not produce a loaded document",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "runtime/services/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations; regenerate index.html deterministically"
       ],
       "integratedIndexSha256": "b3e84d72f2c3bad7ac4c6c4c79b975489b18e96b67e8fbe36369b95f7e24236b"
     },
@@ -122,12 +126,13 @@
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
         "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
         "assets/pdf.svg: in 2.0.10 mirror the canonical Home PDF icon exactly while retaining an app-local asset",
-        "runtime/frame/app-frame.css: in 2.0.10 align the top frame to the InkDOS centered icon + framed file-name pill pattern without changing PDF controller behavior"
+        "runtime/frame/app-frame.css: in 2.0.10 align the top frame to the InkDOS centered icon + framed file-name pill pattern without changing PDF controller behavior",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "fbb08845cf855a4c9a3c4b45adaae9804f25bb2de535beece656cc2a86a51ad4",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.10-frame-alignment"
+      "status": "baseline-preserved-with-2.0.11-single-save-delivery"
     }
   },
-  "previousRelease": "2.0.9"
+  "previousRelease": "2.0.10"
 }
