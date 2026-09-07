@@ -381,8 +381,8 @@ function create({elements:E,state}={}){
   function setCheckpointHandler(fn){checkpointHandler=typeof fn==='function'?fn:()=>Promise.resolve()}
   function lineName(x){return x==='\r\n'?'CRLF':x==='\r'?'CR':'LF'}
   function encName(){return state.encoding.toUpperCase()+(state.bom?' + BOM':'')}
-  function normName(v){let n=String(v||'').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.txt$/i.test(n)?n:n+'.txt'}
-  function setTitle(v){state.fileName=normName(v);E.title.value=state.fileName;document.title=state.fileName+' — InkDOS Plain Text'}
+  function normName(v){let n=String(v||'').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.(?:txt|xml)$/i.test(n)?n:n+'.txt'}
+  function setTitle(v){state.fileName=normName(v);E.title.value=state.fileName;document.title=state.fileName+' — InkDOS Plain Text';document.dispatchEvent(new CustomEvent('inkdos:txt-file-kind',{detail:{fileName:state.fileName}}))}
   function setStatus(msg,cls=''){E.status.textContent=msg;E.status.className='status-item'+(cls?' '+cls:'')}
   function cursorPosition(){const pos=E.editor.selectionStart||0;const before=E.editor.value.slice(0,pos);const lines=before.split('\n');return {line:lines.length,column:lines[lines.length-1].length+1}}
   function updateCursor(){const p=cursorPosition();E.cursor.textContent=`Ln ${p.line}, Col ${p.column}`}
@@ -396,7 +396,7 @@ function create({elements:E,state}={}){
   function find(step){const q=E.findInput.value;if(!q){E.findStatus.textContent='';return}const text=E.editor.value,from=step>0?E.editor.selectionEnd:E.editor.selectionStart;let idx=step>0?text.indexOf(q,from):text.lastIndexOf(q,Math.max(0,from-1));if(idx<0)idx=step>0?text.indexOf(q):text.lastIndexOf(q);if(idx<0){E.findStatus.textContent='0 matches';return}E.editor.focus();E.editor.setSelectionRange(idx,idx+q.length);E.findStatus.textContent=`${idx+1}`;updateCursor()}
   function toggleFind(on){E.findbar.hidden=on===undefined?!E.findbar.hidden:!on;if(!E.findbar.hidden){E.findInput.focus();E.findInput.select();requestAnimationFrame(()=>E.findbar.scrollIntoView({inline:'nearest',block:'nearest'}))}}
   function clampFontSize(size){const n=Math.round(Number(size));return Number.isFinite(n)?Math.max(4,Math.min(28,n)):16}
-  function setViewFont(size){state.fontSize=clampFontSize(size);applyPolicy();updateMeta();scheduleCheckpoint();setStatus(`Editor view: ${state.fontSize} pt · TXT stores text, not font formatting`,'state-ok')}
+  function setViewFont(size){state.fontSize=clampFontSize(size);applyPolicy();updateMeta();scheduleCheckpoint();setStatus(`Editor view: ${state.fontSize} pt · TXT/XML stores text, not font formatting`,'state-ok')}
   function adjustFont(delta){setViewFont(clampFontSize(state.fontSize+delta))}
   function selectAll(){E.editor.focus();E.editor.select();updateCursor()}
   async function copySelection(){const text=E.editor.value.slice(E.editor.selectionStart,E.editor.selectionEnd);if(!text){setStatus('Nothing selected');return}try{if(navigator.clipboard&&navigator.clipboard.writeText)await navigator.clipboard.writeText(text);else if(!document.execCommand('copy'))throw new Error('Clipboard unavailable');setStatus('Copied selection','state-ok')}catch(_){setStatus('Copy is unavailable in this host','state-warn')}}
