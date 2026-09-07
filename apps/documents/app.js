@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 function loadScript(src,test){if(test?.())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('DOCUMENTS_LOCAL_ASSET_LOAD_FAILED: '+src));document.head.appendChild(s)})}
 function loadCss(href,key){if(document.querySelector('link[data-doc-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset['doc'+key.toUpperCase()]='1';document.head.appendChild(l)}
 async function loadD1(){loadCss('ui/d1-tools.css','d1');await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
-async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools)}
+async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
 async function boot(){await loadD1();await loadD2();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
@@ -24,6 +24,7 @@ zoomControls=NS.ZoomControls.create({zoom});
 const commands=NS.CommandController.create({session,pagesHost,chrome,fileOpen,saveController,editor,ruler,navigation,zoom,zoomControls});
 const d1=NS.D1Tools.create({state,session,pagesHost,surface,editor,navigation,chrome});
 const d2=NS.D2Tools.create({state,session,pagesHost,surface,editor,navigation,chrome,d1});
+const d2Sections=NS.D2Sections.create({state,session,pagesHost,surface,editor,d1,chrome});
 chrome.setChooseFile(fileOpen.requestOpen);
 NS.Appearance.install();
 zoom.install();
@@ -31,9 +32,10 @@ fileOpen.install();
 commands.install();
 d1.install();
 d2.install();
+d2Sections.install();
 chrome.syncDirty();
 surface.updateStats();
-NS.DocumentsApp=Object.freeze({session,state,zoom,d1,d2,open:fileOpen.openFile,requestOpen:fileOpen.requestOpen,newDocument:fileOpen.requestNew,save:saveController.save});
+NS.DocumentsApp=Object.freeze({session,state,zoom,d1,d2,d2Sections,open:fileOpen.openFile,requestOpen:fileOpen.requestOpen,newDocument:fileOpen.requestNew,save:saveController.save});
 }
 boot().catch(e=>{console.error(e);const status=$('statusText');if(status)status.textContent='Documents tools failed to load'});
 })(globalThis);
