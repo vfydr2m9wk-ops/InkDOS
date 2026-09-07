@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.6",
-  "integrationPolicy": "Preserve six physically independent app roots and add app-local Share actions to Documents, Spreadsheets, Presentations and PDF, matching the existing Plain Text and EPUB pattern. Share never confirms persistent storage and no cross-app runtime is introduced.",
+  "release": "2.0.7",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.7 standardizes an empty-workspace behavioral contract using app-local state only: Save and Share remain unavailable until that app has a real active document, workbook, presentation, text file, EPUB or PDF. No cross-app runtime or shared mutable document-state code is introduced, and Share never confirms persistent storage.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -16,7 +16,8 @@
         "index.html: add Home anchor to ../../index.html",
         "io/file-delivery.js: expose explicit DOCX Web Share delivery",
         "io/save-controller.js: export current DOCX to Share without marking the session saved",
-        "ui/command-controller.js: add app-local Share menu action after Save copy"
+        "ui/command-controller.js: add app-local Share menu action after Save copy",
+        "2.0.7 contract: preserve existing session.active guards and disabled initial Save/Share state"
       ],
       "integratedIndexSha256": "eca82f2fc18629be23337add353aada91cee1afe4e4de53451e0f6ae134479ad"
     },
@@ -33,7 +34,8 @@
         "io/file-delivery.js: expose explicit XLSX Web Share delivery",
         "io/save-controller.js: export current XLSX to Share without marking the workbook saved",
         "ui/file-menu-controller.js: add app-local Share menu action after Save",
-        "ui/chrome-controller.js: enable Share only when a workbook is active"
+        "ui/chrome-controller.js: enable Share only when a workbook is active",
+        "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true"
       ],
       "integratedIndexSha256": "1e0bfb4484cdb671ed314764ae303d4082b38cdd00596f941135faeadfc63d62"
     },
@@ -50,7 +52,14 @@
         "index.html: standard first-open gate matching Spreadsheets; New presentation and Open presentation actions",
         "io/file-delivery.js: expose explicit PPTX Web Share delivery",
         "io/save-controller.js: export current PPTX to Share without changing save state",
-        "ui/command-controller.js: add app-local Share action and keep it disabled for legacy read-only PPT"
+        "ui/command-controller.js: add app-local Share action and keep it disabled for legacy read-only PPT",
+        "engine/presentation-session.js: in 2.0.7 start with sourceKind none and zero slides; resetNew creates the first slide only after explicit New",
+        "engine/presentation-session.js: expose app-local active state derived from the real presentation model and invalidate outstanding opens when New is requested",
+        "ui/editing-controller.js: disable editing/navigation controls until a presentation is active",
+        "ui/command-controller.js: disable Save, Share and Present until a presentation is active while retaining legacy PPT read-only behavior",
+        "ui/chrome-controller.js: report No presentation for the true empty state",
+        "presentation/slideshow-controller.js: refuse slideshow launch without an active presentation",
+        "io/save-controller.js: guard Save and Share against an inactive presentation"
       ],
       "integratedIndexSha256": "15654c4e421504127400b2049ce7596b50c2e2ff9fe668a52809daa02f2042b4"
     },
@@ -63,7 +72,12 @@
       "nonIndexTreeSha256": "0772c61b0078af57052d2bfb59f4dd8ba62e4eb85ab2e5e2dcdb459c7639d218",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
-        "index.html: add Home anchor to ../../index.html"
+        "index.html: add Home anchor to ../../index.html",
+        "2.0.6: normalize Home/first-open integration into the modular Plain Text template and deterministic bundle",
+        "io/txt-file-controller.js: in 2.0.7 start unloaded instead of creating a blank document during initialization; activate only through New, successful Open or valid recovery",
+        "io/txt-file-controller.js: prevent delayed recovery from replacing an already activated user document",
+        "editor/editor-controller.js: keep Save and Share disabled until state.loaded and hide the start gate only when an editor document becomes active",
+        "ui/txt-controls.js: preserve/reinstate the start gate when an Open attempt does not produce a loaded document"
       ],
       "integratedIndexSha256": "bc6a1ea99d107a89b6aacdf064bfbff0c4665b0129fa45242ff44ed83cc6f10b"
     },
@@ -76,7 +90,8 @@
       "nonIndexTreeSha256": "c8a57e84ed94a8fcf4e2bfa0fc5d89376d11a5a7fae2cdad584b985dfd16b13c",
       "originalIndexSha256": "0fa0bea76a9889d2bbec0d7dcef8b06d59c771fe0ab0597c7e840877e3be945d",
       "allowedIntegrationChanges": [
-        "index.html: add Home anchor to ../../index.html"
+        "index.html: add Home anchor to ../../index.html",
+        "2.0.7 contract: preserve existing book/exportReady gating for Save and Share"
       ],
       "integratedIndexSha256": "6755a8f4dffdd79cc22c5cd7ebd440150ec2a2a5eacc7ded39be9e1a997debb0"
     },
@@ -94,12 +109,13 @@
         "index.html: EPUB-style centered Open PDF start card and success-driven visibility",
         "io/file-delivery.js: expose explicit PDF Web Share delivery",
         "io/save-controller.js: share clean or edited PDF while preserving unsaved-state semantics",
-        "ui/command-controller.js: add app-local Share menu action after Save"
+        "ui/command-controller.js: add app-local Share menu action after Save",
+        "ui/command-controller.js: in 2.0.7 keep menu Save, toolbar Save and Share disabled until session.active"
       ],
       "integratedIndexSha256": "13d8b861a3365ce60c9dd9153d8ff9fa579f1b33bc83a53de4b17267ccdbe287",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.4-share-integration"
+      "status": "baseline-preserved-with-2.0.7-empty-state-contract"
     }
   },
-  "previousRelease": "2.0.3"
+  "previousRelease": "2.0.6"
 }
