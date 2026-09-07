@@ -6,6 +6,7 @@ on:
     branches:
       - 'feature/**'
       - 'fix/**'
+      - 'polish/**'
     paths-ignore:
       - 'CHECKSUMS.sha256'
       - 'SOURCE_LOCK.json'
@@ -63,8 +64,6 @@ jobs:
                   if not item.is_file():
                       continue
                   rel = item.relative_to(path).as_posix()
-                  if rel in excluded:
-                      continue
                   rel_bytes = rel.encode()
                   digest.update(len(rel_bytes).to_bytes(4, 'big'))
                   digest.update(rel_bytes)
