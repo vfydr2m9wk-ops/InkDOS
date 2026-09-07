@@ -5,7 +5,8 @@ ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
-        for app in ACTIVE:self.assertIn(f'./apps/{app}/index.html',text)
+        for app in ACTIVE:
+            self.assertIn(f'./apps/{app}/index.html?v=2.0.8',text)
     def test_standard_start_cards(self):
         two_action=('documents','spreadsheets','presentations','txt')
         for app in two_action:
@@ -22,7 +23,7 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('display:grid!important',text)
         self.assertIn('.start-state[hidden]{display:none!important}',text)
         home=(ROOT/'index.html').read_text(encoding='utf-8')
-        self.assertIn('./apps/presentations/index.html?v=2.0.2',home)
+        self.assertIn('./apps/presentations/index.html?v=2.0.8',home)
 
     def test_pdf_active(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -51,6 +52,10 @@ class SuiteIntegration(unittest.TestCase):
         doc_save=(ROOT/'apps/documents/io/save-controller.js').read_text(encoding='utf-8')
         self.assertGreaterEqual(doc_save.count('if(!session.active)'),2)
 
+        sheet_index=(ROOT/'apps/spreadsheets/index.html').read_text(encoding='utf-8')
+        self.assertRegex(sheet_index,r'id="menuSave"[^>]*disabled')
+        sheet_css=(ROOT/'apps/spreadsheets/runtime/frame/app-frame.css').read_text(encoding='utf-8')
+        self.assertIn('.menu-item:disabled',sheet_css)
         sheets=(ROOT/'apps/spreadsheets/ui/chrome-controller.js').read_text(encoding='utf-8')
         self.assertIn("const active=!!session.book?.loaded",sheets)
         self.assertIn('if(save)save.disabled=!active',sheets)
@@ -80,6 +85,11 @@ class SuiteIntegration(unittest.TestCase):
         self.assertRegex(epub,r'id="saveBtn"[^>]*disabled')
         self.assertRegex(epub,r'id="shareBtn"[^>]*disabled')
 
+        pdf_index=(ROOT/'apps/pdf/index.html').read_text(encoding='utf-8')
+        self.assertRegex(pdf_index,r'id="saveMenuBtn"[^>]*disabled')
+        self.assertRegex(pdf_index,r'id="saveToolbarBtn"[^>]*disabled')
+        pdf_css=(ROOT/'apps/pdf/runtime/frame/app-frame.css').read_text(encoding='utf-8')
+        self.assertIn('.menu-item:disabled',pdf_css)
         pdf=(ROOT/'apps/pdf/ui/command-controller.js').read_text(encoding='utf-8')
         self.assertIn("$('saveMenuBtn').disabled=!active",pdf)
         self.assertIn("$('saveToolbarBtn').disabled=!active",pdf)
