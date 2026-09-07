@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.9 — 2026-09-07
+
+- Add full Light/Dark/System appearance support to Home with a compact sun control and a contextual appearance menu.
+- Introduce horizontal appearance preference communication through `inkdos2:appearance`: a choice made in Home or any workspace becomes the suite preference.
+- Preserve every workspace's existing appearance UI, CSS and app-private theme engine; only each local appearance controller publishes and consumes the shared preference value.
+- Keep each workspace independently functional when extracted from the suite by retaining its own app-specific appearance key and local fallback behavior.
+- Preserve dynamic `System` behavior through each app's existing `prefers-color-scheme` handling and synchronize already-open pages through the browser `storage` event.
+- Add regression checks for the Home dark theme, Home appearance control, local appearance keys and the absence of a shared runtime root.
+- Rotate the offline cache to the 2.0.9 sequence.
+
 ## 2.0.8 — 2026-09-07
 
 - Make PDF and Spreadsheets Save controls disabled in the initial HTML before app JavaScript runs, so the empty-workspace contract is fail-safe rather than visually/runtime dependent.

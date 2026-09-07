@@ -6,7 +6,7 @@ class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         for app in ACTIVE:
-            self.assertIn(f'./apps/{app}/index.html?v=2.0.8',text)
+            self.assertIn(f'./apps/{app}/index.html?v=2.0.9',text)
     def test_standard_start_cards(self):
         two_action=('documents','spreadsheets','presentations','txt')
         for app in two_action:
@@ -23,7 +23,7 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('display:grid!important',text)
         self.assertIn('.start-state[hidden]{display:none!important}',text)
         home=(ROOT/'index.html').read_text(encoding='utf-8')
-        self.assertIn('./apps/presentations/index.html?v=2.0.8',home)
+        self.assertIn('./apps/presentations/index.html?v=2.0.9',home)
 
     def test_pdf_active(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -32,6 +32,19 @@ class SuiteIntegration(unittest.TestCase):
         for app in ACTIVE:
             text=(ROOT/f'apps/{app}/index.html').read_text(encoding='utf-8')
             self.assertIn('../../index.html',text);self.assertIn('aria-label="Home"',text)
+    def test_horizontal_appearance_contract(self):
+        home=(ROOT/'index.html').read_text(encoding='utf-8')
+        css=(ROOT/'assets/home.css').read_text(encoding='utf-8')
+        self.assertIn('inkdos2:appearance',home)
+        self.assertIn('id="appearanceButton"',home);self.assertIn('id="appearanceMenu"',home)
+        for mode in ('light','dark','system'): self.assertIn(f'data-home-appearance-mode="{mode}"',home)
+        self.assertIn('html[data-theme="dark"]',css)
+        local_keys={
+            'documents':'inkdos2:documents:appearance','spreadsheets':'inkdos2:spreadsheets:appearance','presentations':'inkdos2:presentations:appearance',
+            'txt':'inkdos2:txt:appearance','epub':'inkdos2:epub:appearance','pdf':'inkdos2:pdf:p1:appearance'}
+        for app,local_key in local_keys.items():
+            text=(ROOT/'apps'/app/'state'/'appearance.js').read_text(encoding='utf-8')
+            self.assertIn(local_key,text,app);self.assertIn('inkdos2:appearance',text,app);self.assertIn("'storage'",text,app)
     def test_share_action_contract(self):
         direct={'txt':('index.html','shareBtn'),'epub':('index.html','shareBtn')}
         runtime={

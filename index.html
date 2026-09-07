@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f2f5f8">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,7 +13,8 @@
   <link rel="icon" href="./assets/icons/office.svg">
   <link rel="apple-touch-icon" href="./assets/icons/office.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./assets/home.css?v=2.0.8">
+  <script>(function(){var m='system';try{m=localStorage.getItem('inkdos2:appearance')||'system'}catch(_){}if(!/^(light|dark|system)$/.test(m))m='system';var d=m==='dark'||(m==='system'&&typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.appearanceMode=m;document.documentElement.dataset.theme=d?'dark':'light';document.documentElement.style.colorScheme=d?'dark':'light'})();</script>
+  <link rel="stylesheet" href="./assets/home.css?v=2.0.9">
 </head>
 <body>
   <main class="home-shell">
@@ -22,22 +23,49 @@
         <span class="brand-mark" aria-hidden="true"><img src="./assets/icons/office.svg" alt=""></span>
         <span class="brand-copy"><strong>InkDOS</strong><small>Local-first workspace</small></span>
       </a>
+      <div class="home-appearance">
+        <button id="appearanceButton" class="theme-button" type="button" aria-label="Appearance" title="Appearance" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+        </button>
+        <div id="appearanceMenu" class="theme-menu" role="menu" aria-label="Appearance" hidden>
+          <button type="button" role="menuitemradio" data-home-appearance-mode="light" aria-checked="false">Light</button>
+          <button type="button" role="menuitemradio" data-home-appearance-mode="dark" aria-checked="false">Dark</button>
+          <button type="button" role="menuitemradio" data-home-appearance-mode="system" aria-checked="false">System</button>
+        </div>
+      </div>
     </header>
 
     <section class="intro" aria-labelledby="workspaceTitle"><h1 id="workspaceTitle">Choose a workspace</h1></section>
 
     <section class="workspace-grid" aria-label="InkDOS workspaces">
-      <a class="workspace-card documents" href="./apps/documents/index.html?v=2.0.8"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/documents.svg" alt=""></span><span class="workspace-copy"><strong>Documents</strong><small>Create, edit and save DOCX copies locally.</small></span><span class="chevron">›</span></a>
-      <a class="workspace-card spreadsheets" href="./apps/spreadsheets/index.html?v=2.0.8"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/spreadsheets.svg" alt=""></span><span class="workspace-copy"><strong>Spreadsheets</strong><small>Edit XLSX files locally and open legacy XLS workbooks.</small></span><span class="chevron">›</span></a>
-      <a class="workspace-card presentations" href="./apps/presentations/index.html?v=2.0.8"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/presentations.png" alt=""></span><span class="workspace-copy"><strong>Presentations</strong><small>Create, edit and present PPT and PPTX files locally.</small></span><span class="chevron">›</span></a>
-      <a class="workspace-card pdf" href="./apps/pdf/index.html?v=2.0.8"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/pdf.svg" alt=""></span><span class="workspace-copy"><strong>PDF Workspace</strong><small>Read, annotate and save PDF copies locally.</small></span><span class="chevron">›</span></a>
-      <a class="workspace-card txt" href="./apps/txt/index.html?v=2.0.8"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/txt.svg" alt=""></span><span class="workspace-copy"><strong>Plain Text</strong><small>Write and edit plain-text files locally.</small></span><span class="chevron">›</span></a>
-      <a class="workspace-card epub" href="./apps/epub/index.html?v=2.0.8"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/epub.svg" alt=""></span><span class="workspace-copy"><strong>EPUB Reader</strong><small>Read local EPUB books with pages, themes and contents.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card documents" href="./apps/documents/index.html?v=2.0.9"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/documents.svg" alt=""></span><span class="workspace-copy"><strong>Documents</strong><small>Create, edit and save DOCX copies locally.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card spreadsheets" href="./apps/spreadsheets/index.html?v=2.0.9"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/spreadsheets.svg" alt=""></span><span class="workspace-copy"><strong>Spreadsheets</strong><small>Edit XLSX files locally and open legacy XLS workbooks.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card presentations" href="./apps/presentations/index.html?v=2.0.9"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/presentations.png" alt=""></span><span class="workspace-copy"><strong>Presentations</strong><small>Create, edit and present PPT and PPTX files locally.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card pdf" href="./apps/pdf/index.html?v=2.0.9"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/pdf.svg" alt=""></span><span class="workspace-copy"><strong>PDF Workspace</strong><small>Read, annotate and save PDF copies locally.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card txt" href="./apps/txt/index.html?v=2.0.9"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/txt.svg" alt=""></span><span class="workspace-copy"><strong>Plain Text</strong><small>Write and edit plain-text files locally.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card epub" href="./apps/epub/index.html?v=2.0.9"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/epub.svg" alt=""></span><span class="workspace-copy"><strong>EPUB Reader</strong><small>Read local EPUB books with pages, themes and contents.</small></span><span class="chevron">›</span></a>
     </section>
 
-    <footer class="home-footer"><div class="version"><span class="status-dot"></span><span>InkDOS 2.0.8</span></div><nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDOS">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav></footer>
+    <footer class="home-footer"><div class="version"><span class="status-dot"></span><span>InkDOS 2.0.9</span></div><nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDOS">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav></footer>
   </main>
 <script>
+(function(){
+  const KEY='inkdos2:appearance',VALID=new Set(['light','dark','system']);
+  const root=document.documentElement,button=document.getElementById('appearanceButton'),menu=document.getElementById('appearanceMenu'),choices=[...document.querySelectorAll('[data-home-appearance-mode]')];
+  const media=typeof matchMedia==='function'?matchMedia('(prefers-color-scheme: dark)'):null;
+  let mode='system';try{const saved=localStorage.getItem(KEY);if(VALID.has(saved))mode=saved}catch(_){}
+  function resolved(){return mode==='system'?(media&&media.matches?'dark':'light'):mode}
+  function apply(){const value=resolved();root.dataset.appearanceMode=mode;root.dataset.theme=value;root.style.colorScheme=value;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=value==='dark'?'#11161c':'#f2f5f8';for(const choice of choices)choice.setAttribute('aria-checked',String(choice.dataset.homeAppearanceMode===mode))}
+  function closeMenu(){menu.hidden=true;button.setAttribute('aria-expanded','false')}
+  function setMode(next){if(!VALID.has(next))return;mode=next;try{localStorage.setItem(KEY,mode)}catch(_){}apply();closeMenu()}
+  button.addEventListener('click',()=>{const opening=menu.hidden;menu.hidden=!opening;button.setAttribute('aria-expanded',String(opening))});
+  for(const choice of choices)choice.addEventListener('click',()=>setMode(choice.dataset.homeAppearanceMode));
+  document.addEventListener('click',event=>{if(!event.target.closest('.home-appearance'))closeMenu()});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!menu.hidden){closeMenu();button.focus()}});
+  if(media){const changed=()=>{if(mode==='system')apply()};try{media.addEventListener('change',changed)}catch(_){try{media.addListener(changed)}catch(__){}}}
+  window.addEventListener('storage',event=>{if(event.key!==KEY)return;mode=VALID.has(event.newValue)?event.newValue:'system';apply()});
+  apply();
+})();
 if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).catch(()=>{});
 }
