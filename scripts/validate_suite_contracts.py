@@ -31,6 +31,20 @@ class SuiteIntegration(unittest.TestCase):
         for app in ACTIVE:
             text=(ROOT/f'apps/{app}/index.html').read_text(encoding='utf-8')
             self.assertIn('../../index.html',text);self.assertIn('aria-label="Home"',text)
+    def test_share_action_contract(self):
+        direct={'txt':('index.html','shareBtn'),'epub':('index.html','shareBtn')}
+        runtime={
+            'documents':('ui/command-controller.js','shareMenuBtn'),
+            'spreadsheets':('ui/file-menu-controller.js','menuShare'),
+            'presentations':('ui/command-controller.js','shareMenuBtn'),
+            'pdf':('ui/command-controller.js','shareMenuBtn'),
+        }
+        for app,(rel,marker) in {**direct,**runtime}.items():
+            text=(ROOT/'apps'/app/rel).read_text(encoding='utf-8')
+            self.assertIn(marker,text,app);self.assertIn('Share',text,app)
+        for app in runtime:
+            delivery=(ROOT/'apps'/app/'io/file-delivery.js').read_text(encoding='utf-8')
+            self.assertIn('share',delivery,app)
     def test_mobile_home_layout(self):
         css=(ROOT/'assets/home.css').read_text(encoding='utf-8')
         self.assertIn('@media(max-width:720px)',css);self.assertIn('.workspace-grid{grid-template-columns:1fr',css)
