@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.4 — 2026-09-07
+
+- Standardize an explicit Share action across all six workspaces; Plain Text and EPUB keep their existing behavior while Documents, Spreadsheets, Presentations and PDF gain matching app-local actions.
+- Share exports the current DOCX, XLSX, PPTX or PDF state through the system Share Sheet when Web Share file delivery is available.
+- Keep Share separate from Save/Save copy: sharing does not mark unsaved edits as persistently saved.
+- Keep legacy PPT read-only, with both Save and Share disabled for that source type.
+- Add a six-app Share contract to suite validation and refresh integrated source locks/checksums for the new app-local code.
+
 ## 2.0.3 — 2026-09-07
 
 - Install the physically modular PDF P4.2 app; enable Home ↔ PDF navigation and EPUB-style Open PDF card.
