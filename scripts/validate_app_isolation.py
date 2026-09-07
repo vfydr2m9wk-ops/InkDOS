@@ -17,6 +17,19 @@ HOME_FRAME={
     'epub':'runtime/frame/frame-menu.js',
     'pdf':'runtime/frame/frame-menu.js',
 }
+EPUB_LAYOUT={
+    'engine/annotations.js','engine/book-model.js','engine/content-projector.js',
+    'io/epub-writer.js','io/file-delivery.js','io/package-reader.js',
+    'state/annotation-store.js','state/appearance.js','state/reading-state.js',
+    'view/reader-viewport.js','view/reader.css','view/renderer.js',
+    'ui/reader-controls.css','ui/reader-controls.js','ui/start-state.css',
+    'session/book-session.js','runtime/frame/frame-menu.js','runtime/frame/app-frame.css',
+    'runtime/tokens/base.css','app.js','index.html','assets/epub.svg'
+}
+EPUB_RETIRED_ROOT_FILES={
+    'annotation-store.js','annotations.js','book-model.js','content-projector.js',
+    'epub-writer.js','package-reader.js','renderer.js'
+}
 
 class RefParser(HTMLParser):
     def __init__(self):
@@ -87,14 +100,37 @@ def validate_home_launcher(errors):
         expected=f'./apps/{app}/index.html?v=2.0.11&amp;suite=1'
         if expected not in home:errors.append(f'Home: suite opt-in route missing for {app}')
 
+def validate_service_worker_shell(errors):
+    sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
+    refs=re.findall(r'["\'](\./[^"\']+)["\']',sw)
+    for ref in refs:
+        path=urlsplit(ref).path
+        candidate=(ROOT/path[2:]).resolve()
+        if not ensure_within(ROOT.resolve(),candidate):
+            errors.append(f'Service worker shell escapes repository: {ref}')
+        elif not candidate.exists():
+            errors.append(f'Service worker shell references missing file: {ref}')
+
+def validate_epub_layout(errors):
+    root=ROOT/'apps'/'epub'
+    for rel in EPUB_LAYOUT:
+        if not (root/rel).is_file():errors.append(f'epub: expected modular file missing: {rel}')
+    for rel in EPUB_RETIRED_ROOT_FILES:
+        if (root/rel).exists():errors.append(f'epub: retired flat root file still present: {rel}')
+    index=(root/'index.html').read_text(encoding='utf-8')
+    for rel in ('io/package-reader.js','engine/content-projector.js','engine/book-model.js','state/annotation-store.js','engine/annotations.js','io/epub-writer.js','view/renderer.js','ui/start-state.css'):
+        if rel not in index:errors.append(f'epub: modular index reference missing: {rel}')
+
 def main():
     errors=[]
     validate_home_launcher(errors)
+    validate_service_worker_shell(errors)
+    validate_epub_layout(errors)
     for app in ACTIVE:
         validate_optional_home(app,errors)
         validate_isolated_copy(app,errors)
         validate_cross_app_references(app,errors)
     if errors:raise SystemExit('\n'.join(errors))
-    print('Standalone app isolation and optional Home contract passed for all six workspaces.')
+    print('Standalone app isolation, optional Home, offline shell and EPUB modular layout passed.')
 
 if __name__=='__main__':main()
