@@ -30,6 +30,27 @@ function create({session,getDocument,editor,chrome}={}){
    console.error(e);chrome.error(e);chrome.status('Save failed');return null;
   }finally{saving=false;setTimeout(()=>{if(['completed','cancelled','failed'].includes(document.documentElement.dataset.saveState))document.documentElement.dataset.saveState='idle'},1200)}
  }
- return Object.freeze({save,get saving(){return saving}});
+ async function share(){
+  if(!session.active||saving)return null;
+  const doc=getDocument?.();if(!doc)return null;
+  editor.commit();const wasDirty=session.dirty;saving=true;document.documentElement.dataset.saveState='sharing';
+  try{
+   let result;
+   if(wasDirty){
+    result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes:session.sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Preparing PDF to share…':phase==='validating'?'Validating PDF…':'Preparing PDF to share…')});
+   }else{
+    result={blob:new Blob([session.sourceBytes],{type:'application/pdf'}),fileName:NS.FileDelivery.safeName(session.fileName)};
+   }
+   const receipt=await NS.FileDelivery.share(result.blob,result.fileName);
+   if(getDocument()===doc){editor.commit();if(wasDirty)session.markDirty();chrome.dirty();chrome.status(wasDirty?'PDF sent to Share Sheet · edits remain unsaved':'PDF sent to Share Sheet')}
+   document.documentElement.dataset.saveState='completed';return {...result,receipt};
+  }catch(e){
+   if(getDocument()===doc&&wasDirty){session.markDirty();chrome.dirty()}
+   document.documentElement.dataset.saveState=e?.name==='AbortError'?'cancelled':'failed';
+   if(e?.name==='AbortError'){chrome.status('Share cancelled');return null}
+   console.error(e);chrome.error(e);chrome.status('Share failed');return null;
+  }finally{saving=false;setTimeout(()=>{if(['completed','cancelled','failed'].includes(document.documentElement.dataset.saveState))document.documentElement.dataset.saveState='idle'},1200)}
+ }
+ return Object.freeze({save,share,get saving(){return saving}});
 }
 NS.SaveController=Object.freeze({create});})(globalThis);
