@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.6-txt-runtime-diagnostics-seq74';
+const CACHE_NAME='inkdos-v2.0.7-empty-state-file-actions-seq75';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
