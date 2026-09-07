@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.11-single-save-delivery-seq79';
+const CACHE_NAME='inkdos-v2.0.12-modularity-epub-polish-seq80';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -172,27 +172,28 @@ const APP_SHELL=[
   "./apps/txt/txt-codec.js",
   "./apps/txt/txt-policy.js",
   "./apps/txt/ui/txt-controls.js",
-  "./apps/epub/annotation-store.js",
-  "./apps/epub/annotations.js",
   "./apps/epub/app.js",
   "./apps/epub/assets/epub.svg",
-  "./apps/epub/book-model.js",
-  "./apps/epub/content-projector.js",
-  "./apps/epub/epub-writer.js",
+  "./apps/epub/engine/annotations.js",
+  "./apps/epub/engine/book-model.js",
+  "./apps/epub/engine/content-projector.js",
   "./apps/epub/index.html",
+  "./apps/epub/io/epub-writer.js",
   "./apps/epub/io/file-delivery.js",
-  "./apps/epub/package-reader.js",
-  "./apps/epub/renderer.js",
+  "./apps/epub/io/package-reader.js",
   "./apps/epub/runtime/frame/app-frame.css",
   "./apps/epub/runtime/frame/frame-menu.js",
   "./apps/epub/runtime/tokens/base.css",
   "./apps/epub/session/book-session.js",
+  "./apps/epub/state/annotation-store.js",
   "./apps/epub/state/appearance.js",
   "./apps/epub/state/reading-state.js",
   "./apps/epub/ui/reader-controls.css",
   "./apps/epub/ui/reader-controls.js",
+  "./apps/epub/ui/start-state.css",
   "./apps/epub/view/reader-viewport.js",
-  "./apps/epub/view/reader.css"
+  "./apps/epub/view/reader.css",
+  "./apps/epub/view/renderer.js"
 ];
 const NAVIGATION_PATHS=new Set(["./apps/pdf/index.html", "./index.html", "./apps/documents/index.html", "./apps/spreadsheets/index.html", "./apps/presentations/index.html", "./apps/txt/index.html", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 const KNOWN=new Set(APP_SHELL.map(p=>new URL(p,self.registration.scope).href));

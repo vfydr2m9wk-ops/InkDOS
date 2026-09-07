@@ -1,6 +1,6 @@
-# InkDOS 2.0.11
+# InkDOS 2.0.12
 
-InkDOS is a local-first, static browser productivity suite. Version 2.0.11 keeps six physically independent applications behind a small Home launcher, preserves horizontal appearance consistency, and hardens app-local file delivery so one Save action cannot silently create an empty destination and then export a second copy.
+InkDOS is a local-first, static browser productivity suite with six physically independent workspaces behind an optional Home launcher. Version 2.0.12 turns standalone extraction into an explicit release contract and restructures EPUB so its physical source layout matches its logical engine/state/I/O/view separation.
 
 ## Available workspaces
 
@@ -13,45 +13,70 @@ InkDOS is a local-first, static browser productivity suite. Version 2.0.11 keeps
 | EPUB Reader | Available | EPUB |
 | PDF Workspace | Available | PDF |
 
-## Clean-tree rule
+## Physical modularity and optional Home
 
-InkDOS 2.0 does not import the 1.x application runtime. Each application retains its app-private engine, state, I/O and UI code. Deliberate integration changes are recorded in `SOURCE_LOCK.json` with integrated tree hashes. In 2.0.11 the lock also records the single-delivery Save change separately for every affected workspace, rather than treating it as a shared runtime change.
+Each workspace retains its own engine, state, I/O, frame, UI and view code. There is no shared application runtime root under `shared/`, `modules/` or `core/`, and no workspace is allowed to load another workspace's source files.
 
-The suite integration remains narrow: Home links into each app and each app returns through its Home icon. Similar logic may intentionally exist in multiple applications because physical failure isolation is part of the 2.0 architecture.
+The Home button is an optional integration bridge rather than a standalone dependency. Home launches a workspace with `suite=1`. Each app-local frame module keeps its Home action only when that opt-in marker is present; when a workspace is opened directly or extracted from the suite, the frame hides the Home control and removes its active `href`. No shared Home controller is required.
+
+Release validation copies every workspace into an isolated temporary directory and verifies that all non-Home resources required by its entry page still resolve inside that copied app root. It also scans for cross-app runtime references and checks that every file listed in the offline `APP_SHELL` exists.
+
+## EPUB structure
+
+EPUB retains the same reader behavior while its previously flattened root modules are physically separated by responsibility:
+
+```text
+apps/epub/
+  app.js
+  index.html
+  assets/
+  engine/
+    annotations.js
+    book-model.js
+    content-projector.js
+  io/
+    epub-writer.js
+    file-delivery.js
+    package-reader.js
+  runtime/
+  session/
+  state/
+    annotation-store.js
+    appearance.js
+    reading-state.js
+  ui/
+    reader-controls.js
+    reader-controls.css
+    start-state.css
+  view/
+    reader-viewport.js
+    reader.css
+    renderer.js
+```
+
+The 2.0.12 change is structural: package parsing, content projection, annotations, writing and rendering algorithms were moved without intentionally changing their behavior. The start-state styling was also removed from inline `index.html` CSS and placed in the EPUB-local UI layer.
 
 ## Appearance consistency
 
-Home supports Light, Dark and System through a compact appearance control. The six workspaces keep their existing appearance controls and their own app-private theme implementation.
-
-Appearance consistency is horizontal rather than centralized. A workspace applies a user choice locally using its existing appearance controller, keeps its own app-specific preference key, and additionally publishes the preference value (`light`, `dark` or `system`) through `inkdos2:appearance`. Other open InkDOS pages consume that value through the browser storage event, while pages opened later read it at startup. No shared theme engine, shared CSS bundle or cross-app runtime module is required.
-
-This means a workspace remains independently functional if copied out of the suite: its local appearance key and local theme engine still work, while the optional InkDOS preference communication simply has no peers.
+Home supports Light, Dark and System. Each workspace keeps its own app-private appearance controller and preference key. The selected value is communicated horizontally through `inkdos2:appearance`; an extracted app still has its local appearance behavior, while suite-wide synchronization naturally disappears when no peers are present.
 
 ## Empty-workspace contract
 
-Opening a workspace does not itself create a document. Before a real document is created, opened or recovered, Save and Share remain unavailable. Each application implements that rule using its own local state; there is no suite-wide document-state module.
-
-Documents, Spreadsheets, Presentations and Plain Text become active only after New/Open succeeds as appropriate. EPUB and PDF become active only after a file is opened. Presentations starts with zero slides and creates its first blank slide only when New presentation is explicitly requested.
-
-InkDOS 2.0.8 made the PDF and Spreadsheets empty-state controls fail-safe at first paint: Save is disabled in the initial HTML as well as by the app-local runtime, and disabled file-menu actions have an explicit inactive visual state. Home workspace links remain release-versioned so browser navigation is less likely to reuse stale entry pages after an update.
+Opening a workspace does not itself create a document. Save and Share remain unavailable until that app has a real active document, workbook, presentation, text file, book or PDF according to its own state model. Presentations starts with zero slides and creates its first slide only after explicit New or successful Open.
 
 ## Share and save semantics
 
-Share and Save are intentionally separate operations. Share exports the current file state to the host system Share Sheet when file-based Web Share is supported. It does not confirm persistent storage and therefore does not clear unsaved-state indicators.
+Share and Save remain separate operations. Share exports the current file state through the host system Share Sheet when supported and does not itself confirm persistent storage.
 
-InkDOS 2.0.11 adds a single-delivery Save invariant to Documents, Spreadsheets, Presentations, Plain Text and PDF. On iPad/iPhone-style touch WebKit hosts, Save prefers the system file Share route when it is available instead of entering a partially supported File System Access path. On other hosts, if the native save picker has already returned a destination handle and writing that destination fails, the error is terminal: the app does not start Share or download as a second delivery attempt. This prevents the observed empty-file + valid-file pair while keeping the delivery implementation private to each workspace.
+The 2.0.11 single-delivery invariant remains in Documents, Spreadsheets, Presentations, Plain Text and PDF: Apple touch WebKit hosts can prefer file-based system Share for Save, and once a native picker has returned a destination handle a later write failure is terminal rather than starting a second delivery route.
 
-Legacy PPT remains read-only in Presentations, so Save and Share remain disabled for that source type.
+## Format scope
 
-## PDF
-
-PDF is an app-private, physically modular reader and annotation workspace. Open local PDFs, add text/ink/highlight/underline/comments, save copies, and share the current PDF state. The engine and document state do not depend on Home or another app. Internal test fixtures and inspection hooks are excluded from the distribution.
-
-InkDOS 2.0.10 aligned the PDF top frame with the established app-frame pattern used by Plain Text and the other workspaces: the file name is shown inside a centered framed pill, with the PDF application icon beside it. The PDF app-local icon is an exact copy of the canonical Home PDF icon, preserving standalone extraction while preventing visual drift between Home and the workspace.
+The modularity polish does not broaden file-format fidelity. InkDOS remains intentionally narrower than a full desktop office suite such as LibreOffice: its supported formats and preservation behavior are workspace-specific and should be expanded through each app's private parser/writer boundaries rather than through a shared document engine.
 
 ## Local-first
 
-There is no required backend, telemetry service, or remote document-processing service. GitHub Pages is used only as a static host/PWA surface.
+There is no required backend, telemetry service or remote document-processing service. GitHub Pages is used only as a static host/PWA surface.
 
 ## Repository layout
 

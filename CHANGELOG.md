@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.12 — 2026-09-07
+
+- Make the Home bridge optional in all six workspaces: Home launches apps with `suite=1`, while each app-local frame hides the Home control and removes its target when opened directly or extracted standalone.
+- Add a standalone isolation release gate that copies every workspace into an isolated temporary directory, verifies entry resources stay inside the app root, and rejects cross-app/shared-runtime references.
+- Refactor EPUB physically without intentionally changing reader algorithms: move package read/write to `io/`, book/content/annotation projection to `engine/`, annotation persistence to `state/`, rendering to `view/`, and start-state styling to `ui/`.
+- Remove the old flattened EPUB module copies and require the new physical layout in release validation.
+- Validate every service-worker `APP_SHELL` file and update the offline shell to the new EPUB module paths.
+- Preserve format scope and existing functional contracts; this release does not claim broader LibreOffice-level fidelity.
+- Rotate Home routes and the offline cache to the 2.0.12 / sequence 80 snapshot.
+
 ## 2.0.11 — 2026-09-07
 
 - Fix duplicate Save delivery in Documents, Spreadsheets, Presentations, Plain Text and PDF when a host exposes a partially supported native file picker that creates a destination but fails during writable creation or writing.
@@ -21,7 +31,7 @@
 - Add full Light/Dark/System appearance support to Home with a compact sun control and a contextual appearance menu.
 - Introduce horizontal appearance preference communication through `inkdos2:appearance`: a choice made in Home or any workspace becomes the suite preference.
 - Preserve every workspace's existing appearance UI, CSS and app-private theme engine; only each local appearance controller publishes and consumes the shared preference value.
-- Keep each workspace independently functional when extracted from the suite by retaining its own app-specific appearance key and local fallback behavior.
+- Keep each workspace independently functional when extracted from the suite by retaining its own app-specific preference key and local fallback behavior.
 - Preserve dynamic `System` behavior through each app's existing `prefers-color-scheme` handling and synchronize already-open pages through the browser `storage` event.
 - Add regression checks for the Home dark theme, Home appearance control, local appearance keys and the absence of a shared runtime root.
 - Rotate the offline cache to the 2.0.9 sequence.

@@ -6,7 +6,7 @@ class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         for app in ACTIVE:
-            self.assertIn(f'./apps/{app}/index.html?v=2.0.11',text)
+            self.assertIn(f'./apps/{app}/index.html?v=2.0.12&amp;suite=1',text)
     def test_standard_start_cards(self):
         two_action=('documents','spreadsheets','presentations','txt')
         for app in two_action:
@@ -23,7 +23,7 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('display:grid!important',text)
         self.assertIn('.start-state[hidden]{display:none!important}',text)
         home=(ROOT/'index.html').read_text(encoding='utf-8')
-        self.assertIn('./apps/presentations/index.html?v=2.0.11',home)
+        self.assertIn('./apps/presentations/index.html?v=2.0.12&amp;suite=1',home)
 
     def test_pdf_active(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
