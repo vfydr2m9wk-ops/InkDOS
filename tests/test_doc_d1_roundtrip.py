@@ -107,7 +107,8 @@ def main() -> None:
                   const reopened = await app.open(file, {authorized:true});
                   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
                   const reopenedPage = host.querySelector('.doc-page');
-                  const reopenedText = host.querySelector('.page-content')?.innerText || '';
+                  const reopenedText = [...host.querySelectorAll('.page-content')].map(x => x.innerText || '').join('\n');
+                  const reopenedHtml = [...host.querySelectorAll('.page-content')].map(x => x.innerHTML || '').join('\n');
                   const reopenedSpec = reopenedPage?._pageSpec || {};
                   const pageNumber = host.querySelector('.d1-page-number')?.textContent || '';
                   return {
@@ -136,6 +137,7 @@ def main() -> None:
                       pageNumberEnabled: !!reopenedSpec.pageNumber,
                       pageNumber,
                       text: reopenedText,
+                      html: reopenedHtml,
                       pages: host.querySelectorAll('.doc-page').length,
                     },
                   };
@@ -176,6 +178,8 @@ def main() -> None:
         assert reopened["pageNumberEnabled"] is True, result
         assert reopened["pageNumber"] == "1", result
         assert "First paragraph" in reopened["text"] and "Strike color highlight" in reopened["text"], result
+        assert "line-through" in reopened["html"] and "background-color" in reopened["html"], result
+        assert "vertical-align:sub" in reopened["html"] and "vertical-align:super" in reopened["html"], result
         assert reopened["pages"] >= 2, result
         print("DOC-D1 browser save/OOXML/reopen roundtrip passed.")
         print(json.dumps({"pages": reopened["pages"], "orientation": reopened["orientation"]}, sort_keys=True))
