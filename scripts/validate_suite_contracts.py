@@ -6,7 +6,7 @@ class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         for app in ACTIVE:
-            self.assertIn(f'./apps/{app}/index.html?v=2.0.10',text)
+            self.assertIn(f'./apps/{app}/index.html?v=2.0.11',text)
     def test_standard_start_cards(self):
         two_action=('documents','spreadsheets','presentations','txt')
         for app in two_action:
@@ -23,7 +23,7 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('display:grid!important',text)
         self.assertIn('.start-state[hidden]{display:none!important}',text)
         home=(ROOT/'index.html').read_text(encoding='utf-8')
-        self.assertIn('./apps/presentations/index.html?v=2.0.10',home)
+        self.assertIn('./apps/presentations/index.html?v=2.0.11',home)
 
     def test_pdf_active(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -69,6 +69,27 @@ class SuiteIntegration(unittest.TestCase):
         for app in runtime:
             delivery=(ROOT/'apps'/app/'io/file-delivery.js').read_text(encoding='utf-8')
             self.assertIn('share',delivery,app)
+    def test_single_save_delivery_contract(self):
+        files={
+            'documents':ROOT/'apps/documents/io/file-delivery.js',
+            'spreadsheets':ROOT/'apps/spreadsheets/io/file-delivery.js',
+            'presentations':ROOT/'apps/presentations/io/file-delivery.js',
+            'txt':ROOT/'apps/txt/runtime/services/file-delivery.js',
+            'pdf':ROOT/'apps/pdf/io/file-delivery.js',
+        }
+        texts={app:path.read_text(encoding='utf-8') for app,path in files.items()}
+        for app,text in texts.items():
+            self.assertIn('isAppleTouchHost',text,app)
+            self.assertIn('write-failed',text,app)
+        for app in ('documents','spreadsheets','presentations','txt'):
+            self.assertIn("e.code==='cancelled'||e.code==='write-failed'",texts[app],app)
+        self.assertIn("e?.name==='AbortError'||e.code==='write-failed'",texts['pdf'])
+        self.assertIn('if(c.preferShareSave&&c.share)',texts['documents'])
+        self.assertIn('if(c.preferShareSave&&c.share)',texts['spreadsheets'])
+        self.assertIn('if(isAppleTouchHost()&&canShare(file))',texts['presentations'])
+        self.assertIn('if((local||c.preferShareSave)&&c.share)',texts['txt'])
+        self.assertIn('if(isAppleTouchHost()&&canShare(file))',texts['pdf'])
+        self.assertFalse((ROOT/'shared').exists())
     def test_empty_state_file_action_contract(self):
         documents=(ROOT/'apps/documents/index.html').read_text(encoding='utf-8')
         self.assertRegex(documents,r'id="saveMenuBtn"[^>]*disabled')

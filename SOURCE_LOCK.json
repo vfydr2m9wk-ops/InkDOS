@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.10",
-  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.10 keeps the horizontal appearance-preference contract from 2.0.9 and makes a PDF-only visual frame alignment: the PDF app-local icon must be an exact copy of the canonical Home PDF icon, and the PDF frame CSS must present the current file name in a centered framed title pill with the icon beside it. The PDF title controller, engine, annotations, file I/O and other workspace runtimes remain app-private and unchanged. No shared runtime root is introduced.",
+  "release": "2.0.11",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.11 adds the same single-delivery safety contract independently to Documents, Spreadsheets, Presentations, Plain Text and PDF: iPad/iPhone-style touch WebKit hosts may prefer app-local file Web Share for Save, and a native picker write failure after a destination handle exists is terminal so no second Share/download destination is created. EPUB is unchanged. Existing Home, appearance, empty-state and PDF frame contracts remain intact. No shared save runtime or cross-app mutable I/O module is introduced.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -10,7 +10,7 @@
       "sourceTreeSha256BeforeIntegration": "483d12590e2f4bbb63356de90aa71b5a494ac4e1819e88d041d67eef578a1339",
       "sourceFileCount": 32,
       "sourceBytes": 254156,
-      "nonIndexTreeSha256": "2a9b05f82a32c2d0ef4843d4d6f5bb021a1b1731a8fd0dbceafdd03c2f196409",
+      "nonIndexTreeSha256": "f8acdf4646fa26801d606ed80ef709a7e2a768bd7e00c1f855bd6b17100c25bb",
       "originalIndexSha256": "f3303189f1361068c96eb6fa521913908301cfbbc45b287d2a6eeb8ec8adf9d7",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -18,7 +18,8 @@
         "io/save-controller.js: export current DOCX to Share without marking the session saved",
         "ui/command-controller.js: add app-local Share menu action after Save copy",
         "2.0.7 contract: preserve existing session.active guards and disabled initial Save/Share state",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "eca82f2fc18629be23337add353aada91cee1afe4e4de53451e0f6ae134479ad"
     },
@@ -28,7 +29,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "2bc42d81314ea5b44c4fc8d468752f51f024e14d32fa9a6625f0a24c1dbb8226",
+      "nonIndexTreeSha256": "68b3b006555db90dd30d42ead1901ad299991e66e47c0397c025d8f212a055bd",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -39,7 +40,8 @@
         "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true",
         "index.html: in 2.0.8 mark Save disabled in initial markup before runtime synchronization",
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "a0a5a5debfc4fb209ac38496ee05abced0dcdf3596d54a5f8ad09923e4a7a700"
     },
@@ -49,7 +51,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "4aab0a253c753902fda2da8231269e9dc16e8f68e5ed7c9ee7984a4451530b7c",
+      "nonIndexTreeSha256": "74e39c4de284dd9d36297b8bcca9cf7f3c4c8dc4982e14e4c015109483538c40",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -64,7 +66,8 @@
         "ui/chrome-controller.js: report No presentation for the true empty state",
         "presentation/slideshow-controller.js: refuse slideshow launch without an active presentation",
         "io/save-controller.js: guard Save and Share against an inactive presentation",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "15654c4e421504127400b2049ce7596b50c2e2ff9fe668a52809daa02f2042b4"
     },
@@ -74,7 +77,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "6c696cc125048ee98a5948deb232c3ceecc261df3f6c2ae2d2a00fe53d6e48af",
+      "nonIndexTreeSha256": "5521fd5007f53725ae74b9b4d6f0a4bded32a2024b9cb81bf55dbed692442f18",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -83,9 +86,10 @@
         "io/txt-file-controller.js: prevent delayed recovery from replacing an already activated user document",
         "editor/editor-controller.js: keep Save and Share disabled until state.loaded and hide the start gate only when an editor document becomes active",
         "ui/txt-controls.js: preserve/reinstate the start gate when an Open attempt does not produce a loaded document",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "runtime/services/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations; regenerate index.html deterministically"
       ],
-      "integratedIndexSha256": "f14c9b02ab53f92f67e449335023e1e46f6d8c31b0a5d1665737ea36b3d73c2f"
+      "integratedIndexSha256": "b3e84d72f2c3bad7ac4c6c4c79b975489b18e96b67e8fbe36369b95f7e24236b"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
@@ -108,7 +112,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "e500386fccfa5c8d78523d59d19ef9b83d7c46dbb92d7e14a1a2ed826d6ed1b8",
+      "nonIndexTreeSha256": "2f91147d20859055616bdd6908ae44dfe11f4bcb2194e8a39eaa1b16d4187fb0",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
@@ -122,12 +126,13 @@
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
         "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
         "assets/pdf.svg: in 2.0.10 mirror the canonical Home PDF icon exactly while retaining an app-local asset",
-        "runtime/frame/app-frame.css: in 2.0.10 align the top frame to the InkDOS centered icon + framed file-name pill pattern without changing PDF controller behavior"
+        "runtime/frame/app-frame.css: in 2.0.10 align the top frame to the InkDOS centered icon + framed file-name pill pattern without changing PDF controller behavior",
+        "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations"
       ],
       "integratedIndexSha256": "fbb08845cf855a4c9a3c4b45adaae9804f25bb2de535beece656cc2a86a51ad4",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.10-frame-alignment"
+      "status": "baseline-preserved-with-2.0.11-single-save-delivery"
     }
   },
-  "previousRelease": "2.0.9"
+  "previousRelease": "2.0.10"
 }
