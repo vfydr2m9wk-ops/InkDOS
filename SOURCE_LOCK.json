@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.5",
+  "release": "2.0.6",
   "integrationPolicy": "Preserve six physically independent app roots and add app-local Share actions to Documents, Spreadsheets, Presentations and PDF, matching the existing Plain Text and EPUB pattern. Share never confirms persistent storage and no cross-app runtime is introduced.",
   "apps": {
     "documents": {
