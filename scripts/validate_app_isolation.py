@@ -97,7 +97,7 @@ def validate_optional_home(app,errors):
 def validate_home_launcher(errors):
     home=(ROOT/'index.html').read_text(encoding='utf-8')
     for app in ACTIVE:
-        expected=f'./apps/{app}/index.html?v=2.0.11&amp;suite=1'
+        expected=f'./apps/{app}/index.html?v=2.0.12&amp;suite=1'
         if expected not in home:errors.append(f'Home: suite opt-in route missing for {app}')
 
 def validate_service_worker_shell(errors):
