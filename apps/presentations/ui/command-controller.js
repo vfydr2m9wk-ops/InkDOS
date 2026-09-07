@@ -1,11 +1,13 @@
 (function(global){'use strict';const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,history,chrome,fileOpen,save,editor,panel,slideshow}={}){
  const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null;
+ function installShareAction(){const saveBtn=$('saveMenuBtn');if(!saveBtn||$('shareMenuBtn'))return;const share=document.createElement('button');share.id='shareMenuBtn';share.className='menu-item';share.type='button';share.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint">PPTX</span>';saveBtn.insertAdjacentElement('afterend',share);share.onclick=async()=>{if(session.sourceKind==='ppt')return;drawer.close({restoreFocus:false});await save.share();sync()}}
  function sync(){
   chrome.title();chrome.stats();
   const legacy=session.sourceKind==='ppt';
   $('saveMenuBtn').disabled=legacy;
   $('saveMenuBtn').title=legacy?'Legacy PPT is read-only.':'Save PPTX copy';
+  const share=$('shareMenuBtn');if(share){share.disabled=legacy;share.title=legacy?'Legacy PPT is read-only.':'Share PPTX'}
   $('titleText').readOnly=legacy;
   editor.sync()
  }
@@ -13,6 +15,7 @@ function create({session,history,chrome,fileOpen,save,editor,panel,slideshow}={}
  function requestNew(){if(session.dirty&&!confirm('Discard current in-memory changes and create a new presentation?'))return false;session.resetNew();history.reset();refresh();chrome.status('New presentation');drawer?.close();return true}
  function install(){
   drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});zoomPopover=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover')});
+  installShareAction();
   $('newMenuBtn').onclick=requestNew;
   $('openMenuBtn').onclick=()=>{drawer.close({restoreFocus:false});fileOpen.requestOpen()};
   $('saveMenuBtn').onclick=async()=>{if(session.sourceKind==='ppt')return;drawer.close({restoreFocus:false});await save.save();sync()};
