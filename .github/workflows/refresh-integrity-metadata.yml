@@ -36,6 +36,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Normalize Plain Text source integration
+        run: python scripts/sync_txt_source.py
+
+      - name: Build Plain Text distribution
+        run: python scripts/build_txt_bundle.py
+
       - name: Refresh integrated app locks
         shell: bash
         run: |
@@ -91,7 +97,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add SOURCE_LOCK.json BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json CHECKSUMS.sha256
+          git add apps/txt/page.template.html apps/txt/styles.css apps/txt/index.html SOURCE_LOCK.json BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json CHECKSUMS.sha256
           if git diff --cached --quiet; then
             echo "Integrity metadata already current."
             exit 0
