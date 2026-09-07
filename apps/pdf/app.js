@@ -1,7 +1,9 @@
 (function(global){'use strict';
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{},$=id=>document.getElementById(id);
-function loadReaderTools(){if(NS.ReaderTools)return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='ui/reader-tools.js';s.onload=resolve;s.onerror=()=>reject(new Error('PDF_READER_TOOLS_LOAD_FAILED'));document.head.appendChild(s)})}
-async function boot(){await loadReaderTools();NS.PdfWorker.configure();
+function loadScript(src,test){if(test?.())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('PDF_LOCAL_ASSET_LOAD_FAILED: '+src));document.head.appendChild(s)})}
+function loadReaderTools(){return loadScript('ui/reader-tools.js',()=>!!NS.ReaderTools)}
+async function loadPageTools(){if(!document.querySelector('link[data-pdf-page-tools]')){const l=document.createElement('link');l.rel='stylesheet';l.href='ui/page-tools.css';l.dataset.pdfPageTools='1';document.head.appendChild(l)}await loadScript('vendor/jszip.min.js',()=>!!global.JSZip);await loadScript('vendor/pdf-lib/pdf-lib.min.js',()=>!!global.PDFLib?.PDFDocument);await loadScript('engine/page-tools-engine.js',()=>!!NS.PageToolsEngine);await loadScript('ui/page-tools.js',()=>!!NS.PageTools)}
+async function boot(){await loadReaderTools();await loadPageTools();NS.PdfWorker.configure();
 const session=new NS.PdfSession();
 const chrome=NS.ChromeController.create({session});
 const scheduler=new NS.PageScheduler(9);
