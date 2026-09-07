@@ -1,0 +1,20 @@
+PDF.js vendor provenance — InkDOS 2.0 PDF P4
+
+Upstream project: Mozilla PDF.js
+Upstream repository: https://github.com/mozilla/pdf.js
+Vendored display/runtime version: 3.11.174
+Vendored build identifier: ce8716743
+License: Apache License 2.0
+
+Main display library:
+- pdf.min.js: upstream PDF.js 3.11.174 vendored build.
+
+Worker:
+- pdf.worker.min.js: InkDOS-local modified PDF.js 3.11.174 worker.
+- SHA-256: 7a623a54c2ad7b7be0ce90fed307f5aa41d09c15a6ab529d408f6ae53cf10d5c
+- Purpose of modification: allow the same PDFDocumentProxy.saveDocument()/AnnotationStorage path to serialize the narrow InkDOS extension records used for Highlight, Underline and Text comments while retaining normal PDF.js reading, forms, FreeText and Ink behavior.
+- Extension record IDs are isolated behind apps/pdf/extensions/ and are not used by the App Frame, ContentViewport or renderer.
+
+P4 has exactly one PDF.js worker at runtime. There is no separate InkDOS structural-writer worker and no remote/CDN runtime dependency.
+
+A future PDF.js major-version upgrade is intentionally isolated behind apps/pdf/pdfjs/, apps/pdf/extensions/ and vendor/pdfjs/ and must be validated as a separate revision.

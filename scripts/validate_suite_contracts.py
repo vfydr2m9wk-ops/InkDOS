@@ -1,7 +1,7 @@
 from pathlib import Path
 import hashlib,json,re,unittest
 ROOT=Path(__file__).resolve().parents[1]
-ACTIVE=('documents','spreadsheets','presentations','txt','epub')
+ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -24,9 +24,9 @@ class SuiteIntegration(unittest.TestCase):
         home=(ROOT/'index.html').read_text(encoding='utf-8')
         self.assertIn('./apps/presentations/index.html?v=2.0.2',home)
 
-    def test_pdf_placeholder(self):
+    def test_pdf_active(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
-        self.assertIn('PDF Workspace',text);self.assertIn('Coming soon',text);self.assertFalse((ROOT/'apps/pdf').exists())
+        self.assertIn('PDF Workspace',text);self.assertNotIn('Coming soon',text);self.assertTrue((ROOT/'apps/pdf/index.html').is_file())
     def test_return_bridge(self):
         for app in ACTIVE:
             text=(ROOT/f'apps/{app}/index.html').read_text(encoding='utf-8')
@@ -35,8 +35,8 @@ class SuiteIntegration(unittest.TestCase):
         css=(ROOT/'assets/home.css').read_text(encoding='utf-8')
         self.assertIn('@media(max-width:720px)',css);self.assertIn('.workspace-grid{grid-template-columns:1fr',css)
     def test_no_cross_suite_runtime_roots(self):
-        for rel in ('shared','modules','core','apps/pdf'):self.assertFalse((ROOT/rel).exists(),rel)
-    def test_source_lock_has_five_apps(self):
+        for rel in ('shared','modules','core'):self.assertFalse((ROOT/rel).exists(),rel)
+    def test_source_lock_has_six_apps(self):
         lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text(encoding='utf-8'))
         self.assertEqual(set(lock['apps']),set(ACTIVE))
 if __name__=='__main__':unittest.main()

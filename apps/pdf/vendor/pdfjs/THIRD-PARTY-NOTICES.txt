@@ -1,0 +1,11 @@
+InkDOS 2.0 PDF P4 — Third-Party Notices
+
+PDF.js
+Copyright Mozilla Foundation and contributors.
+Licensed under the Apache License, Version 2.0.
+
+This application redistributes a locally vendored PDF.js 3.11.174 build and adapts its display, annotation, form, annotation-editor and save APIs to the InkDOS interface. The full Apache 2.0 license is included as LICENSE-PDFJS.txt.
+
+The vendored pdf.worker.min.js is a modified PDF.js 3.11.174 worker. The modification is limited to serialization support for InkDOS Highlight, Underline and Text-comment extension records through PDF.js AnnotationStorage/saveDocument. The modified worker remains distributed under the Apache License 2.0 and its exact SHA-256 is recorded in VENDOR-PROVENANCE.txt.
+
+InkDOS branding and application UI are separate from Mozilla/Firefox branding. No endorsement by Mozilla is implied.

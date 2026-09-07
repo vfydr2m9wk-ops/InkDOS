@@ -7,7 +7,7 @@ CMDS=[
  [sys.executable,'scripts/validate_repository.py'],
  [sys.executable,'scripts/audit_source.py'],
  [sys.executable,'scripts/verify_checksums.py'],
- [sys.executable,'-m','unittest','discover','-s','tests','-p','test_*.py'],
+ [sys.executable,'scripts/validate_suite_contracts.py'],
 ]
 def main():
     for c in CMDS: subprocess.run(c,cwd=ROOT,check=True)

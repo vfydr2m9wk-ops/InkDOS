@@ -1,5 +1,5 @@
 # Project status
 
-Release: **InkDOS 2.0.1 Core**
+Release: **InkDOS 2.0.3**
 
-Documents, Spreadsheets, Presentations, Plain Text and EPUB Reader are installed from their frozen FINAL baselines. PDF Workspace is marked **Coming soon** and has no runtime in this release.
+Six installed independent workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB Reader and PDF Workspace. PDF uses the user-accepted P4.2 functional baseline with a Home link and app-local first-open card. Existing five apps retain their previous hashes. See `PDF-CLOSURE-AUDIT.md` for verification scope.

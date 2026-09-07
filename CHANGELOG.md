@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.3 — 2026-09-07
+
+- Install the physically modular PDF P4.2 app; enable Home ↔ PDF navigation and EPUB-style Open PDF card.
+- Preserve all five existing app source trees byte-for-byte.
+- Exclude internal PDF inspection hooks, fixtures and sample documents.
+- Update six-app release locks and offline cache; correct the existing stale Presentations icon cache URL.
+- Retain all release contracts as validation tooling, with no internal tests directory in the update payload.
+
 ## 2.0.2 — 2026-09-07
 
 - Fixed the Presentations first-open gate so the app no longer exposes the pre-created blank slide before the user chooses New or Open.

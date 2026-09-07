@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.2",
-  "integrationPolicy": "2.0.2 corrects the Presentations first-open gate in its entry index only; all non-index app runtime bytes remain frozen.",
+  "release": "2.0.3",
+  "integrationPolicy": "Add the user-accepted PDF P4.2 runtime; remove its internal inspection hook; add PDF-local Home and first-open UI. All five existing app trees remain byte-identical.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -69,7 +69,24 @@
         "index.html: add Home anchor to ../../index.html"
       ],
       "integratedIndexSha256": "6755a8f4dffdd79cc22c5cd7ebd440150ec2a2a5eacc7ded39be9e1a997debb0"
+    },
+    "pdf": {
+      "sourcePackage": "InkDOS-2.0-PDF-P4.2-AUDITED.zip",
+      "sourcePackageSha256": "5c822081246c3b7d46eb513badcbb86f057d75cc540bec2f41974ed75d765b04",
+      "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
+      "sourceFileCount": 39,
+      "sourceBytes": 1519470,
+      "nonIndexTreeSha256": "86d037049daf3dd56647feeaf0f7c143b774d41cfded4542997d45ac9e374ebd",
+      "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
+      "allowedIntegrationChanges": [
+        "app.js: remove internal __inkdosPdfP4 inspection hook",
+        "index.html: Home anchor to ../../index.html",
+        "index.html: EPUB-style centered Open PDF start card and success-driven visibility"
+      ],
+      "integratedIndexSha256": "13d8b861a3365ce60c9dd9153d8ff9fa579f1b33bc83a53de4b17267ccdbe287",
+      "functionalBaseline": "P4.2 user-accepted",
+      "status": "frozen"
     }
   },
-  "previousRelease": "2.0.1"
+  "previousRelease": "2.0.2"
 }

@@ -40,6 +40,10 @@
     {
       "name": "EPUB Reader",
       "url": "./apps/epub/index.html"
+    },
+    {
+      "name": "PDF Workspace",
+      "url": "./apps/pdf/index.html"
     }
   ]
 }

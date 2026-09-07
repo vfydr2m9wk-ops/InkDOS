@@ -1,9 +1,9 @@
 {
   "name": "InkDOS",
   "displayName": "InkDOS",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "releaseChannel": "stable",
-  "releaseName": "InkDOS 2.0.2",
+  "releaseName": "InkDOS 2.0.3",
   "date": "2026-09-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDOS/",
@@ -28,13 +28,11 @@
     "epub": {
       "path": "apps/epub/index.html",
       "format": "EPUB"
-    }
-  },
-  "plannedComponents": {
+    },
     "pdf": {
       "path": "apps/pdf/index.html",
-      "format": "PDF",
-      "status": "coming-soon"
+      "format": "PDF"
     }
-  }
+  },
+  "plannedComponents": {}
 }

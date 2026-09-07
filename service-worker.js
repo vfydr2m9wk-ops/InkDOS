@@ -1,6 +1,42 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.2-presentation-start-seq70';
+const CACHE_NAME='inkdos-v2.0.3-pdf-final-seq71';
 const APP_SHELL=[
+  "./apps/pdf/app.js",
+  "./apps/pdf/assets/pdf.svg",
+  "./apps/pdf/engine/pdf-policy.js",
+  "./apps/pdf/engine/pdf-session.js",
+  "./apps/pdf/extensions/review-annotations.css",
+  "./apps/pdf/extensions/review-annotations.js",
+  "./apps/pdf/index.html",
+  "./apps/pdf/io/file-delivery.js",
+  "./apps/pdf/io/file-open-controller.js",
+  "./apps/pdf/io/pdf-worker.js",
+  "./apps/pdf/io/save-adapter.js",
+  "./apps/pdf/io/save-controller.js",
+  "./apps/pdf/modes/mode-controller.js",
+  "./apps/pdf/pdfjs/editor-adapter.js",
+  "./apps/pdf/pdfjs/environment.js",
+  "./apps/pdf/pdfjs/event-bus.js",
+  "./apps/pdf/pdfjs/page-layers.js",
+  "./apps/pdf/pdfjs/pdfjs-layers.css",
+  "./apps/pdf/runtime/frame/app-frame.css",
+  "./apps/pdf/runtime/frame/frame-menu.js",
+  "./apps/pdf/runtime/platform/content-viewport-adapter.js",
+  "./apps/pdf/runtime/tokens/base.css",
+  "./apps/pdf/state/appearance.js",
+  "./apps/pdf/ui/chrome-controller.js",
+  "./apps/pdf/ui/command-controller.js",
+  "./apps/pdf/ui/navigation-controller.js",
+  "./apps/pdf/ui/navigation.css",
+  "./apps/pdf/ui/pdf-toolbar.css",
+  "./apps/pdf/ui/zoom-controls.js",
+  "./apps/pdf/vendor/pdfjs/pdf.min.js",
+  "./apps/pdf/vendor/pdfjs/pdf.worker.min.js",
+  "./apps/pdf/view/page-layout.js",
+  "./apps/pdf/view/page-renderer.js",
+  "./apps/pdf/view/page-scheduler.js",
+  "./apps/pdf/view/pdf-surface.css",
+  "./apps/pdf/view/zoom-controller.js",
   "./index.html",
   "./manifest.webmanifest",
   "./assets/home.css",
@@ -9,7 +45,7 @@ const APP_SHELL=[
   "./assets/icons/pdf.svg",
   "./assets/icons/documents.svg",
   "./assets/icons/spreadsheets.svg",
-  "./assets/icons/presentations.svg",
+  "./assets/icons/presentations.png",
   "./assets/icons/txt.svg",
   "./assets/icons/epub.svg",
   "./apps/documents/app.js",
@@ -158,7 +194,7 @@ const APP_SHELL=[
   "./apps/epub/view/reader-viewport.js",
   "./apps/epub/view/reader.css"
 ];
-const NAVIGATION_PATHS=new Set(["./index.html", "./apps/documents/index.html", "./apps/spreadsheets/index.html", "./apps/presentations/index.html", "./apps/txt/index.html", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
+const NAVIGATION_PATHS=new Set(["./apps/pdf/index.html", "./index.html", "./apps/documents/index.html", "./apps/spreadsheets/index.html", "./apps/presentations/index.html", "./apps/txt/index.html", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 const KNOWN=new Set(APP_SHELL.map(p=>new URL(p,self.registration.scope).href));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';return new Request(u.href,{method:'GET'})}
 self.addEventListener('install',event=>event.waitUntil((async()=>{const c=await caches.open(CACHE_NAME);await c.addAll(APP_SHELL);await self.skipWaiting()})()));

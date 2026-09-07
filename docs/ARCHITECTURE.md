@@ -1,29 +1,33 @@
-# InkDOS 2.0 architecture
+# InkDOS 2.0.3 architecture
 
-InkDOS 2.0 is a launcher plus five independent applications.
+Home is a small launcher for six independent apps. It owns no document session, editor, shared file router or cross-app engine. Integration is ordinary navigation to each `apps/<app>/index.html` and back to Home.
 
-```text
-Home
- ├─ Documents
- ├─ Spreadsheets
- ├─ Presentations
- ├─ PDF Workspace (placeholder only)
- ├─ Plain Text
- └─ EPUB Reader
-```
+Every app retains its own runtime, UI, IO, state, view and vendor dependencies. Deliberate duplication is preserved for failure isolation. The five pre-existing app trees are byte-identical to 2.0.2.
 
-Home has no file-opening, editing, recent-files, or global-suite runtime. It only routes to the installed app entry points.
+## PDF physical ownership
 
-Each application owns its own runtime, IO, state, view and vendor dependencies. Cross-app runtime imports are not required. Deliberate redundancy is preserved rather than centralized.
+| Location within apps/pdf | Responsibility |
+| --- | --- |
+| runtime/frame/ | App frame, menu and chrome styles |
+| runtime/platform/ | ContentViewport measurement |
+| runtime/tokens/ | App-local visual tokens |
+| engine/ | PDF geometry policy and document session |
+| view/ | Page scheduling, canvas rendering, layout and zoom |
+| pdfjs/ | Native annotation/editor/text-layer adapters |
+| extensions/ | Highlight, underline and comment records |
+| io/ | Local file opening, worker setup, copy validation and delivery |
+| state/ | App appearance preference |
+| modes/, ui/ | View/Annotate mode and tool/navigation controls |
+| vendor/pdfjs/ | App-private pinned display engine and worker |
+| app.js | Composition of private app instances |
+| index.html | Entry markup, Home anchor and first-open presentation |
 
-## Integration boundary
+These are separate files loaded by the PDF entry, not headings inside a shared suite engine. PDF runtime resources resolve entirely inside its own directory. The only upward navigation is the Home anchor. Direct entry to the PDF app does not require loading Home or any sibling app. Browser policies still determine whether multi-file apps may run under file://; a local/static HTTP host is supported.
 
-The canonical FINAL package source tree for each app is copied into `apps/<app>/`. Integration may modify only `apps/<app>/index.html`, solely to add a Home icon linking to `../../index.html`. `SOURCE_LOCK.json` pins the source package SHA-256, the original app-tree digest, the non-index tree digest, and the integrated index hash.
+## Frozen integration boundary
 
-## PDF boundary
+SOURCE_LOCK.json preserves all existing app locks and adds the PDF hashes. Compared with the user-accepted P4.2 app source, the distribution removes only its internal global instance-inspection hook from app.js. The entry index adds a Home anchor and an EPUB-style one-button startup card. No PDF engine, annotation, saving, viewport or toolbar module is modified by this integration.
 
-`apps/pdf/` does not exist in 2.0.0. The Home card is a non-interactive placeholder. A later PDF update must add an app-private runtime instead of reviving the retired 1.x PDF tree.
+## First-open contract
 
-## First-open contract (2.0.1)
-
-Spreadsheets is the visual baseline for startup cards. Documents, Spreadsheets, Presentations and Plain Text offer New/Open. Read-only readers such as EPUB, and the future PDF workspace, use the same card with one centered Open action. This release changes only affected app entry indexes; non-index app runtime bytes remain frozen.
+Documents, Spreadsheets, Presentations and Plain Text have New/Open. EPUB and PDF use one centered Open action. PDF's card uses app-local red theme tokens. File picker cancellation or invalid input retains the card; the app's committed title update dismisses it after successful opening. Home remains a six-card grid with the existing mobile single-column behavior.

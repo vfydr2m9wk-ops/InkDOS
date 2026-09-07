@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-FORBIDDEN=('apps/pdf','shared','modules','core','legacy','shared/vendor/pdfjs')
+FORBIDDEN=('shared','modules','core','legacy','shared/vendor/pdfjs')
 def main():
     bad=[x for x in FORBIDDEN if (ROOT/x).exists()]
     if bad: raise SystemExit('Legacy/cross-suite runtime roots present: '+', '.join(bad))

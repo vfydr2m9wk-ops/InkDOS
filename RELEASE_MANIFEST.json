@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "InkDOS",
-  "version": "2.0.2",
-  "releaseName": "InkDOS 2.0.2",
+  "version": "2.0.3",
+  "releaseName": "InkDOS 2.0.3",
   "releaseDate": "2026-09-07",
   "releaseType": "Core Release",
   "entryPoints": {
@@ -10,22 +10,18 @@
     "spreadsheets": "apps/spreadsheets/index.html",
     "presentations": "apps/presentations/index.html",
     "txt": "apps/txt/index.html",
-    "epub": "apps/epub/index.html"
+    "epub": "apps/epub/index.html",
+    "pdf": "apps/pdf/index.html"
   },
   "supportedFormats": [
     "DOCX",
     "XLS / XLSX",
     "PPT / PPTX",
     "TXT",
-    "EPUB"
+    "EPUB",
+    "PDF"
   ],
-  "planned": {
-    "pdf": {
-      "path": "apps/pdf/index.html",
-      "format": "PDF",
-      "status": "coming-soon"
-    }
-  },
+  "planned": {},
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "homepage": "https://vfydr2m9wk-ops.github.io/InkDOS/",
   "buildRequired": false,
