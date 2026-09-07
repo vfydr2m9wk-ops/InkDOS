@@ -18,7 +18,7 @@ def main():
     app=(APP/'app.js').read_text(encoding='utf-8')
     for needle in ['foreColor','hiliteColor','strikeThrough','subscript','superscript','d1ReplaceNext','d1ReplaceAll','d1PageSize','d1Orientation','d1HeaderText','d1FooterText','d1PageNumber','d1PageBreak','Print / Export PDF']:
         require(tools,needle,f'DOC-D1 tool contract missing: {needle}')
-    for needle in ['<w:strike/>','w:shd w:val=','w:vertAlign w:val=','pageBreakBefore','pgSz','pgMar','header-inkdos-d1.xml','footer-inkdos-d1.xml',' PAGE ','DocxParser.parse','DocxWriter.save']:
+    for needle in ['<w:strike/>','w:shd w:val=','w:vertAlign w:val=','pageBreakBefore','pgSz','pgMar',"for(const kind of ['header','footer'])","kind+'-inkdos-d1.xml'",' PAGE ','DocxParser.parse','DocxWriter.save']:
         require(ext,needle,f'DOC-D1 OOXML contract missing: {needle}')
     for needle in ["orientation:'portrait'","pageNumber:false"]:
         require(spec,needle,f'DOC-D1 page spec contract missing: {needle}')
