@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.9",
-  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.9 adds only a horizontal appearance-preference communication contract: each app keeps its own appearance UI, app-private theme implementation and local preference key, while publishing and consuming light/dark/system through the browser storage key inkdos2:appearance. Home gains its own dark appearance and selector. No shared theme engine, shared CSS runtime, cross-app mutable document state or new shared runtime root is introduced.",
+  "release": "2.0.10",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.10 keeps the horizontal appearance-preference contract from 2.0.9 and makes a PDF-only visual frame alignment: the PDF app-local icon must be an exact copy of the canonical Home PDF icon, and the PDF frame CSS must present the current file name in a centered framed title pill with the icon beside it. The PDF title controller, engine, annotations, file I/O and other workspace runtimes remain app-private and unchanged. No shared runtime root is introduced.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -108,7 +108,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "eacf424d306eb3e700c2ca176fbad2da1241026a6e8c67208f91d4ab139da1e1",
+      "nonIndexTreeSha256": "e500386fccfa5c8d78523d59d19ef9b83d7c46dbb92d7e14a1a2ed826d6ed1b8",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
@@ -120,12 +120,14 @@
         "ui/command-controller.js: in 2.0.7 keep menu Save, toolbar Save and Share disabled until session.active",
         "index.html: in 2.0.8 mark menu Save and toolbar Save disabled in initial markup before runtime synchronization",
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
-        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key",
+        "assets/pdf.svg: in 2.0.10 mirror the canonical Home PDF icon exactly while retaining an app-local asset",
+        "runtime/frame/app-frame.css: in 2.0.10 align the top frame to the InkDOS centered icon + framed file-name pill pattern without changing PDF controller behavior"
       ],
       "integratedIndexSha256": "fbb08845cf855a4c9a3c4b45adaae9804f25bb2de535beece656cc2a86a51ad4",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.9-appearance-sync"
+      "status": "baseline-preserved-with-2.0.10-frame-alignment"
     }
   },
-  "previousRelease": "2.0.8"
+  "previousRelease": "2.0.9"
 }

@@ -17,19 +17,23 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text())
-    if v.get('version')!='2.0.9': raise SystemExit('Unexpected version')
-    if state.get('appliedSequence')!=77 or state.get('currentPackage')!='2.0.9-global-appearance-sync': raise SystemExit('Unexpected development state')
+    if v.get('version')!='2.0.10': raise SystemExit('Unexpected version')
+    if state.get('appliedSequence')!=78 or state.get('currentPackage')!='2.0.10-pdf-frame-alignment': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
     for app in ACTIVE:
-        if f'./apps/{app}/index.html?v=2.0.9' not in home: raise SystemExit(f'Versioned Home route missing: {app}')
+        if f'./apps/{app}/index.html?v=2.0.10' not in home: raise SystemExit(f'Versioned Home route missing: {app}')
         idx=ROOT/f'apps/{app}/index.html'; text=idx.read_text(encoding='utf-8')
         if '../../index.html' not in text or 'aria-label="Home"' not in text: raise SystemExit(f'Home bridge missing: {app}')
         entry=lock['apps'][app]
         if sha(idx)!=entry['integratedIndexSha256']: raise SystemExit(f'Integrated index hash changed: {app}')
         if tree_digest(ROOT/f'apps/{app}',exclude=('index.html',))!=entry['nonIndexTreeSha256']: raise SystemExit(f'Integrated non-index source changed: {app}')
     if 'PDF Workspace' not in home or 'Coming soon' in home: raise SystemExit('PDF route must be active')
+    if (ROOT/'apps/pdf/assets/pdf.svg').read_bytes()!=(ROOT/'assets/icons/pdf.svg').read_bytes(): raise SystemExit('PDF app icon must match canonical Home icon')
+    pdf_frame=(ROOT/'apps/pdf/runtime/frame/app-frame.css').read_text(encoding='utf-8')
+    for marker in ('.document-title{position:absolute;left:50%', '.title-text{height:100%', 'border:1px solid var(--line)', '.pdf-icon{width:30px'):
+        if marker not in pdf_frame: raise SystemExit('PDF frame title alignment missing: '+marker)
     if "inkdos2:appearance" not in home or 'id="appearanceButton"' not in home or 'id="appearanceMenu"' not in home: raise SystemExit('Home appearance control missing')
     home_css=(ROOT/'assets/home.css').read_text(encoding='utf-8')
     if 'html[data-theme="dark"]' not in home_css: raise SystemExit('Home dark appearance missing')
