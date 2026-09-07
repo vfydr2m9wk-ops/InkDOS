@@ -15,7 +15,7 @@ InkDOS is a local-first, static browser productivity suite. Version 2.0.11 keeps
 
 ## Clean-tree rule
 
-InkDOS 2.0 does not import the 1.x application runtime. Each application retains its app-private engine, state, I/O and UI code. Deliberate integration changes are recorded in `SOURCE_LOCK.json` with integrated tree hashes.
+InkDOS 2.0 does not import the 1.x application runtime. Each application retains its app-private engine, state, I/O and UI code. Deliberate integration changes are recorded in `SOURCE_LOCK.json` with integrated tree hashes. In 2.0.11 the lock also records the single-delivery Save change separately for every affected workspace, rather than treating it as a shared runtime change.
 
 The suite integration remains narrow: Home links into each app and each app returns through its Home icon. Similar logic may intentionally exist in multiple applications because physical failure isolation is part of the 2.0 architecture.
 
