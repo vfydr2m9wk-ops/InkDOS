@@ -17,13 +17,13 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text())
-    if v.get('version')!='2.0.7': raise SystemExit('Unexpected version')
-    if state.get('appliedSequence')!=75 or state.get('currentPackage')!='2.0.7-empty-state-file-actions': raise SystemExit('Unexpected development state')
+    if v.get('version')!='2.0.8': raise SystemExit('Unexpected version')
+    if state.get('appliedSequence')!=76 or state.get('currentPackage')!='2.0.8-disabled-state-visibility': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
     for app in ACTIVE:
-        if f'./apps/{app}/index.html' not in home: raise SystemExit(f'Home route missing: {app}')
+        if f'./apps/{app}/index.html?v=2.0.8' not in home: raise SystemExit(f'Versioned Home route missing: {app}')
         idx=ROOT/f'apps/{app}/index.html'; text=idx.read_text(encoding='utf-8')
         if '../../index.html' not in text or 'aria-label="Home"' not in text: raise SystemExit(f'Home bridge missing: {app}')
         entry=lock['apps'][app]
@@ -41,8 +41,6 @@ def main():
         if marker not in presentation: raise SystemExit(f'Presentations startup gate missing: {marker}')
     if 'display:grid!important' not in presentation or '.start-state[hidden]{display:none!important}' not in presentation:
         raise SystemExit('Presentations startup gate visibility contract missing')
-    if './apps/presentations/index.html?v=2.0.2' not in home:
-        raise SystemExit('Versioned Home route for Presentations is missing')
     pdf=(ROOT/'apps/pdf/index.html').read_text()
     for marker in ('pdfStartGate','new MutationObserver(syncStart)','syncStart()'):
         if marker not in pdf: raise SystemExit('PDF start gate missing: '+marker)

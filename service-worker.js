@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.7-empty-state-file-actions-seq75';
+const CACHE_NAME='inkdos-v2.0.8-disabled-state-visibility-seq76';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
