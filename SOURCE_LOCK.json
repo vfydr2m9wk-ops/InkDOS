@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.8",
-  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.8 keeps the 2.0.7 empty-workspace behavioral contract and makes disabled file actions fail-safe and visibly disabled in PDF and Spreadsheets from initial HTML, while retaining app-local runtime guards. Home routes are release-versioned to reduce stale browser navigation ambiguity. No cross-app runtime or shared mutable document-state code is introduced.",
+  "release": "2.0.9",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.9 adds only a horizontal appearance-preference communication contract: each app keeps its own appearance UI, app-private theme implementation and local preference key, while publishing and consuming light/dark/system through the browser storage key inkdos2:appearance. Home gains its own dark appearance and selector. No shared theme engine, shared CSS runtime, cross-app mutable document state or new shared runtime root is introduced.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -10,14 +10,15 @@
       "sourceTreeSha256BeforeIntegration": "483d12590e2f4bbb63356de90aa71b5a494ac4e1819e88d041d67eef578a1339",
       "sourceFileCount": 32,
       "sourceBytes": 254156,
-      "nonIndexTreeSha256": "acdc3bc07b6df8fd7ce485a73e461c9a38476d5996540591bf5d7a54d6c4639c",
+      "nonIndexTreeSha256": "2a9b05f82a32c2d0ef4843d4d6f5bb021a1b1731a8fd0dbceafdd03c2f196409",
       "originalIndexSha256": "f3303189f1361068c96eb6fa521913908301cfbbc45b287d2a6eeb8ec8adf9d7",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
         "io/file-delivery.js: expose explicit DOCX Web Share delivery",
         "io/save-controller.js: export current DOCX to Share without marking the session saved",
         "ui/command-controller.js: add app-local Share menu action after Save copy",
-        "2.0.7 contract: preserve existing session.active guards and disabled initial Save/Share state"
+        "2.0.7 contract: preserve existing session.active guards and disabled initial Save/Share state",
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
       ],
       "integratedIndexSha256": "eca82f2fc18629be23337add353aada91cee1afe4e4de53451e0f6ae134479ad"
     },
@@ -27,7 +28,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "6e045c8d7c92576a1eced883829ffa183acbb763700d84a74d0ea327e4594426",
+      "nonIndexTreeSha256": "2bc42d81314ea5b44c4fc8d468752f51f024e14d32fa9a6625f0a24c1dbb8226",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -37,7 +38,8 @@
         "ui/chrome-controller.js: enable Share only when a workbook is active",
         "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true",
         "index.html: in 2.0.8 mark Save disabled in initial markup before runtime synchronization",
-        "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive"
+        "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
       ],
       "integratedIndexSha256": "a0a5a5debfc4fb209ac38496ee05abced0dcdf3596d54a5f8ad09923e4a7a700"
     },
@@ -47,7 +49,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "e6daa49c97c20c3807df9258d12a1cd1c410009f8998595966e2bea3ffddb6aa",
+      "nonIndexTreeSha256": "4aab0a253c753902fda2da8231269e9dc16e8f68e5ed7c9ee7984a4451530b7c",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -61,7 +63,8 @@
         "ui/command-controller.js: disable Save, Share and Present until a presentation is active while retaining legacy PPT read-only behavior",
         "ui/chrome-controller.js: report No presentation for the true empty state",
         "presentation/slideshow-controller.js: refuse slideshow launch without an active presentation",
-        "io/save-controller.js: guard Save and Share against an inactive presentation"
+        "io/save-controller.js: guard Save and Share against an inactive presentation",
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
       ],
       "integratedIndexSha256": "15654c4e421504127400b2049ce7596b50c2e2ff9fe668a52809daa02f2042b4"
     },
@@ -71,7 +74,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "b3dad52dd3b72e6b0d575d1f460d87ba5b20adbee2e54c3dddb6228a9eb6de79",
+      "nonIndexTreeSha256": "6c696cc125048ee98a5948deb232c3ceecc261df3f6c2ae2d2a00fe53d6e48af",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -79,9 +82,10 @@
         "io/txt-file-controller.js: in 2.0.7 start unloaded instead of creating a blank document during initialization; activate only through New, successful Open or valid recovery",
         "io/txt-file-controller.js: prevent delayed recovery from replacing an already activated user document",
         "editor/editor-controller.js: keep Save and Share disabled until state.loaded and hide the start gate only when an editor document becomes active",
-        "ui/txt-controls.js: preserve/reinstate the start gate when an Open attempt does not produce a loaded document"
+        "ui/txt-controls.js: preserve/reinstate the start gate when an Open attempt does not produce a loaded document",
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
       ],
-      "integratedIndexSha256": "36c49f93494197fc92477a47b73a713639316cebf6ccf0bedaa300b1d0471b89"
+      "integratedIndexSha256": "f14c9b02ab53f92f67e449335023e1e46f6d8c31b0a5d1665737ea36b3d73c2f"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
@@ -89,11 +93,12 @@
       "sourceTreeSha256BeforeIntegration": "d93aa9a078daab5662c5eeff20e594b1477bd865d2d303d5f44d2d884b0988e4",
       "sourceFileCount": 21,
       "sourceBytes": 92063,
-      "nonIndexTreeSha256": "c8a57e84ed94a8fcf4e2bfa0fc5d89376d11a5a7fae2cdad584b985dfd16b13c",
+      "nonIndexTreeSha256": "0a95ab151a0d4fe452a01bdd4f861690b684c06027479498a905d42f72ffb045",
       "originalIndexSha256": "0fa0bea76a9889d2bbec0d7dcef8b06d59c771fe0ab0597c7e840877e3be945d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
-        "2.0.7 contract: preserve existing book/exportReady gating for Save and Share"
+        "2.0.7 contract: preserve existing book/exportReady gating for Save and Share",
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
       ],
       "integratedIndexSha256": "6755a8f4dffdd79cc22c5cd7ebd440150ec2a2a5eacc7ded39be9e1a997debb0"
     },
@@ -103,7 +108,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "a2f26da9b8988349b8d7753ded5a4ac8652189332906a949794863c4418db918",
+      "nonIndexTreeSha256": "eacf424d306eb3e700c2ca176fbad2da1241026a6e8c67208f91d4ab139da1e1",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
@@ -114,12 +119,13 @@
         "ui/command-controller.js: add app-local Share menu action after Save",
         "ui/command-controller.js: in 2.0.7 keep menu Save, toolbar Save and Share disabled until session.active",
         "index.html: in 2.0.8 mark menu Save and toolbar Save disabled in initial markup before runtime synchronization",
-        "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive"
+        "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive",
+        "state/appearance.js: in 2.0.9 communicate the suite appearance preference while retaining the app-private appearance engine and local key"
       ],
       "integratedIndexSha256": "fbb08845cf855a4c9a3c4b45adaae9804f25bb2de535beece656cc2a86a51ad4",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.8-disabled-state-visibility"
+      "status": "baseline-preserved-with-2.0.9-appearance-sync"
     }
   },
-  "previousRelease": "2.0.7"
+  "previousRelease": "2.0.8"
 }
