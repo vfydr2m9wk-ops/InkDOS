@@ -2,7 +2,7 @@
 const NS=global.InkDOS2Documents;if(!NS)throw new Error('Documents runtime namespace missing.');
 const $=id=>document.getElementById(id);
 function loadScript(src,test){if(test?.())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('DOCUMENTS_LOCAL_ASSET_LOAD_FAILED: '+src));document.head.appendChild(s)})}
-async function loadD1(){if(!document.querySelector('link[data-doc-d1]')){const l=document.createElement('link');l.rel='stylesheet';l.href='ui/d1-tools.css';l.dataset.docD1='1';document.head.appendChild(l)}await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
+async function loadD1(){if(!document.querySelector('link[data-doc-d1]')){const l=document.createElement('link');l.rel='stylesheet';l.href='ui/d1-tools.css';l.dataset.docD1='1';document.head.appendChild(l)}await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
 async function boot(){await loadD1();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
