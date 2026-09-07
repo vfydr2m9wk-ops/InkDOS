@@ -1,5 +1,5 @@
 {
-  "id": "./",
+  "id": "./index.html",
   "name": "InkDOS",
   "short_name": "InkDOS",
   "description": "Local-first offline productivity workspaces.",
@@ -8,11 +8,17 @@
   "display": "standalone",
   "background_color": "#f2f5f8",
   "theme_color": "#f2f5f8",
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "./assets/icons/office.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "./assets/icons/office.svg",
