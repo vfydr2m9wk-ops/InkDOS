@@ -17,8 +17,8 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text())
-    if v.get('version')!='2.0.3': raise SystemExit('Unexpected version')
-    if state.get('appliedSequence')!=71 or state.get('currentPackage')!='2.0.3-pdf-final': raise SystemExit('Unexpected development state')
+    if v.get('version')!='2.0.4': raise SystemExit('Unexpected version')
+    if state.get('appliedSequence')!=72 or state.get('currentPackage')!='2.0.4-share-actions': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -28,7 +28,7 @@ def main():
         if '../../index.html' not in text or 'aria-label="Home"' not in text: raise SystemExit(f'Home bridge missing: {app}')
         entry=lock['apps'][app]
         if sha(idx)!=entry['integratedIndexSha256']: raise SystemExit(f'Integrated index hash changed: {app}')
-        if tree_digest(ROOT/f'apps/{app}',exclude=('index.html',))!=entry['nonIndexTreeSha256']: raise SystemExit(f'Frozen non-index source changed: {app}')
+        if tree_digest(ROOT/f'apps/{app}',exclude=('index.html',))!=entry['nonIndexTreeSha256']: raise SystemExit(f'Integrated non-index source changed: {app}')
     if 'PDF Workspace' not in home or 'Coming soon' in home: raise SystemExit('PDF route must be active')
     starts={'documents':('startNew','startOpen'),'spreadsheets':('startNew','startOpen'),'presentations':('startNew','startOpen'),'txt':('startNew','startOpen'),'epub':('openStartBtn',),'pdf':('openStartBtn',)}
     for app,ids in starts.items():
@@ -50,5 +50,5 @@ def main():
     forbidden=('suite-shell.js','file-router.js','recent-files.js','module-loader.js','shared/app-shell.js')
     for marker in forbidden:
         if marker in home: raise SystemExit(f'Legacy Home runtime reference: {marker}')
-    print('Repository structure and frozen-app locks validated.')
+    print('Repository structure and integrated-app locks validated.')
 if __name__=='__main__': main()
