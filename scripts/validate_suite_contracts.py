@@ -45,6 +45,47 @@ class SuiteIntegration(unittest.TestCase):
         for app in runtime:
             delivery=(ROOT/'apps'/app/'io/file-delivery.js').read_text(encoding='utf-8')
             self.assertIn('share',delivery,app)
+    def test_empty_state_file_action_contract(self):
+        documents=(ROOT/'apps/documents/index.html').read_text(encoding='utf-8')
+        self.assertRegex(documents,r'id="saveMenuBtn"[^>]*disabled')
+        doc_save=(ROOT/'apps/documents/io/save-controller.js').read_text(encoding='utf-8')
+        self.assertGreaterEqual(doc_save.count('if(!session.active)'),2)
+
+        sheets=(ROOT/'apps/spreadsheets/ui/chrome-controller.js').read_text(encoding='utf-8')
+        self.assertIn("const active=!!session.book?.loaded",sheets)
+        self.assertIn('if(save)save.disabled=!active',sheets)
+        self.assertIn('if(share)share.disabled=!active',sheets)
+        sheet_save=(ROOT/'apps/spreadsheets/io/save-controller.js').read_text(encoding='utf-8')
+        self.assertGreaterEqual(sheet_save.count('if(!session.book?.loaded)return false'),2)
+
+        presentation_session=(ROOT/'apps/presentations/engine/presentation-session.js').read_text(encoding='utf-8')
+        self.assertIn("this.sourceKind='none'",presentation_session)
+        self.assertIn('get active()',presentation_session)
+        self.assertNotIn('this.compatibility=[];this.resetNew()',presentation_session)
+        presentation_commands=(ROOT/'apps/presentations/ui/command-controller.js').read_text(encoding='utf-8')
+        self.assertIn('const active=session.active',presentation_commands)
+        self.assertIn("$('saveMenuBtn').disabled=!canExport",presentation_commands)
+        self.assertIn('share.disabled=!canExport',presentation_commands)
+        presentation_save=(ROOT/'apps/presentations/io/save-controller.js').read_text(encoding='utf-8')
+        self.assertGreaterEqual(presentation_save.count('if(!session.active||busy)return null'),2)
+
+        txt_editor=(ROOT/'apps/txt/editor/editor-controller.js').read_text(encoding='utf-8')
+        self.assertIn('E.saveBtn.disabled=!state.loaded;E.shareBtn.disabled=!state.loaded',txt_editor)
+        txt_files=(ROOT/'apps/txt/io/txt-file-controller.js').read_text(encoding='utf-8')
+        self.assertIn('function initializeEmptyState()',txt_files)
+        self.assertIn('function initialize(){initializeEmptyState();restoreRecovery()}',txt_files)
+        self.assertGreaterEqual(txt_files.count('if(!state.loaded)return'),2)
+
+        epub=(ROOT/'apps/epub/index.html').read_text(encoding='utf-8')
+        self.assertRegex(epub,r'id="saveBtn"[^>]*disabled')
+        self.assertRegex(epub,r'id="shareBtn"[^>]*disabled')
+
+        pdf=(ROOT/'apps/pdf/ui/command-controller.js').read_text(encoding='utf-8')
+        self.assertIn("$('saveMenuBtn').disabled=!active",pdf)
+        self.assertIn("$('saveToolbarBtn').disabled=!active",pdf)
+        self.assertIn('share.disabled=!active',pdf)
+        pdf_save=(ROOT/'apps/pdf/io/save-controller.js').read_text(encoding='utf-8')
+        self.assertGreaterEqual(pdf_save.count('if(!session.active||saving)return null'),2)
     def test_mobile_home_layout(self):
         css=(ROOT/'assets/home.css').read_text(encoding='utf-8')
         self.assertIn('@media(max-width:720px)',css);self.assertIn('.workspace-grid{grid-template-columns:1fr',css)
