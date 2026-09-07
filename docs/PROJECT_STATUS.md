@@ -12,4 +12,6 @@ All workspaces continue to obey the same behavioral empty-state rule while remai
 
 InkDOS 2.0.10 normalizes the PDF workspace frame against the Plain Text / InkDOS frame pattern. The current PDF name is displayed inside a centered framed pill with the PDF icon beside it, while the menu and Home controls remain on the left. The PDF app-local SVG is now byte-identical to the canonical PDF icon used by Home. This change is confined to the PDF frame CSS and local asset; the PDF title controller, engine, annotations and file I/O remain unchanged.
 
+Release validation now explicitly guards both requirements: PDF icon byte identity with Home and preservation of the centered framed-title geometry.
+
 PDF otherwise retains the user-accepted P4.2 functional baseline. See `PDF-CLOSURE-AUDIT.md` for its verification scope.
