@@ -10,7 +10,6 @@
 html[data-theme="dark"]{color-scheme:dark;--bg:#11161c;--surface:#1c222a;--surface-2:#252d37;--text:#edf2f7;--muted:#aab5c3;--edge:#37414e;--edge-strong:#505c6b;--accent-soft:#3b3210;--shadow:0 10px 28px rgba(0,0,0,.4)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{font-family:var(--ui);background:var(--bg);color:var(--text)}button,input,select,textarea{font:inherit;color:inherit}button{touch-action:manipulation}
 
-
 :root{
   --txt-accent:#d9a514;--txt-accent-strong:#9a6c00;--txt-accent-soft:#fff7dc;
   --txt-bg:#eef1f5;--txt-surface:#fff;--txt-surface-soft:#f7f8fa;
@@ -76,7 +75,6 @@ html[data-theme="dark"]{
 @media(min-width:900px) and (pointer:fine){.size-chip{height:34px;min-width:60px;border-radius:9px;padding:0 7px;font-size:13px}.findbar{height:34px}.findbar input{height:32px;width:180px;border-radius:8px;font-size:13px}.content-viewport{padding-top:14px;padding-bottom:14px}#editor{padding:34px 48px 42px}.list-popover{width:min(320px,calc(100vw - 24px))}.confirm-btn{min-height:36px}}
 
 html[data-theme="dark"] #editor::selection{background:#36577f}
-
 
 /* InkDOS 2.0 App Frame — shell geometry and generic frame controls only.
    Ownership rule: this file may style the frame/chrome, never an app's content surface. */
@@ -144,8 +142,7 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 @media(pointer:fine){
   .framebar{min-height:calc(46px + var(--frame-safe-t));padding-top:var(--frame-safe-t);padding-bottom:4px}.menu-btn{width:36px;height:36px;min-width:36px}.menu-btn svg{width:19px;height:19px}.file-pill-wrap{height:34px}.title-icon{width:27px;height:27px}.toolstrip{height:42px;padding-top:4px;padding-bottom:4px}.tool-btn{width:34px;height:34px;min-width:34px;flex-basis:34px}.drawer{top:calc(var(--frame-safe-t) + 52px)}
 }
-@media(max-width:470px){.title-icon{display:none}.file-pill-wrap{width:50vw;max-width:calc(100% - 126px);min-width:118px}}
-</style></head>
+@media(max-width:470px){.title-icon{display:none}.file-pill-wrap{width:50vw;max-width:calc(100% - 126px);min-width:118px}}</style></head>
 <body><svg class="svg-defs" aria-hidden="true"><defs><linearGradient id="inkdosTxtGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd75e"/><stop offset="1" stop-color="#e0a716"/></linearGradient></defs><symbol id="inkdosTxtIcon" viewBox="0 0 512 512"><rect x="24" y="24" width="464" height="464" rx="112" fill="url(#inkdosTxtGradient)"/><rect x="126" y="93" width="274" height="326" rx="35" fill="#fff8d6"/><path d="M174 93v326" stroke="#d89f12" stroke-width="16"/><path d="M116 150h26M116 211h26M116 272h26M116 333h26" stroke="#5c4a20" stroke-width="16" stroke-linecap="round"/><path d="M216 173h132M216 226h132M216 279h132M216 332h91" stroke="#6b5b31" stroke-width="16" stroke-linecap="round"/></symbol></svg>
 <div class="app-frame">
   <header class="framebar" aria-label="Plain Text frame">
@@ -214,7 +211,6 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
 class ViewportMetrics{constructor({availableWidth,availableHeight,dpr=1,epoch=0,visibility='visible'}){this.availableWidth=Math.max(0,Number(availableWidth)||0);this.availableHeight=Math.max(0,Number(availableHeight)||0);this.dpr=Math.max(0.1,Number(dpr)||1);this.epoch=Math.max(0,Number(epoch)||0);this.visibility=visibility;Object.freeze(this)}get valid(){return this.availableWidth>0&&this.availableHeight>0}}
 NS.ViewportMetrics=ViewportMetrics;})(globalThis);
-
 </script>
 <script>/* apps/txt/runtime/contracts/document-session.js */
 (function(g){'use strict';
@@ -232,18 +228,15 @@ NS.ViewportMetrics=ViewportMetrics;})(globalThis);
   function cryptoId(){if(g.crypto&&g.crypto.randomUUID)return g.crypto.randomUUID();return 'id-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);}
   NS.DocumentSession=DocumentSession;
 })(globalThis);
-
 </script>
 <script>/* apps/txt/runtime/contracts/render-request.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.RenderRequest=class RenderRequest{constructor({target,model,metrics,epoch,signal}){this.target=target;this.model=model;this.metrics=metrics;this.epoch=epoch;this.signal=signal||null;Object.freeze(this)}};})(globalThis);
-
 </script>
 <script>/* apps/txt/runtime/platform/content-viewport-adapter.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
 class ContentViewportAdapter{constructor(el,onMetrics){this.el=el;this.onMetrics=onMetrics;this.epoch=0;this.ro=null;this.handle=this.measure.bind(this);if(g.ResizeObserver){this.ro=new ResizeObserver(this.handle);this.ro.observe(el)}g.addEventListener('resize',this.handle,{passive:true});this.measure()}
 measure(){const r=this.el.getBoundingClientRect();this.epoch+=1;const m=new NS.ViewportMetrics({availableWidth:r.width,availableHeight:r.height,dpr:g.devicePixelRatio||1,epoch:this.epoch,visibility:document.visibilityState});this.onMetrics&&this.onMetrics(m)}dispose(){this.ro&&this.ro.disconnect();g.removeEventListener('resize',this.handle)}}
 NS.ContentViewportAdapter=ContentViewportAdapter;})(globalThis);
-
 </script>
 <script>/* apps/txt/runtime/services/file-delivery.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
@@ -270,7 +263,6 @@ if(route==='web-share')return viaShare(blob,fileName,file).catch(e=>{if(e.code==
 if(route==='file-system-access')return viaPicker(blob,fileName).catch(e=>{if(e.code==='cancelled')throw e;if(canShareFile(file))return viaShare(blob,fileName,file).catch(()=>viaDownload(blob,fileName).catch(()=>{throw e}));return viaDownload(blob,fileName).catch(()=>{throw e})});
 return viaDownload(blob,fileName)}
 NS.sha256=sha256;NS.FileDelivery={deliver,share,capabilities,safeName};})(globalThis);
-
 </script>
 <script>/* apps/txt/runtime/services/recovery-store.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};const DB='inkdos2-txt-recovery';const VER=1;const STORE='checkpoints';
@@ -280,7 +272,6 @@ async function get(key){const db=await openDb();return new Promise((res,rej)=>{c
 async function remove(key){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(key);tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error)}})}
 class RecoveryStore{constructor(key='last'){this.key=key;this.generation=0}async checkpoint(payload){this.generation+=1;const rec={key:this.key,generation:this.generation,createdAt:Date.now(),payload};await put(rec);return rec}async latest(){return get(this.key)}async clear(){return remove(this.key)}}
 NS.RecoveryStore=RecoveryStore;})(globalThis);
-
 </script>
 <script>/* apps/txt/runtime/frame/app-frame.js */
 (function(g){'use strict';
@@ -305,7 +296,6 @@ function bindHorizontalScroller(el){
 }
 NS.AppFrame=Object.freeze({centerError,bindDrawer,bindHorizontalScroller});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/state/appearance.js */
 (function(g){'use strict';
@@ -325,7 +315,6 @@ if(media){const changed=()=>{if(mode==='system')apply('system',{persist:false})}
 apply(mode,{persist:false});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 NS.AppearanceController=Object.freeze({get mode(){return mode},get resolved(){return resolve(mode)},apply});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/txt-codec.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
@@ -335,11 +324,9 @@ function decode(buffer){const b=new Uint8Array(buffer);if(b.length>=2&&b[0]===0x
 function normalize(text){return String(text).replace(/\r\n/g,'\n').replace(/\r/g,'\n')}
 function encode(text,{encoding='utf-8',bom=false,lineEnding='\n'}={}){const logical=String(text).replace(/\n/g,lineEnding);if(encoding==='utf-8'){const body=new TextEncoder().encode(logical);if(!bom)return body;const out=new Uint8Array(body.length+3);out.set([0xef,0xbb,0xbf]);out.set(body,3);return out}const le=[];for(const ch of logical){const cp=ch.codePointAt(0);if(cp<=0xffff){le.push(cp&255,(cp>>8)&255)}else{const n=cp-0x10000,hi=0xd800+(n>>10),lo=0xdc00+(n&1023);le.push(hi&255,(hi>>8)&255,lo&255,(lo>>8)&255)}}let body=Uint8Array.from(le);if(encoding==='utf-16be'){const be=new Uint8Array(body.length);for(let i=0;i<body.length;i+=2){be[i]=body[i+1];be[i+1]=body[i]}body=be}if(!bom)return body;const head=encoding==='utf-16be'?[0xfe,0xff]:[0xff,0xfe];const out=new Uint8Array(body.length+2);out.set(head);out.set(body,2);return out}
 NS.TxtCodec={decode,encode,normalize,detectLineEnding};})(globalThis);
-
 </script>
 <script>/* apps/txt/history.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};class History{constructor(limit=120){this.limit=limit;this.stack=[];this.index=-1}reset(value=''){this.stack=[value];this.index=0}push(value){if(this.stack[this.index]===value)return;this.stack=this.stack.slice(0,this.index+1);this.stack.push(value);if(this.stack.length>this.limit)this.stack.shift();else this.index++;}undo(){if(this.index<=0)return null;this.index--;return this.stack[this.index]}redo(){if(this.index>=this.stack.length-1)return null;this.index++;return this.stack[this.index]}get canUndo(){return this.index>0}get canRedo(){return this.index<this.stack.length-1}}NS.TxtHistory=History;})(globalThis);
-
 </script>
 <script>/* apps/txt/state/txt-state.js */
 (function(g){'use strict';
@@ -347,11 +334,9 @@ const NS=g.InkDOS2=g.InkDOS2||{};
 function create(){return {loaded:false,fileName:'Untitled.txt',encoding:'utf-8',bom:false,lineEnding:'\n',wrap:true,fontSize:16,session:new NS.DocumentSession(),history:new NS.TxtHistory(),openController:null,debounce:null,lastReceipt:null,metrics:null,discardResolver:null}}
 NS.TxtState=Object.freeze({create});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/txt-policy.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.TxtPolicy={apply(editor,{wrap,fontSize}){editor.classList.toggle('no-wrap',!wrap);editor.style.setProperty('--text-size',fontSize+'px');return {wrap,fontSize}}};})(globalThis);
-
 </script>
 <script>/* apps/txt/export-verify.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
@@ -364,7 +349,6 @@ let decoded;try{decoded=new TextDecoder(enc,{fatal:true}).decode(body)}catch(e){
 const expected=String(snapshot.text).replace(/\n/g,le);if(decoded!==expected)throw new Error('Export verification failed: bytes do not match immutable text snapshot.');return Object.freeze({encoding:enc,bom,lineEnding:le,byteLength:b.byteLength,textLength:decoded.length})}
 function assertPrefix(bytes,prefix){if(bytes.length<prefix.length||prefix.some((v,i)=>bytes[i]!==v))throw new Error('Export verification failed: expected BOM missing.');}
 NS.TxtExportVerify={verify};})(globalThis);
-
 </script>
 <script>/* apps/txt/editor/outline-model.js */
 (function(g){'use strict';
@@ -380,7 +364,6 @@ function renderListLine(indent,family,content,lines,index){const level=Math.max(
 function normalizeNumberOutline(lines,anchorIndex){let start=anchorIndex,end=anchorIndex;while(start>0&&lines[start-1].trim()&&inferFamily(lines,start-1,parseListLine(lines[start-1]))==='number')start--;while(end+1<lines.length&&lines[end+1].trim()&&inferFamily(lines,end+1,parseListLine(lines[end+1]))==='number')end++;let top=0,sub=0;for(let i=start;i<=end;i++){const p=parseListLine(lines[i]);if(inferFamily(lines,i,p)!=='number')continue;const level=Math.max(0,Math.min(2,p.indent));let marker;if(level===0){top++;sub=0;marker=top+'.'}else if(level===1){sub++;marker=alphaMarker(sub)}else marker='-';lines[i]='\t'.repeat(level)+marker+' '+p.content}return {start,end}}
 NS.TxtOutlineModel=Object.freeze({parseListLine,directFamily,inferFamily,alphaMarker,ordinalAt,markerFor,renderListLine,normalizeNumberOutline});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/editor/editor-controller.js */
 (function(g){'use strict';
@@ -426,7 +409,6 @@ function create({elements:E,state}={}){
 }
 NS.TxtEditorController=Object.freeze({create});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/io/txt-file-controller.js */
 (function(g){'use strict';
@@ -451,7 +433,6 @@ function create({elements:E,state,editor,recoveryKey='txt:phase2-shell:last-sess
 }
 NS.TxtFileController=Object.freeze({create});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/ui/txt-controls.js */
 (function(g){'use strict';
@@ -480,7 +461,6 @@ function create(E=collect()){
 }
 NS.TxtControls=Object.freeze({collect,create});
 })(globalThis);
-
 </script>
 <script>/* apps/txt/app.js */
 (function(g){'use strict';
@@ -490,7 +470,6 @@ const state=NS.TxtState.create(),editor=NS.TxtEditorController.create({elements:
 editor.setCheckpointHandler(files.checkpoint);new NS.ContentViewportAdapter(document.querySelector('.content-viewport'),editor.setMetrics);
 controls.bind({editor,files,state},frameMenu);NS.TxtAppDebug=Object.freeze({state,...editor.debug(),...files.debug()});files.initialize();
 })(globalThis);
-
 </script>
 <script>(function(){const s=document.getElementById('startState'),f=document.getElementById('fileInput');document.getElementById('startNew')?.addEventListener('click',()=>{document.getElementById('newBtn')?.click();s.hidden=true});document.getElementById('startOpen')?.addEventListener('click',()=>document.getElementById('openBtn')?.click());f?.addEventListener('change',()=>{if(f.files&&f.files.length)s.hidden=true});})();</script>
 <script>document.body.dataset.runtimeReady=(globalThis.InkDOS2&&globalThis.InkDOS2.TxtAppDebug)?'true':'false';</script>

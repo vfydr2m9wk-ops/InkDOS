@@ -65,7 +65,7 @@
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html"
       ],
-      "integratedIndexSha256": "420dbd2a9050dce23cc045f9fbb3d8a82dd952cd5b26b2a3c5a11fdec6e2377f"
+      "integratedIndexSha256": "f290413fe76a955ccbe65417c3a77d5ed3af6c6d990339ebec98c941d391e633"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
