@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.6",
-  "integrationPolicy": "Preserve six physically independent app roots and add app-local Share actions to Documents, Spreadsheets, Presentations and PDF, matching the existing Plain Text and EPUB pattern. Share never confirms persistent storage and no cross-app runtime is introduced.",
+  "release": "2.0.7",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.7 standardizes an empty-workspace behavioral contract using app-local state only: Save and Share remain unavailable until that app has a real active document, workbook, presentation, text file, EPUB or PDF. No cross-app runtime or shared mutable document-state code is introduced, and Share never confirms persistent storage.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -16,7 +16,8 @@
         "index.html: add Home anchor to ../../index.html",
         "io/file-delivery.js: expose explicit DOCX Web Share delivery",
         "io/save-controller.js: export current DOCX to Share without marking the session saved",
-        "ui/command-controller.js: add app-local Share menu action after Save copy"
+        "ui/command-controller.js: add app-local Share menu action after Save copy",
+        "2.0.7 contract: preserve existing session.active guards and disabled initial Save/Share state"
       ],
       "integratedIndexSha256": "eca82f2fc18629be23337add353aada91cee1afe4e4de53451e0f6ae134479ad"
     },
@@ -26,14 +27,15 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "a3e94a1027c5711dd33091fa68eb5b8988ba9cda9283a8e5fd60e0c1dc137607",
+      "nonIndexTreeSha256": "232d086ff3a8c7f4587720bac657bd15df58c1ebf053aef7cbad2475be19a197",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
         "io/file-delivery.js: expose explicit XLSX Web Share delivery",
         "io/save-controller.js: export current XLSX to Share without marking the workbook saved",
         "ui/file-menu-controller.js: add app-local Share menu action after Save",
-        "ui/chrome-controller.js: enable Share only when a workbook is active"
+        "ui/chrome-controller.js: enable Share only when a workbook is active",
+        "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true"
       ],
       "integratedIndexSha256": "1e0bfb4484cdb671ed314764ae303d4082b38cdd00596f941135faeadfc63d62"
     },
@@ -43,14 +45,21 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "75d499b54337e6df3d8c68cc7432fb5565c9fa253157d9bc1af49e131a480f9e",
+      "nonIndexTreeSha256": "e6daa49c97c20c3807df9258d12a1cd1c410009f8998595966e2bea3ffddb6aa",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
         "index.html: standard first-open gate matching Spreadsheets; New presentation and Open presentation actions",
         "io/file-delivery.js: expose explicit PPTX Web Share delivery",
         "io/save-controller.js: export current PPTX to Share without changing save state",
-        "ui/command-controller.js: add app-local Share action and keep it disabled for legacy read-only PPT"
+        "ui/command-controller.js: add app-local Share action and keep it disabled for legacy read-only PPT",
+        "engine/presentation-session.js: in 2.0.7 start with sourceKind none and zero slides; resetNew creates the first slide only after explicit New",
+        "engine/presentation-session.js: expose app-local active state derived from the real presentation model and invalidate outstanding opens when New is requested",
+        "ui/editing-controller.js: disable editing/navigation controls until a presentation is active",
+        "ui/command-controller.js: disable Save, Share and Present until a presentation is active while retaining legacy PPT read-only behavior",
+        "ui/chrome-controller.js: report No presentation for the true empty state",
+        "presentation/slideshow-controller.js: refuse slideshow launch without an active presentation",
+        "io/save-controller.js: guard Save and Share against an inactive presentation"
       ],
       "integratedIndexSha256": "15654c4e421504127400b2049ce7596b50c2e2ff9fe668a52809daa02f2042b4"
     },
@@ -60,12 +69,17 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "0772c61b0078af57052d2bfb59f4dd8ba62e4eb85ab2e5e2dcdb459c7639d218",
+      "nonIndexTreeSha256": "b3dad52dd3b72e6b0d575d1f460d87ba5b20adbee2e54c3dddb6228a9eb6de79",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
-        "index.html: add Home anchor to ../../index.html"
+        "index.html: add Home anchor to ../../index.html",
+        "2.0.6: normalize Home/first-open integration into the modular Plain Text template and deterministic bundle",
+        "io/txt-file-controller.js: in 2.0.7 start unloaded instead of creating a blank document during initialization; activate only through New, successful Open or valid recovery",
+        "io/txt-file-controller.js: prevent delayed recovery from replacing an already activated user document",
+        "editor/editor-controller.js: keep Save and Share disabled until state.loaded and hide the start gate only when an editor document becomes active",
+        "ui/txt-controls.js: preserve/reinstate the start gate when an Open attempt does not produce a loaded document"
       ],
-      "integratedIndexSha256": "bc6a1ea99d107a89b6aacdf064bfbff0c4665b0129fa45242ff44ed83cc6f10b"
+      "integratedIndexSha256": "36c49f93494197fc92477a47b73a713639316cebf6ccf0bedaa300b1d0471b89"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
@@ -76,7 +90,8 @@
       "nonIndexTreeSha256": "c8a57e84ed94a8fcf4e2bfa0fc5d89376d11a5a7fae2cdad584b985dfd16b13c",
       "originalIndexSha256": "0fa0bea76a9889d2bbec0d7dcef8b06d59c771fe0ab0597c7e840877e3be945d",
       "allowedIntegrationChanges": [
-        "index.html: add Home anchor to ../../index.html"
+        "index.html: add Home anchor to ../../index.html",
+        "2.0.7 contract: preserve existing book/exportReady gating for Save and Share"
       ],
       "integratedIndexSha256": "6755a8f4dffdd79cc22c5cd7ebd440150ec2a2a5eacc7ded39be9e1a997debb0"
     },
@@ -86,7 +101,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "c98e526e1c28232462d24e3c30e29ce819906157557d4a00fcd1bb0902d334df",
+      "nonIndexTreeSha256": "b56829f98e69bfa9eeeae336edd7ddd111e7f6c83cc6f4addf6aec3029630595",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
@@ -94,12 +109,13 @@
         "index.html: EPUB-style centered Open PDF start card and success-driven visibility",
         "io/file-delivery.js: expose explicit PDF Web Share delivery",
         "io/save-controller.js: share clean or edited PDF while preserving unsaved-state semantics",
-        "ui/command-controller.js: add app-local Share menu action after Save"
+        "ui/command-controller.js: add app-local Share menu action after Save",
+        "ui/command-controller.js: in 2.0.7 keep menu Save, toolbar Save and Share disabled until session.active"
       ],
       "integratedIndexSha256": "13d8b861a3365ce60c9dd9153d8ff9fa579f1b33bc83a53de4b17267ccdbe287",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.4-share-integration"
+      "status": "baseline-preserved-with-2.0.7-empty-state-contract"
     }
   },
-  "previousRelease": "2.0.3"
+  "previousRelease": "2.0.6"
 }

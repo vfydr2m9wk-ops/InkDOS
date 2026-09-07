@@ -1,10 +1,20 @@
 # Changelog
 
+## 2.0.7 — 2026-09-07
+
+- Standardize the empty-workspace file-action contract across all six independent apps: Save and Share remain unavailable until a real document, workbook, presentation, text file, book or PDF is active.
+- Make Presentations start with a true empty session (`sourceKind: none`, zero slides) instead of constructing a hidden blank presentation; New creates the first slide and Open activates the session only after a successful commit.
+- Gate Presentations editing, slideshow, Save and Share commands on an active presentation while preserving legacy PPT read-only behavior.
+- Make Plain Text start unloaded until New, a successful Open, or a valid local recovery checkpoint activates a document; Save and Share now follow the same loaded-state contract.
+- Align Spreadsheets and PDF Save controls with their existing Share/controller active-state guards.
+- Add a suite-level regression contract for empty-state Save/Share behavior without introducing any cross-app runtime dependency.
+- Rotate the offline application cache so WebKit/XeOS receives the corrected state behavior.
+
 ## 2.0.6 — 2026-09-07
 
 - Remove the production Plain Text global runtime-error banner so opaque host/WebKit `Script error.` events no longer surface as a false app failure.
 - Normalize the existing Home bridge and first-open card integration back into the physical Plain Text template/styles source; the published behavior remains unchanged.
-- Add a deterministic Plain Text bundle builder and a byte-for-byte release validation check so `apps/txt/index.html` must remain derivable from its modular sources.
+- Add a deterministic Plain Text bundle builder and a byte-for-byte release validation check so `apps/txt/index.html` must remain derivable from its modular template, styles and JavaScript sources.
 - Preserve Plain Text editor/runtime modules, TXT file I/O, Share behavior and the other five workspace runtimes unchanged.
 - Rotate the offline application cache so WebKit/XeOS receives the corrected Plain Text distribution.
 

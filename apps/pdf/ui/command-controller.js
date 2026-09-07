@@ -2,7 +2,7 @@
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{},$=id=>document.getElementById(id);
 function create({session,chrome,fileOpen,save,layout,editor,navigation,modeController}={}){const drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});
  function installShareAction(){const saveBtn=$('saveMenuBtn');if(!saveBtn||$('shareMenuBtn'))return;const share=document.createElement('button');share.id='shareMenuBtn';share.className='menu-item';share.type='button';share.disabled=true;share.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint">PDF</span>';saveBtn.insertAdjacentElement('afterend',share);share.onclick=()=>{drawer.close();save.share()}}
- function syncPage(){const n=layout.currentPage||1;$('pageInput').value=String(n);$('pageCount').textContent='/ '+(layout.pageCount||0);chrome.page(n,layout.pageCount);navigation?.syncCurrent(n);editor.setCurrentPage(n);const share=$('shareMenuBtn');if(share)share.disabled=!session.active}
+ function syncPage(){const n=layout.currentPage||1;$('pageInput').value=String(n);$('pageCount').textContent='/ '+(layout.pageCount||0);chrome.page(n,layout.pageCount);navigation?.syncCurrent(n);editor.setCurrentPage(n);const active=!!session.active,share=$('shareMenuBtn');$('saveMenuBtn').disabled=!active;$('saveToolbarBtn').disabled=!active;if(share)share.disabled=!active}
  function syncEditor(){const s=editor.inspect().state;$('undoBtn').disabled=!s.hasSomethingToUndo;$('redoBtn').disabled=!s.hasSomethingToRedo;$('deleteAnnotationBtn').disabled=!s.hasSelectedEditor}
  function install(){
   installShareAction();

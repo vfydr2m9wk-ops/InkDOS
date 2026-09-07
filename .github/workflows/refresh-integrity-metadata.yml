@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - feature/share-all-apps
+      - feature/empty-state-file-actions
     paths-ignore:
       - 'CHECKSUMS.sha256'
       - 'SOURCE_LOCK.json'
