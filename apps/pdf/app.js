@@ -5,7 +5,7 @@ async function boot(){await loadReaderTools();NS.PdfWorker.configure();
 const session=new NS.PdfSession();
 const chrome=NS.ChromeController.create({session});
 const scheduler=new NS.PageScheduler(9);
-let commands=null,readerTools=null;
+let commands=null,readerTools=null,pageTools=null;
 const editor=new NS.PdfjsEditorAdapter({container:$('contentViewport'),viewer:$('pdfStack'),session,chrome,onState:()=>commands?.syncEditor()});
 const pageLayers=new NS.PdfjsPageLayers({editor});
 const extensions=new NS.ReviewAnnotations({editor,session,chrome});
@@ -17,12 +17,13 @@ const navigation=NS.NavigationController.create({layout,chrome});
 const modeController=NS.ModeController.create({editor,extensions,pageLayers,chrome});
 const fileOpen=NS.FileOpenController.create({session,fileInput:$('fileInput'),scheduler,layout,chrome,
   prepareToReplace:()=>{editor.commit();return editor.doc?.annotationStorage.serializable.hash},canReplace:()=>!save.saving,
-  onBeforeReplace:async()=>{readerTools?.resetDocument();layout.clearDocument();extensions.setDocument(null);pageLayers.setDocument(null);navigation.close()},
-  onDocumentOpened:async info=>{pageLayers.setDocument(info.pdfDocument);extensions.setDocument(info.pdfDocument);await navigation.setDocument(info.pdfDocument,info.pageCount);modeController.setMode('view');readerTools?.resetDocument();readerTools?.syncEnabled()}
+  onBeforeReplace:async()=>{readerTools?.resetDocument();pageTools?.resetDocument();layout.clearDocument();extensions.setDocument(null);pageLayers.setDocument(null);navigation.close()},
+  onDocumentOpened:async info=>{pageLayers.setDocument(info.pdfDocument);extensions.setDocument(info.pdfDocument);await navigation.setDocument(info.pdfDocument,info.pageCount);modeController.setMode('view');readerTools?.resetDocument();readerTools?.syncEnabled();pageTools?.resetDocument();pageTools?.syncEnabled()}
 });
 const save=NS.SaveController.create({session,getDocument:()=>fileOpen.pdfDocument,editor,chrome});
 readerTools=NS.ReaderTools.create({session,getDocument:()=>fileOpen.pdfDocument,layout,chrome});
-commands=NS.CommandController.create({session,chrome,fileOpen,save,layout,editor,navigation,modeController,readerTools});
+pageTools=NS.PageTools.create({session,getDocument:()=>fileOpen.pdfDocument,fileOpen,editor,chrome,layout,navigation});
+commands=NS.CommandController.create({session,chrome,fileOpen,save,layout,editor,navigation,modeController,readerTools,pageTools});
 NS.Appearance.install();
 fileOpen.install();
 zoomControls.install();
@@ -30,11 +31,12 @@ navigation.install();
 extensions.install();
 modeController.install();
 readerTools.install();
+pageTools.install();
 commands.install();
 global.addEventListener('beforeunload',e=>{editor.commit();if(session.dirty){e.preventDefault();e.returnValue=''}});
 adapter.measure();
 chrome.title();chrome.dirty();chrome.page(1,0);
-NS.ReaderCompletionDebug=Object.freeze({readerTools,layout});
+NS.ReaderCompletionDebug=Object.freeze({readerTools,pageTools,layout});
 }
 boot().catch(e=>{console.error(e);const status=$('statusText');if(status)status.textContent='Reader tools failed to load'});
 })(globalThis);
