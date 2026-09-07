@@ -1,0 +1,6 @@
+pdf-lib 1.17.1
+Upstream: https://github.com/Hopding/pdf-lib
+Runtime file: dist/pdf-lib.min.js
+License: MIT
+Vendored for InkDOS PDF P2 only; no cross-app runtime dependency.
+Verification: pinned jsDelivr 1.17.1 bytes are byte-identical to GitHub blob edb12c72cdaa11b608eb5967cf1531892b7f3b31 (525099 bytes).
