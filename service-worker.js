@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.4-share-actions-seq72';
+const CACHE_NAME='inkdos-v2.0.5-webapp-compat-seq73';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",

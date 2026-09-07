@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.5 — 2026-09-07
+
+- Restore WebKit/PWA installation compatibility metadata removed during the 2.0 Home refactor.
+- Restore `mobile-web-app-capable`, `apple-mobile-web-app-capable` and Apple standalone status-bar metadata on the Home entry point.
+- Restore the manifest identity to `./index.html`, language/categories metadata and `any maskable` purpose for the primary PNG icon.
+- Preserve all six workspace runtimes and the 2.0.4 Share implementation unchanged.
+- Rotate the offline application cache so WebKit/XeOS receives the refreshed Home and manifest metadata.
+
 ## 2.0.4 — 2026-09-07
 
 - Standardize an explicit Share action across all six workspaces; Plain Text and EPUB keep their existing behavior while Documents, Spreadsheets, Presentations and PDF gain matching app-local actions.
