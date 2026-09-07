@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.10 — 2026-09-07
+
+- Make the PDF workspace use an exact local copy of the canonical PDF icon shown on Home, eliminating the previous visual mismatch while keeping the PDF app independently extractable.
+- Align the PDF top frame with the established InkDOS app-frame pattern used by Plain Text: left-side navigation controls, a centered icon-and-title group, and the current PDF file name inside a framed pill.
+- Preserve the existing `titleText` controller contract, dirty-state indicator, PDF engine, annotation layer, file I/O, Save/Share behavior and appearance controller unchanged.
+- Add regression checks that require the PDF app icon to remain byte-identical to the Home icon and require the centered framed-title geometry to remain present.
+- Version Home workspace routes and rotate the offline cache to the 2.0.10 sequence.
+
 ## 2.0.9 — 2026-09-07
 
 - Add full Light/Dark/System appearance support to Home with a compact sun control and a contextual appearance menu.
@@ -32,14 +40,14 @@
 ## 2.0.6 — 2026-09-07
 
 - Remove the production Plain Text global runtime-error banner so opaque host/WebKit `Script error.` events no longer surface as a false app failure.
-- Normalize the existing Home bridge and first-open card integration back into the physical Plain Text template/styles source; the published behavior remains unchanged.
+- Normalize the existing Home bridge and first-open integration into the modular Plain Text template and deterministic bundle.
 - Add a deterministic Plain Text bundle builder and a byte-for-byte release validation check so `apps/txt/index.html` must remain derivable from its modular sources.
 - Preserve Plain Text editor/runtime modules, TXT file I/O, Share behavior and the other five workspace runtimes unchanged.
 - Rotate the offline application cache so WebKit/XeOS receives the corrected Plain Text distribution.
 
 ## 2.0.5 — 2026-09-07
 
-- Restore WebKit/PWA installation compatibility metadata removed during the 2.0 Home refactor.
+- Restore WebKit/PWA standalone installation metadata removed during the 2.0 Home refactor.
 - Restore `mobile-web-app-capable`, `apple-mobile-web-app-capable` and Apple standalone status-bar metadata on the Home entry point.
 - Restore the manifest identity to `./index.html`, language/categories metadata and `any maskable` purpose for the primary PNG icon.
 - Preserve all six workspace runtimes and the 2.0.4 Share implementation unchanged.
