@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.11",
+  "release": "2.0.12",
   "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.11 adds the same single-delivery safety contract independently to Documents, Spreadsheets, Presentations, Plain Text and PDF: iPad/iPhone-style touch WebKit hosts may prefer app-local file Web Share for Save, and a native picker write failure after a destination handle exists is terminal so no second Share/download destination is created. EPUB is unchanged. Existing Home, appearance, empty-state and PDF frame contracts remain intact. No shared save runtime or cross-app mutable I/O module is introduced.",
   "apps": {
     "documents": {
