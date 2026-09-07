@@ -17,8 +17,8 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text())
-    if v.get('version')!='2.0.4': raise SystemExit('Unexpected version')
-    if state.get('appliedSequence')!=72 or state.get('currentPackage')!='2.0.4-share-actions': raise SystemExit('Unexpected development state')
+    if v.get('version')!='2.0.5': raise SystemExit('Unexpected version')
+    if state.get('appliedSequence')!=73 or state.get('currentPackage')!='2.0.5-webapp-compat': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
