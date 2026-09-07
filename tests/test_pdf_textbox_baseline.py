@@ -1,4 +1,6 @@
 from pathlib import Path
+import shutil
+import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +43,110 @@ class PdfTextboxBaselineTests(unittest.TestCase):
         self.assertIn("function commitFreeAnnotation", controller)
         self.assertIn("state.annotations.push(annotation)", controller)
         self.assertIn("state.undo.push", controller)
+
+    def test_text_box_insert_edit_and_undo_behavior(self):
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("Node.js is unavailable")
+
+        script = r"""
+function classList(initial) {
+  const values = new Set(initial || []);
+  return {
+    add(value) { values.add(value); },
+    remove(value) { values.delete(value); },
+    contains(value) { return values.has(value); },
+    toggle(value, force) {
+      if (force === true) values.add(value);
+      else if (force === false) values.delete(value);
+      else if (values.has(value)) values.delete(value);
+      else values.add(value);
+      return values.has(value);
+    }
+  };
+}
+
+const handlers = {};
+const title = { textContent: '' };
+const submit = { textContent: '' };
+const value = { value: '', focus() {}, select() {} };
+const form = {
+  addEventListener(name, fn) { handlers['form:' + name] = fn; },
+  querySelector() { return submit; },
+  reset() { value.value = ''; }
+};
+const dialog = {
+  classList: classList(['hidden']),
+  addEventListener(name, fn) { handlers['dialog:' + name] = fn; }
+};
+const cancel = { addEventListener() {} };
+const commentList = {
+  children: [],
+  textContent: '',
+  replaceChildren() { this.children = []; this.textContent = ''; },
+  append(node) { this.children.push(node); }
+};
+const pdfPages = { addEventListener() {} };
+const undoReview = {};
+const dirtyMark = { hidden: true };
+
+global.document = {
+  body: { dataset: {} },
+  querySelectorAll() { return []; },
+  getElementById(id) { return id === 'textDialogTitle' ? title : null; },
+  addEventListener() {},
+  createElement() { return { className: '', textContent: '', onclick: null }; }
+};
+global.localStorage = { getItem() { return null; }, setItem() {} };
+global.prompt = () => null;
+global.getSelection = () => ({ removeAllRanges() {} });
+global.InkDOSPdfAnnotationLayer = {
+  createAnnotationLayer() {
+    return { renderPageReview() {}, wireReviewLayer() {} };
+  }
+};
+
+require('./apps/pdf/review/review-controller.js');
+const state = {
+  storageKey: '', fingerprint: '', annotations: [], bookmarks: [], undo: [],
+  tool: 'text', textSelection: null, selectionTimer: 0, pages: new Map(), page: 1
+};
+let serial = 0;
+const controller = global.InkDOSPdfReviewController.createReviewController({
+  state,
+  elements: {
+    commentList, dirtyMark, textDialog: dialog, textDialogForm: form,
+    textDialogValue: value, dialogCancel: cancel, pdfPages, undoReview
+  },
+  clamp(number, minimum, maximum) {
+    return Math.max(minimum, Math.min(maximum, number));
+  },
+  makeId() { serial += 1; return 'id-' + serial; },
+  status() {}, toast() {}, renderBookmarks() {}, navigateToPage() {}, rerender() {}
+});
+
+if (!controller.requestTextAnnotation({ page: 1, x: .1, y: .1, w: .2, h: .1 })) process.exit(10);
+value.value = 'First text';
+handlers['form:submit']({ preventDefault() {} });
+if (state.annotations.length !== 1 || state.annotations[0].text !== 'First text') process.exit(11);
+if (!state.dirty) process.exit(12);
+
+const id = state.annotations[0].id;
+if (!controller.requestTextEdit(id)) process.exit(13);
+value.value = 'Edited text';
+handlers['form:submit']({ preventDefault() {} });
+if (state.annotations[0].text !== 'Edited text') process.exit(14);
+if (state.undo[state.undo.length - 1].kind !== 'annotation-update') process.exit(15);
+controller.undoLastReviewAction();
+if (state.annotations[0].text !== 'First text') process.exit(16);
+"""
+        result = subprocess.run(
+            [node, "-e", script],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":
