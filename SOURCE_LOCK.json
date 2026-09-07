@@ -101,7 +101,7 @@
       "sourceTreeSha256BeforeIntegration": "d93aa9a078daab5662c5eeff20e594b1477bd865d2d303d5f44d2d884b0988e4",
       "sourceFileCount": 21,
       "sourceBytes": 92063,
-      "nonIndexTreeSha256": "aa7e65de1130d07cc6e573e946bb8e5ff229e2ad9ddc486388756bc97e0667ee",
+      "nonIndexTreeSha256": "110ec5a600b888df74cc268b8fe14aca54fbea30f8a7dd8ac57104ea9764b96b",
       "originalIndexSha256": "0fa0bea76a9889d2bbec0d7dcef8b06d59c771fe0ab0597c7e840877e3be945d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -111,7 +111,7 @@
         "2.0.12 structural refactor: relocate PackageReader and EpubWriter to io/, ContentProjector/BookModel/ReaderAnnotations to engine/, AnnotationStore to state/, ReaderRenderer to view/, and move start-state CSS to ui/ without intentionally changing algorithms",
         "index.html: in 2.0.12 compose the relocated app-private modules from their responsibility directories and remove the retired flattened root module copies"
       ],
-      "integratedIndexSha256": "29209929beb22a702664ec55a5789c67424242e8df7b8b9cec948b298414bb12"
+      "integratedIndexSha256": "2aeb0150bdfd39e4517eb41ed759f98983652ed7982995766d8b6e6e8e66e645"
     },
     "pdf": {
       "sourcePackage": "InkDOS-2.0-PDF-P4.2-AUDITED.zip",
