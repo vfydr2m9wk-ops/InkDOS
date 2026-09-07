@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.8 — 2026-09-07
+
+- Make PDF and Spreadsheets Save controls disabled in the initial HTML before app JavaScript runs, so the empty-workspace contract is fail-safe rather than visually/runtime dependent.
+- Add explicit disabled styling to PDF and Spreadsheets file-menu actions so Edge/WebKit visibly distinguish unavailable Save/Share actions.
+- Keep existing app-local runtime guards: PDF still keys off `session.active`, and Spreadsheets still keys off `session.book.loaded`.
+- Version all Home workspace routes with `v=2.0.8` to reduce stale browser navigation ambiguity after releases.
+- Add regression checks for initial disabled markup, disabled visual styling and release-versioned Home routes.
+- Rotate the offline cache to the 2.0.8 sequence.
+
 ## 2.0.7 — 2026-09-07
 
 - Standardize the empty-workspace file-action contract across all six independent apps: Save and Share remain unavailable until a real document, workbook, presentation, text file, book or PDF is active.
@@ -14,7 +23,7 @@
 
 - Remove the production Plain Text global runtime-error banner so opaque host/WebKit `Script error.` events no longer surface as a false app failure.
 - Normalize the existing Home bridge and first-open card integration back into the physical Plain Text template/styles source; the published behavior remains unchanged.
-- Add a deterministic Plain Text bundle builder and a byte-for-byte release validation check so `apps/txt/index.html` must remain derivable from its modular template, styles and JavaScript sources.
+- Add a deterministic Plain Text bundle builder and a byte-for-byte release validation check so `apps/txt/index.html` must remain derivable from its modular sources.
 - Preserve Plain Text editor/runtime modules, TXT file I/O, Share behavior and the other five workspace runtimes unchanged.
 - Rotate the offline application cache so WebKit/XeOS receives the corrected Plain Text distribution.
 
@@ -54,7 +63,6 @@
 - Documents, Presentations and Plain Text now offer New/Open from the central card.
 - EPUB uses the same card with one centered Open action.
 - Spreadsheets remains the unchanged visual baseline; PDF remains Coming soon.
-
 
 ## 2.0.0 — 2026-09-07
 
