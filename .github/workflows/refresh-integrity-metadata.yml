@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/share-all-apps
-      - feature/empty-state-file-actions
+      - 'feature/**'
+      - 'fix/**'
     paths-ignore:
       - 'CHECKSUMS.sha256'
       - 'SOURCE_LOCK.json'
