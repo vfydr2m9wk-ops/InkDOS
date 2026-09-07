@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.7",
-  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.7 standardizes an empty-workspace behavioral contract using app-local state only: Save and Share remain unavailable until that app has a real active document, workbook, presentation, text file, EPUB or PDF. No cross-app runtime or shared mutable document-state code is introduced, and Share never confirms persistent storage.",
+  "release": "2.0.8",
+  "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.8 keeps the 2.0.7 empty-workspace behavioral contract and makes disabled file actions fail-safe and visibly disabled in PDF and Spreadsheets from initial HTML, while retaining app-local runtime guards. Home routes are release-versioned to reduce stale browser navigation ambiguity. No cross-app runtime or shared mutable document-state code is introduced.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -35,7 +35,9 @@
         "io/save-controller.js: export current XLSX to Share without marking the workbook saved",
         "ui/file-menu-controller.js: add app-local Share menu action after Save",
         "ui/chrome-controller.js: enable Share only when a workbook is active",
-        "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true"
+        "ui/chrome-controller.js: in 2.0.7 keep both Save and Share disabled until session.book.loaded is true",
+        "index.html: in 2.0.8 mark Save disabled in initial markup before runtime synchronization",
+        "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive"
       ],
       "integratedIndexSha256": "1e0bfb4484cdb671ed314764ae303d4082b38cdd00596f941135faeadfc63d62"
     },
@@ -110,12 +112,14 @@
         "io/file-delivery.js: expose explicit PDF Web Share delivery",
         "io/save-controller.js: share clean or edited PDF while preserving unsaved-state semantics",
         "ui/command-controller.js: add app-local Share menu action after Save",
-        "ui/command-controller.js: in 2.0.7 keep menu Save, toolbar Save and Share disabled until session.active"
+        "ui/command-controller.js: in 2.0.7 keep menu Save, toolbar Save and Share disabled until session.active",
+        "index.html: in 2.0.8 mark menu Save and toolbar Save disabled in initial markup before runtime synchronization",
+        "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive"
       ],
       "integratedIndexSha256": "13d8b861a3365ce60c9dd9153d8ff9fa579f1b33bc83a53de4b17267ccdbe287",
       "functionalBaseline": "P4.2 user-accepted",
-      "status": "baseline-preserved-with-2.0.7-empty-state-contract"
+      "status": "baseline-preserved-with-2.0.8-disabled-state-visibility"
     }
   },
-  "previousRelease": "2.0.6"
+  "previousRelease": "2.0.7"
 }
