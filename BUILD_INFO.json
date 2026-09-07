@@ -1,16 +1,19 @@
 {
+  "schemaVersion": 1,
   "product": "InkDOS",
-  "version": "1.0.0-beta.10",
-  "buildDate": "2026-09-04",
-  "channel": "beta",
-  "buildType": "public-beta-source",
+  "version": "2.0.0",
+  "buildDate": "2026-09-07",
+  "channel": "stable",
   "modules": [
     "documents",
     "spreadsheets",
     "presentations",
-    "pdf",
     "txt",
     "epub"
   ],
-  "requiresPreviousPackages": false
+  "plannedModules": [
+    "pdf"
+  ],
+  "architecture": "launcher-plus-independent-apps",
+  "requiresPreviousRuntime": false
 }

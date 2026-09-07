@@ -1,37 +1,33 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "project": "InkDOS",
-  "version": "1.0.0-beta.10",
-  "releaseName": "1.0 Beta 10",
-  "releaseDate": "2026-09-04",
-  "releaseType": "Public Beta Release",
+  "version": "2.0.0",
+  "releaseName": "InkDOS 2.0 Core",
+  "releaseDate": "2026-09-07",
+  "releaseType": "Core Release",
   "entryPoints": {
     "documents": "apps/documents/index.html",
     "spreadsheets": "apps/spreadsheets/index.html",
     "presentations": "apps/presentations/index.html",
-    "pdf": "apps/pdf/index.html",
     "txt": "apps/txt/index.html",
     "epub": "apps/epub/index.html"
   },
   "supportedFormats": [
     "DOCX",
     "XLS / XLSX",
-    "PPTX",
-    "PDF",
+    "PPT / PPTX",
     "TXT",
     "EPUB"
   ],
+  "planned": {
+    "pdf": {
+      "path": "apps/pdf/index.html",
+      "format": "PDF",
+      "status": "coming-soon"
+    }
+  },
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "homepage": "https://vfydr2m9wk-ops.github.io/InkDOS/",
   "buildRequired": false,
-  "automaticRemoteRuntimeDependencies": false,
-  "license": "MIT for InkDOS original code; bundled third-party components retain upstream licenses.",
-  "validation": {
-    "repository": "scripts/validate_repository.py",
-    "sourceAudit": "scripts/audit_source.py",
-    "architecture": "scripts/check_architecture_guardrails.py",
-    "unit": "python3 -m unittest discover -s tests -p test_*.py",
-    "browser": "scripts/run_browser_regressions.py",
-    "checksums": "scripts/verify_checksums.py"
-  }
+  "automaticRemoteRuntimeDependencies": false
 }

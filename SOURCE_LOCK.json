@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "product": "InkDOS",
+  "release": "2.0.0",
+  "integrationPolicy": "Frozen app source trees copied only from canonical FINAL packages. Only apps/*/index.html is modified to add the suite Home bridge. No 1.x runtime is imported.",
+  "apps": {
+    "documents": {
+      "sourcePackage": "Documents-FINAL.zip",
+      "sourcePackageSha256": "e9826e79a6ada990aab80e0dab2a9527bef7a42e70b18383eca383498f2821a5",
+      "sourceTreeSha256BeforeIntegration": "483d12590e2f4bbb63356de90aa71b5a494ac4e1819e88d041d67eef578a1339",
+      "sourceFileCount": 32,
+      "sourceBytes": 254156,
+      "nonIndexTreeSha256": "53b1ca652f64ba336d09247002fef34dc0f77313e02b9f287b3b0da7f38d342b",
+      "originalIndexSha256": "f3303189f1361068c96eb6fa521913908301cfbbc45b287d2a6eeb8ec8adf9d7",
+      "allowedIntegrationChanges": [
+        "index.html: add Home anchor to ../../index.html"
+      ],
+      "integratedIndexSha256": "c0e811732ed5bcc7bf6f0bce60f48b43133823c79546394c42cb65224f45b2ef"
+    },
+    "spreadsheets": {
+      "sourcePackage": "Spreadsheets-FINAL.zip",
+      "sourcePackageSha256": "ff5d4fe1a6133e6a8d23d4dd277fcf5008c1c200b1da997f33a8c2c7bf16ae5e",
+      "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
+      "sourceFileCount": 38,
+      "sourceBytes": 339284,
+      "nonIndexTreeSha256": "5e118fdb9e8b78cca5f3efde13a320c73fe9445efda358374c965c87bc4ff9e1",
+      "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
+      "allowedIntegrationChanges": [
+        "index.html: add Home anchor to ../../index.html"
+      ],
+      "integratedIndexSha256": "1e0bfb4484cdb671ed314764ae303d4082b38cdd00596f941135faeadfc63d62"
+    },
+    "presentations": {
+      "sourcePackage": "Presentations-FINAL.zip",
+      "sourcePackageSha256": "5c3acc74022752b788ba74d5053d2f17b3f3fa472c6241890bae323f5acd04d2",
+      "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
+      "sourceFileCount": 29,
+      "sourceBytes": 241833,
+      "nonIndexTreeSha256": "487eb7d20c71882fed73b742820e82e9add7ed49ac05c4d14ca68b3695879378",
+      "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
+      "allowedIntegrationChanges": [
+        "index.html: add Home anchor to ../../index.html"
+      ],
+      "integratedIndexSha256": "7b64b43a9d25262cc31df550a59668fe02cbb82568c8849b9a1c199d3649593e"
+    },
+    "txt": {
+      "sourcePackage": "TXT-FINAL.zip",
+      "sourcePackageSha256": "1ac34437a738220d0584e14aa94871bc1dfe30bd042b7e4924044ab361d7af43",
+      "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
+      "sourceFileCount": 25,
+      "sourceBytes": 154424,
+      "nonIndexTreeSha256": "cd41399c237e8337c3aa719a2195cc2723bda29208e6d8b838283c915ef1974b",
+      "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
+      "allowedIntegrationChanges": [
+        "index.html: add Home anchor to ../../index.html"
+      ],
+      "integratedIndexSha256": "4dfe3d95f05b3381b8c0efae473d008c97ba880def92eaeec03129d9a743083d"
+    },
+    "epub": {
+      "sourcePackage": "EPUB-FINAL.zip",
+      "sourcePackageSha256": "cba22d966290644b30d1f2ffb7ab0ca4f51ed05fa4b2f4977d6072d3bff03d28",
+      "sourceTreeSha256BeforeIntegration": "d93aa9a078daab5662c5eeff20e594b1477bd865d2d303d5f44d2d884b0988e4",
+      "sourceFileCount": 21,
+      "sourceBytes": 92063,
+      "nonIndexTreeSha256": "c8a57e84ed94a8fcf4e2bfa0fc5d89376d11a5a7fae2cdad584b985dfd16b13c",
+      "originalIndexSha256": "0fa0bea76a9889d2bbec0d7dcef8b06d59c771fe0ab0597c7e840877e3be945d",
+      "allowedIntegrationChanges": [
+        "index.html: add Home anchor to ../../index.html"
+      ],
+      "integratedIndexSha256": "cd5dfab6c3d7a92247151c41d697eb59d5b0fe434611c209c28e503d520c037a"
+    }
+  }
+}

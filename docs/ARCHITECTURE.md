@@ -1,28 +1,25 @@
-# InkDOS architecture
+# InkDOS 2.0 architecture
 
-InkDOS is a static browser application: source files are served directly with no mandatory runtime build step.
+InkDOS 2.0 is a launcher plus five independent applications.
 
-## Entry points
+```text
+Home
+ ├─ Documents
+ ├─ Spreadsheets
+ ├─ Presentations
+ ├─ PDF Workspace (placeholder only)
+ ├─ Plain Text
+ └─ EPUB Reader
+```
 
-`index.html` is the suite hub. The six workspaces live under `apps/documents`, `apps/spreadsheets`, `apps/presentations`, `apps/pdf`, `apps/txt` and `apps/epub`. Root format launchers remain small direct compatibility entry points where they still provide user value.
+Home has no file-opening, editing, recent-files, or global-suite runtime. It only routes to the installed app entry points.
 
-## Shared runtime
+Each application owns its own runtime, IO, state, view and vendor dependencies. Cross-app runtime imports are not required. Deliberate redundancy is preserved rather than centralized.
 
-- `shared/office-runtime.js`: safe file/package primitives and download lifecycle.
-- `shared/file-router.js`: suite-to-workspace file routing.
-- `shared/local-recovery.js`: private IndexedDB recovery for editable Office workspaces.
-- `shared/office-shell.js`: lightweight composition/bootstrap for shared UI modules.
-- `shared/ui/`: reusable shell, layout, session and visual components.
-- `modules/`: declarative workspace registry and loader.
+## Integration boundary
 
-## UI layering
+The canonical FINAL package source tree for each app is copied into `apps/<app>/`. Integration may modify only `apps/<app>/index.html`, solely to add a Home icon linking to `../../index.html`. `SOURCE_LOCK.json` pins the source package SHA-256, the original app-tree digest, the non-index tree digest, and the integrated index hash.
 
-The active shared cascade uses design tokens, components, workspace layout, the base visual foundation and four bounded semantic late layers: `visual.css`, `content.css`, `workspace.css` and `polish.css`. Version-named corrective overlays are not part of the current architecture.
+## PDF boundary
 
-## Boundaries
-
-Parsers/writers own format semantics. Workspace controllers own user interaction. Shared modules must not silently take ownership of format-specific data. Imported content is untrusted and network access is not required for core editing/reading.
-
-## Engineering rule
-
-Architecture is allowed to change when a smaller implementation preserves or improves the tested product contract. Git stores superseded designs; the runtime does not.
+`apps/pdf/` does not exist in 2.0.0. The Home card is a non-interactive placeholder. A later PDF update must add an app-private runtime instead of reviving the retired 1.x PDF tree.

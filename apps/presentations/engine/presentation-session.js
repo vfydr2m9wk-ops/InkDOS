@@ -1,0 +1,48 @@
+(function(global){'use strict';
+const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
+const DEFAULT_W=12192000,DEFAULT_H=6858000;let seq=0;
+const uid=p=>`${p}-${Date.now().toString(36)}-${(++seq).toString(36)}`;
+const clone=v=>JSON.parse(JSON.stringify(v));
+const sane=(v,f)=>Number.isFinite(Number(v))?Number(v):f;
+function normalizeParagraphs(input,text,fallback={}){
+  if(Array.isArray(input)&&input.length){return input.map(p=>({
+    align:['left','center','right','justify'].includes(p.align)?p.align:(fallback.align||'left'),
+    level:Math.max(0,Math.min(8,sane(p.level,0))),
+    bullet:p.bullet||null,
+    lineSpacing:sane(p.lineSpacing,1.0),lineSpacingPt:p.lineSpacingPt==null?null:sane(p.lineSpacingPt,null),spaceBeforePt:sane(p.spaceBeforePt,0),spaceAfterPt:sane(p.spaceAfterPt,0),
+    runs:Array.isArray(p.runs)&&p.runs.length?p.runs.map(r=>({text:String(r.text??''),fontSizePt:sane(r.fontSizePt,fallback.fontSizePt||24),bold:!!r.bold,italic:!!r.italic,underline:!!r.underline,color:r.color||fallback.color||null,fontFamily:r.fontFamily||fallback.fontFamily||null})):[{text:'',fontSizePt:fallback.fontSizePt||24,bold:!!fallback.bold,italic:!!fallback.italic,underline:false,color:fallback.color||null,fontFamily:fallback.fontFamily||null}]
+  }))}
+  return String(text??'Text').split('\n').map(line=>({align:fallback.align||'left',level:0,bullet:null,lineSpacing:1,lineSpacingPt:null,spaceBeforePt:0,spaceAfterPt:0,runs:[{text:line,fontSizePt:fallback.fontSizePt||24,bold:!!fallback.bold,italic:!!fallback.italic,underline:false,color:fallback.color||null,fontFamily:fallback.fontFamily||null}]}));
+}
+function plainText(paragraphs){return (paragraphs||[]).map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n')}
+function textSignature(o={}){return JSON.stringify({text:String(o.text??''),paragraphs:o.paragraphs||[],fontSizePt:sane(o.fontSizePt,24),bold:!!o.bold,italic:!!o.italic,align:o.align||'left',color:o.color||null,fontFamily:o.fontFamily||null,verticalAlign:o.verticalAlign||'top',marginLeftEmu:sane(o.marginLeftEmu,91440),marginRightEmu:sane(o.marginRightEmu,91440),marginTopEmu:sane(o.marginTopEmu,45720),marginBottomEmu:sane(o.marginBottomEmu,45720),wrap:o.wrap||'square',autoFit:o.autoFit||'none',autoFitScale:sane(o.autoFitScale,1)});}
+function textObject(input={}){
+  const base={fontSizePt:sane(input.fontSizePt,28),bold:!!input.bold,italic:!!input.italic,align:['left','center','right','justify'].includes(input.align)?input.align:'left',color:input.color||null,fontFamily:input.fontFamily||null};
+  const paragraphs=normalizeParagraphs(input.paragraphs,input.text,base);
+  return {id:input.id||uid('obj'),type:'text',x:sane(input.x,914400),y:sane(input.y,914400),w:sane(input.w,10058400),h:sane(input.h,1371600),text:plainText(paragraphs),paragraphs,fontSizePt:base.fontSizePt,bold:base.bold,italic:base.italic,align:base.align,color:base.color,fontFamily:base.fontFamily,placeholder:input.placeholder||null,placeholderIdx:input.placeholderIdx??null,rotation:sane(input.rotation,0),verticalAlign:input.verticalAlign||'top',marginLeftEmu:sane(input.marginLeftEmu,91440),marginRightEmu:sane(input.marginRightEmu,91440),marginTopEmu:sane(input.marginTopEmu,45720),marginBottomEmu:sane(input.marginBottomEmu,45720),wrap:input.wrap||'square',autoFit:input.autoFit||'none',autoFitScale:Math.max(.35,Math.min(1.5,sane(input.autoFitScale,1))),fill:input.fill||null,line:input.line||null,opacity:Math.max(0,Math.min(1,sane(input.opacity,1))),richSource:input.richSource||null,sourceRef:input.sourceRef?clone(input.sourceRef):null,sourceSignature:input.sourceSignature||null};
+}
+function imageObject(input={}){return {id:input.id||uid('img'),type:'image',x:sane(input.x,914400),y:sane(input.y,914400),w:sane(input.w,3657600),h:sane(input.h,2057400),src:String(input.src||''),mime:input.mime||'image/png',crop:input.crop||null,rotation:sane(input.rotation,0),opacity:Math.max(0,Math.min(1,sane(input.opacity,1)))};}
+function shapeObject(input={}){return {id:input.id||uid('shape'),type:'shape',shapeType:input.shapeType||'rect',x:sane(input.x,914400),y:sane(input.y,914400),w:sane(input.w,3657600),h:sane(input.h,2057400),fill:input.fill||null,line:input.line||null,rotation:sane(input.rotation,0),opacity:Math.max(0,Math.min(1,sane(input.opacity,1)))};}
+function blankSlide(index=1,{widthEmu=DEFAULT_W,heightEmu=DEFAULT_H}={}){return {id:uid('slide'),slideNumber:index,widthEmu,heightEmu,background:'#ffffff',objects:[textObject({x:914400,y:685800,w:10058400,h:1100000,text:index===1?'Presentation title':'Slide title',fontSizePt:34,bold:true,align:'center',placeholder:'title'}),textObject({x:1219200,y:2057400,w:9753600,h:2743200,text:index===1?'Tap a text box to edit.':'Add content here',fontSizePt:22,align:'left',placeholder:'body'})]}}
+class PresentationSession{
+ constructor(){this.sessionId=uid('session');this.operationId=0;this.revision=0;this.fileName='Untitled.pptx';this.sourceKind='new';this.sourceBytes=new Uint8Array();this.sourceSlideParts=[];this.slides=[];this.currentSlideId=null;this.dirty=false;this.compatibility=[];this.resetNew()}
+ beginOperation(){return ++this.operationId}
+ replaceCandidate(candidate,op){if(op!==this.operationId)return false;this.fileName=candidate.fileName||'Presentation.pptx';this.sourceKind=candidate.sourceKind||'pptx';this.sourceBytes=new Uint8Array(candidate.sourceBytes||[]);this.slides=clone(candidate.slides||[]);this.sourceSlideParts=clone(candidate.sourceSlideParts||this.slides.map(s=>s.sourcePart).filter(Boolean));this.currentSlideId=this.slides[0]?.id||null;this.compatibility=clone(candidate.compatibility||[]);this.dirty=false;this.revision++;this.renumber();return true}
+ resetNew(){this.sourceKind='new';this.sourceBytes=new Uint8Array();this.sourceSlideParts=[];this.fileName='Untitled.pptx';this.slides=[blankSlide(1)];this.currentSlideId=this.slides[0].id;this.compatibility=[];this.dirty=false;this.revision++;this.renumber()}
+ renumber(){this.slides.forEach((s,i)=>s.slideNumber=i+1)}
+ get currentIndex(){const i=this.slides.findIndex(s=>s.id===this.currentSlideId);return i<0?0:i}
+ get currentSlide(){return this.slides[this.currentIndex]||null}
+ setCurrentByIndex(index){if(!this.slides.length)return false;const i=Math.max(0,Math.min(this.slides.length-1,Number(index)||0));this.currentSlideId=this.slides[i].id;return true}
+ setCurrentById(id){if(!this.slides.some(s=>s.id===id))return false;this.currentSlideId=id;return true}
+ markDirty(){this.dirty=true;this.revision++}
+ snapshot(){return {fileName:this.fileName,sourceKind:this.sourceKind,slides:clone(this.slides),currentSlideId:this.currentSlideId,dirty:this.dirty,compatibility:clone(this.compatibility)}}
+ restore(snapshot,{dirty=true}={}){this.fileName=snapshot.fileName;this.sourceKind=snapshot.sourceKind;this.slides=clone(snapshot.slides);this.currentSlideId=this.slides.some(s=>s.id===snapshot.currentSlideId)?snapshot.currentSlideId:this.slides[0]?.id||null;this.compatibility=clone(snapshot.compatibility||[]);this.dirty=dirty;this.renumber();this.revision++}
+ addSlide(afterIndex=this.currentIndex){const slide=blankSlide(1,{widthEmu:this.currentSlide?.widthEmu||DEFAULT_W,heightEmu:this.currentSlide?.heightEmu||DEFAULT_H});this.slides.splice(Math.min(this.slides.length,afterIndex+1),0,slide);this.renumber();this.currentSlideId=slide.id;return slide}
+ duplicateCurrent(){const src=this.currentSlide;if(!src)return null;const slide=clone(src);slide.id=uid('slide');slide.objects=slide.objects.map(o=>({...o,id:uid(o.type==='image'?'img':o.type==='shape'?'shape':'obj')}));this.slides.splice(this.currentIndex+1,0,slide);this.renumber();this.currentSlideId=slide.id;return slide}
+ deleteCurrent(){if(this.slides.length<=1)return false;const i=this.currentIndex;this.slides.splice(i,1);this.renumber();this.currentSlideId=this.slides[Math.min(i,this.slides.length-1)].id;return true}
+ addText(){const slide=this.currentSlide;if(!slide)return null;const o=textObject({x:slide.widthEmu*.18,y:slide.heightEmu*.32,w:slide.widthEmu*.64,h:slide.heightEmu*.18,text:'New text',fontSizePt:24,align:'center'});slide.objects.push(o);return o}
+ acceptConfirmedPptx(bytes,receipt={}){if(this.sourceKind!=='pptx')return false;this.sourceBytes=new Uint8Array(bytes||[]);for(const mapping of receipt.insertedMappings||[]){const slide=this.slides.find(s=>s.id===mapping.slideId),obj=slide?.objects.find(o=>o.id===mapping.objectId);if(obj&&obj.type==='text')obj.sourceRef={slidePart:mapping.slidePart,shapeId:String(mapping.shapeId)}}for(const slide of this.slides)for(const obj of slide.objects||[])if(obj.type==='text'&&obj.sourceRef)obj.sourceSignature=textSignature(obj);this.sourceSlideParts=this.slides.map(s=>s.sourcePart).filter(Boolean);this.dirty=false;this.revision++;return true}
+}
+NS.PresentationSession=PresentationSession;
+NS.PresentationModel=Object.freeze({DEFAULT_W,DEFAULT_H,textObject,imageObject,shapeObject,blankSlide,clone,plainText,normalizeParagraphs,textSignature});
+})(globalThis);

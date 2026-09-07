@@ -1,42 +1,48 @@
-# InkDOS — Ink Desk Offline Suite
+# InkDOS 2.0
 
-InkDOS is a local-first, offline and private browser productivity suite for focused DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workflows.
+InkDOS is a local-first, static browser productivity suite. Version 2.0 is a clean consolidation around five independently frozen applications and a small Home launcher.
 
-## 1.0.0-beta.10
+## Available workspaces
 
-Beta 4 is the current functional-hardening baseline. It adds private recovery to Plain Text, removes redundant redirect/visual patch layers, and keeps current code and documentation focused on the product that ships now.
+| Workspace | Status | Formats |
+| --- | --- | --- |
+| Documents | Available | DOCX |
+| Spreadsheets | Available | XLS / XLSX |
+| Presentations | Available | PPT / PPTX |
+| Plain Text | Available | TXT |
+| EPUB Reader | Available | EPUB |
+| PDF Workspace | Coming soon | PDF |
 
-The engineering rule is simple: Git preserves history; `main` preserves the best current implementation. Compatibility is defined by user-visible behavior and data fidelity, not by preserving old internal names, wrappers or patch layers.
+## Clean-tree rule
 
-## Product priorities
+InkDOS 2.0 does not import the 1.x application runtime. The five application source trees are taken only from their canonical FINAL packages recorded in `SOURCE_LOCK.json`.
 
-- local-first and offline operation;
-- broad, explicit document-format support without pretending to full Office parity;
-- safe local recovery and generated-copy saving;
-- stable visual hierarchy and predictable interaction;
-- small, cohesive runtime modules with no unnecessary compatibility layers;
-- aggressive refactoring only behind reproducible tests and candidate-tree validation.
+The suite integration is intentionally narrow: Home links into each app, and each app's `index.html` receives one Home icon linking back to `../../index.html`. No other app file is changed.
 
-## Run
+The applications retain app-private runtimes, including deliberate redundancy. Similar code is not deduplicated into a mutable suite-wide runtime because failure isolation is part of the 2.0 architecture.
 
-Open `index.html` directly or use GitHub Pages. HTTP(S) is preferred for service workers, PWA installation and predictable browser behavior.
+## PDF
 
-## Validate
+The PDF card is visible but disabled in 2.0.0. No PDF runtime or PDF.js tree is installed. PDF will be added as a later update.
 
-```bash
-npm run validate
-npm run audit
-npm test
-npm run test:browser
-npm run test:release
+## Local-first
+
+There is no required backend, telemetry service, or remote document-processing service. GitHub Pages is used only as a static host/PWA surface.
+
+## Repository layout
+
+```text
+index.html
+assets/
+apps/
+  documents/
+  spreadsheets/
+  presentations/
+  txt/
+  epub/
+docs/
+scripts/
+tests/
 ```
 
-The GitHub update workflow applies packages only after a disposable candidate tree passes the configured validation profile.
-
-## Status
-
-This is **1.0 beta**. Supported behavior and known limits are documented in [`COMPATIBILITY.md`](COMPATIBILITY.md) and [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md).
-
-## License
-
-InkDOS original code is licensed under the MIT License. Bundled third-party components retain their upstream licenses; see `docs/THIRD_PARTY_NOTICES.md`.
+See `docs/ARCHITECTURE.md`, `docs/PROJECT_STATUS.md`, and `docs/UPDATE_MODEL.md`.

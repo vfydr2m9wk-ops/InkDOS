@@ -1,195 +1,101 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <link rel="icon" href="../../assets/icons/presentations.png">
-  <title>Presentations — InkDOS</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="../../shared/office-shell.css" />
-  <link rel="stylesheet" href="stability.css?v=1.0.0-beta.10" />
-  <link rel="manifest" href="../../manifest.webmanifest">
-  <link rel="apple-touch-icon" href="../../assets/icons/office.png">
-  <link rel="stylesheet" href="../../shared/ui/responsive-workspace.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/app-shell.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/app-home.css?v=1.0.0-beta.10">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f7f8fa">
+<title>Presentations — InkDOS 2.0</title>
+<link rel="icon" href="assets/presentations.png">
+<link rel="stylesheet" href="runtime/tokens/base.css">
+<link rel="stylesheet" href="runtime/frame/app-frame.css">
+<link rel="stylesheet" href="ui/editor.css">
+<link rel="stylesheet" href="view/presentation-surface.css">
 </head>
-<body class="office-product office-presentations" data-inkdos-app="presentations">
-  <input id="fileInput" type="file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden />
-  <input id="imageInput" type="file" accept="image/*" hidden />
+<body>
+<div class="app-shell" id="appShell">
+  <header class="topbar" id="topbar">
+    <div class="frame-side frame-left"><button id="menuBtn" class="frame-btn" type="button" title="Menu" aria-label="Open Presentations menu" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="frame-btn" href="../../index.html" aria-label="Home" title="Home" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></a></div>
+    <div class="presentation-title"><img src="assets/presentations.png" class="presentations-icon" alt=""><input id="titleText" class="title-input" value="Untitled.pptx" aria-label="Presentation name" spellcheck="false" autocomplete="off"><span id="dirtyDot" class="dirty-dot" aria-hidden="true"></span></div>
+    <div class="frame-side frame-right" aria-hidden="true"></div>
+  </header>
 
-  <section id="startScreen" class="start-screen" data-app-home>
-    <a class="start-home-link" href="../../index.html" target="_top" title="InkDOS home" aria-label="Return to InkDOS home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 10.5v9h5v-5h3v5h5v-9"/></svg></a>
-    <div class="start-card">
-      <div class="app-badge">P</div>
-      <h1>Presentations</h1>
-      <p>Create, open and present PowerPoint files locally.</p>
-      <div class="start-actions inkdos-start-actions">
-        <button id="newBtn" class="start-btn inkdos-start-button inkdos-start-new"><span class="inkdos-start-icon inkdos-plus" aria-hidden="true">+</span><span>New document</span></button>
-        <button id="openBtn" class="start-btn inkdos-start-button inkdos-start-open"><span class="inkdos-start-icon inkdos-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span></button>
-      </div>
-      <small>PPT / PPTX · Local editing · Saving creates a new PPTX copy</small>
+  <div id="editbar" class="editbar" tabindex="0" aria-label="Horizontally scrollable presentation editing toolbar">
+    <div class="tool-group" role="group" aria-label="History and navigation">
+      <button id="undoBtn" class="tool-btn icon-only" type="button" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg></button>
+      <button id="redoBtn" class="tool-btn icon-only" type="button" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
+      <button id="slidePanelBtn" class="tool-btn icon-only active" type="button" title="Show or hide slide thumbnails" aria-label="Show or hide slide thumbnails" aria-controls="slidePanel" aria-expanded="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16"/></svg></button>
+      <button id="prevSlideBtn" class="tool-btn icon-only" type="button" title="Previous slide" aria-label="Previous slide"><svg viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
+      <button id="nextSlideBtn" class="tool-btn icon-only" type="button" title="Next slide" aria-label="Next slide"><svg viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
     </div>
-  </section>
+    <span class="tool-divider" aria-hidden="true"></span>
+    <div class="tool-group" role="group" aria-label="Slide actions">
+      <button id="addSlideBtn" class="tool-btn labeled-tool" type="button" title="New slide" aria-label="New slide"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M12 8v8M8 12h8"/></svg><span class="tool-label">Slide</span></button>
+      <button id="duplicateSlideBtn" class="tool-btn labeled-tool" type="button" title="Duplicate slide" aria-label="Duplicate slide"><svg viewBox="0 0 24 24"><rect x="8" y="7" width="11" height="12" rx="2"/><path d="M5 16H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1"/></svg><span class="tool-label">Duplicate</span></button>
+      <button id="deleteSlideBtn" class="tool-btn labeled-tool" type="button" title="Delete slide" aria-label="Delete slide"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg><span class="tool-label">Delete</span></button>
+    </div>
+    <span class="tool-divider" aria-hidden="true"></span>
+    <div class="tool-group" role="group" aria-label="Text formatting">
+      <button id="insertTextBtn" class="tool-btn labeled-tool" type="button" title="Insert text box" aria-label="Insert text box"><svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg><span class="tool-label">Text</span></button>
+      <select id="fontSize" class="font-size-select" title="Font size" aria-label="Font size"><option>12</option><option>16</option><option>20</option><option selected>24</option><option>28</option><option>32</option><option>36</option><option>44</option><option>54</option><option>72</option></select>
+      <button id="boldBtn" class="tool-btn icon-only" type="button" title="Bold" aria-label="Bold"><b>B</b></button>
+      <button id="italicBtn" class="tool-btn icon-only" type="button" title="Italic" aria-label="Italic"><i>I</i></button>
+      <select id="alignSelect" class="align-select" title="Alignment" aria-label="Text alignment"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select>
+    </div>
+    <span class="tool-divider" aria-hidden="true"></span>
+    <div class="tool-group" role="group" aria-label="View controls">
+      <button id="zoomMenuBtn" class="tool-btn zoom-tool" type="button" title="Zoom" aria-label="Slide zoom" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><span id="zoomToolbarLabel">100%</span></button>
+      <button id="presentBtn" class="tool-btn labeled-tool" type="button" title="Present from current slide" aria-label="Present from current slide"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="12" rx="1.5"/><path d="M9.5 7.5 15 10l-5.5 2.5z"/><path d="M12 16v4M8.5 20h7"/></svg><span class="tool-label">Present</span></button>
+    </div>
+    <span class="toolbar-end-spacer" aria-hidden="true"></span>
+  </div>
 
-  <main id="app" class="app hidden hide-notes">
-    <header class="titlebar">
-      <div class="titlebar-left">
-        <a class="icon-btn top-action home-link" href="../../index.html" target="_top" title="InkDOS home" aria-label="Return to InkDOS home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M5.5 10.5v9h5v-5h3v5h5v-9"/></svg></a>
-        <button id="newSmall" class="icon-btn top-action new-small" title="New Presentation" aria-label="New Presentation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-        <button id="openSmall" class="icon-btn top-action" title="Open Presentation" aria-label="Open Presentation"><svg viewBox="0 0 24 24"><path d="M3 7.25A2.25 2.25 0 0 1 5.25 5H10l2 2h6.75A2.25 2.25 0 0 1 21 9.25v7.5A2.25 2.25 0 0 1 18.75 19H5.25A2.25 2.25 0 0 1 3 16.75z"/></svg></button>
-        <span class="top-divider" aria-hidden="true"></span>
-        <button id="undoBtn" class="icon-btn top-action history-btn" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg></button>
-        <button id="redoBtn" class="icon-btn top-action history-btn" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
-      </div>
-      <input id="docTitle" class="doc-title presentation-title-input" type="text" value="Untitled presentation.pptx" aria-label="Presentation name" spellcheck="false" autocomplete="off">
-      <div class="titlebar-right">
-        <button id="presentFromStartTop" class="top-action present-top-action" title="Present from first slide" aria-label="Present from first slide"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="12" rx="1.5"/><path d="M9.5 7.5 15 10l-5.5 2.5z"/><path d="M12 16v4M8.5 20h7"/></svg><span>From start</span></button>
-        <button id="presentFromCurrentTop" class="top-action present-top-action current" title="Present from current slide" aria-label="Present from current slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5 18 12 8 18.5z"/></svg><span>Current</span></button>
-        <button id="saveBtn" class="save-btn top-action" title="Save PPTX copy" aria-label="Save PPTX copy"><svg viewBox="0 0 24 24"><path d="M5 3.5h12l2.5 2.5v14.5H4.5v-17z"/><path d="M8 3.5v6h8v-6"/><path d="M8 20.5v-7h8v7"/><path d="M10.5 6.5h3"/></svg></button>
-      </div>
-    </header>
-
-    <nav class="toolbar">
-      <button data-tab="home" class="tab active">Home</button>
-      <button data-tab="insert" class="tab">Insert</button>
-      <button data-tab="arrange" class="tab">Arrange</button>
-      <button data-tab="view" class="tab">View</button>
-      <button data-tab="present" class="tab">Present</button>
-      <span class="toolbar-spacer"></span>
-      <span id="stateBadge" class="state-badge">Ready</span>
-    </nav>
-
-    <section class="tools" id="toolsHome">
-      <button id="addSlideBtn">New slide ▾</button>
-      <button id="dupSlideBtn">Duplicate</button>
-      <button id="delSlideBtn">Delete</button>
-      <span class="sep"></span>
-      <select id="fontFamily"><option>Arial</option><option>Aptos</option><option>Calibri</option><option>Georgia</option><option>Helvetica</option><option>Times New Roman</option></select>
-      <select id="fontSize"><option>12</option><option>16</option><option>20</option><option>24</option><option>32</option><option>44</option><option>60</option></select>
-      <button id="boldBtn">B</button>
-      <button id="italicBtn"><i>I</i></button>
-      <button id="alignLeft">⇤</button>
-      <button id="alignCenter">≡</button>
-      <button id="alignRight">⇥</button>
-    </section>
-
-    <section class="tools hidden" id="toolsInsert">
-      <button id="insertTextBtn">Text</button>
-      <button id="insertImageBtn">Image</button>
-      <select id="shapeType" aria-label="Shape type"><option value="rect">Rectangle</option><option value="roundRect">Rounded rectangle</option><option value="ellipse">Ellipse</option><option value="triangle">Triangle</option><option value="diamond">Diamond</option><option value="line">Line</option><option value="rightArrow">Arrow</option></select><button id="insertShapeBtn">Insert shape</button>
-    </section>
-
-    <section class="tools hidden" id="toolsArrange">
-      <button id="frontBtn">Bring front</button>
-      <button id="backBtn">Send back</button>
-      <button id="deleteObjBtn">Delete object</button>
-    </section>
-
-    <section class="tools hidden" id="toolsView">
-      <button id="togglePresentationsBtn">Hide thumbnails</button>
-      <button id="toggleInspectorBtn" aria-controls="inspector" aria-expanded="false">Show format panel</button>
-      <button id="toggleNotesBtn">Show presenter notes</button>
-      <span class="sep"></span>
-      <button id="presentViewBtn" class="view-present-action" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="12" rx="1.5"/><path d="M9.5 7.5 15 10l-5.5 2.5z"/><path d="M12 16v4M8.5 20h7"/></svg><span>Present current</span></button>
-      <span class="sep"></span>
-      <button id="zoomOutBtn">−</button>
-      <input id="zoomRange" type="range" min="35" max="200" step="5" value="90" />
-      <button id="zoomInBtn">+</button>
-      <button id="fitBtn">Fit</button>
-    </section>
-
-    <section class="tools hidden" id="toolsPresent">
-      <label>Transition <select id="transitionType"><option value="none">None</option><option value="fade">Fade</option><option value="slide">Slide</option><option value="zoom">Zoom</option></select></label>
-      <button id="presentFromStartBtn" class="present-action" type="button"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5 18 12 8 18.5z"/></svg><span>From first slide</span></button>
-      <button id="presentFromCurrentBtn" type="button"><svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5 18 12 8 18.5z"/></svg><span>From current slide</span></button>
-    </section>
-
-    <section class="workspace hide-inspector">
-      <aside class="slide-list" id="slideList" tabindex="0" aria-label="Slide thumbnails"></aside>
-      <section class="stage-wrap" id="stageWrap">
-        <div id="stage" class="stage">
-          <div id="slideCanvas" class="slide-canvas"></div>
-        </div>
-      </section>
-      <aside class="inspector" id="inspector">
-        <h3>Format</h3>
-        <label>X <input id="propX" type="number" /></label>
-        <label>Y <input id="propY" type="number" /></label>
-        <label>W <input id="propW" type="number" /></label>
-        <label>H <input id="propH" type="number" /></label>
-        <label>Opacity <input id="propOpacity" type="range" min="0" max="1" step="0.05" /></label>
-        <div class="inspector-section"><strong>Appearance</strong><div id="palette" class="palette" aria-label="Preset colors"></div><label>Fill <input id="propFill" type="color" /></label></div>
-        <div class="inspector-section"><strong>Rotation</strong><label>Angle <input id="propRotation" type="number" min="-360" max="360" step="1" /></label></div>
-        <div id="imageTools" class="inspector-section hidden"><strong>Image crop</strong><label>Zoom <input id="cropZoom" type="range" min="1" max="3" step="0.05" value="1" /></label><label>Horizontal <input id="cropX" type="range" min="0" max="100" step="1" value="50" /></label><label>Vertical <input id="cropY" type="range" min="0" max="100" step="1" value="50" /></label><button id="resetCropBtn" type="button">Reset crop</button></div>
-      </aside>
-    </section>
-
-    <section id="notesPanel" class="notes-panel" aria-label="Presenter notes">
-      <div class="notes-head">
-        <strong>Presenter Notes</strong>
-        <span id="notesCount">0 characters</span>
-      </div>
-      <textarea id="presenterNotes" placeholder="Add notes for the presenter. Notes are not shown during the slideshow."></textarea>
-    </section>
-
-    <footer class="statusbar">
-      <span id="slideStatus">Slide 1 of 1</span>
-      <span class="grow"></span>
-      <div class="bottom-zoom" aria-label="Slide zoom">
-        <button id="bottomZoomOutBtn" class="zoom-mini" title="Zoom out" aria-label="Zoom out">−</button>
-        <input id="bottomZoomRange" type="range" min="35" max="200" step="5" value="90" aria-label="Zoom level" />
-        <button id="bottomZoomInBtn" class="zoom-mini" title="Zoom in" aria-label="Zoom in">+</button>
-        <button id="bottomFitBtn" class="zoom-fit" title="Fit slide" aria-label="Fit slide">Fit</button>
-        <span id="zoomText">90%</span>
-      </div>
-    </footer>
+  <main id="workspace" class="presentation-workspace" data-panel-open="true">
+    <aside id="slidePanel" class="slide-panel" aria-label="Slide thumbnails"><div id="slidePanelInner" class="slide-panel-inner"></div></aside>
+    <section id="viewport" class="content-viewport" tabindex="0" aria-label="Presentation content viewport"><div id="stage" class="slide-stage"><div id="slideShell" class="slide-shell"><div id="slideCanvas" class="slide-canvas"></div></div></div></section>
   </main>
 
-  <section id="presentOverlay" class="present-overlay hidden" tabindex="0" aria-label="Presentation mode">
-    <div class="present-controls" role="toolbar" aria-label="Presentation controls">
-      <button id="exitPresentBtn" class="present-control-btn exit-present-btn" type="button" aria-label="Exit presentation">
-        <svg class="present-control-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
-        <span>Exit</span>
-      </button>
-    </div>
-    <div id="presentSlide" class="present-slide" aria-live="polite"></div>
-    <div id="presentCounter" class="present-counter">1 / 1</div>
-    <div id="presentHelp" class="present-help">Click, tap, Space or → for next · ← for previous · Esc to exit</div>
-  </section>
+  <footer class="statusbar"><span id="statusText">Ready</span><span id="slideStatus">Slide 1 of 1</span></footer>
+  <input id="fileInput" type="file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
 
-
-  <section id="templateDialog" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="templateTitle">
-    <div class="modal-card">
-      <div class="modal-head"><h2 id="templateTitle">Choose a layout</h2><button id="closeTemplateBtn" class="icon-btn" aria-label="Close">×</button></div>
-      <div id="templateGrid" class="template-grid"></div>
+  <div id="menuBackdrop" class="backdrop" hidden></div>
+  <aside id="generalMenu" class="drawer" role="dialog" aria-modal="true" aria-label="Presentations menu" hidden>
+    <div class="drawer-head"><div class="drawer-title"><img src="assets/presentations.png" class="drawer-icon" alt=""><span>Presentations</span></div><button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="drawer-section-label">File</div><div class="menu-list">
+      <button id="newMenuBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>New presentation</span><span class="hint">⌘N</span></button>
+      <button id="openMenuBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg><span>Open PPT / PPTX</span><span class="hint">⌘O</span></button>
+      <button id="saveMenuBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg><span>Save copy</span><span class="hint">⌘S</span></button>
+      <button id="presentStartMenuBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="12" rx="1.5"/><path d="M9.5 7.5 15 10l-5.5 2.5z"/><path d="M12 16v4M8.5 20h7"/></svg><span>Present from start</span><span></span></button>
     </div>
-  </section>
-  <script src="../../shared/office-runtime.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/vendor/jszip.min.js?v=3.10.1"></script>
-  <script src="engine/compatibility.js"></script>
-  <script src="engine/background-resolver.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/office-shell.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/product-config.js?v=1.0.0-beta.10"></script>
-  <script src="../../modules/module-registry.js?v=1.0.0-beta.10"></script>
-  <script src="../../modules/module-loader.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/recent-files.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-router.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/app-shell.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/responsive-command-menu.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/app-home.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/local-recovery.js?v=1.0.0-beta.10"></script>
-  <script src="state/selection-controller.js?v=1.0.0-beta.10"></script>
-  <script src="state/history-controller.js?v=1.0.0-beta.10"></script>
-  <script src="ui/inspector-controller.js?v=1.0.0-beta.10"></script>
-  <script src="ui/thumbnails-controller.js?v=1.0.0-beta.10"></script>
-  <script src="ui/presenter-notes-controller.js?v=1.0.0-beta.10"></script>
-  <script src="presentation/slideshow-controller.js?v=1.0.0-beta.10"></script>
-  <script src="io/pptx-write-adapter.js?v=1.0.0-beta.10"></script>
-  <script src="io/ppt-import-adapter.js?v=1.0.0-beta.10"></script>
-  <script src="io/file-controller.js?v=1.0.0-beta.10"></script>
-  <script src="io/recovery-controller.js?v=1.0.0-beta.10"></script>
-  <script src="app.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/register-service-worker.js?v=1.0.0-beta.10"></script>
+    <div class="drawer-section"><div class="drawer-section-label">Appearance</div><div class="appearance-switch" role="group" aria-label="App appearance"><button class="appearance-choice" type="button" data-appearance-choice="light">Light</button><button class="appearance-choice" type="button" data-appearance-choice="dark">Dark</button><button class="appearance-choice" type="button" data-appearance-choice="system">System</button></div></div>
+  </aside>
+
+  <div id="zoomPopover" class="zoom-popover" role="dialog" aria-label="Slide zoom" hidden><div class="zoom-head"><strong>Zoom</strong><output id="zoomOutput" for="zoomSlider">100%</output></div><div class="zoom-row"><button id="zoomOut" class="zoom-round" type="button" aria-label="Zoom out">−</button><input id="zoomSlider" type="range" min="50" max="200" step="5" value="100" aria-label="Zoom percentage"><button id="zoomIn" class="zoom-round" type="button" aria-label="Zoom in">+</button></div><div class="zoom-presets"><button id="fitWidth" type="button">Fit width</button><button id="fitPage" type="button">Fit page</button><button id="zoom100" type="button">100%</button></div><small>Manual 50–200% · fit modes recalculate on rotation</small></div>
+
+  <section id="presentOverlay" hidden tabindex="0" aria-label="Presentation mode" style="position:fixed;inset:0;z-index:300;background:#090909;display:grid;place-items:center;overflow:hidden"><button data-present-exit type="button" aria-label="Exit presentation" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:2;min-width:44px;min-height:44px;border:0;border-radius:12px;background:rgba(30,30,30,.72);color:white">×</button><div id="presentHost" style="position:relative;width:min(100vw,177.78vh);height:min(100vh,56.25vw);max-width:100vw;max-height:100vh;background:white"></div><div id="presentCounter" style="position:fixed;bottom:max(10px,env(safe-area-inset-bottom));right:max(12px,env(safe-area-inset-right));color:white;background:rgba(0,0,0,.45);padding:5px 8px;border-radius:8px;font-size:12px">1 / 1</div></section>
+</div>
+<script src="vendor/jszip.min.js"></script>
+<script src="runtime/frame/frame-menu.js"></script>
+<script src="runtime/platform/content-viewport-adapter.js"></script>
+<script src="state/appearance.js"></script>
+<script src="engine/presentation-session.js"></script>
+<script src="engine/presentation-policy.js"></script>
+<script src="state/history-controller.js"></script>
+<script src="state/selection-controller.js"></script>
+<script src="io/ppt-legacy-reader.js"></script>
+<script src="io/pptx-open-controller.js"></script>
+<script src="io/pptx-writer.js"></script>
+<script src="io/pptx-preservation-writer.js"></script>
+<script src="io/file-delivery.js"></script>
+<script src="io/save-controller.js"></script>
+<script src="view/slide-surface.js"></script>
+<script src="view/zoom-controller.js"></script>
+<script src="ui/slide-panel-controller.js"></script>
+<script src="ui/chrome-controller.js"></script>
+<script src="ui/zoom-controls.js"></script>
+<script src="ui/editing-controller.js"></script>
+<script src="presentation/slideshow-controller.js"></script>
+<script src="ui/command-controller.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

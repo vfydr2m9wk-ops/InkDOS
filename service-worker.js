@@ -1,229 +1,166 @@
 'use strict';
-// Update sequence 67: functional hardening and current-state cleanup.
-const CACHE_NAME='inkdos-shell-v1.0.0-beta.10-ui67';
-const CACHE_PREFIX='inkdos-shell-';
+const CACHE_NAME='inkdos-v2.0.0-seq68';
 const APP_SHELL=[
-  './',
-  './shared/product-config.js',
-  './shared/suite-shell.js',
-  './shared/recent-files.js',
-  './shared/app-shell.js',
-  './shared/responsive-command-menu.js',
-  './shared/app-home.js',
-  './shared/suite-shell.css',
-  './index.html',
-  './manifest.webmanifest',
-  './modules/module-registry.js',
-  './modules/module-loader.js',
-  './modules/module-config.json',
-  './modules/module-schema.json',
-  './shared/hub.css',
-  './shared/ui/refinement-home.css',
-  './shared/ui/app-shell.css',
-  './shared/ui/app-home.css',
-  './shared/office-shell.css',
-  './shared/office-shell.js',
-  './shared/ui/design-tokens.css',
-  './shared/ui/components.css',
-  './shared/ui/application-shell.js',
-  './shared/ui/shell-contract.json',
-  './shared/ui/workspace-layout.css',
-  './shared/ui/responsive-workspace.css',
-  './shared/ui/workspace-layout.js',
-  './shared/ui/workspace-panel-controller.js',
-  './shared/ui/document-ruler-model.js',
-  './shared/ui/document-ruler-drag-controller.js',
-  './shared/ui/document-session-controller.js',
-  './shared/ui/visual-foundation.css',
-  './shared/ui/visual.css',
-  './shared/ui/content.css',
-  './shared/ui/workspace.css',
-  './shared/ui/polish.css',
-  './shared/office-runtime.js',
-  './shared/file-lifecycle.js',
-  './shared/local-recovery.js',
-  './shared/file-router.js',
-  './shared/formula-engine.js',
-  './shared/safe-dom.js',
-  './shared/register-service-worker.js',
-  './shared/vendor/jszip.min.js',
-  './shared/vendor/pako_inflate.min.js',
-  './assets/icons/office.png',
-  './assets/icons/documents.png',
-  './assets/icons/spreadsheets.png',
-  './assets/icons/presentations.png',
-  './assets/icons/pdf.png',
-  './assets/icons/office.svg',
-  './assets/icons/documents.svg',
-  './assets/icons/spreadsheets.svg',
-  './assets/icons/presentations.svg',
-  './assets/icons/pdf.svg',
-  './assets/icons/epub.svg',
-  './assets/icons/epub.png',
-  './assets/icons/txt.svg',
-  './assets/icons/txt.png',
-  './assets/icons/icon-catalog.json',
-  './apps/documents/module.json',
-  './apps/documents/index.html',
-  './apps/documents/styles.css',
-  './apps/documents/drawing-layout.js',
-  './apps/documents/docx-parser.js',
-  './apps/documents/docx-writer.js',
-  './apps/documents/app.js',
-  './apps/spreadsheets/module.json',
-  './apps/spreadsheets/index.html',
-  './apps/spreadsheets/styles.css',
-  './apps/spreadsheets/xls-biff8-engine.js',
-  './apps/spreadsheets/worksheet-package.js',
-  './apps/spreadsheets/xlsx-engine.js',
-  './apps/spreadsheets/worksheet-tabs.js',
-  './apps/spreadsheets/formula-integrity.js',
-  './apps/spreadsheets/app.js',
-  './apps/spreadsheets/formula-model.js',
-  './apps/spreadsheets/formula-session.js',
-  './apps/spreadsheets/formula-safety.js',
-  './apps/spreadsheets/history-controller.js',
-  './apps/spreadsheets/formula-reference.css',
-  './apps/spreadsheets/formula-reference.js',
-  './apps/spreadsheets/formula-editor.css',
-  './apps/spreadsheets/formula-editor.js',
-  './apps/presentations/module.json',
-  './apps/presentations/index.html',
-  './apps/presentations/styles.css',
-  './apps/presentations/stability.css',
-  './apps/presentations/engine/compatibility.js',
-  './apps/presentations/engine/background-resolver.js',
-  './apps/presentations/state/selection-controller.js',
-  './apps/presentations/state/history-controller.js',
-  './apps/presentations/ui/inspector-controller.js',
-  './apps/presentations/ui/thumbnails-controller.js',
-  './apps/presentations/ui/presenter-notes-controller.js',
-  './apps/presentations/presentation/slideshow-controller.js',
-  './apps/presentations/io/pptx-write-adapter.js',
-  './apps/presentations/io/ppt-import-adapter.js',
-  './apps/presentations/io/file-controller.js',
-  './apps/presentations/io/recovery-controller.js',
-  './apps/presentations/app.js',
-  './apps/pdf/module.json',
-  './apps/pdf/index.html',
-  './apps/pdf/styles.css',
-  './apps/pdf/responsive-reflow.css',
-  './apps/pdf/fullscreen-mobile.css',
-  './apps/pdf/text-selection-review.js',
-  './apps/pdf/flatten-export.css',
-  './apps/pdf/flatten-export.js',
-  './apps/pdf/io/save-controller.js',
-  './apps/pdf/review/annotation-layer.js',
-  './apps/pdf/review/review-controller.js',
-  './apps/pdf/viewer/navigation-controller.js',
-  './apps/pdf/viewer/page-renderer.js',
-  './apps/pdf/viewer/responsive-controller.js',
-  './apps/pdf/viewer/fullscreen-controller.js',
-  './apps/pdf/app.js',
-  './apps/txt/module.json',
-  './apps/txt/index.html',
-  './apps/txt/styles.css',
-  './apps/txt/app.js',
-  './apps/txt/history-controller.js',
-  './apps/txt/find-controller.js',
-  './apps/txt/recovery-controller.js',
-  './apps/epub/module.json',
-  './apps/epub/index.html',
-  './apps/epub/styles.css',
-  './apps/epub/epub-parser.js',
-  './apps/epub/app.js'
-  ,'./shared/vendor/pdfjs/pdf.min.js'
-  ,'./shared/vendor/pdfjs/pdf.worker.min.js'
+  "./index.html",
+  "./manifest.webmanifest",
+  "./assets/home.css",
+  "./assets/icons/office.svg",
+  "./assets/icons/office.png",
+  "./assets/icons/pdf.svg",
+  "./assets/icons/documents.svg",
+  "./assets/icons/spreadsheets.svg",
+  "./assets/icons/presentations.svg",
+  "./assets/icons/txt.svg",
+  "./assets/icons/epub.svg",
+  "./apps/documents/app.js",
+  "./apps/documents/assets/documents.svg",
+  "./apps/documents/engine/document-session.js",
+  "./apps/documents/engine/document-state.js",
+  "./apps/documents/engine/docx-parser.js",
+  "./apps/documents/engine/page-spec.js",
+  "./apps/documents/index.html",
+  "./apps/documents/io/docx-writer.js",
+  "./apps/documents/io/file-delivery.js",
+  "./apps/documents/io/file-open-controller.js",
+  "./apps/documents/io/package-reader.js",
+  "./apps/documents/io/save-controller.js",
+  "./apps/documents/runtime/frame/app-frame.css",
+  "./apps/documents/runtime/frame/frame-menu.js",
+  "./apps/documents/runtime/platform/content-viewport-adapter.js",
+  "./apps/documents/runtime/tokens/base.css",
+  "./apps/documents/state/appearance.js",
+  "./apps/documents/ui/chrome-controller.js",
+  "./apps/documents/ui/command-controller.js",
+  "./apps/documents/ui/editor-controller.js",
+  "./apps/documents/ui/editor.css",
+  "./apps/documents/ui/navigation-panel.js",
+  "./apps/documents/ui/ruler-controller.js",
+  "./apps/documents/ui/session-dialog.js",
+  "./apps/documents/ui/zoom-controls.js",
+  "./apps/documents/vendor/jszip.min.js",
+  "./apps/documents/vendor/pako_inflate.min.js",
+  "./apps/documents/view/document-surface.css",
+  "./apps/documents/view/drawing-layout.js",
+  "./apps/documents/view/page-surface.js",
+  "./apps/documents/view/pagination-engine.js",
+  "./apps/documents/view/zoom-controller.js",
+  "./apps/spreadsheets/app.js",
+  "./apps/spreadsheets/assets/spreadsheets.svg",
+  "./apps/spreadsheets/engine/formula/arithmetic.js",
+  "./apps/spreadsheets/engine/formula/evaluator.js",
+  "./apps/spreadsheets/engine/geometry/grid-geometry.js",
+  "./apps/spreadsheets/engine/history.js",
+  "./apps/spreadsheets/engine/selection-model.js",
+  "./apps/spreadsheets/engine/workbook-editor.js",
+  "./apps/spreadsheets/engine/workbook-session.js",
+  "./apps/spreadsheets/index.html",
+  "./apps/spreadsheets/io/file-delivery.js",
+  "./apps/spreadsheets/io/file-open-controller.js",
+  "./apps/spreadsheets/io/package-validator.js",
+  "./apps/spreadsheets/io/save-controller.js",
+  "./apps/spreadsheets/io/worksheet-package.js",
+  "./apps/spreadsheets/io/xls-biff8-engine.js",
+  "./apps/spreadsheets/io/xlsx-engine.js",
+  "./apps/spreadsheets/module.json",
+  "./apps/spreadsheets/runtime/frame/app-frame.css",
+  "./apps/spreadsheets/runtime/frame/frame-menu.js",
+  "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js",
+  "./apps/spreadsheets/runtime/tokens/base.css",
+  "./apps/spreadsheets/state/appearance.js",
+  "./apps/spreadsheets/ui/chrome-controller.js",
+  "./apps/spreadsheets/ui/editor-controller.js",
+  "./apps/spreadsheets/ui/editor-toolbar.css",
+  "./apps/spreadsheets/ui/file-menu-controller.js",
+  "./apps/spreadsheets/ui/formula-bar.js",
+  "./apps/spreadsheets/ui/session-dialog.js",
+  "./apps/spreadsheets/ui/worksheet-tabs.js",
+  "./apps/spreadsheets/ui/zoom-controls.js",
+  "./apps/spreadsheets/vendor/LICENSE-JSZIP.txt",
+  "./apps/spreadsheets/vendor/LICENSE-PAKO.txt",
+  "./apps/spreadsheets/vendor/jszip.min.js",
+  "./apps/spreadsheets/vendor/pako_inflate.min.js",
+  "./apps/spreadsheets/view/grid-surface.css",
+  "./apps/spreadsheets/view/grid-surface.js",
+  "./apps/spreadsheets/view/zoom-controller.js",
+  "./apps/presentations/app.js",
+  "./apps/presentations/assets/presentations.png",
+  "./apps/presentations/engine/presentation-policy.js",
+  "./apps/presentations/engine/presentation-session.js",
+  "./apps/presentations/index.html",
+  "./apps/presentations/io/file-delivery.js",
+  "./apps/presentations/io/ppt-legacy-reader.js",
+  "./apps/presentations/io/pptx-open-controller.js",
+  "./apps/presentations/io/pptx-preservation-writer.js",
+  "./apps/presentations/io/pptx-writer.js",
+  "./apps/presentations/io/save-controller.js",
+  "./apps/presentations/presentation/slideshow-controller.js",
+  "./apps/presentations/runtime/frame/app-frame.css",
+  "./apps/presentations/runtime/frame/frame-menu.js",
+  "./apps/presentations/runtime/platform/content-viewport-adapter.js",
+  "./apps/presentations/runtime/tokens/base.css",
+  "./apps/presentations/state/appearance.js",
+  "./apps/presentations/state/history-controller.js",
+  "./apps/presentations/state/selection-controller.js",
+  "./apps/presentations/ui/chrome-controller.js",
+  "./apps/presentations/ui/command-controller.js",
+  "./apps/presentations/ui/editing-controller.js",
+  "./apps/presentations/ui/editor.css",
+  "./apps/presentations/ui/slide-panel-controller.js",
+  "./apps/presentations/ui/zoom-controls.js",
+  "./apps/presentations/vendor/jszip.min.js",
+  "./apps/presentations/view/presentation-surface.css",
+  "./apps/presentations/view/slide-surface.js",
+  "./apps/presentations/view/zoom-controller.js",
+  "./apps/txt/app.js",
+  "./apps/txt/assets/ASSET-PROVENANCE.txt",
+  "./apps/txt/assets/txt.svg",
+  "./apps/txt/editor/editor-controller.js",
+  "./apps/txt/editor/outline-model.js",
+  "./apps/txt/export-verify.js",
+  "./apps/txt/history.js",
+  "./apps/txt/index.html",
+  "./apps/txt/io/txt-file-controller.js",
+  "./apps/txt/page.template.html",
+  "./apps/txt/runtime/contracts/document-session.js",
+  "./apps/txt/runtime/contracts/render-request.js",
+  "./apps/txt/runtime/contracts/viewport-metrics.js",
+  "./apps/txt/runtime/frame/app-frame.css",
+  "./apps/txt/runtime/frame/app-frame.js",
+  "./apps/txt/runtime/platform/content-viewport-adapter.js",
+  "./apps/txt/runtime/services/file-delivery.js",
+  "./apps/txt/runtime/services/recovery-store.js",
+  "./apps/txt/runtime/tokens/base.css",
+  "./apps/txt/state/appearance.js",
+  "./apps/txt/state/txt-state.js",
+  "./apps/txt/styles.css",
+  "./apps/txt/txt-codec.js",
+  "./apps/txt/txt-policy.js",
+  "./apps/txt/ui/txt-controls.js",
+  "./apps/epub/annotation-store.js",
+  "./apps/epub/annotations.js",
+  "./apps/epub/app.js",
+  "./apps/epub/assets/epub.svg",
+  "./apps/epub/book-model.js",
+  "./apps/epub/content-projector.js",
+  "./apps/epub/epub-writer.js",
+  "./apps/epub/index.html",
+  "./apps/epub/io/file-delivery.js",
+  "./apps/epub/package-reader.js",
+  "./apps/epub/renderer.js",
+  "./apps/epub/runtime/frame/app-frame.css",
+  "./apps/epub/runtime/frame/frame-menu.js",
+  "./apps/epub/runtime/tokens/base.css",
+  "./apps/epub/session/book-session.js",
+  "./apps/epub/state/appearance.js",
+  "./apps/epub/state/reading-state.js",
+  "./apps/epub/ui/reader-controls.css",
+  "./apps/epub/ui/reader-controls.js",
+  "./apps/epub/view/reader-viewport.js",
+  "./apps/epub/view/reader.css"
 ];
-const APP_SHELL_URLS=new Set(APP_SHELL.map(path=>new URL(path,self.registration.scope).href));
-const NAVIGATION_PATHS=new Set([
-  new URL('./index.html',self.registration.scope).pathname,
-  new URL('./apps/documents/index.html',self.registration.scope).pathname,
-  new URL('./apps/spreadsheets/index.html',self.registration.scope).pathname,
-  new URL('./apps/presentations/index.html',self.registration.scope).pathname,
-  new URL('./apps/pdf/index.html',self.registration.scope).pathname,
-  new URL('./apps/txt/index.html',self.registration.scope).pathname,
-  new URL('./apps/epub/index.html',self.registration.scope).pathname
-]);
-function canonicalCacheKey(request){
-  const url=new URL(request.url);
-  const canonical=new URL(url.href);
-  canonical.search='';
-  canonical.hash='';
-  if(APP_SHELL_URLS.has(canonical.href)||(request.mode==='navigate'&&NAVIGATION_PATHS.has(canonical.pathname))){
-    return new Request(canonical.href,{method:'GET'});
-  }
-  return request;
-}
-
-function isCacheableShellRequest(request){
-  const key=canonicalCacheKey(request);
-  return APP_SHELL_URLS.has(key.url);
-}
-async function installAppShell(){
-  await caches.delete(CACHE_NAME);
-  const cache=await caches.open(CACHE_NAME);
-  try{
-    await cache.addAll(APP_SHELL);
-  }catch(error){
-    await caches.delete(CACHE_NAME);
-    console.error('InkDOS app-shell installation failed; the incomplete cache was removed.',error);
-    throw error;
-  }
-}
-async function removeOldCaches(){
-  const keys=await caches.keys();
-  await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_NAME).map(key=>caches.delete(key)));
-}
-
-async function cacheResponse(cache,key,response){
-  try{
-    await cache.put(key,response);
-  }catch(error){
-    console.error('InkDOS could not update a cached application asset.',{url:key.url,error});
-  }
-}
-async function respondWithShell(request){
-  const key=canonicalCacheKey(request);
-  const cache=await caches.open(CACHE_NAME);
-  const cached=await cache.match(key);
-  if(cached&&!cached.ok){
-    await cache.delete(key);
-  }
-  try{
-    const response=await fetch(request);
-    if(response&&response.ok&&response.type!=='opaque')await cacheResponse(cache,key,response.clone());
-    return response;
-  }catch(error){
-    const fallback=await cache.match(key);
-    if(fallback)return fallback;
-    console.error('InkDOS could not load an application asset from the network or cache.',{url:request.url,error});
-    throw error;
-  }
-}
-self.addEventListener('install',event=>{
-  event.waitUntil(installAppShell().then(()=>self.skipWaiting()));
-});
-
-self.addEventListener('activate',event=>{
-  event.waitUntil(removeOldCaches().then(()=>self.clients.claim()));
-});
-self.addEventListener('fetch',event=>{
-  const request=event.request;
-  if(request.method!=='GET')return;
-  const url=new URL(request.url);
-  if(url.origin!==self.location.origin)return;
-  if(!isCacheableShellRequest(request))return;
-  event.respondWith(respondWithShell(request));
-});
-self.addEventListener('message',event=>{
-  const data=event.data||{};
-  if(data.type!=='inkdos:clear-app-cache')return;
-  event.waitUntil(caches.delete(CACHE_NAME).then(async()=>{
-    await installAppShell();
-    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdos:app-cache-reset',ok:true});
-  }).catch(error=>{
-    console.error('InkDOS app-cache recovery failed.',error);
-    if(event.source&&typeof event.source.postMessage==='function')event.source.postMessage({type:'inkdos:app-cache-reset',ok:false});
-  }));
-});
+const NAVIGATION_PATHS=new Set(["./index.html", "./apps/documents/index.html", "./apps/spreadsheets/index.html", "./apps/presentations/index.html", "./apps/txt/index.html", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
+const KNOWN=new Set(APP_SHELL.map(p=>new URL(p,self.registration.scope).href));
+function key(request){const u=new URL(request.url);u.search='';u.hash='';return new Request(u.href,{method:'GET'})}
+self.addEventListener('install',event=>event.waitUntil((async()=>{const c=await caches.open(CACHE_NAME);await c.addAll(APP_SHELL);await self.skipWaiting()})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const name of await caches.keys())if(name!==CACHE_NAME&&name.startsWith('inkdos-'))await caches.delete(name);await self.clients.claim()})()));
+self.addEventListener('fetch',event=>{const r=event.request;if(r.method!=='GET')return;const u=new URL(r.url);if(u.origin!==self.location.origin)return;const k=key(r);const known=KNOWN.has(k.url)||(r.mode==='navigate'&&NAVIGATION_PATHS.has(new URL(k.url).pathname));if(!known)return;event.respondWith((async()=>{const c=await caches.open(CACHE_NAME);try{const response=await fetch(r);if(response&&response.ok&&response.type!=='opaque')await c.put(k,response.clone());return response}catch(error){const cached=await c.match(k);if(cached)return cached;throw error}})())});

@@ -1,13 +1,10 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "version": "1.0.0-beta.10",
-  "distribution": "complete source tree",
+  "version": "2.0.0",
+  "generatedAt": "2026-09-07",
   "entryPoint": "index.html",
-  "requiresBuild": false,
-  "generatedAt": "2026-09-04",
-  "publicationBootstrapRequired": false,
-  "vendorLock": "VENDOR_SOURCES.json",
-  "updateWorkflow": ".github/workflows/apply-inkdos-update.yml",
-  "workflowPolicy": "validated candidate; update ZIPs cannot modify GitHub workflows"
+  "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
+  "sourceLock": "SOURCE_LOCK.json",
+  "updateWorkflow": ".github/workflows/apply-inkdos-update.yml"
 }

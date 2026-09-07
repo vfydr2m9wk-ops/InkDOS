@@ -1,0 +1,26 @@
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};
+const $=id=>document.getElementById(id);
+function collect(){return {menuBtn:$('menuBtn'),menu:$('moreMenu'),backdrop:$('backdrop'),closeMenu:$('closeMenuBtn'),newBtn:$('newBtn'),openBtn:$('openBtn'),saveBtn:$('saveBtn'),shareBtn:$('shareBtn'),fileInput:$('fileInput'),undoBtn:$('undoBtn'),redoBtn:$('redoBtn'),wrap:$('wrapBtn'),font:$('fontSize'),fontDown:$('fontDownBtn'),fontUp:$('fontUpBtn'),outdent:$('outdentBtn'),indent:$('indentBtn'),listBtn:$('listBtn'),listMenu:$('listMenu'),findBtn:$('findBtn'),findbar:$('findbar'),findInput:$('findInput'),findPrev:$('findPrev'),findNext:$('findNext'),findClose:$('findClose'),findStatus:$('findStatus'),selectAll:$('selectAllBtn'),copy:$('copyBtn'),paste:$('pasteBtn'),toolbar:$('toolbar'),title:$('docTitle'),dirty:$('dirtyDot'),editor:$('editor'),surface:$('surface'),status:$('status'),cursor:$('cursorState'),counts:$('counts'),encoding:$('encoding'),lineEnding:$('lineEnding'),checkpoint:$('checkpointState'),export:$('exportState'),modalBackdrop:$('modalBackdrop'),discardDialog:$('discardDialog'),discardMessage:$('discardMessage'),discardCancel:$('discardCancel'),discardContinue:$('discardContinue')}}
+function create(E=collect()){
+  function positionListMenu(){const r=E.listBtn.getBoundingClientRect(),menu=E.listMenu;menu.hidden=false;menu.style.left=Math.max(8,Math.min(innerWidth-350,r.left))+'px';menu.style.top=Math.min(innerHeight-220,r.bottom+6)+'px';E.listBtn.setAttribute('aria-expanded','true')}
+  function closeListMenu(){E.listMenu.hidden=true;E.listBtn.setAttribute('aria-expanded','false')}
+  function toggleListMenu(){if(E.listMenu.hidden)positionListMenu();else closeListMenu()}
+  function bind({editor,files,state},frameMenu){
+    E.editor.addEventListener('input',editor.markChanged);for(const ev of ['keyup','click','select'])E.editor.addEventListener(ev,editor.updateCursor);
+    E.editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.changeIndent(e.shiftKey?-1:1);return}if(e.key==='Enter'&&!e.shiftKey&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&editor.continueListOnEnter())e.preventDefault()});
+    E.title.addEventListener('change',editor.handleTitleChange);
+    E.newBtn.onclick=()=>{frameMenu.close();files.newDoc()};E.openBtn.onclick=()=>{frameMenu.close();E.fileInput.click()};E.fileInput.onchange=()=>files.openFile(E.fileInput.files[0]).catch(e=>editor.setStatus(e.message,'state-error')).finally(()=>E.fileInput.value='');E.saveBtn.onclick=()=>{frameMenu.close();files.save().catch(e=>editor.setStatus('Export failed: '+e.message,'state-error'))};E.shareBtn.onclick=()=>{frameMenu.close();files.shareCurrent().catch(e=>editor.setStatus('Share failed: '+e.message,'state-error'))};
+    E.undoBtn.onclick=editor.doUndo;E.redoBtn.onclick=editor.doRedo;E.wrap.onclick=()=>editor.setWrap(!state.wrap);E.font.addEventListener('change',()=>editor.setViewFont(E.font.value));E.font.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();editor.setViewFont(E.font.value);E.editor.focus()}});E.fontDown.onclick=()=>editor.adjustFont(-1);E.fontUp.onclick=()=>editor.adjustFont(1);
+    E.outdent.onclick=()=>editor.changeIndent(-1);E.indent.onclick=()=>editor.changeIndent(1);E.listBtn.onclick=toggleListMenu;for(const btn of E.listMenu.querySelectorAll('[data-list-family]'))btn.onclick=()=>{editor.applyListFamily(btn.dataset.listFamily);closeListMenu()};
+    E.findBtn.onclick=()=>editor.toggleFind();E.findClose.onclick=()=>editor.toggleFind(false);E.findNext.onclick=()=>editor.find(1);E.findPrev.onclick=()=>editor.find(-1);E.findInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();editor.find(e.shiftKey?-1:1)}if(e.key==='Escape'){e.stopPropagation();editor.toggleFind(false)}});
+    E.selectAll.onclick=editor.selectAll;E.copy.onclick=()=>editor.copySelection();E.paste.onclick=()=>editor.pasteClipboard();
+    E.discardCancel.onclick=()=>files.resolveDiscard(false);E.discardContinue.onclick=()=>files.resolveDiscard(true);E.modalBackdrop.onclick=()=>files.resolveDiscard(false);
+    document.addEventListener('pointerdown',e=>{if(!E.listMenu.hidden&&!E.listMenu.contains(e.target)&&!E.listBtn.contains(e.target))closeListMenu()});
+    document.addEventListener('keydown',e=>{const mod=e.metaKey||e.ctrlKey;if(e.key==='Escape'&&state.discardResolver){e.preventDefault();files.resolveDiscard(false);return}if(e.key==='Escape'&&!E.listMenu.hidden){e.preventDefault();closeListMenu();return}if(e.key==='Escape'&&frameMenu.isOpen){e.preventDefault();frameMenu.close();return}if(mod&&e.key.toLowerCase()==='f'){e.preventDefault();editor.toggleFind(true)}if(mod&&e.key.toLowerCase()==='s'){e.preventDefault();files.save().catch(()=>{})}if(mod&&e.key.toLowerCase()==='n'){e.preventDefault();files.newDoc()}if(mod&&e.key.toLowerCase()==='o'){e.preventDefault();E.fileInput.click()}});
+    g.addEventListener('resize',()=>{if(!E.listMenu.hidden)closeListMenu()});g.addEventListener('pagehide',()=>{if(state.loaded&&state.session.dirty)files.checkpoint().catch(()=>{})});
+  }
+  return Object.freeze({elements:E,bind,closeListMenu});
+}
+NS.TxtControls=Object.freeze({collect,create});
+})(globalThis);

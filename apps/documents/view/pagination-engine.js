@@ -1,0 +1,11 @@
+(function(global){'use strict';
+const NS=global.InkDOS2Documents=global.InkDOS2Documents||{};
+async function paginate(blocks,pageSpec){const models=[],tolerance=3;let current=[],activeSpec=NS.PageSpec.normalize((blocks[0]&&blocks[0].pageSpec)||pageSpec),measure=null,content=null;
+ function applyMeasureSpec(el,spec){spec=NS.PageSpec.normalize(spec);el.style.width=spec.widthPx+'px';el.style.height=spec.heightPx+'px';el.style.padding=spec.marginTopPx+'px '+spec.marginRightPx+'px '+spec.marginBottomPx+'px '+spec.marginLeftPx+'px';el.style.fontFamily=JSON.stringify(spec.fontFamily||'Calibri')+',Arial,sans-serif';el.style.fontSize=spec.fontSizePt+'pt';el.style.lineHeight=String(spec.lineHeight||1.15)}
+ function setup(spec){measure?.remove();measure=document.createElement('div');measure.className='page pagination-measure';applyMeasureSpec(measure,spec);measure.style.cssText+='position:fixed;visibility:hidden;pointer-events:none;left:-30000px;top:0;box-shadow:none;contain:none;overflow:visible;';content=document.createElement('div');content.className='pagination-content-measure';content.style.width=spec.contentWidthPx+'px';content.style.height='auto';content.style.minHeight='0';measure.appendChild(content);document.body.appendChild(measure)}
+ function commit(){if(!current.length)return;models.push({items:current,spec:activeSpec});current=[];content.innerHTML=''}
+ setup(activeSpec);
+ for(let i=0;i<blocks.length;i++){const block=blocks[i],spec=NS.PageSpec.normalize(block.pageSpec||activeSpec);if(block.sectionStart&&!NS.PageSpec.same(spec,activeSpec)){commit();activeSpec=spec;setup(activeSpec)}else if(block.sectionStart&&current.length)commit();if((block.hardPageBreakBefore||block.softPageBreakBefore)&&current.length)commit();const holder=document.createElement('div');holder.innerHTML=block.html;content.appendChild(holder);current.push({index:i,html:block.html,text:block.text,sourceIndex:block.sourceIndex,sourceSubIndex:block.sourceSubIndex});if(content.scrollHeight>activeSpec.contentHeightPx+tolerance&&current.length>1){current.pop();holder.remove();commit();content.appendChild(holder);current.push({index:i,html:block.html,text:block.text,sourceIndex:block.sourceIndex,sourceSubIndex:block.sourceSubIndex})}}
+ commit();measure?.remove();return models}
+NS.PaginationEngine=Object.freeze({paginate});
+})(globalThis);

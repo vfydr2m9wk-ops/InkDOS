@@ -1,13 +1,13 @@
 {
   "name": "InkDOS",
   "displayName": "InkDOS",
-  "version": "1.0.0-beta.10",
-  "releaseChannel": "beta",
-  "releaseName": "1.0 Beta 10",
-  "date": "2026-09-04",
+  "version": "2.0.0",
+  "releaseChannel": "stable",
+  "releaseName": "InkDOS 2.0 Core",
+  "date": "2026-09-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDOS/",
-  "status": "beta",
+  "status": "release",
   "components": {
     "documents": {
       "path": "apps/documents/index.html",
@@ -19,11 +19,7 @@
     },
     "presentations": {
       "path": "apps/presentations/index.html",
-      "format": "PPTX"
-    },
-    "pdf": {
-      "path": "apps/pdf/index.html",
-      "format": "PDF"
+      "format": "PPT / PPTX"
     },
     "txt": {
       "path": "apps/txt/index.html",
@@ -32,6 +28,13 @@
     "epub": {
       "path": "apps/epub/index.html",
       "format": "EPUB"
+    }
+  },
+  "plannedComponents": {
+    "pdf": {
+      "path": "apps/pdf/index.html",
+      "format": "PDF",
+      "status": "coming-soon"
     }
   }
 }

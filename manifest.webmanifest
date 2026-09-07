@@ -1,98 +1,45 @@
 {
-  "id": "./index.html",
-  "name": "InkDOS — Ink Desk Offline Suite",
+  "id": "./",
+  "name": "InkDOS",
   "short_name": "InkDOS",
-  "description": "Local. Offline. Private. DOCX, XLS/XLSX, PPTX, PDF, TXT and EPUB workspaces.",
+  "description": "Local-first offline productivity workspaces.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f6f8",
-  "theme_color": "#293548",
-  "lang": "en",
-  "categories": [
-    "productivity",
-    "utilities"
-  ],
+  "background_color": "#f2f5f8",
+  "theme_color": "#f2f5f8",
   "icons": [
     {
-      "src": "assets/icons/office.png",
+      "src": "./assets/icons/office.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icons/office.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "shortcuts": [
     {
       "name": "Documents",
-      "short_name": "Documents",
-      "url": "apps/documents/index.html",
-      "icons": [
-        {
-          "src": "assets/icons/documents.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
+      "url": "./apps/documents/index.html"
     },
     {
       "name": "Spreadsheets",
-      "short_name": "Spreadsheets",
-      "url": "apps/spreadsheets/index.html",
-      "icons": [
-        {
-          "src": "assets/icons/spreadsheets.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
+      "url": "./apps/spreadsheets/index.html"
     },
     {
       "name": "Presentations",
-      "short_name": "Presentations",
-      "url": "apps/presentations/index.html",
-      "icons": [
-        {
-          "src": "assets/icons/presentations.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "PDF Workspace",
-      "short_name": "PDF",
-      "url": "./apps/pdf/index.html",
-      "icons": [
-        {
-          "src": "./assets/icons/pdf.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
+      "url": "./apps/presentations/index.html"
     },
     {
       "name": "Plain Text",
-      "short_name": "TXT",
-      "url": "apps/txt/index.html",
-      "icons": [
-        {
-          "src": "assets/icons/txt.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
+      "url": "./apps/txt/index.html"
     },
     {
       "name": "EPUB Reader",
-      "short_name": "EPUB",
-      "url": "apps/epub/index.html",
-      "icons": [
-        {
-          "src": "assets/icons/epub.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
+      "url": "./apps/epub/index.html"
     }
   ]
 }

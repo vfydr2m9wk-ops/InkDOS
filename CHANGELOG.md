@@ -1,10 +1,10 @@
 # Changelog
 
-## 1.0.0-beta.10 — 1.0 Beta 10 (2026-09-04)
+## 2.0.0 — 2026-09-07
 
-- Added private IndexedDB recovery to Plain Text and removed the duplicate discard prompt when opening another TXT file.
-- Removed six obsolete root redirect launchers; canonical workspace URLs are now the only launch targets.
-- Merged the standalone start-action correction stylesheet into the canonical visual polish layer, reducing one stylesheet and six page requests.
-- Removed historical migration/refactor reports from the active tree and rebased architecture policy on current limits.
-- Normalized module/release metadata and first-party cache-busting to the current release.
-- Removed the final service-worker compatibility shim for the retired product cache/event namespace.
+- Clean-tree consolidation of the five frozen 2.0 apps.
+- New Home workspace selector with 3×2 wide layout and single-column phone layout.
+- Added one Home bridge to each app entry page; no other app runtime file changed.
+- PDF runtime intentionally absent; Home shows a Coming soon placeholder.
+- Removed dependency on the 1.x suite shell, recent-files runtime, module launcher and shared application runtime.
+- Added clean 2.0 release metadata, integrity locks, service worker and transactional updater.

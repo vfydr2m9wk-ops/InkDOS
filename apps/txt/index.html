@@ -1,245 +1,476 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,viewport-fit=cover"
-  >
-  <link rel="icon" href="../../assets/icons/txt.png">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#d9a514">
-  <meta
-    name="description"
-    content="InkDOS local plain-text viewer and editor."
-  >
-  <title>Untitled.txt — Plain Text</title>
-<link rel="stylesheet" href="../../shared/office-shell.css">
-  <link rel="stylesheet" href="styles.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/responsive-workspace.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/app-shell.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/app-home.css?v=1.0.0-beta.10">
-</head>
-<body class="office-product office-txt" data-inkdos-app="txt">
-  <header
-    class="txt-titlebar"
-    data-inkdos-shell-region="titlebar"
-    aria-label="Plain Text title bar"
-  >
-    <div class="title-actions title-actions-left">
-      <a
-        class="icon-btn home-btn"
-        href="../../index.html"
-        aria-label="InkDOS home"
-        title="InkDOS home"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"/>
-          <path d="M9 20v-6h6v6"/>
-        </svg>
-      </a>
-      <button
-        id="newBtn"
-        class="icon-btn"
-        type="button"
-        aria-label="New text file"
-        title="New"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
-      </button>
-      <button
-        id="openBtn"
-        class="icon-btn"
-        type="button"
-        aria-label="Open text file"
-        title="Open"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/>
-          <path d="M3.5 10h17"/>
-        </svg>
-      </button>
-      <span class="toolbar-separator" aria-hidden="true"></span>
-      <button
-        id="undoBtn"
-        class="icon-btn"
-        type="button"
-        aria-label="Undo"
-        title="Undo"
-        disabled
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m9 7-4 4 4 4"/>
-          <path d="M5 11h8a6 6 0 0 1 6 6"/>
-        </svg>
-      </button>
-      <button
-        id="redoBtn"
-        class="icon-btn"
-        type="button"
-        aria-label="Redo"
-        title="Redo"
-        disabled
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m15 7 4 4-4 4"/>
-          <path d="M19 11h-8a6 6 0 0 0-6 6"/>
-        </svg>
-      </button>
-    </div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="color-scheme" content="light dark"><meta name="theme-color" content="#eef1f5"><title>InkDOS Plain Text 2.0</title><script>(function(){var m="system";try{m=localStorage.getItem("inkdos2:txt:appearance")||"system"}catch(_){}if(!/^(light|dark|system)$/.test(m))m="system";var d=m==="dark"||(m==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.appearance=m;document.documentElement.dataset.theme=d?"dark":"light"})();</script><style>:root{
+  color-scheme:light;
+  --bg:#ececec;--surface:#fff;--surface-2:#f5f5f5;--text:#111;--muted:#646464;
+  --edge:#c8c8c8;--edge-strong:#9f9f9f;--accent:#d2a514;--accent-soft:#fff6cf;
+  --danger:#9f1d1d;--shadow:0 10px 28px rgba(0,0,0,.12);
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+}
+html[data-theme="dark"]{color-scheme:dark;--bg:#11161c;--surface:#1c222a;--surface-2:#252d37;--text:#edf2f7;--muted:#aab5c3;--edge:#37414e;--edge-strong:#505c6b;--accent-soft:#3b3210;--shadow:0 10px 28px rgba(0,0,0,.4)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{font-family:var(--ui);background:var(--bg);color:var(--text)}button,input,select,textarea{font:inherit;color:inherit}button{touch-action:manipulation}
 
-    <div class="title-center">
-      <img
-        class="txt-app-icon"
-        src="../../assets/icons/txt.svg"
-        alt=""
-        aria-hidden="true"
-      >
-      <input
-        id="docTitle"
-        class="file-title-input"
-        type="text"
-        value="Untitled.txt"
-        aria-label="Text file name"
-        spellcheck="false"
-        autocomplete="off"
-      >
-      <span id="dirtyMark" class="dirty-mark" hidden aria-hidden="true">•</span>
-    </div>
+:root{
+  --txt-accent:#d9a514;--txt-accent-strong:#9a6c00;--txt-accent-soft:#fff7dc;
+  --txt-bg:#eef1f5;--txt-surface:#fff;--txt-surface-soft:#f7f8fa;
+  --txt-line:#d9dee7;--txt-line-strong:#c8ced8;--txt-text:#1b1f27;--txt-muted:#697386;
+  --txt-shadow:0 12px 32px rgba(15,23,42,.10),0 1px 0 rgba(255,255,255,.72) inset;
+  --txt-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --txt-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  --safe-l:max(16px,env(safe-area-inset-left));--safe-r:max(16px,env(safe-area-inset-right));
+  --safe-t:max(8px,env(safe-area-inset-top));--safe-b:max(8px,env(safe-area-inset-bottom));
 
-    <div class="title-actions title-actions-right">
-      <button
-        id="saveBtn"
-        class="icon-btn save-btn"
-        type="button"
-        aria-label="Save text file"
-        title="Save"
-        disabled
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 4h12l2 2v14H5z"/>
-          <path d="M8 4v6h8V4M8 20v-6h8v6"/>
-        </svg>
-      </button>
+  /* App skin -> app-private App Frame semantic contract. Geometry remains owned by runtime/frame/app-frame.css. */
+  --frame-bg:var(--txt-bg);--frame-surface:var(--txt-surface);--frame-surface-soft:var(--txt-surface-soft);
+  --frame-chrome:rgba(250,251,252,.96);--frame-chrome-fade:rgba(250,251,252,.94);--frame-line:var(--txt-line);--frame-line-strong:var(--txt-line-strong);
+  --frame-text:var(--txt-text);--frame-muted:var(--txt-muted);--frame-ui:var(--txt-ui);
+  --frame-safe-l:var(--safe-l);--frame-safe-r:var(--safe-r);--frame-safe-t:var(--safe-t);--frame-safe-b:var(--safe-b);
+  --frame-accent-soft:var(--txt-accent-soft);--frame-accent-strong:#a86f00;--frame-accent-focus:#d0ae47;
+  --frame-accent-ring:rgba(217,165,20,.16);--frame-accent-border:#e2c961;--frame-accent-text:#745200;
+  --frame-state-ok:#176b28;--frame-state-warn:#8b5d00;--frame-state-error:#9d1f1f;
+  --frame-app-icon-filter:drop-shadow(0 3px 7px rgba(169,121,0,.18));
+  --frame-control-inset:0 1px 0 rgba(255,255,255,.82) inset;--frame-divider:rgba(31,41,55,.08);
+  --frame-overlay:rgba(31,38,48,.38);--frame-panel-shadow:0 22px 58px rgba(15,23,42,.24);
+}
+html[data-theme="dark"]{
+  --txt-accent-soft:#3b3210;--txt-bg:#11161c;--txt-surface:#1c222a;--txt-surface-soft:#252d37;
+  --txt-line:#37414e;--txt-line-strong:#505c6b;--txt-text:#edf2f7;--txt-muted:#aab5c3;
+  --txt-shadow:0 12px 32px rgba(0,0,0,.38),0 1px 0 rgba(255,255,255,.035) inset;
+  --frame-chrome:rgba(20,26,33,.98);--frame-chrome-fade:rgba(20,26,33,.96);
+  --frame-accent-soft:#3b3210;--frame-accent-strong:#e0b935;--frame-accent-focus:#d5b43f;
+  --frame-accent-ring:rgba(217,165,20,.20);--frame-accent-border:#695c29;--frame-accent-text:#f3d872;
+  --frame-state-ok:#7fd391;--frame-state-warn:#e1bc64;--frame-state-error:#ff8f8f;
+  --frame-control-inset:0 1px 0 rgba(255,255,255,.035) inset;--frame-divider:rgba(255,255,255,.08);
+  --frame-overlay:rgba(0,0,0,.56);--frame-panel-shadow:0 22px 58px rgba(0,0,0,.46);
+}
+
+/* TXT toolbar controls. The toolbar container/buttons belong to the shared frame. */
+.size-chip{height:42px;min-width:69px;flex:0 0 auto;padding:0 9px;border:1px solid var(--txt-line);border-radius:11px;background:var(--txt-surface);display:flex;align-items:center;justify-content:center;gap:5px;color:var(--txt-muted);font-variant-numeric:tabular-nums}.size-chip input{appearance:textfield;-moz-appearance:textfield;border:0;outline:0;background:transparent;padding:0;margin:0;color:var(--txt-text);font-weight:700;text-align:center;width:34px;min-width:34px;font:inherit;font-variant-numeric:tabular-nums}.size-chip input::-webkit-outer-spin-button,.size-chip input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.size-chip span{pointer-events:none}
+.findbar{height:42px;display:flex;align-items:center;gap:6px;flex:0 0 auto}.findbar[hidden]{display:none!important}.findbar input{height:40px;width:190px;min-width:150px;border:1px solid var(--txt-line);border-radius:10px;background:var(--txt-surface);padding:0 10px;outline:none}.findbar input:focus{border-color:#d0ae47;box-shadow:0 0 0 3px rgba(217,165,20,.12)}.find-status{min-width:30px;color:var(--txt-muted);font-size:12px}
+
+/* Content boundary: ContentViewport owns available content space; textarea owns document scroll. */
+.content-viewport{min-height:0;min-width:0;overflow:hidden;padding:18px max(18px,var(--safe-r)) 18px max(18px,var(--safe-l));background:var(--txt-bg);position:relative}.stage{height:100%;width:min(1080px,100%);margin:0 auto}.editor-surface{height:100%;width:100%;background:var(--txt-surface);border:1px solid var(--txt-line);border-radius:16px;box-shadow:var(--txt-shadow);overflow:hidden;position:relative}
+#editor{--text-size:16px;width:100%;height:100%;min-width:0;min-height:0;resize:none;border:0;outline:0;padding:40px 54px 48px;overflow:auto;background:var(--txt-surface);color:var(--txt-text);font-family:var(--txt-mono);font-size:var(--text-size);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}#editor.no-wrap{white-space:pre;overflow-wrap:normal}#editor::selection{background:#c9ddff}
+
+@media(max-width:640px){
+  .size-chip{height:40px;min-width:62px;padding:0 7px}.findbar{height:40px}.findbar input{height:38px;width:160px;min-width:140px}
+  .content-viewport{padding:10px max(10px,var(--safe-r)) 10px max(10px,var(--safe-l))}.editor-surface{border-radius:13px;box-shadow:0 7px 20px rgba(15,23,42,.08)}#editor{padding:24px 20px 34px}
+}
+
+/* TXT plain-text structural editing: sequential outlines + free 4–28 pt view size + host-independent discard confirmation. */
+.list-tool{position:relative}
+.list-popover{position:fixed;z-index:90;width:min(340px,calc(100vw - 24px));padding:8px;background:var(--txt-surface);border:1px solid var(--txt-line);border-radius:15px;box-shadow:0 18px 48px rgba(15,23,42,.22)}
+.list-popover[hidden]{display:none!important}
+.list-choice{width:100%;min-height:58px;border:0;border-radius:11px;background:transparent;display:grid;grid-template-columns:88px 1fr;align-items:center;gap:9px;padding:7px 10px;text-align:left;cursor:pointer}
+.list-choice:hover,.list-choice:focus-visible{background:var(--txt-surface-soft);outline:none}
+.list-choice>span:last-child{display:grid;gap:2px}.list-choice strong{font-size:13px}.list-choice small{font-size:11px;color:var(--txt-muted);font-weight:500}
+.list-sample{font-family:var(--txt-mono);font-size:15px;color:var(--frame-accent-text);white-space:nowrap}
+.modal-backdrop{position:fixed;inset:0;background:rgba(31,38,48,.42);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);z-index:200}
+.modal-backdrop[hidden],.confirm-dialog[hidden]{display:none!important}
+.confirm-dialog{position:fixed;z-index:210;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,calc(100vw - 28px));background:var(--txt-surface);border:1px solid var(--txt-line);border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.28);padding:20px}
+.confirm-dialog h2{margin:0 0 8px;font-size:18px;line-height:1.25}.confirm-dialog p{margin:0;color:var(--txt-muted);font-size:13px;line-height:1.5}
+.confirm-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.confirm-btn{min-height:40px;border-radius:10px;padding:0 14px;border:1px solid var(--txt-line);background:var(--txt-surface);font-weight:700;cursor:pointer}.confirm-btn.secondary:hover{background:var(--txt-surface-soft)}.confirm-btn.danger{border-color:#d1aa36;background:var(--txt-accent-soft);color:#704f00}
+@media(max-width:640px){.list-popover{left:12px!important;right:12px!important;top:auto!important;bottom:calc(var(--safe-b) + 42px);width:auto}.confirm-actions{display:grid;grid-template-columns:1fr 1fr}.confirm-btn{width:100%}}
+@media(min-width:900px) and (pointer:fine){.size-chip{height:34px;min-width:60px;border-radius:9px;padding:0 7px;font-size:13px}.findbar{height:34px}.findbar input{height:32px;width:180px;border-radius:8px;font-size:13px}.content-viewport{padding-top:14px;padding-bottom:14px}#editor{padding:34px 48px 42px}.list-popover{width:min(320px,calc(100vw - 24px))}.confirm-btn{min-height:36px}}
+
+html[data-theme="dark"] #editor::selection{background:#36577f}
+
+/* InkDOS 2.0 App Frame — shell geometry and generic frame controls only.
+   Ownership rule: this file may style the frame/chrome, never an app's content surface. */
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--frame-bg);font-family:var(--frame-ui);color:var(--frame-text);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
+.app-frame{height:100dvh;min-height:100%;width:100%;max-width:100vw;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;background:var(--frame-bg);overflow:hidden}
+
+.framebar{min-height:58px;display:flex;align-items:center;padding:var(--frame-safe-t) var(--frame-safe-r) 8px var(--frame-safe-l);background:var(--frame-chrome);border-bottom:1px solid var(--frame-line);box-shadow:0 2px 10px rgba(15,23,42,.045);position:relative;z-index:30}
+.frame-left{display:flex;align-items:center;gap:9px;min-width:0;max-width:38%;position:relative;z-index:2}
+.menu-btn{width:42px;height:42px;min-width:42px;border:1px solid transparent;border-radius:12px;display:grid;place-items:center;background:transparent;cursor:pointer;transition:background .14s ease,border-color .14s ease,transform .08s ease}
+.menu-btn:hover,.menu-btn:focus-visible{background:var(--frame-surface-soft);border-color:var(--frame-line);outline:none}.menu-btn:active{transform:translateY(1px) scale(.98)}
+.menu-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round}
+.app-mark{display:flex;align-items:center;gap:7px;min-width:0;color:var(--frame-muted);font-weight:650;font-size:14px}.app-icon{width:31px;height:31px;flex:0 0 auto;filter:var(--frame-app-icon-filter,none)}.app-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-pill-wrap{position:absolute;left:50%;transform:translateX(-50%);width:min(420px,44vw);max-width:calc(100% - 220px);height:39px;z-index:1}
+.file-pill{width:100%;height:100%;border:1px solid var(--frame-line);border-radius:11px;background:var(--frame-surface);display:block;padding:0 28px 0 18px;font-weight:730;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:var(--frame-control-inset);outline:none}
+.file-pill:focus{border-color:var(--frame-accent-focus);box-shadow:0 0 0 3px var(--frame-accent-ring);text-align:left}.dirty-dot{position:absolute;right:10px;top:50%;transform:translateY(-55%);color:var(--frame-accent-strong);font-size:20px;line-height:1;pointer-events:none}
+
+.toolstrip-shell{background:var(--frame-chrome);border-bottom:1px solid var(--frame-line);position:relative;z-index:20;overflow:hidden}.toolstrip-shell::after{content:"";position:absolute;top:0;right:0;bottom:0;width:30px;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),var(--frame-chrome-fade))}
+.toolstrip{width:100%;max-width:100vw;min-width:0;height:54px;display:flex;flex-flow:row nowrap;align-items:center;gap:7px;overflow-x:scroll;overflow-y:hidden;white-space:nowrap;padding:6px calc(var(--frame-safe-r) + 22px) 6px var(--frame-safe-l);scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;cursor:grab}.toolstrip:active{cursor:grabbing}.toolstrip::-webkit-scrollbar{display:none}
+.tool-btn{width:42px;height:42px;min-width:42px;flex:0 0 42px;border:1px solid var(--frame-line);border-radius:11px;background:var(--frame-surface);display:grid;place-items:center;cursor:pointer;box-shadow:var(--frame-control-inset)}.tool-btn:hover,.tool-btn:focus-visible{background:var(--frame-surface-soft);outline:none;border-color:var(--frame-line-strong)}.tool-btn:disabled{opacity:.42;cursor:default}.tool-btn.active{background:var(--frame-accent-soft);border-color:var(--frame-accent-border);color:var(--frame-accent-text)}.tool-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tool-btn.text-glyph{font-size:17px;font-weight:750;letter-spacing:-.02em}.compact-tool{font-size:20px}.tool-sep{width:1px;height:28px;background:var(--frame-line);margin:0 2px;flex:0 0 1px}
+
+.statusbar{min-height:34px;display:flex;align-items:center;gap:0;padding:0 var(--frame-safe-r) var(--frame-safe-b) var(--frame-safe-l);background:var(--frame-chrome);border-top:1px solid var(--frame-line);font-size:12px;color:var(--frame-muted);white-space:nowrap;overflow-x:auto;scrollbar-width:none;font-variant-numeric:tabular-nums}.statusbar::-webkit-scrollbar{display:none}.status-item{height:34px;display:inline-flex;align-items:center;padding:0 12px;border-right:1px solid var(--frame-divider);flex:0 0 auto}.status-item:first-child{padding-left:0}.status-spacer{flex:1 1 auto;min-width:22px}.internal-state{display:none!important}.state-ok{color:var(--frame-state-ok)}.state-warn{color:var(--frame-state-warn)}.state-error{color:var(--frame-state-error)}
+
+.backdrop{position:fixed;inset:0;background:var(--frame-overlay);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:100}.drawer{position:fixed;z-index:110;top:calc(var(--frame-safe-t) + 58px);left:var(--frame-safe-l);width:min(330px,calc(100vw - var(--frame-safe-l) - var(--frame-safe-r)));max-height:calc(100dvh - var(--frame-safe-t) - var(--frame-safe-b) - 82px);overflow:auto;background:var(--frame-surface);border:1px solid var(--frame-line);border-radius:18px;box-shadow:var(--frame-panel-shadow);padding:12px}.drawer[hidden],.backdrop[hidden]{display:none!important}.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 5px 11px 7px;border-bottom:1px solid var(--frame-line);margin-bottom:6px}.drawer-title{display:flex;align-items:center;gap:8px;font-weight:760}.drawer-title .app-icon{width:31px;height:31px}.close-btn{width:36px;height:36px;border:0;border-radius:10px;background:transparent;display:grid;place-items:center;cursor:pointer}.close-btn:hover{background:var(--frame-surface-soft)}.close-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}.menu-list{display:grid;gap:3px}.menu-item{height:48px;border:0;border-radius:12px;background:transparent;display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;padding:0 11px;text-align:left;cursor:pointer;font-weight:650}.menu-item:hover,.menu-item:focus-visible{background:var(--frame-surface-soft);outline:none}.menu-item:disabled{opacity:.45;cursor:default}.menu-item svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.menu-item .hint{font-size:11px;font-weight:500;color:var(--frame-muted)}
+
+@media(max-width:640px){
+  .framebar{min-height:60px;padding-bottom:6px}.frame-left{gap:6px;max-width:105px}.app-name{display:none}.app-mark{gap:0}.app-icon{width:30px;height:30px}.menu-btn{width:40px;height:40px;min-width:40px}
+  .file-pill-wrap{height:40px;width:48vw;max-width:calc(100% - 196px);min-width:128px}.file-pill{padding:0 23px 0 9px;font-size:15px}.dirty-dot{right:7px}
+  .toolstrip{height:52px;padding-top:5px;padding-bottom:5px;gap:6px}.tool-btn{width:40px;height:40px;min-width:40px;flex-basis:40px;border-radius:10px}
+  .statusbar{font-size:11px}.status-item{height:32px;padding:0 9px}.status-detail{display:none}.drawer{top:calc(var(--frame-safe-t) + 62px);border-radius:17px}
+}
+@media(max-width:390px){.file-pill-wrap{width:47vw;max-width:164px;min-width:118px}.file-pill{font-size:14px}.frame-left{max-width:96px}.app-icon{width:28px;height:28px}}
+@media(max-width:340px){.file-pill-wrap{width:calc(100% - 196px);max-width:124px;min-width:118px}}
+@media(prefers-reduced-motion:reduce){.menu-btn{transition:none}}
+[hidden]{display:none!important}
+
+/* Desktop density contract D1 — local copy for TXT only. Touch/mobile geometry remains unchanged. */
+@media(min-width:900px) and (pointer:fine){
+  .framebar{min-height:46px;padding-top:4px;padding-bottom:4px}.frame-left{gap:7px}.menu-btn{width:34px;height:34px;min-width:34px;border-radius:9px}.menu-btn svg{width:18px;height:18px}.app-icon{width:26px;height:26px}.app-mark{font-size:13px}.file-pill-wrap{height:34px;width:min(420px,42vw)}.file-pill{border-radius:9px;font-size:14px}
+  .toolstrip{height:42px;padding-top:4px;padding-bottom:4px;gap:5px}.tool-btn{width:34px;height:34px;min-width:34px;flex-basis:34px;border-radius:9px}.tool-btn svg{width:17px;height:17px}.tool-btn.text-glyph{font-size:15px}.tool-sep{height:24px}
+  .statusbar{min-height:30px;font-size:11px}.status-item{height:30px;padding:0 10px}.drawer{top:calc(var(--frame-safe-t) + 48px);width:min(310px,calc(100vw - var(--frame-safe-l) - var(--frame-safe-r)));border-radius:14px;padding:10px}.drawer-title .app-icon{width:26px;height:26px}.close-btn{width:32px;height:32px}.menu-item{height:42px;border-radius:10px;font-size:13px}
+}
+
+/* App-local appearance selector. The controller is duplicated per app by design. */
+.menu-section{margin-top:9px;padding-top:10px;border-top:1px solid var(--frame-line)}
+.menu-section-label{padding:0 4px 7px;color:var(--frame-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.appearance-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--frame-surface-soft)}
+.appearance-choice{height:34px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--frame-muted);font-size:12px;font-weight:700;cursor:pointer}
+.appearance-choice.active{background:var(--frame-surface);border-color:var(--frame-line-strong);color:var(--frame-text);box-shadow:var(--frame-control-inset)}
+.appearance-choice:focus-visible{outline:2px solid var(--frame-accent-focus);outline-offset:1px}
+@media(min-width:900px) and (pointer:fine){.appearance-choice{height:30px;font-size:11px}}
+
+/* D3 visual normalization — generic frame geometry, aligned to the frozen Documents shell. */
+.framebar{min-height:calc(54px + var(--frame-safe-t));padding-top:var(--frame-safe-t);padding-bottom:5px;box-shadow:none}
+.frame-left{max-width:none}
+.title-icon{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);width:30px;height:30px;filter:var(--frame-app-icon-filter,none);pointer-events:none}
+.file-pill-wrap{width:min(420px,46vw);max-width:calc(100% - 150px);height:38px}
+.file-pill{background:color-mix(in srgb,var(--frame-chrome) 94%,transparent);padding:0 28px 0 12px;font-weight:650;box-shadow:none}
+.toolstrip-shell{box-shadow:none}.toolstrip{height:50px;padding-top:5px;padding-bottom:5px}
+.tool-btn{width:40px;height:40px;min-width:40px;flex-basis:40px;border-color:transparent;background:transparent;box-shadow:none}
+.tool-btn:hover,.tool-btn:focus-visible{background:var(--frame-surface-soft);border-color:var(--frame-line)}
+.tool-btn.active{background:var(--frame-accent-soft);border-color:transparent}
+.statusbar{min-height:calc(34px + var(--frame-safe-b));font-size:11px;gap:10px}.status-item{height:30px;padding:0 6px;border-right:0}.status-item:first-child{padding-left:0}
+.drawer-head{padding-bottom:8px}.menu-item{font-weight:600}
+@media(pointer:fine){
+  .framebar{min-height:calc(46px + var(--frame-safe-t));padding-top:var(--frame-safe-t);padding-bottom:4px}.menu-btn{width:36px;height:36px;min-width:36px}.menu-btn svg{width:19px;height:19px}.file-pill-wrap{height:34px}.title-icon{width:27px;height:27px}.toolstrip{height:42px;padding-top:4px;padding-bottom:4px}.tool-btn{width:34px;height:34px;min-width:34px;flex-basis:34px}.drawer{top:calc(var(--frame-safe-t) + 52px)}
+}
+@media(max-width:470px){.title-icon{display:none}.file-pill-wrap{width:50vw;max-width:calc(100% - 126px);min-width:118px}}
+</style></head>
+<body><script>(function(){window.addEventListener('error',function(e){var b=document.getElementById('runtimeError');if(!b){b=document.createElement('div');b.id='runtimeError';b.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;padding:10px 12px;border-radius:10px;background:#8f1d1d;color:white;font:13px -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.25)';document.body.appendChild(b)}b.textContent='Runtime error: '+(e.message||'unknown error')});})();</script>
+<svg class="svg-defs" aria-hidden="true"><defs><linearGradient id="inkdosTxtGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd75e"/><stop offset="1" stop-color="#e0a716"/></linearGradient></defs><symbol id="inkdosTxtIcon" viewBox="0 0 512 512"><rect x="24" y="24" width="464" height="464" rx="112" fill="url(#inkdosTxtGradient)"/><rect x="126" y="93" width="274" height="326" rx="35" fill="#fff8d6"/><path d="M174 93v326" stroke="#d89f12" stroke-width="16"/><path d="M116 150h26M116 211h26M116 272h26M116 333h26" stroke="#5c4a20" stroke-width="16" stroke-linecap="round"/><path d="M216 173h132M216 226h132M216 279h132M216 332h91" stroke="#6b5b31" stroke-width="16" stroke-linecap="round"/></symbol></svg>
+<div class="app-frame">
+  <header class="framebar" aria-label="Plain Text frame">
+    <div class="frame-left">
+      <button id="menuBtn" class="menu-btn" type="button" aria-label="Open general menu" title="Menu" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="menu-btn" href="../../index.html" aria-label="Home" title="Home" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></a>
     </div>
+    <div class="file-pill-wrap"><svg class="title-icon" aria-hidden="true"><use href="#inkdosTxtIcon"/></svg><input id="docTitle" class="file-pill" value="Untitled.txt" aria-label="File name" spellcheck="false" autocomplete="off"><span id="dirtyDot" class="dirty-dot" hidden aria-hidden="true">•</span></div>
   </header>
 
-  <div
-    class="txt-toolbar"
-    data-inkdos-shell-region="toolbar"
-    aria-label="Text display controls"
-  >
-    <button
-      id="wrapBtn"
-      class="tool-btn active"
-      type="button"
-      aria-pressed="true"
-    >
-      Wrap
-    </button>
-    <label class="font-size-control">
-      <span>Text size</span>
-      <select id="fontSize" aria-label="Text size">
-        <option value="14">14</option>
-        <option value="16" selected>16</option>
-        <option value="18">18</option>
-        <option value="20">20</option>
-        <option value="24">24</option>
-      </select>
-    </label>
-    <button id="findBtn" class="tool-btn" type="button">
-      Find
-    </button>
-    <div id="findBar" class="find-bar" hidden>
-      <input
-        id="findInput"
-        type="search"
-        placeholder="Find text"
-        aria-label="Find text"
-        autocomplete="off"
-      >
-      <button id="findPrevious" class="icon-btn compact" type="button" aria-label="Previous result">↑</button>
-      <button id="findNext" class="icon-btn compact" type="button" aria-label="Next result">↓</button>
-      <button id="findClose" class="icon-btn compact" type="button" aria-label="Close find">×</button>
-      <span id="findStatus" role="status" aria-live="polite"></span>
+  <div class="toolstrip-shell">
+    <div id="toolbar" class="toolstrip" tabindex="0" aria-label="Horizontally scrollable editing toolbar">
+      <button id="undoBtn" class="tool-btn" type="button" disabled aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="m9 7-4 4 4 4"/><path d="M5 11h8a6 6 0 0 1 6 6"/></svg></button>
+      <button id="redoBtn" class="tool-btn" type="button" disabled aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 4 4-4 4"/><path d="M19 11h-8a6 6 0 0 0-6 6"/></svg></button>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="wrapBtn" class="tool-btn active" type="button" aria-pressed="true" aria-label="Wrap long lines" title="Wrap"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h13a3 3 0 0 1 0 6h-4"/><path d="m15 13-3 3 3 3M4 20h6"/></svg></button>
+      <button id="fontDownBtn" class="tool-btn text-glyph" type="button" aria-label="Decrease editor view text size" title="Smaller editor text (view only)">A−</button>
+      <label class="size-chip" aria-label="Editor view text size"><input id="fontSize" type="number" min="4" max="28" step="1" value="16" inputmode="numeric" aria-label="Editor view text size from 4 to 28 points"><span>pt</span></label>
+      <button id="fontUpBtn" class="tool-btn text-glyph" type="button" aria-label="Increase editor view text size" title="Larger editor text (view only)">A+</button>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="outdentBtn" class="tool-btn" type="button" aria-label="Decrease paragraph indent" title="Decrease indent"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="m7 9-4 3 4 3"/></svg></button>
+      <button id="indentBtn" class="tool-btn" type="button" aria-label="Increase paragraph indent" title="Increase indent"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="m3 9 4 3-4 3"/></svg></button>
+      <button id="listBtn" class="tool-btn list-tool" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="List and outline style" title="List / outline"><svg viewBox="0 0 24 24"><path d="M9 6h10M9 12h10M9 18h10"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg></button>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="findBtn" class="tool-btn" type="button" aria-label="Find" title="Find"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg></button>
+      <div id="findbar" class="findbar" hidden><input id="findInput" type="search" placeholder="Find text" aria-label="Find text"><button id="findPrev" class="tool-btn compact-tool" type="button" aria-label="Previous match" title="Previous match"><svg viewBox="0 0 24 24"><path d="m6 14 6-6 6 6"/></svg></button><button id="findNext" class="tool-btn compact-tool" type="button" aria-label="Next match" title="Next match"><svg viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></svg></button><button id="findClose" class="tool-btn compact-tool" type="button" aria-label="Close find" title="Close find">×</button><span id="findStatus" class="find-status"></span></div>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="selectAllBtn" class="tool-btn" type="button" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></svg></button>
+      <button id="copyBtn" class="tool-btn" type="button" aria-label="Copy" title="Copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <button id="pasteBtn" class="tool-btn" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2M8 10h8M8 14h8"/></svg></button>
     </div>
   </div>
 
-  <main class="txt-main">
-    <section id="startScreen" class="txt-start-card" data-app-home>
-      <img
-        src="../../assets/icons/txt.svg"
-        class="start-icon"
-        alt=""
-        aria-hidden="true"
-      >
-      <h1>Plain Text</h1>
-      <p>
-        Create or open a local TXT file. Text stays on this device.
-      </p>
-      <div class="start-actions inkdos-start-actions">
-        <button id="newStartBtn" class="start-btn inkdos-start-button inkdos-start-new" type="button">
-          <span class="inkdos-start-icon inkdos-plus" aria-hidden="true">+</span><span>New document</span>
-        </button>
-        <button id="openStartBtn" class="start-btn inkdos-start-button inkdos-start-open" type="button">
-          <span class="inkdos-start-icon inkdos-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span>
-        </button>
-      </div>
-    </section>
+  <main class="content-viewport"><div class="stage"><section id="surface" class="editor-surface"><textarea id="editor" aria-label="Plain text editor" spellcheck="true" autocapitalize="sentences" autocomplete="off"></textarea></section></div></main>
 
-    <section id="editorShell" class="editor-shell" hidden>
-      <textarea
-        id="editor"
-        aria-label="Plain text editor"
-        spellcheck="true"
-        autocapitalize="sentences"
-        autocomplete="off"
-        placeholder="Start typing…"
-      ></textarea>
-    </section>
-  </main>
+  <footer class="statusbar"><span id="status" class="status-item">Ready</span><span id="cursorState" class="status-item">Ln 1, Col 1</span><span id="counts" class="status-item status-detail">1 line · 0 words · 0 chars</span><span class="status-spacer"></span><span id="encoding" class="status-item">UTF-8</span><span id="lineEnding" class="status-item">LF</span><span id="checkpointState" class="internal-state" aria-hidden="true"></span><span id="exportState" class="internal-state" aria-hidden="true"></span></footer>
+</div>
 
-  <footer class="txt-statusbar">
-    <span id="statusText" role="status" aria-live="polite">Ready</span>
-    <span id="lineCount">1 line</span>
-    <span id="wordCount">0 words</span>
-    <span id="characterCount">0 characters</span>
-    <span id="encodingLabel">UTF-8</span>
-    <span class="status-spacer"></span>
-    <div class="workspace-zoom" aria-label="Text workspace zoom">
-      <button id="txtZoomOut" type="button" aria-label="Zoom out">−</button>
-      <input id="txtZoomSlider" type="range" min="50" max="160" step="5" value="100" aria-label="Zoom level">
-      <button id="txtZoomIn" type="button" aria-label="Zoom in">+</button>
-      <button id="txtFit" type="button" aria-label="Fit editor">Fit</button>
-      <span id="txtZoomLabel" class="zoom-percent">100%</span>
-    </div>
-  </footer>
+<div id="backdrop" class="backdrop" hidden></div>
+<aside id="moreMenu" class="drawer" role="dialog" aria-modal="true" aria-label="Plain Text general menu" hidden>
+  <div class="drawer-head"><div class="drawer-title"><svg class="app-icon" aria-hidden="true"><use href="#inkdosTxtIcon"/></svg><span>Plain Text</span></div><button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="menu-list">
+    <button id="newBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>New document</span><span class="hint">⌘N</span></button>
+    <button id="openBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg><span>Open</span><span class="hint">⌘O</span></button>
+    <button id="saveBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg><span>Save copy</span><span class="hint">⌘S</span></button>
+    <button id="shareBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint"></span></button>
+  </div>
+  <div class="menu-section"><div class="menu-section-label">Appearance</div><div class="appearance-switch" role="group" aria-label="App appearance"><button class="appearance-choice" type="button" data-appearance-mode="light" aria-pressed="false">Light</button><button class="appearance-choice" type="button" data-appearance-mode="dark" aria-pressed="false">Dark</button><button class="appearance-choice" type="button" data-appearance-mode="system" aria-pressed="false">System</button></div></div>
+</aside>
+<input id="fileInput" type="file" accept=".txt,text/plain" hidden>
 
-  <input
-    id="fileInput"
-    type="file"
-    accept=".txt,text/plain"
-    hidden
-  >
+<div id="listMenu" class="list-popover" role="menu" aria-label="List and outline styles" hidden>
+  <button class="list-choice" type="button" role="menuitem" data-list-family="dash"><span class="list-sample">− &nbsp;• &nbsp;▪</span><span><strong>Dash outline</strong><small>dash → bullet → square</small></span></button>
+  <button class="list-choice" type="button" role="menuitem" data-list-family="bullet"><span class="list-sample">• &nbsp;◦ &nbsp;▪</span><span><strong>Bullets</strong><small>bullet → hollow bullet → square</small></span></button>
+  <button class="list-choice" type="button" role="menuitem" data-list-family="number"><span class="list-sample">1. &nbsp;a. &nbsp;−</span><span><strong>Numbered outline</strong><small>1, 2, 3 → a, b, c → dash</small></span></button>
+</div>
 
-  <script src="../../shared/office-runtime.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-lifecycle.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-router.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/office-shell.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/product-config.js?v=1.0.0-beta.10"></script>
-  <script src="../../modules/module-registry.js?v=1.0.0-beta.10"></script>
-  <script src="../../modules/module-loader.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/recent-files.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-router.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/app-shell.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/responsive-command-menu.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/app-home.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/local-recovery.js?v=1.0.0-beta.10"></script>
-  <script src="recovery-controller.js?v=1.0.0-beta.10"></script>
-  <script src="history-controller.js?v=1.0.0-beta.10"></script>
-  <script src="find-controller.js?v=1.0.0-beta.10"></script>
-  <script src="app.js?v=1.0.0-beta.10"></script>
-</body>
-</html>
+<div id="modalBackdrop" class="modal-backdrop" hidden></div>
+<section id="discardDialog" class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="discardTitle" hidden>
+  <h2 id="discardTitle">Unsaved text</h2>
+  <p id="discardMessage">This text file has changes that are not verified in a saved copy.</p>
+  <div class="confirm-actions"><button id="discardCancel" class="confirm-btn secondary" type="button">Cancel</button><button id="discardContinue" class="confirm-btn danger" type="button">Discard changes</button></div>
+</section>
+<script>document.documentElement.dataset.inkdosBundle='inline-d3';</script>
+
+<script>/* apps/txt/runtime/contracts/viewport-metrics.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+class ViewportMetrics{constructor({availableWidth,availableHeight,dpr=1,epoch=0,visibility='visible'}){this.availableWidth=Math.max(0,Number(availableWidth)||0);this.availableHeight=Math.max(0,Number(availableHeight)||0);this.dpr=Math.max(0.1,Number(dpr)||1);this.epoch=Math.max(0,Number(epoch)||0);this.visibility=visibility;Object.freeze(this)}get valid(){return this.availableWidth>0&&this.availableHeight>0}}
+NS.ViewportMetrics=ViewportMetrics;})(globalThis);
+</script>
+<script>/* apps/txt/runtime/contracts/document-session.js */
+(function(g){'use strict';
+  const NS=g.InkDOS2=g.InkDOS2||{};
+  class DocumentSession{
+    constructor(init={}){this.sessionId=init.sessionId||cryptoId();this.documentId=init.documentId||cryptoId();this.revision=0;this.operationId=0;this.sourceHash=init.sourceHash||null;this.dirty=false;this.checkpointRevision=null;this.exportRevision=null;}
+    beginOperation(){this.operationId+=1;return this.operationId;}
+    isCurrentOperation(id){return id===this.operationId;}
+    mutate(){this.revision+=1;this.dirty=true;return this.revision;}
+    sourceOpened(hash){this.revision=0;this.operationId+=1;this.sourceHash=hash||null;this.dirty=false;this.checkpointRevision=null;this.exportRevision=null;}
+    markCheckpoint(rev){if(Number.isInteger(rev)&&rev<=this.revision)this.checkpointRevision=rev;}
+    markExport(rev){if(Number.isInteger(rev)&&rev<=this.revision)this.exportRevision=rev;}
+    snapshot(){return Object.freeze({sessionId:this.sessionId,documentId:this.documentId,revision:this.revision,operationId:this.operationId,sourceHash:this.sourceHash,dirty:this.dirty,checkpointRevision:this.checkpointRevision,exportRevision:this.exportRevision});}
+  }
+  function cryptoId(){if(g.crypto&&g.crypto.randomUUID)return g.crypto.randomUUID();return 'id-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);}
+  NS.DocumentSession=DocumentSession;
+})(globalThis);
+</script>
+<script>/* apps/txt/runtime/contracts/render-request.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.RenderRequest=class RenderRequest{constructor({target,model,metrics,epoch,signal}){this.target=target;this.model=model;this.metrics=metrics;this.epoch=epoch;this.signal=signal||null;Object.freeze(this)}};})(globalThis);
+</script>
+<script>/* apps/txt/runtime/platform/content-viewport-adapter.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+class ContentViewportAdapter{constructor(el,onMetrics){this.el=el;this.onMetrics=onMetrics;this.epoch=0;this.ro=null;this.handle=this.measure.bind(this);if(g.ResizeObserver){this.ro=new ResizeObserver(this.handle);this.ro.observe(el)}g.addEventListener('resize',this.handle,{passive:true});this.measure()}
+measure(){const r=this.el.getBoundingClientRect();this.epoch+=1;const m=new NS.ViewportMetrics({availableWidth:r.width,availableHeight:r.height,dpr:g.devicePixelRatio||1,epoch:this.epoch,visibility:document.visibilityState});this.onMetrics&&this.onMetrics(m)}dispose(){this.ro&&this.ro.disconnect();g.removeEventListener('resize',this.handle)}}
+NS.ContentViewportAdapter=ContentViewportAdapter;})(globalThis);
+</script>
+<script>/* apps/txt/runtime/services/file-delivery.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+async function sha256(bytes){if(!(g.crypto&&g.crypto.subtle))return null;const buf=bytes instanceof ArrayBuffer?bytes:bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);const dig=await g.crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(dig),b=>b.toString(16).padStart(2,'0')).join('')}
+function safeName(name){let n=String(name||'Untitled.txt').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.txt$/i.test(n)?n:n+'.txt'}
+function toFile(blob,fileName){const name=safeName(fileName);try{return new File([blob],name,{type:blob.type||'text/plain',lastModified:Date.now()})}catch(_){return null}}
+function canShareFile(file){if(!file||!g.navigator||typeof navigator.share!=='function'||typeof navigator.canShare!=='function')return false;try{return !!navigator.canShare({files:[file]})}catch(_){return false}}
+function capabilities(file){return Object.freeze({fileSystem:typeof g.showSaveFilePicker==='function',share:canShareFile(file),download:!!(g.document&&g.URL&&URL.createObjectURL)})}
+function stamp(base){return Object.assign({requestedAt:new Date().toISOString(),deliveryConfirmed:false},base)}
+async function finishReceipt(base,blob){const bytes=new Uint8Array(await blob.arrayBuffer());return Object.freeze(Object.assign(stamp(base),{bytes:bytes.byteLength,sha256:await sha256(bytes)}))}
+function chooseRoute(file){const c=capabilities(file);const local=(g.location&&g.location.protocol==='file:');if(local&&c.share)return 'web-share';if(c.fileSystem)return 'file-system-access';if(c.share)return 'web-share';return 'download'}
+async function viaPicker(blob,fileName){let handlePromise;try{handlePromise=g.showSaveFilePicker({suggestedName:safeName(fileName),types:[{description:'Plain text',accept:{'text/plain':['.txt']}}]})}catch(e){throw deliveryError('picker-blocked','Native save picker is unavailable in this host.',e)}
+let handle;try{handle=await handlePromise}catch(e){if(e&&e.name==='AbortError')throw deliveryError('cancelled','Save cancelled.',e);throw deliveryError('picker-blocked','Native save picker was blocked by this host.',e)}
+try{const writable=await handle.createWritable();await writable.write(blob);await writable.close()}catch(e){throw deliveryError('write-failed','The selected file could not be written.',e)}
+return finishReceipt({fileName:safeName(fileName),method:'file-system-access',deliveryConfirmed:true},blob)}
+async function viaShare(blob,fileName,file){let sharePromise;try{sharePromise=navigator.share({files:[file],title:safeName(fileName)})}catch(e){throw deliveryError('share-blocked','System share is unavailable in this host.',e)}
+try{await sharePromise}catch(e){if(e&&e.name==='AbortError')throw deliveryError('cancelled','Share cancelled.',e);throw deliveryError('share-blocked','System share was blocked by this host.',e)}
+return finishReceipt({fileName:safeName(fileName),method:'web-share',deliveryConfirmed:false},blob)}
+async function viaDownload(blob,fileName){if(!(g.document&&g.URL&&URL.createObjectURL))throw deliveryError('download-unavailable','Download is unavailable in this host.');const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=safeName(fileName);a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000)}return finishReceipt({fileName:safeName(fileName),method:'download',deliveryConfirmed:false},blob)}
+function deliveryError(code,message,cause){const e=new Error(message);e.name='InkDOSDeliveryError';e.code=code;if(cause)e.cause=cause;return e}
+function share(blob,fileName){const file=toFile(blob,fileName);if(!canShareFile(file))return Promise.reject(deliveryError('share-unavailable','System file sharing is unavailable in this host.'));return viaShare(blob,fileName,file)}
+function deliver(blob,fileName){const file=toFile(blob,fileName);const route=chooseRoute(file);/* The native route is invoked before any await so transient user activation is still available. */
+if(route==='web-share')return viaShare(blob,fileName,file).catch(e=>{if(e.code==='cancelled')throw e;return viaDownload(blob,fileName).catch(()=>{throw e})});
+if(route==='file-system-access')return viaPicker(blob,fileName).catch(e=>{if(e.code==='cancelled')throw e;if(canShareFile(file))return viaShare(blob,fileName,file).catch(()=>viaDownload(blob,fileName).catch(()=>{throw e}));return viaDownload(blob,fileName).catch(()=>{throw e})});
+return viaDownload(blob,fileName)}
+NS.sha256=sha256;NS.FileDelivery={deliver,share,capabilities,safeName};})(globalThis);
+</script>
+<script>/* apps/txt/runtime/services/recovery-store.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};const DB='inkdos2-txt-recovery';const VER=1;const STORE='checkpoints';
+function openDb(){return new Promise((res,rej)=>{if(!g.indexedDB)return rej(new Error('IndexedDB unavailable'));const r=indexedDB.open(DB,VER);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'key'})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('IndexedDB open failed'))})}
+async function put(record){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(record);tx.oncomplete=()=>{db.close();res(record)};tx.onerror=()=>{db.close();rej(tx.error)}})}
+async function get(key){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(key);r.onsuccess=()=>{db.close();res(r.result||null)};r.onerror=()=>{db.close();rej(r.error)}})}
+async function remove(key){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(key);tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error)}})}
+class RecoveryStore{constructor(key='last'){this.key=key;this.generation=0}async checkpoint(payload){this.generation+=1;const rec={key:this.key,generation:this.generation,createdAt:Date.now(),payload};await put(rec);return rec}async latest(){return get(this.key)}async clear(){return remove(this.key)}}
+NS.RecoveryStore=RecoveryStore;})(globalThis);
+</script>
+<script>/* apps/txt/runtime/frame/app-frame.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};
+function centerError(el){if(!el)return null;const r=el.getBoundingClientRect();return Math.abs((r.left+r.width/2)-g.innerWidth/2)}
+function bindDrawer({trigger,drawer,backdrop,closeButton,beforeOpen}={}){
+  if(!trigger||!drawer||!backdrop||!closeButton)throw new Error('AppFrame.bindDrawer requires trigger, drawer, backdrop and closeButton');
+  function open(){if(typeof beforeOpen==='function')beforeOpen();drawer.hidden=false;backdrop.hidden=false;closeButton.focus()}
+  function close({restoreFocus=true}={}){drawer.hidden=true;backdrop.hidden=true;if(restoreFocus)trigger.focus({preventScroll:true})}
+  trigger.addEventListener('click',open);closeButton.addEventListener('click',()=>close());backdrop.addEventListener('click',()=>close());
+  return Object.freeze({open,close,get isOpen(){return !drawer.hidden}})
+}
+function bindHorizontalScroller(el){
+  if(!el)throw new Error('AppFrame.bindHorizontalScroller requires an element');
+  let dragging=false,startX=0,startScroll=0;
+  const down=e=>{if(e.pointerType==='mouse'&&!e.target.closest('button,input,select')){dragging=true;startX=e.clientX;startScroll=el.scrollLeft;el.setPointerCapture(e.pointerId)}};
+  const move=e=>{if(dragging)el.scrollLeft=startScroll-(e.clientX-startX)};
+  const stop=()=>{dragging=false};
+  const wheel=e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){el.scrollLeft+=e.deltaY;e.preventDefault()}};
+  el.addEventListener('pointerdown',down);el.addEventListener('pointermove',move);el.addEventListener('pointerup',stop);el.addEventListener('pointercancel',stop);el.addEventListener('wheel',wheel,{passive:false});
+  return Object.freeze({dispose(){el.removeEventListener('pointerdown',down);el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',stop);el.removeEventListener('pointercancel',stop);el.removeEventListener('wheel',wheel)}})
+}
+NS.AppFrame=Object.freeze({centerError,bindDrawer,bindHorizontalScroller});
+})(globalThis);
+</script>
+<script>/* apps/txt/state/appearance.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};
+const STORAGE_KEY='inkdos2:txt:appearance';
+const MODES=new Set(['light','dark','system']);
+const media=typeof g.matchMedia==='function'?g.matchMedia('(prefers-color-scheme: dark)'):null;
+function normalize(value){return MODES.has(value)?value:'system'}
+function resolve(mode){return mode==='system'?(media&&media.matches?'dark':'light'):mode}
+function read(){try{return normalize(g.localStorage&&g.localStorage.getItem(STORAGE_KEY))}catch(_){return 'system'}}
+function write(mode){try{if(g.localStorage)g.localStorage.setItem(STORAGE_KEY,mode)}catch(_){}}
+let mode=read();
+function syncButtons(){for(const b of document.querySelectorAll('[data-appearance-mode]')){const active=b.dataset.appearanceMode===mode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')}}
+function apply(next,{persist=true}={}){mode=normalize(next);const resolved=resolve(mode);document.documentElement.dataset.appearance=mode;document.documentElement.dataset.theme=resolved;document.documentElement.style.colorScheme=resolved;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',resolved==='dark'?'#171a20':'#eef1f5');syncButtons();if(persist)write(mode);return resolved}
+function bind(){for(const b of document.querySelectorAll('[data-appearance-mode]'))b.addEventListener('click',()=>apply(b.dataset.appearanceMode));syncButtons()}
+if(media){const changed=()=>{if(mode==='system')apply('system',{persist:false})};if(media.addEventListener)media.addEventListener('change',changed);else if(media.addListener)media.addListener(changed)}
+apply(mode,{persist:false});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+NS.AppearanceController=Object.freeze({get mode(){return mode},get resolved(){return resolve(mode)},apply});
+})(globalThis);
+</script>
+<script>/* apps/txt/txt-codec.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+function detectLineEnding(text){if(text.includes('\r\n'))return '\r\n';if(text.includes('\r'))return '\r';return '\n'}
+function decodeUtf8Strict(bytes){return new TextDecoder('utf-8',{fatal:true}).decode(bytes)}
+function decode(buffer){const b=new Uint8Array(buffer);if(b.length>=2&&b[0]===0xff&&b[1]===0xfe)return {text:new TextDecoder('utf-16le',{fatal:true}).decode(b.subarray(2)),encoding:'utf-16le',bom:true};if(b.length>=2&&b[0]===0xfe&&b[1]===0xff){const s=new Uint8Array(b.length-2);for(let i=2;i+1<b.length;i+=2){s[i-2]=b[i+1];s[i-1]=b[i]}return {text:new TextDecoder('utf-16le',{fatal:true}).decode(s),encoding:'utf-16be',bom:true};}let off=0,bom=false;if(b.length>=3&&b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf){off=3;bom=true}return {text:decodeUtf8Strict(b.subarray(off)),encoding:'utf-8',bom}}
+function normalize(text){return String(text).replace(/\r\n/g,'\n').replace(/\r/g,'\n')}
+function encode(text,{encoding='utf-8',bom=false,lineEnding='\n'}={}){const logical=String(text).replace(/\n/g,lineEnding);if(encoding==='utf-8'){const body=new TextEncoder().encode(logical);if(!bom)return body;const out=new Uint8Array(body.length+3);out.set([0xef,0xbb,0xbf]);out.set(body,3);return out}const le=[];for(const ch of logical){const cp=ch.codePointAt(0);if(cp<=0xffff){le.push(cp&255,(cp>>8)&255)}else{const n=cp-0x10000,hi=0xd800+(n>>10),lo=0xdc00+(n&1023);le.push(hi&255,(hi>>8)&255,lo&255,(lo>>8)&255)}}let body=Uint8Array.from(le);if(encoding==='utf-16be'){const be=new Uint8Array(body.length);for(let i=0;i<body.length;i+=2){be[i]=body[i+1];be[i+1]=body[i]}body=be}if(!bom)return body;const head=encoding==='utf-16be'?[0xfe,0xff]:[0xff,0xfe];const out=new Uint8Array(body.length+2);out.set(head);out.set(body,2);return out}
+NS.TxtCodec={decode,encode,normalize,detectLineEnding};})(globalThis);
+</script>
+<script>/* apps/txt/history.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};class History{constructor(limit=120){this.limit=limit;this.stack=[];this.index=-1}reset(value=''){this.stack=[value];this.index=0}push(value){if(this.stack[this.index]===value)return;this.stack=this.stack.slice(0,this.index+1);this.stack.push(value);if(this.stack.length>this.limit)this.stack.shift();else this.index++;}undo(){if(this.index<=0)return null;this.index--;return this.stack[this.index]}redo(){if(this.index>=this.stack.length-1)return null;this.index++;return this.stack[this.index]}get canUndo(){return this.index>0}get canRedo(){return this.index<this.stack.length-1}}NS.TxtHistory=History;})(globalThis);
+</script>
+<script>/* apps/txt/state/txt-state.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};
+function create(){return {loaded:false,fileName:'Untitled.txt',encoding:'utf-8',bom:false,lineEnding:'\n',wrap:true,fontSize:16,session:new NS.DocumentSession(),history:new NS.TxtHistory(),openController:null,debounce:null,lastReceipt:null,metrics:null,discardResolver:null}}
+NS.TxtState=Object.freeze({create});
+})(globalThis);
+</script>
+<script>/* apps/txt/txt-policy.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.TxtPolicy={apply(editor,{wrap,fontSize}){editor.classList.toggle('no-wrap',!wrap);editor.style.setProperty('--text-size',fontSize+'px');return {wrap,fontSize}}};})(globalThis);
+</script>
+<script>/* apps/txt/export-verify.js */
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+function verify(bytes,snapshot){const b=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes);const enc=snapshot.encoding||'utf-8',bom=!!snapshot.bom,le=snapshot.lineEnding||'\n';let body=b;
+if(enc==='utf-8'&&bom){assertPrefix(b,[0xef,0xbb,0xbf]);body=b.subarray(3)}
+else if(enc==='utf-16le'&&bom){assertPrefix(b,[0xff,0xfe]);body=b.subarray(2)}
+else if(enc==='utf-16be'&&bom){assertPrefix(b,[0xfe,0xff]);body=b.subarray(2)}
+if((enc==='utf-16le'||enc==='utf-16be')&&body.length%2)throw new Error('Export verification failed: odd UTF-16 byte length.');
+let decoded;try{decoded=new TextDecoder(enc,{fatal:true}).decode(body)}catch(e){throw new Error('Export verification failed: invalid '+enc+' bytes.',{cause:e})}
+const expected=String(snapshot.text).replace(/\n/g,le);if(decoded!==expected)throw new Error('Export verification failed: bytes do not match immutable text snapshot.');return Object.freeze({encoding:enc,bom,lineEnding:le,byteLength:b.byteLength,textLength:decoded.length})}
+function assertPrefix(bytes,prefix){if(bytes.length<prefix.length||prefix.some((v,i)=>bytes[i]!==v))throw new Error('Export verification failed: expected BOM missing.');}
+NS.TxtExportVerify={verify};})(globalThis);
+</script>
+<script>/* apps/txt/editor/outline-model.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};
+const LIST_MARKERS=Object.freeze({dash:Object.freeze(['-','•','▪']),bullet:Object.freeze(['•','◦','▪'])});
+function parseListLine(line){const tabs=(String(line).match(/^\t*/)||[''])[0];const rest=String(line).slice(tabs.length);let m=rest.match(/^(\d+)\.\s+(.*)$/u);if(m)return {indent:tabs.length,marker:m[1]+'.',kind:'number',content:m[2],prefixLength:tabs.length+m[1].length+2};m=rest.match(/^([a-z])\.\s+(.*)$/iu);if(m)return {indent:tabs.length,marker:m[1].toLowerCase()+'.',kind:'alpha',content:m[2],prefixLength:tabs.length+3};m=rest.match(/^([-•◦▪])\s+(.*)$/u);if(m)return {indent:tabs.length,marker:m[1],kind:m[1]==='-'?'dash':m[1]==='•'?'bullet':m[1]==='◦'?'hollow':'square',content:m[2],prefixLength:tabs.length+2};return {indent:tabs.length,marker:null,kind:null,content:rest,prefixLength:tabs.length}}
+function directFamily(p){if(!p.marker)return null;if(p.kind==='number'||p.kind==='alpha')return 'number';if(p.kind==='hollow')return 'bullet';if(p.indent===0&&p.kind==='dash')return 'dash';if(p.indent===0&&p.kind==='bullet')return 'bullet';return null}
+function inferFamily(lines,index,p=parseListLine(lines[index])){const direct=directFamily(p);if(direct)return direct;for(let i=index-1;i>=0;i--){const q=parseListLine(lines[i]);if(!lines[i].trim())break;if(q.indent<p.indent&&q.marker){const fam=directFamily(q);if(fam)return fam;if(q.kind==='number'||q.kind==='alpha')return 'number'}if(q.indent===0&&!q.marker)break}if(p.kind==='bullet')return p.indent>0?'dash':'bullet';if(p.kind==='square')return 'bullet';return 'dash'}
+function alphaMarker(n){const x=Math.max(1,n);return String.fromCharCode(96+((x-1)%26)+1)+'.'}
+function ordinalAt(lines,index,level){let count=0;for(let i=index-1;i>=0;i--){const p=parseListLine(lines[i]);if(!lines[i].trim())break;const fam=inferFamily(lines,i,p);if(fam!=='number'){if(p.indent<=level)break;continue}if(level===0){if(p.indent===0)count++;else if(p.indent<level)break}else if(level===1){if(p.indent===0)break;if(p.indent===1)count++}}return count+1}
+function markerFor(family,level,lines,index){const l=Math.max(0,Math.min(2,level));if(family==='number'){if(l===0)return ordinalAt(lines,index,0)+'.';if(l===1)return alphaMarker(ordinalAt(lines,index,1));return '-'}return LIST_MARKERS[family][l]}
+function renderListLine(indent,family,content,lines,index){const level=Math.max(0,Math.min(2,indent));return '\t'.repeat(level)+markerFor(family,level,lines,index)+' '+content}
+function normalizeNumberOutline(lines,anchorIndex){let start=anchorIndex,end=anchorIndex;while(start>0&&lines[start-1].trim()&&inferFamily(lines,start-1,parseListLine(lines[start-1]))==='number')start--;while(end+1<lines.length&&lines[end+1].trim()&&inferFamily(lines,end+1,parseListLine(lines[end+1]))==='number')end++;let top=0,sub=0;for(let i=start;i<=end;i++){const p=parseListLine(lines[i]);if(inferFamily(lines,i,p)!=='number')continue;const level=Math.max(0,Math.min(2,p.indent));let marker;if(level===0){top++;sub=0;marker=top+'.'}else if(level===1){sub++;marker=alphaMarker(sub)}else marker='-';lines[i]='\t'.repeat(level)+marker+' '+p.content}return {start,end}}
+NS.TxtOutlineModel=Object.freeze({parseListLine,directFamily,inferFamily,alphaMarker,ordinalAt,markerFor,renderListLine,normalizeNumberOutline});
+})(globalThis);
+</script>
+<script>/* apps/txt/editor/editor-controller.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};const O=NS.TxtOutlineModel;
+function create({elements:E,state}={}){
+  if(!E||!E.editor||!state)throw new Error('TxtEditorController requires UI elements and state');
+  let checkpointHandler=()=>Promise.resolve();
+  function setCheckpointHandler(fn){checkpointHandler=typeof fn==='function'?fn:()=>Promise.resolve()}
+  function lineName(x){return x==='\r\n'?'CRLF':x==='\r'?'CR':'LF'}
+  function encName(){return state.encoding.toUpperCase()+(state.bom?' + BOM':'')}
+  function normName(v){let n=String(v||'').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.txt$/i.test(n)?n:n+'.txt'}
+  function setTitle(v){state.fileName=normName(v);E.title.value=state.fileName;document.title=state.fileName+' — InkDOS Plain Text'}
+  function setStatus(msg,cls=''){E.status.textContent=msg;E.status.className='status-item'+(cls?' '+cls:'')}
+  function cursorPosition(){const pos=E.editor.selectionStart||0;const before=E.editor.value.slice(0,pos);const lines=before.split('\n');return {line:lines.length,column:lines[lines.length-1].length+1}}
+  function updateCursor(){const p=cursorPosition();E.cursor.textContent=`Ln ${p.line}, Col ${p.column}`}
+  function updateMeta(){E.encoding.textContent=encName();E.lineEnding.textContent=lineName(state.lineEnding);const t=E.editor.value;const lines=t.length?t.split('\n').length:1;const words=t.trim()?t.trim().split(/\s+/u).filter(Boolean).length:0;E.counts.textContent=`${lines} line${lines===1?'':'s'} · ${words} word${words===1?'':'s'} · ${t.length} char${t.length===1?'':'s'}`;E.dirty.hidden=!state.session.dirty;E.undoBtn.disabled=!state.history.canUndo;E.redoBtn.disabled=!state.history.canRedo;E.saveBtn.disabled=!state.loaded;E.checkpoint.textContent=state.session.checkpointRevision===state.session.revision?'checkpoint ✓':'checkpoint …';E.export.textContent=state.lastReceipt?`export r${state.session.exportRevision??'?'} requested`:'no export';updateCursor()}
+  function showEditor(){state.loaded=true;E.surface.hidden=false;E.toolbar.hidden=false;E.saveBtn.disabled=false}
+  function markChanged(){state.session.mutate();state.history.push(E.editor.value);updateMeta();scheduleCheckpoint()}
+  function scheduleCheckpoint(){clearTimeout(state.debounce);state.debounce=setTimeout(()=>checkpointHandler().catch(e=>setStatus('Recovery unavailable: '+e.message,'state-warn')),850)}
+  function applyPolicy(){NS.TxtPolicy.apply(E.editor,{wrap:state.wrap,fontSize:state.fontSize});E.wrap.setAttribute('aria-pressed',String(state.wrap));E.wrap.classList.toggle('active',state.wrap);E.font.value=String(state.fontSize)}
+  function doUndo(){const v=state.history.undo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
+  function doRedo(){const v=state.history.redo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
+  function find(step){const q=E.findInput.value;if(!q){E.findStatus.textContent='';return}const text=E.editor.value,from=step>0?E.editor.selectionEnd:E.editor.selectionStart;let idx=step>0?text.indexOf(q,from):text.lastIndexOf(q,Math.max(0,from-1));if(idx<0)idx=step>0?text.indexOf(q):text.lastIndexOf(q);if(idx<0){E.findStatus.textContent='0 matches';return}E.editor.focus();E.editor.setSelectionRange(idx,idx+q.length);E.findStatus.textContent=`${idx+1}`;updateCursor()}
+  function toggleFind(on){E.findbar.hidden=on===undefined?!E.findbar.hidden:!on;if(!E.findbar.hidden){E.findInput.focus();E.findInput.select();requestAnimationFrame(()=>E.findbar.scrollIntoView({inline:'nearest',block:'nearest'}))}}
+  function clampFontSize(size){const n=Math.round(Number(size));return Number.isFinite(n)?Math.max(4,Math.min(28,n)):16}
+  function setViewFont(size){state.fontSize=clampFontSize(size);applyPolicy();updateMeta();scheduleCheckpoint();setStatus(`Editor view: ${state.fontSize} pt · TXT stores text, not font formatting`,'state-ok')}
+  function adjustFont(delta){setViewFont(clampFontSize(state.fontSize+delta))}
+  function selectAll(){E.editor.focus();E.editor.select();updateCursor()}
+  async function copySelection(){const text=E.editor.value.slice(E.editor.selectionStart,E.editor.selectionEnd);if(!text){setStatus('Nothing selected');return}try{if(navigator.clipboard&&navigator.clipboard.writeText)await navigator.clipboard.writeText(text);else if(!document.execCommand('copy'))throw new Error('Clipboard unavailable');setStatus('Copied selection','state-ok')}catch(_){setStatus('Copy is unavailable in this host','state-warn')}}
+  async function pasteClipboard(){try{if(!navigator.clipboard||!navigator.clipboard.readText)throw new Error('Clipboard unavailable');const text=await navigator.clipboard.readText(),start=E.editor.selectionStart,end=E.editor.selectionEnd;E.editor.setRangeText(text,start,end,'end');markChanged();E.editor.focus();setStatus('Pasted','state-ok')}catch(_){E.editor.focus();setStatus('Use the system Paste command in this host','state-warn')}}
+  function lineSelection(){const value=E.editor.value,lines=value.split('\n'),s=E.editor.selectionStart,e=E.editor.selectionEnd;let pos=0,startLine=0,endLine=0;for(let i=0;i<lines.length;i++){const next=pos+lines[i].length;if(s>=pos&&s<=next)startLine=i;const effectiveEnd=(e>s&&e>0&&value[e-1]==='\n')?e-1:e;if(effectiveEnd>=pos&&effectiveEnd<=next){endLine=i;break}pos=next+1}const starts=[];let acc=0;for(const line of lines){starts.push(acc);acc+=line.length+1}return {value,lines,startLine,endLine,starts,selectionStart:s,selectionEnd:e,collapsed:s===e,offsetInStart:s-starts[startLine]}}
+  function selectedIndices(sel){const a=[];for(let i=sel.startLine;i<=sel.endLine;i++)a.push(i);return a}
+  function commitLines(sel,lines,status){const before=sel.lines[sel.startLine],after=lines[sel.startLine];E.editor.value=lines.join('\n');markChanged();if(sel.collapsed){const oldP=O.parseListLine(before),newP=O.parseListLine(after),oldOffset=sel.offsetInStart;const mapped=oldOffset<=oldP.prefixLength?newP.prefixLength:newP.prefixLength+(oldOffset-oldP.prefixLength);const start=lines.slice(0,sel.startLine).reduce((n,x)=>n+x.length+1,0),pos=Math.max(start,Math.min(start+after.length,start+mapped));E.editor.setSelectionRange(pos,pos)}else{const start=lines.slice(0,sel.startLine).reduce((n,x)=>n+x.length+1,0),end=start+lines.slice(sel.startLine,sel.endLine+1).reduce((n,x,i)=>n+x.length+(i?1:0),0);E.editor.setSelectionRange(start,end)}E.editor.focus();updateCursor();if(status)setStatus(status,'state-ok')}
+  function applyListFamily(family){const sel=lineSelection(),lines=sel.lines.slice(),indices=selectedIndices(sel);let changed=false,firstChanged=null;for(const i of indices){if(!lines[i].trim())continue;const p=O.parseListLine(lines[i]),level=Math.min(2,p.indent),content=p.marker?p.content:lines[i].slice(p.indent);lines[i]=O.renderListLine(level,family,content,lines,i);changed=true;if(firstChanged===null)firstChanged=i}if(changed&&family==='number')O.normalizeNumberOutline(lines,firstChanged);if(changed)commitLines(sel,lines,'Outline applied · stored as plain-text markers');return changed}
+  function changeIndent(delta){const sel=lineSelection(),lines=sel.lines.slice(),indices=selectedIndices(sel);let changed=false,numberAnchor=null;for(const i of indices){if(!lines[i].trim())continue;const p=O.parseListLine(lines[i]);if(p.marker){const family=O.inferFamily(lines,i,p),next=Math.max(0,Math.min(2,p.indent+delta));if(next===p.indent)continue;lines[i]=O.renderListLine(next,family,p.content,lines,i);if(family==='number'&&numberAnchor===null)numberAnchor=i;changed=true}else if(delta>0){if(p.indent>=2)continue;lines[i]='\t'+lines[i];changed=true}else if(p.indent>0){lines[i]=lines[i].slice(1);changed=true}}if(changed&&numberAnchor!==null)O.normalizeNumberOutline(lines,numberAnchor);if(changed)commitLines(sel,lines,delta>0?'Indent increased':'Indent decreased');else setStatus(delta>0?'Maximum outline depth reached':'Nothing to outdent','state-warn')}
+  function lineStartOffset(lines,index){let n=0;for(let i=0;i<index;i++)n+=lines[i].length+1;return n}
+  function continueListOnEnter(){const sel=lineSelection();if(!sel.collapsed)return false;const index=sel.startLine,line=sel.lines[index],p=O.parseListLine(line);if(!p.marker)return false;const family=O.inferFamily(sel.lines,index,p),relative=Math.max(0,sel.offsetInStart-p.prefixLength),lines=sel.lines.slice();if(!p.content.trim()){if(p.indent>0){lines[index]=O.renderListLine(p.indent-1,family,'',lines,index);if(family==='number')O.normalizeNumberOutline(lines,index);E.editor.value=lines.join('\n');markChanged();const q=O.parseListLine(lines[index]),pos=lineStartOffset(lines,index)+q.prefixLength;E.editor.setSelectionRange(pos,pos);setStatus('Outline level decreased','state-ok')}else{lines[index]='';if(family==='number'&&index>0)O.normalizeNumberOutline(lines,index-1);E.editor.value=lines.join('\n');markChanged();E.editor.setSelectionRange(lineStartOffset(lines,index),lineStartOffset(lines,index));setStatus('Outline ended','state-ok')}E.editor.focus();updateCursor();return true}const before=p.content.slice(0,relative),after=p.content.slice(relative);lines[index]='\t'.repeat(p.indent)+p.marker+' '+before;const next=index+1;lines.splice(next,0,O.renderListLine(p.indent,family,after,lines,next));if(family==='number')O.normalizeNumberOutline(lines,index);E.editor.value=lines.join('\n');markChanged();const q=O.parseListLine(lines[next]),pos=lineStartOffset(lines,next)+q.prefixLength;E.editor.setSelectionRange(pos,pos);E.editor.focus();updateCursor();setStatus('Outline continued','state-ok');return true}
+  function handleTitleChange(){const prev=state.fileName;setTitle(E.title.value);if(prev!==state.fileName){state.session.mutate();scheduleCheckpoint();updateMeta()}}
+  function setWrap(next){state.wrap=!!next;applyPolicy();updateMeta();scheduleCheckpoint()}
+  function setMetrics(m){state.metrics=m;document.body.dataset.viewport=m.availableWidth.toFixed(0)+'x'+m.availableHeight.toFixed(0)}
+  function debug(){return {changeIndent,applyListFamily,continueListOnEnter,clampFontSize,titleCenterError:()=>NS.AppFrame.centerError(E.title),viewport:()=>state.metrics,toolbarOverflow:()=>({clientWidth:E.toolbar.clientWidth,scrollWidth:E.toolbar.scrollWidth,scrollLeft:E.toolbar.scrollLeft})}}
+  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,doUndo,doRedo,find,toggleFind,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
+}
+NS.TxtEditorController=Object.freeze({create});
+})(globalThis);
+</script>
+<script>/* apps/txt/io/txt-file-controller.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};const C=NS.TxtCodec;const MAX_BYTES=20*1024*1024;
+function create({elements:E,state,editor,recoveryKey='txt:phase2-shell:last-session'}={}){
+  if(!E||!state||!editor)throw new Error('TxtFileController requires elements, state and editor');
+  const recovery=new NS.RecoveryStore(recoveryKey);
+  async function checkpoint(){if(!state.loaded)return;const rev=state.session.revision;const payload={schema:1,fileName:state.fileName,text:E.editor.value,encoding:state.encoding,bom:state.bom,lineEnding:state.lineEnding,wrap:state.wrap,fontSize:state.fontSize,revision:rev,sessionId:state.session.sessionId};await recovery.checkpoint(payload);if(rev===state.session.revision)state.session.markCheckpoint(rev);editor.updateMeta()}
+  async function restoreRecovery(){try{const r=await recovery.latest();if(!r||!r.payload||typeof r.payload.text!=='string')return;const p=r.payload;E.editor.value=String(p.text);state.encoding=p.encoding||'utf-8';state.bom=!!p.bom;state.lineEnding=p.lineEnding||'\n';state.wrap=p.wrap!==false;state.fontSize=editor.clampFontSize(p.fontSize);state.session=new NS.DocumentSession();state.session.sourceOpened(null);state.session.revision=Number(p.revision)||0;state.session.dirty=true;state.session.markCheckpoint(state.session.revision);state.history.reset(E.editor.value);editor.setTitle(p.fileName||'Recovered.txt');editor.applyPolicy();editor.showEditor();editor.setStatus('Recovered local checkpoint — not a saved file','state-warn');editor.updateMeta()}catch(_){} }
+  function resolveDiscard(answer){if(!state.discardResolver)return;const resolve=state.discardResolver;state.discardResolver=null;E.discardDialog.hidden=true;E.modalBackdrop.hidden=true;resolve(!!answer)}
+  function confirmDiscard(message){if(!state.loaded||!state.session.dirty)return Promise.resolve(true);if(state.discardResolver)return Promise.resolve(false);E.discardMessage.textContent=message||'This text file has changes that are not verified in a saved copy.';E.modalBackdrop.hidden=false;E.discardDialog.hidden=false;return new Promise(resolve=>{state.discardResolver=resolve;requestAnimationFrame(()=>E.discardContinue.focus())})}
+  function resetBlankState(){state.session=new NS.DocumentSession();state.session.sourceOpened(null);state.history.reset('');state.encoding='utf-8';state.bom=false;state.lineEnding='\n';state.wrap=true;state.fontSize=16;state.lastReceipt=null;E.editor.value='';editor.setTitle('Untitled.txt');editor.applyPolicy();editor.showEditor();editor.setStatus('Ready');editor.updateMeta()}
+  async function newDoc(){if(!await confirmDiscard('Discard the current changes and create a new blank text document?'))return;if(state.openController)state.openController.abort();resetBlankState();E.editor.focus();await checkpoint().catch(()=>{})}
+  async function hashBytes(bytes){return NS.sha256?await NS.sha256(bytes):null}
+  async function openFile(file){if(!file)return;if(!await confirmDiscard('Discard the current changes and open the selected text file?'))return;if(file.size>MAX_BYTES)throw new Error('File exceeds provisional 20 MB test limit.');if(!/\.txt$/i.test(file.name||''))throw new Error('Choose a .txt file.');if(state.openController)state.openController.abort();const controller=new AbortController();state.openController=controller;const op=state.session.beginOperation();editor.setStatus('Opening '+file.name+'…');const buf=await file.arrayBuffer();if(controller.signal.aborted||!state.session.isCurrentOperation(op))return;const decoded=C.decode(buf);const normalized=C.normalize(decoded.text);const h=await hashBytes(new Uint8Array(buf));if(controller.signal.aborted||!state.session.isCurrentOperation(op))return;state.session=new NS.DocumentSession({sourceHash:h});state.session.sourceOpened(h);state.history.reset(normalized);state.encoding=decoded.encoding;state.bom=decoded.bom;state.lineEnding=C.detectLineEnding(decoded.text);state.lastReceipt=null;E.editor.value=normalized;editor.setTitle(file.name);editor.applyPolicy();editor.showEditor();editor.setStatus('Opened transactionally');editor.updateMeta();await checkpoint().catch(()=>{});E.editor.focus()}
+  function buildExportSnapshot(){editor.setTitle(E.title.value);const ss=state.session.snapshot();const snapshot=Object.freeze({sessionId:ss.sessionId,documentId:ss.documentId,revision:ss.revision,fileName:state.fileName,text:E.editor.value,encoding:state.encoding,bom:state.bom,lineEnding:state.lineEnding});const bytes=C.encode(snapshot.text,{encoding:snapshot.encoding,bom:snapshot.bom,lineEnding:snapshot.lineEnding});NS.TxtExportVerify.verify(bytes,snapshot);const blob=new Blob([bytes],{type:'text/plain'});return Object.freeze({snapshot,bytes,blob})}
+  async function save(){if(!state.loaded)return;const packet=buildExportSnapshot(),snap=packet.snapshot;let receipt;try{receipt=await NS.FileDelivery.deliver(packet.blob,snap.fileName)}catch(e){if(e&&e.code==='cancelled'){editor.setStatus('Save cancelled');return}throw e}if(state.session.sessionId!==snap.sessionId)return;state.lastReceipt=Object.freeze(Object.assign({},receipt,{revision:snap.revision,sessionId:snap.sessionId}));state.session.markExport(snap.revision);if(receipt.deliveryConfirmed)editor.setStatus(`Saved copy · SHA-256 ${receipt.sha256?receipt.sha256.slice(0,12)+'…':'unavailable'}`,'state-ok');else if(receipt.method==='web-share')editor.setStatus(`Share completed · SHA-256 ${receipt.sha256?receipt.sha256.slice(0,12)+'…':'unavailable'} · final Files write not independently verifiable`,'state-warn');else editor.setStatus(`Download requested · SHA-256 ${receipt.sha256?receipt.sha256.slice(0,12)+'…':'unavailable'} · host write not confirmed`,'state-warn');editor.updateMeta()}
+  async function shareCurrent(){if(!state.loaded)return;const packet=buildExportSnapshot(),snap=packet.snapshot;let receipt;try{receipt=await NS.FileDelivery.share(packet.blob,snap.fileName)}catch(e){if(e&&e.code==='cancelled'){editor.setStatus('Share cancelled');return}throw e}if(state.session.sessionId!==snap.sessionId)return;editor.setStatus(`Shared current snapshot · SHA-256 ${receipt.sha256?receipt.sha256.slice(0,12)+'…':'unavailable'} · document remains ${state.session.dirty?'modified':'unchanged'}`,'state-ok');editor.updateMeta()}
+  function initialize(){resetBlankState();restoreRecovery()}
+  function debug(){return {codec:C,openBytes:async(name,bytes)=>{const f=new File([bytes],name,{type:'text/plain'});await openFile(f);return state.session.snapshot()},exportBytes:()=>C.encode(E.editor.value,{encoding:state.encoding,bom:state.bom,lineEnding:state.lineEnding}),buildExportSnapshot,deliveryCapabilities:()=>NS.FileDelivery.capabilities(new File([''],state.fileName,{type:'text/plain'})),recoveryKey,confirmDiscard,shareCurrent}}
+  return Object.freeze({checkpoint,newDoc,openFile,save,shareCurrent,resolveDiscard,confirmDiscard,initialize,debug});
+}
+NS.TxtFileController=Object.freeze({create});
+})(globalThis);
+</script>
+<script>/* apps/txt/ui/txt-controls.js */
+(function(g){'use strict';
+const NS=g.InkDOS2=g.InkDOS2||{};
+const $=id=>document.getElementById(id);
+function collect(){return {menuBtn:$('menuBtn'),menu:$('moreMenu'),backdrop:$('backdrop'),closeMenu:$('closeMenuBtn'),newBtn:$('newBtn'),openBtn:$('openBtn'),saveBtn:$('saveBtn'),shareBtn:$('shareBtn'),fileInput:$('fileInput'),undoBtn:$('undoBtn'),redoBtn:$('redoBtn'),wrap:$('wrapBtn'),font:$('fontSize'),fontDown:$('fontDownBtn'),fontUp:$('fontUpBtn'),outdent:$('outdentBtn'),indent:$('indentBtn'),listBtn:$('listBtn'),listMenu:$('listMenu'),findBtn:$('findBtn'),findbar:$('findbar'),findInput:$('findInput'),findPrev:$('findPrev'),findNext:$('findNext'),findClose:$('findClose'),findStatus:$('findStatus'),selectAll:$('selectAllBtn'),copy:$('copyBtn'),paste:$('pasteBtn'),toolbar:$('toolbar'),title:$('docTitle'),dirty:$('dirtyDot'),editor:$('editor'),surface:$('surface'),status:$('status'),cursor:$('cursorState'),counts:$('counts'),encoding:$('encoding'),lineEnding:$('lineEnding'),checkpoint:$('checkpointState'),export:$('exportState'),modalBackdrop:$('modalBackdrop'),discardDialog:$('discardDialog'),discardMessage:$('discardMessage'),discardCancel:$('discardCancel'),discardContinue:$('discardContinue')}}
+function create(E=collect()){
+  function positionListMenu(){const r=E.listBtn.getBoundingClientRect(),menu=E.listMenu;menu.hidden=false;menu.style.left=Math.max(8,Math.min(innerWidth-350,r.left))+'px';menu.style.top=Math.min(innerHeight-220,r.bottom+6)+'px';E.listBtn.setAttribute('aria-expanded','true')}
+  function closeListMenu(){E.listMenu.hidden=true;E.listBtn.setAttribute('aria-expanded','false')}
+  function toggleListMenu(){if(E.listMenu.hidden)positionListMenu();else closeListMenu()}
+  function bind({editor,files,state},frameMenu){
+    E.editor.addEventListener('input',editor.markChanged);for(const ev of ['keyup','click','select'])E.editor.addEventListener(ev,editor.updateCursor);
+    E.editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.changeIndent(e.shiftKey?-1:1);return}if(e.key==='Enter'&&!e.shiftKey&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&editor.continueListOnEnter())e.preventDefault()});
+    E.title.addEventListener('change',editor.handleTitleChange);
+    E.newBtn.onclick=()=>{frameMenu.close();files.newDoc()};E.openBtn.onclick=()=>{frameMenu.close();E.fileInput.click()};E.fileInput.onchange=()=>files.openFile(E.fileInput.files[0]).catch(e=>editor.setStatus(e.message,'state-error')).finally(()=>E.fileInput.value='');E.saveBtn.onclick=()=>{frameMenu.close();files.save().catch(e=>editor.setStatus('Export failed: '+e.message,'state-error'))};E.shareBtn.onclick=()=>{frameMenu.close();files.shareCurrent().catch(e=>editor.setStatus('Share failed: '+e.message,'state-error'))};
+    E.undoBtn.onclick=editor.doUndo;E.redoBtn.onclick=editor.doRedo;E.wrap.onclick=()=>editor.setWrap(!state.wrap);E.font.addEventListener('change',()=>editor.setViewFont(E.font.value));E.font.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();editor.setViewFont(E.font.value);E.editor.focus()}});E.fontDown.onclick=()=>editor.adjustFont(-1);E.fontUp.onclick=()=>editor.adjustFont(1);
+    E.outdent.onclick=()=>editor.changeIndent(-1);E.indent.onclick=()=>editor.changeIndent(1);E.listBtn.onclick=toggleListMenu;for(const btn of E.listMenu.querySelectorAll('[data-list-family]'))btn.onclick=()=>{editor.applyListFamily(btn.dataset.listFamily);closeListMenu()};
+    E.findBtn.onclick=()=>editor.toggleFind();E.findClose.onclick=()=>editor.toggleFind(false);E.findNext.onclick=()=>editor.find(1);E.findPrev.onclick=()=>editor.find(-1);E.findInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();editor.find(e.shiftKey?-1:1)}if(e.key==='Escape'){e.stopPropagation();editor.toggleFind(false)}});
+    E.selectAll.onclick=editor.selectAll;E.copy.onclick=()=>editor.copySelection();E.paste.onclick=()=>editor.pasteClipboard();
+    E.discardCancel.onclick=()=>files.resolveDiscard(false);E.discardContinue.onclick=()=>files.resolveDiscard(true);E.modalBackdrop.onclick=()=>files.resolveDiscard(false);
+    document.addEventListener('pointerdown',e=>{if(!E.listMenu.hidden&&!E.listMenu.contains(e.target)&&!E.listBtn.contains(e.target))closeListMenu()});
+    document.addEventListener('keydown',e=>{const mod=e.metaKey||e.ctrlKey;if(e.key==='Escape'&&state.discardResolver){e.preventDefault();files.resolveDiscard(false);return}if(e.key==='Escape'&&!E.listMenu.hidden){e.preventDefault();closeListMenu();return}if(e.key==='Escape'&&frameMenu.isOpen){e.preventDefault();frameMenu.close();return}if(mod&&e.key.toLowerCase()==='f'){e.preventDefault();editor.toggleFind(true)}if(mod&&e.key.toLowerCase()==='s'){e.preventDefault();files.save().catch(()=>{})}if(mod&&e.key.toLowerCase()==='n'){e.preventDefault();files.newDoc()}if(mod&&e.key.toLowerCase()==='o'){e.preventDefault();E.fileInput.click()}});
+    g.addEventListener('resize',()=>{if(!E.listMenu.hidden)closeListMenu()});g.addEventListener('pagehide',()=>{if(state.loaded&&state.session.dirty)files.checkpoint().catch(()=>{})});
+  }
+  return Object.freeze({elements:E,bind,closeListMenu});
+}
+NS.TxtControls=Object.freeze({collect,create});
+})(globalThis);
+</script>
+<script>/* apps/txt/app.js */
+(function(g){'use strict';
+const NS=g.InkDOS2,controls=NS.TxtControls.create(),E=controls.elements;
+const frameMenu=NS.AppFrame.bindDrawer({trigger:E.menuBtn,drawer:E.menu,backdrop:E.backdrop,closeButton:E.closeMenu,beforeOpen:controls.closeListMenu});NS.AppFrame.bindHorizontalScroller(E.toolbar);
+const state=NS.TxtState.create(),editor=NS.TxtEditorController.create({elements:E,state}),files=NS.TxtFileController.create({elements:E,state,editor});
+editor.setCheckpointHandler(files.checkpoint);new NS.ContentViewportAdapter(document.querySelector('.content-viewport'),editor.setMetrics);
+controls.bind({editor,files,state},frameMenu);NS.TxtAppDebug=Object.freeze({state,...editor.debug(),...files.debug()});files.initialize();
+})(globalThis);
+</script>
+<script>document.body.dataset.runtimeReady=(globalThis.InkDOS2&&globalThis.InkDOS2.TxtAppDebug)?'true':'false';</script>
+</body></html>

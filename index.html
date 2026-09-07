@@ -3,84 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f6f8">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#171a20">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="InkDOS — Ink Desk Offline Suite. Local. Offline. Private.">
-  <meta property="og:title" content="InkDOS — Ink Desk Offline Suite">
-  <meta property="og:description" content="A consolidated local-first, offline productivity suite.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://vfydr2m9wk-ops.github.io/InkDOS/docs/images/social-preview.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <title>InkDOS — Ink Desk Offline Suite</title>
-  <link rel="icon" href="./assets/icons/office.png">
-  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f2f5f8">
+  <meta name="description" content="InkDOS — local-first productivity workspaces.">
+  <title>InkDOS</title>
+  <link rel="icon" href="./assets/icons/office.svg">
   <link rel="apple-touch-icon" href="./assets/icons/office.png">
-  <link rel="stylesheet" href="./shared/hub.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="./shared/ui/visual.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="./shared/ui/polish.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="./shared/suite-shell.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="./shared/ui/refinement-home.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="./shared/ui/app-shell.css?v=1.0.0-beta.10">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./assets/home.css?v=2.0.0">
 </head>
-<body data-inkdos-app="home">
-  <main class="hub-shell">
-    <header class="hub-topbar">
-      <a class="brand-lockup" href="./index.html" aria-label="InkDOS home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-copy"><strong data-product-name>InkDOS</strong><small data-product-long-name>Ink Desk Offline Suite</small></span>
+<body>
+  <main class="home-shell">
+    <header class="brand-row">
+      <a class="brand" href="./index.html" aria-current="page" aria-label="InkDOS Home">
+        <span class="brand-mark" aria-hidden="true"><img src="./assets/icons/office.svg" alt=""></span>
+        <span class="brand-copy"><strong>InkDOS</strong><small>Local-first workspace</small></span>
       </a>
-      <span class="release-badge" data-release-badge aria-label="Product version"></span>
-      <button class="suite-menu" type="button" data-suite-action="menu" aria-controls="suiteSidebar" aria-expanded="false" aria-label="Open suite navigation">☰</button>
     </header>
 
-    <section class="hub-intro" aria-labelledby="hubTitle">
-      <p class="eyebrow">Local. Offline. Private.</p>
-      <h1 id="hubTitle">Your work, on this device.</h1>
-      <p>Open a supported file or create a new workspace.</p>
-      <div class="suite-actions" aria-label="Suite actions">
-        <button class="suite-action primary" type="button" data-suite-action="open">Open</button>
-        <button class="suite-action" type="button" data-suite-action="create">Create</button>
-        <input id="suiteOpenInput" type="file" hidden>
-      </div>
+    <section class="intro" aria-labelledby="workspaceTitle"><h1 id="workspaceTitle">Choose a workspace</h1></section>
+
+    <section class="workspace-grid" aria-label="InkDOS workspaces">
+      <a class="workspace-card documents" href="./apps/documents/index.html"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/documents.svg" alt=""></span><span class="workspace-copy"><strong>Documents</strong><small>Create, edit and save DOCX copies locally.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card spreadsheets" href="./apps/spreadsheets/index.html"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/spreadsheets.svg" alt=""></span><span class="workspace-copy"><strong>Spreadsheets</strong><small>Edit XLSX files locally and open legacy XLS workbooks.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card presentations" href="./apps/presentations/index.html"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/presentations.png" alt=""></span><span class="workspace-copy"><strong>Presentations</strong><small>Create, edit and present PPT and PPTX files locally.</small></span><span class="chevron">›</span></a>
+      <div class="workspace-card pdf unavailable" aria-disabled="true" aria-label="PDF Workspace — coming soon"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/pdf.svg" alt=""></span><span class="workspace-copy"><strong>PDF Workspace</strong><small>PDF Workspace is being completed for InkDOS 2.0.</small><span class="coming-soon">Coming soon</span></span></div>
+      <a class="workspace-card txt" href="./apps/txt/index.html"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/txt.svg" alt=""></span><span class="workspace-copy"><strong>Plain Text</strong><small>Write and edit plain-text files locally.</small></span><span class="chevron">›</span></a>
+      <a class="workspace-card epub" href="./apps/epub/index.html"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/epub.svg" alt=""></span><span class="workspace-copy"><strong>EPUB Reader</strong><small>Read local EPUB books with pages, themes and contents.</small></span><span class="chevron">›</span></a>
     </section>
 
-    <p id="moduleRegistryStatus" class="module-registry-status" role="status" aria-live="polite" hidden></p>
-    <section class="recent-section" aria-labelledby="recentTitle"><div class="section-heading"><h2 id="recentTitle">Recent</h2><button type="button" data-suite-action="clear-recent">Clear recent</button></div><ul data-recent-list><li class="recent-empty" data-recent-empty>No recent files yet</li></ul></section>
-
-    <section class="workspace-grid" data-module-grid aria-label="InkDOS workspaces">
-      <a class="workspace-card documents" href="./apps/documents/index.html"><span class="app-icon">D</span><span class="workspace-copy"><strong>Documents</strong><small>DOCX</small></span><span class="open-arrow">›</span></a>
-      <a class="workspace-card spreadsheets" href="./apps/spreadsheets/index.html"><span class="app-icon">S</span><span class="workspace-copy"><strong>Spreadsheets</strong><small>XLS · XLSX</small></span><span class="open-arrow">›</span></a>
-      <a class="workspace-card presentations" href="./apps/presentations/index.html"><span class="app-icon">P</span><span class="workspace-copy"><strong>Presentations</strong><small>PPTX</small></span><span class="open-arrow">›</span></a>
-      <a class="workspace-card pdf" href="./apps/pdf/index.html"><span class="app-icon">PDF</span><span class="workspace-copy"><strong>PDF Workspace</strong><small>PDF</small></span><span class="open-arrow">›</span></a>
-      <a class="workspace-card txt" href="./apps/txt/index.html"><span class="app-icon">TXT</span><span class="workspace-copy"><strong>Plain Text</strong><small>TXT</small></span><span class="open-arrow">›</span></a>
-      <a class="workspace-card epub" href="./apps/epub/index.html"><span class="app-icon">EPUB</span><span class="workspace-copy"><strong>EPUB Reader</strong><small>EPUB</small></span><span class="open-arrow">›</span></a>
-    </section>
-
-    <footer class="hub-footer">
-      <div class="footer-status"><span class="status-dot" aria-hidden="true"></span><span data-release-version></span></div>
-      <nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDOS">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav>
-    </footer>
+    <footer class="home-footer"><div class="version"><span class="status-dot"></span><span>InkDOS 2.0.0</span></div><nav aria-label="Project links"><a href="https://github.com/vfydr2m9wk-ops/InkDOS">Source</a><a href="./docs/PROJECT_STATUS.md">Status</a><a href="./docs/KNOWN_LIMITATIONS.md">Limitations</a><a href="./CONTRIBUTING.md">Contribute</a></nav></footer>
   </main>
-  <aside id="suiteSidebar" class="suite-sidebar" hidden role="dialog" aria-modal="true" aria-label="InkDOS navigation">
-    <button class="suite-menu" type="button" data-suite-action="close-menu" aria-label="Close suite navigation">×</button>
-    <nav class="suite-nav" aria-label="Suite navigation">
-      <a href="./index.html" aria-current="page">Home</a><a href="./apps/documents/index.html">Documents</a><a href="./apps/spreadsheets/index.html">Spreadsheets</a><a href="./apps/presentations/index.html">Presentations</a><a href="./apps/pdf/index.html">PDF Workspace</a><a href="./apps/epub/index.html">EPUB Reader</a><a href="./apps/txt/index.html">Plain Text</a><a href="#recentTitle">Recent</a><a href="#theme">Settings</a><a href="#about">About</a>
-    </nav>
-    <section id="theme"><label for="themeChoice">Theme</label><select id="themeChoice" data-theme-choice><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></section>
-    <section id="about"><strong data-product-name>InkDOS</strong><p data-product-long-name>Ink Desk Offline Suite</p><p>Local. Offline. Private.</p></section>
-  </aside>
-  <noscript><p class="noscript-message">InkDOS requires JavaScript.</p></noscript>
-  <script src="./shared/product-config.js?v=1.0.0-beta.10"></script>
-  <script src="./modules/module-registry.js?v=1.0.0-beta.10"></script>
-  <script src="./modules/module-loader.js?v=1.0.0-beta.10"></script>
-  <script src="./shared/recent-files.js?v=1.0.0-beta.10"></script>
-  <script src="./shared/file-router.js?v=1.0.0-beta.10"></script>
-  <script src="./shared/app-shell.js?v=1.0.0-beta.10"></script>
-  <script src="./shared/suite-shell.js?v=1.0.0-beta.10"></script>
-  <script defer src="./shared/register-service-worker.js?v=1.0.0-beta.10"></script>
+<script>
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).catch(()=>{});
+}
+</script>
 </body>
 </html>

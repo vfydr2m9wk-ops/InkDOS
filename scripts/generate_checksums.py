@@ -1,46 +1,20 @@
 #!/usr/bin/env python3
-"""Regenerate CHECKSUMS.sha256 for the distributable source tree."""
-from __future__ import annotations
-
-import hashlib
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "CHECKSUMS.sha256"
-EXCLUDED_PARTS = {".git", ".mobile-import", "__pycache__", "_site", "test-results"}
-EXCLUDED_NAMES = {"CHECKSUMS.sha256", "DEVELOPMENT_STATE.json", "package-lock.json", ".DS_Store", "Thumbs.db"}
-EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip"}
-
-
-def included_files() -> list[Path]:
-    paths: list[Path] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(ROOT)
-        if any(part in EXCLUDED_PARTS for part in relative.parts):
-            continue
-        if relative.parts[:3] == ("tests", "browser", "results"):
-            continue
-        if relative.name in EXCLUDED_NAMES or relative.suffix.lower() in EXCLUDED_SUFFIXES:
-            continue
-        paths.append(path)
-    return sorted(paths, key=lambda path: path.relative_to(ROOT).as_posix())
-
-
-def digest(path: Path) -> str:
-    hasher = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            hasher.update(block)
-    return hasher.hexdigest()
-
-
-def main() -> None:
-    lines = [f"{digest(path)}  {path.relative_to(ROOT).as_posix()}" for path in included_files()]
-    MANIFEST.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Wrote {len(lines)} entries to {MANIFEST.name}.")
-
-
-if __name__ == "__main__":
-    main()
+import hashlib
+ROOT=Path(__file__).resolve().parents[1]
+EXCLUDE={'CHECKSUMS.sha256'}
+def ignored(p):
+    rel=p.relative_to(ROOT)
+    return p.name in EXCLUDE or '.git' in rel.parts or '__pycache__' in rel.parts or (rel.parts[:2]==('.github','workflows')) or (p.name.startswith('InkDOS-update-v') and p.suffix=='.zip')
+def digest(p):
+    h=hashlib.sha256()
+    with p.open('rb') as f:
+        for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+    return h.hexdigest()
+def main():
+    rows=[]
+    for p in sorted(ROOT.rglob('*')):
+        if p.is_file() and not ignored(p): rows.append(f"{digest(p)}  {p.relative_to(ROOT).as_posix()}")
+    (ROOT/'CHECKSUMS.sha256').write_text('\n'.join(rows)+'\n',encoding='utf-8')
+    print(f'Generated {len(rows)} checksums.')
+if __name__=='__main__': main()

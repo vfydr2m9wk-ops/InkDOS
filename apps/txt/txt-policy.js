@@ -1,0 +1,1 @@
+(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.TxtPolicy={apply(editor,{wrap,fontSize}){editor.classList.toggle('no-wrap',!wrap);editor.style.setProperty('--text-size',fontSize+'px');return {wrap,fontSize}}};})(globalThis);

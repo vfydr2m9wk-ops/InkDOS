@@ -1,101 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <link rel="icon" href="../../assets/icons/epub.png">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#7655c7">
-  <meta name="description" content="InkDOS local EPUB reader.">
-  <title>Untitled.epub — EPUB Reader</title>
-<link rel="stylesheet" href="../../shared/office-shell.css">
-  <link rel="stylesheet" href="styles.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/responsive-workspace.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/app-shell.css?v=1.0.0-beta.10">
-  <link rel="stylesheet" href="../../shared/ui/app-home.css?v=1.0.0-beta.10">
-</head>
-<body class="office-product office-epub" data-reader-theme="paper" data-inkdos-app="epub">
-  <header class="epub-titlebar" data-inkdos-shell-region="titlebar" aria-label="EPUB Reader title bar">
-    <div class="title-actions">
-      <a class="icon-btn" href="../../index.html" aria-label="InkDOS home" title="InkDOS home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"/><path d="M9 20v-6h6v6"/></svg></a>
-      <button id="openBtn" class="icon-btn" type="button" aria-label="Open EPUB" title="Open"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></button>
-      <button id="tocBtn" class="icon-btn" type="button" aria-label="Table of contents" aria-pressed="false" title="Contents" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg></button>
-    </div>
-    <div class="title-center">
-      <img class="epub-app-icon" src="../../assets/icons/epub.svg" alt="" aria-hidden="true">
-      <input id="docTitle" class="file-title-input" type="text" value="Untitled.epub" aria-label="EPUB file name" spellcheck="false" autocomplete="off">
-      <span id="dirtyMark" class="dirty-mark" hidden aria-hidden="true">•</span>
-    </div>
-    <div class="title-actions title-actions-right">
-      <button id="saveBtn" class="icon-btn save-btn" type="button" aria-label="Save renamed EPUB copy" title="Save copy" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg></button>
-    </div>
-  </header>
-
-  <div class="reader-toolbar" data-inkdos-shell-region="toolbar" aria-label="Reading controls">
-    <div class="size-controls" aria-label="Text size">
-      <button id="fontDecrease" class="tool-btn" type="button" aria-label="Decrease text size">A−</button>
-      <span id="fontSizeLabel">18 px</span>
-      <button id="fontIncrease" class="tool-btn" type="button" aria-label="Increase text size">A+</button>
-    </div>
-    <div class="theme-controls" aria-label="Page background">
-      <button class="theme-dot active" data-theme="paper" type="button" aria-label="Paper theme" title="Paper"></button>
-      <button class="theme-dot" data-theme="sepia" type="button" aria-label="Sepia theme" title="Sepia"></button>
-      <button class="theme-dot" data-theme="sage" type="button" aria-label="Sage theme" title="Sage"></button>
-      <button class="theme-dot" data-theme="night" type="button" aria-label="Night theme" title="Night" hidden></button>
-    </div>
-    <span class="toolbar-spacer"></span>
-    <span id="bookMeta" class="book-meta">Open an EPUB to begin</span>
-  </div>
-
-  <main class="reader-main">
-    <aside id="tocPanel" class="toc-panel" hidden aria-label="Table of contents">
-      <div class="toc-header"><strong>Contents</strong><button id="tocClose" class="icon-btn compact" type="button" aria-label="Close contents">×</button></div>
-      <nav id="tocList" class="toc-list"></nav>
-    </aside>
-
-    <section id="startScreen" class="epub-start-card" data-app-home>
-      <img src="../../assets/icons/epub.svg" class="start-icon" alt="" aria-hidden="true">
-      <h1>EPUB Reader</h1>
-      <p>Read local EPUB books with lateral pages, adjustable text and calm page themes.</p>
-      <div class="start-actions inkdos-start-actions inkdos-start-actions-single"><button id="openStartBtn" class="start-btn inkdos-start-button inkdos-start-open" type="button"><span class="inkdos-start-icon inkdos-folder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg></span><span>Open document</span></button></div>
-    </section>
-
-    <section id="readerShell" class="reader-shell" hidden>
-      <button id="previousPage" class="page-arrow" type="button" aria-label="Previous page">‹</button>
-      <article id="pageSurface" class="page-surface" tabindex="0" aria-live="polite"><div id="pageContent" class="page-content"></div></article>
-      <button id="nextPage" class="page-arrow" type="button" aria-label="Next page">›</button>
-    </section>
-  </main>
-
-  <footer class="reader-statusbar">
-    <span id="statusText" role="status" aria-live="polite">Ready</span>
-    <span id="chapterLabel">No book</span>
-    <span id="pageCounter">0 / 0</span>
-    <span class="status-spacer"></span>
-    <div class="workspace-zoom" aria-label="Reader zoom">
-      <button id="epubZoomOut" type="button" aria-label="Zoom out">−</button>
-      <input id="epubZoomSlider" type="range" min="50" max="160" step="5" value="100" aria-label="Zoom level">
-      <button id="epubZoomIn" type="button" aria-label="Zoom in">+</button>
-      <button id="epubFit" type="button" aria-label="Fit page">Fit</button>
-      <span id="epubZoomLabel" class="zoom-percent">100%</span>
-    </div>
-  </footer>
-
-  <input id="fileInput" type="file" accept=".epub,application/epub+zip" hidden>
-  <script src="../../shared/vendor/jszip.min.js"></script>
-  <script src="../../shared/office-runtime.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-lifecycle.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-router.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/office-shell.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/product-config.js?v=1.0.0-beta.10"></script>
-  <script src="../../modules/module-registry.js?v=1.0.0-beta.10"></script>
-  <script src="../../modules/module-loader.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/recent-files.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/file-router.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/app-shell.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/responsive-command-menu.js?v=1.0.0-beta.10"></script>
-  <script src="../../shared/app-home.js?v=1.0.0-beta.10"></script>
-  <script src="epub-parser.js?v=1.0.0-beta.10"></script>
-  <script src="app.js?v=1.0.0-beta.10"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="theme-color" content="#eef1f5"><title>EPUB Reader — InkDOS 2.0</title><link rel="icon" href="assets/epub.svg"><script>(function(){var m="system";try{m=localStorage.getItem("inkdos2:epub:appearance")||"system"}catch(_){}if(!/^(light|dark|system)$/.test(m))m="system";var d=m==="dark"||(m==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.appearance=m;document.documentElement.dataset.theme=d?"dark":"light"})();</script><link rel="stylesheet" href="runtime/tokens/base.css"><link rel="stylesheet" href="runtime/frame/app-frame.css"><link rel="stylesheet" href="ui/reader-controls.css"><link rel="stylesheet" href="view/reader.css"></head><body>
+<div class="app-frame"><header class="topbar framebar"><div class="frame-side frame-left"><button id="menuBtn" class="frame-btn menu-btn" type="button" aria-expanded="false" aria-label="Open EPUB menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="frame-btn" href="../../index.html" aria-label="Home" title="Home" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></a></div><div class="document-title"><img class="app-icon epub-icon" src="assets/epub.svg" alt="" aria-hidden="true"><input id="docTitle" class="title-input file-pill" value="EPUB Reader" readonly aria-label="EPUB file name"></div><div class="frame-side frame-right" aria-hidden="true"></div></header>
+<div class="toolstrip-shell"><div id="toolbar" class="toolstrip" tabindex="0" aria-label="EPUB reader toolbar"><button id="prevBtn" class="tool-btn" type="button" aria-label="Previous page"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><button id="nextBtn" class="tool-btn" type="button" aria-label="Next page"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button><span class="tool-sep"></span><button id="tocBtn" class="tool-btn text" type="button" aria-label="Contents"><svg viewBox="0 0 24 24"><path d="M8 6h11M8 12h11M8 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Contents</span></button><button id="appearanceBtn" class="tool-btn text" type="button" aria-label="Reading appearance"><strong>Aa</strong></button><button id="highlightBtn" class="tool-btn" type="button" aria-label="Highlight selected text" title="Highlight"><svg viewBox="0 0 24 24"><path d="m6 15 8.7-8.7 3 3L9 18H6z"/><path d="m13.5 7.5 3 3M4 20h9"/></svg></button><span class="tool-sep"></span><div class="flow-switch" aria-label="Reading flow"><button id="pagesBtn" type="button" class="active" aria-pressed="true">Pages</button><button id="scrollBtn" type="button" aria-pressed="false">Scroll</button></div></div></div>
+<main id="contentViewport" class="content-viewport" aria-label="EPUB reading area"><div id="readerStage" class="reader-stage theme-paper mode-pages" aria-label="EPUB reading viewport"><article id="readerSurface" class="reader-surface"></article><div id="emptyState" class="empty-state"><div class="empty-card"><div>Open a local EPUB to start reading.</div><button id="openStartBtn" type="button">Open EPUB</button></div></div></div></main>
+<footer class="statusbar"><span id="progressText" class="status-text">No book</span><input id="progressRange" class="progress-range" type="range" min="1" max="1" step="1" value="1" disabled aria-label="Reading progress"><span id="chapterState" class="chapter-state">Ready</span></footer></div>
+<div id="backdrop" class="backdrop" hidden></div>
+<aside id="mainMenu" class="drawer general-drawer" role="dialog" aria-modal="true" aria-label="EPUB menu" hidden><div class="drawer-head"><div class="drawer-title"><img class="app-icon" src="assets/epub.svg" alt="" aria-hidden="true"><span>EPUB Reader</span></div><button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="menu-section-label">File</div><div class="menu-list"><button id="openBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg><span>Open EPUB</span><span class="hint">local</span></button><button id="saveBtn" class="menu-item" type="button" disabled><svg viewBox="0 0 24 24"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg><span>Save copy</span><span class="hint">EPUB</span></button><button id="shareBtn" class="menu-item" type="button" disabled><svg viewBox="0 0 24 24"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M5 12v7h14v-7"/></svg><span>Share</span><span class="hint">EPUB</span></button></div><div class="menu-section"><div class="menu-section-label">Appearance</div><div class="appearance-switch" role="group" aria-label="App appearance"><button class="appearance-choice" type="button" data-appearance-mode="light" aria-pressed="false">Light</button><button class="appearance-choice" type="button" data-appearance-mode="dark" aria-pressed="false">Dark</button><button class="appearance-choice" type="button" data-appearance-mode="system" aria-pressed="false">System</button></div></div></aside>
+<aside id="appearanceSheet" class="sheet appearance-sheet" role="dialog" aria-label="Reading appearance" hidden><div class="sheet-head"><strong>Reading appearance</strong><button id="appearanceClose" class="close-btn" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="font-family-row"><label for="fontFamily">Font style</label><select id="fontFamily" aria-label="Font style"><option value="book">Book — Georgia</option><option value="classic">Classic — Times</option><option value="sans">Sans — Arial</option><option value="humanist">Humanist — Trebuchet</option><option value="system">System</option></select></div><div class="font-row"><button id="fontDown" type="button" aria-label="Decrease text size">A−</button><div class="font-value"><span>Text size</span><label><input id="fontValue" type="number" min="4" max="28" step="1" inputmode="numeric" value="18" aria-label="Text size value"><small>px</small></label></div><button id="fontUp" type="button" aria-label="Increase text size">A+</button></div><input id="fontRange" class="font-range" type="range" min="4" max="28" step="1" value="18" aria-label="Text size"><div class="setting-label">Page color</div><div class="theme-grid"><button type="button" data-theme-choice="paper" class="theme-choice active"><span class="theme-preview paper-preview">Aa</span><span>Paper</span></button><button type="button" data-theme-choice="sepia" class="theme-choice"><span class="theme-preview sepia-preview">Aa</span><span>Sepia</span></button><button type="button" data-theme-choice="sage" class="theme-choice"><span class="theme-preview sage-preview">Aa</span><span>Sage</span></button><button type="button" data-theme-choice="night" class="theme-choice"><span class="theme-preview night-preview">Aa</span><span>Night</span></button></div><div class="sheet-note">EPUB text reflows. Your logical reading position is preserved when possible.</div></aside>
+<aside id="highlightSheet" class="sheet highlight-sheet" role="dialog" aria-label="Highlight tools" hidden><div class="sheet-head"><strong>Highlight</strong><button id="highlightClose" class="close-btn" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="annotation-count" id="annotationCount">Select text, then choose a color.</div><div class="highlight-grid"><button class="highlight-choice" type="button" data-highlight-color="yellow"><span class="highlight-swatch swatch-yellow"></span><span>Yellow</span></button><button class="highlight-choice" type="button" data-highlight-color="green"><span class="highlight-swatch swatch-green"></span><span>Green</span></button><button class="highlight-choice" type="button" data-highlight-color="pink"><span class="highlight-swatch swatch-pink"></span><span>Pink</span></button><button class="highlight-choice" type="button" data-highlight-color="blue"><span class="highlight-swatch swatch-blue"></span><span>Blue</span></button></div><button id="highlightClear" class="highlight-clear" type="button">Remove highlight from selection</button><div class="sheet-note">Highlights are embedded in an InkDOS annotation layer when you save an edited EPUB copy. The original book remains unchanged.</div></aside>
+<aside id="tocSheet" class="sheet toc-sheet" role="dialog" aria-label="Contents" hidden><div class="sheet-head"><strong>Contents</strong><button id="tocClose" class="close-btn" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><nav id="tocList" class="toc-list"></nav></aside>
+<input id="fileInput" type="file" accept=".epub,application/epub+zip" hidden>
+<script src="package-reader.js"></script><script src="content-projector.js"></script><script src="book-model.js"></script><script src="annotation-store.js"></script><script src="annotations.js"></script><script src="epub-writer.js"></script><script src="io/file-delivery.js"></script><script src="state/reading-state.js"></script><script src="state/appearance.js"></script><script src="runtime/frame/frame-menu.js"></script><script src="view/reader-viewport.js"></script><script src="renderer.js"></script><script src="session/book-session.js"></script><script src="ui/reader-controls.js"></script><script src="app.js"></script></body></html>

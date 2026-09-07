@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="color-scheme" content="light dark"><meta name="theme-color" content="#eef1f5"><title>InkDOS Plain Text 2.0</title><script>(function(){var m="system";try{m=localStorage.getItem("inkdos2:txt:appearance")||"system"}catch(_){}if(!/^(light|dark|system)$/.test(m))m="system";var d=m==="dark"||(m==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.appearance=m;document.documentElement.dataset.theme=d?"dark":"light"})();</script><!-- STYLES --></head>
+<body><script>(function(){window.addEventListener('error',function(e){var b=document.getElementById('runtimeError');if(!b){b=document.createElement('div');b.id='runtimeError';b.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;padding:10px 12px;border-radius:10px;background:#8f1d1d;color:white;font:13px -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.25)';document.body.appendChild(b)}b.textContent='Runtime error: '+(e.message||'unknown error')});})();</script>
+<svg class="svg-defs" aria-hidden="true"><defs><linearGradient id="inkdosTxtGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd75e"/><stop offset="1" stop-color="#e0a716"/></linearGradient></defs><symbol id="inkdosTxtIcon" viewBox="0 0 512 512"><rect x="24" y="24" width="464" height="464" rx="112" fill="url(#inkdosTxtGradient)"/><rect x="126" y="93" width="274" height="326" rx="35" fill="#fff8d6"/><path d="M174 93v326" stroke="#d89f12" stroke-width="16"/><path d="M116 150h26M116 211h26M116 272h26M116 333h26" stroke="#5c4a20" stroke-width="16" stroke-linecap="round"/><path d="M216 173h132M216 226h132M216 279h132M216 332h91" stroke="#6b5b31" stroke-width="16" stroke-linecap="round"/></symbol></svg>
+<div class="app-frame">
+  <header class="framebar" aria-label="Plain Text frame">
+    <div class="frame-left">
+      <button id="menuBtn" class="menu-btn" type="button" aria-label="Open general menu" title="Menu" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    <div class="file-pill-wrap"><svg class="title-icon" aria-hidden="true"><use href="#inkdosTxtIcon"/></svg><input id="docTitle" class="file-pill" value="Untitled.txt" aria-label="File name" spellcheck="false" autocomplete="off"><span id="dirtyDot" class="dirty-dot" hidden aria-hidden="true">•</span></div>
+  </header>
+
+  <div class="toolstrip-shell">
+    <div id="toolbar" class="toolstrip" tabindex="0" aria-label="Horizontally scrollable editing toolbar">
+      <button id="undoBtn" class="tool-btn" type="button" disabled aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="m9 7-4 4 4 4"/><path d="M5 11h8a6 6 0 0 1 6 6"/></svg></button>
+      <button id="redoBtn" class="tool-btn" type="button" disabled aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 4 4-4 4"/><path d="M19 11h-8a6 6 0 0 0-6 6"/></svg></button>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="wrapBtn" class="tool-btn active" type="button" aria-pressed="true" aria-label="Wrap long lines" title="Wrap"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h13a3 3 0 0 1 0 6h-4"/><path d="m15 13-3 3 3 3M4 20h6"/></svg></button>
+      <button id="fontDownBtn" class="tool-btn text-glyph" type="button" aria-label="Decrease editor view text size" title="Smaller editor text (view only)">A−</button>
+      <label class="size-chip" aria-label="Editor view text size"><input id="fontSize" type="number" min="4" max="28" step="1" value="16" inputmode="numeric" aria-label="Editor view text size from 4 to 28 points"><span>pt</span></label>
+      <button id="fontUpBtn" class="tool-btn text-glyph" type="button" aria-label="Increase editor view text size" title="Larger editor text (view only)">A+</button>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="outdentBtn" class="tool-btn" type="button" aria-label="Decrease paragraph indent" title="Decrease indent"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="m7 9-4 3 4 3"/></svg></button>
+      <button id="indentBtn" class="tool-btn" type="button" aria-label="Increase paragraph indent" title="Increase indent"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="m3 9 4 3-4 3"/></svg></button>
+      <button id="listBtn" class="tool-btn list-tool" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="List and outline style" title="List / outline"><svg viewBox="0 0 24 24"><path d="M9 6h10M9 12h10M9 18h10"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg></button>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="findBtn" class="tool-btn" type="button" aria-label="Find" title="Find"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg></button>
+      <div id="findbar" class="findbar" hidden><input id="findInput" type="search" placeholder="Find text" aria-label="Find text"><button id="findPrev" class="tool-btn compact-tool" type="button" aria-label="Previous match" title="Previous match"><svg viewBox="0 0 24 24"><path d="m6 14 6-6 6 6"/></svg></button><button id="findNext" class="tool-btn compact-tool" type="button" aria-label="Next match" title="Next match"><svg viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></svg></button><button id="findClose" class="tool-btn compact-tool" type="button" aria-label="Close find" title="Close find">×</button><span id="findStatus" class="find-status"></span></div>
+      <span class="tool-sep" aria-hidden="true"></span>
+      <button id="selectAllBtn" class="tool-btn" type="button" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></svg></button>
+      <button id="copyBtn" class="tool-btn" type="button" aria-label="Copy" title="Copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <button id="pasteBtn" class="tool-btn" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2M8 10h8M8 14h8"/></svg></button>
+    </div>
+  </div>
+
+  <main class="content-viewport"><div class="stage"><section id="surface" class="editor-surface"><textarea id="editor" aria-label="Plain text editor" spellcheck="true" autocapitalize="sentences" autocomplete="off"></textarea></section></div></main>
+
+  <footer class="statusbar"><span id="status" class="status-item">Ready</span><span id="cursorState" class="status-item">Ln 1, Col 1</span><span id="counts" class="status-item status-detail">1 line · 0 words · 0 chars</span><span class="status-spacer"></span><span id="encoding" class="status-item">UTF-8</span><span id="lineEnding" class="status-item">LF</span><span id="checkpointState" class="internal-state" aria-hidden="true"></span><span id="exportState" class="internal-state" aria-hidden="true"></span></footer>
+</div>
+
+<div id="backdrop" class="backdrop" hidden></div>
+<aside id="moreMenu" class="drawer" role="dialog" aria-modal="true" aria-label="Plain Text general menu" hidden>
+  <div class="drawer-head"><div class="drawer-title"><svg class="app-icon" aria-hidden="true"><use href="#inkdosTxtIcon"/></svg><span>Plain Text</span></div><button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="menu-list">
+    <button id="newBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>New document</span><span class="hint">⌘N</span></button>
+    <button id="openBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg><span>Open</span><span class="hint">⌘O</span></button>
+    <button id="saveBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg><span>Save copy</span><span class="hint">⌘S</span></button>
+    <button id="shareBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint"></span></button>
+  </div>
+  <div class="menu-section"><div class="menu-section-label">Appearance</div><div class="appearance-switch" role="group" aria-label="App appearance"><button class="appearance-choice" type="button" data-appearance-mode="light" aria-pressed="false">Light</button><button class="appearance-choice" type="button" data-appearance-mode="dark" aria-pressed="false">Dark</button><button class="appearance-choice" type="button" data-appearance-mode="system" aria-pressed="false">System</button></div></div>
+</aside>
+<input id="fileInput" type="file" accept=".txt,text/plain" hidden>
+
+<div id="listMenu" class="list-popover" role="menu" aria-label="List and outline styles" hidden>
+  <button class="list-choice" type="button" role="menuitem" data-list-family="dash"><span class="list-sample">− &nbsp;• &nbsp;▪</span><span><strong>Dash outline</strong><small>dash → bullet → square</small></span></button>
+  <button class="list-choice" type="button" role="menuitem" data-list-family="bullet"><span class="list-sample">• &nbsp;◦ &nbsp;▪</span><span><strong>Bullets</strong><small>bullet → hollow bullet → square</small></span></button>
+  <button class="list-choice" type="button" role="menuitem" data-list-family="number"><span class="list-sample">1. &nbsp;a. &nbsp;−</span><span><strong>Numbered outline</strong><small>1, 2, 3 → a, b, c → dash</small></span></button>
+</div>
+
+<div id="modalBackdrop" class="modal-backdrop" hidden></div>
+<section id="discardDialog" class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="discardTitle" hidden>
+  <h2 id="discardTitle">Unsaved text</h2>
+  <p id="discardMessage">This text file has changes that are not verified in a saved copy.</p>
+  <div class="confirm-actions"><button id="discardCancel" class="confirm-btn secondary" type="button">Cancel</button><button id="discardContinue" class="confirm-btn danger" type="button">Discard changes</button></div>
+</section>
+<script>document.documentElement.dataset.inkdosBundle='inline-d3';</script>
+
+<!-- SCRIPT apps/txt/runtime/contracts/viewport-metrics.js -->
+<!-- SCRIPT apps/txt/runtime/contracts/document-session.js -->
+<!-- SCRIPT apps/txt/runtime/contracts/render-request.js -->
+<!-- SCRIPT apps/txt/runtime/platform/content-viewport-adapter.js -->
+<!-- SCRIPT apps/txt/runtime/services/file-delivery.js -->
+<!-- SCRIPT apps/txt/runtime/services/recovery-store.js -->
+<!-- SCRIPT apps/txt/runtime/frame/app-frame.js -->
+<!-- SCRIPT apps/txt/state/appearance.js -->
+<!-- SCRIPT apps/txt/txt-codec.js -->
+<!-- SCRIPT apps/txt/history.js -->
+<!-- SCRIPT apps/txt/state/txt-state.js -->
+<!-- SCRIPT apps/txt/txt-policy.js -->
+<!-- SCRIPT apps/txt/export-verify.js -->
+<!-- SCRIPT apps/txt/editor/outline-model.js -->
+<!-- SCRIPT apps/txt/editor/editor-controller.js -->
+<!-- SCRIPT apps/txt/io/txt-file-controller.js -->
+<!-- SCRIPT apps/txt/ui/txt-controls.js -->
+<!-- SCRIPT apps/txt/app.js -->
+<script>document.body.dataset.runtimeReady=(globalThis.InkDOS2&&globalThis.InkDOS2.TxtAppDebug)?'true':'false';</script>
+</body></html>
