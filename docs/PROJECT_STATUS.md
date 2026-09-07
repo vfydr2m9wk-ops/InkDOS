@@ -1,19 +1,33 @@
 # Project status
 
-Release: **InkDOS 2.0.11**
+Release: **InkDOS 2.0.12**
 
-Six installed independent workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB Reader and PDF Workspace. InkDOS 2.0.11 preserves the Web App compatibility restored in 2.0.5, the deterministic Plain Text distribution work from 2.0.6, the six-app Share behavior from 2.0.4, the 2.0.7 empty-workspace behavioral contract, the 2.0.8 fail-safe disabled-state work, the 2.0.9 horizontal appearance contract and the 2.0.10 PDF frame alignment.
+Six installed independent workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB Reader and PDF Workspace. InkDOS 2.0.12 preserves the existing appearance, empty-workspace, Share, single-delivery Save and PDF frame contracts while making standalone app extraction an explicit validated property.
 
-Home supports Light, Dark and System with a compact appearance control. The same preference can be changed from any workspace using its existing appearance UI. The selected value is communicated horizontally through `inkdos2:appearance`; each workspace continues to apply the value through its own private appearance controller and retains its own app-specific preference key. There is no shared theme engine or cross-app runtime dependency.
+## Standalone and suite integration
 
-This preserves physical modularity: extracting a workspace from the suite leaves its local appearance behavior functional; only suite-wide preference synchronization naturally disappears when no other InkDOS page is present.
+Each workspace remains physically rooted under its own `apps/<workspace>/` directory and retains its own runtime, state and I/O implementation. Home is now an optional bridge: the suite launcher adds `suite=1` to workspace navigation, and the corresponding app-local frame module exposes the Home action only in that integrated context. When opened directly or extracted, the workspace removes the Home target from its active frame without requiring a suite runtime.
 
-All workspaces continue to obey the same behavioral empty-state rule while remaining physically modular: opening a workspace alone does not make Save or Share available. Those actions become available only after the app has a real active document/book/PDF according to its own private state. Presentations starts with zero slides and creates a presentation only after New or a successful Open. Plain Text starts unloaded unless New, Open, or a valid recovery checkpoint activates a document.
+The release gate now copies each workspace to an isolated temporary directory, verifies that its non-Home entry resources resolve within that app root, scans for cross-app runtime references, and checks that the offline service-worker shell contains no missing files. This directly covers the strict-standalone gap identified during the previous modularity audit.
 
-InkDOS 2.0.11 hardens Save delivery in Documents, Spreadsheets, Presentations, Plain Text and PDF. A single Save action is now constrained to one destination route. iPad/iPhone-style touch WebKit hosts prefer file-based system Share for Save when available, avoiding partially implemented File System Access behavior. On other hosts, once a native save picker has returned a destination handle, a subsequent writable/write failure is terminal and cannot cascade into a second Share/download export. This directly prevents the empty-file + valid-file duplicate observed on affected hosts.
+## EPUB polish
 
-The correction remains physically modular: each affected workspace owns its own file-delivery implementation, and no shared mutable save service has been added. EPUB is unchanged because the reported duplicate-save path does not use the same writable-picker fallback sequence.
+EPUB previously had good logical separation but several core modules were physically flattened at the app root. Version 2.0.12 moves those existing responsibilities into app-private directories without intentionally changing algorithms:
 
-Release validation guards the one-Save/one-delivery invariant alongside the existing PDF icon/frame, appearance, empty-workspace and app-root modularity contracts.
+- package reading and EPUB writing under `io/`;
+- book model, content projection and annotation projection under `engine/`;
+- annotation persistence under `state/`;
+- rendering under `view/`;
+- start-state presentation CSS under `ui/`.
+
+`app.js` remains the composition layer, while `index.html` now loads the physically separated modules. The old flattened module copies are absent, and the release gate requires the new EPUB layout.
+
+## Preserved contracts
+
+Appearance remains horizontally synchronized through `inkdos2:appearance`, while every workspace retains its app-local appearance key and controller. Save and Share remain unavailable until a real active document/book/PDF exists according to each workspace's private state. The 2.0.11 one-Save/one-delivery rule remains active in Documents, Spreadsheets, Presentations, Plain Text and PDF.
+
+## Scope boundary
+
+This release is code-structure polish. It does not claim broader DOCX/XLSX/PPTX/EPUB/PDF compatibility or LibreOffice-level fidelity. Format expansion remains a later per-workspace task and must preserve the same app-private parser/writer boundaries.
 
 PDF otherwise retains the user-accepted P4.2 functional baseline. See `PDF-CLOSURE-AUDIT.md` for its verification scope.
