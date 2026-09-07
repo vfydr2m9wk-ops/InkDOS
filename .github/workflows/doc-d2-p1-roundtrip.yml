@@ -7,6 +7,7 @@ on:
     paths:
       - 'apps/documents/**'
       - 'tests/test_doc_d2_p1_roundtrip.py'
+      - 'tests/test_doc_d2_sections_roundtrip.py'
       - 'requirements-ci.txt'
       - '.github/workflows/doc-d2-p1-roundtrip.yml'
   pull_request:
@@ -15,6 +16,7 @@ on:
     paths:
       - 'apps/documents/**'
       - 'tests/test_doc_d2_p1_roundtrip.py'
+      - 'tests/test_doc_d2_sections_roundtrip.py'
       - 'requirements-ci.txt'
       - '.github/workflows/doc-d2-p1-roundtrip.yml'
 
@@ -42,5 +44,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check -r requirements-ci.txt
           python -m playwright install --with-deps chromium
-      - name: Run DOC-D2 P1 roundtrip
+      - name: Run DOC-D2 review roundtrip
         run: python tests/test_doc_d2_p1_roundtrip.py
+      - name: Run DOC-D2 section roundtrip
+        run: python tests/test_doc_d2_sections_roundtrip.py
