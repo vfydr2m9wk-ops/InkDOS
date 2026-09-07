@@ -27,7 +27,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "232d086ff3a8c7f4587720bac657bd15df58c1ebf053aef7cbad2475be19a197",
+      "nonIndexTreeSha256": "6e045c8d7c92576a1eced883829ffa183acbb763700d84a74d0ea327e4594426",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -39,7 +39,7 @@
         "index.html: in 2.0.8 mark Save disabled in initial markup before runtime synchronization",
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive"
       ],
-      "integratedIndexSha256": "1e0bfb4484cdb671ed314764ae303d4082b38cdd00596f941135faeadfc63d62"
+      "integratedIndexSha256": "a0a5a5debfc4fb209ac38496ee05abced0dcdf3596d54a5f8ad09923e4a7a700"
     },
     "presentations": {
       "sourcePackage": "Presentations-FINAL.zip",
@@ -103,7 +103,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "b56829f98e69bfa9eeeae336edd7ddd111e7f6c83cc6f4addf6aec3029630595",
+      "nonIndexTreeSha256": "a2f26da9b8988349b8d7753ded5a4ac8652189332906a949794863c4418db918",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
@@ -116,7 +116,7 @@
         "index.html: in 2.0.8 mark menu Save and toolbar Save disabled in initial markup before runtime synchronization",
         "runtime/frame/app-frame.css: in 2.0.8 render disabled menu actions visibly inactive"
       ],
-      "integratedIndexSha256": "13d8b861a3365ce60c9dd9153d8ff9fa579f1b33bc83a53de4b17267ccdbe287",
+      "integratedIndexSha256": "fbb08845cf855a4c9a3c4b45adaae9804f25bb2de535beece656cc2a86a51ad4",
       "functionalBaseline": "P4.2 user-accepted",
       "status": "baseline-preserved-with-2.0.8-disabled-state-visibility"
     }
