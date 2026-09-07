@@ -49,7 +49,7 @@ def main():
             browser.close()
         assert 'commentRangeStart' in result['docXml'] and 'commentReference' in result['docXml'],result
         assert 'footnoteReference' in result['docXml'],result
-        assert 'w:pStyle' in result['docXml'] and 'TOCHeading' in result['docXml'] and 'TOC1' in result['docXml'] and 'Quote' in result['docXml'],result
+        assert 'w:pStyle' in result['docXml'] and 'TOCHeading' in result['docXml'] and 'TOC2' in result['docXml'] and 'Quote' in result['docXml'],result
         assert 'gridSpan' in result['docXml'] and 'w:val="2"' in result['docXml'],result
         assert 'Review note' in result['comments'],result
         assert 'Footnote body' in result['footnotes'],result
