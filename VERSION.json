@@ -1,38 +1,20 @@
 {
   "name": "InkDOS",
   "displayName": "InkDOS",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "releaseChannel": "stable",
-  "releaseName": "InkDOS 2.0.7",
+  "releaseName": "InkDOS 2.0.8",
   "date": "2026-09-07",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDOS/",
   "status": "release",
   "components": {
-    "documents": {
-      "path": "apps/documents/index.html",
-      "format": "DOCX"
-    },
-    "spreadsheets": {
-      "path": "apps/spreadsheets/index.html",
-      "format": "XLS / XLSX"
-    },
-    "presentations": {
-      "path": "apps/presentations/index.html",
-      "format": "PPT / PPTX"
-    },
-    "txt": {
-      "path": "apps/txt/index.html",
-      "format": "TXT"
-    },
-    "epub": {
-      "path": "apps/epub/index.html",
-      "format": "EPUB"
-    },
-    "pdf": {
-      "path": "apps/pdf/index.html",
-      "format": "PDF"
-    }
+    "documents": {"path": "apps/documents/index.html", "format": "DOCX"},
+    "spreadsheets": {"path": "apps/spreadsheets/index.html", "format": "XLS / XLSX"},
+    "presentations": {"path": "apps/presentations/index.html", "format": "PPT / PPTX"},
+    "txt": {"path": "apps/txt/index.html", "format": "TXT"},
+    "epub": {"path": "apps/epub/index.html", "format": "EPUB"},
+    "pdf": {"path": "apps/pdf/index.html", "format": "PDF"}
   },
   "plannedComponents": {}
 }
