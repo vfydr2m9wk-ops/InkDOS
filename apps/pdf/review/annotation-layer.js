@@ -4,18 +4,18 @@
   function createAnnotationLayer({
     state,
     clamp,
-    makeId,
     isFreeAnnotationTool,
-    markDirty,
-    renderSideLists
+    commitFreeAnnotation,
+    requestTextAnnotation,
+    requestTextEdit
   }) {
     if (
       !state ||
       !clamp ||
-      !makeId ||
       !isFreeAnnotationTool ||
-      !markDirty ||
-      !renderSideLists
+      !commitFreeAnnotation ||
+      !requestTextAnnotation ||
+      !requestTextEdit
     ) {
       throw new Error(
         'InkDOS PDF annotation layer requires state and review callbacks.'
@@ -82,6 +82,10 @@
             `height:${clamp(rect.h, 0, 1) * 100}%`
           ].join(';');
 
+          if (annotation.id) {
+            element.dataset.annotationId = annotation.id;
+          }
+
           if (
             annotation.text &&
             annotation.source !== 'text-selection'
@@ -90,6 +94,9 @@
           }
 
           const titleParts = [];
+          if (annotation.type === 'text') {
+            titleParts.push('Tap to edit text');
+          }
           if (annotation.comment) {
             titleParts.push(annotation.comment);
           }
@@ -108,8 +115,28 @@
     function wireReviewLayer(layer, pageNumber) {
       let start = null;
 
+      function resetPointer() {
+        start = null;
+      }
+
       layer.onpointerdown = event => {
         if (!isFreeAnnotationTool(state.tool)) return;
+
+        const editableText =
+          state.tool === 'text' &&
+          event.target.closest?.(
+            '.review-annotation.text[data-annotation-id]'
+          );
+
+        if (editableText) {
+          start = {
+            editId: editableText.dataset.annotationId,
+            id: event.pointerId
+          };
+          layer.setPointerCapture?.(event.pointerId);
+          event.preventDefault();
+          return;
+        }
 
         const bounds = layer.getBoundingClientRect();
         start = {
@@ -132,6 +159,13 @@
       layer.onpointerup = event => {
         if (!start) return;
 
+        if (start.editId) {
+          const editId = start.editId;
+          resetPointer();
+          requestTextEdit(editId);
+          return;
+        }
+
         const bounds = layer.getBoundingClientRect();
         const endX = clamp(
           (event.clientX - bounds.left) / bounds.width,
@@ -144,36 +178,44 @@
           1
         );
 
+        let x = Math.min(start.x, endX);
+        let y = Math.min(start.y, endY);
+        let w = Math.abs(endX - start.x);
+        let h = Math.abs(endY - start.y);
+
+        if (state.tool === 'text') {
+          w = Math.max(0.18, w);
+          h = Math.max(0.06, h);
+          x = clamp(x, 0, Math.max(0, 1 - w));
+          y = clamp(y, 0, Math.max(0, 1 - h));
+        } else {
+          w = Math.max(0.012, w);
+          h = Math.max(0.012, h);
+        }
+
         const item = {
-          id: makeId(),
           page: pageNumber,
           type: state.tool,
           source: 'free',
-          x: Math.min(start.x, endX),
-          y: Math.min(start.y, endY),
-          w: Math.max(0.012, Math.abs(endX - start.x)),
-          h: Math.max(0.012, Math.abs(endY - start.y))
+          x,
+          y,
+          w,
+          h
         };
 
-        if (state.tool === 'text') {
-          const insertedText = prompt('Text:', '');
-          if (insertedText === null) {
-            start = null;
-            return;
-          }
-          item.text = insertedText;
+        resetPointer();
+
+        if (item.type === 'text') {
+          requestTextAnnotation(item);
+          return;
         }
 
-        state.undo.push({
-          kind: 'annotation',
-          id: item.id
-        });
-        state.annotations.push(item);
-        start = null;
+        commitFreeAnnotation(item);
+      };
 
-        markDirty();
-        renderPageReview(pageNumber);
-        renderSideLists();
+      layer.onpointercancel = resetPointer;
+      layer.onlostpointercapture = () => {
+        if (start?.editId) resetPointer();
       };
     }
 
