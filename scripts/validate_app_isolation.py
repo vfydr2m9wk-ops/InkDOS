@@ -2,6 +2,7 @@
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
+import json
 import re
 import shutil
 import tempfile
@@ -121,16 +122,31 @@ def validate_epub_layout(errors):
     for rel in ('io/package-reader.js','engine/content-projector.js','engine/book-model.js','state/annotation-store.js','engine/annotations.js','io/epub-writer.js','view/renderer.js','ui/start-state.css'):
         if rel not in index:errors.append(f'epub: modular index reference missing: {rel}')
 
+def validate_source_lock_policy(errors):
+    lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text(encoding='utf-8'))
+    if lock.get('release')!='2.0.12':errors.append('SOURCE_LOCK: release must be 2.0.12')
+    policy=lock.get('integrationPolicy','')
+    for marker in ('suite=1','physically independent','EPUB','isolated'):
+        if marker not in policy:errors.append(f'SOURCE_LOCK: 2.0.12 integration policy missing {marker}')
+    for app in ACTIVE:
+        allowed='\n'.join(lock.get('apps',{}).get(app,{}).get('allowedIntegrationChanges',[]))
+        if '2.0.12' not in allowed or 'Home' not in allowed:
+            errors.append(f'SOURCE_LOCK: optional Home change not recorded for {app}')
+    epub='\n'.join(lock.get('apps',{}).get('epub',{}).get('allowedIntegrationChanges',[]))
+    for marker in ('structural refactor','io/','engine/','state/','view/'):
+        if marker not in epub:errors.append(f'SOURCE_LOCK: EPUB refactor record missing {marker}')
+
 def main():
     errors=[]
     validate_home_launcher(errors)
     validate_service_worker_shell(errors)
     validate_epub_layout(errors)
+    validate_source_lock_policy(errors)
     for app in ACTIVE:
         validate_optional_home(app,errors)
         validate_isolated_copy(app,errors)
         validate_cross_app_references(app,errors)
     if errors:raise SystemExit('\n'.join(errors))
-    print('Standalone app isolation, optional Home, offline shell and EPUB modular layout passed.')
+    print('Standalone app isolation, optional Home, offline shell, EPUB modular layout and source-lock policy passed.')
 
 if __name__=='__main__':main()
