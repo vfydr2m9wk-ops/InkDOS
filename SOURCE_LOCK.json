@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.1",
-  "integrationPolicy": "2.0.1 changes only each affected app entry index to standardize the first-open choice card; every non-index app byte remains frozen.",
+  "release": "2.0.2",
+  "integrationPolicy": "2.0.2 corrects the Presentations first-open gate in its entry index only; all non-index app runtime bytes remain frozen.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -39,9 +39,10 @@
       "nonIndexTreeSha256": "487eb7d20c71882fed73b742820e82e9add7ed49ac05c4d14ca68b3695879378",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
-        "index.html: add Home anchor to ../../index.html"
+        "index.html: add Home anchor to ../../index.html",
+        "index.html: standard first-open gate matching Spreadsheets; New presentation and Open presentation actions"
       ],
-      "integratedIndexSha256": "6fa9f3c4d432830e55686a43858272be27b08bc7f5e0a234138c49919212ba23"
+      "integratedIndexSha256": "15654c4e421504127400b2049ce7596b50c2e2ff9fe668a52809daa02f2042b4"
     },
     "txt": {
       "sourcePackage": "TXT-FINAL.zip",
@@ -70,5 +71,5 @@
       "integratedIndexSha256": "6755a8f4dffdd79cc22c5cd7ebd440150ec2a2a5eacc7ded39be9e1a997debb0"
     }
   },
-  "previousRelease": "2.0.0"
+  "previousRelease": "2.0.1"
 }

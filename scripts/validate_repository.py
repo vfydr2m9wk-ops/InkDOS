@@ -17,8 +17,8 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text())
-    if v.get('version')!='2.0.1': raise SystemExit('Unexpected version')
-    if state.get('appliedSequence')!=69 or state.get('currentPackage')!='2.0.1-standard-opening': raise SystemExit('Unexpected development state')
+    if v.get('version')!='2.0.2': raise SystemExit('Unexpected version')
+    if state.get('appliedSequence')!=70 or state.get('currentPackage')!='2.0.2-presentation-start-gate': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -29,7 +29,7 @@ def main():
         entry=lock['apps'][app]
         if sha(idx)!=entry['integratedIndexSha256']: raise SystemExit(f'Integrated index hash changed: {app}')
         if tree_digest(ROOT/f'apps/{app}',exclude=('index.html',))!=entry['nonIndexTreeSha256']: raise SystemExit(f'Frozen non-index source changed: {app}')
-    if (ROOT/'apps/pdf').exists(): raise SystemExit('PDF runtime must not exist in 2.0.1')
+    if (ROOT/'apps/pdf').exists(): raise SystemExit('PDF runtime must not exist in 2.0.2')
     if 'PDF Workspace' not in home or 'Coming soon' not in home: raise SystemExit('PDF placeholder missing')
     starts={'documents':('startNew','startOpen'),'spreadsheets':('startNew','startOpen'),'presentations':('startNew','startOpen'),'txt':('startNew','startOpen'),'epub':('openStartBtn',)}
     for app,ids in starts.items():
@@ -37,6 +37,13 @@ def main():
         if 'start-card' not in text: raise SystemExit(f'Standard start card missing: {app}')
         for ident in ids:
             if f'id=\"{ident}\"' not in text: raise SystemExit(f'Start action {ident} missing: {app}')
+    presentation=(ROOT/'apps/presentations/index.html').read_text(encoding='utf-8')
+    for marker in ('presentationStartGate','showStart()','waitForOpenCommit','app.newPresentation()'):
+        if marker not in presentation: raise SystemExit(f'Presentations startup gate missing: {marker}')
+    if 'display:grid!important' not in presentation or '.start-state[hidden]{display:none!important}' not in presentation:
+        raise SystemExit('Presentations startup gate visibility contract missing')
+    if './apps/presentations/index.html?v=2.0.2' not in home:
+        raise SystemExit('Versioned Home route for Presentations is missing')
     forbidden=('suite-shell.js','file-router.js','recent-files.js','module-loader.js','shared/app-shell.js')
     for marker in forbidden:
         if marker in home: raise SystemExit(f'Legacy Home runtime reference: {marker}')

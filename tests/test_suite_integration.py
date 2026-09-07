@@ -13,6 +13,17 @@ class SuiteIntegration(unittest.TestCase):
             self.assertIn('start-card',text,app);self.assertIn('id="startNew"',text,app);self.assertIn('id="startOpen"',text,app)
         epub=(ROOT/'apps/epub/index.html').read_text(encoding='utf-8')
         self.assertIn('start-card',epub);self.assertIn('id="openStartBtn"',epub);self.assertNotIn('id="startNew"',epub)
+    def test_presentations_start_gate_is_behavioral(self):
+        text=(ROOT/'apps/presentations/index.html').read_text(encoding='utf-8')
+        self.assertIn('presentationStartGate',text)
+        self.assertIn('showStart()',text)
+        self.assertIn('waitForOpenCommit',text)
+        self.assertIn('app.newPresentation()',text)
+        self.assertIn('display:grid!important',text)
+        self.assertIn('.start-state[hidden]{display:none!important}',text)
+        home=(ROOT/'index.html').read_text(encoding='utf-8')
+        self.assertIn('./apps/presentations/index.html?v=2.0.2',home)
+
     def test_pdf_placeholder(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         self.assertIn('PDF Workspace',text);self.assertIn('Coming soon',text);self.assertFalse((ROOT/'apps/pdf').exists())

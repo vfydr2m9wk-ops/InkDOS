@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="ui/editor.css">
 <link rel="stylesheet" href="view/presentation-surface.css">
 <style>
-/* InkDOS 2.0.1 — app-local first-open card; metrics mirror Spreadsheets. */
-.presentation-workspace{position:relative}.start-state{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:18px;background:var(--workspace-bg,#cfd1d4);pointer-events:none}.start-card{width:min(430px,100%);padding:28px;border:1px solid var(--line,#d9dee7);border-radius:22px;background:var(--chrome,#fff);box-shadow:var(--shadow,0 12px 32px rgba(15,23,42,.10));text-align:center;pointer-events:auto}.start-icon{width:68px;height:68px;border-radius:16px}.start-card h1{margin:14px 0 6px}.start-card p{margin:0 0 18px;color:var(--muted,#697386)}.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.start-actions button{min-height:44px;border:1px solid var(--line,#d9dee7);border-radius:11px;background:var(--chrome,#fff);padding:0 16px;color:inherit}.start-actions .primary{background:var(--accent,#d65a35);color:#fff;border-color:var(--accent,#d65a35)}
+/* InkDOS 2.0.2 — Presentations first-open gate. Spreadsheets is the visual baseline. */
+.presentation-workspace{position:relative}.start-state{position:absolute;inset:0;z-index:80;display:grid!important;place-items:center;padding:18px;background:var(--bg);pointer-events:auto}.start-state[hidden]{display:none!important}.start-card{width:min(430px,calc(100% - 36px));padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--chrome);box-shadow:var(--shadow);text-align:center;pointer-events:auto}.start-icon{width:68px;height:68px;border-radius:16px}.start-card h1{margin:14px 0 6px}.start-card p{margin:0 0 18px;color:var(--muted)}.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.start-actions button{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--panel);padding:0 16px;color:inherit}.start-actions .primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -103,7 +103,62 @@
 <script src="ui/command-controller.js"></script>
 <script src="app.js"></script>
 <script>
-(function(){const state=document.getElementById('startState'),file=document.getElementById('fileInput');document.getElementById('startNew')?.addEventListener('click',()=>{const ok=document.getElementById('newMenuBtn')?.click();state.hidden=true});document.getElementById('startOpen')?.addEventListener('click',()=>document.getElementById('openMenuBtn')?.click());file?.addEventListener('change',()=>{if(file.files&&file.files.length)state.hidden=true});})();
+(function presentationStartGate(){
+  const state=document.getElementById('startState');
+  const startNew=document.getElementById('startNew');
+  const startOpen=document.getElementById('startOpen');
+  const fileInput=document.getElementById('fileInput');
+  const menuNew=document.getElementById('newMenuBtn');
+  const app=globalThis.__inkdosPresentations;
+  if(!state||!startNew||!startOpen||!fileInput||!app)return;
+
+  function showStart(){
+    state.hidden=false;
+    state.removeAttribute('hidden');
+    state.dataset.active='true';
+    state.style.setProperty('display','grid','important');
+  }
+  function hideStart(){
+    state.dataset.active='false';
+    state.style.removeProperty('display');
+    state.hidden=true;
+  }
+  function waitForOpenCommit(beforeRevision){
+    let frames=0;
+    function check(){
+      const kind=app.session.sourceKind;
+      if((kind==='ppt'||kind==='pptx')&&app.session.revision>beforeRevision){hideStart();return}
+      if(++frames<900&&state.dataset.active==='true')requestAnimationFrame(check);
+    }
+    requestAnimationFrame(check);
+  }
+
+  /* The presentation engine creates its blank slide model during construction.
+     Keep that implementation untouched and place a deterministic first-open gate
+     above it until the user explicitly chooses New or a file open commits. */
+  showStart();
+
+  startNew.addEventListener('click',()=>{
+    const accepted=app.newPresentation();
+    if(accepted!==false)hideStart();
+  });
+  startOpen.addEventListener('click',()=>fileInput.click());
+
+  fileInput.addEventListener('change',()=>{
+    if(fileInput.files&&fileInput.files.length)waitForOpenCommit(app.session.revision);
+  });
+
+  if(menuNew)menuNew.addEventListener('click',()=>{
+    const before=app.session.revision;
+    setTimeout(()=>{if(app.session.sourceKind==='new'&&app.session.revision>before)hideStart()},0);
+  },true);
+
+  document.addEventListener('keydown',event=>{
+    if(state.dataset.active!=='true'||!(event.metaKey||event.ctrlKey)||event.key.toLowerCase()!=='n')return;
+    const before=app.session.revision;
+    setTimeout(()=>{if(app.session.sourceKind==='new'&&app.session.revision>before)hideStart()},0);
+  },true);
+})();
 </script>
 
 </body>

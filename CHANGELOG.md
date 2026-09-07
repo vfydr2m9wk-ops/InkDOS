@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.2 — 2026-09-07
+
+- Fixed the Presentations first-open gate so the app no longer exposes the pre-created blank slide before the user chooses New or Open.
+- Kept the presentation engine, parser, writer, state and editing controllers frozen; the correction is confined to the presentation entry index.
+- Versioned the Home → Presentations route to force a fresh Safari/WebKit navigation after the update.
+
 ## 2.0.1 — 2026-09-07
 
 - Standardized first-open cards to the Spreadsheets interaction pattern.
