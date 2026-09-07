@@ -13,6 +13,7 @@ class PdfTextboxBaselineTests(unittest.TestCase):
         self.assertIn("shared/ui/workspace-panel-controller.js", index)
         self.assertIn("shared/ui/workspace-layout.js", index)
         self.assertEqual(index.count("shared/file-router.js"), 1)
+        self.assertIn("review/text-box-controller.js", index)
 
     def test_text_box_uses_app_dialog_instead_of_annotation_prompt(self):
         annotation = (
@@ -21,14 +22,18 @@ class PdfTextboxBaselineTests(unittest.TestCase):
         controller = (
             ROOT / "apps" / "pdf" / "review" / "review-controller.js"
         ).read_text(encoding="utf-8")
+        text_box = (
+            ROOT / "apps" / "pdf" / "review" / "text-box-controller.js"
+        ).read_text(encoding="utf-8")
 
         self.assertNotIn("prompt('Text:'", annotation)
         self.assertIn("requestTextAnnotation", annotation)
         self.assertIn("requestTextEdit", annotation)
-        self.assertIn("textDialogForm", controller)
-        self.assertIn("annotation-update", controller)
-        self.assertIn("Text box inserted.", controller)
-        self.assertIn("Text box updated.", controller)
+        self.assertIn("InkDOSPdfTextBoxController", controller)
+        self.assertIn("textDialogForm", text_box)
+        self.assertIn("annotation-update", text_box)
+        self.assertIn("Text box inserted.", text_box)
+        self.assertIn("Text box updated.", text_box)
 
     def test_review_state_mutation_is_owned_by_controller(self):
         annotation = (
@@ -43,6 +48,16 @@ class PdfTextboxBaselineTests(unittest.TestCase):
         self.assertIn("function commitFreeAnnotation", controller)
         self.assertIn("state.annotations.push(annotation)", controller)
         self.assertIn("state.undo.push", controller)
+
+    def test_review_modules_stay_below_architecture_line_limit(self):
+        review_dir = ROOT / "apps" / "pdf" / "review"
+        for name in (
+            "annotation-layer.js",
+            "review-controller.js",
+            "text-box-controller.js",
+        ):
+            line_count = len((review_dir / name).read_text(encoding="utf-8").splitlines())
+            self.assertLessEqual(line_count, 500, f"{name} has {line_count} lines")
 
     def test_text_box_insert_edit_and_undo_behavior(self):
         node = shutil.which("node")
@@ -106,6 +121,7 @@ global.InkDOSPdfAnnotationLayer = {
   }
 };
 
+require('./apps/pdf/review/text-box-controller.js');
 require('./apps/pdf/review/review-controller.js');
 const state = {
   storageKey: '', fingerprint: '', annotations: [], bookmarks: [], undo: [],
