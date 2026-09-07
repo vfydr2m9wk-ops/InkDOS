@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.11-single-save-delivery-seq79';
+const CACHE_NAME='inkdos-v2.0.12-modularity-epub-polish-seq80';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
