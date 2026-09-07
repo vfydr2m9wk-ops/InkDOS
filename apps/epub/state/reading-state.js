@@ -1,7 +1,8 @@
 (function(g){'use strict';const NS=g.InkDOS2Epub=g.InkDOS2Epub||{},PREFIX='inkdos2.epub.reading.v1.',DB='inkdos2-epub-state',VER=1,STORE='reading';
 function fnv(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h.toString(16).padStart(8,'0')}
 async function key(pkg,book){const parts=[];for(const e of pkg.ordered||[]){if(e.isDirectory||e.path===NS.AnnotationStore?.PATH)continue;parts.push(e.path+'|'+e.crc32+'|'+e.uncompressedSize)}parts.sort();const seed=(book&&book.rootfile||'')+'\n'+(book&&book.title||'')+'\n'+parts.join('\n');try{if(g.crypto&&crypto.subtle){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(seed));return Array.from(new Uint8Array(d),b=>b.toString(16).padStart(2,'0')).join('')}}catch(_){}return 'fnv-'+fnv(seed)}
-function record(state){return {locator:state.locator,flow:state.flow,fontPx:state.fontPx,fontStyle:state.fontStyle,theme:state.theme,updatedAt:new Date().toISOString()}}
+function bookmarkRecord(v){return Array.from(v||[]).slice(0,500).map(b=>({id:String(b.id||''),anchor:String(b.anchor||''),chapter:Number(b.chapter)||1,path:String(b.path||''),fragment:String(b.fragment||''),label:String(b.label||'Bookmark').slice(0,160),createdAt:String(b.createdAt||'')})).filter(b=>b.id&&b.anchor&&b.path)}
+function record(state){return {locator:state.locator,flow:state.flow,fontPx:state.fontPx,fontStyle:state.fontStyle,theme:state.theme,bookmarks:bookmarkRecord(state.bookmarks),updatedAt:new Date().toISOString()}}
 function openDb(){return new Promise((res,rej)=>{try{if(!g.indexedDB)return rej(new Error('IndexedDB unavailable'));const r=indexedDB.open(DB,VER);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'key'})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('IndexedDB open failed'))}catch(e){rej(e)}})}
 async function dbLoad(k){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly'),r=tx.objectStore(STORE).get(k);r.onsuccess=()=>{db.close();res(r.result&&r.result.value||null)};r.onerror=()=>{db.close();rej(r.error)}})}
 async function dbSave(k,v){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({key:k,value:v});tx.oncomplete=()=>{db.close();res(true)};tx.onerror=()=>{db.close();rej(tx.error)}})}
@@ -9,4 +10,4 @@ function localLoad(k){try{const raw=localStorage.getItem(PREFIX+k);return raw?JS
 function localSave(k,v){try{localStorage.setItem(PREFIX+k,JSON.stringify(v));return true}catch(_){return false}}
 async function load(k){if(!k)return null;try{const v=await dbLoad(k);if(v&&v.locator)return v}catch(_){}const v=localLoad(k);return v&&v.locator?v:null}
 async function save(k,state){if(!k||!state||!state.locator)return false;const v=record(state);try{return await dbSave(k,v)}catch(_){return localSave(k,v)}}
-NS.ReadingState={key,load,save};})(globalThis);
+NS.ReadingState={key,load,save,bookmarkRecord};})(globalThis);
