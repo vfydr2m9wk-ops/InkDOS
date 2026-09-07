@@ -6,7 +6,7 @@ class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         for app in ACTIVE:
-            self.assertIn(f'./apps/{app}/index.html?v=2.0.9',text)
+            self.assertIn(f'./apps/{app}/index.html?v=2.0.10',text)
     def test_standard_start_cards(self):
         two_action=('documents','spreadsheets','presentations','txt')
         for app in two_action:
@@ -23,11 +23,21 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('display:grid!important',text)
         self.assertIn('.start-state[hidden]{display:none!important}',text)
         home=(ROOT/'index.html').read_text(encoding='utf-8')
-        self.assertIn('./apps/presentations/index.html?v=2.0.9',home)
+        self.assertIn('./apps/presentations/index.html?v=2.0.10',home)
 
     def test_pdf_active(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         self.assertIn('PDF Workspace',text);self.assertNotIn('Coming soon',text);self.assertTrue((ROOT/'apps/pdf/index.html').is_file())
+    def test_pdf_frame_visual_contract(self):
+        self.assertEqual((ROOT/'apps/pdf/assets/pdf.svg').read_bytes(),(ROOT/'assets/icons/pdf.svg').read_bytes())
+        css=(ROOT/'apps/pdf/runtime/frame/app-frame.css').read_text(encoding='utf-8')
+        self.assertIn('.document-title{position:absolute;left:50%',css)
+        self.assertIn('.title-text{height:100%',css)
+        self.assertIn('border:1px solid var(--line)',css)
+        self.assertIn('.pdf-icon{width:30px',css)
+        controller=(ROOT/'apps/pdf/ui/chrome-controller.js').read_text(encoding='utf-8')
+        self.assertIn("const title=$('titleText')",controller)
+        self.assertIn("session.fileName:'No PDF open'",controller)
     def test_return_bridge(self):
         for app in ACTIVE:
             text=(ROOT/f'apps/{app}/index.html').read_text(encoding='utf-8')
