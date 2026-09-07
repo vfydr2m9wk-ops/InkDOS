@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.9-global-appearance-sync-seq77';
+const CACHE_NAME='inkdos-v2.0.10-pdf-frame-alignment-seq78';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
