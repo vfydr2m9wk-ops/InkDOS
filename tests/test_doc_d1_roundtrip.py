@@ -46,7 +46,7 @@ def main() -> None:
             page.goto(BASE + "/apps/documents/", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOS2Documents?.DocumentsApp?.d1")
             result = page.evaluate(
-                """async () => {
+                r"""async () => {
                   const NS = globalThis.InkDOS2Documents;
                   const app = NS.DocumentsApp;
                   await app.newDocument();
