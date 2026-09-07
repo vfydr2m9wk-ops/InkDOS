@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.9",
+  "release": "2.0.10",
   "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.9 adds only a horizontal appearance-preference communication contract: each app keeps its own appearance UI, app-private theme implementation and local preference key, while publishing and consuming light/dark/system through the browser storage key inkdos2:appearance. Home gains its own dark appearance and selector. No shared theme engine, shared CSS runtime, cross-app mutable document state or new shared runtime root is introduced.",
   "apps": {
     "documents": {
