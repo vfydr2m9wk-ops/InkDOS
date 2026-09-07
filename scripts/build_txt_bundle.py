@@ -24,7 +24,7 @@ def read(rel: str) -> str:
 
 def build() -> str:
     page = TEMPLATE.read_text(encoding="utf-8")
-    styles = "\n\n".join(read(path).rstrip("\n") for path in STYLE_SOURCES)
+    styles = "\n\n".join(read(path).rstrip("\n") for path in STYLE_SOURCES) + "\n"
     marker = "<!-- STYLES -->"
     if page.count(marker) != 1:
         raise SystemExit(f"Expected exactly one {marker} marker")
