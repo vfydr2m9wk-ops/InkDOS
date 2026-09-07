@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.11 — 2026-09-07
+
+- Fix duplicate Save delivery in Documents, Spreadsheets, Presentations, Plain Text and PDF when a host exposes a partially supported native file picker that creates a destination but fails during writable creation or writing.
+- Treat a picker `write-failed` result as terminal after a destination handle exists; never fall through to Share or download and silently create a second file from the same Save action.
+- Prefer one-shot system file sharing for Save on iPad/iPhone-style touch WebKit hosts when file-based Web Share is available, avoiding the partial File System Access path that produced an empty file plus a valid exported copy.
+- Keep Share as a separate explicit operation and preserve each workspace's own file-delivery module; no shared mutable save runtime or cross-app dependency is introduced.
+- Add release-level regression checks for the single-delivery invariant, rebuild the deterministic Plain Text bundle, version Home workspace routes and rotate the offline cache.
+
 ## 2.0.10 — 2026-09-07
 
 - Make the PDF workspace use an exact local copy of the canonical PDF icon shown on Home, eliminating the previous visual mismatch while keeping the PDF app independently extractable.
