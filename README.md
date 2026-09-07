@@ -1,6 +1,6 @@
-# InkDOS 2.0.9
+# InkDOS 2.0.10
 
-InkDOS is a local-first, static browser productivity suite. Version 2.0.9 keeps six physically independent applications behind a small Home launcher and adds horizontal appearance consistency without introducing a shared application runtime.
+InkDOS is a local-first, static browser productivity suite. Version 2.0.10 keeps six physically independent applications behind a small Home launcher, preserves horizontal appearance consistency, and aligns the PDF workspace frame with the established InkDOS app-frame visual contract.
 
 ## Available workspaces
 
@@ -44,6 +44,8 @@ Legacy PPT remains read-only in Presentations, so Save and Share remain disabled
 ## PDF
 
 PDF is an app-private, physically modular reader and annotation workspace. Open local PDFs, add text/ink/highlight/underline/comments, save copies, and share the current PDF state. The engine and document state do not depend on Home or another app. Internal test fixtures and inspection hooks are excluded from the distribution.
+
+InkDOS 2.0.10 aligns the PDF top frame with the established app-frame pattern used by Plain Text and the other workspaces: the file name is shown inside a centered framed pill, with the PDF application icon beside it. The PDF app-local icon is an exact copy of the canonical Home PDF icon, preserving standalone extraction while preventing visual drift between Home and the workspace. PDF engine, annotation, file I/O and title-controller behavior remain unchanged.
 
 ## Local-first
 
