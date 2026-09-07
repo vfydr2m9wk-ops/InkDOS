@@ -1,6 +1,6 @@
-# InkDOS 2.0.7
+# InkDOS 2.0.8
 
-InkDOS is a local-first, static browser productivity suite. Version 2.0.7 keeps six physically independent applications behind a small Home launcher and enforces the same empty-workspace file-action contract in every app without introducing a shared mutable runtime.
+InkDOS is a local-first, static browser productivity suite. Version 2.0.8 keeps six physically independent applications behind a small Home launcher and hardens the shared empty-workspace behavioral contract without introducing a shared mutable runtime.
 
 ## Available workspaces
 
@@ -23,7 +23,9 @@ The suite integration remains narrow: Home links into each app and each app retu
 
 Opening a workspace does not itself create a document. Before a real document is created, opened or recovered, Save and Share remain unavailable. Each application implements that rule using its own local state; there is no suite-wide document-state module.
 
-Documents, Spreadsheets, Presentations and Plain Text become active only after New/Open succeeds as appropriate. EPUB and PDF become active only after a file is opened. Presentations now starts with zero slides and creates its first blank slide only when New presentation is explicitly requested.
+Documents, Spreadsheets, Presentations and Plain Text become active only after New/Open succeeds as appropriate. EPUB and PDF become active only after a file is opened. Presentations starts with zero slides and creates its first blank slide only when New presentation is explicitly requested.
+
+InkDOS 2.0.8 makes the PDF and Spreadsheets empty-state controls fail-safe at first paint: Save is disabled in the initial HTML as well as by the app-local runtime, and disabled file-menu actions have an explicit inactive visual state. Home workspace links are release-versioned so browser navigation is less likely to reuse stale entry pages after an update.
 
 ## Share and save semantics
 
