@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.5",
+  "release": "2.0.6",
   "integrationPolicy": "Preserve six physically independent app roots and add app-local Share actions to Documents, Spreadsheets, Presentations and PDF, matching the existing Plain Text and EPUB pattern. Share never confirms persistent storage and no cross-app runtime is introduced.",
   "apps": {
     "documents": {
@@ -60,12 +60,12 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "cd41399c237e8337c3aa719a2195cc2723bda29208e6d8b838283c915ef1974b",
+      "nonIndexTreeSha256": "0772c61b0078af57052d2bfb59f4dd8ba62e4eb85ab2e5e2dcdb459c7639d218",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html"
       ],
-      "integratedIndexSha256": "a642c3185ce01531a737d754922e8781b5b256f34b48c040fef073d97762f3d6"
+      "integratedIndexSha256": "bc6a1ea99d107a89b6aacdf064bfbff0c4665b0129fa45242ff44ed83cc6f10b"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",

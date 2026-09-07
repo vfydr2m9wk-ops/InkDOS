@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.6 — 2026-09-07
+
+- Remove the production Plain Text global runtime-error banner so opaque host/WebKit `Script error.` events no longer surface as a false app failure.
+- Normalize the existing Home bridge and first-open card integration back into the physical Plain Text template/styles source; the published behavior remains unchanged.
+- Add a deterministic Plain Text bundle builder and a byte-for-byte release validation check so `apps/txt/index.html` must remain derivable from its modular sources.
+- Preserve Plain Text editor/runtime modules, TXT file I/O, Share behavior and the other five workspace runtimes unchanged.
+- Rotate the offline application cache so WebKit/XeOS receives the corrected Plain Text distribution.
+
 ## 2.0.5 — 2026-09-07
 
 - Restore WebKit/PWA installation compatibility metadata removed during the 2.0 Home refactor.

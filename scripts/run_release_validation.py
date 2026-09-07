@@ -4,6 +4,7 @@ import subprocess,sys
 ROOT=Path(__file__).resolve().parents[1]
 CMDS=[
  [sys.executable,'scripts/check_no_legacy_runtime.py'],
+ [sys.executable,'scripts/build_txt_bundle.py','--check'],
  [sys.executable,'scripts/validate_repository.py'],
  [sys.executable,'scripts/audit_source.py'],
  [sys.executable,'scripts/verify_checksums.py'],
