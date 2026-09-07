@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 — 2026-09-07
+
+- Standardized first-open cards to the Spreadsheets interaction pattern.
+- Documents, Presentations and Plain Text now offer New/Open from the central card.
+- EPUB uses the same card with one centered Open action.
+- Spreadsheets remains the unchanged visual baseline; PDF remains Coming soon.
+
+
 ## 2.0.0 — 2026-09-07
 
 - Clean-tree consolidation of the five frozen 2.0 apps.

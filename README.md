@@ -1,6 +1,6 @@
-# InkDOS 2.0
+# InkDOS 2.0.1
 
-InkDOS is a local-first, static browser productivity suite. Version 2.0 is a clean consolidation around five independently frozen applications and a small Home launcher.
+InkDOS is a local-first, static browser productivity suite. Version 2.0.1 is a clean consolidation around five independently frozen applications and a small Home launcher.
 
 ## Available workspaces
 
@@ -17,13 +17,13 @@ InkDOS is a local-first, static browser productivity suite. Version 2.0 is a cle
 
 InkDOS 2.0 does not import the 1.x application runtime. The five application source trees are taken only from their canonical FINAL packages recorded in `SOURCE_LOCK.json`.
 
-The suite integration is intentionally narrow: Home links into each app, and each app's `index.html` receives one Home icon linking back to `../../index.html`. No other app file is changed.
+The suite integration remains narrow: Home links into each app, each app returns through its Home icon, and 2.0.1 standardizes only the first-open card inside affected app entry pages. Non-index app runtime files remain frozen.
 
 The applications retain app-private runtimes, including deliberate redundancy. Similar code is not deduplicated into a mutable suite-wide runtime because failure isolation is part of the 2.0 architecture.
 
 ## PDF
 
-The PDF card is visible but disabled in 2.0.0. No PDF runtime or PDF.js tree is installed. PDF will be added as a later update.
+The PDF card is visible but disabled in 2.0.1. No PDF runtime or PDF.js tree is installed. PDF will be added as a later update.
 
 ## Local-first
 

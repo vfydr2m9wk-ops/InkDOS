@@ -23,3 +23,7 @@ The canonical FINAL package source tree for each app is copied into `apps/<app>/
 ## PDF boundary
 
 `apps/pdf/` does not exist in 2.0.0. The Home card is a non-interactive placeholder. A later PDF update must add an app-private runtime instead of reviving the retired 1.x PDF tree.
+
+## First-open contract (2.0.1)
+
+Spreadsheets is the visual baseline for startup cards. Documents, Spreadsheets, Presentations and Plain Text offer New/Open. Read-only readers such as EPUB, and the future PDF workspace, use the same card with one centered Open action. This release changes only affected app entry indexes; non-index app runtime bytes remain frozen.

@@ -11,6 +11,10 @@
 <link rel="stylesheet" href="runtime/frame/app-frame.css">
 <link rel="stylesheet" href="ui/editor.css">
 <link rel="stylesheet" href="view/presentation-surface.css">
+<style>
+/* InkDOS 2.0.1 — app-local first-open card; metrics mirror Spreadsheets. */
+.presentation-workspace{position:relative}.start-state{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:18px;background:var(--workspace-bg,#cfd1d4);pointer-events:none}.start-card{width:min(430px,100%);padding:28px;border:1px solid var(--line,#d9dee7);border-radius:22px;background:var(--chrome,#fff);box-shadow:var(--shadow,0 12px 32px rgba(15,23,42,.10));text-align:center;pointer-events:auto}.start-icon{width:68px;height:68px;border-radius:16px}.start-card h1{margin:14px 0 6px}.start-card p{margin:0 0 18px;color:var(--muted,#697386)}.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.start-actions button{min-height:44px;border:1px solid var(--line,#d9dee7);border-radius:11px;background:var(--chrome,#fff);padding:0 16px;color:inherit}.start-actions .primary{background:var(--accent,#d65a35);color:#fff;border-color:var(--accent,#d65a35)}
+</style>
 </head>
 <body>
 <div class="app-shell" id="appShell">
@@ -51,6 +55,7 @@
   </div>
 
   <main id="workspace" class="presentation-workspace" data-panel-open="true">
+    <div id="startState" class="start-state"><div class="start-card"><img src="assets/presentations.png" class="start-icon" alt=""><h1>Presentations</h1><p>Create a presentation or open a PPT/PPTX file locally.</p><div class="start-actions"><button id="startNew" type="button">New presentation</button><button id="startOpen" class="primary" type="button">Open presentation</button></div></div></div>
     <aside id="slidePanel" class="slide-panel" aria-label="Slide thumbnails"><div id="slidePanelInner" class="slide-panel-inner"></div></aside>
     <section id="viewport" class="content-viewport" tabindex="0" aria-label="Presentation content viewport"><div id="stage" class="slide-stage"><div id="slideShell" class="slide-shell"><div id="slideCanvas" class="slide-canvas"></div></div></div></section>
   </main>
@@ -97,5 +102,9 @@
 <script src="presentation/slideshow-controller.js"></script>
 <script src="ui/command-controller.js"></script>
 <script src="app.js"></script>
+<script>
+(function(){const state=document.getElementById('startState'),file=document.getElementById('fileInput');document.getElementById('startNew')?.addEventListener('click',()=>{const ok=document.getElementById('newMenuBtn')?.click();state.hidden=true});document.getElementById('startOpen')?.addEventListener('click',()=>document.getElementById('openMenuBtn')?.click());file?.addEventListener('change',()=>{if(file.files&&file.files.length)state.hidden=true});})();
+</script>
+
 </body>
 </html>

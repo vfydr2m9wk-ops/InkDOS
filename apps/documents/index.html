@@ -11,6 +11,10 @@
 <link rel="stylesheet" href="runtime/frame/app-frame.css">
 <link rel="stylesheet" href="ui/editor.css">
 <link rel="stylesheet" href="view/document-surface.css">
+<style>
+/* InkDOS 2.0.1 — app-local first-open card; metrics mirror Spreadsheets. */
+.viewport{position:relative}.start-state{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:18px;background:var(--app-bg,#eef1f5);pointer-events:none}.start-card{width:min(430px,100%);padding:28px;border:1px solid var(--line,#d9dee7);border-radius:22px;background:var(--chrome,#fff);box-shadow:var(--shadow,0 12px 32px rgba(15,23,42,.10));text-align:center;pointer-events:auto}.start-icon{width:68px;height:68px}.start-card h1{margin:14px 0 6px}.start-card p{margin:0 0 18px;color:var(--muted,#697386)}.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.start-actions button{min-height:44px;border:1px solid var(--line,#d9dee7);border-radius:11px;background:var(--chrome,#fff);padding:0 16px;color:inherit}.start-actions .primary{background:var(--accent,#4673e8);color:#fff;border-color:var(--accent,#4673e8)}
+</style>
 </head>
 <body>
 <div class="app-shell" id="appShell">
@@ -67,11 +71,13 @@
   </div></div>
 
   <main id="viewport" class="viewport" tabindex="0" aria-label="Document viewport">
-    <div id="welcome" class="welcome-card">
-      <img src="assets/documents.svg" class="welcome-icon" alt="">
-      <h1>Documents</h1>
-      <p>Open or create a DOCX from the menu. Processing stays on this device.</p>
-      <p class="support-note">DOCX · local editing · Save creates a copy</p>
+    <div id="welcome" class="start-state">
+      <div class="start-card">
+        <img src="assets/documents.svg" class="start-icon" alt="">
+        <h1>Documents</h1>
+        <p>Create a document or open a DOCX file locally.</p>
+        <div class="start-actions"><button id="startNew" type="button">New document</button><button id="startOpen" class="primary" type="button">Open document</button></div>
+      </div>
     </div>
     <div id="pagesHost" class="pages-host" hidden></div>
   </main>
@@ -153,4 +159,8 @@
 <script src="io/save-controller.js"></script>
 <script src="ui/command-controller.js"></script>
 <script src="app.js"></script>
+<script>
+(function(){const n=document.getElementById('startNew'),o=document.getElementById('startOpen');if(n)n.addEventListener('click',()=>document.getElementById('newMenuBtn')?.click());if(o)o.addEventListener('click',()=>document.getElementById('openMenuBtn')?.click());})();
+</script>
+
 </body></html>

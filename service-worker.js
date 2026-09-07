@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.0-seq68';
+const CACHE_NAME='inkdos-v2.0.1-start-seq69';
 const APP_SHELL=[
   "./index.html",
   "./manifest.webmanifest",

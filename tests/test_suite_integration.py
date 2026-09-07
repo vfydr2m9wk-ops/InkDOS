@@ -6,6 +6,13 @@ class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         for app in ACTIVE:self.assertIn(f'./apps/{app}/index.html',text)
+    def test_standard_start_cards(self):
+        two_action=('documents','spreadsheets','presentations','txt')
+        for app in two_action:
+            text=(ROOT/f'apps/{app}/index.html').read_text(encoding='utf-8')
+            self.assertIn('start-card',text,app);self.assertIn('id="startNew"',text,app);self.assertIn('id="startOpen"',text,app)
+        epub=(ROOT/'apps/epub/index.html').read_text(encoding='utf-8')
+        self.assertIn('start-card',epub);self.assertIn('id="openStartBtn"',epub);self.assertNotIn('id="startNew"',epub)
     def test_pdf_placeholder(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
         self.assertIn('PDF Workspace',text);self.assertIn('Coming soon',text);self.assertFalse((ROOT/'apps/pdf').exists())

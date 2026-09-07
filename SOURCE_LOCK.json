@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.0.0",
-  "integrationPolicy": "Frozen app source trees copied only from canonical FINAL packages. Only apps/*/index.html is modified to add the suite Home bridge. No 1.x runtime is imported.",
+  "release": "2.0.1",
+  "integrationPolicy": "2.0.1 changes only each affected app entry index to standardize the first-open choice card; every non-index app byte remains frozen.",
   "apps": {
     "documents": {
       "sourcePackage": "Documents-FINAL.zip",
@@ -15,7 +15,7 @@
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html"
       ],
-      "integratedIndexSha256": "c0e811732ed5bcc7bf6f0bce60f48b43133823c79546394c42cb65224f45b2ef"
+      "integratedIndexSha256": "eca82f2fc18629be23337add353aada91cee1afe4e4de53451e0f6ae134479ad"
     },
     "spreadsheets": {
       "sourcePackage": "Spreadsheets-FINAL.zip",
@@ -41,7 +41,7 @@
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html"
       ],
-      "integratedIndexSha256": "7b64b43a9d25262cc31df550a59668fe02cbb82568c8849b9a1c199d3649593e"
+      "integratedIndexSha256": "6fa9f3c4d432830e55686a43858272be27b08bc7f5e0a234138c49919212ba23"
     },
     "txt": {
       "sourcePackage": "TXT-FINAL.zip",
@@ -54,7 +54,7 @@
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html"
       ],
-      "integratedIndexSha256": "4dfe3d95f05b3381b8c0efae473d008c97ba880def92eaeec03129d9a743083d"
+      "integratedIndexSha256": "a642c3185ce01531a737d754922e8781b5b256f34b48c040fef073d97762f3d6"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
@@ -67,7 +67,8 @@
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html"
       ],
-      "integratedIndexSha256": "cd5dfab6c3d7a92247151c41d697eb59d5b0fe434611c209c28e503d520c037a"
+      "integratedIndexSha256": "6755a8f4dffdd79cc22c5cd7ebd440150ec2a2a5eacc7ded39be9e1a997debb0"
     }
-  }
+  },
+  "previousRelease": "2.0.0"
 }
