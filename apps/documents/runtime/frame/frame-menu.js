@@ -1,5 +1,12 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Documents=global.InkDOS2Documents||{};
+function configureOptionalHome(){
+ const link=document.querySelector('a[aria-label="Home"]');if(!link)return false;
+ let enabled=false;try{enabled=new URLSearchParams(global.location.search).get('suite')==='1'}catch(_){}
+ if(enabled){link.hidden=false;link.removeAttribute('aria-hidden');link.removeAttribute('tabindex')}
+ else{link.hidden=true;link.setAttribute('aria-hidden','true');link.tabIndex=-1;link.removeAttribute('href')}
+ return enabled
+}
 function bindDrawer({trigger,drawer,backdrop,closeButton,onOpen,onClose}={}){
  if(!trigger||!drawer||!backdrop)throw new Error('FrameDrawer requires trigger, drawer and backdrop.');
  function open(){if(typeof onOpen==='function')onOpen();drawer.hidden=false;backdrop.hidden=false;trigger.setAttribute('aria-expanded','true');requestAnimationFrame(()=>closeButton?.focus?.({preventScroll:true}))}
@@ -17,5 +24,6 @@ function bindPopover({trigger,popover,onOpen,onClose}={}){
  trigger.addEventListener('click',toggle);document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!trigger.contains(e.target))close()});window.addEventListener('resize',()=>{if(!popover.hidden)close()},{passive:true});
  return Object.freeze({open,close,toggle,get isOpen(){return !popover.hidden}})
 }
-NS.FrameUI=Object.freeze({bindDrawer,bindPopover});
+configureOptionalHome();
+NS.FrameUI=Object.freeze({bindDrawer,bindPopover,configureOptionalHome});
 })(globalThis);
