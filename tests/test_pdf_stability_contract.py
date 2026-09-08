@@ -15,6 +15,9 @@ def main():
     for command in ("pdf.navigation.toggle","pdf.navigation.close","pdf.navigation.tab.outline","pdf.navigation.tab.pages","pdf.navigation.thumb.previous","pdf.navigation.thumb.next","pdf.navigation.outline.go","pdf.navigation.page.go"): assert command in bindings
     assert "navPanelBtn:'pdf.navigation.toggle'" in bindings and "closeNavigation:'pdf.navigation.close'" in bindings
     assert "pdf.navigation.toggle',{" not in commands and "navigation.toggle" not in commands
+    for command in ("appearance.light","appearance.dark","appearance.system"): assert command in bindings
+    assert "[data-appearance-choice]" in bindings and "NS.Appearance.set(choice)" in bindings
+    assert "data-appearance-choice" not in commands and "NS.Appearance.set" not in commands
     assert "userScrollEpoch" in layout and "sameMetrics" in layout and "userEpoch===this.userScrollEpoch" in layout and "scrollIntoView" not in layout
     for path in ("runtime/commands/command-registry.js","ui/command-bindings.js","ui/toolbar-rail.js","ui/mode-bindings.js","features/reader/reader-runtime.js","features/page-tools/page-tools-runtime.js"): assert path in app
     for name in ("move-page.js","rotate-page.js","delete-page.js","extract-page.js","split-pdf.js","merge-pdfs.js"): assert name in app

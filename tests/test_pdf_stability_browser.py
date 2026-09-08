@@ -54,6 +54,21 @@ def main() -> None:
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 5")
             page.wait_for_function("() => document.querySelectorAll('.pdf-page-shell').length >= 1")
 
+            # Appearance is a command surface, not a direct DOM handler.
+            appearance_commands = page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
+            for command in ("appearance.light", "appearance.dark", "appearance.system"):
+                assert command in appearance_commands
+            page.click("#menuBtn")
+            dark = page.locator('[data-appearance-choice="dark"]')
+            assert dark.get_attribute("data-command") == "appearance.dark"
+            dark.click()
+            page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'dark'")
+            assert dark.get_attribute("aria-pressed") == "true"
+            system = page.locator('[data-appearance-choice="system"]')
+            system.click()
+            page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'system'")
+            page.click("#closeMenuBtn")
+
             # PDF-P1 Reader Completion: controls are bindings, commands survive movement/removal.
             reader_commands = page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
             for command in ("reader.search", "reader.search.next", "reader.search.reveal", "reader.rotate-view", "reader.print"):
