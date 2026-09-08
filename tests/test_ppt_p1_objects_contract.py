@@ -26,6 +26,8 @@ def main():
         require(surface,needle,f'PPT-P1 geometry interaction missing: {needle}')
     for needle in ['pptP1ImageBtn','pptP1Shape','pptP1TextColor','pptP1Fill','pptP1Border','pptP1Bullets','pptP1Layout','image/png','image/jpeg']:
         require(tools,needle,f'PPT-P1 object toolbar contract missing: {needle}')
+    for needle in ['function insertShape(value)','function applyLayout(value)','shape.onchange=()=>','insertShape(value)','layout.onchange=()=>','applyLayout(value)','function setDisabled(id,value)']:
+        require(tools,needle,f'PPT-P1 feature/control isolation contract missing: {needle}')
     for needle in ['ppt-p1-structure-writer.js','ppt-p1-object-writer.js','PptP1ObjectWriter']:
         require(save,needle,f'PPT-P1 writer loader missing: {needle}')
     for needle in ['package-preserving-pptx-home-editing','generated-pptx-home-editing','makeShape','makePic','objectMappings','ppt/media/inkdos','buChar','solidFill','setGeometry']:

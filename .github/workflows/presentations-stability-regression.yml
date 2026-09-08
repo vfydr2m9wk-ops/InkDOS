@@ -1,0 +1,76 @@
+name: Presentations stability regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "apps/presentations/**"
+      - "tests/test_presentations_stability_*.py"
+      - "tests/test_ppt_p1_*.py"
+      - "service-worker.js"
+      - ".github/workflows/presentations-stability-regression.yml"
+  pull_request:
+    paths:
+      - "apps/presentations/**"
+      - "tests/test_presentations_stability_*.py"
+      - "tests/test_ppt_p1_*.py"
+      - "service-worker.js"
+      - ".github/workflows/presentations-stability-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: python tests/test_presentations_stability_contract.py
+      - run: python tests/test_ppt_p1_structure_contract.py
+      - run: python tests/test_ppt_p1_objects_contract.py
+      - name: Check Presentations runtime syntax
+        run: |
+          node --check apps/presentations/app.js
+          node --check apps/presentations/ui/command-controller.js
+          node --check apps/presentations/ui/editing-controller.js
+          node --check apps/presentations/ui/slide-panel-controller.js
+          node --check apps/presentations/view/slide-surface.js
+          node --check apps/presentations/view/zoom-controller.js
+          node --check service-worker.js
+
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python tests/test_presentations_stability_browser.py
+
+  frozen-ppt-p1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps chromium
+      - run: python tests/test_ppt_p1_structure_roundtrip.py
+      - run: python tests/test_ppt_p1_objects_roundtrip.py

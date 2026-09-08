@@ -14,9 +14,10 @@
     "freeze"
   ],
   "completedWorkspaces": [
-    "pdf"
+    "pdf",
+    "documents"
   ],
-  "currentWorkspace": "documents",
+  "currentWorkspace": "presentations",
   "progressiveMainPromotion": true,
   "proportionalModularization": true
 }
