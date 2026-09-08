@@ -38,12 +38,22 @@ def wait_port(port: int, timeout: float = 10.0) -> None:
         time.sleep(0.1)
     raise RuntimeError("Local test server did not start")
 
+def stop_server(server: subprocess.Popen | None) -> None:
+    if server is None or server.poll() is not None:
+        return
+    server.terminate()
+    try:
+        server.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        server.kill()
+        server.wait(timeout=3)
+
 def main() -> None:
     browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
     if browser_name not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={browser_name}")
 
-    server = subprocess.Popen(
+    server: subprocess.Popen | None = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(PORT), "--bind", "127.0.0.1"],
         cwd=ROOT,
         stdout=subprocess.DEVNULL,
@@ -96,8 +106,12 @@ def main() -> None:
             )
             assert missing == [], (browser_name, missing)
 
+            # Simulate a real network outage by taking down the origin server. This
+            # avoids Playwright WebKit's context.set_offline()/reload internal error
+            # while making the assertion stricter: no origin request can succeed.
             errors.clear()
-            context.set_offline(True)
+            stop_server(server)
+            server = None
             page.reload(wait_until="load", timeout=20_000)
             page.wait_for_function(
                 "() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug",
@@ -131,16 +145,11 @@ def main() -> None:
             if errors:
                 raise AssertionError({"browser": browser_name, "errors": errors})
 
-            context.set_offline(False)
             browser.close()
 
         print(f"PDF offline modular boot regression passed on {browser_name}.")
     finally:
-        server.terminate()
-        try:
-            server.wait(timeout=3)
-        except subprocess.TimeoutExpired:
-            server.kill()
+        stop_server(server)
 
 if __name__ == "__main__":
     main()
