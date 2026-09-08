@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "program": "security-remediation",
+  "active": true,
+  "securityGate": "blocked",
+  "baseBranch": "main",
+  "scopePolicy": "functional-plus-explicit-security-exceptions",
+  "allowedExactPaths": [
+    "apps/pdf/io/file-open-controller.js"
+  ],
+  "rationale": {
+    "apps/pdf/io/file-open-controller.js": "Temporary PDF security hardening while the vendored PDF.js migration is completed."
+  }
+}
