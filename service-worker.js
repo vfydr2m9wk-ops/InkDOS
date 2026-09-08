@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-modularity-epub-polish-seq80';
+const CACHE_NAME='inkdos-v2.0.12-stability-documents-seq84';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -8,6 +8,14 @@ const APP_SHELL=[
   "./apps/pdf/engine/pdf-session.js",
   "./apps/pdf/extensions/review-annotations.css",
   "./apps/pdf/extensions/review-annotations.js",
+  "./apps/pdf/features/reader/reader-runtime.js",
+  "./apps/pdf/features/page-tools/page-tools-runtime.js",
+  "./apps/pdf/features/page-tools/actions/move-page.js",
+  "./apps/pdf/features/page-tools/actions/rotate-page.js",
+  "./apps/pdf/features/page-tools/actions/delete-page.js",
+  "./apps/pdf/features/page-tools/actions/extract-page.js",
+  "./apps/pdf/features/page-tools/actions/split-pdf.js",
+  "./apps/pdf/features/page-tools/actions/merge-pdfs.js",
   "./apps/pdf/index.html",
   "./apps/pdf/io/file-delivery.js",
   "./apps/pdf/io/file-open-controller.js",
@@ -20,19 +28,23 @@ const APP_SHELL=[
   "./apps/pdf/pdfjs/event-bus.js",
   "./apps/pdf/pdfjs/page-layers.js",
   "./apps/pdf/pdfjs/pdfjs-layers.css",
+  "./apps/pdf/runtime/commands/command-registry.js",
   "./apps/pdf/runtime/frame/app-frame.css",
   "./apps/pdf/runtime/frame/frame-menu.js",
   "./apps/pdf/runtime/platform/content-viewport-adapter.js",
   "./apps/pdf/runtime/tokens/base.css",
   "./apps/pdf/state/appearance.js",
   "./apps/pdf/ui/chrome-controller.js",
+  "./apps/pdf/ui/command-bindings.js",
   "./apps/pdf/ui/command-controller.js",
+  "./apps/pdf/ui/mode-bindings.js",
   "./apps/pdf/ui/navigation-controller.js",
   "./apps/pdf/ui/navigation.css",
   "./apps/pdf/ui/page-tools.css",
   "./apps/pdf/ui/page-tools.js",
   "./apps/pdf/ui/pdf-toolbar.css",
   "./apps/pdf/ui/reader-tools.js",
+  "./apps/pdf/ui/toolbar-rail.js",
   "./apps/pdf/ui/zoom-controls.js",
   "./apps/pdf/vendor/jszip.min.js",
   "./apps/pdf/vendor/pdf-lib/pdf-lib.min.js",
@@ -70,6 +82,7 @@ const APP_SHELL=[
   "./apps/documents/io/package-reader.js",
   "./apps/documents/io/rtf-importer.js",
   "./apps/documents/io/save-controller.js",
+  "./apps/documents/runtime/commands/document-commands.js",
   "./apps/documents/runtime/frame/app-frame.css",
   "./apps/documents/runtime/frame/frame-menu.js",
   "./apps/documents/runtime/platform/content-viewport-adapter.js",
@@ -213,9 +226,9 @@ const APP_SHELL=[
   "./apps/epub/view/reader.css",
   "./apps/epub/view/renderer.js"
 ];
-const NAVIGATION_PATHS=new Set(["./apps/pdf/index.html", "./index.html", "./apps/documents/index.html", "./apps/spreadsheets/index.html", "./apps/presentations/index.html", "./apps/txt/index.html", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
+const NAVIGATION_PATHS=new Set(["./", "./index.html", "./apps/pdf/", "./apps/pdf/index.html", "./apps/documents/", "./apps/documents/index.html", "./apps/spreadsheets/", "./apps/spreadsheets/index.html", "./apps/presentations/", "./apps/presentations/index.html", "./apps/txt/", "./apps/txt/index.html", "./apps/epub/", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 const KNOWN=new Set(APP_SHELL.map(p=>new URL(p,self.registration.scope).href));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';return new Request(u.href,{method:'GET'})}
 self.addEventListener('install',event=>event.waitUntil((async()=>{const c=await caches.open(CACHE_NAME);await c.addAll(APP_SHELL);await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const name of await caches.keys())if(name!==CACHE_NAME&&name.startsWith('inkdos-'))await caches.delete(name);await self.clients.claim()})()));
-self.addEventListener('fetch',event=>{const r=event.request;if(r.method!=='GET')return;const u=new URL(r.url);if(u.origin!==self.location.origin)return;const k=key(r);const known=KNOWN.has(k.url)||(r.mode==='navigate'&&NAVIGATION_PATHS.has(new URL(k.url).pathname));if(!known)return;event.respondWith((async()=>{const c=await caches.open(CACHE_NAME);try{const response=await fetch(r);if(response&&response.ok&&response.type!=='opaque')await c.put(k,response.clone());return response}catch(error){const cached=await c.match(k);if(cached)return cached;throw error}})())});
+self.addEventListener('fetch',event=>{const r=event.request;if(r.method!=='GET')return;const u=new URL(r.url);if(u.origin!==self.location.origin)return;const k=key(r);const known=KNOWN.has(k.url)||(r.mode==='navigate'&&NAVIGATION_PATHS.has(new URL(k.url).pathname));if(!known)return;event.respondWith((async()=>{const c=await caches.open(CACHE_NAME);try{const response=await fetch(r);if(response&&response.ok&&response.type!=='opaque')await c.put(k,response.clone());return response}catch(error){const cached=await c.match(k);if(cached)return cached;if(r.mode==='navigate'){const path=new URL(k.url).pathname.endsWith('/')?new URL('index.html',k.url).href:null;if(path){const fallback=await c.match(path);if(fallback)return fallback}}throw error}})())});

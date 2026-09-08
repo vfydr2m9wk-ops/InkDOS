@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "program": "stability-functional-isolation",
+  "active": true,
+  "workingBranch": "audit/stability-functional-isolation",
+  "auditOrder": [
+    "pdf",
+    "documents",
+    "presentations",
+    "txt",
+    "epub",
+    "spreadsheets",
+    "cross-suite",
+    "freeze"
+  ],
+  "completedWorkspaces": [
+    "pdf"
+  ],
+  "currentWorkspace": "documents",
+  "progressiveMainPromotion": true,
+  "proportionalModularization": true
+}

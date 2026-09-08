@@ -5,7 +5,7 @@ function loadScript(src,test){if(test?.())return Promise.resolve();return new Pr
 function loadCss(href,key){if(document.querySelector('link[data-doc-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset['doc'+key.toUpperCase()]='1';document.head.appendChild(l)}
 async function loadD1(){loadCss('ui/d1-tools.css','d1');await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
 async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('io/rtf-importer.js',()=>!!NS.RtfImporter);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
-async function boot(){await loadD1();await loadD2();
+async function boot(){await loadScript('runtime/commands/document-commands.js',()=>!!NS.DocumentCommands);await loadD1();await loadD2();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');
@@ -22,7 +22,8 @@ const ruler=NS.RulerController.create({state,editor});
 const fileOpen=NS.FileOpenController.create({state,session,fileInput,pagesHost,chrome,surface,editor,sessionDialog});
 const saveController=NS.SaveController.create({session,pagesHost,chrome});
 zoomControls=NS.ZoomControls.create({zoom});
-const commands=NS.CommandController.create({session,pagesHost,chrome,fileOpen,saveController,editor,ruler,navigation,zoom,zoomControls});
+const commandRegistry=NS.DocumentCommands.create({fileOpen,saveController,editor,navigation});
+const commands=NS.CommandController.create({session,pagesHost,chrome,fileOpen,editor,ruler,navigation,zoom,zoomControls,commands:commandRegistry});
 const d1=NS.D1Tools.create({state,session,pagesHost,surface,editor,navigation,chrome});
 const d2=NS.D2Tools.create({state,session,pagesHost,surface,editor,navigation,chrome,d1});
 const d2Sections=NS.D2Sections.create({state,session,pagesHost,surface,editor,d1,chrome});
@@ -30,6 +31,7 @@ chrome.setChooseFile(fileOpen.requestOpen);
 NS.Appearance.install();
 zoom.install();
 fileOpen.install();
+commandRegistry.install();
 commands.install();
 d1.install();
 d2.install();

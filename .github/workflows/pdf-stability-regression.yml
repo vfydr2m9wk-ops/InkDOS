@@ -1,0 +1,84 @@
+name: PDF stability regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "apps/pdf/**"
+      - "tests/test_pdf_stability_*.py"
+      - "tests/test_pdf_p2_page_tools.cjs"
+      - "service-worker.js"
+      - "index.html"
+      - ".github/workflows/pdf-stability-regression.yml"
+  pull_request:
+    paths:
+      - "apps/pdf/**"
+      - "tests/test_pdf_stability_*.py"
+      - "tests/test_pdf_p2_page_tools.cjs"
+      - "service-worker.js"
+      - "index.html"
+      - ".github/workflows/pdf-stability-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: python tests/test_pdf_stability_contract.py
+      - run: python tests/test_pdf_stability_offline_contract.py
+      - run: node tests/test_pdf_p2_page_tools.cjs
+      - name: Check PDF modular runtime syntax
+        run: |
+          node --check service-worker.js
+          node --check apps/pdf/app.js
+          node --check apps/pdf/runtime/commands/command-registry.js
+          node --check apps/pdf/runtime/frame/frame-menu.js
+          node --check apps/pdf/ui/command-bindings.js
+          node --check apps/pdf/ui/toolbar-rail.js
+          node --check apps/pdf/modes/mode-controller.js
+          node --check apps/pdf/ui/mode-bindings.js
+          node --check apps/pdf/ui/command-controller.js
+          node --check apps/pdf/ui/navigation-controller.js
+          node --check apps/pdf/extensions/review-annotations.js
+          node --check apps/pdf/pdfjs/editor-adapter.js
+          node --check apps/pdf/view/page-layout.js
+          node --check apps/pdf/features/reader/reader-runtime.js
+          node --check apps/pdf/ui/reader-tools.js
+          node --check apps/pdf/features/page-tools/page-tools-runtime.js
+          node --check apps/pdf/features/page-tools/actions/move-page.js
+          node --check apps/pdf/features/page-tools/actions/rotate-page.js
+          node --check apps/pdf/features/page-tools/actions/delete-page.js
+          node --check apps/pdf/features/page-tools/actions/extract-page.js
+          node --check apps/pdf/features/page-tools/actions/split-pdf.js
+          node --check apps/pdf/features/page-tools/actions/merge-pdfs.js
+          node --check apps/pdf/ui/page-tools.js
+
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python tests/test_pdf_stability_browser.py
+      - run: python tests/test_pdf_stability_frame.py
+      - run: python tests/test_pdf_stability_comments.py
+      - run: python tests/test_pdf_stability_roundtrip.py
+      - run: python tests/test_pdf_stability_offline.py

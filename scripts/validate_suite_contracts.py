@@ -61,12 +61,18 @@ class SuiteIntegration(unittest.TestCase):
             'documents':('ui/command-controller.js','shareMenuBtn'),
             'spreadsheets':('ui/file-menu-controller.js','menuShare'),
             'presentations':('ui/command-controller.js','shareMenuBtn'),
-            'pdf':('ui/command-controller.js','shareMenuBtn'),
         }
         for app,(rel,marker) in {**direct,**runtime}.items():
             text=(ROOT/'apps'/app/rel).read_text(encoding='utf-8')
             self.assertIn(marker,text,app);self.assertIn('Share',text,app)
-        for app in runtime:
+        pdf_bindings=(ROOT/'apps/pdf/ui/command-bindings.js').read_text(encoding='utf-8')
+        pdf_commands=(ROOT/'apps/pdf/ui/command-controller.js').read_text(encoding='utf-8')
+        self.assertIn("share.id='shareMenuBtn'",pdf_bindings)
+        self.assertIn("share.dataset.command='file.share'",pdf_bindings)
+        self.assertIn("registry.bindElement(share,'file.share')",pdf_bindings)
+        self.assertIn("registry.register('file.share'",pdf_commands)
+        self.assertIn('Share',pdf_bindings)
+        for app in (*runtime,'pdf'):
             delivery=(ROOT/'apps'/app/'io/file-delivery.js').read_text(encoding='utf-8')
             self.assertIn('share',delivery,app)
     def test_single_save_delivery_contract(self):
@@ -134,10 +140,15 @@ class SuiteIntegration(unittest.TestCase):
         self.assertRegex(pdf_index,r'id="saveToolbarBtn"[^>]*disabled')
         pdf_css=(ROOT/'apps/pdf/runtime/frame/app-frame.css').read_text(encoding='utf-8')
         self.assertIn('.menu-item:disabled',pdf_css)
-        pdf=(ROOT/'apps/pdf/ui/command-controller.js').read_text(encoding='utf-8')
-        self.assertIn("$('saveMenuBtn').disabled=!active",pdf)
-        self.assertIn("$('saveToolbarBtn').disabled=!active",pdf)
-        self.assertIn('share.disabled=!active',pdf)
+        pdf_commands=(ROOT/'apps/pdf/ui/command-controller.js').read_text(encoding='utf-8')
+        pdf_bindings=(ROOT/'apps/pdf/ui/command-bindings.js').read_text(encoding='utf-8')
+        pdf_registry=(ROOT/'apps/pdf/runtime/commands/command-registry.js').read_text(encoding='utf-8')
+        self.assertIn("registry.register('file.save',{isEnabled:()=>!!session.active",pdf_commands)
+        self.assertIn("registry.register('file.share',{isEnabled:()=>!!session.active",pdf_commands)
+        self.assertIn("saveMenuBtn:'file.save'",pdf_bindings)
+        self.assertIn("saveToolbarBtn:'file.save'",pdf_bindings)
+        self.assertIn("share.dataset.command='file.share'",pdf_bindings)
+        self.assertIn('el.disabled=!s.enabled',pdf_registry)
         pdf_save=(ROOT/'apps/pdf/io/save-controller.js').read_text(encoding='utf-8')
         self.assertGreaterEqual(pdf_save.count('if(!session.active||saving)return null'),2)
     def test_mobile_home_layout(self):

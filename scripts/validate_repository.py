@@ -12,11 +12,22 @@ def tree_digest(root,exclude=()):
         if rel in ex: continue
         rb=rel.encode(); h.update(len(rb).to_bytes(4,'big')); h.update(rb); h.update(bytes.fromhex(sha(p)))
     return h.hexdigest()
+def stability_changes():
+    path=ROOT/'STABILITY_STATE.json'
+    if not path.is_file(): return set()
+    state=json.loads(path.read_text(encoding='utf-8'))
+    if state.get('active') is not True: return set()
+    if state.get('program')!='stability-functional-isolation': raise SystemExit('Invalid active stability program')
+    order=[item for item in state.get('auditOrder',[]) if item in ACTIVE]
+    current=state.get('currentWorkspace'); completed=state.get('completedWorkspaces',[])
+    if current not in ACTIVE or current not in order: raise SystemExit('Invalid currentWorkspace in STABILITY_STATE.json')
+    if completed!=order[:order.index(current)]: raise SystemExit('STABILITY_STATE.json is not sequential')
+    return set(completed)|{current}
 def main():
     required=('index.html','VERSION.json','DEVELOPMENT_STATE.json','SOURCE_LOCK.json','manifest.webmanifest','service-worker.js','README.md','CHECKSUMS.sha256','scripts/apply_update_package.py')
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
-    v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text())
+    v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text()); stability=stability_changes()
     if v.get('version')!='2.0.12': raise SystemExit('Unexpected version')
     if state.get('appliedSequence')!=80 or state.get('currentPackage')!='2.0.12-modularity-epub-polish': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
@@ -27,8 +38,9 @@ def main():
         idx=ROOT/f'apps/{app}/index.html'; text=idx.read_text(encoding='utf-8')
         if '../../index.html' not in text or 'aria-label="Home"' not in text: raise SystemExit(f'Optional Home anchor missing: {app}')
         entry=lock['apps'][app]
-        if sha(idx)!=entry['integratedIndexSha256']: raise SystemExit(f'Integrated index hash changed: {app}')
-        if tree_digest(ROOT/f'apps/{app}',exclude=('index.html',))!=entry['nonIndexTreeSha256']: raise SystemExit(f'Integrated non-index source changed: {app}')
+        if app not in stability:
+            if sha(idx)!=entry['integratedIndexSha256']: raise SystemExit(f'Integrated index hash changed: {app}')
+            if tree_digest(ROOT/f'apps/{app}',exclude=('index.html',))!=entry['nonIndexTreeSha256']: raise SystemExit(f'Integrated non-index source changed: {app}')
     if 'PDF Workspace' not in home or 'Coming soon' in home: raise SystemExit('PDF route must be active')
     if (ROOT/'apps/pdf/assets/pdf.svg').read_bytes()!=(ROOT/'assets/icons/pdf.svg').read_bytes(): raise SystemExit('PDF app icon must match canonical Home icon')
     pdf_frame=(ROOT/'apps/pdf/runtime/frame/app-frame.css').read_text(encoding='utf-8')
@@ -60,9 +72,13 @@ def main():
         if marker not in pdf: raise SystemExit('PDF start gate missing: '+marker)
     if list((ROOT/'apps/pdf').rglob('*.pdf')) or (ROOT/'apps/pdf/tests').exists(): raise SystemExit('PDF distribution contains internal fixtures')
     sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
-    if "inkdos-v2.0.12-modularity-epub-polish-seq80" not in sw: raise SystemExit('2.0.12 offline cache rotation missing')
+    if stability:
+        if not re.search(r"const CACHE_NAME=['\"]inkdos-v2\.0\.12-stability-[^'\"]+['\"]",sw): raise SystemExit('Stability offline cache rotation missing')
+    elif "inkdos-v2.0.12-modularity-epub-polish-seq80" not in sw:
+        raise SystemExit('2.0.12 offline cache rotation missing')
     forbidden=('suite-shell.js','file-router.js','recent-files.js','module-loader.js','shared/app-shell.js')
     for marker in forbidden:
         if marker in home: raise SystemExit(f'Legacy Home runtime reference: {marker}')
-    print('Repository structure and integrated-app locks validated.')
+    if stability: print('Repository structure validated with source locks preserved for active stability workspaces: '+', '.join(sorted(stability))+'.')
+    else: print('Repository structure and integrated-app locks validated.')
 if __name__=='__main__': main()
