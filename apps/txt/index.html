@@ -208,11 +208,6 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 </section>
 <script>document.documentElement.dataset.inkdosBundle='inline-d3';</script>
 
-<script>/* apps/txt/runtime/contracts/viewport-metrics.js */
-(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
-class ViewportMetrics{constructor({availableWidth,availableHeight,dpr=1,epoch=0,visibility='visible'}){this.availableWidth=Math.max(0,Number(availableWidth)||0);this.availableHeight=Math.max(0,Number(availableHeight)||0);this.dpr=Math.max(0.1,Number(dpr)||1);this.epoch=Math.max(0,Number(epoch)||0);this.visibility=visibility;Object.freeze(this)}get valid(){return this.availableWidth>0&&this.availableHeight>0}}
-NS.ViewportMetrics=ViewportMetrics;})(globalThis);
-</script>
 <script>/* apps/txt/runtime/contracts/document-session.js */
 (function(g){'use strict';
   const NS=g.InkDOS2=g.InkDOS2||{};
@@ -230,13 +225,11 @@ NS.ViewportMetrics=ViewportMetrics;})(globalThis);
   NS.DocumentSession=DocumentSession;
 })(globalThis);
 </script>
-<script>/* apps/txt/runtime/contracts/render-request.js */
-(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.RenderRequest=class RenderRequest{constructor({target,model,metrics,epoch,signal}){this.target=target;this.model=model;this.metrics=metrics;this.epoch=epoch;this.signal=signal||null;Object.freeze(this)}};})(globalThis);
-</script>
 <script>/* apps/txt/runtime/platform/content-viewport-adapter.js */
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+function viewportMetrics({availableWidth,availableHeight,dpr=1,epoch=0,visibility='visible'}){const width=Math.max(0,Number(availableWidth)||0),height=Math.max(0,Number(availableHeight)||0);return Object.freeze({availableWidth:width,availableHeight:height,dpr:Math.max(0.1,Number(dpr)||1),epoch:Math.max(0,Number(epoch)||0),visibility,valid:width>0&&height>0})}
 class ContentViewportAdapter{constructor(el,onMetrics){this.el=el;this.onMetrics=onMetrics;this.epoch=0;this.ro=null;this.handle=this.measure.bind(this);if(g.ResizeObserver){this.ro=new ResizeObserver(this.handle);this.ro.observe(el)}g.addEventListener('resize',this.handle,{passive:true});this.measure()}
-measure(){const r=this.el.getBoundingClientRect();this.epoch+=1;const m=new NS.ViewportMetrics({availableWidth:r.width,availableHeight:r.height,dpr:g.devicePixelRatio||1,epoch:this.epoch,visibility:document.visibilityState});this.onMetrics&&this.onMetrics(m)}dispose(){this.ro&&this.ro.disconnect();g.removeEventListener('resize',this.handle)}}
+measure(){const r=this.el.getBoundingClientRect();this.epoch+=1;const m=viewportMetrics({availableWidth:r.width,availableHeight:r.height,dpr:g.devicePixelRatio||1,epoch:this.epoch,visibility:document.visibilityState});this.onMetrics&&this.onMetrics(m)}dispose(){this.ro&&this.ro.disconnect();g.removeEventListener('resize',this.handle)}}
 NS.ContentViewportAdapter=ContentViewportAdapter;})(globalThis);
 </script>
 <script>/* apps/txt/runtime/services/file-delivery.js */
