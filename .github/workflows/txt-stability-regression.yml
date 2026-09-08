@@ -9,6 +9,7 @@ on:
       - "tests/test_txt_stability_*.py"
       - "scripts/build_txt_bundle.py"
       - "service-worker.js"
+      - "STABILITY_STATE.json"
       - ".github/workflows/txt-stability-regression.yml"
   pull_request:
     paths:
@@ -16,6 +17,7 @@ on:
       - "tests/test_txt_stability_*.py"
       - "scripts/build_txt_bundle.py"
       - "service-worker.js"
+      - "STABILITY_STATE.json"
       - ".github/workflows/txt-stability-regression.yml"
 
 permissions:
@@ -29,6 +31,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+      - name: Build Plain Text distribution from source
+        run: python scripts/build_txt_bundle.py
       - run: python tests/test_txt_stability_contract.py
 
   browser:
@@ -46,6 +50,8 @@ jobs:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: requirements-ci.txt
+      - name: Build Plain Text distribution from source
+        run: python scripts/build_txt_bundle.py
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps ${{ matrix.browser }}
       - run: python tests/test_txt_stability_browser.py

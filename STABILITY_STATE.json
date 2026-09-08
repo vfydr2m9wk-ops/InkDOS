@@ -15,9 +15,10 @@
   ],
   "completedWorkspaces": [
     "pdf",
-    "documents"
+    "documents",
+    "presentations"
   ],
-  "currentWorkspace": "presentations",
+  "currentWorkspace": "txt",
   "progressiveMainPromotion": true,
   "proportionalModularization": true
 }
