@@ -51,6 +51,9 @@ jobs:
       - name: Build Plain Text distribution
         run: python scripts/build_txt_bundle.py
 
+      - name: Generate hash-based CSP metadata
+        run: python scripts/generate_csp.py
+
       - name: Refresh integrated app locks outside active stability audit
         shell: bash
         run: |
@@ -110,11 +113,11 @@ jobs:
       - name: Validate refreshed snapshot
         run: python scripts/run_release_validation.py
 
-      - name: Restrict generated changes to integrity outputs
+      - name: Restrict generated changes to integrity and entry-point outputs
         shell: bash
         run: |
           set -euo pipefail
-          allowed='^(apps/txt/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
           while IFS= read -r path; do
             [[ -z "$path" ]] && continue
             if ! [[ "$path" =~ $allowed ]]; then
@@ -130,7 +133,13 @@ jobs:
         run: |
           set -euo pipefail
           git diff --binary -- \
+            index.html \
+            apps/documents/index.html \
+            apps/spreadsheets/index.html \
+            apps/presentations/index.html \
+            apps/pdf/index.html \
             apps/txt/index.html \
+            apps/epub/index.html \
             SOURCE_LOCK.json \
             BUILD_INFO.json \
             SOURCE_MANIFEST.json \
@@ -138,12 +147,13 @@ jobs:
             CHECKSUMS.sha256 > /tmp/integrity.patch
           python - <<'PY' >> "$GITHUB_OUTPUT"
           from pathlib import Path
-          import base64, hashlib, subprocess
+          import base64, gzip, hashlib, subprocess
           data = Path('/tmp/integrity.patch').read_bytes()
+          packed = gzip.compress(data, compresslevel=9, mtime=0)
           print('base_sha=' + subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip())
           print('changed=' + ('true' if data else 'false'))
           print('patch_sha256=' + hashlib.sha256(data).hexdigest())
-          print('patch_b64=' + base64.b64encode(data).decode('ascii'))
+          print('patch_b64=' + base64.b64encode(packed).decode('ascii'))
           PY
 
       - name: Record validation handoff
@@ -152,7 +162,7 @@ jobs:
           {
             echo '### Integrity refresh handoff'
             echo
-            echo 'Generated integrity metadata was produced and validated with read-only repository permissions.'
+            echo 'Generated entry-point/CSP and integrity metadata was produced and validated with read-only repository permissions.'
             echo 'The write-capable job will only apply this validated patch to the same branch head and will not execute repository scripts.'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -192,7 +202,7 @@ jobs:
           PATCH_SHA256: ${{ needs.prepare.outputs.patch_sha256 }}
         run: |
           set -euo pipefail
-          printf '%s' "$PATCH_B64" | base64 --decode > /tmp/integrity.patch
+          printf '%s' "$PATCH_B64" | base64 --decode | gzip --decompress > /tmp/integrity.patch
           actual="$(sha256sum /tmp/integrity.patch | awk '{print $1}')"
           [[ "$actual" == "$PATCH_SHA256" ]] || {
             echo "Validated metadata patch SHA-256 mismatch." >&2
@@ -200,7 +210,7 @@ jobs:
           }
           git apply --check /tmp/integrity.patch
           git apply /tmp/integrity.patch
-          allowed='^(apps/txt/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
           while IFS= read -r path; do
             [[ -z "$path" ]] && continue
             if ! [[ "$path" =~ $allowed ]]; then
@@ -218,7 +228,19 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/txt/index.html SOURCE_LOCK.json BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json CHECKSUMS.sha256
+          git add \
+            index.html \
+            apps/documents/index.html \
+            apps/spreadsheets/index.html \
+            apps/presentations/index.html \
+            apps/pdf/index.html \
+            apps/txt/index.html \
+            apps/epub/index.html \
+            SOURCE_LOCK.json \
+            BUILD_INFO.json \
+            SOURCE_MANIFEST.json \
+            RELEASE_MANIFEST.json \
+            CHECKSUMS.sha256
           git diff --cached --quiet && { echo "No metadata changes to commit."; exit 0; }
           git commit -m "Refresh InkDOS integrity metadata"
           git push origin "HEAD:$TARGET_BRANCH"
