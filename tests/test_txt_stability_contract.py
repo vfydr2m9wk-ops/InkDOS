@@ -60,6 +60,7 @@ def main() -> None:
         '<!-- SCRIPT apps/txt/editor/t1-essentials.js -->',
         '<!-- SCRIPT apps/txt/editor/t2-xml-tools.js -->',
         '<!-- SCRIPT apps/txt/app.js -->',
+        'id="textToolsAnchor" class="tool-sep"',
         "TxtAppDebug?.commands",
         "execute('file.new')",
         "execute('file.open.request')",
@@ -83,8 +84,8 @@ def main() -> None:
         'NS.TxtFileController.create',
         'NS.TxtCommands.create',
         'NS.TxtT1Essentials.create({elements:E,state,editor,files,commands,beforeOpen:()=>{controls.closeListMenu();t2?.close()}})',
+        't1.install();t2=NS.TxtT2XmlTools.create({elements:E,state,editor,files,commands,beforeOpen:()=>t1?.closeTools()});t2.install()',
         'controls.bind({editor,files,state,commands},frameMenu,{beforeListOpen:()=>{t1?.closeTools();t2?.close()}})',
-        'NS.TxtT2XmlTools.create({elements:E,state,editor,files,commands,beforeOpen:()=>t1?.closeTools()})',
         'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
     ]:
@@ -112,6 +113,7 @@ def main() -> None:
         forbid(commands, forbidden, f'Plain Text semantic commands must not own control DOM: {forbidden}')
 
     for needle in [
+        "textToolsAnchor:$('textToolsAnchor')",
         'function bind({editor,files,state,commands},frameMenu,{beforeListOpen=()=>{}}={})',
         'E.editor.addEventListener',
         "E.undoBtn.onclick=()=>execute('history.undo')",
@@ -147,6 +149,7 @@ def main() -> None:
     for needle in [
         'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
         'function openTools(){beforeOpen();syncTools()',
+        "if(!E.textToolsAnchor)throw new Error('TXT_TOOL_ANCHOR_MISSING');E.toolbar.insertBefore(ui.toolsBtn,E.textToolsAnchor)",
         "commands.register('find.open'",
         "commands.register('find.close'",
         "commands.register('find.toggle'",
@@ -169,6 +172,7 @@ def main() -> None:
     ]:
         require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
     for forbidden in [
+        'nextElementSibling',
         'controls',
         'E.listBtn',
         'closeListMenu',
@@ -181,12 +185,12 @@ def main() -> None:
         "ui.encodingSelect.onchange=()=>{const next=",
         "ui.bomToggle.onchange=()=>{if(state.bom",
     ]:
-        forbid(t1, forbidden, f'Plain Text T1 must not depend on sibling controls or bind semantic behavior to a specific control: {forbidden}')
+        forbid(t1, forbidden, f'Plain Text T1 must not depend on sibling DOM order/controls or bind semantic behavior to a specific control: {forbidden}')
 
     for needle in [
         'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
         'function open(){beforeOpen();syncUi()',
-        'const sep=E.findbar.nextElementSibling;E.toolbar.insertBefore(ui.btn,sep||null)',
+        "if(!E.textToolsAnchor)throw new Error('XML_TOOL_ANCHOR_MISSING');E.toolbar.insertBefore(ui.btn,E.textToolsAnchor)",
         "document.addEventListener('inkdos:txt-view-policy',refreshView)",
         "document.addEventListener('inkdos:txt-storage-policy',handleStoragePolicy)",
         "commands.execute('storage.bom.set',true)",
@@ -194,6 +198,7 @@ def main() -> None:
     ]:
         require(t2, needle, f'Plain Text T2 isolation contract missing: {needle}')
     for forbidden in [
+        'nextElementSibling',
         'textToolsMenu',
         'textToolsBtn',
         'lineNumberGutter',
@@ -204,7 +209,7 @@ def main() -> None:
         "E.fontDown.addEventListener('click'",
         "E.fontUp.addEventListener('click'",
     ]:
-        forbid(t2, forbidden, f'Plain Text T2 must not depend on sibling/view/storage control DOM: {forbidden}')
+        forbid(t2, forbidden, f'Plain Text T2 must not depend on sibling/DOM-order/view/storage control DOM: {forbidden}')
 
     for needle in [
         'function doUndo()',
