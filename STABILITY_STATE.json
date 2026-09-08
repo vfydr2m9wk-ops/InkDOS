@@ -16,9 +16,10 @@
   "completedWorkspaces": [
     "pdf",
     "documents",
-    "presentations"
+    "presentations",
+    "txt"
   ],
-  "currentWorkspace": "txt",
+  "currentWorkspace": "epub",
   "progressiveMainPromotion": true,
   "proportionalModularization": true
 }
