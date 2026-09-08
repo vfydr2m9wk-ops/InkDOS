@@ -1,13 +1,14 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,chrome}={}){
-  let busy=false;
+  let busy=false,p1Loader=null;
+  function ensureP1Writer(){if(NS.PptP1StructureWriter)return Promise.resolve();if(p1Loader)return p1Loader;p1Loader=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='io/ppt-p1-structure-writer.js';s.onload=()=>NS.PptP1StructureWriter?resolve():reject(new Error('PPT-P1 structure writer did not initialize.'));s.onerror=()=>reject(new Error('PPT-P1 structure writer could not be loaded locally.'));document.head.appendChild(s)});return p1Loader}
   async function buildCopy(sharing=false){
     if(!session.active)throw new Error('No presentation is open.');
     if(session.sourceKind==='ppt')throw new Error('Legacy PPT is read-only. Share and Save Copy are available for new presentations and PPTX files.');
     let bytes,receipt={mode:'generated-pptx'};
     if(session.sourceKind==='pptx'){
-      chrome.status(sharing?'Preparing PPTX to share…':'Preparing PPTX copy…');
+      await ensureP1Writer();chrome.status(sharing?'Preparing PPTX to share…':'Preparing PPTX copy…');
       const result=await NS.PptxPreservationWriter.build(session);bytes=result.bytes;receipt=result.receipt;
     }else{
       chrome.status(sharing?'Building PPTX to share…':'Building PPTX copy…');bytes=await NS.PptxWriter.build(session);
@@ -41,7 +42,7 @@ function create({session,chrome}={}){
     }catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName});return null}
     finally{busy=false}
   }
-  return Object.freeze({save,share})
+  return Object.freeze({save,share,buildCopy,ensureP1Writer})
 }
 NS.SaveController=Object.freeze({create});
 })(globalThis);
