@@ -11,9 +11,15 @@ def require(text: str, needle: str, message: str) -> None:
         raise SystemExit(message)
 
 
+def forbid(text: str, needle: str, message: str) -> None:
+    if needle in text:
+        raise SystemExit(message)
+
+
 def main() -> None:
     runtime_files = [
         APP / 'app.js',
+        APP / 'commands' / 'txt-commands.js',
         APP / 'editor' / 'editor-controller.js',
         APP / 'editor' / 'outline-model.js',
         APP / 'editor' / 't1-essentials.js',
@@ -38,6 +44,7 @@ def main() -> None:
     template = (APP / 'page.template.html').read_text(encoding='utf-8')
     bundle = (APP / 'index.html').read_text(encoding='utf-8')
     app = (APP / 'app.js').read_text(encoding='utf-8')
+    commands = (APP / 'commands' / 'txt-commands.js').read_text(encoding='utf-8')
     controls = (APP / 'ui' / 'txt-controls.js').read_text(encoding='utf-8')
     editor = (APP / 'editor' / 'editor-controller.js').read_text(encoding='utf-8')
     files = (APP / 'io' / 'txt-file-controller.js').read_text(encoding='utf-8')
@@ -46,6 +53,7 @@ def main() -> None:
         '<!-- STYLES -->',
         '<!-- SCRIPT apps/txt/editor/editor-controller.js -->',
         '<!-- SCRIPT apps/txt/io/txt-file-controller.js -->',
+        '<!-- SCRIPT apps/txt/commands/txt-commands.js -->',
         '<!-- SCRIPT apps/txt/ui/txt-controls.js -->',
         '<!-- SCRIPT apps/txt/editor/t1-essentials.js -->',
         '<!-- SCRIPT apps/txt/editor/t2-xml-tools.js -->',
@@ -62,23 +70,59 @@ def main() -> None:
         'NS.TxtControls.create()',
         'NS.TxtEditorController.create',
         'NS.TxtFileController.create',
+        'NS.TxtCommands.create',
+        'controls.bind({editor,files,state,commands}',
         'NS.TxtT1Essentials.create',
         'NS.TxtT2XmlTools.create',
-        'NS.TxtAppDebug=Object.freeze',
+        'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
     ]:
         require(app, needle, f'Plain Text bootstrap contract missing: {needle}')
 
     for needle in [
+        "register('file.new'",
+        "register('file.open.request'",
+        "register('file.open'",
+        "register('file.save'",
+        "register('file.share'",
+        "register('history.undo'",
+        "register('history.redo'",
+        "register('view.wrap.toggle'",
+        "register('view.font.set'",
+        "register('outline.indent'",
+        "register('outline.list'",
+        "register('selection.all'",
+        "register('clipboard.copy'",
+        "register('clipboard.paste'",
+        'TXT_COMMAND_NOT_REGISTERED',
+    ]:
+        require(commands, needle, f'Plain Text semantic command contract missing: {needle}')
+    for forbidden in ['getElementById', 'undoBtn', 'redoBtn', 'wrapBtn', 'saveBtn', 'shareBtn']:
+        forbid(commands, forbidden, f'Plain Text semantic commands must not own control DOM: {forbidden}')
+
+    for needle in [
         'E.editor.addEventListener',
+        "E.undoBtn.onclick=()=>execute('history.undo')",
+        "E.redoBtn.onclick=()=>execute('history.redo')",
+        "E.wrap.onclick=()=>execute('view.wrap.toggle')",
+        "E.outdent.onclick=()=>execute('outline.indent',-1)",
+        "E.indent.onclick=()=>execute('outline.indent',1)",
+        "E.selectAll.onclick=()=>execute('selection.all')",
+        "if(mod&&e.key.toLowerCase()==='s')",
+        "execute('file.save')",
+        "execute('file.new')",
+        "execute('file.open.request')",
+    ]:
+        require(controls, needle, f'Plain Text control binding contract missing: {needle}')
+    for forbidden in [
         'E.undoBtn.onclick=editor.doUndo',
         'E.redoBtn.onclick=editor.doRedo',
-        'E.findBtn.onclick',
-        "if(mod&&e.key.toLowerCase()==='s')",
-        "if(mod&&e.key.toLowerCase()==='n')",
-        "if(mod&&e.key.toLowerCase()==='o')",
+        'E.wrap.onclick=()=>editor.setWrap',
+        'E.newBtn.onclick=()=>{frameMenu.close();files.newDoc()',
+        'files.save().catch',
+        'files.shareCurrent().catch',
     ]:
-        require(controls, needle, f'Plain Text control baseline missing: {needle}')
+        forbid(controls, forbidden, f'Plain Text controls still own semantic behavior: {forbidden}')
 
     for needle in [
         'function doUndo()',

@@ -61,9 +61,20 @@ def main() -> None:
             editor.fill('alpha beta alpha')
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.session.dirty && InkDOS2.TxtAppDebug.state.history.canUndo")
             assert page.locator('#counts').inner_text().startswith('1 line · 3 words')
-            page.click('#undoBtn')
+
+            # Semantic history survives removal of its toolbar controls.
+            command_probe = page.evaluate(
+                """() => {
+                    const d=InkDOS2.TxtAppDebug;
+                    document.getElementById('undoBtn').remove();
+                    document.getElementById('redoBtn').remove();
+                    return {undo:d.commands.has('history.undo'),redo:d.commands.has('history.redo')};
+                }"""
+            )
+            assert command_probe == {'undo': True, 'redo': True}, command_probe
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.undo')")
             assert editor.input_value() == ''
-            page.click('#redoBtn')
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.redo')")
             assert editor.input_value() == 'alpha beta alpha'
 
             # Find/replace essentials remain coherent with editor state/history.
@@ -74,9 +85,9 @@ def main() -> None:
             page.click('#replaceAllBtn')
             assert editor.input_value() == 'gamma beta gamma'
             assert 'replacement' in page.locator('#status').inner_text().lower()
-            page.click('#undoBtn')
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.undo')")
             assert editor.input_value() == 'alpha beta alpha'
-            page.click('#redoBtn')
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.redo')")
             assert editor.input_value() == 'gamma beta gamma'
 
             # View-only controls must update view policy without mutating text.
