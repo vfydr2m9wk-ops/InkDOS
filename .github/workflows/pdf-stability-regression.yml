@@ -45,6 +45,7 @@ jobs:
           node --check apps/pdf/ui/mode-bindings.js
           node --check apps/pdf/ui/command-controller.js
           node --check apps/pdf/ui/navigation-controller.js
+          node --check apps/pdf/extensions/review-annotations.js
           node --check apps/pdf/pdfjs/editor-adapter.js
           node --check apps/pdf/view/page-layout.js
           node --check apps/pdf/features/reader/reader-runtime.js
@@ -76,4 +77,5 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps ${{ matrix.browser }}
       - run: python tests/test_pdf_stability_browser.py
+      - run: python tests/test_pdf_stability_comments.py
       - run: python tests/test_pdf_stability_offline.py

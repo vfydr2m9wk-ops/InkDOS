@@ -6,9 +6,14 @@ PDF = ROOT / "apps" / "pdf"
 def text(path): return path.read_text(encoding="utf-8")
 
 def main():
-    app=text(PDF/"app.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");reader_ui=text(PDF/"ui"/"reader-tools.js");reader_runtime=text(PDF/"features"/"reader"/"reader-runtime.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
+    app=text(PDF/"app.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");review=text(PDF/"extensions"/"review-annotations.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");reader_ui=text(PDF/"ui"/"reader-tools.js");reader_runtime=text(PDF/"features"/"reader"/"reader-runtime.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
     actions={"move":text(PDF/"features"/"page-tools"/"actions"/"move-page.js"),"rotate":text(PDF/"features"/"page-tools"/"actions"/"rotate-page.js"),"delete":text(PDF/"features"/"page-tools"/"actions"/"delete-page.js"),"extract":text(PDF/"features"/"page-tools"/"actions"/"extract-page.js"),"split":text(PDF/"features"/"page-tools"/"actions"/"split-pdf.js"),"merge":text(PDF/"features"/"page-tools"/"actions"/"merge-pdfs.js")}
     assert "editingstateschanged" in editor and "annotationeditorstateschanged" in editor
+    for command in ("pdf.comment.open","pdf.comment.cancel","pdf.comment.save"): assert command in review
+    assert "registry?.bindElement(pin,COMMENT_COMMANDS.open)" in review and "m.layer.append(pin);this.registry?.bindElement" in review
+    for forbidden in ("pin.onclick","cancel.onclick","back.onclick","dlg.onsubmit"): assert forbidden not in review
+    assert "dlg.addEventListener('submit',this._commentSubmit)" in review and "registry?.execute(COMMENT_COMMANDS.save)" in review
+    assert "new NS.ReviewAnnotations({editor,session,chrome,registry})" in app
     assert "DEFAULT_TAB='outline'" in nav and "open(DEFAULT_TAB)" in nav and "anchor?.isConnected" in nav
     for forbidden in ("$('closeNavigation').onclick","$('outlineTab').onclick","$('pagesTab').onclick","$('thumbPrevBlock').onclick","$('thumbNextBlock').onclick","b.onclick=","card.onclick="): assert forbidden not in nav
     assert "registry?.bindElement" in nav and "pdf.navigation.outline.go" in nav and "pdf.navigation.page.go" in nav
