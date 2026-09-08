@@ -1,0 +1,35 @@
+(function(global){'use strict';
+const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{},$=id=>document.getElementById(id);
+const STATIC_BINDINGS=Object.freeze({
+  openMenuBtn:'file.open',
+  saveMenuBtn:'file.save',
+  saveToolbarBtn:'file.save',
+  prevPageBtn:'navigation.previous',
+  nextPageBtn:'navigation.next',
+  undoBtn:'history.undo',
+  redoBtn:'history.redo',
+  deleteAnnotationBtn:'annotation.delete'
+});
+function create({registry}={}){
+  let share=null;
+  function ensureShareAction(){
+    const saveBtn=$('saveMenuBtn');if(!saveBtn)return null;
+    share=$('shareMenuBtn');
+    if(!share){
+      share=document.createElement('button');share.id='shareMenuBtn';share.className='menu-item';share.type='button';
+      share.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint">PDF</span>';
+      saveBtn.insertAdjacentElement('afterend',share);
+    }
+    share.dataset.command='file.share';registry.bindElement(share,'file.share');return share
+  }
+  function install(){
+    ensureShareAction();
+    for(const[id,command]of Object.entries(STATIC_BINDINGS)){const el=$(id);if(el){el.dataset.command=command;registry.bindElement(el,command)}}
+    registry.sync()
+  }
+  function sync(){registry.sync()}
+  function inspect(){return Object.freeze({staticBindings:{...STATIC_BINDINGS},share:!!share})}
+  return Object.freeze({install,sync,inspect})
+}
+NS.CommandBindings=Object.freeze({create,STATIC_BINDINGS});
+})(globalThis);

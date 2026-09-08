@@ -1,8 +1,17 @@
 (function(global){'use strict';
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{};
 class PdfjsEditorAdapter{
-  constructor({container,viewer,session,chrome,onState}={}){this.container=container;this.viewer=viewer;this.session=session;this.chrome=chrome;this.onState=onState||(()=>{});this.doc=null;this.eventBus=new NS.PdfjsEventBus();this.uiManager=null;this.layers=new Map();this.mode='view';this.tool='none';this.state={hasSomethingToUndo:false,hasSomethingToRedo:false,hasSelectedEditor:false,isEditing:false,isEmpty:true};this.params={};this._states=e=>{this.state={...this.state,...(e?.details||{})};this.onState(this.inspect())};this._params=e=>{for(const item of e?.details||[]){if(Array.isArray(item)&&item.length>=2)this.params[item[0]]=item[1]}this.onState(this.inspect())};this.eventBus._on('annotationeditorstateschanged',this._states);this.eventBus._on('annotationeditorparamschanged',this._params)}
-  attachDocument(doc){this.destroyManager();this.doc=doc||null;this.lastScale=null;if(!doc)return;const alt=NS.PdfjsEnvironment.altTextManager();this.uiManager=new pdfjsLib.AnnotationEditorUIManager(this.container,this.viewer,alt,this.eventBus,doc,null);const storage=doc.annotationStorage;storage.onSetModified=()=>{this.session.markDirty();this.chrome.dirty();this.onState(this.inspect())};storage.onResetModified=()=>{this.session.markDirty();this.chrome.dirty();this.onState(this.inspect())};this.applyMode()}
+  constructor({container,viewer,session,chrome,onState}={}){
+    this.container=container;this.viewer=viewer;this.session=session;this.chrome=chrome;this.onState=onState||(()=>{});
+    this.doc=null;this.eventBus=new NS.PdfjsEventBus();this.uiManager=null;this.layers=new Map();this.mode='view';this.tool='none';
+    this.state={hasSomethingToUndo:false,hasSomethingToRedo:false,hasSelectedEditor:false,isEditing:false,isEmpty:true};this.params={};
+    this._states=e=>{this.state={...this.state,...(e?.details||{})};this.onState(this.inspect())};
+    this._params=e=>{for(const item of e?.details||[]){if(Array.isArray(item)&&item.length>=2)this.params[item[0]]=item[1]}this.onState(this.inspect())};
+    this.eventBus._on('editingstateschanged',this._states);
+    this.eventBus._on('annotationeditorstateschanged',this._states);
+    this.eventBus._on('annotationeditorparamschanged',this._params)
+  }
+  attachDocument(doc){this.destroyManager();this.doc=doc||null;this.lastScale=null;this.state={hasSomethingToUndo:false,hasSomethingToRedo:false,hasSelectedEditor:false,isEditing:false,isEmpty:true};this.onState(this.inspect());if(!doc)return;const alt=NS.PdfjsEnvironment.altTextManager();this.uiManager=new pdfjsLib.AnnotationEditorUIManager(this.container,this.viewer,alt,this.eventBus,doc,null);const storage=doc.annotationStorage;storage.onSetModified=()=>{this.session.markDirty();this.chrome.dirty();this.onState(this.inspect())};storage.onResetModified=()=>{this.session.markDirty();this.chrome.dirty();this.onState(this.inspect())};this.applyMode()}
   destroyManager(){for(const layer of this.layers.values())try{layer.destroy()}catch(_){}this.layers.clear();if(this.uiManager)try{this.uiManager.destroy()}catch(_){}this.uiManager=null;this.doc=null}
   createLayer({pageNumber,div,annotationLayer,viewport}){if(!this.uiManager)throw new Error('PDF editor manager not ready.');const existing=this.layers.get(pageNumber);if(existing){this.updateLayer(pageNumber,viewport);return existing}const layer=new pdfjsLib.AnnotationEditorLayer({uiManager:this.uiManager,pageIndex:pageNumber-1,div,accessibilityManager:null,annotationLayer,viewport,l10n:NS.PdfjsEnvironment.l10n});layer.render({viewport});this.layers.set(pageNumber,layer);this.applyMode();return layer}
   updateLayer(pageNumber,viewport){const layer=this.layers.get(pageNumber);if(!layer)return;const previous=layer.viewport;if(previous&&['scale','rotation','width','height'].every(key=>previous[key]===viewport[key]))return;layer.update({viewport})}

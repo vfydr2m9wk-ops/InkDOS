@@ -1,0 +1,55 @@
+name: PDF stability regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "apps/pdf/**"
+      - "tests/test_pdf_stability_*.py"
+      - ".github/workflows/pdf-stability-regression.yml"
+  pull_request:
+    paths:
+      - "apps/pdf/**"
+      - "tests/test_pdf_stability_*.py"
+      - ".github/workflows/pdf-stability-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: python tests/test_pdf_stability_contract.py
+      - run: node --check apps/pdf/app.js
+      - run: node --check apps/pdf/runtime/commands/command-registry.js
+      - run: node --check apps/pdf/ui/command-bindings.js
+      - run: node --check apps/pdf/ui/toolbar-rail.js
+      - run: node --check apps/pdf/ui/command-controller.js
+      - run: node --check apps/pdf/ui/navigation-controller.js
+      - run: node --check apps/pdf/pdfjs/editor-adapter.js
+      - run: node --check apps/pdf/view/page-layout.js
+
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python tests/test_pdf_stability_browser.py
