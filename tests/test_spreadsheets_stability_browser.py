@@ -108,8 +108,7 @@ def main() -> None:
                 'dirty': False,
             }, (browser_name, created)
 
-            # Semantic mutation and the current toolbar bindings must agree on one
-            # history model. This freezes behavior before command/binding refactors.
+            # Semantic mutation and toolbar projection share one history model.
             edited = page.evaluate("""() => {
                 const api=globalThis.__inkdosSpreadsheetsS1;
                 api.editor.editor.commitValue('42',0,0);
@@ -127,6 +126,20 @@ def main() -> None:
             page.click('#redoBtn')
             bold_after_redo = page.evaluate("() => !!globalThis.__inkdosSpreadsheetsS1.session.activeSheet().cells.get('A1')?.style?.font?.bold")
             assert bold_after_redo is True, browser_name
+
+            # A command is a semantic operation, not the toolbar control that happens
+            # to invoke it. Removing Italic must not destroy formatting or Undo.
+            command_probe = page.evaluate("""() => {
+                const api=globalThis.__inkdosSpreadsheetsS1;
+                document.getElementById('italicBtn').remove();
+                const registered=api.editor.commands.has('format.italic');
+                api.editor.commands.execute('format.italic');
+                const applied=!!api.session.activeSheet().cells.get('A1')?.style?.font?.italic;
+                api.editor.commands.execute('edit.undo');
+                const undone=!api.session.activeSheet().cells.get('A1')?.style?.font?.italic;
+                return {registered,applied,undone};
+            }""")
+            assert command_probe == {'registered': True, 'applied': True, 'undone': True}, (browser_name, command_probe)
 
             # Writer -> parser round-trip must preserve the edited cell, and the same
             # generated XLSX must be accepted transactionally by FileOpenController.

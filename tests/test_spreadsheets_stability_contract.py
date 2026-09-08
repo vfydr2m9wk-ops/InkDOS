@@ -25,6 +25,7 @@ def main() -> None:
     index = read('apps/spreadsheets/index.html')
     app = read('apps/spreadsheets/app.js')
     frame = read('apps/spreadsheets/runtime/frame/frame-menu.js')
+    chrome_controller = read('apps/spreadsheets/ui/chrome-controller.js')
     editor_controller = read('apps/spreadsheets/ui/editor-controller.js')
     workbook_editor = read('apps/spreadsheets/engine/workbook-editor.js')
     workbook_session = read('apps/spreadsheets/engine/workbook-session.js')
@@ -62,8 +63,6 @@ def main() -> None:
     if positions != sorted(positions):
         raise AssertionError('Spreadsheets script graph is not in dependency order')
 
-    # Every local script/style referenced by the workspace must be present in the
-    # root offline shell so a fresh controlled page can boot with the origin down.
     local_refs = re.findall(r'<script[^>]+src="([^"?#]+)', index)
     local_refs += re.findall(r'<link[^>]+rel="stylesheet"[^>]+href="([^"?#]+)', index)
     for ref in local_refs:
@@ -71,24 +70,47 @@ def main() -> None:
             continue
         require(service_worker, f'"./apps/spreadsheets/{ref}"', 'Spreadsheets offline shell')
 
-    # Bootstrap surface used by browser regressions and future command-isolation tests.
     for marker in (
         'new NS.WorkbookSession()',
         'NS.FileOpenController.create',
         'NS.SaveController.create',
         'NS.EditorController.create',
+        'chrome.bindEditorControls(editorController.commands)',
         'root.__inkdosSpreadsheetsS1',
     ):
         require(app, marker, 'Spreadsheets bootstrap')
 
-    # App bootstrap composes frame behavior; the frame module owns toolbar rail
-    # construction and its DOM listeners/styles.
+    # App bootstrap composes frame behavior; the frame module owns toolbar rail.
     require(frame, 'function installToolbarRail(target)', 'Spreadsheets frame authority')
     require(frame, 'installToolbarRail', 'Spreadsheets frame authority')
     require(app, "NS.FrameUI.installToolbarRail(document.getElementById('formatbar'))", 'Spreadsheets frame composition')
     forbid(app, 'function installToolbarRail', 'Spreadsheets bootstrap frame isolation')
     forbid(app, 'inkdosToolbarRailStyle', 'Spreadsheets bootstrap frame isolation')
     forbid(app, "document.createElement('style')", 'Spreadsheets bootstrap frame isolation')
+
+    # EditorController owns semantic orchestration and a stable command facade;
+    # ChromeController owns toolbar DOM binding/projection.
+    for marker in (
+        "register('format.bold'",
+        "register('format.italic'",
+        "register('edit.undo'",
+        "register('edit.redo'",
+        "register('file.save'",
+        "register('file.open'",
+        'SPREADSHEET_COMMAND_NOT_REGISTERED',
+        'commands,get selection',
+    ):
+        require(editor_controller, marker, 'Spreadsheets command facade')
+    require(editor_controller, 'chrome.syncEditorToolbar', 'Spreadsheets toolbar projection routing')
+    forbid(editor_controller, "$('boldBtn').onclick", 'Spreadsheets toolbar binding isolation')
+    forbid(editor_controller, "$('undoBtn').onclick", 'Spreadsheets toolbar binding isolation')
+    forbid(editor_controller, "$('redoBtn').onclick", 'Spreadsheets toolbar binding isolation')
+    require(chrome_controller, 'function syncEditorToolbar', 'Spreadsheets toolbar projection authority')
+    require(chrome_controller, 'function bindEditorControls(commands)', 'Spreadsheets toolbar binding authority')
+    require(chrome_controller, "commands.execute('format.bold')", 'Spreadsheets toolbar command routing')
+    require(chrome_controller, "commands.execute('edit.undo')", 'Spreadsheets toolbar command routing')
+    require(chrome_controller, "commands.execute('edit.redo')", 'Spreadsheets toolbar command routing')
+    forbid(chrome_controller, "editor.toggleFont('bold')", 'Spreadsheets chrome semantic isolation')
 
     # WorkbookEditor is the semantic mutation/history authority. Its size alone is
     # not a reason to split it; these APIs must remain callable independently of UI.
@@ -106,20 +128,15 @@ def main() -> None:
     require(save_controller, 'LocalXLSX.saveCopy', 'Workbook XLSX save path')
     require(save_controller, 'FileDelivery.deliver', 'Workbook delivery path')
 
-    # Safety envelope for XLSX ingestion remains blocking.
     for marker in (
         'maxInputBytes', 'maxEntries', 'maxInflatedBytes', 'ZIP_PATH_INVALID',
         'ZIP_CASE_COLLISION', 'XML_DTD_FORBIDDEN', 'XLSX_REQUIRED_PART_MISSING',
     ):
         require(package_validator, marker, 'Spreadsheets package safety')
 
-    # Both codecs remain explicit format engines. Do not infer a split requirement
-    # from their physical size.
     require(xlsx_engine, 'LocalXLSX', 'XLSX engine')
     require(xls_engine, 'LocalXLS', 'XLS legacy engine')
 
-    # Current controller must still expose the editor through a stable surface;
-    # later audits may move bindings without changing this behavior.
     require(editor_controller, 'get editor(){return editor}', 'Spreadsheets editor surface')
 
     print('Spreadsheets stability contract: OK')
