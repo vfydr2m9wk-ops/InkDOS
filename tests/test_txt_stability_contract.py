@@ -152,10 +152,18 @@ def main() -> None:
         'function find(step,query)',
         'function replaceOne(query,replacement)',
         'function replaceAll(query,replacement)',
+        "document.addEventListener('inkdos:txt-view-policy',scheduleLineNumbers)",
     ]:
         require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
-    for forbidden in ['E.findPrev.onclick=', 'E.findNext.onclick=']:
-        forbid(t1, forbidden, f'Plain Text T1 must not replace core find control bindings: {forbidden}')
+    for forbidden in [
+        'E.findPrev.onclick=',
+        'E.findNext.onclick=',
+        "E.wrap.addEventListener('click'",
+        "E.font.addEventListener('change'",
+        "E.fontDown.addEventListener('click'",
+        "E.fontUp.addEventListener('click'",
+    ]:
+        forbid(t1, forbidden, f'Plain Text T1 must not bind semantic view behavior to a specific control: {forbidden}')
 
     for needle in [
         'function doUndo()',
@@ -164,6 +172,7 @@ def main() -> None:
         'function setWrap(next)',
         'function setViewFont(size)',
         'state.history.push(E.editor.value)',
+        "document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy'",
     ]:
         require(editor, needle, f'Plain Text editor baseline missing: {needle}')
 

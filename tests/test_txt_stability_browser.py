@@ -119,13 +119,41 @@ def main() -> None:
             page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.redo')")
             assert editor.input_value() == 'gamma beta gamma'
 
-            # View-only controls must update view policy without mutating text.
+            # Line numbers follow semantic view policy even after view controls are removed.
             before_text = editor.input_value()
-            page.click('#wrapBtn')
-            assert page.locator('#wrapBtn').get_attribute('aria-pressed') == 'false'
-            page.locator('#fontSize').fill('20')
-            page.locator('#fontSize').press('Enter')
-            assert page.evaluate("() => InkDOS2.TxtAppDebug.state.fontSize") == 20
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT1.setLineNumbers(true)")
+            page.wait_for_function("() => document.querySelectorAll('#lineNumberLayer .t1-line-number').length > 0")
+            view_probe = page.evaluate(
+                """() => {
+                    const d=InkDOS2.TxtAppDebug;
+                    for(const id of ['wrapBtn','fontSize','fontDownBtn','fontUpBtn'])document.getElementById(id)?.remove();
+                    return {wrap:d.commands.has('view.wrap.toggle'),font:d.commands.has('view.font.set')};
+                }"""
+            )
+            assert view_probe == {'wrap': True, 'font': True}, view_probe
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('view.wrap.toggle')")
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('view.font.set',20)")
+            page.wait_for_function(
+                """() => {
+                    const mirror=document.getElementById('lineNumberMirror'),editor=document.getElementById('editor');
+                    return mirror.classList.contains('no-wrap') && getComputedStyle(mirror).fontSize===getComputedStyle(editor).fontSize && document.querySelectorAll('#lineNumberLayer .t1-line-number').length>0;
+                }"""
+            )
+            semantic_view = page.evaluate(
+                """() => ({
+                    wrap:InkDOS2.TxtAppDebug.state.wrap,
+                    fontSize:InkDOS2.TxtAppDebug.state.fontSize,
+                    mirrorNoWrap:document.getElementById('lineNumberMirror').classList.contains('no-wrap'),
+                    mirrorFont:getComputedStyle(document.getElementById('lineNumberMirror')).fontSize,
+                    editorFont:getComputedStyle(document.getElementById('editor')).fontSize,
+                    lineNumbers:document.querySelectorAll('#lineNumberLayer .t1-line-number').length,
+                })"""
+            )
+            assert semantic_view['wrap'] is False, semantic_view
+            assert semantic_view['fontSize'] == 20, semantic_view
+            assert semantic_view['mirrorNoWrap'] is True, semantic_view
+            assert semantic_view['mirrorFont'] == semantic_view['editorFont'], semantic_view
+            assert semantic_view['lineNumbers'] > 0, semantic_view
             assert editor.input_value() == before_text
 
             # Transactional open decodes TXT bytes and resets history without using the file picker.
