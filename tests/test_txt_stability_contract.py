@@ -115,11 +115,17 @@ def main() -> None:
 
     for needle in [
         "textToolsAnchor:$('textToolsAnchor')",
+        'function syncViewPolicy(eventOrDetail={})',
+        "document.addEventListener('inkdos:txt-view-policy',syncViewPolicy)",
+        'syncViewPolicy({wrap:state.wrap,fontSize:state.fontSize})',
         'function bind({editor,files,state,commands},frameMenu,{beforeListOpen=()=>{}}={})',
         'E.editor.addEventListener',
         "E.undoBtn.onclick=()=>execute('history.undo')",
         "E.redoBtn.onclick=()=>execute('history.redo')",
-        "E.wrap.onclick=()=>execute('view.wrap.toggle')",
+        "if(E.wrap)E.wrap.onclick=()=>execute('view.wrap.toggle')",
+        "if(E.font){E.font.addEventListener('change',()=>execute('view.font.set',E.font.value))",
+        "if(E.fontDown)E.fontDown.onclick=()=>execute('view.font.adjust',-1)",
+        "if(E.fontUp)E.fontUp.onclick=()=>execute('view.font.adjust',1)",
         "E.outdent.onclick=()=>execute('outline.indent',-1)",
         "E.indent.onclick=()=>execute('outline.indent',1)",
         'if(E.listMenu.hidden)beforeListOpen()',
@@ -254,14 +260,18 @@ def main() -> None:
         'function setWrap(next)',
         'function setViewFont(size)',
         'state.history.push(E.editor.value)',
+        'NS.TxtPolicy.apply(E.editor,{wrap:state.wrap,fontSize:state.fontSize})',
         "document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy'",
     ]:
         require(editor, needle, f'Plain Text editor baseline missing: {needle}')
     for forbidden in [
         'function find(step)',
         ',find,toggleFind,',
+        'E.wrap.setAttribute',
+        'E.wrap.classList.toggle',
+        'E.font.value=',
     ]:
-        forbid(editor, forbidden, f'Plain Text editor must not duplicate T1 Find semantics: {forbidden}')
+        forbid(editor, forbidden, f'Plain Text editor must not duplicate T1 Find or own view-control projection: {forbidden}')
 
     for needle in [
         'function initializeEmptyState()',
