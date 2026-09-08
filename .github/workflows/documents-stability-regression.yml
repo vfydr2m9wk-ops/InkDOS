@@ -7,11 +7,13 @@ on:
     paths:
       - "apps/documents/**"
       - "tests/test_documents_stability_*.py"
+      - "service-worker.js"
       - ".github/workflows/documents-stability-regression.yml"
   pull_request:
     paths:
       - "apps/documents/**"
       - "tests/test_documents_stability_*.py"
+      - "service-worker.js"
       - ".github/workflows/documents-stability-regression.yml"
 
 permissions:
@@ -26,7 +28,12 @@ jobs:
         with:
           python-version: "3.11"
       - run: python tests/test_documents_stability_contract.py
-      - run: node --check apps/documents/ui/command-controller.js
+      - name: Check Documents command runtime syntax
+        run: |
+          node --check apps/documents/app.js
+          node --check apps/documents/runtime/commands/document-commands.js
+          node --check apps/documents/ui/command-controller.js
+          node --check service-worker.js
 
   browser:
     strategy:
