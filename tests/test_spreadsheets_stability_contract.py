@@ -16,6 +16,11 @@ def require(text: str, needle: str, label: str) -> None:
         raise AssertionError(f'{label}: missing {needle!r}')
 
 
+def forbid(text: str, needle: str, label: str) -> None:
+    if needle in text:
+        raise AssertionError(f'{label}: forbidden {needle!r}')
+
+
 def main() -> None:
     index = read('apps/spreadsheets/index.html')
     app = read('apps/spreadsheets/app.js')
@@ -75,7 +80,15 @@ def main() -> None:
         'root.__inkdosSpreadsheetsS1',
     ):
         require(app, marker, 'Spreadsheets bootstrap')
-    require(frame, 'NS.FrameUI=Object.freeze', 'Spreadsheets frame module')
+
+    # App bootstrap composes frame behavior; the frame module owns toolbar rail
+    # construction and its DOM listeners/styles.
+    require(frame, 'function installToolbarRail(target)', 'Spreadsheets frame authority')
+    require(frame, 'installToolbarRail', 'Spreadsheets frame authority')
+    require(app, "NS.FrameUI.installToolbarRail(document.getElementById('formatbar'))", 'Spreadsheets frame composition')
+    forbid(app, 'function installToolbarRail', 'Spreadsheets bootstrap frame isolation')
+    forbid(app, 'inkdosToolbarRailStyle', 'Spreadsheets bootstrap frame isolation')
+    forbid(app, "document.createElement('style')", 'Spreadsheets bootstrap frame isolation')
 
     # WorkbookEditor is the semantic mutation/history authority. Its size alone is
     # not a reason to split it; these APIs must remain callable independently of UI.
