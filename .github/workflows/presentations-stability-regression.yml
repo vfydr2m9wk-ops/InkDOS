@@ -29,6 +29,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+      - run: python tests/test_presentations_stability_contract.py
       - run: python tests/test_ppt_p1_structure_contract.py
       - run: python tests/test_ppt_p1_objects_contract.py
       - name: Check Presentations runtime syntax

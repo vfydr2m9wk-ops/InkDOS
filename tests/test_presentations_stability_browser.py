@@ -58,6 +58,23 @@ def main() -> None:
             assert initial["session"]["currentIndex"] == 0, initial
             assert initial["view"]["panelOpen"] is True, initial
 
+            # Controls are bindings; editing semantics live in the workspace command registry.
+            command_ids = page.evaluate("() => globalThis.__inkdosPresentations.listCommands()")
+            for command in (
+                "history.undo",
+                "history.redo",
+                "slide.add",
+                "slide.duplicate",
+                "slide.delete",
+                "slide.move",
+                "edit.insertText",
+                "navigation.previous",
+                "navigation.next",
+            ):
+                assert command in command_ids, (browser_name, command, command_ids)
+            assert page.locator("#undoBtn").get_attribute("data-command") == "history.undo"
+            assert page.locator("#addSlideBtn").get_attribute("data-command") == "slide.add"
+
             # Slide structure operations must remain coherent with history.
             page.click("#addSlideBtn")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 2")
@@ -68,7 +85,18 @@ def main() -> None:
 
             page.click("#undoBtn")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 3")
-            page.click("#redoBtn")
+            page.evaluate("() => document.getElementById('redoBtn').remove()")
+            redone = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('history.redo')")
+            assert redone is True
+            page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 2")
+
+            # Removing a toolbar control must not destroy the command or break state projection.
+            page.evaluate("() => document.getElementById('addSlideBtn').remove()")
+            added = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('slide.add')")
+            assert added is True
+            page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 3")
+            undone = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('history.undo')")
+            assert undone is True
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 2")
 
             # Navigation must update the authoritative session rather than only visual state.
@@ -122,7 +150,7 @@ def main() -> None:
 
         if errors:
             raise AssertionError({"browser": browser_name, "errors": errors})
-        print(f"Presentations stability browser baseline passed on {browser_name}.")
+        print(f"Presentations stability browser regression passed on {browser_name}.")
     finally:
         server.terminate()
         try:
