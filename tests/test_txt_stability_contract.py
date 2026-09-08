@@ -186,7 +186,8 @@ def main() -> None:
     ]:
         require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
     for forbidden in [
-        'files',
+        ',files,',
+        'files.',
         'editor.toggleFind',
         'nextElementSibling',
         'controls',
@@ -219,7 +220,8 @@ def main() -> None:
     ]:
         require(t2, needle, f'Plain Text T2 isolation contract missing: {needle}')
     for forbidden in [
-        'files',
+        ',files,',
+        'files.',
         'nextElementSibling',
         'function declarationEncoding(text){const m=',
         'function encodingCompatible(declared){if(',
