@@ -93,7 +93,7 @@ def main() -> None:
             opened = page.evaluate(
                 """async () => {
                     const d = InkDOS2.TxtAppDebug;
-                    const bytes = new TextEncoder().encode('one\r\ntwo');
+                    const bytes = new Uint8Array([111,110,101,13,10,116,119,111]);
                     await d.openBytes('sample.txt', bytes);
                     return {
                         loaded:d.state.loaded,
