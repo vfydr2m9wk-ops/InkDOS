@@ -7,6 +7,7 @@ on:
       - 'feature/**'
       - 'fix/**'
       - 'polish/**'
+      - 'audit/stability-functional-isolation'
     paths-ignore:
       - 'CHECKSUMS.sha256'
       - 'SOURCE_LOCK.json'
@@ -41,7 +42,7 @@ jobs:
       - name: Build Plain Text distribution
         run: python scripts/build_txt_bundle.py
 
-      - name: Refresh integrated app locks
+      - name: Refresh integrated app locks outside stability audit
         shell: bash
         run: |
           python - <<'PY'
@@ -49,6 +50,13 @@ jobs:
           import hashlib, json
 
           root = Path('.')
+          stability_path = root / 'STABILITY_STATE.json'
+          if stability_path.is_file():
+              stability = json.loads(stability_path.read_text(encoding='utf-8'))
+              if stability.get('active') is True and stability.get('program') == 'stability-functional-isolation':
+                  print('Active stability audit: preserving SOURCE_LOCK.json as the approved main baseline.')
+                  raise SystemExit(0)
+
           lock_path = root / 'SOURCE_LOCK.json'
           lock = json.loads(lock_path.read_text(encoding='utf-8'))
           version = json.loads((root / 'VERSION.json').read_text(encoding='utf-8'))['version']
