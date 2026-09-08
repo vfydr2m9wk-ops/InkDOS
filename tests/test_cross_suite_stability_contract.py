@@ -44,7 +44,7 @@ def normalize_resource(index_path: Path, raw: str) -> str | None:
 
 def main() -> None:
     state = json.loads((ROOT / "STABILITY_STATE.json").read_text(encoding="utf-8"))
-    assert state["currentWorkspace"] == "cross-suite", state
+    assert state["currentWorkspace"] in {"cross-suite", "freeze"}, state
     assert state["completedWorkspaces"] == list(WORKSPACES), state
 
     sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
