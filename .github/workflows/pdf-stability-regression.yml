@@ -32,6 +32,8 @@ jobs:
           node --check apps/pdf/runtime/commands/command-registry.js
           node --check apps/pdf/ui/command-bindings.js
           node --check apps/pdf/ui/toolbar-rail.js
+          node --check apps/pdf/modes/mode-controller.js
+          node --check apps/pdf/ui/mode-bindings.js
           node --check apps/pdf/ui/command-controller.js
           node --check apps/pdf/ui/navigation-controller.js
           node --check apps/pdf/pdfjs/editor-adapter.js

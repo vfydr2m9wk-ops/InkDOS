@@ -16,6 +16,8 @@ def main():
     registry = text(PDF / "runtime" / "commands" / "command-registry.js")
     bindings = text(PDF / "ui" / "command-bindings.js")
     rail = text(PDF / "ui" / "toolbar-rail.js")
+    mode = text(PDF / "modes" / "mode-controller.js")
+    mode_bindings = text(PDF / "ui" / "mode-bindings.js")
     page_ui = text(PDF / "ui" / "page-tools.js")
     page_runtime = text(PDF / "features" / "page-tools" / "page-tools-runtime.js")
     actions = {
@@ -35,10 +37,8 @@ def main():
     assert "sameMetrics" in layout
     assert "userEpoch===this.userScrollEpoch" in layout
     assert "scrollIntoView" not in layout
-    assert "runtime/commands/command-registry.js" in app
-    assert "ui/command-bindings.js" in app
-    assert "ui/toolbar-rail.js" in app
-    assert "features/page-tools/page-tools-runtime.js" in app
+    for path in ("runtime/commands/command-registry.js","ui/command-bindings.js","ui/toolbar-rail.js","ui/mode-bindings.js","features/page-tools/page-tools-runtime.js"):
+        assert path in app
     for name in ("move-page.js","rotate-page.js","delete-page.js","extract-page.js","split-pdf.js","merge-pdfs.js"):
         assert name in app
     assert "function installToolbarRail" not in app
@@ -53,6 +53,15 @@ def main():
     assert "undoBtn:'history.undo'" in bindings
     assert "deleteAnnotationBtn:'annotation.delete'" in bindings
 
+    # Mode state is DOM-free; visual controls live in a binding module.
+    assert "querySelectorAll" not in mode
+    assert "data-pdf-mode" not in mode
+    assert "data-annotate-tool" not in mode
+    assert "subscribe" in mode
+    for command in ("pdf.mode.view","pdf.mode.annotate","pdf.tool.select","pdf.tool.text","pdf.tool.pen","pdf.tool.highlight","pdf.tool.underline","pdf.tool.comment"):
+        assert command in mode_bindings
+    assert "ModeBindings.create" in app
+
     # Page Tools must be a command-bound UI shell, not an implementation bucket.
     for command in ("pdf.pages.move","pdf.pages.rotate","pdf.pages.delete","pdf.pages.extract","pdf.pages.split","pdf.pages.merge.choose","pdf.pages.merge.files"):
         assert command in page_ui
@@ -61,23 +70,14 @@ def main():
     assert "snapshotCurrent" not in page_ui
     assert "verifyPdf" not in page_ui
     assert "PageToolsRuntime" in page_runtime
-    expected = {
-        "move": "PageToolsEngine.movePage",
-        "rotate": "PageToolsEngine.rotatePage",
-        "delete": "PageToolsEngine.deletePage",
-        "extract": "PageToolsEngine.extractPages",
-        "split": "PageToolsEngine.splitAfter",
-        "merge": "PageToolsEngine.merge",
-    }
-    for key, needle in expected.items():
-        assert needle in actions[key], f"{key} action lost its isolated engine call"
-    # An individual action must not import/mention sibling action namespaces.
+    expected = {"move":"PageToolsEngine.movePage","rotate":"PageToolsEngine.rotatePage","delete":"PageToolsEngine.deletePage","extract":"PageToolsEngine.extractPages","split":"PageToolsEngine.splitAfter","merge":"PageToolsEngine.merge"}
     action_names = ("PageMoveAction","PageRotateAction","PageDeleteAction","PageExtractAction","PageSplitAction","PageMergeAction")
+    own_map = {"move":"PageMoveAction","rotate":"PageRotateAction","delete":"PageDeleteAction","extract":"PageExtractAction","split":"PageSplitAction","merge":"PageMergeAction"}
     for key, source in actions.items():
-        own = {"move":"PageMoveAction","rotate":"PageRotateAction","delete":"PageDeleteAction","extract":"PageExtractAction","split":"PageSplitAction","merge":"PageMergeAction"}[key]
-        assert own in source
+        assert expected[key] in source
+        assert own_map[key] in source
         for other in action_names:
-            if other != own:
+            if other != own_map[key]:
                 assert other not in source
 
     print("PDF stability/static isolation contract passed.")
