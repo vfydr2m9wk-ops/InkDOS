@@ -80,4 +80,5 @@ jobs:
       - run: python tests/test_pdf_stability_browser.py
       - run: python tests/test_pdf_stability_frame.py
       - run: python tests/test_pdf_stability_comments.py
+      - run: python tests/test_pdf_stability_roundtrip.py
       - run: python tests/test_pdf_stability_offline.py
