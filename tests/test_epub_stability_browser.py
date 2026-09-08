@@ -15,6 +15,10 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8783
 BASE = f'http://127.0.0.1:{PORT}'
+EPUB_OFFLINE_URLS = (
+    '/apps/epub/engine/navigation-index.js',
+    '/apps/epub/ui/navigation-tools.js',
+)
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -26,6 +30,17 @@ def wait_port(timeout: float = 10.0) -> None:
                 return
         time.sleep(0.1)
     raise RuntimeError('Local EPUB test server did not start')
+
+
+def stop_server(server: subprocess.Popen | None) -> None:
+    if server is None or server.poll() is not None:
+        return
+    server.terminate()
+    try:
+        server.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        server.kill()
+        server.wait(timeout=3)
 
 
 def build_epub(path: Path) -> None:
@@ -81,7 +96,7 @@ def main() -> None:
     if browser_name not in {'chromium', 'firefox', 'webkit'}:
         raise RuntimeError(f'Unsupported BROWSER={browser_name}')
 
-    server = subprocess.Popen(
+    server: subprocess.Popen | None = subprocess.Popen(
         [sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'],
         cwd=ROOT,
         stdout=subprocess.DEVNULL,
@@ -95,9 +110,18 @@ def main() -> None:
             build_epub(epub_path)
             with sync_playwright() as pw:
                 browser = getattr(pw, browser_name).launch(headless=True)
-                page = browser.new_page(viewport={'width': 1360, 'height': 900})
+                context = browser.new_context(viewport={'width': 1360, 'height': 900})
+                page = context.new_page()
                 page.on('pageerror', lambda exc: errors.append(f'pageerror: {exc}'))
                 page.on('console', lambda msg: errors.append(f'console.error: {msg.text}') if msg.type == 'error' else None)
+
+                # Install and activate the root service worker before exercising the app.
+                page.goto(BASE + '/index.html', wait_until='load')
+                assert page.evaluate("() => 'serviceWorker' in navigator") is True, browser_name
+                page.evaluate('async () => { await navigator.serviceWorker.ready; return true; }')
+                page.reload(wait_until='load')
+                page.wait_for_function('() => !!navigator.serviceWorker.controller')
+
                 page.goto(BASE + '/apps/epub/', wait_until='load')
                 page.wait_for_function('() => !!globalThis.__InkEpubR4')
                 page.wait_for_selector('.inkdos-toolbar-rail')
@@ -111,6 +135,23 @@ def main() -> None:
                     arrows:document.querySelectorAll('.inkdos-toolbar-arrow').length,
                 })""")
                 assert rail == {'rail': 1, 'toolbarInside': True, 'arrows': 2}, rail
+
+                missing = page.evaluate(
+                    r"""async (paths) => {
+                        const names=(await caches.keys()).filter(name=>name.startsWith('inkdos-'));
+                        const inkCaches=await Promise.all(names.map(name=>caches.open(name)));
+                        const missing=[];
+                        for(const path of paths){
+                            const url=new URL(path,location.origin).href;
+                            let hit=false;
+                            for(const cache of inkCaches){if(await cache.match(url)){hit=true;break;}}
+                            if(!hit)missing.push(path);
+                        }
+                        return missing;
+                    }""",
+                    list(EPUB_OFFLINE_URLS),
+                )
+                assert missing == [], (browser_name, missing)
 
                 page.set_input_files('#fileInput', str(epub_path))
                 page.wait_for_function("""() => {
@@ -161,17 +202,27 @@ def main() -> None:
                 locator = page.evaluate("() => globalThis.__InkEpubR4.state().locator")
                 assert locator['path'] == 'OEBPS/ch2.xhtml', locator
 
+                # A fresh reader boot must still resolve its navigation modules with network disabled.
+                errors.clear()
+                context.set_offline(True)
+                page.reload(wait_until='load', timeout=20_000)
+                page.wait_for_function('() => !!globalThis.__InkEpubR4', timeout=15_000)
+                offline = page.evaluate("""() => ({
+                    navigationIndex:!!globalThis.InkDOS2Epub?.EpubNavigationIndex,
+                    navigationTools:!!globalThis.InkDOS2Epub?.ReaderNavigationTools,
+                    toolbarRail:document.querySelectorAll('.inkdos-toolbar-rail').length===1,
+                    emptyState:!document.getElementById('emptyState').hidden,
+                })""")
+                assert all(offline.values()), (browser_name, offline)
+                context.set_offline(False)
+
+                if errors:
+                    raise AssertionError('\n'.join(errors))
                 browser.close()
 
-        if errors:
-            raise AssertionError('\n'.join(errors))
         print(f'EPUB stability browser ({browser_name}): OK')
     finally:
-        server.terminate()
-        try:
-            server.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            server.kill()
+        stop_server(server)
 
 
 if __name__ == '__main__':

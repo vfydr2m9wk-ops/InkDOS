@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,14 +28,20 @@ def main() -> None:
     controls = read('apps/epub/ui/reader-controls.js')
     session = read('apps/epub/session/book-session.js')
     package_reader = read('apps/epub/io/package-reader.js')
+    service_worker = read('service-worker.js')
 
     # The EPUB bootstrap is assembled from explicit responsibility modules.
     scripts = [
         'io/package-reader.js',
         'engine/content-projector.js',
         'engine/book-model.js',
+        'engine/navigation-index.js',
         'state/annotation-store.js',
+        'engine/annotations.js',
+        'io/epub-writer.js',
+        'io/file-delivery.js',
         'state/reading-state.js',
+        'state/appearance.js',
         'runtime/frame/frame-menu.js',
         'view/reader-viewport.js',
         'view/renderer.js',
@@ -49,6 +56,17 @@ def main() -> None:
         positions.append(index.index(f'src="{script}"'))
     if positions != sorted(positions):
         raise AssertionError('EPUB script graph is not in dependency order')
+
+    # Every local runtime dependency referenced by the EPUB document must be
+    # explicitly known to the offline shell. A cached index without one of its
+    # scripts/styles is not a valid offline boot.
+    local_refs = re.findall(r'<script[^>]+src="([^"?#]+)', index)
+    local_refs += re.findall(r'<link[^>]+rel="stylesheet"[^>]+href="([^"?#]+)', index)
+    for ref in local_refs:
+        if ref.startswith(('http://', 'https://', '//')):
+            continue
+        require(service_worker, f'"./apps/epub/{ref}"', 'EPUB offline shell')
+    require(service_worker, 'inkdos-v2.0.12-stability-epub-seq86', 'EPUB offline cache rotation')
 
     for element_id in (
         'toolbar', 'fileInput', 'readerStage', 'readerSurface', 'emptyState',
