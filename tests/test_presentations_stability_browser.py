@@ -142,6 +142,32 @@ def main() -> None:
             assert abs(zoom_probe["manual"] - 1.5) < 0.01, zoom_probe
             page.wait_for_function("() => Math.abs(globalThis.__inkdosPresentations.zoom.scale - 1.5) < 0.02")
 
+            # P1 Shape/Layout are feature actions, not control-owned behavior.
+            page.evaluate("() => { document.getElementById('pptP1Shape').remove(); document.getElementById('pptP1Layout').remove(); }")
+            p1_shape = page.evaluate(
+                """() => {
+                    const app = globalThis.__inkdosPresentations;
+                    const created = app.p1Tools.insertShape('ellipse');
+                    app.p1Tools.sync();
+                    const selected = app.selection.getObject(app.session);
+                    return {created:!!created,type:selected?.type||null,shapeType:selected?.shapeType||null};
+                }"""
+            )
+            assert p1_shape == {"created": True, "type": "shape", "shapeType": "ellipse"}, p1_shape
+            assert page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('history.undo')") is True
+            p1_layout = page.evaluate(
+                """() => {
+                    const app = globalThis.__inkdosPresentations;
+                    const applied = app.p1Tools.applyLayout('section');
+                    app.p1Tools.sync();
+                    const title = app.session.currentSlide.objects.find(o => o.type === 'text' && o.placeholder === 'title');
+                    return {applied, fontSizePt:title?.fontSizePt||null};
+                }"""
+            )
+            assert p1_layout["applied"] is True, p1_layout
+            assert p1_layout["fontSizePt"] == 36, p1_layout
+            assert page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('history.undo')") is True
+
             # Selection and insert-text behavior remain functional after navigation/history churn.
             page.click("#insertTextBtn")
             page.wait_for_function("() => !!globalThis.__inkdosPresentations.selection.objectId")
