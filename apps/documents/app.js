@@ -2,11 +2,14 @@
 const NS=global.InkDOS2Documents;if(!NS)throw new Error('Documents runtime namespace missing.');
 const $=id=>document.getElementById(id);
 function loadScript(src,test){if(test?.())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('DOCUMENTS_LOCAL_ASSET_LOAD_FAILED: '+src));document.head.appendChild(s)})}
-async function loadD1(){if(!document.querySelector('link[data-doc-d1]')){const l=document.createElement('link');l.rel='stylesheet';l.href='ui/d1-tools.css';l.dataset.docD1='1';document.head.appendChild(l)}await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
-async function boot(){await loadD1();
+function loadCss(href,key){if(document.querySelector('link[data-doc-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset['doc'+key.toUpperCase()]='1';document.head.appendChild(l)}
+async function loadD1(){loadCss('ui/d1-tools.css','d1');await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
+async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('io/rtf-importer.js',()=>!!NS.RtfImporter);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
+async function boot(){await loadD1();await loadD2();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');
+fileInput.accept='.docx,.rtf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,text/rtf';const startCopy=welcome?.querySelector('.start-card p');if(startCopy)startCopy.textContent='Create a document or open a DOCX or RTF file locally.';
 const adapter=new NS.ContentViewportAdapter(viewport,pagesHost);
 let zoomControls=null;
 const zoom=new NS.ZoomController(adapter,pagesHost,info=>zoomControls?.update(info));
@@ -21,15 +24,19 @@ const saveController=NS.SaveController.create({session,pagesHost,chrome});
 zoomControls=NS.ZoomControls.create({zoom});
 const commands=NS.CommandController.create({session,pagesHost,chrome,fileOpen,saveController,editor,ruler,navigation,zoom,zoomControls});
 const d1=NS.D1Tools.create({state,session,pagesHost,surface,editor,navigation,chrome});
+const d2=NS.D2Tools.create({state,session,pagesHost,surface,editor,navigation,chrome,d1});
+const d2Sections=NS.D2Sections.create({state,session,pagesHost,surface,editor,d1,chrome});
 chrome.setChooseFile(fileOpen.requestOpen);
 NS.Appearance.install();
 zoom.install();
 fileOpen.install();
 commands.install();
 d1.install();
+d2.install();
+d2Sections.install();
 chrome.syncDirty();
 surface.updateStats();
-NS.DocumentsApp=Object.freeze({session,state,zoom,d1,open:fileOpen.openFile,requestOpen:fileOpen.requestOpen,newDocument:fileOpen.requestNew,save:saveController.save});
+NS.DocumentsApp=Object.freeze({session,state,zoom,d1,d2,d2Sections,open:fileOpen.openFile,requestOpen:fileOpen.requestOpen,newDocument:fileOpen.requestNew,save:saveController.save});
 }
 boot().catch(e=>{console.error(e);const status=$('statusText');if(status)status.textContent='Documents tools failed to load'});
 })(globalThis);

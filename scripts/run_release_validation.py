@@ -7,6 +7,7 @@ CMDS=[
  [sys.executable,'scripts/build_txt_bundle.py','--check'],
  ['node','tests/test_pdf_p2_page_tools.cjs'],
  [sys.executable,'tests/test_doc_d1_contract.py'],
+ [sys.executable,'tests/test_doc_d2_p1_contract.py'],
  [sys.executable,'scripts/validate_repository.py'],
  [sys.executable,'scripts/validate_app_isolation.py'],
  [sys.executable,'scripts/audit_source.py'],
