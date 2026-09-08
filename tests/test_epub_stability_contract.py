@@ -26,6 +26,7 @@ def main() -> None:
     app = read('apps/epub/app.js')
     frame_module = read('apps/epub/runtime/frame/frame-menu.js')
     controls = read('apps/epub/ui/reader-controls.js')
+    bindings = read('apps/epub/ui/reader-bindings.js')
     session = read('apps/epub/session/book-session.js')
     package_reader = read('apps/epub/io/package-reader.js')
     service_worker = read('service-worker.js')
@@ -47,6 +48,7 @@ def main() -> None:
         'view/renderer.js',
         'session/book-session.js',
         'ui/reader-controls.js',
+        'ui/reader-bindings.js',
         'ui/navigation-tools.js',
         'app.js',
     ]
@@ -66,7 +68,7 @@ def main() -> None:
         if ref.startswith(('http://', 'https://', '//')):
             continue
         require(service_worker, f'"./apps/epub/{ref}"', 'EPUB offline shell')
-    require(service_worker, 'inkdos-v2.0.12-stability-epub-seq86', 'EPUB offline cache rotation')
+    require(service_worker, 'inkdos-v2.0.12-stability-epub-seq87', 'EPUB offline cache rotation')
 
     for element_id in (
         'toolbar', 'fileInput', 'readerStage', 'readerSurface', 'emptyState',
@@ -75,10 +77,11 @@ def main() -> None:
     ):
         require(index, f'id="{element_id}"', 'EPUB frame contract')
 
-    # Bootstrap composes frame behavior; it does not implement toolbar chrome.
+    # Bootstrap composes responsibilities instead of implementing frame or bindings.
     require(app, 'BookSession.create()', 'EPUB bootstrap')
     require(app, 'ReaderRenderer.create()', 'EPUB bootstrap')
     require(app, 'ReaderControls.create', 'EPUB bootstrap')
+    require(app, 'ReaderBindings.create', 'EPUB bootstrap')
     require(app, 'ReaderNavigationTools.create', 'EPUB bootstrap')
     require(app, 'globalThis.__InkEpubR4', 'EPUB stability surface')
     require(app, 'LocalAppFrame.installToolbarRail(E.toolbar)', 'EPUB frame composition')
@@ -87,9 +90,16 @@ def main() -> None:
     require(frame_module, 'function installToolbarRail(target)', 'EPUB frame authority')
     require(frame_module, 'NS.LocalAppFrame={create,configureOptionalHome,installToolbarRail}', 'EPUB frame authority')
 
-    # Reading operations remain semantic APIs rather than toolbar-only behavior.
-    for api in ('goPage', 'setFlow', 'setFont', 'setFontStyle', 'goLocator', 'goPath', 'prepareExport'):
+    # ReaderControls owns reader behavior; ReaderBindings alone owns DOM event wiring.
+    forbid(controls, 'addEventListener', 'EPUB reader semantic isolation')
+    require(bindings, 'addEventListener', 'EPUB reader binding authority')
+    require(bindings, 'NS.ReaderBindings=Object.freeze({create})', 'EPUB reader binding authority')
+    for api in (
+        'goPage', 'setFlow', 'setFont', 'setFontStyle', 'setTheme', 'goLocator',
+        'goPath', 'openFile', 'saveCopy', 'shareCopy', 'prepareExport',
+    ):
         require(controls, api, 'EPUB reader API')
+
     require(session, 'loadCandidate', 'EPUB transactional session')
     require(session, 'isCurrent(candidate)', 'EPUB transactional session')
     require(session, 'commit(candidate)', 'EPUB transactional session')

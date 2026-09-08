@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-epub-seq86';
+const CACHE_NAME='inkdos-v2.0.12-stability-epub-seq87';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -220,6 +220,7 @@ const APP_SHELL=[
   "./apps/epub/state/reading-state.js",
   "./apps/epub/ui/reader-controls.css",
   "./apps/epub/ui/reader-controls.js",
+  "./apps/epub/ui/reader-bindings.js",
   "./apps/epub/ui/navigation-tools.js",
   "./apps/epub/ui/start-state.css",
   "./apps/epub/view/reader-viewport.js",
