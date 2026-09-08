@@ -35,6 +35,16 @@ PPT-P1 establishes the domestic PPTX editing baseline on top of the existing Pre
 
 The suite service worker includes the PPT-P1 structure writer, object writer and contextual tool module so this baseline remains available in the installed offline shell.
 
-The next permitted functional cycle is **PPT-P2 — Presentation Completion + PPT Import**. Presentations PPT-P1 and all previously frozen workspaces must not receive additional functional work during PPT-P2 except for objective regressions required to complete or protect the authorized PPT-P2 scope.
+## Stability Functional Isolation Freeze — 2026-09-08
+
+The six functional baselines above are additionally protected by the frozen `stability-functional-isolation` regression baseline recorded in `docs/STABILITY-FREEZE-2026-09-08.md`.
+
+The stability freeze covers PDF, Documents, Presentations, Plain Text, EPUB Reader and Spreadsheets in sequence, followed by an integrated cross-suite frame/bootstrap/offline audit. Its aggregate gate protects command/control independence, app-local responsibility boundaries, proportional modularity, browser behavior, offline bootstrap, security configuration and preserved file-format round-trips.
+
+The frozen runtime anchor is `9da9b798c624e3db6bcf933d85ed19892997bf5f`. The aggregate freeze candidate passed workflow run `34270610710` at commit `f17e102e3e9b612e86da020ba3ab880b16f5741c` across static contracts, preservation round-trips, Chromium, Firefox and WebKit.
+
+Future feature phases must preserve this baseline. A later feature is not approved solely by its own tests; its applicable workspace stability regression and cross-suite offline/isolation regression remain part of the acceptance gate.
+
+The next previously permitted functional cycle remains **PPT-P2 — Presentation Completion + PPT Import**, subject to a subsequent authorized development phase. The stability freeze itself does not start PPT-P2, XLS-S1 or XLS-S2.
 
 Exact SHA-256 values and integration hashes for installed trees are recorded in `SOURCE_LOCK.json` and `CHECKSUMS.sha256`.

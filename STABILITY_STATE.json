@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "program": "stability-functional-isolation",
-  "active": true,
+  "active": false,
   "workingBranch": "audit/stability-functional-isolation",
   "auditOrder": [
     "pdf",
@@ -15,9 +15,21 @@
   ],
   "completedWorkspaces": [
     "pdf",
-    "documents"
+    "documents",
+    "presentations",
+    "txt",
+    "epub",
+    "spreadsheets"
   ],
-  "currentWorkspace": "presentations",
+  "currentWorkspace": "freeze",
+  "freezeCandidate": {
+    "date": "2026-09-08",
+    "runtimeAnchor": "9da9b798c624e3db6bcf933d85ed19892997bf5f",
+    "crossSuiteRun": 34270011352,
+    "freezeGateCommit": "f17e102e3e9b612e86da020ba3ab880b16f5741c",
+    "freezeGateRun": 34270610710,
+    "status": "frozen"
+  },
   "progressiveMainPromotion": true,
   "proportionalModularization": true
 }

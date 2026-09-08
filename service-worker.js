@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-documents-seq84';
+const CACHE_NAME='inkdos-v2.0.12-stability-epub-seq87';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -189,8 +189,6 @@ const APP_SHELL=[
   "./apps/txt/io/txt-file-controller.js",
   "./apps/txt/page.template.html",
   "./apps/txt/runtime/contracts/document-session.js",
-  "./apps/txt/runtime/contracts/render-request.js",
-  "./apps/txt/runtime/contracts/viewport-metrics.js",
   "./apps/txt/runtime/frame/app-frame.css",
   "./apps/txt/runtime/frame/app-frame.js",
   "./apps/txt/runtime/platform/content-viewport-adapter.js",
@@ -208,6 +206,7 @@ const APP_SHELL=[
   "./apps/epub/engine/annotations.js",
   "./apps/epub/engine/book-model.js",
   "./apps/epub/engine/content-projector.js",
+  "./apps/epub/engine/navigation-index.js",
   "./apps/epub/index.html",
   "./apps/epub/io/epub-writer.js",
   "./apps/epub/io/file-delivery.js",
@@ -221,6 +220,8 @@ const APP_SHELL=[
   "./apps/epub/state/reading-state.js",
   "./apps/epub/ui/reader-controls.css",
   "./apps/epub/ui/reader-controls.js",
+  "./apps/epub/ui/reader-bindings.js",
+  "./apps/epub/ui/navigation-tools.js",
   "./apps/epub/ui/start-state.css",
   "./apps/epub/view/reader-viewport.js",
   "./apps/epub/view/reader.css",

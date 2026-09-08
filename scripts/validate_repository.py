@@ -3,6 +3,7 @@ from pathlib import Path
 import hashlib,json,re
 ROOT=Path(__file__).resolve().parents[1]
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
+FROZEN_WORKSPACES=['pdf','documents','presentations','txt','epub','spreadsheets']
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def tree_digest(root,exclude=()):
     root=Path(root); ex=set(exclude); h=hashlib.sha256()
@@ -23,11 +24,24 @@ def stability_changes():
     if current not in ACTIVE or current not in order: raise SystemExit('Invalid currentWorkspace in STABILITY_STATE.json')
     if completed!=order[:order.index(current)]: raise SystemExit('STABILITY_STATE.json is not sequential')
     return set(completed)|{current}
+def frozen_stability():
+    path=ROOT/'STABILITY_STATE.json'
+    if not path.is_file(): return False
+    state=json.loads(path.read_text(encoding='utf-8'))
+    candidate=state.get('freezeCandidate') or {}
+    return (
+        state.get('program')=='stability-functional-isolation'
+        and state.get('active') is False
+        and state.get('currentWorkspace')=='freeze'
+        and state.get('completedWorkspaces')==FROZEN_WORKSPACES
+        and candidate.get('status')=='frozen'
+        and bool(candidate.get('runtimeAnchor'))
+    )
 def main():
     required=('index.html','VERSION.json','DEVELOPMENT_STATE.json','SOURCE_LOCK.json','manifest.webmanifest','service-worker.js','README.md','CHECKSUMS.sha256','scripts/apply_update_package.py')
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
-    v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text()); stability=stability_changes()
+    v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text()); stability=stability_changes(); frozen=frozen_stability()
     if v.get('version')!='2.0.12': raise SystemExit('Unexpected version')
     if state.get('appliedSequence')!=80 or state.get('currentPackage')!='2.0.12-modularity-epub-polish': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
@@ -72,7 +86,7 @@ def main():
         if marker not in pdf: raise SystemExit('PDF start gate missing: '+marker)
     if list((ROOT/'apps/pdf').rglob('*.pdf')) or (ROOT/'apps/pdf/tests').exists(): raise SystemExit('PDF distribution contains internal fixtures')
     sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
-    if stability:
+    if stability or frozen:
         if not re.search(r"const CACHE_NAME=['\"]inkdos-v2\.0\.12-stability-[^'\"]+['\"]",sw): raise SystemExit('Stability offline cache rotation missing')
     elif "inkdos-v2.0.12-modularity-epub-polish-seq80" not in sw:
         raise SystemExit('2.0.12 offline cache rotation missing')
@@ -80,5 +94,6 @@ def main():
     for marker in forbidden:
         if marker in home: raise SystemExit(f'Legacy Home runtime reference: {marker}')
     if stability: print('Repository structure validated with source locks preserved for active stability workspaces: '+', '.join(sorted(stability))+'.')
+    elif frozen: print('Repository structure and integrated-app locks validated against frozen stability baseline.')
     else: print('Repository structure and integrated-app locks validated.')
 if __name__=='__main__': main()

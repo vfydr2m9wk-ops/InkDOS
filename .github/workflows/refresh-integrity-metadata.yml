@@ -95,6 +95,9 @@ jobs:
       - name: Refresh checksums
         run: python scripts/generate_checksums.py
 
+      - name: Validate frozen stability lifecycle
+        run: python tests/test_stability_freeze_contract.py
+
       - name: Validate refreshed snapshot
         run: python scripts/run_release_validation.py
 

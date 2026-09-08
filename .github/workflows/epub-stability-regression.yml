@@ -1,0 +1,51 @@
+name: EPUB stability regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "apps/epub/**"
+      - "tests/test_epub_stability_*.py"
+      - "service-worker.js"
+      - "STABILITY_STATE.json"
+      - ".github/workflows/epub-stability-regression.yml"
+  pull_request:
+    paths:
+      - "apps/epub/**"
+      - "tests/test_epub_stability_*.py"
+      - "service-worker.js"
+      - "STABILITY_STATE.json"
+      - ".github/workflows/epub-stability-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: python tests/test_epub_stability_contract.py
+
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python tests/test_epub_stability_browser.py

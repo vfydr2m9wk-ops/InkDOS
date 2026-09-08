@@ -25,7 +25,7 @@
       <span class="tool-sep" aria-hidden="true"></span>
       <button id="findBtn" class="tool-btn" type="button" aria-label="Find" title="Find"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg></button>
       <div id="findbar" class="findbar" hidden><input id="findInput" type="search" placeholder="Find text" aria-label="Find text"><button id="findPrev" class="tool-btn compact-tool" type="button" aria-label="Previous match" title="Previous match"><svg viewBox="0 0 24 24"><path d="m6 14 6-6 6 6"/></svg></button><button id="findNext" class="tool-btn compact-tool" type="button" aria-label="Next match" title="Next match"><svg viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></svg></button><button id="findClose" class="tool-btn compact-tool" type="button" aria-label="Close find" title="Close find">×</button><span id="findStatus" class="find-status"></span></div>
-      <span class="tool-sep" aria-hidden="true"></span>
+      <span id="textToolsAnchor" class="tool-sep" aria-hidden="true"></span>
       <button id="selectAllBtn" class="tool-btn" type="button" aria-label="Select all" title="Select all"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></svg></button>
       <button id="copyBtn" class="tool-btn" type="button" aria-label="Copy" title="Copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
       <button id="pasteBtn" class="tool-btn" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2M8 10h8M8 14h8"/></svg></button>
@@ -64,9 +64,7 @@
 </section>
 <script>document.documentElement.dataset.inkdosBundle='inline-d3';</script>
 
-<!-- SCRIPT apps/txt/runtime/contracts/viewport-metrics.js -->
 <!-- SCRIPT apps/txt/runtime/contracts/document-session.js -->
-<!-- SCRIPT apps/txt/runtime/contracts/render-request.js -->
 <!-- SCRIPT apps/txt/runtime/platform/content-viewport-adapter.js -->
 <!-- SCRIPT apps/txt/runtime/services/file-delivery.js -->
 <!-- SCRIPT apps/txt/runtime/services/recovery-store.js -->
@@ -80,10 +78,11 @@
 <!-- SCRIPT apps/txt/editor/outline-model.js -->
 <!-- SCRIPT apps/txt/editor/editor-controller.js -->
 <!-- SCRIPT apps/txt/io/txt-file-controller.js -->
+<!-- SCRIPT apps/txt/commands/txt-commands.js -->
 <!-- SCRIPT apps/txt/ui/txt-controls.js -->
 <!-- SCRIPT apps/txt/editor/t1-essentials.js -->
 <!-- SCRIPT apps/txt/editor/t2-xml-tools.js -->
 <!-- SCRIPT apps/txt/app.js -->
-<script>(function(){const s=document.getElementById('startState'),f=document.getElementById('fileInput');document.getElementById('startNew')?.addEventListener('click',()=>{document.getElementById('newBtn')?.click();s.hidden=true});document.getElementById('startOpen')?.addEventListener('click',()=>document.getElementById('openBtn')?.click());f?.addEventListener('change',()=>{if(f.files&&f.files.length)s.hidden=true});})();</script>
+<script>(function(g){const commands=()=>g.InkDOS2?.TxtAppDebug?.commands;document.getElementById('startNew')?.addEventListener('click',()=>commands()?.execute('file.new'));document.getElementById('startOpen')?.addEventListener('click',()=>commands()?.execute('file.open.request'))})(globalThis);</script>
 <script>document.body.dataset.runtimeReady=(globalThis.InkDOS2&&globalThis.InkDOS2.TxtAppDebug)?'true':'false';</script>
 </body></html>
