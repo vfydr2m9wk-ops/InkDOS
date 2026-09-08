@@ -205,6 +205,7 @@ def main() -> None:
             xml_opened = page.evaluate(
                 """async () => {
                     const d=InkDOS2.TxtAppDebug;
+                    d.initializeEmptyState();
                     const text='<root><child>one</child></root>';
                     await d.openBytes('sample.xml',new TextEncoder().encode(text));
                     d.txtT1.setLineNumbers(true);
