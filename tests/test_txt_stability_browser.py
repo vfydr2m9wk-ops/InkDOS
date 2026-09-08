@@ -206,7 +206,8 @@ def main() -> None:
                 """async () => {
                     const d=InkDOS2.TxtAppDebug;
                     d.initializeEmptyState();
-                    const text='<?xml version="1.0" encoding="UTF-8"?>\n<root><child>one</child></root>';
+                    const text=`<?xml version="1.0" encoding="UTF-8"?>
+<root><child>one</child></root>`;
                     await d.openBytes('sample.xml',new TextEncoder().encode(text));
                     for(const id of ['encodingSelect','bomToggle','lineEndingSelect'])document.getElementById(id)?.remove();
                     return {
@@ -222,7 +223,7 @@ def main() -> None:
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.encoding==='utf-16le' && InkDOS2.TxtAppDebug.state.bom===true && document.getElementById('editor').value.includes('encoding=\"UTF-16LE\"')")
             page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('storage.bom.set',false)")
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.bom===true")
-            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('storage.lineEnding.set','\r\n')")
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('storage.lineEnding.set',String.fromCharCode(13,10))")
             semantic_storage = page.evaluate(
                 """() => ({
                     encoding:InkDOS2.TxtAppDebug.state.encoding,
