@@ -48,6 +48,7 @@ def main() -> None:
     controls = (APP / 'ui' / 'txt-controls.js').read_text(encoding='utf-8')
     editor = (APP / 'editor' / 'editor-controller.js').read_text(encoding='utf-8')
     t1 = (APP / 'editor' / 't1-essentials.js').read_text(encoding='utf-8')
+    t2 = (APP / 'editor' / 't2-xml-tools.js').read_text(encoding='utf-8')
     files = (APP / 'io' / 'txt-file-controller.js').read_text(encoding='utf-8')
 
     for needle in [
@@ -83,7 +84,7 @@ def main() -> None:
         'NS.TxtCommands.create',
         'NS.TxtT1Essentials.create({elements:E,state,editor,files,controls,commands})',
         'controls.bind({editor,files,state,commands}',
-        'NS.TxtT2XmlTools.create',
+        'NS.TxtT2XmlTools.create({elements:E,state,editor,files,beforeOpen:()=>t1?.closeTools()})',
         'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
     ]:
@@ -164,6 +165,25 @@ def main() -> None:
         "E.fontUp.addEventListener('click'",
     ]:
         forbid(t1, forbidden, f'Plain Text T1 must not bind semantic view behavior to a specific control: {forbidden}')
+
+    for needle in [
+        'function create({elements:E,state,editor,files,beforeOpen=()=>{}}={})',
+        'function open(){beforeOpen();syncUi()',
+        'const sep=E.findbar.nextElementSibling;E.toolbar.insertBefore(ui.btn,sep||null)',
+        "document.addEventListener('inkdos:txt-view-policy',refreshView)",
+        '.t2-view{position:absolute;z-index:3;',
+    ]:
+        require(t2, needle, f'Plain Text T2 isolation contract missing: {needle}')
+    for forbidden in [
+        'textToolsMenu',
+        'textToolsBtn',
+        'lineNumberGutter',
+        "E.wrap.addEventListener('click'",
+        "E.font.addEventListener('change'",
+        "E.fontDown.addEventListener('click'",
+        "E.fontUp.addEventListener('click'",
+    ]:
+        forbid(t2, forbidden, f'Plain Text T2 must not depend on sibling/view control DOM: {forbidden}')
 
     for needle in [
         'function doUndo()',

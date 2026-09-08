@@ -201,6 +201,43 @@ def main() -> None:
             encoded = bytes(export_probe['bytes'])
             assert b'o\x00n\x00e\x00\r\x00\n\x00t\x00w\x00o\x00' in encoded, export_probe
 
+            # T2 XML tools survive removal of T1 controls and follow semantic view policy.
+            xml_opened = page.evaluate(
+                """async () => {
+                    const d=InkDOS2.TxtAppDebug;
+                    const text='<root><child>one</child></root>';
+                    await d.openBytes('sample.xml',new TextEncoder().encode(text));
+                    d.txtT1.setLineNumbers(true);
+                    document.getElementById('textToolsMenu')?.remove();
+                    document.getElementById('textToolsBtn')?.remove();
+                    return {xml:d.txtT2.isXml(),text:document.getElementById('editor').value};
+                }"""
+            )
+            assert xml_opened == {'xml': True, 'text': '<root><child>one</child></root>'}, xml_opened
+            page.click('#xmlToolsBtn')
+            assert page.locator('#xmlToolsMenu').is_visible()
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT2.setView('syntax')")
+            page.wait_for_function("() => !document.getElementById('xmlSyntaxPreview').hidden && document.getElementById('editor').hidden")
+            overlay = page.evaluate(
+                """() => ({
+                    preview:Number(getComputedStyle(document.getElementById('xmlSyntaxPreview')).zIndex)||0,
+                    gutter:Number(getComputedStyle(document.getElementById('lineNumberGutter')).zIndex)||0,
+                })"""
+            )
+            assert overlay['preview'] > overlay['gutter'], overlay
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('view.wrap.toggle')")
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('view.font.set',18)")
+            page.wait_for_function(
+                """() => {
+                    const d=InkDOS2.TxtAppDebug,preview=document.getElementById('xmlSyntaxPreview'),editor=document.getElementById('editor');
+                    return d.state.wrap===true && d.state.fontSize===18 && !preview.classList.contains('no-wrap') && getComputedStyle(preview).fontSize===getComputedStyle(editor).fontSize;
+                }"""
+            )
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('view.wrap.toggle')")
+            page.wait_for_function("() => InkDOS2.TxtAppDebug.state.wrap===false && document.getElementById('xmlSyntaxPreview').classList.contains('no-wrap')")
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT2.setView('edit')")
+            assert not page.locator('#editor').is_hidden()
+
             # Viewport remains measurable after the editing and IO churn above.
             viewport = page.evaluate("() => InkDOS2.TxtAppDebug.viewport()")
             assert viewport and viewport['availableWidth'] > 0 and viewport['availableHeight'] > 0, viewport
