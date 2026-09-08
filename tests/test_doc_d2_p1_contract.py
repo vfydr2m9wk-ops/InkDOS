@@ -23,6 +23,7 @@ def main():
     rtf=(APP/'io'/'rtf-importer.js').read_text(encoding='utf-8')
     opener=(APP/'io'/'file-open-controller.js').read_text(encoding='utf-8')
     app=(APP/'app.js').read_text(encoding='utf-8')
+    sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
     for needle in ['d2Spellcheck','d2CommentText','d2FootnoteText','d2UpdateToc','Heading3','Subtitle','Quote','d2MergeRight','d2DeleteRow','d2DeleteColumn']:
         require(tools,needle,f'DOC-D2 P1 tool contract missing: {needle}')
     for needle in ['comments.xml','footnotes.xml','commentRangeStart','commentReference','footnoteReference','TOCHeading','TOC1','TOC2','TOC3','gridSpan','DocxParser.parse','DocxWriter.save']:
@@ -43,11 +44,13 @@ def main():
         require(opener,needle,f'DOC-D2 RTF open/save contract missing: {needle}')
     for needle in ['engine/d2-docx-extension.js','engine/d2-sections-extension.js','io/rtf-importer.js','ui/d2-tools.js','ui/d2-sections.js','ui/d2-tools.css','D2Tools.create','D2Sections.create',"fileInput.accept='.docx,.rtf"]:
         require(app,needle,f'DOC-D2 P1 app-local loader missing: {needle}')
+    for needle in ['./apps/documents/engine/d2-docx-extension.js','./apps/documents/engine/d2-sections-extension.js','./apps/documents/io/rtf-importer.js','./apps/documents/ui/d2-sections.js','./apps/documents/ui/d2-tools.css','./apps/documents/ui/d2-tools.js']:
+        require(sw,needle,f'DOC-D2 offline shell missing: {needle}')
     siblings=['apps/pdf/','apps/spreadsheets/','apps/presentations/','apps/epub/','apps/txt/']
     combined='\n'.join([tools,sections,ext,sect_ext,rtf,opener])
     if any(x in combined for x in siblings):
         raise SystemExit('DOC-D2 contains a sibling-workspace dependency')
-    print('DOC-D2 P1 + RTF static and syntax contract passed.')
+    print('DOC-D2 P1 + RTF static, syntax and offline contract passed.')
 
 if __name__=='__main__':
     main()
