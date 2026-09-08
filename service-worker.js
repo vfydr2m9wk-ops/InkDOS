@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-pdf-reader-seq83';
+const CACHE_NAME='inkdos-v2.0.12-stability-documents-seq84';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -82,6 +82,7 @@ const APP_SHELL=[
   "./apps/documents/io/package-reader.js",
   "./apps/documents/io/rtf-importer.js",
   "./apps/documents/io/save-controller.js",
+  "./apps/documents/runtime/commands/document-commands.js",
   "./apps/documents/runtime/frame/app-frame.css",
   "./apps/documents/runtime/frame/frame-menu.js",
   "./apps/documents/runtime/platform/content-viewport-adapter.js",
