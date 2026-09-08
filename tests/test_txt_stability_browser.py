@@ -246,6 +246,7 @@ def main() -> None:
             assert semantic_storage['lineEndingControl'] is False, semantic_storage
 
             # Transient popovers coordinate through bootstrap callbacks, not T1 sibling-control bindings.
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT1.closeTools()")
             page.click('#textToolsBtn')
             assert page.locator('#textToolsMenu').is_visible()
             page.click('#listBtn')
