@@ -84,7 +84,7 @@ def main() -> None:
         'NS.TxtCommands.create',
         'NS.TxtT1Essentials.create({elements:E,state,editor,files,controls,commands})',
         'controls.bind({editor,files,state,commands}',
-        'NS.TxtT2XmlTools.create({elements:E,state,editor,files,beforeOpen:()=>t1?.closeTools()})',
+        'NS.TxtT2XmlTools.create({elements:E,state,editor,files,commands,beforeOpen:()=>t1?.closeTools()})',
         'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
     ]:
@@ -150,6 +150,14 @@ def main() -> None:
         "commands.register('find.prev'",
         "commands.register('replace.one'",
         "commands.register('replace.all'",
+        "commands.register('storage.encoding.set',setEncoding)",
+        "commands.register('storage.bom.set',setBom)",
+        "commands.register('storage.lineEnding.set',setLineEnding)",
+        "commands.execute('storage.encoding.set',ui.encodingSelect.value)",
+        "commands.execute('storage.bom.set',ui.bomToggle.checked)",
+        "commands.execute('storage.lineEnding.set'",
+        "document.dispatchEvent(new CustomEvent('inkdos:txt-storage-policy'",
+        "document.addEventListener('inkdos:txt-storage-policy',syncTools)",
         'function find(step,query)',
         'function replaceOne(query,replacement)',
         'function replaceAll(query,replacement)',
@@ -163,14 +171,18 @@ def main() -> None:
         "E.font.addEventListener('change'",
         "E.fontDown.addEventListener('click'",
         "E.fontUp.addEventListener('click'",
+        "ui.encodingSelect.onchange=()=>{const next=",
+        "ui.bomToggle.onchange=()=>{if(state.bom",
     ]:
-        forbid(t1, forbidden, f'Plain Text T1 must not bind semantic view behavior to a specific control: {forbidden}')
+        forbid(t1, forbidden, f'Plain Text T1 must not bind semantic behavior to a specific control implementation: {forbidden}')
 
     for needle in [
-        'function create({elements:E,state,editor,files,beforeOpen=()=>{}}={})',
+        'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
         'function open(){beforeOpen();syncUi()',
         'const sep=E.findbar.nextElementSibling;E.toolbar.insertBefore(ui.btn,sep||null)',
         "document.addEventListener('inkdos:txt-view-policy',refreshView)",
+        "document.addEventListener('inkdos:txt-storage-policy',handleStoragePolicy)",
+        "commands.execute('storage.bom.set',true)",
         '.t2-view{position:absolute;z-index:3;',
     ]:
         require(t2, needle, f'Plain Text T2 isolation contract missing: {needle}')
@@ -178,12 +190,14 @@ def main() -> None:
         'textToolsMenu',
         'textToolsBtn',
         'lineNumberGutter',
+        'encodingSelect',
+        'bomToggle',
         "E.wrap.addEventListener('click'",
         "E.font.addEventListener('change'",
         "E.fontDown.addEventListener('click'",
         "E.fontUp.addEventListener('click'",
     ]:
-        forbid(t2, forbidden, f'Plain Text T2 must not depend on sibling/view control DOM: {forbidden}')
+        forbid(t2, forbidden, f'Plain Text T2 must not depend on sibling/view/storage control DOM: {forbidden}')
 
     for needle in [
         'function doUndo()',

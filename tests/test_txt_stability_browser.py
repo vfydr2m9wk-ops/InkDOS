@@ -201,20 +201,52 @@ def main() -> None:
             encoded = bytes(export_probe['bytes'])
             assert b'o\x00n\x00e\x00\r\x00\n\x00t\x00w\x00o\x00' in encoded, export_probe
 
-            # T2 XML tools survive removal of T1 controls and follow semantic view policy.
-            xml_opened = page.evaluate(
+            # Storage policy survives removal of T1 controls; XML enforces UTF-16 BOM through commands.
+            storage_probe = page.evaluate(
                 """async () => {
                     const d=InkDOS2.TxtAppDebug;
                     d.initializeEmptyState();
-                    const text='<root><child>one</child></root>';
+                    const text='<?xml version="1.0" encoding="UTF-8"?>\n<root><child>one</child></root>';
                     await d.openBytes('sample.xml',new TextEncoder().encode(text));
-                    d.txtT1.setLineNumbers(true);
-                    document.getElementById('textToolsMenu')?.remove();
-                    document.getElementById('textToolsBtn')?.remove();
-                    return {xml:d.txtT2.isXml(),text:document.getElementById('editor').value};
+                    for(const id of ['encodingSelect','bomToggle','lineEndingSelect'])document.getElementById(id)?.remove();
+                    return {
+                        xml:d.txtT2.isXml(),
+                        encoding:d.commands.has('storage.encoding.set'),
+                        bom:d.commands.has('storage.bom.set'),
+                        lineEnding:d.commands.has('storage.lineEnding.set'),
+                    };
                 }"""
             )
-            assert xml_opened == {'xml': True, 'text': '<root><child>one</child></root>'}, xml_opened
+            assert storage_probe == {'xml': True, 'encoding': True, 'bom': True, 'lineEnding': True}, storage_probe
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('storage.encoding.set','utf-16le')")
+            page.wait_for_function("() => InkDOS2.TxtAppDebug.state.encoding==='utf-16le' && InkDOS2.TxtAppDebug.state.bom===true && document.getElementById('editor').value.includes('encoding=\"UTF-16LE\"')")
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('storage.bom.set',false)")
+            page.wait_for_function("() => InkDOS2.TxtAppDebug.state.bom===true")
+            page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('storage.lineEnding.set','\r\n')")
+            semantic_storage = page.evaluate(
+                """() => ({
+                    encoding:InkDOS2.TxtAppDebug.state.encoding,
+                    bom:InkDOS2.TxtAppDebug.state.bom,
+                    lineEnding:InkDOS2.TxtAppDebug.state.lineEnding,
+                    text:document.getElementById('editor').value,
+                    bytes:Array.from(InkDOS2.TxtAppDebug.exportBytes()),
+                    encodingControl:!!document.getElementById('encodingSelect'),
+                    bomControl:!!document.getElementById('bomToggle'),
+                    lineEndingControl:!!document.getElementById('lineEndingSelect'),
+                })"""
+            )
+            assert semantic_storage['encoding'] == 'utf-16le', semantic_storage
+            assert semantic_storage['bom'] is True, semantic_storage
+            assert semantic_storage['lineEnding'] == '\r\n', semantic_storage
+            assert 'encoding="UTF-16LE"' in semantic_storage['text'], semantic_storage
+            assert semantic_storage['bytes'][:2] == [255, 254], semantic_storage
+            assert semantic_storage['encodingControl'] is False, semantic_storage
+            assert semantic_storage['bomControl'] is False, semantic_storage
+            assert semantic_storage['lineEndingControl'] is False, semantic_storage
+
+            # T2 XML tools survive removal of the remaining T1 shell and follow semantic view policy.
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT1.setLineNumbers(true)")
+            page.evaluate("() => {document.getElementById('textToolsMenu')?.remove();document.getElementById('textToolsBtn')?.remove()}")
             page.click('#xmlToolsBtn')
             assert page.locator('#xmlToolsMenu').is_visible()
             page.evaluate("() => InkDOS2.TxtAppDebug.txtT2.setView('syntax')")
