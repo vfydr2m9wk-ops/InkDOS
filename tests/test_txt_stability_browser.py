@@ -231,11 +231,11 @@ def main() -> None:
             page.wait_for_function(
                 """() => {
                     const d=InkDOS2.TxtAppDebug,preview=document.getElementById('xmlSyntaxPreview'),editor=document.getElementById('editor');
-                    return d.state.wrap===true && d.state.fontSize===18 && !preview.classList.contains('no-wrap') && getComputedStyle(preview).fontSize===getComputedStyle(editor).fontSize;
+                    return d.state.wrap===false && d.state.fontSize===18 && preview.classList.contains('no-wrap') && getComputedStyle(preview).fontSize===getComputedStyle(editor).fontSize;
                 }"""
             )
             page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('view.wrap.toggle')")
-            page.wait_for_function("() => InkDOS2.TxtAppDebug.state.wrap===false && document.getElementById('xmlSyntaxPreview').classList.contains('no-wrap')")
+            page.wait_for_function("() => InkDOS2.TxtAppDebug.state.wrap===true && !document.getElementById('xmlSyntaxPreview').classList.contains('no-wrap')")
             page.evaluate("() => InkDOS2.TxtAppDebug.txtT2.setView('edit')")
             assert not page.locator('#editor').is_hidden()
 
