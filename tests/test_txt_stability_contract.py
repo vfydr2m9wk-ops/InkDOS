@@ -59,9 +59,18 @@ def main() -> None:
         '<!-- SCRIPT apps/txt/editor/t1-essentials.js -->',
         '<!-- SCRIPT apps/txt/editor/t2-xml-tools.js -->',
         '<!-- SCRIPT apps/txt/app.js -->',
+        "TxtAppDebug?.commands",
+        "execute('file.new')",
+        "execute('file.open.request')",
         "document.body.dataset.runtimeReady",
     ]:
         require(template, needle, f'Plain Text template contract missing: {needle}')
+    for forbidden in [
+        "getElementById('newBtn')?.click()",
+        "getElementById('openBtn')?.click()",
+        "f?.addEventListener('change'",
+    ]:
+        forbid(template, forbidden, f'Plain Text start gate still delegates semantics through another control: {forbidden}')
 
     if '<!-- SCRIPT ' in bundle or '<!-- STYLES -->' in bundle:
         raise SystemExit('Plain Text generated bundle still contains unexpanded source markers')

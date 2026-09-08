@@ -47,10 +47,24 @@ def main() -> None:
             page.goto(BASE + '/apps/txt/', wait_until='load')
             page.wait_for_function("() => document.body.dataset.runtimeReady === 'true' && !!globalThis.InkDOS2?.TxtAppDebug")
 
-            # Empty-state and start gate.
+            # Empty-state start actions are semantic commands, not drawer-button delegation.
             assert page.locator('#startState').is_visible()
             empty = page.evaluate("() => ({loaded:InkDOS2.TxtAppDebug.state.loaded, save:document.getElementById('saveBtn').disabled, share:document.getElementById('shareBtn').disabled})")
             assert empty == {'loaded': False, 'save': True, 'share': True}, empty
+            start_probe = page.evaluate(
+                """() => {
+                    const d=InkDOS2.TxtAppDebug;
+                    const input=document.getElementById('fileInput');
+                    globalThis.__txtStartOpenRequested=false;
+                    input.click=()=>{globalThis.__txtStartOpenRequested=true};
+                    document.getElementById('openBtn').remove();
+                    return {open:d.commands.has('file.open.request'),newDoc:d.commands.has('file.new')};
+                }"""
+            )
+            assert start_probe == {'open': True, 'newDoc': True}, start_probe
+            page.click('#startOpen')
+            assert page.evaluate("() => globalThis.__txtStartOpenRequested") is True
+            page.evaluate("() => document.getElementById('newBtn').remove()")
             page.click('#startNew')
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.loaded && document.getElementById('startState').hidden")
             assert not page.locator('#saveBtn').is_disabled()
