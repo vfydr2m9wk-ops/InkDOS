@@ -50,6 +50,7 @@ def main() -> None:
     t1 = (APP / 'editor' / 't1-essentials.js').read_text(encoding='utf-8')
     t2 = (APP / 'editor' / 't2-xml-tools.js').read_text(encoding='utf-8')
     files = (APP / 'io' / 'txt-file-controller.js').read_text(encoding='utf-8')
+    policy = (APP / 'txt-policy.js').read_text(encoding='utf-8')
 
     for needle in [
         '<!-- STYLES -->',
@@ -188,7 +189,12 @@ def main() -> None:
         forbid(t1, forbidden, f'Plain Text T1 must not depend on sibling DOM order/controls or bind semantic behavior to a specific control: {forbidden}')
 
     for needle in [
+        'P=NS.TxtPolicy',
         'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
+        'function isXml(){return P.isXmlName(state.fileName)}',
+        'function declarationEncoding(text){return P.declaredXmlEncoding(text)}',
+        'function encodingCompatible(declared){return P.xmlEncodingCompatible(declared,state.encoding)}',
+        'const label=P.xmlEncodingLabel(state.encoding)',
         'function open(){beforeOpen();syncUi()',
         "if(!E.textToolsAnchor)throw new Error('XML_TOOL_ANCHOR_MISSING');E.toolbar.insertBefore(ui.btn,E.textToolsAnchor)",
         "document.addEventListener('inkdos:txt-view-policy',refreshView)",
@@ -199,6 +205,8 @@ def main() -> None:
         require(t2, needle, f'Plain Text T2 isolation contract missing: {needle}')
     for forbidden in [
         'nextElementSibling',
+        'function declarationEncoding(text){const m=',
+        'function encodingCompatible(declared){if(',
         'textToolsMenu',
         'textToolsBtn',
         'lineNumberGutter',
@@ -209,7 +217,35 @@ def main() -> None:
         "E.fontDown.addEventListener('click'",
         "E.fontUp.addEventListener('click'",
     ]:
-        forbid(t2, forbidden, f'Plain Text T2 must not depend on sibling/DOM-order/view/storage control DOM: {forbidden}')
+        forbid(t2, forbidden, f'Plain Text T2 must not duplicate storage policy or depend on sibling/DOM-order/view/storage control DOM: {forbidden}')
+
+    for needle in [
+        'function apply(editor,{wrap,fontSize})',
+        'function isXmlName(name)',
+        'function declaredXmlEncoding(text)',
+        'function xmlEncodingCompatible(declared,encoding)',
+        'function xmlEncodingLabel(encoding)',
+        'function assertXmlStorage({fileName,text,encoding,bom}={})',
+        'Object.freeze({apply,isXmlName,declaredXmlEncoding,xmlEncodingCompatible,xmlEncodingLabel,assertXmlStorage})',
+    ]:
+        require(policy, needle, f'Plain Text policy authority missing: {needle}')
+
+    for needle in [
+        'const C=NS.TxtCodec,P=NS.TxtPolicy',
+        'P.assertXmlStorage(snapshot)',
+        "P.isXmlName(snapshot.fileName)?'application/xml':'text/plain'",
+        'isXmlName:P.isXmlName',
+        'declaredXmlEncoding:P.declaredXmlEncoding',
+        'xmlEncodingCompatible:P.xmlEncodingCompatible',
+    ]:
+        require(files, needle, f'Plain Text file controller must consume shared TXT/XML policy: {needle}')
+    for forbidden in [
+        'function isXmlName(name)',
+        'function declaredXmlEncoding(text)',
+        'function xmlEncodingCompatible(declared,encoding)',
+        'function validateXmlExport(snapshot)',
+    ]:
+        forbid(files, forbidden, f'Plain Text file controller duplicates shared TXT/XML policy: {forbidden}')
 
     for needle in [
         'function doUndo()',
