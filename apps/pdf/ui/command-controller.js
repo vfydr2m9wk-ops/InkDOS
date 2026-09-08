@@ -1,41 +1,10 @@
 (function(global){'use strict';
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{},$=id=>document.getElementById(id);
-function create({session,chrome,fileOpen,save,layout,editor,navigation,modeController,readerTools,pageTools,registry}={}){
- const drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});
- const bindings=NS.CommandBindings.create({registry});
+function create({session,chrome,fileOpen,save,layout,editor,navigation,modeController,readerTools,pageTools,registry}={}){const drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});const bindings=NS.CommandBindings.create({registry});
  function syncPage(){const n=layout.currentPage||1;$('pageInput').value=String(n);$('pageCount').textContent='/ '+(layout.pageCount||0);chrome.page(n,layout.pageCount);navigation?.syncCurrent(n);editor.setCurrentPage(n);readerTools?.syncEnabled();pageTools?.syncEnabled();registry.sync()}
  function syncEditor(){registry.sync('history.undo');registry.sync('history.redo');registry.sync('annotation.delete')}
- function registerCommands(){
-   registry.register('file.open',{execute:()=>{drawer.close();return fileOpen.chooseFile()}});
-   registry.register('file.save',{isEnabled:()=>!!session.active,execute:()=>{drawer.close();return save.save()}});
-   registry.register('file.share',{isEnabled:()=>!!session.active,execute:()=>{drawer.close();return save.share()}});
-   registry.register('navigation.previous',{isEnabled:()=>!!session.active&&layout.currentPage>1,execute:()=>layout.prev()});
-   registry.register('navigation.next',{isEnabled:()=>!!session.active&&layout.currentPage<(layout.pageCount||0),execute:()=>layout.next()});
-   registry.register('history.undo',{isEnabled:()=>!!editor.inspect().state.hasSomethingToUndo,execute:()=>{editor.undo();setTimeout(syncEditor,0)}});
-   registry.register('history.redo',{isEnabled:()=>!!editor.inspect().state.hasSomethingToRedo,execute:()=>{editor.redo();setTimeout(syncEditor,0)}});
-   registry.register('annotation.delete',{isEnabled:()=>!!editor.inspect().state.hasSelectedEditor,execute:()=>{editor.deleteSelected();setTimeout(syncEditor,0)}});
-   registry.register('reader.search',{isEnabled:()=>!!session.active,execute:()=>readerTools?.openSearch()});
-   registry.register('reader.print',{isEnabled:()=>!!session.active,execute:()=>readerTools?.print()});
-   registry.register('reader.rotate-view',{isEnabled:()=>!!session.active&&modeController.mode==='view',execute:()=>readerTools?.rotate(90)})
- }
- function install(){
-  registerCommands();bindings.install();
-  $('pageInput').addEventListener('change',()=>layout.goToPage(Number($('pageInput').value)));
-  $('textSize').onchange=e=>editor.setTextSize(e.target.value);$('textColor').onchange=e=>editor.setTextColor(e.target.value);$('penColor').onchange=e=>editor.setPenColor(e.target.value);$('penThickness').onchange=e=>editor.setPenThickness(e.target.value);$('penOpacity').onchange=e=>editor.setPenOpacity(e.target.value);
-  document.querySelectorAll('[data-appearance-choice]').forEach(b=>b.onclick=()=>NS.Appearance.set(b.dataset.appearanceChoice));
-  document.addEventListener('keydown',e=>{
-    const key=e.key.toLowerCase(),editing=/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')||document.activeElement?.isContentEditable,mod=e.metaKey||e.ctrlKey;
-    if(mod&&key==='o'){e.preventDefault();registry.execute('file.open');return}
-    if(mod&&key==='s'){e.preventDefault();registry.execute('file.save');return}
-    if(mod&&key==='f'){e.preventDefault();registry.execute('reader.search');return}
-    if(mod&&key==='p'){e.preventDefault();registry.execute('reader.print');return}
-    if(!editing&&mod&&key==='z'&&modeController.mode==='annotate'){e.preventDefault();registry.execute(e.shiftKey?'history.redo':'history.undo');return}
-    if(!editing&&e.key==='Delete'&&modeController.mode==='annotate'){registry.execute('annotation.delete');return}
-    if(!editing&&!mod&&key==='r'&&modeController.mode==='view'){e.preventDefault();registry.execute('reader.rotate-view');return}
-    if(!editing&&e.key==='Escape'){readerTools?.closeSearch();pageTools?.close();editor.unselect();modeController.setTool('none');syncEditor()}
-  });
-  syncEditor();syncPage()
- }
+ function registerCommands(){registry.register('file.open',{execute:()=>{drawer.close();return fileOpen.chooseFile()}});registry.register('file.save',{isEnabled:()=>!!session.active,execute:()=>{drawer.close();return save.save()}});registry.register('file.share',{isEnabled:()=>!!session.active,execute:()=>{drawer.close();return save.share()}});registry.register('pdf.navigation.toggle',{isEnabled:()=>!!session.active,execute:()=>navigation.toggle()});registry.register('navigation.previous',{isEnabled:()=>!!session.active&&layout.currentPage>1,execute:()=>layout.prev()});registry.register('navigation.next',{isEnabled:()=>!!session.active&&layout.currentPage<(layout.pageCount||0),execute:()=>layout.next()});registry.register('history.undo',{isEnabled:()=>!!editor.inspect().state.hasSomethingToUndo,execute:()=>{editor.undo();setTimeout(syncEditor,0)}});registry.register('history.redo',{isEnabled:()=>!!editor.inspect().state.hasSomethingToRedo,execute:()=>{editor.redo();setTimeout(syncEditor,0)}});registry.register('annotation.delete',{isEnabled:()=>!!editor.inspect().state.hasSelectedEditor,execute:()=>{editor.deleteSelected();setTimeout(syncEditor,0)}});registry.register('reader.search',{isEnabled:()=>!!session.active,execute:()=>readerTools?.openSearch()});registry.register('reader.print',{isEnabled:()=>!!session.active,execute:()=>readerTools?.print()});registry.register('reader.rotate-view',{isEnabled:()=>!!session.active&&modeController.mode==='view',execute:()=>readerTools?.rotate(90)})}
+ function install(){registerCommands();bindings.install();$('pageInput').addEventListener('change',()=>layout.goToPage(Number($('pageInput').value)));$('textSize').onchange=e=>editor.setTextSize(e.target.value);$('textColor').onchange=e=>editor.setTextColor(e.target.value);$('penColor').onchange=e=>editor.setPenColor(e.target.value);$('penThickness').onchange=e=>editor.setPenThickness(e.target.value);$('penOpacity').onchange=e=>editor.setPenOpacity(e.target.value);document.querySelectorAll('[data-appearance-choice]').forEach(b=>b.onclick=()=>NS.Appearance.set(b.dataset.appearanceChoice));document.addEventListener('keydown',e=>{const key=e.key.toLowerCase(),editing=/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')||document.activeElement?.isContentEditable,mod=e.metaKey||e.ctrlKey;if(mod&&key==='o'){e.preventDefault();registry.execute('file.open');return}if(mod&&key==='s'){e.preventDefault();registry.execute('file.save');return}if(mod&&key==='f'){e.preventDefault();registry.execute('reader.search');return}if(mod&&key==='p'){e.preventDefault();registry.execute('reader.print');return}if(!editing&&mod&&key==='z'&&modeController.mode==='annotate'){e.preventDefault();registry.execute(e.shiftKey?'history.redo':'history.undo');return}if(!editing&&e.key==='Delete'&&modeController.mode==='annotate'){registry.execute('annotation.delete');return}if(!editing&&!mod&&key==='r'&&modeController.mode==='view'){e.preventDefault();registry.execute('reader.rotate-view');return}if(!editing&&e.key==='Escape'){readerTools?.closeSearch();pageTools?.close();editor.unselect();modeController.setTool('none');syncEditor()}});syncEditor();syncPage()}
  return Object.freeze({install,syncEditor,syncPage,registry,bindings,inspect:()=>Object.freeze({commands:registry.inspect(),bindings:bindings.inspect()})})
 }
 NS.CommandController=Object.freeze({create});})(globalThis);
