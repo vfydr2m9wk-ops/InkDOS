@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-documents-seq84';
+const CACHE_NAME='inkdos-v2.0.12-stability-documents-seq85';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -189,8 +189,6 @@ const APP_SHELL=[
   "./apps/txt/io/txt-file-controller.js",
   "./apps/txt/page.template.html",
   "./apps/txt/runtime/contracts/document-session.js",
-  "./apps/txt/runtime/contracts/render-request.js",
-  "./apps/txt/runtime/contracts/viewport-metrics.js",
   "./apps/txt/runtime/frame/app-frame.css",
   "./apps/txt/runtime/frame/app-frame.js",
   "./apps/txt/runtime/platform/content-viewport-adapter.js",
