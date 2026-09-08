@@ -47,6 +47,7 @@ def main() -> None:
     commands = (APP / 'commands' / 'txt-commands.js').read_text(encoding='utf-8')
     controls = (APP / 'ui' / 'txt-controls.js').read_text(encoding='utf-8')
     editor = (APP / 'editor' / 'editor-controller.js').read_text(encoding='utf-8')
+    t1 = (APP / 'editor' / 't1-essentials.js').read_text(encoding='utf-8')
     files = (APP / 'io' / 'txt-file-controller.js').read_text(encoding='utf-8')
 
     for needle in [
@@ -71,8 +72,8 @@ def main() -> None:
         'NS.TxtEditorController.create',
         'NS.TxtFileController.create',
         'NS.TxtCommands.create',
+        'NS.TxtT1Essentials.create({elements:E,state,editor,files,controls,commands})',
         'controls.bind({editor,files,state,commands}',
-        'NS.TxtT1Essentials.create',
         'NS.TxtT2XmlTools.create',
         'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
@@ -107,11 +108,16 @@ def main() -> None:
         "E.wrap.onclick=()=>execute('view.wrap.toggle')",
         "E.outdent.onclick=()=>execute('outline.indent',-1)",
         "E.indent.onclick=()=>execute('outline.indent',1)",
+        "E.findBtn.onclick=()=>execute('find.toggle')",
+        "E.findClose.onclick=()=>execute('find.close')",
+        "E.findNext.onclick=()=>execute('find.next',E.findInput.value)",
+        "E.findPrev.onclick=()=>execute('find.prev',E.findInput.value)",
         "E.selectAll.onclick=()=>execute('selection.all')",
         "if(mod&&e.key.toLowerCase()==='s')",
         "execute('file.save')",
         "execute('file.new')",
         "execute('file.open.request')",
+        "execute('find.open')",
     ]:
         require(controls, needle, f'Plain Text control binding contract missing: {needle}')
     for forbidden in [
@@ -119,10 +125,28 @@ def main() -> None:
         'E.redoBtn.onclick=editor.doRedo',
         'E.wrap.onclick=()=>editor.setWrap',
         'E.newBtn.onclick=()=>{frameMenu.close();files.newDoc()',
+        'E.findNext.onclick=()=>editor.find',
+        'E.findPrev.onclick=()=>editor.find',
         'files.save().catch',
         'files.shareCurrent().catch',
     ]:
         forbid(controls, forbidden, f'Plain Text controls still own semantic behavior: {forbidden}')
+
+    for needle in [
+        "commands.register('find.open'",
+        "commands.register('find.close'",
+        "commands.register('find.toggle'",
+        "commands.register('find.next'",
+        "commands.register('find.prev'",
+        "commands.register('replace.one'",
+        "commands.register('replace.all'",
+        'function find(step,query)',
+        'function replaceOne(query,replacement)',
+        'function replaceAll(query,replacement)',
+    ]:
+        require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
+    for forbidden in ['E.findPrev.onclick=', 'E.findNext.onclick=']:
+        forbid(t1, forbidden, f'Plain Text T1 must not replace core find control bindings: {forbidden}')
 
     for needle in [
         'function doUndo()',

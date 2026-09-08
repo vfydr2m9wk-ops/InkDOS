@@ -77,12 +77,27 @@ def main() -> None:
             page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.redo')")
             assert editor.input_value() == 'alpha beta alpha'
 
-            # Find/replace essentials remain coherent with editor state/history.
+            # Find/replace semantics survive removal of their command controls.
             page.click('#findBtn')
             page.locator('#findInput').fill('alpha')
             page.wait_for_function("() => document.getElementById('findStatus').textContent.includes('2 match')")
-            page.locator('#replaceInput').fill('gamma')
-            page.click('#replaceAllBtn')
+            find_probe = page.evaluate(
+                """() => {
+                    const d=InkDOS2.TxtAppDebug;
+                    for(const id of ['findPrev','findNext','replaceOneBtn','replaceAllBtn'])document.getElementById(id)?.remove();
+                    return {
+                        prev:d.commands.has('find.prev'),
+                        next:d.commands.has('find.next'),
+                        one:d.commands.has('replace.one'),
+                        all:d.commands.has('replace.all'),
+                    };
+                }"""
+            )
+            assert find_probe == {'prev': True, 'next': True, 'one': True, 'all': True}, find_probe
+            assert page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('find.next','alpha')") is True
+            assert page.evaluate("() => document.getElementById('editor').value.slice(document.getElementById('editor').selectionStart,document.getElementById('editor').selectionEnd)") == 'alpha'
+            replaced = page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('replace.all','alpha','gamma')")
+            assert replaced == 2, replaced
             assert editor.input_value() == 'gamma beta gamma'
             assert 'replacement' in page.locator('#status').inner_text().lower()
             page.evaluate("() => InkDOS2.TxtAppDebug.commands.execute('history.undo')")
