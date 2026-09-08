@@ -201,3 +201,19 @@ The stability program may freeze only when:
 ISOLATE RESPONSIBILITIES, NOT EVERY FUNCTION.
 
 FAULT ISOLATION IS THE GOAL; FILE COUNT IS NOT A QUALITY METRIC.
+
+16. PROGRESSIVE PROMOTION TO MAIN
+
+Main is not reserved only for the final stability freeze. It is the user-visible approved baseline and should receive verified stability checkpoints progressively.
+
+When a coherent element or workspace checkpoint has passed its applicable regression suite and the transition stability audit is green:
+- promote that verified checkpoint to main as soon as practical;
+- do not wait for the entire multi-workspace stability program to finish merely to expose already-stable work;
+- never promote a state with a known regression, unexplained red workflow, incomplete transition audit, or unresolved P1/P0 review finding;
+- use the existing audit/stability-functional-isolation branch as the source whenever possible;
+- after integration, realign audit/stability-functional-isolation with the new main baseline and continue on the same working branch;
+- reuse the same branch for subsequent pull requests/checkpoints instead of creating workspace-specific branches.
+
+If the audit branch already contains work from a later, not-yet-stable increment above an earlier stable point, do not create branch clutter solely to reconstruct the earlier checkpoint. Finish or safely isolate the accumulated work, obtain a clean gate, and promote the next coherent verified state.
+
+The purpose of progressive promotion is to keep the functioning app close to the latest verified architecture while preserving the rule that main contains only approved stable states.
