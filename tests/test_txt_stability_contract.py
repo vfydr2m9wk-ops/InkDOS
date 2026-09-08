@@ -257,6 +257,11 @@ def main() -> None:
         "document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy'",
     ]:
         require(editor, needle, f'Plain Text editor baseline missing: {needle}')
+    for forbidden in [
+        'function find(step)',
+        ',find,toggleFind,',
+    ]:
+        forbid(editor, forbidden, f'Plain Text editor must not duplicate T1 Find semantics: {forbidden}')
 
     for needle in [
         'function initializeEmptyState()',
