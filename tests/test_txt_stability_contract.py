@@ -118,10 +118,15 @@ def main() -> None:
         'function syncViewPolicy(eventOrDetail={})',
         "document.addEventListener('inkdos:txt-view-policy',syncViewPolicy)",
         'syncViewPolicy({wrap:state.wrap,fontSize:state.fontSize})',
+        'function syncCommandState(eventOrDetail={})',
+        "document.addEventListener('inkdos:txt-command-state',syncCommandState)",
+        'syncCommandState({loaded:state.loaded,canUndo:state.history.canUndo,canRedo:state.history.canRedo})',
         'function bind({editor,files,state,commands},frameMenu,{beforeListOpen=()=>{}}={})',
         'E.editor.addEventListener',
-        "E.undoBtn.onclick=()=>execute('history.undo')",
-        "E.redoBtn.onclick=()=>execute('history.redo')",
+        "if(E.undoBtn)E.undoBtn.onclick=()=>execute('history.undo')",
+        "if(E.redoBtn)E.redoBtn.onclick=()=>execute('history.redo')",
+        "if(E.saveBtn)E.saveBtn.onclick=()=>{frameMenu.close();Promise.resolve(execute('file.save'))",
+        "if(E.shareBtn)E.shareBtn.onclick=()=>{frameMenu.close();Promise.resolve(execute('file.share'))",
         "if(E.wrap)E.wrap.onclick=()=>execute('view.wrap.toggle')",
         "if(E.font){E.font.addEventListener('change',()=>execute('view.font.set',E.font.value))",
         "if(E.fontDown)E.fontDown.onclick=()=>execute('view.font.adjust',-1)",
@@ -250,8 +255,10 @@ def main() -> None:
         'function declaredXmlEncoding(text)',
         'function xmlEncodingCompatible(declared,encoding)',
         'function validateXmlExport(snapshot)',
+        'E.saveBtn',
+        'E.shareBtn',
     ]:
-        forbid(files, forbidden, f'Plain Text file controller duplicates shared TXT/XML policy: {forbidden}')
+        forbid(files, forbidden, f'Plain Text file controller duplicates policy or owns command-control projection: {forbidden}')
 
     for needle in [
         'function doUndo()',
@@ -259,6 +266,8 @@ def main() -> None:
         'function markChanged()',
         'function setWrap(next)',
         'function setViewFont(size)',
+        'function publishCommandState()',
+        "document.dispatchEvent(new CustomEvent('inkdos:txt-command-state'",
         'state.history.push(E.editor.value)',
         'NS.TxtPolicy.apply(E.editor,{wrap:state.wrap,fontSize:state.fontSize})',
         "document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy'",
@@ -270,8 +279,12 @@ def main() -> None:
         'E.wrap.setAttribute',
         'E.wrap.classList.toggle',
         'E.font.value=',
+        'E.undoBtn',
+        'E.redoBtn',
+        'E.saveBtn',
+        'E.shareBtn',
     ]:
-        forbid(editor, forbidden, f'Plain Text editor must not duplicate T1 Find or own view-control projection: {forbidden}')
+        forbid(editor, forbidden, f'Plain Text editor must not duplicate Find or own control projection: {forbidden}')
 
     for needle in [
         'function initializeEmptyState()',
