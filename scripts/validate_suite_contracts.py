@@ -119,8 +119,11 @@ class SuiteIntegration(unittest.TestCase):
         self.assertNotIn('this.compatibility=[];this.resetNew()',presentation_session)
         presentation_commands=(ROOT/'apps/presentations/ui/command-controller.js').read_text(encoding='utf-8')
         self.assertIn('const active=session.active',presentation_commands)
-        self.assertIn("$('saveMenuBtn').disabled=!canExport",presentation_commands)
-        self.assertIn('share.disabled=!canExport',presentation_commands)
+        self.assertRegex(presentation_commands,r"register\('file\.save'.*session\.active&&session\.sourceKind!=='ppt'")
+        self.assertRegex(presentation_commands,r"register\('file\.share'.*session\.active&&session\.sourceKind!=='ppt'")
+        self.assertIn("canExport=isEnabled('file.save')",presentation_commands)
+        self.assertIn('saveBtn.disabled=!canExport',presentation_commands)
+        self.assertIn("share.disabled=!isEnabled('file.share')",presentation_commands)
         presentation_save=(ROOT/'apps/presentations/io/save-controller.js').read_text(encoding='utf-8')
         self.assertGreaterEqual(presentation_save.count('if(!session.active||busy)return null'),2)
 
