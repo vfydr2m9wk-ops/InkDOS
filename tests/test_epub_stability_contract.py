@@ -15,9 +15,15 @@ def require(text: str, needle: str, label: str) -> None:
         raise AssertionError(f'{label}: missing {needle!r}')
 
 
+def forbid(text: str, needle: str, label: str) -> None:
+    if needle in text:
+        raise AssertionError(f'{label}: forbidden {needle!r}')
+
+
 def main() -> None:
     index = read('apps/epub/index.html')
     app = read('apps/epub/app.js')
+    frame_module = read('apps/epub/runtime/frame/frame-menu.js')
     controls = read('apps/epub/ui/reader-controls.js')
     session = read('apps/epub/session/book-session.js')
     package_reader = read('apps/epub/io/package-reader.js')
@@ -51,12 +57,17 @@ def main() -> None:
     ):
         require(index, f'id="{element_id}"', 'EPUB frame contract')
 
-    # A small debug/public surface is required by the stability harness.
+    # Bootstrap composes frame behavior; it does not implement toolbar chrome.
     require(app, 'BookSession.create()', 'EPUB bootstrap')
     require(app, 'ReaderRenderer.create()', 'EPUB bootstrap')
     require(app, 'ReaderControls.create', 'EPUB bootstrap')
     require(app, 'ReaderNavigationTools.create', 'EPUB bootstrap')
     require(app, 'globalThis.__InkEpubR4', 'EPUB stability surface')
+    require(app, 'LocalAppFrame.installToolbarRail(E.toolbar)', 'EPUB frame composition')
+    forbid(app, 'function installToolbarRail', 'EPUB bootstrap isolation')
+    forbid(app, "document.createElement('style')", 'EPUB bootstrap isolation')
+    require(frame_module, 'function installToolbarRail(target)', 'EPUB frame authority')
+    require(frame_module, 'NS.LocalAppFrame={create,configureOptionalHome,installToolbarRail}', 'EPUB frame authority')
 
     # Reading operations remain semantic APIs rather than toolbar-only behavior.
     for api in ('goPage', 'setFlow', 'setFont', 'setFontStyle', 'goLocator', 'goPath', 'prepareExport'):
