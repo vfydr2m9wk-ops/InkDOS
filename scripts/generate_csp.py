@@ -20,10 +20,9 @@ ENTRY_POINTS = (
     Path("apps/epub/index.html"),
 )
 
-# Generated CSP metadata is emitted as its own indented line for formatted HTML.
-# Remove that whole line first so render(render(html)) is byte-for-byte stable.
-# The second expression handles compact/minified entry points where the tag may be
-# adjacent to other markup on the same line.
+# Generated CSP metadata is emitted as its own indented line only when the
+# charset tag itself starts on an indented/formatted line. Compact entry points
+# keep the CSP tag adjacent to the charset tag so strip/reinsert is byte-stable.
 CSP_META_LINE_RE = re.compile(
     r'(?mi)^[ \t]*<meta\s+[^>]*http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>[ \t]*(?:\r?\n)?'
 )
@@ -79,6 +78,18 @@ def policy_for(text_without_csp: str) -> str:
     return "; ".join((BASE_DIRECTIVES[0], script, *BASE_DIRECTIVES[1:]))
 
 
+def insertion_for(text: str, charset: re.Match[str], meta: str) -> str:
+    """Return a CSP insertion that preserves the entry point's local layout."""
+    line_start = text.rfind("\n", 0, charset.start()) + 1
+    prefix = text[line_start : charset.start()]
+    # A charset tag is considered pretty/formatted only when everything before
+    # it on the same physical line is indentation. Merely having an earlier
+    # newline is insufficient (the TXT bundle is compact after its first line).
+    if prefix.strip():
+        return meta
+    return "\n" + prefix + meta
+
+
 def render(text: str) -> str:
     clean = strip_existing_csp(text)
     policy = policy_for(clean)
@@ -86,17 +97,15 @@ def render(text: str) -> str:
     charset = CHARSET_RE.search(clean)
     if not charset:
         raise RuntimeError("Entry point does not contain a quoted meta charset tag")
-    pretty = "\n" in clean[: charset.end() + 4]
-    insertion = ("\n  " if pretty else "") + meta
+    insertion = insertion_for(clean, charset, meta)
     rendered = clean[: charset.end()] + insertion + clean[charset.end() :]
+
     # Defensive invariant: generated CSP must be intrinsically idempotent.
-    # Do not recurse through render(); compare against one canonical strip/reinsert.
     canonical_clean = strip_existing_csp(rendered)
     canonical_charset = CHARSET_RE.search(canonical_clean)
     if not canonical_charset:
         raise RuntimeError("Generated CSP lost the meta charset tag")
-    canonical_pretty = "\n" in canonical_clean[: canonical_charset.end() + 4]
-    canonical_insertion = ("\n  " if canonical_pretty else "") + meta
+    canonical_insertion = insertion_for(canonical_clean, canonical_charset, meta)
     canonical = (
         canonical_clean[: canonical_charset.end()]
         + canonical_insertion
