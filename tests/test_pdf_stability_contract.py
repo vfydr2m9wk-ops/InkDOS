@@ -6,16 +6,13 @@ PDF = ROOT / "apps" / "pdf"
 def text(path): return path.read_text(encoding="utf-8")
 
 def main():
-    app=text(PDF/"app.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
+    app=text(PDF/"app.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");reader_ui=text(PDF/"ui"/"reader-tools.js");reader_runtime=text(PDF/"features"/"reader"/"reader-runtime.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
     actions={"move":text(PDF/"features"/"page-tools"/"actions"/"move-page.js"),"rotate":text(PDF/"features"/"page-tools"/"actions"/"rotate-page.js"),"delete":text(PDF/"features"/"page-tools"/"actions"/"delete-page.js"),"extract":text(PDF/"features"/"page-tools"/"actions"/"extract-page.js"),"split":text(PDF/"features"/"page-tools"/"actions"/"split-pdf.js"),"merge":text(PDF/"features"/"page-tools"/"actions"/"merge-pdfs.js")}
     assert "editingstateschanged" in editor and "annotationeditorstateschanged" in editor
     assert "DEFAULT_TAB='outline'" in nav and "open(DEFAULT_TAB)" in nav
-    assert "$('navPanelBtn').onclick" not in nav
-    assert "anchor?.isConnected" in nav
-    assert "navPanelBtn:'pdf.navigation.toggle'" in bindings
-    assert "pdf.navigation.toggle" in commands and "navigation.toggle" in commands
+    assert "$('navPanelBtn').onclick" not in nav and "anchor?.isConnected" in nav and "navPanelBtn:'pdf.navigation.toggle'" in bindings and "pdf.navigation.toggle" in commands and "navigation.toggle" in commands
     assert "userScrollEpoch" in layout and "sameMetrics" in layout and "userEpoch===this.userScrollEpoch" in layout and "scrollIntoView" not in layout
-    for path in ("runtime/commands/command-registry.js","ui/command-bindings.js","ui/toolbar-rail.js","ui/mode-bindings.js","features/page-tools/page-tools-runtime.js"): assert path in app
+    for path in ("runtime/commands/command-registry.js","ui/command-bindings.js","ui/toolbar-rail.js","ui/mode-bindings.js","features/reader/reader-runtime.js","features/page-tools/page-tools-runtime.js"): assert path in app
     for name in ("move-page.js","rotate-page.js","delete-page.js","extract-page.js","split-pdf.js","merge-pdfs.js"): assert name in app
     assert "function installToolbarRail" not in app and "NS.ToolbarRail" in rail and "NS.CommandRegistry" in registry and "bindElement" in registry
     assert "history.undo" in commands and "history.redo" in commands and "annotation.delete" in commands
@@ -24,7 +21,12 @@ def main():
     assert "querySelectorAll" not in mode and "data-pdf-mode" not in mode and "data-annotate-tool" not in mode and "subscribe" in mode
     for command in ("pdf.mode.view","pdf.mode.annotate","pdf.tool.select","pdf.tool.text","pdf.tool.pen","pdf.tool.highlight","pdf.tool.underline","pdf.tool.comment"): assert command in mode_bindings
     assert "ModeBindings.create" in app
-    for command in ("pdf.pages.move","pdf.pages.rotate","pdf.pages.delete","pdf.pages.extract","pdf.pages.split","pdf.pages.merge.choose","pdf.pages.merge.files"): assert command in page_ui
+    for command in ("reader.search","reader.search.close","reader.search.query","reader.search.previous","reader.search.next","reader.search.reveal","reader.rotate-view","reader.print"): assert command in reader_ui
+    for forbidden in ("searchBtn.onclick","rotateBtn.onclick","printBtn.onclick","prevBtn.onclick","nextBtn.onclick","b.onclick=()=>reveal"): assert forbidden not in reader_ui
+    assert "getTextContent" not in reader_ui and "layout.rotateView" not in reader_ui and "getTextContent" in reader_runtime and "layout.rotateView" in reader_runtime
+    assert "reader.search',{" not in commands and "reader.print',{" not in commands and "reader.rotate-view',{" not in commands
+    for command in ("pdf.pages.panel.toggle","pdf.pages.panel.close","pdf.pages.move","pdf.pages.rotate","pdf.pages.delete","pdf.pages.extract","pdf.pages.split","pdf.pages.merge.choose","pdf.pages.merge.files"): assert command in page_ui
+    assert "$('closePageTools').onclick" not in page_ui and 'data-command="pdf.pages.panel.close"' in page_ui
     for forbidden in ("PageToolsEngine.movePage","PageToolsEngine.rotatePage","PageToolsEngine.deletePage","PageToolsEngine.extractPages","PageToolsEngine.splitAfter","PageToolsEngine.merge"): assert forbidden not in page_ui
     assert "snapshotCurrent" not in page_ui and "verifyPdf" not in page_ui and "PageToolsRuntime" in page_runtime
     expected={"move":"PageToolsEngine.movePage","rotate":"PageToolsEngine.rotatePage","delete":"PageToolsEngine.deletePage","extract":"PageToolsEngine.extractPages","split":"PageToolsEngine.splitAfter","merge":"PageToolsEngine.merge"};action_names=("PageMoveAction","PageRotateAction","PageDeleteAction","PageExtractAction","PageSplitAction","PageMergeAction");own_map={"move":"PageMoveAction","rotate":"PageRotateAction","delete":"PageDeleteAction","extract":"PageExtractAction","split":"PageSplitAction","merge":"PageMergeAction"}

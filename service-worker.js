@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-pdf-offline-seq82';
+const CACHE_NAME='inkdos-v2.0.12-stability-pdf-reader-seq83';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -8,6 +8,7 @@ const APP_SHELL=[
   "./apps/pdf/engine/pdf-session.js",
   "./apps/pdf/extensions/review-annotations.css",
   "./apps/pdf/extensions/review-annotations.js",
+  "./apps/pdf/features/reader/reader-runtime.js",
   "./apps/pdf/features/page-tools/page-tools-runtime.js",
   "./apps/pdf/features/page-tools/actions/move-page.js",
   "./apps/pdf/features/page-tools/actions/rotate-page.js",

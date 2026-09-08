@@ -27,10 +27,7 @@ def main() -> None:
     browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
     if browser_name not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={browser_name}")
-    server = subprocess.Popen(
-        [sys.executable, "-m", "http.server", str(PORT), "--bind", "127.0.0.1"],
-        cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-    )
+    server = subprocess.Popen([sys.executable, "-m", "http.server", str(PORT), "--bind", "127.0.0.1"], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     errors: list[str] = []
     try:
         wait_port(PORT)
@@ -51,12 +48,34 @@ def main() -> None:
                 p.drawText(`Stability fixture page ${i + 1}`, {x: 48, y: 730, size: 20});
               }
               const bytes = new Uint8Array(await pdf.save());
-              const file = new File([bytes], 'stability-fixture.pdf', {type:'application/pdf'});
-              return await d.fileOpen.openFile(file);
+              return await d.fileOpen.openFile(new File([bytes], 'stability-fixture.pdf', {type:'application/pdf'}));
             }""")
             assert opened is True
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 5")
             page.wait_for_function("() => document.querySelectorAll('.pdf-page-shell').length >= 1")
+
+            # PDF-P1 Reader Completion: controls are bindings, commands survive movement/removal.
+            reader_commands = page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
+            for command in ("reader.search", "reader.search.next", "reader.search.reveal", "reader.rotate-view", "reader.print"):
+                assert command in reader_commands
+            page.evaluate("() => document.getElementById('editbar').append(document.getElementById('pdfSearchBtn'))")
+            page.locator("#pdfSearchBtn").scroll_into_view_if_needed()
+            page.click("#pdfSearchBtn")
+            assert page.locator("#pdfSearchPanel").is_visible()
+            page.locator("#pdfSearchInput").fill("Stability fixture page")
+            page.wait_for_function("() => document.querySelectorAll('.pdf-search-result').length === 5", timeout=10000)
+            assert page.locator(".pdf-search-result").first.get_attribute("data-command") == "reader.search.reveal"
+            assert page.locator("#pdfSearchNext").get_attribute("data-command") == "reader.search.next"
+            page.click("#pdfSearchNext")
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 2")
+            page.click("#pdfSearchBtn")
+            assert page.locator("#pdfSearchPanel").is_hidden()
+            page.evaluate("() => document.getElementById('pdfRotateViewBtn').remove()")
+            rotated = page.evaluate("async () => await globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.execute('reader.rotate-view')")
+            assert rotated == 90
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.rotation === 90")
+            page.evaluate(r"""async () => { const r=globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry; await r.execute('reader.rotate-view'); await r.execute('reader.rotate-view'); await r.execute('reader.rotate-view'); }""")
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.rotation === 0")
 
             page.click("#navPanelBtn")
             assert "active" in (page.locator("#outlineTab").get_attribute("class") or "").split()
@@ -73,26 +92,17 @@ def main() -> None:
             page.evaluate(r"""() => {
               const d = globalThis.InkDOS2PdfP4.PdfStabilityDebug;
               window.__inkdosHistoryFlag = 0;
-              d.editor.addCommand({
-                cmd: () => { window.__inkdosHistoryFlag = 1; },
-                undo: () => { window.__inkdosHistoryFlag = 0; },
-                mustExec: true,
-              });
+              d.editor.addCommand({cmd: () => { window.__inkdosHistoryFlag = 1; }, undo: () => { window.__inkdosHistoryFlag = 0; }, mustExec: true});
             }""")
             page.wait_for_function("() => !document.getElementById('undoBtn').disabled")
             assert page.evaluate("() => window.__inkdosHistoryFlag") == 1
-
             page.evaluate("() => document.getElementById('editbar').append(document.getElementById('undoBtn'))")
-            page.locator("#undoBtn").scroll_into_view_if_needed()
-            page.click("#undoBtn")
+            page.locator("#undoBtn").scroll_into_view_if_needed(); page.click("#undoBtn")
             page.wait_for_function("() => window.__inkdosHistoryFlag === 0")
             page.wait_for_function("() => !document.getElementById('redoBtn').disabled")
-            page.locator("#redoBtn").scroll_into_view_if_needed()
-            page.click("#redoBtn")
+            page.locator("#redoBtn").scroll_into_view_if_needed(); page.click("#redoBtn")
             page.wait_for_function("() => window.__inkdosHistoryFlag === 1")
-
-            page.locator("#undoBtn").scroll_into_view_if_needed()
-            page.click("#undoBtn")
+            page.locator("#undoBtn").scroll_into_view_if_needed(); page.click("#undoBtn")
             page.wait_for_function("() => window.__inkdosHistoryFlag === 0")
             page.evaluate("() => document.getElementById('redoBtn').remove()")
             redone = page.evaluate("async () => await globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.execute('history.redo')")
@@ -103,60 +113,42 @@ def main() -> None:
               const d = globalThis.InkDOS2PdfP4.PdfStabilityDebug;
               window.__inkdosDeleteCalled = 0;
               d.editor.deleteSelected = () => { window.__inkdosDeleteCalled += 1; };
-              d.editor.eventBus.dispatch('editingstateschanged', {
-                source: d.editor,
-                details: {hasSelectedEditor:true}
-              });
+              d.editor.eventBus.dispatch('editingstateschanged', {source: d.editor, details: {hasSelectedEditor:true}});
               return !document.getElementById('deleteAnnotationBtn').disabled;
             }""")
             assert delete_probe is True
-            page.locator("#deleteAnnotationBtn").scroll_into_view_if_needed()
-            page.click("#deleteAnnotationBtn")
+            page.locator("#deleteAnnotationBtn").scroll_into_view_if_needed(); page.click("#deleteAnnotationBtn")
             assert page.evaluate("() => window.__inkdosDeleteCalled") == 1
 
-            viewport = page.locator("#contentViewport")
-            viewport.hover()
+            viewport = page.locator("#contentViewport"); viewport.hover()
             page.evaluate("() => { const v=document.getElementById('contentViewport'); v.scrollTop=0; }")
             before = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
-            page.mouse.wheel(0, 650)
-            page.wait_for_timeout(250)
+            page.mouse.wheel(0, 650); page.wait_for_timeout(250)
             after = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
             assert after > before, (browser_name, before, after)
-
-            page.select_option("#zoomSelect", "125")
-            page.wait_for_timeout(40)
+            page.select_option("#zoomSelect", "125"); page.wait_for_timeout(40)
             zoom_before = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
-            page.mouse.wheel(0, 550)
-            page.wait_for_timeout(600)
+            page.mouse.wheel(0, 550); page.wait_for_timeout(600)
             zoom_after = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
             assert zoom_after > zoom_before, (browser_name, zoom_before, zoom_after)
 
-            page.click("#navPanelBtn")
-            page.click("#closeNavigation")
-            page.click("#pageToolsBtn")
+            page.click("#navPanelBtn"); page.click("#closeNavigation"); page.click("#pageToolsBtn")
+            assert page.locator("#closePageTools").get_attribute("data-command") == "pdf.pages.panel.close"
             page.click("#closePageTools")
             panel_before = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
-            page.mouse.wheel(0, 450)
-            page.wait_for_timeout(250)
+            page.mouse.wheel(0, 450); page.wait_for_timeout(250)
             panel_after = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
             assert panel_after > panel_before, (browser_name, panel_before, panel_after)
 
             page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.goToPage(2)")
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 2")
-            page.click("#pageToolsBtn")
-            page.once("dialog", lambda dialog: dialog.accept())
-            page.click("#pageDeleteBtn")
+            page.click("#pageToolsBtn"); page.once("dialog", lambda dialog: dialog.accept()); page.click("#pageDeleteBtn")
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 4", timeout=15000)
             assert page.locator("#pageToolsPanel").is_hidden()
 
             final = page.evaluate(r"""() => {
               const d = globalThis.InkDOS2PdfP4.PdfStabilityDebug;
-              return {
-                pageCount: d.layout.pageCount,
-                nav: d.navigation.inspect(),
-                commands: d.registry.inspect(),
-                scroll: d.layout.inspect(),
-              };
+              return {pageCount:d.layout.pageCount,nav:d.navigation.inspect(),commands:d.registry.inspect(),scroll:d.layout.inspect()};
             }""")
             assert final["pageCount"] == 4
             assert final["nav"]["tab"] == "outline"
@@ -164,15 +156,11 @@ def main() -> None:
             assert "annotation.delete" in final["commands"]["commands"]
             browser.close()
 
-        if errors:
-            raise AssertionError({"browser": browser_name, "errors": errors})
+        if errors: raise AssertionError({"browser": browser_name, "errors": errors})
         print(f"PDF stability browser regression passed on {browser_name}.")
     finally:
         server.terminate()
-        try:
-            server.wait(timeout=3)
-        except subprocess.TimeoutExpired:
-            server.kill()
+        try: server.wait(timeout=3)
+        except subprocess.TimeoutExpired: server.kill()
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()

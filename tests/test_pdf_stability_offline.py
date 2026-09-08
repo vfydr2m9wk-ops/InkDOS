@@ -19,6 +19,7 @@ PDF_DYNAMIC_URLS = (
     "/apps/pdf/ui/command-bindings.js",
     "/apps/pdf/ui/toolbar-rail.js",
     "/apps/pdf/ui/mode-bindings.js",
+    "/apps/pdf/features/reader/reader-runtime.js",
     "/apps/pdf/features/page-tools/page-tools-runtime.js",
     "/apps/pdf/features/page-tools/actions/move-page.js",
     "/apps/pdf/features/page-tools/actions/rotate-page.js",
@@ -68,23 +69,14 @@ def main() -> None:
             context = browser.new_context(viewport={"width": 1280, "height": 900})
             page = context.new_page()
             page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
-            page.on(
-                "console",
-                lambda msg: errors.append(f"console.error: {msg.text}")
-                if msg.type == "error"
-                else None,
-            )
+            page.on("console", lambda msg: errors.append(f"console.error: {msg.text}") if msg.type == "error" else None)
 
-            # Install and activate the root suite service worker.
             page.goto(BASE + "/index.html", wait_until="load")
-            supported = page.evaluate("() => 'serviceWorker' in navigator")
-            assert supported is True, browser_name
+            assert page.evaluate("() => 'serviceWorker' in navigator") is True, browser_name
             page.evaluate("async () => { await navigator.serviceWorker.ready; return true; }")
             page.reload(wait_until="load")
             page.wait_for_function("() => !!navigator.serviceWorker.controller")
 
-            # Load PDF once online, then prove the dynamic modular assets are in the
-            # active InkDOS cache rather than merely available from the network.
             page.goto(BASE + "/apps/pdf/", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
             missing = page.evaluate(
@@ -106,17 +98,11 @@ def main() -> None:
             )
             assert missing == [], (browser_name, missing)
 
-            # Simulate a real network outage by taking down the origin server. This
-            # avoids Playwright WebKit's context.set_offline()/reload internal error
-            # while making the assertion stricter: no origin request can succeed.
             errors.clear()
             stop_server(server)
             server = None
             page.reload(wait_until="load", timeout=20_000)
-            page.wait_for_function(
-                "() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug",
-                timeout=15_000,
-            )
+            page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug", timeout=15_000)
             offline = page.evaluate(
                 r"""() => {
                     const ns = globalThis.InkDOS2PdfP4;
@@ -127,15 +113,10 @@ def main() -> None:
                         bindings: !!ns.CommandBindings,
                         toolbarRail: !!ns.ToolbarRail,
                         modeBindings: !!ns.ModeBindings,
+                        readerRuntime: !!ns.ReaderRuntime,
+                        readerCommands: ['reader.search','reader.search.next','reader.rotate-view','reader.print'].every(id => commands.includes(id)),
                         pageToolsRuntime: !!ns.PageToolsRuntime,
-                        pageActions: [
-                            'PageMoveAction',
-                            'PageRotateAction',
-                            'PageDeleteAction',
-                            'PageExtractAction',
-                            'PageSplitAction',
-                            'PageMergeAction',
-                        ].every(name => !!ns[name]),
+                        pageActions: ['PageMoveAction','PageRotateAction','PageDeleteAction','PageExtractAction','PageSplitAction','PageMergeAction'].every(name => !!ns[name]),
                         undo: commands.includes('history.undo'),
                         deleteAnnotation: commands.includes('annotation.delete'),
                     };
@@ -144,7 +125,6 @@ def main() -> None:
             assert all(offline.values()), (browser_name, offline)
             if errors:
                 raise AssertionError({"browser": browser_name, "errors": errors})
-
             browser.close()
 
         print(f"PDF offline modular boot regression passed on {browser_name}.")

@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "apps" / "pdf"
 
 DYNAMIC_PDF_ASSETS = (
+    "features/reader/reader-runtime.js",
     "ui/reader-tools.js",
     "vendor/jszip.min.js",
     "vendor/pdf-lib/pdf-lib.min.js",

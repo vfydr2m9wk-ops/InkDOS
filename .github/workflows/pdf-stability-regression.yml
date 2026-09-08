@@ -47,6 +47,8 @@ jobs:
           node --check apps/pdf/ui/navigation-controller.js
           node --check apps/pdf/pdfjs/editor-adapter.js
           node --check apps/pdf/view/page-layout.js
+          node --check apps/pdf/features/reader/reader-runtime.js
+          node --check apps/pdf/ui/reader-tools.js
           node --check apps/pdf/features/page-tools/page-tools-runtime.js
           node --check apps/pdf/features/page-tools/actions/move-page.js
           node --check apps/pdf/features/page-tools/actions/rotate-page.js
