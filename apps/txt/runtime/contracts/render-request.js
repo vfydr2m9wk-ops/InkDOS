@@ -1,1 +1,0 @@
-(function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};NS.RenderRequest=class RenderRequest{constructor({target,model,metrics,epoch,signal}){this.target=target;this.model=model;this.metrics=metrics;this.epoch=epoch;this.signal=signal||null;Object.freeze(this)}};})(globalThis);
