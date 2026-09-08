@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 function loadScript(src,test){if(test?.())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('DOCUMENTS_LOCAL_ASSET_LOAD_FAILED: '+src));document.head.appendChild(s)})}
 function loadCss(href,key){if(document.querySelector('link[data-doc-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset['doc'+key.toUpperCase()]='1';document.head.appendChild(l)}
 async function loadD1(){loadCss('ui/d1-tools.css','d1');await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
-async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
+async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('io/rtf-importer.js',()=>!!NS.RtfImporter);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
 async function boot(){await loadD1();await loadD2();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
