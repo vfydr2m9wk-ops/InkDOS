@@ -8,6 +8,7 @@ on:
       - 'apps/documents/**'
       - 'tests/test_doc_d2_p1_roundtrip.py'
       - 'tests/test_doc_d2_sections_roundtrip.py'
+      - 'tests/test_doc_d2_rtf_roundtrip.py'
       - 'requirements-ci.txt'
       - '.github/workflows/doc-d2-p1-roundtrip.yml'
   pull_request:
@@ -17,6 +18,7 @@ on:
       - 'apps/documents/**'
       - 'tests/test_doc_d2_p1_roundtrip.py'
       - 'tests/test_doc_d2_sections_roundtrip.py'
+      - 'tests/test_doc_d2_rtf_roundtrip.py'
       - 'requirements-ci.txt'
       - '.github/workflows/doc-d2-p1-roundtrip.yml'
 
@@ -48,3 +50,5 @@ jobs:
         run: python tests/test_doc_d2_p1_roundtrip.py
       - name: Run DOC-D2 section roundtrip
         run: python tests/test_doc_d2_sections_roundtrip.py
+      - name: Run DOC-D2 RTF import roundtrip
+        run: python tests/test_doc_d2_rtf_roundtrip.py
