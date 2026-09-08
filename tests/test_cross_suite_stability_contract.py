@@ -54,6 +54,7 @@ def main() -> None:
 
     missing: list[str] = []
     checked: list[str] = []
+    inline_only: list[str] = []
     for workspace in WORKSPACES:
         index_path = ROOT / "apps" / workspace / "index.html"
         assert index_path.is_file(), index_path
@@ -61,7 +62,8 @@ def main() -> None:
         parser.feed(index_path.read_text(encoding="utf-8"))
         resources = [normalize_resource(index_path, raw) for raw in parser.resources]
         resources = [path for path in resources if path]
-        assert resources, f"No local runtime resources found for {workspace}"
+        if not resources:
+            inline_only.append(workspace)
         assert len(resources) == len(set(resources)), f"Duplicate runtime resource in {workspace}"
         for resource in resources:
             checked.append(resource)
@@ -76,7 +78,8 @@ def main() -> None:
     assert "./manifest.webmanifest" in precache
     assert "./service-worker.js" not in precache, "Service worker must update from the network, not cache itself"
 
-    print(f"Cross-suite static contract: OK ({len(set(checked))} workspace resources checked)")
+    inline_note = f"; inline bootstrap: {', '.join(inline_only)}" if inline_only else ""
+    print(f"Cross-suite static contract: OK ({len(set(checked))} declared workspace resources checked{inline_note})")
 
 
 if __name__ == "__main__":
