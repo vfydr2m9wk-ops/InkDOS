@@ -25,6 +25,14 @@ def main() -> None:
     for phase in ("PPT-P2", "XLS-S1", "XLS-S2"):
         assert phase in baseline, phase
 
+    sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
+    assert "inkdos-v2.0.12-stability-" in sw, "Frozen baseline must retain a stability cache namespace"
+    validator = (ROOT / "scripts" / "validate_repository.py").read_text(encoding="utf-8")
+    assert "def frozen_stability():" in validator
+    assert "if stability or frozen:" in validator
+    assert "candidate.get('status')=='frozen'" in validator
+    assert "state.get('completedWorkspaces')==FROZEN_WORKSPACES" in validator
+
     required = [
         "tests/test_pdf_stability_contract.py",
         "tests/test_documents_stability_contract.py",
