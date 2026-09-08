@@ -128,13 +128,13 @@ def main() -> None:
                 optional_page = context.new_page()
                 optional_page.on('pageerror', lambda exc: optional_errors.append(f'pageerror: {exc}'))
                 optional_page.on('console', lambda msg: optional_errors.append(f'console.error: {msg.text}') if msg.type == 'error' else None)
-                optional_page.add_init_script("""() => {
+                optional_page.add_init_script("""(() => {
                     const original=Document.prototype.getElementById;
                     Document.prototype.getElementById=function(id){
                         if(location.pathname.startsWith('/apps/epub/') && (id==='searchBtn'||id==='bookmarkBtn'))return null;
                         return original.call(this,id);
                     };
-                }""")
+                })()""")
                 optional_page.goto(BASE + '/apps/epub/', wait_until='load')
                 optional_page.wait_for_function('() => !!globalThis.__InkEpubR4')
                 optional_probe = optional_page.evaluate("""() => {
