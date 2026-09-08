@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-modularity-epub-polish-seq80';
+const CACHE_NAME='inkdos-v2.0.13-doc-d2-rtf-seq81';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -57,6 +57,8 @@ const APP_SHELL=[
   "./apps/documents/app.js",
   "./apps/documents/assets/documents.svg",
   "./apps/documents/engine/d1-docx-extension.js",
+  "./apps/documents/engine/d2-docx-extension.js",
+  "./apps/documents/engine/d2-sections-extension.js",
   "./apps/documents/engine/document-session.js",
   "./apps/documents/engine/document-state.js",
   "./apps/documents/engine/docx-parser.js",
@@ -66,6 +68,7 @@ const APP_SHELL=[
   "./apps/documents/io/file-delivery.js",
   "./apps/documents/io/file-open-controller.js",
   "./apps/documents/io/package-reader.js",
+  "./apps/documents/io/rtf-importer.js",
   "./apps/documents/io/save-controller.js",
   "./apps/documents/runtime/frame/app-frame.css",
   "./apps/documents/runtime/frame/frame-menu.js",
@@ -76,6 +79,9 @@ const APP_SHELL=[
   "./apps/documents/ui/command-controller.js",
   "./apps/documents/ui/d1-tools.css",
   "./apps/documents/ui/d1-tools.js",
+  "./apps/documents/ui/d2-sections.js",
+  "./apps/documents/ui/d2-tools.css",
+  "./apps/documents/ui/d2-tools.js",
   "./apps/documents/ui/editor-controller.js",
   "./apps/documents/ui/editor.css",
   "./apps/documents/ui/navigation-panel.js",
