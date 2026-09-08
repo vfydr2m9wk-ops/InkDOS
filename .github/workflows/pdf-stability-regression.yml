@@ -26,14 +26,24 @@ jobs:
         with:
           python-version: "3.11"
       - run: python tests/test_pdf_stability_contract.py
-      - run: node --check apps/pdf/app.js
-      - run: node --check apps/pdf/runtime/commands/command-registry.js
-      - run: node --check apps/pdf/ui/command-bindings.js
-      - run: node --check apps/pdf/ui/toolbar-rail.js
-      - run: node --check apps/pdf/ui/command-controller.js
-      - run: node --check apps/pdf/ui/navigation-controller.js
-      - run: node --check apps/pdf/pdfjs/editor-adapter.js
-      - run: node --check apps/pdf/view/page-layout.js
+      - name: Check PDF modular runtime syntax
+        run: |
+          node --check apps/pdf/app.js
+          node --check apps/pdf/runtime/commands/command-registry.js
+          node --check apps/pdf/ui/command-bindings.js
+          node --check apps/pdf/ui/toolbar-rail.js
+          node --check apps/pdf/ui/command-controller.js
+          node --check apps/pdf/ui/navigation-controller.js
+          node --check apps/pdf/pdfjs/editor-adapter.js
+          node --check apps/pdf/view/page-layout.js
+          node --check apps/pdf/features/page-tools/page-tools-runtime.js
+          node --check apps/pdf/features/page-tools/actions/move-page.js
+          node --check apps/pdf/features/page-tools/actions/rotate-page.js
+          node --check apps/pdf/features/page-tools/actions/delete-page.js
+          node --check apps/pdf/features/page-tools/actions/extract-page.js
+          node --check apps/pdf/features/page-tools/actions/split-pdf.js
+          node --check apps/pdf/features/page-tools/actions/merge-pdfs.js
+          node --check apps/pdf/ui/page-tools.js
 
   browser:
     strategy:
