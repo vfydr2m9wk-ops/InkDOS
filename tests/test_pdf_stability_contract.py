@@ -6,9 +6,14 @@ PDF = ROOT / "apps" / "pdf"
 def text(path): return path.read_text(encoding="utf-8")
 
 def main():
-    app=text(PDF/"app.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");review=text(PDF/"extensions"/"review-annotations.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");reader_ui=text(PDF/"ui"/"reader-tools.js");reader_runtime=text(PDF/"features"/"reader"/"reader-runtime.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
+    app=text(PDF/"app.js");index=text(PDF/"index.html");frame=text(PDF/"runtime"/"frame"/"frame-menu.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");review=text(PDF/"extensions"/"review-annotations.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");reader_ui=text(PDF/"ui"/"reader-tools.js");reader_runtime=text(PDF/"features"/"reader"/"reader-runtime.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
     actions={"move":text(PDF/"features"/"page-tools"/"actions"/"move-page.js"),"rotate":text(PDF/"features"/"page-tools"/"actions"/"rotate-page.js"),"delete":text(PDF/"features"/"page-tools"/"actions"/"delete-page.js"),"extract":text(PDF/"features"/"page-tools"/"actions"/"extract-page.js"),"split":text(PDF/"features"/"page-tools"/"actions"/"split-pdf.js"),"merge":text(PDF/"features"/"page-tools"/"actions"/"merge-pdfs.js")}
     assert "editingstateschanged" in editor and "annotationeditorstateschanged" in editor
+    assert "createDrawer" in frame and "addEventListener('click'" not in frame and "addEventListener('keydown'" not in frame
+    for command in ("frame.menu.toggle","frame.menu.close"): assert command in bindings
+    assert "menuBtn:'frame.menu.toggle'" in bindings and "closeMenuBtn:'frame.menu.close'" in bindings and "menuBackdrop:'frame.menu.close'" in bindings and "openStartBtn:'file.open'" in bindings
+    assert "NS.FrameUI.createDrawer" in commands and "registry.execute('frame.menu.close')" in commands
+    assert "openStartBtn').addEventListener" not in index
     for command in ("pdf.comment.open","pdf.comment.cancel","pdf.comment.save"): assert command in review
     assert "registry?.bindElement(pin,COMMENT_COMMANDS.open)" in review and "m.layer.append(pin);this.registry?.bindElement" in review
     for forbidden in ("pin.onclick","cancel.onclick","back.onclick","dlg.onsubmit"): assert forbidden not in review
