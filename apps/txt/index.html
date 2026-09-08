@@ -398,8 +398,9 @@ function create({elements:E,state}={}){
   function publishCommandState(){document.dispatchEvent(new CustomEvent('inkdos:txt-command-state',{detail:{loaded:!!state.loaded,canUndo:!!state.history.canUndo,canRedo:!!state.history.canRedo}}))}
   function updateMeta(){E.encoding.textContent=encName();E.lineEnding.textContent=lineName(state.lineEnding);const t=E.editor.value;const lines=t.length?t.split('\n').length:1;const words=t.trim()?t.trim().split(/\s+/u).filter(Boolean).length:0;E.counts.textContent=`${lines} line${lines===1?'':'s'} · ${words} word${words===1?'':'s'} · ${t.length} char${t.length===1?'':'s'}`;E.dirty.hidden=!state.session.dirty;E.checkpoint.textContent=state.session.checkpointRevision===state.session.revision?'checkpoint ✓':'checkpoint …';E.export.textContent=state.lastReceipt?`export r${state.session.exportRevision??'?'} requested`:'no export';publishCommandState();updateCursor()}
   function showEditor(){state.loaded=true;if(E.startState)E.startState.hidden=true;E.surface.hidden=false;E.toolbar.hidden=false}
+  function requestCheckpoint(){return Promise.resolve(checkpointHandler()).catch(e=>{setStatus('Recovery unavailable: '+e.message,'state-warn');return false})}
   function markChanged(){state.session.mutate();state.history.push(E.editor.value);updateMeta();scheduleCheckpoint()}
-  function scheduleCheckpoint(){clearTimeout(state.debounce);state.debounce=setTimeout(()=>checkpointHandler().catch(e=>setStatus('Recovery unavailable: '+e.message,'state-warn')),850)}
+  function scheduleCheckpoint(){clearTimeout(state.debounce);state.debounce=setTimeout(requestCheckpoint,850)}
   function applyPolicy(){NS.TxtPolicy.apply(E.editor,{wrap:state.wrap,fontSize:state.fontSize});document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy',{detail:{wrap:state.wrap,fontSize:state.fontSize}}))}
   function doUndo(){const v=state.history.undo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
   function doRedo(){const v=state.history.redo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
@@ -420,7 +421,7 @@ function create({elements:E,state}={}){
   function setWrap(next){state.wrap=!!next;applyPolicy();updateMeta();scheduleCheckpoint()}
   function setMetrics(m){state.metrics=m;document.body.dataset.viewport=m.availableWidth.toFixed(0)+'x'+m.availableHeight.toFixed(0)}
   function debug(){return {changeIndent,applyListFamily,continueListOnEnter,clampFontSize,titleCenterError:()=>NS.AppFrame.centerError(E.title),viewport:()=>state.metrics,toolbarOverflow:()=>({clientWidth:E.toolbar.clientWidth,scrollWidth:E.toolbar.scrollWidth,scrollLeft:E.toolbar.scrollLeft})}}
-  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,doUndo,doRedo,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
+  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,requestCheckpoint,doUndo,doRedo,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
 }
 NS.TxtEditorController=Object.freeze({create});
 })(globalThis);
@@ -518,8 +519,8 @@ NS.TxtControls=Object.freeze({collect,create});
 const NS=g.InkDOS2=g.InkDOS2||{};
 const LINE_NUMBER_LIMIT=10000;
 const LINE_NUMBER_KEY='inkdos2:txt:lineNumbers';
-function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={}){
-  if(!E||!state||!editor||!files||!commands)throw new Error('TxtT1Essentials requires elements, state, editor, files and commands');
+function create({elements:E,state,editor,commands,beforeOpen=()=>{}}={}){
+  if(!E||!state||!editor||!commands)throw new Error('TxtT1Essentials requires elements, state, editor and commands');
   const ui={};let lineNumbers=false,lineRenderFrame=0;
   function injectStyles(){if(document.getElementById('txtT1Styles'))return;const style=document.createElement('style');style.id='txtT1Styles';style.textContent=`
 .findbar .t1-replace-input{width:170px;min-width:130px}.t1-find-action{height:40px;min-width:64px;flex:0 0 auto;border:1px solid var(--txt-line);border-radius:10px;background:var(--txt-surface);color:var(--txt-text);padding:0 9px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.t1-find-action:hover,.t1-find-action:focus-visible{background:var(--txt-surface-soft);outline:none}.t1-text-tools{font-size:11px;font-weight:800;letter-spacing:.02em}.t1-popover{position:fixed;z-index:95;width:min(320px,calc(100vw - 24px));padding:12px;background:var(--txt-surface);border:1px solid var(--txt-line);border-radius:15px;box-shadow:0 18px 48px rgba(15,23,42,.22);display:grid;gap:11px}.t1-popover[hidden]{display:none!important}.t1-popover-row{display:grid;grid-template-columns:98px 1fr;align-items:center;gap:10px}.t1-popover-row>label,.t1-popover-label{font-size:12px;color:var(--txt-muted);font-weight:700}.t1-popover input[type="number"],.t1-popover select{width:100%;min-height:36px;border:1px solid var(--txt-line);border-radius:9px;background:var(--txt-surface);color:var(--txt-text);padding:0 9px;font:inherit;outline:none}.t1-popover input:focus,.t1-popover select:focus{border-color:#d0ae47;box-shadow:0 0 0 3px rgba(217,165,20,.12)}.t1-go-wrap{display:grid;grid-template-columns:1fr auto;gap:6px}.t1-small-btn{min-height:36px;border:1px solid var(--txt-line);border-radius:9px;background:var(--txt-surface-soft);color:var(--txt-text);padding:0 11px;font:inherit;font-weight:700;cursor:pointer}.t1-check-row{display:flex;align-items:center;gap:8px;min-height:34px}.t1-check-row input{width:18px;height:18px;accent-color:var(--txt-accent-strong)}.t1-note{font-size:11px;line-height:1.4;color:var(--txt-muted)}.editor-surface.t1-line-numbers #editor{padding-left:86px}.t1-line-gutter{position:absolute;z-index:2;left:0;top:0;bottom:0;width:58px;overflow:hidden;border-right:1px solid var(--txt-line);background:var(--txt-surface-soft);pointer-events:none}.t1-line-layer{position:absolute;inset:0;will-change:transform}.t1-line-number{position:absolute;left:0;right:8px;text-align:right;color:var(--txt-muted);font-family:var(--txt-mono);font-variant-numeric:tabular-nums;user-select:none}.t1-line-mirror{position:fixed;left:-100000px;top:0;visibility:hidden;pointer-events:none;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}.t1-line-mirror.no-wrap{white-space:pre;overflow-wrap:normal}.t1-line-mirror-row{display:block;min-height:1.5em;white-space:inherit;overflow-wrap:inherit;word-break:inherit}
@@ -548,7 +549,7 @@ function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={}){
   function lineEndingName(v){return v==='\r\n'?'CRLF':v==='\r'?'CR':'LF'}
   function displayEncoding(){return String(state.encoding||'utf-8').toUpperCase()+(state.bom?' + BOM':'')}
   function publishStoragePolicy(){document.dispatchEvent(new CustomEvent('inkdos:txt-storage-policy',{detail:{encoding:state.encoding,bom:!!state.bom,lineEnding:state.lineEnding}}))}
-  function commitStorageSetting(message){if(state.loaded)state.session.mutate();editor.updateMeta();files.checkpoint().catch(e=>editor.setStatus('Recovery unavailable: '+e.message,'state-warn'));editor.setStatus(message,'state-ok');publishStoragePolicy()}
+  function commitStorageSetting(message){if(state.loaded)state.session.mutate();editor.updateMeta();editor.requestCheckpoint();editor.setStatus(message,'state-ok');publishStoragePolicy()}
   function setEncoding(value){const next=String(value||'').toLowerCase();if(!['utf-8','utf-16le','utf-16be'].includes(next)||next===state.encoding)return false;state.encoding=next;if(/^utf-16/.test(next)&&!state.bom)state.bom=true;commitStorageSetting('Encoding set to '+displayEncoding());return true}
   function setBom(value){const next=!!value;if(next===state.bom)return false;state.bom=next;commitStorageSetting(next?'BOM enabled':'BOM disabled');return true}
   function setLineEnding(value){const next=String(value);if(!['\n','\r\n','\r'].includes(next)||next===state.lineEnding)return false;state.lineEnding=next;commitStorageSetting('Line endings set to '+lineEndingName(next));return true}
@@ -587,8 +588,8 @@ NS.TxtT1Essentials=Object.freeze({create});
 (function(g){'use strict';
 const NS=g.InkDOS2=g.InkDOS2||{},P=NS.TxtPolicy;
 const SYNTAX_PREVIEW_LIMIT=2*1024*1024,TREE_NODE_LIMIT=5000;
-function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={}){
-  if(!E||!state||!editor||!files||!commands)throw new Error('TxtT2XmlTools requires elements, state, editor, files and commands');
+function create({elements:E,state,editor,commands,beforeOpen=()=>{}}={}){
+  if(!E||!state||!editor||!commands)throw new Error('TxtT2XmlTools requires elements, state, editor and commands');
   const ui={};let viewMode='edit';
   function isXml(){return P.isXmlName(state.fileName)}
   function make(tag,props={}){const el=document.createElement(tag);for(const[k,v]of Object.entries(props)){if(k==='text')el.textContent=v;else if(k==='className')el.className=v;else if(k in el)el[k]=v;else el.setAttribute(k,v)}return el}
@@ -636,7 +637,7 @@ const NS=g.InkDOS2;let t1=null,t2=null;const controls=NS.TxtControls.create(),E=
 const frameMenu=NS.AppFrame.bindDrawer({trigger:E.menuBtn,drawer:E.menu,backdrop:E.backdrop,closeButton:E.closeMenu,beforeOpen:()=>{controls.closeListMenu();t1?.closeTools();t2?.close()}});NS.AppFrame.bindHorizontalScroller(E.toolbar);
 const state=NS.TxtState.create(),editor=NS.TxtEditorController.create({elements:E,state}),files=NS.TxtFileController.create({elements:E,state,editor}),commands=NS.TxtCommands.create({state,editor,files,requestOpen:()=>E.fileInput.click()});
 editor.setCheckpointHandler(files.checkpoint);new NS.ContentViewportAdapter(document.querySelector('.content-viewport'),editor.setMetrics);
-t1=NS.TxtT1Essentials.create({elements:E,state,editor,files,commands,beforeOpen:()=>{controls.closeListMenu();t2?.close()}});t1.install();t2=NS.TxtT2XmlTools.create({elements:E,state,editor,files,commands,beforeOpen:()=>t1?.closeTools()});t2.install();controls.bind({editor,files,state,commands},frameMenu,{beforeListOpen:()=>{t1?.closeTools();t2?.close()}});NS.TxtAppDebug=Object.freeze({state,commands,...editor.debug(),...files.debug(),txtT1:t1.debug(),txtT2:t2.debug()});files.initialize();
+t1=NS.TxtT1Essentials.create({elements:E,state,editor,commands,beforeOpen:()=>{controls.closeListMenu();t2?.close()}});t1.install();t2=NS.TxtT2XmlTools.create({elements:E,state,editor,commands,beforeOpen:()=>t1?.closeTools()});t2.install();controls.bind({editor,files,state,commands},frameMenu,{beforeListOpen:()=>{t1?.closeTools();t2?.close()}});NS.TxtAppDebug=Object.freeze({state,commands,...editor.debug(),...files.debug(),txtT1:t1.debug(),txtT2:t2.debug()});files.initialize();
 })(globalThis);
 
 (function(global){'use strict';
