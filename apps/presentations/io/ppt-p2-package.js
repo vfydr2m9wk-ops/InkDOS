@@ -1,0 +1,15 @@
+(function(global){'use strict';
+const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
+const P='http://schemas.openxmlformats.org/presentationml/2006/main';
+const XML='application/xml';
+const SUPPORTED=new Set(['none','fade','push','wipe']);
+function parseXml(text,label){const d=new DOMParser().parseFromString(text,XML);if(d.querySelector('parsererror'))throw new Error(`Malformed ${label} XML.`);return d}
+function directChild(node,name){return [...(node?.children||[])].find(x=>x.localName===name)||null}
+function normalize(value){value=String(value||'none').toLowerCase();return SUPPORTED.has(value)?value:'none'}
+function transitionOf(doc){const root=doc?.documentElement,t=directChild(root,'transition');if(!t)return'none';const effect=[...(t.children||[])][0];return normalize(effect?.localName||'none')}
+function writeTransition(doc,value){const root=doc.documentElement;if(!root||root.localName!=='sld')throw new Error('Invalid slide XML root.');const current=directChild(root,'transition');if(current)current.remove();value=normalize(value);if(value==='none')return;const transition=doc.createElementNS(P,'p:transition'),effect=doc.createElementNS(P,`p:${value}`);if(value==='push')effect.setAttribute('dir','l');if(value==='wipe')effect.setAttribute('dir','r');transition.appendChild(effect);const anchor=[...root.children].find(x=>x.localName==='timing'||x.localName==='extLst')||null;root.insertBefore(transition,anchor)}
+async function readSlideTransitions(bytes,slideParts){if(!global.JSZip)throw new Error('Private PPTX ZIP engine is unavailable.');const zip=await global.JSZip.loadAsync(bytes,{checkCRC32:true,createFolders:false}),parts=Array.isArray(slideParts)?slideParts:[];const out=[];for(const part of parts){const z=zip.file(part);if(!z){out.push('none');continue}const doc=parseXml(await z.async('text'),part);out.push(transitionOf(doc))}return out}
+function partMap(session,receipt={}){const mapped=new Map((receipt.slideMappings||[]).map(item=>[item.slideId,item.slidePart]));return session.slides.map((slide,index)=>mapped.get(slide.id)||slide.sourcePart||`ppt/slides/slide${index+1}.xml`)}
+async function applySlideTransitions(session,bytes,receipt={}){if(!global.JSZip)throw new Error('Private PPTX ZIP engine is unavailable.');const edited=session.slides.some(slide=>slide.transitionEdited===true);if(!edited)return new Uint8Array(bytes||[]);const zip=await global.JSZip.loadAsync(bytes,{checkCRC32:true,createFolders:false}),parts=partMap(session,receipt);for(let i=0;i<session.slides.length;i++){const slide=session.slides[i];if(slide.transitionEdited!==true)continue;const part=parts[i],z=zip.file(part);if(!z)throw new Error(`PPT-P2 transition target is missing: ${part}`);const doc=parseXml(await z.async('text'),part);writeTransition(doc,slide.transition);zip.file(part,new XMLSerializer().serializeToString(doc),{createFolders:false})}return zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6},platform:'DOS'})}
+NS.PptP2Package=Object.freeze({SUPPORTED:Object.freeze([...SUPPORTED]),normalize,readSlideTransitions,applySlideTransitions});
+})(globalThis);

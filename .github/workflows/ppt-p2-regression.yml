@@ -1,0 +1,67 @@
+name: PPT-P2 regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "FUNCTIONAL_STATE.json"
+      - "apps/presentations/**"
+      - "tests/test_ppt_p2_*.py"
+      - ".github/workflows/ppt-p2-regression.yml"
+  pull_request:
+    paths:
+      - "FUNCTIONAL_STATE.json"
+      - "apps/presentations/**"
+      - "tests/test_ppt_p2_*.py"
+      - ".github/workflows/ppt-p2-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Validate PPT-P2 functional phase
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          state=json.loads(Path('FUNCTIONAL_STATE.json').read_text(encoding='utf-8'))
+          assert state['transitionGateRequired'] is True
+          assert state['currentPhase']=={'id':'PPT-P2','workspace':'presentations','status':'active'}
+          assert 'PPT-P1' in state['completedPhases']
+          assert state['nextPhase']=={'id':'XLS-S1','workspace':'spreadsheets'}
+          PY
+      - name: Check PPT-P2 runtime syntax
+        run: |
+          node --check apps/presentations/app.js
+          node --check apps/presentations/ui/command-controller.js
+          node --check apps/presentations/ui/ppt-p2-tools.js
+          node --check apps/presentations/io/ppt-p2-package.js
+          node --check apps/presentations/io/save-controller.js
+          node --check apps/presentations/presentation/slideshow-controller.js
+
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python tests/test_ppt_p2_transitions_browser.py

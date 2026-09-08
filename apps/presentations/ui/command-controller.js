@@ -12,7 +12,7 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  function format(label,mutator){const o=selected();if(!o||o.type!=='text')return false;history.transact(label,()=>mutator(o));refresh({thumbs:true,center:false});return true}
  function navigateTo(value){const index=Number(value);if(!Number.isInteger(index)||index<0||index>=session.slides.length||index===session.currentIndex)return false;session.setCurrentByIndex(index);selection.clear();refresh({thumbs:false,center:true});panel.syncActive();return true}
  function installCommands(){
-  register('file.new',()=>{if(session.dirty&&!global.confirm('Discard current in-memory changes and create a new presentation?'))return false;session.resetNew();history.reset();refresh();chrome.status('New presentation');return true});
+  register('file.new',()=>{if(session.dirty&&!global.confirm('Discard current in-memory changes and create a new presentation?'))return false;session.resetNew();history.reset();onStructureChange?.();refresh();chrome.status('New presentation');return true});
   register('file.open',()=>fileOpen.requestOpen());
   register('file.save',()=>save.save(),()=>session.active&&session.sourceKind!=='ppt');
   register('file.share',()=>save.share(),()=>session.active&&session.sourceKind!=='ppt');
@@ -60,6 +60,6 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   sync()
  }
  installCommands();
- return Object.freeze({install,sync,refresh,requestNew:()=>execute('file.new'),execute,isEnabled,has:id=>registry.has(id),list:()=>[...registry.keys()],get drawer(){return drawer},get zoomPopover(){return zoomPopover}})
+ return Object.freeze({install,sync,refresh,requestNew:()=>execute('file.new'),register,execute,isEnabled,has:id=>registry.has(id),list:()=>[...registry.keys()],get drawer(){return drawer},get zoomPopover(){return zoomPopover}})
 }
 NS.CommandController=Object.freeze({create});})(globalThis);
