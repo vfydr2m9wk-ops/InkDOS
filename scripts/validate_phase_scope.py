@@ -39,7 +39,31 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def stability_scope(path: Path) -> tuple[str, set[str]] | None:
+def frozen_anchor(state: dict) -> str | None:
+    if state.get("program") != "stability-functional-isolation":
+        return None
+    if state.get("active") is not False or state.get("currentWorkspace") != "freeze":
+        return None
+    frozen = state.get("freezeCandidate") or {}
+    if frozen.get("status") != "frozen":
+        return None
+    anchor = frozen.get("runtimeAnchor")
+    return anchor if isinstance(anchor, str) and anchor else None
+
+
+def base_state(base_ref: str) -> dict:
+    try:
+        raw = git("show", f"{base_ref}:STABILITY_STATE.json")
+    except subprocess.CalledProcessError:
+        return {}
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def stability_scope(path: Path, base_ref: str) -> tuple[str, set[str]] | None:
     if not path.is_file():
         return None
     state = load_json(path)
@@ -55,13 +79,14 @@ def stability_scope(path: Path) -> tuple[str, set[str]] | None:
     if any(item not in WORKSPACES for item in completed) or len(completed) != len(set(completed)):
         raise SystemExit("Invalid completedWorkspaces in STABILITY_STATE.json")
 
-    # A completed stability program remains the governing scope while its frozen
-    # baseline is promoted to main. Do not fall back to the unrelated functional
-    # roadmap merely because the stability program is no longer active.
+    # A completed stability program governs only the PR that is promoting that
+    # frozen baseline into the selected base. Once the same runtime anchor is
+    # already present in base, normal future development falls back to
+    # FUNCTIONAL_STATE.json and the one-workspace rule becomes authoritative again.
     if active is False and state.get("currentWorkspace") == "freeze":
-        frozen = state.get("freezeCandidate") or {}
-        if frozen.get("status") != "frozen":
-            raise SystemExit("Inactive stability freeze must have status=frozen")
+        anchor = frozen_anchor(state)
+        if not anchor:
+            raise SystemExit("Inactive stability freeze must have status=frozen and a runtimeAnchor")
         if set(order) != WORKSPACES or len(order) != len(WORKSPACES):
             raise SystemExit("Frozen stability auditOrder must contain all six workspaces exactly once")
         if completed != order:
@@ -69,6 +94,8 @@ def stability_scope(path: Path) -> tuple[str, set[str]] | None:
                 "Frozen STABILITY_STATE.json must list every audited workspace in order; "
                 f"expected completedWorkspaces={order}, got {completed}"
             )
+        if frozen_anchor(base_state(base_ref)) == anchor:
+            return None
         return "stability:freeze", set(order)
 
     if active is not True:
@@ -108,14 +135,14 @@ def main() -> None:
     parser.add_argument("--stability-state", default="STABILITY_STATE.json")
     args = parser.parse_args()
 
-    scope = stability_scope(ROOT / args.stability_state)
-    mode = "stability" if scope else "functional"
-    phase, allowed_apps = scope or functional_scope(ROOT / args.state)
-
     try:
         git("rev-parse", "--verify", args.base)
     except subprocess.CalledProcessError as exc:
         raise SystemExit(f"Base ref is unavailable: {args.base}") from exc
+
+    scope = stability_scope(ROOT / args.stability_state, args.base)
+    mode = "stability" if scope else "functional"
+    phase, allowed_apps = scope or functional_scope(ROOT / args.state)
 
     changed = [p for p in git("diff", "--name-only", "--diff-filter=ACMRD", f"{args.base}...HEAD").splitlines() if p]
     violations: list[str] = []
