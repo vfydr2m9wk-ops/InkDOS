@@ -14,12 +14,15 @@ for token in [
     "function execute(id,...args)",
     "register('file.new'",
     "register('edit.undo'",
-    "register('format.bold'",
+    "FORMAT_COMMANDS.forEach(cmd=>register('format.'+cmd",
     "register('insert.table'",
     "register('panel.search'",
     "navigation.openPanel('searchPanel')",
 ]:
     assert token in CMD, f'Documents semantic command layer missing: {token}'
+
+for command in ['bold','italic','underline','outdent','indent','insertUnorderedList','insertOrderedList']:
+    assert f"'{command}'" in CMD, f'Documents formatting command missing from semantic command set: {command}'
 
 for token in [
     "commands.execute(id,...args)",
