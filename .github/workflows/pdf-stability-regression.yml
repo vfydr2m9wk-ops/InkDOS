@@ -7,11 +7,17 @@ on:
     paths:
       - "apps/pdf/**"
       - "tests/test_pdf_stability_*.py"
+      - "tests/test_pdf_p2_page_tools.cjs"
+      - "service-worker.js"
+      - "index.html"
       - ".github/workflows/pdf-stability-regression.yml"
   pull_request:
     paths:
       - "apps/pdf/**"
       - "tests/test_pdf_stability_*.py"
+      - "tests/test_pdf_p2_page_tools.cjs"
+      - "service-worker.js"
+      - "index.html"
       - ".github/workflows/pdf-stability-regression.yml"
 
 permissions:
@@ -26,8 +32,11 @@ jobs:
         with:
           python-version: "3.11"
       - run: python tests/test_pdf_stability_contract.py
+      - run: python tests/test_pdf_stability_offline_contract.py
+      - run: node tests/test_pdf_p2_page_tools.cjs
       - name: Check PDF modular runtime syntax
         run: |
+          node --check service-worker.js
           node --check apps/pdf/app.js
           node --check apps/pdf/runtime/commands/command-registry.js
           node --check apps/pdf/ui/command-bindings.js
@@ -65,3 +74,4 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps ${{ matrix.browser }}
       - run: python tests/test_pdf_stability_browser.py
+      - run: python tests/test_pdf_stability_offline.py
