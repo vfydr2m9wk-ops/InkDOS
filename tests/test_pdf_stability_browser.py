@@ -67,6 +67,8 @@ def main() -> None:
             page.click("#navPanelBtn")
             assert "active" in (page.locator("#outlineTab").get_attribute("class") or "").split()
             page.click("#closeNavigation")
+            page.click('[data-pdf-mode="annotate"]')
+            page.wait_for_function("() => document.documentElement.dataset.pdfMode === 'annotate'")
 
             page.evaluate(r"""() => {
               const d = globalThis.InkDOS2PdfP4.PdfStabilityDebug;
@@ -81,12 +83,15 @@ def main() -> None:
             assert page.evaluate("() => window.__inkdosHistoryFlag") == 1
 
             page.evaluate("() => document.getElementById('editbar').append(document.getElementById('undoBtn'))")
+            page.locator("#undoBtn").scroll_into_view_if_needed()
             page.click("#undoBtn")
             page.wait_for_function("() => window.__inkdosHistoryFlag === 0")
             page.wait_for_function("() => !document.getElementById('redoBtn').disabled")
+            page.locator("#redoBtn").scroll_into_view_if_needed()
             page.click("#redoBtn")
             page.wait_for_function("() => window.__inkdosHistoryFlag === 1")
 
+            page.locator("#undoBtn").scroll_into_view_if_needed()
             page.click("#undoBtn")
             page.wait_for_function("() => window.__inkdosHistoryFlag === 0")
             page.evaluate("() => document.getElementById('redoBtn').remove()")
@@ -105,6 +110,7 @@ def main() -> None:
               return !document.getElementById('deleteAnnotationBtn').disabled;
             }""")
             assert delete_probe is True
+            page.locator("#deleteAnnotationBtn").scroll_into_view_if_needed()
             page.click("#deleteAnnotationBtn")
             assert page.evaluate("() => window.__inkdosDeleteCalled") == 1
 
