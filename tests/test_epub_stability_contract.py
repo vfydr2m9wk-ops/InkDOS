@@ -27,6 +27,7 @@ def main() -> None:
     frame_module = read('apps/epub/runtime/frame/frame-menu.js')
     controls = read('apps/epub/ui/reader-controls.js')
     bindings = read('apps/epub/ui/reader-bindings.js')
+    navigation = read('apps/epub/ui/navigation-tools.js')
     session = read('apps/epub/session/book-session.js')
     package_reader = read('apps/epub/io/package-reader.js')
     service_worker = read('service-worker.js')
@@ -83,6 +84,7 @@ def main() -> None:
     require(app, 'ReaderControls.create', 'EPUB bootstrap')
     require(app, 'ReaderBindings.create', 'EPUB bootstrap')
     require(app, 'ReaderNavigationTools.create', 'EPUB bootstrap')
+    require(app, 'navigation:navigation.api', 'EPUB binding composition')
     require(app, 'globalThis.__InkEpubR4', 'EPUB stability surface')
     require(app, 'LocalAppFrame.installToolbarRail(E.toolbar)', 'EPUB frame composition')
     forbid(app, 'function installToolbarRail', 'EPUB bootstrap isolation')
@@ -90,15 +92,23 @@ def main() -> None:
     require(frame_module, 'function installToolbarRail(target)', 'EPUB frame authority')
     require(frame_module, 'NS.LocalAppFrame={create,configureOptionalHome,installToolbarRail}', 'EPUB frame authority')
 
-    # ReaderControls owns reader behavior; ReaderBindings alone owns DOM event wiring.
+    # ReaderControls owns reader behavior; ReaderBindings alone owns toolbar/control wiring.
     forbid(controls, 'addEventListener', 'EPUB reader semantic isolation')
+    for api in ('openNavigationSheet', 'closeNavigationSheet', 'toggleNavigationSheet'):
+        require(controls, api, 'EPUB navigation sheet API')
     require(bindings, 'addEventListener', 'EPUB reader binding authority')
+    require(bindings, "navigation.showTab('contents')", 'EPUB navigation binding')
     require(bindings, 'NS.ReaderBindings=Object.freeze({create})', 'EPUB reader binding authority')
     for api in (
         'goPage', 'setFlow', 'setFont', 'setFontStyle', 'setTheme', 'goLocator',
         'goPath', 'openFile', 'saveCopy', 'shareCopy', 'prepareExport',
     ):
         require(controls, api, 'EPUB reader API')
+
+    # Navigation features invoke semantic reader APIs, never toolbar controls.
+    require(navigation, 'reader.openNavigationSheet()', 'EPUB navigation semantic routing')
+    forbid(navigation, 'tocBtn.click()', 'EPUB navigation control coupling')
+    forbid(navigation, 'E.tocBtn.addEventListener', 'EPUB navigation control binding')
 
     require(session, 'loadCandidate', 'EPUB transactional session')
     require(session, 'isCurrent(candidate)', 'EPUB transactional session')

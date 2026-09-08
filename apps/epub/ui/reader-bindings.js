@@ -1,7 +1,7 @@
 (function(g){'use strict';
 const NS=g.InkDOS2Epub=g.InkDOS2Epub||{};
-function create({elements:E,reader}={}){
- if(!E||!reader)throw new Error('ReaderBindings requires elements and reader');
+function create({elements:E,reader,navigation}={}){
+ if(!E||!reader||!navigation)throw new Error('ReaderBindings requires elements, reader and navigation');
  let ro=null,touchStart=null;
  function closeSheets(except){for(const p of [E.appearance,E.highlight,E.toc])if(p!==except)p.hidden=true}
  function toggleSheet(panel){const opening=panel.hidden;closeSheets(opening?panel:null);panel.hidden=!opening}
@@ -12,8 +12,8 @@ function create({elements:E,reader}={}){
   E.file.addEventListener('change',()=>{const file=E.file.files&&E.file.files[0];if(file)reader.openFile(file)});
   E.save.addEventListener('click',()=>reader.saveCopy());
   E.share.addEventListener('click',()=>reader.shareCopy());
-  E.tocBtn.addEventListener('click',()=>toggleSheet(E.toc));
-  E.tocClose.addEventListener('click',()=>E.toc.hidden=true);
+  E.tocBtn.addEventListener('click',()=>{const opened=reader.toggleNavigationSheet();if(opened)navigation.showTab('contents')});
+  E.tocClose.addEventListener('click',()=>reader.closeNavigationSheet());
   E.tocList.addEventListener('click',event=>{const button=event.target.closest&&event.target.closest('[data-epub-toc-index]');if(button)reader.openTocEntry(button.dataset.epubTocIndex)});
   E.appearanceBtn.addEventListener('click',()=>toggleSheet(E.appearance));
   E.appearanceClose.addEventListener('click',()=>E.appearance.hidden=true);

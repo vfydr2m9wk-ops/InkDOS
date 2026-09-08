@@ -192,15 +192,21 @@ def main() -> None:
                 page.evaluate("() => { document.getElementById('appearanceBtn').remove(); globalThis.__InkEpubR4.setFont(20); globalThis.__InkEpubR4.setFontStyle('sans'); }")
                 page.wait_for_function("() => { const s=globalThis.__InkEpubR4.state(); return s.fontPx===20 && s.fontStyle==='sans'; }")
 
-                # Navigation remains available after removing the corresponding toolbar control.
-                # Capture the semantic result and locator in the same JS turn so a scroll observer
-                # cannot re-project reading position between two separate harness reads.
+                # Navigation must survive removal and invalidation of the toolbar control itself.
+                # This catches hidden programmatic dependencies on tocBtn.click().
                 navigation_probe = page.evaluate("""() => {
-                    document.getElementById('tocBtn').remove();
+                    const tocButton=document.getElementById('tocBtn');
+                    Object.defineProperty(tocButton,'click',{value:()=>{throw new Error('tocBtn.click dependency');},configurable:true});
+                    tocButton.remove();
+                    globalThis.__InkEpubR4.navigation.openNavigation('search');
+                    const navigationOpen=!document.getElementById('tocSheet').hidden;
+                    const searchOpen=!document.querySelector('[data-nav-panel="search"]').hidden;
                     const ok=globalThis.__InkEpubR4.goPath('OEBPS/ch2.xhtml','two');
                     const locator=globalThis.__InkEpubR4.state().locator;
-                    return {ok,locator};
+                    return {navigationOpen,searchOpen,ok,locator};
                 }""")
+                assert navigation_probe['navigationOpen'] is True, navigation_probe
+                assert navigation_probe['searchOpen'] is True, navigation_probe
                 assert navigation_probe['ok'] is True, navigation_probe
                 locator = navigation_probe['locator']
                 assert locator['chapter'] == 2, locator

@@ -4,6 +4,9 @@ const FONT_STYLES=Object.freeze({book:'Georgia,"Times New Roman",serif',classic:
 function create({elements:E,frame,renderer,session}){
  const state=session.state;let scrollTimer=null,persistTimer=null,suppressUntil=0;
  function closeSheets(){for(const p of [E.appearance,E.highlight,E.toc])p.hidden=true}
+ function openNavigationSheet(){E.appearance.hidden=true;E.highlight.hidden=true;E.toc.hidden=false;return true}
+ function closeNavigationSheet(){E.toc.hidden=true;return false}
+ function toggleNavigationSheet(){return E.toc.hidden?openNavigationSheet():closeNavigationSheet()}
  function notice(t,ms=2400){state.notice=String(t||'');clearTimeout(state.noticeTimer);updateUi();if(state.notice&&ms>0)state.noticeTimer=setTimeout(()=>{state.notice='';updateUi()},ms)}
  function theme(t){state.theme=['paper','sepia','sage','night'].includes(t)?t:'paper';E.viewport.className='reader-stage theme-'+state.theme+' mode-'+state.flow;for(const b of document.querySelectorAll('[data-theme-choice]'))b.classList.toggle('active',b.dataset.themeChoice===state.theme)}
  function capture(){if(!state.book)return state.locator;const loc=V.nearestAnchor(E.viewport,E.surface,state.flow);if(loc)state.locator=loc;return state.locator}
@@ -20,7 +23,7 @@ function create({elements:E,frame,renderer,session}){
  function goPage(i,behavior='smooth'){if(!state.book||state.flow!=='pages'||!state.metrics)return;pageState();i=V.clamp(Number(i)||0,0,state.pageCount-1);suppressUntil=performance.now()+220;E.viewport.scrollTo({left:i*state.metrics.availableWidth,top:0,behavior});setTimeout(()=>{pageState();state.locator=V.nearestAnchor(E.viewport,E.surface,state.flow)||state.locator;updateUi();schedulePersist();document.dispatchEvent(new CustomEvent('inkdos:epub-location',{detail:{locator:state.locator}}))},behavior==='smooth'?230:30)}
  function goLocator(loc){if(!session.locatorExists(state.book,loc))return false;state.locator={anchor:loc.anchor,chapter:Number(loc.chapter)||1,path:loc.path||'',fragment:loc.fragment||''};relayout(state.locator);schedulePersist(0);return true}
  function goPath(path,fragment){if(!state.book||!path)return false;const chapterIndex=state.book.chapters.findIndex(c=>c.path===path);if(chapterIndex<0)return false;const ch=state.book.chapters[chapterIndex];let block=null;if(fragment)block=ch.blocks.find(x=>x.sourceId===fragment);if(!block)block=ch.blocks[0];if(!block)return false;return goLocator({anchor:block.id,chapter:chapterIndex+1,path:ch.path,fragment:fragment||block.sourceId||''})}
- function openTocEntry(index){const entry=state.book&&state.book.toc[Number(index)];if(!entry)return false;if(goPath(entry.path,entry.fragment))notice('Opened '+entry.label,1200);E.toc.hidden=true;return true}
+ function openTocEntry(index){const entry=state.book&&state.book.toc[Number(index)];if(!entry)return false;if(goPath(entry.path,entry.fragment))notice('Opened '+entry.label,1200);closeNavigationSheet();return true}
  function buildToc(){E.tocList.replaceChildren();state.book.toc.forEach((entry,index)=>{const b=document.createElement('button');b.type='button';b.textContent=entry.label;b.dataset.epubTocIndex=String(index);E.tocList.append(b)})}
  async function prepareExport(){const p=session.prepareExport();updateUi();try{await p;updateUi()}catch(err){notice((err.code||'export')+': '+(err.message||err),5000)}}
  function annotationChanged(loc){A.render(E.surface,state.annotations);try{getSelection().removeAllRanges()}catch(_){}E.highlight.hidden=true;relayout(loc||state.locator);notice('Highlight updated · preparing edited copy',1800);prepareExport()}
@@ -35,7 +38,7 @@ function create({elements:E,frame,renderer,session}){
  function viewportResized(){const loc=capture();measure(loc)}
  function persistCurrentPosition(){capture();session.persist()}
  function initialize(){theme('paper');measure(null);updateUi()}
- const api=Object.freeze({state:()=>({...state,annotations:session.plainAnnotations(state.annotations),bookmarks:session.plainBookmarks(state.bookmarks,state.book)}),capture,goPage,setFlow,setFont,setFontStyle,setTheme,goLocator,goPath,openTocEntry,applyHighlight,removeHighlight,prepareExport,openFile,captureSelection,handleReaderLink,saveCopy,shareCopy,viewportScrolled,viewportResized,persistCurrentPosition,initialize,notice,centerError:()=>frame.centerError(E.title)});
+ const api=Object.freeze({state:()=>({...state,annotations:session.plainAnnotations(state.annotations),bookmarks:session.plainBookmarks(state.bookmarks,state.book)}),capture,goPage,setFlow,setFont,setFontStyle,setTheme,goLocator,goPath,openTocEntry,openNavigationSheet,closeNavigationSheet,toggleNavigationSheet,applyHighlight,removeHighlight,prepareExport,openFile,captureSelection,handleReaderLink,saveCopy,shareCopy,viewportScrolled,viewportResized,persistCurrentPosition,initialize,notice,centerError:()=>frame.centerError(E.title)});
  return Object.freeze({api});
 }
 NS.ReaderControls=Object.freeze({create});
