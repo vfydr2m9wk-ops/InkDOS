@@ -22,7 +22,8 @@ def main() -> None:
     baseline = (ROOT / "docs" / "STABILITY-FREEZE-2026-09-08.md").read_text(encoding="utf-8")
     assert RUNTIME_ANCHOR in baseline
     assert "A button is a command binding" in baseline or "a button is a command binding" in baseline
-    assert "PPT-P2/XLS-S1/XLS-S2" in baseline
+    for phase in ("PPT-P2", "XLS-S1", "XLS-S2"):
+        assert phase in baseline, phase
 
     required = [
         "tests/test_pdf_stability_contract.py",
