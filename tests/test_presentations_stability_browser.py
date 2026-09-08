@@ -63,6 +63,7 @@ def main() -> None:
             for command in (
                 "history.undo",
                 "history.redo",
+                "panel.toggle",
                 "slide.add",
                 "slide.duplicate",
                 "slide.delete",
@@ -74,6 +75,8 @@ def main() -> None:
                 assert command in command_ids, (browser_name, command, command_ids)
             assert page.locator("#undoBtn").get_attribute("data-command") == "history.undo"
             assert page.locator("#addSlideBtn").get_attribute("data-command") == "slide.add"
+            assert page.locator("#slidePanelBtn").get_attribute("data-command") == "panel.toggle"
+            assert page.locator("#slidePanelBtn").get_attribute("aria-expanded") == "true"
 
             # Slide structure operations must remain coherent with history.
             page.click("#addSlideBtn")
@@ -107,11 +110,14 @@ def main() -> None:
             active_thumb = page.locator("#slidePanelInner .slide-thumb.active")
             assert active_thumb.count() == 1
 
-            # Panel state and viewport layout survive repeated toggle cycles.
-            page.click("#slidePanelBtn")
+            # Panel state belongs to the panel; the toolbar control is only a binding/projection.
+            page.evaluate("() => document.getElementById('slidePanelBtn').remove()")
+            toggled = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('panel.toggle')")
+            assert toggled is True
             page.wait_for_function("() => globalThis.__inkdosPresentations.panel.isOpen === false")
             assert page.locator("#workspace").get_attribute("data-panel-open") == "false"
-            page.click("#slidePanelBtn")
+            toggled = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('panel.toggle')")
+            assert toggled is True
             page.wait_for_function("() => globalThis.__inkdosPresentations.panel.isOpen === true")
             assert page.locator("#workspace").get_attribute("data-panel-open") == "true"
 

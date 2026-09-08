@@ -21,7 +21,7 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   register('presentation.present.start',()=>slideshow.open(true),()=>session.active);
   register('history.undo',()=>{if(!history.undo())return false;selection.clear();refresh({thumbs:true,center:false});return true},()=>history.canUndo);
   register('history.redo',()=>{if(!history.redo())return false;selection.clear();refresh({thumbs:true,center:false});return true},()=>history.canRedo);
-  register('panel.toggle',()=>panel.toggle(),()=>session.active);
+  register('panel.toggle',()=>{panel.toggle();editor.sync();return true},()=>session.active);
   register('slide.add',()=>{history.transact('Add slide',()=>session.addSlide());selection.clear();onStructureChange?.();refresh({thumbs:true,center:true});return true},structureEditable);
   register('slide.duplicate',()=>{history.transact('Duplicate slide',()=>session.duplicateCurrent());selection.clear();onStructureChange?.();refresh({thumbs:true,center:true});return true},structureEditable);
   register('slide.delete',()=>{history.transact('Delete slide',()=>session.deleteCurrent());selection.clear();onStructureChange?.();refresh({thumbs:true,center:true});return true},()=>structureEditable()&&session.slides.length>1);
