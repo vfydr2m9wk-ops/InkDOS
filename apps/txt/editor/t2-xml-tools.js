@@ -1,8 +1,8 @@
 (function(g){'use strict';
 const NS=g.InkDOS2=g.InkDOS2||{},P=NS.TxtPolicy;
 const SYNTAX_PREVIEW_LIMIT=2*1024*1024,TREE_NODE_LIMIT=5000;
-function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={}){
-  if(!E||!state||!editor||!files||!commands)throw new Error('TxtT2XmlTools requires elements, state, editor, files and commands');
+function create({elements:E,state,editor,commands,beforeOpen=()=>{}}={}){
+  if(!E||!state||!editor||!commands)throw new Error('TxtT2XmlTools requires elements, state, editor and commands');
   const ui={};let viewMode='edit';
   function isXml(){return P.isXmlName(state.fileName)}
   function make(tag,props={}){const el=document.createElement(tag);for(const[k,v]of Object.entries(props)){if(k==='text')el.textContent=v;else if(k==='className')el.className=v;else if(k in el)el[k]=v;else el.setAttribute(k,v)}return el}

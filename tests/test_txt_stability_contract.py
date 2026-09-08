@@ -84,8 +84,8 @@ def main() -> None:
         'NS.TxtEditorController.create',
         'NS.TxtFileController.create',
         'NS.TxtCommands.create',
-        'NS.TxtT1Essentials.create({elements:E,state,editor,files,commands,beforeOpen:()=>{controls.closeListMenu();t2?.close()}})',
-        't1.install();t2=NS.TxtT2XmlTools.create({elements:E,state,editor,files,commands,beforeOpen:()=>t1?.closeTools()});t2.install()',
+        'NS.TxtT1Essentials.create({elements:E,state,editor,commands,beforeOpen:()=>{controls.closeListMenu();t2?.close()}})',
+        't1.install();t2=NS.TxtT2XmlTools.create({elements:E,state,editor,commands,beforeOpen:()=>t1?.closeTools()});t2.install()',
         'controls.bind({editor,files,state,commands},frameMenu,{beforeListOpen:()=>{t1?.closeTools();t2?.close()}})',
         'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
@@ -159,7 +159,7 @@ def main() -> None:
         forbid(controls, forbidden, f'Plain Text controls still own semantic behavior: {forbidden}')
 
     for needle in [
-        'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
+        'function create({elements:E,state,editor,commands,beforeOpen=()=>{}}={})',
         'function toggleFind(on)',
         "commands.register('find.open',()=>toggleFind(true))",
         "commands.register('find.close',()=>toggleFind(false))",
@@ -176,6 +176,7 @@ def main() -> None:
         "commands.execute('storage.encoding.set',ui.encodingSelect.value)",
         "commands.execute('storage.bom.set',ui.bomToggle.checked)",
         "commands.execute('storage.lineEnding.set'",
+        'editor.requestCheckpoint()',
         "document.dispatchEvent(new CustomEvent('inkdos:txt-storage-policy'",
         "document.addEventListener('inkdos:txt-storage-policy',syncTools)",
         'function find(step,query)',
@@ -185,6 +186,7 @@ def main() -> None:
     ]:
         require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
     for forbidden in [
+        'files',
         'editor.toggleFind',
         'nextElementSibling',
         'controls',
@@ -199,11 +201,11 @@ def main() -> None:
         "ui.encodingSelect.onchange=()=>{const next=",
         "ui.bomToggle.onchange=()=>{if(state.bom",
     ]:
-        forbid(t1, forbidden, f'Plain Text T1 must not delegate Find visibility or depend on sibling DOM order/controls: {forbidden}')
+        forbid(t1, forbidden, f'Plain Text T1 must not depend on persistence, delegate Find visibility, or depend on sibling/control DOM: {forbidden}')
 
     for needle in [
         'P=NS.TxtPolicy',
-        'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
+        'function create({elements:E,state,editor,commands,beforeOpen=()=>{}}={})',
         'function isXml(){return P.isXmlName(state.fileName)}',
         'function declarationEncoding(text){return P.declaredXmlEncoding(text)}',
         'function encodingCompatible(declared){return P.xmlEncodingCompatible(declared,state.encoding)}',
@@ -217,6 +219,7 @@ def main() -> None:
     ]:
         require(t2, needle, f'Plain Text T2 isolation contract missing: {needle}')
     for forbidden in [
+        'files',
         'nextElementSibling',
         'function declarationEncoding(text){const m=',
         'function encodingCompatible(declared){if(',
@@ -230,7 +233,7 @@ def main() -> None:
         "E.fontDown.addEventListener('click'",
         "E.fontUp.addEventListener('click'",
     ]:
-        forbid(t2, forbidden, f'Plain Text T2 must not duplicate storage policy or depend on sibling/DOM-order/view/storage control DOM: {forbidden}')
+        forbid(t2, forbidden, f'Plain Text T2 must not depend on persistence, duplicate storage policy, or depend on sibling/view/storage DOM: {forbidden}')
 
     for needle in [
         'function apply(editor,{wrap,fontSize})',
@@ -266,6 +269,9 @@ def main() -> None:
         'function doUndo()',
         'function doRedo()',
         'function markChanged()',
+        'function requestCheckpoint()',
+        'Promise.resolve(checkpointHandler())',
+        'state.debounce=setTimeout(requestCheckpoint,850)',
         'function setWrap(next)',
         'function setViewFont(size)',
         'function publishCommandState()',

@@ -14,8 +14,9 @@ function create({elements:E,state}={}){
   function publishCommandState(){document.dispatchEvent(new CustomEvent('inkdos:txt-command-state',{detail:{loaded:!!state.loaded,canUndo:!!state.history.canUndo,canRedo:!!state.history.canRedo}}))}
   function updateMeta(){E.encoding.textContent=encName();E.lineEnding.textContent=lineName(state.lineEnding);const t=E.editor.value;const lines=t.length?t.split('\n').length:1;const words=t.trim()?t.trim().split(/\s+/u).filter(Boolean).length:0;E.counts.textContent=`${lines} line${lines===1?'':'s'} · ${words} word${words===1?'':'s'} · ${t.length} char${t.length===1?'':'s'}`;E.dirty.hidden=!state.session.dirty;E.checkpoint.textContent=state.session.checkpointRevision===state.session.revision?'checkpoint ✓':'checkpoint …';E.export.textContent=state.lastReceipt?`export r${state.session.exportRevision??'?'} requested`:'no export';publishCommandState();updateCursor()}
   function showEditor(){state.loaded=true;if(E.startState)E.startState.hidden=true;E.surface.hidden=false;E.toolbar.hidden=false}
+  function requestCheckpoint(){return Promise.resolve(checkpointHandler()).catch(e=>{setStatus('Recovery unavailable: '+e.message,'state-warn');return false})}
   function markChanged(){state.session.mutate();state.history.push(E.editor.value);updateMeta();scheduleCheckpoint()}
-  function scheduleCheckpoint(){clearTimeout(state.debounce);state.debounce=setTimeout(()=>checkpointHandler().catch(e=>setStatus('Recovery unavailable: '+e.message,'state-warn')),850)}
+  function scheduleCheckpoint(){clearTimeout(state.debounce);state.debounce=setTimeout(requestCheckpoint,850)}
   function applyPolicy(){NS.TxtPolicy.apply(E.editor,{wrap:state.wrap,fontSize:state.fontSize});document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy',{detail:{wrap:state.wrap,fontSize:state.fontSize}}))}
   function doUndo(){const v=state.history.undo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
   function doRedo(){const v=state.history.redo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
@@ -36,7 +37,7 @@ function create({elements:E,state}={}){
   function setWrap(next){state.wrap=!!next;applyPolicy();updateMeta();scheduleCheckpoint()}
   function setMetrics(m){state.metrics=m;document.body.dataset.viewport=m.availableWidth.toFixed(0)+'x'+m.availableHeight.toFixed(0)}
   function debug(){return {changeIndent,applyListFamily,continueListOnEnter,clampFontSize,titleCenterError:()=>NS.AppFrame.centerError(E.title),viewport:()=>state.metrics,toolbarOverflow:()=>({clientWidth:E.toolbar.clientWidth,scrollWidth:E.toolbar.scrollWidth,scrollLeft:E.toolbar.scrollLeft})}}
-  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,doUndo,doRedo,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
+  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,requestCheckpoint,doUndo,doRedo,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
 }
 NS.TxtEditorController=Object.freeze({create});
 })(globalThis);
