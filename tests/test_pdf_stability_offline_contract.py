@@ -34,6 +34,8 @@ def main() -> None:
         precache_entry = f'"./apps/pdf/{relative}"'
         assert precache_entry in service_worker, f"PDF dynamic asset missing from offline APP_SHELL: {relative}"
 
+    assert '"./apps/pdf/"' in service_worker, "Canonical PDF directory navigation is not handled offline"
+    assert '"./apps/pdf/index.html"' in service_worker
     assert "navigator.serviceWorker.register('./service-worker.js'" in root_index
     assert "service-worker.js" in workflow
     assert "test_pdf_stability_offline.py" in workflow

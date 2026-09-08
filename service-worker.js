@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-pdf-offline-seq81';
+const CACHE_NAME='inkdos-v2.0.12-stability-pdf-offline-seq82';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -224,9 +224,9 @@ const APP_SHELL=[
   "./apps/epub/view/reader.css",
   "./apps/epub/view/renderer.js"
 ];
-const NAVIGATION_PATHS=new Set(["./apps/pdf/index.html", "./index.html", "./apps/documents/index.html", "./apps/spreadsheets/index.html", "./apps/presentations/index.html", "./apps/txt/index.html", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
+const NAVIGATION_PATHS=new Set(["./", "./index.html", "./apps/pdf/", "./apps/pdf/index.html", "./apps/documents/", "./apps/documents/index.html", "./apps/spreadsheets/", "./apps/spreadsheets/index.html", "./apps/presentations/", "./apps/presentations/index.html", "./apps/txt/", "./apps/txt/index.html", "./apps/epub/", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 const KNOWN=new Set(APP_SHELL.map(p=>new URL(p,self.registration.scope).href));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';return new Request(u.href,{method:'GET'})}
 self.addEventListener('install',event=>event.waitUntil((async()=>{const c=await caches.open(CACHE_NAME);await c.addAll(APP_SHELL);await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const name of await caches.keys())if(name!==CACHE_NAME&&name.startsWith('inkdos-'))await caches.delete(name);await self.clients.claim()})()));
-self.addEventListener('fetch',event=>{const r=event.request;if(r.method!=='GET')return;const u=new URL(r.url);if(u.origin!==self.location.origin)return;const k=key(r);const known=KNOWN.has(k.url)||(r.mode==='navigate'&&NAVIGATION_PATHS.has(new URL(k.url).pathname));if(!known)return;event.respondWith((async()=>{const c=await caches.open(CACHE_NAME);try{const response=await fetch(r);if(response&&response.ok&&response.type!=='opaque')await c.put(k,response.clone());return response}catch(error){const cached=await c.match(k);if(cached)return cached;throw error}})())});
+self.addEventListener('fetch',event=>{const r=event.request;if(r.method!=='GET')return;const u=new URL(r.url);if(u.origin!==self.location.origin)return;const k=key(r);const known=KNOWN.has(k.url)||(r.mode==='navigate'&&NAVIGATION_PATHS.has(new URL(k.url).pathname));if(!known)return;event.respondWith((async()=>{const c=await caches.open(CACHE_NAME);try{const response=await fetch(r);if(response&&response.ok&&response.type!=='opaque')await c.put(k,response.clone());return response}catch(error){const cached=await c.match(k);if(cached)return cached;if(r.mode==='navigate'){const path=new URL(k.url).pathname.endsWith('/')?new URL('index.html',k.url).href:null;if(path){const fallback=await c.match(path);if(fallback)return fallback}}throw error}})())});
