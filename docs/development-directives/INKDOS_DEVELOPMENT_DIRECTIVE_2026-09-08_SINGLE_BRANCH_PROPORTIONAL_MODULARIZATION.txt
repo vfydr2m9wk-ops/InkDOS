@@ -1,0 +1,203 @@
+INKDOS DEVELOPMENT DIRECTIVE — SINGLE-BRANCH STABILITY AND PROPORTIONAL MODULARIZATION
+Date: 2026-09-08
+Status: ACTIVE / BLOCKING
+Scope: InkDOS 2.x stability program and all work performed under audit/stability-functional-isolation until superseded.
+
+1. PURPOSE
+
+This directive supersedes any interpretation of earlier stability directives that would encourage branch proliferation or excessive physical fragmentation. The objective is to maximize functional isolation while minimizing administrative and source-code fragmentation.
+
+The program remains a stability program, not a feature-expansion program.
+
+2. SINGLE WORKING BRANCH POLICY
+
+The authoritative working branch for the entire current stability program is:
+
+audit/stability-functional-isolation
+
+Use this branch for all workspace audits, bug fixes, regression tests, architectural cleanup, CI corrections, offline/service-worker corrections, and phase transitions whenever technically possible.
+
+Do NOT create a new branch for:
+- an individual bug;
+- a single workspace;
+- a cleanup increment;
+- a failing test;
+- a CI correction;
+- a refactor step;
+- a phase transition;
+- a stability recheck.
+
+A new branch is permitted only when there is a genuine need to preserve an incompatible or parallel line of development. Temporary branches, when exceptionally required, must be removed after integration.
+
+Main remains the approved integrated baseline. Backup branches are exceptional snapshots, not a routine workflow.
+
+3. AUTONOMOUS PHASE PROGRESSION
+
+Work continues without requesting confirmation after each internal increment.
+
+For every increment:
+- implement the smallest coherent change;
+- run the applicable regression and stability gates;
+- if green, continue automatically;
+- if red, do not advance;
+- document the failure when useful;
+- add or strengthen an automated regression test when feasible;
+- correct the defect on the same working branch;
+- rerun the gate;
+- repeat until green.
+
+A red workflow is a blocking signal and must not be normalized or bypassed.
+
+4. AUDIT ORDER
+
+The stability program continues in this order:
+
+1. PDF Workspace
+2. Documents
+3. Presentations
+4. Plain Text
+5. EPUB Reader
+6. Spreadsheets
+7. Cross-suite frame/bootstrap/offline/service-worker audit
+8. Stability Freeze
+
+The functional roadmap remains suspended until the stability gate is completed and frozen. Do not advance PPT-P2, XLS-S1, XLS-S2, final roadmap Audit, or unrelated feature work during this program.
+
+5. PROPORTIONAL MODULARIZATION PRINCIPLE
+
+Core rule:
+
+MAXIMUM FUNCTIONAL ISOLATION WITH ONLY THE MINIMUM NECESSARY PHYSICAL FRAGMENTATION.
+
+Factor code by natural responsibility, not by file size, function count, button count, formal layer quota, or aesthetic preference.
+
+A button is only a binding to a command. Moving, removing, hiding, replacing, or re-rendering a control must not destroy the command or unrelated behavior.
+
+However, distinct responsibilities do not automatically require distinct files. Responsibilities may remain in one physical module when doing so preserves clarity and does not introduce coupling.
+
+Create a new module only when the split materially improves one or more of:
+- ownership clarity;
+- lifecycle isolation;
+- command/control independence;
+- state authority;
+- testability;
+- fault containment;
+- import/export isolation;
+- renderer isolation;
+- offline/bootstrap reliability;
+- regression radius.
+
+Do not create modules merely to reduce line count.
+
+6. OVER-FRAGMENTATION WARNING SIGNS
+
+Treat the following as candidates for consolidation:
+- tiny files that only forward one call;
+- one-file-per-button structures;
+- one-file-per-trivial-operation structures;
+- artificial Manager/Controller/Registry/Adapter/Service chains without independent lifecycle or responsibility;
+- duplicated state representations across UI, toolbar, viewport, history, and persistence;
+- modules whose only value is another level of indirection;
+- splits that increase the number of files needed to understand or change a feature without reducing external dependencies.
+
+If a feature becomes harder to remove, replace, debug, or reason about after refactoring, and its coupling did not decrease, the refactor is considered unsuccessful.
+
+7. NATURAL ARCHITECTURAL BOUNDARIES
+
+Each workspace must preserve distinguishable responsibilities for:
+- app frame / shell;
+- toolbar / command surface;
+- command semantics / routing;
+- feature logic;
+- viewport / renderer;
+- session / history / authoritative state;
+- persistence / import / export.
+
+These are responsibility boundaries, not mandatory one-file-per-layer requirements.
+
+A compact implementation is preferred when it preserves the same isolation guarantees.
+
+8. STATE AUTHORITY
+
+Avoid multiple competing representations of the same fact.
+
+Selection, current page/slide/cell, zoom, dirty state, history position, active tool, and current document/workbook/presentation state should each have a clear authority. UI controls project state; they must not become the authoritative owner of state merely because they display it.
+
+9. LIFECYCLE AND EVENT DISCIPLINE
+
+Every feature must have explicit ownership of its listeners, observers, timers, subscriptions, and temporary DOM state.
+
+Avoid:
+- duplicated global keydown handlers;
+- repeated resize handlers;
+- hidden listeners surviving feature reinitialization;
+- MutationObservers or ResizeObservers without clear ownership;
+- bootstrap-order dependencies that are not explicit;
+- cross-feature DOM mutation.
+
+Where a feature supports reinitialization or replacement, cleanup must be testable.
+
+10. STABILITY AUDIT BETWEEN PHASES
+
+Before leaving any workspace phase, run an explicit stability audit.
+
+The phase-transition audit must include, as applicable:
+- clean boot;
+- New/Open;
+- real fixture load;
+- independent command invocation;
+- command/control independence;
+- Undo/Redo;
+- Delete behavior;
+- scrolling after editing, panels, zoom, and navigation interactions;
+- correct panel state;
+- keyboard shortcut and button equivalence;
+- open → modify → save → reopen;
+- no-modification save integrity;
+- feature/viewport/frame ownership boundaries;
+- control removal or reorder independence;
+- listener/lifecycle stability;
+- no uncaught runtime errors;
+- offline/service-worker asset completeness;
+- already-frozen regression suites;
+- supported browser matrix, including WebKit where practical.
+
+A workspace is not considered complete merely because its newest tests pass. The transition audit must also verify that previously completed stability baselines remain green.
+
+11. REGRESSION-FIRST RULE
+
+Every reproduced regression should receive an automated regression test before or together with its fix when feasible.
+
+Manual user testing is secondary. Automated regression coverage is the primary gate.
+
+12. COMMIT POLICY
+
+Prefer grouped logical commits after validation.
+
+Avoid commit noise for cosmetic movement or mechanical fragmentation. A commit should represent a coherent stability, isolation, consolidation, or regression-test increment.
+
+13. CURRENT APPLICATION TO PDF AND DOCUMENTS
+
+PDF established the first stability boundaries but revealed an upper limit for physical granularity. Small one-operation Page Tools action files are not a pattern to reproduce automatically in other workspaces. They may be consolidated later if consolidation preserves behavior and isolation.
+
+Documents is the current active audit front. Its next architectural target is to separate command semantics from UI bindings using the minimum number of modules necessary. Do not create one module per command or per toolbar control.
+
+14. FINAL FREEZE CRITERION
+
+The stability program may freeze only when:
+- all six workspace audits are complete;
+- discovered regressions are fixed or explicitly disproved;
+- each workspace passes its phase-transition stability audit;
+- command/control independence is demonstrated;
+- state/lifecycle ownership is coherent;
+- over-fragmentation has been reviewed and unnecessary micro-modules consolidated where appropriate;
+- offline/service-worker integrity passes;
+- cross-suite frame/bootstrap isolation passes;
+- the supported browser regression matrix passes to the declared support level;
+- the final baseline is documented and frozen.
+
+15. OPERATING MAXIM
+
+ISOLATE RESPONSIBILITIES, NOT EVERY FUNCTION.
+
+FAULT ISOLATION IS THE GOAL; FILE COUNT IS NOT A QUALITY METRIC.
