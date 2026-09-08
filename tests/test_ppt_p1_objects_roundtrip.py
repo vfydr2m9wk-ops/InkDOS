@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import os,socket,subprocess,sys,time
+import base64,os,socket,subprocess,sys,time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -8,6 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 PORT=8770
 BASE=f'http://127.0.0.1:{PORT}'
 PNG_B64='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2nJsAAAAASUVORK5CYII='
+PPTX_MIME='application/vnd.openxmlformats-officedocument.presentationml.presentation'
 
 def wait_port():
     deadline=time.time()+10
@@ -41,15 +42,15 @@ def main():
             page=browser.new_page(viewport={'width':1400,'height':980})
             page.goto(BASE+'/apps/presentations/',wait_until='load')
             page.wait_for_function('() => !!globalThis.InkDOS2Presentations?.PresentationsApp?.p1Tools')
-            setup=page.evaluate(r"""async()=>{
-              const NS=globalThis.InkDOS2Presentations,M=NS.PresentationModel,app=NS.PresentationsApp;
-              const src=new NS.PresentationSession();src.resetNew();src.slides[0].objects[0].text='Imported Home Slide';src.slides[0].objects[0].paragraphs=M.normalizeParagraphs(null,'Imported Home Slide',src.slides[0].objects[0]);
-              const sourceBytes=await NS.PptxWriter.build(src),opened=await app.open(new File([sourceBytes],'Objects.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-              const shape=document.getElementById('pptP1Shape');shape.value='ellipse';shape.dispatchEvent(new Event('change',{bubbles:true}));
-              await new Promise(r=>requestAnimationFrame(r));const o=app.selection.getObject(app.session);app.p1Tools.applyFill('#336699');app.p1Tools.applyBorder('#993333');
-              return{opened:!!opened,shapeId:o?.id,overlay:!!document.querySelector('.ppt-p1-object-overlay'),handles:document.querySelectorAll('.ppt-p1-handle').length,before:{x:o?.x,y:o?.y,w:o?.w,h:o?.h,rotation:o?.rotation}};
+            source_b64=page.evaluate(r"""async()=>{
+              const NS=globalThis.InkDOS2Presentations,M=NS.PresentationModel,src=new NS.PresentationSession();src.resetNew();src.slides[0].objects[0].text='Imported Home Slide';src.slides[0].objects[0].paragraphs=M.normalizeParagraphs(null,'Imported Home Slide',src.slides[0].objects[0]);const bytes=await NS.PptxWriter.build(src);let s='',chunk=0x8000;for(let i=0;i<bytes.length;i+=chunk)s+=String.fromCharCode(...bytes.subarray(i,i+chunk));return btoa(s)
             }""")
-            assert setup['opened'] and setup['shapeId'] and setup['overlay'] and setup['handles']==3,setup
+            page.locator('#fileInput').set_input_files(files=[{'name':'Objects.pptx','mimeType':PPTX_MIME,'buffer':base64.b64decode(source_b64)}])
+            page.wait_for_function("() => globalThis.__inkdosPresentations?.session?.sourceKind==='pptx' && document.getElementById('startState')?.hidden===true")
+            setup=page.evaluate(r"""async()=>{
+              const app=globalThis.__inkdosPresentations;const shape=document.getElementById('pptP1Shape');shape.value='ellipse';shape.dispatchEvent(new Event('change',{bubbles:true}));await new Promise(r=>requestAnimationFrame(r));const o=app.selection.getObject(app.session);app.p1Tools.applyFill('#336699');app.p1Tools.applyBorder('#993333');return{opened:app.session.sourceKind==='pptx',startHidden:document.getElementById('startState')?.hidden===true,shapeId:o?.id,overlay:!!document.querySelector('.ppt-p1-object-overlay'),handles:document.querySelectorAll('.ppt-p1-handle').length,before:{x:o?.x,y:o?.y,w:o?.w,h:o?.h,rotation:o?.rotation}};
+            }""")
+            assert setup['opened'] and setup['startHidden'] and setup['shapeId'] and setup['overlay'] and setup['handles']==3,setup
             setup['hitTargets']={s:hit_target(page,s) for s in ['.ppt-p1-handle.move','.ppt-p1-handle.resize','.ppt-p1-handle.rotate']}
             assert all(v and 'ppt-p1-handle' in str(v.get('cls','')) for v in setup['hitTargets'].values()),setup
             drag(page,'.ppt-p1-handle.move',36,24)
@@ -68,7 +69,7 @@ def main():
               const built=await NS.PptxPreservationWriter.build(app.session),zip=await JSZip.loadAsync(built.bytes,{checkCRC32:true}),part=built.receipt.slideMappings[0].slidePart,slideXml=await zip.file(part).async('text'),rels=await zip.file(part.replace('/slides/','/slides/_rels/')+'.rels').async('text'),media=Object.keys(zip.files).filter(x=>x.startsWith('ppt/media/inkdos'));
               const decoded=await NS.PptxOpenController.decodePptx(built.bytes,'Objects-roundtrip.pptx'),d=decoded.slides[0],decodedState={count:d.objects.length,types:d.objects.map(o=>o.type),texts:d.objects.filter(o=>o.type==='text').map(o=>({text:o.text,color:o.color,bullet:o.paragraphs?.[0]?.bullet,x:o.x,y:o.y,w:o.w,h:o.h})),shapes:d.objects.filter(o=>o.type==='shape').map(o=>({shapeType:o.shapeType,fill:o.fill,line:o.line,x:o.x,y:o.y,w:o.w,h:o.h,rotation:o.rotation})),images:d.objects.filter(o=>o.type==='image').map(o=>({mime:o.mime,x:o.x,y:o.y,w:o.w,h:o.h}))};
               const reopened=await app.open(new File([built.bytes],'Objects-roundtrip.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const reopenedTypes=app.session.currentSlide.objects.map(o=>o.type);
-              const fresh=new NS.PresentationSession();fresh.resetNew();const fs=fresh.addShape('roundRect');fs.fill='#445566';fs.rotation=17;const fi=fresh.addImage({src:'data:image/png;base64,'+pngB64,mime:'image/png',widthEmu:2400000,heightEmu:1600000});const ft=fresh.addText();ft.text='Fresh bullet';ft.paragraphs=M.normalizeParagraphs(null,ft.text,ft);ft.paragraphs[0].bullet='•';ft.color='#AA2244';for(const r of ft.paragraphs[0].runs)r.color=ft.color;const freshBytes=await NS.PptxWriter.build(fresh),freshDecoded=await NS.PptxOpenController.decodePptx(freshBytes,'Fresh.pptx');
+              const fresh=new NS.PresentationSession();fresh.resetNew();const fs=fresh.addShape('roundRect');fs.fill='#445566';fs.rotation=17;fresh.addImage({src:'data:image/png;base64,'+pngB64,mime:'image/png',widthEmu:2400000,heightEmu:1600000});const ft=fresh.addText();ft.text='Fresh bullet';ft.paragraphs=M.normalizeParagraphs(null,ft.text,ft);ft.paragraphs[0].bullet='•';ft.color='#AA2244';for(const r of ft.paragraphs[0].runs)r.color=ft.color;const freshBytes=await NS.PptxWriter.build(fresh),freshDecoded=await NS.PptxOpenController.decodePptx(freshBytes,'Fresh.pptx');
               return{afterShape,textState,imageState,receipt:built.receipt,slideXml,rels,media,decodedState,reopened:!!reopened,reopenedTypes,fresh:{types:freshDecoded.slides[0].objects.map(o=>o.type),texts:freshDecoded.slides[0].objects.filter(o=>o.type==='text').map(o=>o.text),shapes:freshDecoded.slides[0].objects.filter(o=>o.type==='shape').map(o=>({shapeType:o.shapeType,rotation:o.rotation,fill:o.fill})),images:freshDecoded.slides[0].objects.filter(o=>o.type==='image').length}};
             }""",PNG_B64)
             browser.close()
