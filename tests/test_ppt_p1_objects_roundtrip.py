@@ -18,6 +18,12 @@ def wait_port():
         time.sleep(.1)
     raise RuntimeError('Local test server did not start')
 
+def hit_target(page,selector):
+    box=page.locator(selector).bounding_box()
+    assert box,selector
+    x=box['x']+box['width']/2;y=box['y']+box['height']/2
+    return page.evaluate("""p=>{const e=document.elementFromPoint(p.x,p.y);return e?{tag:e.tagName,cls:e.className||'',handle:e.dataset?.p1Handle||null,objectId:e.dataset?.objectId||null}:null}""",{'x':x,'y':y})
+
 def drag(page,selector,dx,dy):
     box=page.locator(selector).bounding_box()
     assert box,selector
@@ -44,6 +50,8 @@ def main():
               return{opened:!!opened,shapeId:o?.id,overlay:!!document.querySelector('.ppt-p1-object-overlay'),handles:document.querySelectorAll('.ppt-p1-handle').length,before:{x:o?.x,y:o?.y,w:o?.w,h:o?.h,rotation:o?.rotation}};
             }""")
             assert setup['opened'] and setup['shapeId'] and setup['overlay'] and setup['handles']==3,setup
+            setup['hitTargets']={s:hit_target(page,s) for s in ['.ppt-p1-handle.move','.ppt-p1-handle.resize','.ppt-p1-handle.rotate']}
+            assert all(v and 'ppt-p1-handle' in str(v.get('cls','')) for v in setup['hitTargets'].values()),setup
             drag(page,'.ppt-p1-handle.move',36,24)
             drag(page,'.ppt-p1-handle.resize',42,30)
             drag(page,'.ppt-p1-handle.rotate',-34,48)
@@ -65,9 +73,9 @@ def main():
             }""",PNG_B64)
             browser.close()
         a=result['afterShape'];b=setup['before']
-        assert a['x']!=b['x'] or a['y']!=b['y'],result
-        assert a['w']>b['w'] and a['h']>b['h'],result
-        assert abs(a['rotation'])>1,result
+        assert a['x']!=b['x'] or a['y']!=b['y'],{'setup':setup,'result':result}
+        assert a['w']>b['w'] and a['h']>b['h'],{'setup':setup,'result':result}
+        assert abs(a['rotation'])>1,{'setup':setup,'result':result}
         assert a['fill'].lower()=='#336699' and a['line']['color'].lower()=='#993333',result
         assert result['textState']['bullet']=='•' and result['textState']['color'].lower()=='#2244aa',result
         assert result['imageState']['line']['color'].lower()=='#117744',result
