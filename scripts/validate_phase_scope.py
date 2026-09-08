@@ -43,17 +43,40 @@ def stability_scope(path: Path) -> tuple[str, set[str]] | None:
     if not path.is_file():
         return None
     state = load_json(path)
-    if state.get("active") is not True:
+    active = state.get("active")
+    program = state.get("program")
+    if program != "stability-functional-isolation":
+        if active is True:
+            raise SystemExit("Invalid active stability program")
         return None
-    if state.get("program") != "stability-functional-isolation":
-        raise SystemExit("Invalid active stability program")
+
     order = [item for item in state.get("auditOrder", []) if item in WORKSPACES]
-    current = state.get("currentWorkspace")
     completed = state.get("completedWorkspaces", [])
-    if current not in WORKSPACES or current not in order:
-        raise SystemExit("Invalid currentWorkspace in STABILITY_STATE.json")
     if any(item not in WORKSPACES for item in completed) or len(completed) != len(set(completed)):
         raise SystemExit("Invalid completedWorkspaces in STABILITY_STATE.json")
+
+    # A completed stability program remains the governing scope while its frozen
+    # baseline is promoted to main. Do not fall back to the unrelated functional
+    # roadmap merely because the stability program is no longer active.
+    if active is False and state.get("currentWorkspace") == "freeze":
+        frozen = state.get("freezeCandidate") or {}
+        if frozen.get("status") != "frozen":
+            raise SystemExit("Inactive stability freeze must have status=frozen")
+        if set(order) != WORKSPACES or len(order) != len(WORKSPACES):
+            raise SystemExit("Frozen stability auditOrder must contain all six workspaces exactly once")
+        if completed != order:
+            raise SystemExit(
+                "Frozen STABILITY_STATE.json must list every audited workspace in order; "
+                f"expected completedWorkspaces={order}, got {completed}"
+            )
+        return "stability:freeze", set(order)
+
+    if active is not True:
+        return None
+
+    current = state.get("currentWorkspace")
+    if current not in WORKSPACES or current not in order:
+        raise SystemExit("Invalid currentWorkspace in STABILITY_STATE.json")
     current_index = order.index(current)
     expected_completed = order[:current_index]
     if completed != expected_completed:
