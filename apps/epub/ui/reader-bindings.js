@@ -14,6 +14,8 @@ function create({elements:E,reader,navigation}={}){
   E.share.addEventListener('click',()=>reader.shareCopy());
   E.tocBtn.addEventListener('click',()=>{const opened=reader.toggleNavigationSheet();if(opened)navigation.showTab('contents')});
   E.tocClose.addEventListener('click',()=>reader.closeNavigationSheet());
+  if(E.bookmarkBtn)E.bookmarkBtn.addEventListener('click',()=>navigation.toggleBookmark());
+  if(E.searchBtn)E.searchBtn.addEventListener('click',()=>navigation.openNavigation('search'));
   E.tocList.addEventListener('click',event=>{const button=event.target.closest&&event.target.closest('[data-epub-toc-index]');if(button)reader.openTocEntry(button.dataset.epubTocIndex)});
   E.appearanceBtn.addEventListener('click',()=>toggleSheet(E.appearance));
   E.appearanceClose.addEventListener('click',()=>E.appearance.hidden=true);

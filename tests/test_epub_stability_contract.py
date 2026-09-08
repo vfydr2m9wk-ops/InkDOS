@@ -84,6 +84,8 @@ def main() -> None:
     require(app, 'ReaderControls.create', 'EPUB bootstrap')
     require(app, 'ReaderBindings.create', 'EPUB bootstrap')
     require(app, 'ReaderNavigationTools.create', 'EPUB bootstrap')
+    require(app, "bookmarkBtn:$('bookmarkBtn')", 'EPUB optional control composition')
+    require(app, "searchBtn:$('searchBtn')", 'EPUB optional control composition')
     require(app, 'navigation:navigation.api', 'EPUB binding composition')
     require(app, 'globalThis.__InkEpubR4', 'EPUB stability surface')
     require(app, 'LocalAppFrame.installToolbarRail(E.toolbar)', 'EPUB frame composition')
@@ -92,12 +94,14 @@ def main() -> None:
     require(frame_module, 'function installToolbarRail(target)', 'EPUB frame authority')
     require(frame_module, 'NS.LocalAppFrame={create,configureOptionalHome,installToolbarRail}', 'EPUB frame authority')
 
-    # ReaderControls owns reader behavior; ReaderBindings alone owns toolbar/control wiring.
+    # ReaderControls owns reader behavior; ReaderBindings owns toolbar/control wiring.
     forbid(controls, 'addEventListener', 'EPUB reader semantic isolation')
     for api in ('openNavigationSheet', 'closeNavigationSheet', 'toggleNavigationSheet'):
         require(controls, api, 'EPUB navigation sheet API')
     require(bindings, 'addEventListener', 'EPUB reader binding authority')
     require(bindings, "navigation.showTab('contents')", 'EPUB navigation binding')
+    require(bindings, "if(E.bookmarkBtn)E.bookmarkBtn.addEventListener('click',()=>navigation.toggleBookmark())", 'EPUB optional bookmark binding')
+    require(bindings, "if(E.searchBtn)E.searchBtn.addEventListener('click',()=>navigation.openNavigation('search'))", 'EPUB optional search binding')
     require(bindings, 'NS.ReaderBindings=Object.freeze({create})', 'EPUB reader binding authority')
     for api in (
         'goPage', 'setFlow', 'setFont', 'setFontStyle', 'setTheme', 'goLocator',
@@ -109,6 +113,10 @@ def main() -> None:
     require(navigation, 'reader.openNavigationSheet()', 'EPUB navigation semantic routing')
     forbid(navigation, 'tocBtn.click()', 'EPUB navigation control coupling')
     forbid(navigation, 'E.tocBtn.addEventListener', 'EPUB navigation control binding')
+    forbid(navigation, 'ui.searchBtn.addEventListener', 'EPUB search toolbar coupling')
+    forbid(navigation, 'ui.bookmarkBtn.addEventListener', 'EPUB bookmark toolbar coupling')
+    require(navigation, 'toggleBookmark', 'EPUB bookmark semantic API')
+    require(navigation, 'openNavigation', 'EPUB search/navigation semantic API')
 
     require(session, 'loadCandidate', 'EPUB transactional session')
     require(session, 'isCurrent(candidate)', 'EPUB transactional session')

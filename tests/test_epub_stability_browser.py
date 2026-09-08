@@ -122,6 +122,36 @@ def main() -> None:
                 page.reload(wait_until='load')
                 page.wait_for_function('() => !!navigator.serviceWorker.controller')
 
+                # Optional toolbar controls must not be bootstrap dependencies. Simulate a
+                # shell variant where Search and Bookmark cannot be resolved by getElementById.
+                optional_errors: list[str] = []
+                optional_page = context.new_page()
+                optional_page.on('pageerror', lambda exc: optional_errors.append(f'pageerror: {exc}'))
+                optional_page.on('console', lambda msg: optional_errors.append(f'console.error: {msg.text}') if msg.type == 'error' else None)
+                optional_page.add_init_script("""() => {
+                    const original=Document.prototype.getElementById;
+                    Document.prototype.getElementById=function(id){
+                        if(location.pathname.startsWith('/apps/epub/') && (id==='searchBtn'||id==='bookmarkBtn'))return null;
+                        return original.call(this,id);
+                    };
+                }""")
+                optional_page.goto(BASE + '/apps/epub/', wait_until='load')
+                optional_page.wait_for_function('() => !!globalThis.__InkEpubR4')
+                optional_probe = optional_page.evaluate("""() => {
+                    globalThis.__InkEpubR4.navigation.openNavigation('search');
+                    globalThis.__InkEpubR4.navigation.toggleBookmark();
+                    return {
+                        navigationOpen:!document.querySelector('#tocSheet').hidden,
+                        searchOpen:!document.querySelector('[data-nav-panel="search"]').hidden,
+                        searchLookup:document.getElementById('searchBtn')===null,
+                        bookmarkLookup:document.getElementById('bookmarkBtn')===null,
+                    };
+                }""")
+                assert all(optional_probe.values()), (browser_name, optional_probe)
+                if optional_errors:
+                    raise AssertionError('\n'.join(optional_errors))
+                optional_page.close()
+
                 page.goto(BASE + '/apps/epub/', wait_until='load')
                 page.wait_for_function('() => !!globalThis.__InkEpubR4')
                 page.wait_for_selector('.inkdos-toolbar-rail')
