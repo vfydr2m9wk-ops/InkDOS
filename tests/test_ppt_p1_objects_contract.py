@@ -19,6 +19,7 @@ def main():
     tools=(APP/'ui'/'ppt-p1-tools.js').read_text(encoding='utf-8')
     save=(APP/'io'/'save-controller.js').read_text(encoding='utf-8')
     writer=(APP/'io'/'ppt-p1-object-writer.js').read_text(encoding='utf-8')
+    sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
     for needle in ['addImage','addShape','applyLayout','twoContent','section','importedUnmapped']:
         require(session,needle,f'PPT-P1 object model contract missing: {needle}')
     for needle in ['ppt-p1-object-overlay','ppt-p1-handle','Move object','Resize object','Rotate object','commitFromBefore']:
@@ -31,10 +32,12 @@ def main():
         require(writer,needle,f'PPT-P1 object writer contract missing: {needle}')
     for needle in ['ui/ppt-p1-tools.js','get p1Tools()']:
         require(app,needle,f'PPT-P1 app integration missing: {needle}')
+    for needle in ['./apps/presentations/io/ppt-p1-structure-writer.js','./apps/presentations/io/ppt-p1-object-writer.js','./apps/presentations/ui/ppt-p1-tools.js']:
+        require(sw,needle,f'PPT-P1 offline shell contract missing: {needle}')
     combined='\n'.join([app,session,surface,tools,save,writer])
     for sibling in ['apps/documents/','apps/pdf/','apps/spreadsheets/','apps/epub/','apps/txt/']:
         if sibling in combined:
             raise SystemExit('PPT-P1 object editing contains a sibling-workspace runtime dependency')
-    print('PPT-P1 objects/geometry/styles/layouts static and syntax contract passed.')
+    print('PPT-P1 objects/geometry/styles/layouts static, syntax and offline-shell contract passed.')
 
 if __name__=='__main__':main()
