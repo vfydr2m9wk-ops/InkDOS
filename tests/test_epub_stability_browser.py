@@ -193,13 +193,17 @@ def main() -> None:
                 page.wait_for_function("() => { const s=globalThis.__InkEpubR4.state(); return s.fontPx===20 && s.fontStyle==='sans'; }")
 
                 # Navigation remains available after removing the corresponding toolbar control.
+                # Capture the semantic result and locator in the same JS turn so a scroll observer
+                # cannot re-project reading position between two separate harness reads.
                 navigation_probe = page.evaluate("""() => {
                     document.getElementById('tocBtn').remove();
-                    return globalThis.__InkEpubR4.goPath('OEBPS/ch2.xhtml','two');
+                    const ok=globalThis.__InkEpubR4.goPath('OEBPS/ch2.xhtml','two');
+                    const locator=globalThis.__InkEpubR4.state().locator;
+                    return {ok,locator};
                 }""")
-                assert navigation_probe is True
-                page.wait_for_function("() => globalThis.__InkEpubR4.state().locator && globalThis.__InkEpubR4.state().locator.chapter === 2")
-                locator = page.evaluate("() => globalThis.__InkEpubR4.state().locator")
+                assert navigation_probe['ok'] is True, navigation_probe
+                locator = navigation_probe['locator']
+                assert locator['chapter'] == 2, locator
                 assert locator['path'] == 'OEBPS/ch2.xhtml', locator
 
                 # A fresh reader boot must still resolve its navigation modules with network disabled.
