@@ -1,0 +1,99 @@
+name: Stability freeze regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "apps/**"
+      - "tests/**"
+      - "scripts/**"
+      - "service-worker.js"
+      - "index.html"
+      - "manifest.webmanifest"
+      - "STABILITY_STATE.json"
+      - "docs/STABILITY-FREEZE-2026-09-08.md"
+      - ".github/workflows/stability-freeze-regression.yml"
+  pull_request:
+    paths:
+      - "apps/**"
+      - "tests/**"
+      - "scripts/**"
+      - "service-worker.js"
+      - "index.html"
+      - "manifest.webmanifest"
+      - "STABILITY_STATE.json"
+      - "docs/STABILITY-FREEZE-2026-09-08.md"
+      - ".github/workflows/stability-freeze-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Validate suite architecture and offline contracts
+        run: python scripts/validate_suite_contracts.py
+      - name: Run all frozen static contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/test_*_contract.py; do
+            echo "==> $test"
+            python "$test"
+          done
+      - name: Run security configuration regression
+        run: python tests/test_security_pdfjs_config.py
+
+  browser-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Run complete primary stability browser suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/test_*_stability_browser.py; do
+            echo "==> $test [$BROWSER]"
+            python "$test"
+          done
+
+  preservation-roundtrips:
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: chromium
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: Run all preserved format round-trips
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/test_*roundtrip.py; do
+            echo "==> $test"
+            python "$test"
+          done

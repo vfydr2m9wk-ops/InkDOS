@@ -21,7 +21,13 @@
     "epub",
     "spreadsheets"
   ],
-  "currentWorkspace": "cross-suite",
+  "currentWorkspace": "freeze",
+  "freezeCandidate": {
+    "date": "2026-09-08",
+    "runtimeAnchor": "9da9b798c624e3db6bcf933d85ed19892997bf5f",
+    "crossSuiteRun": 34270011352,
+    "status": "candidate"
+  },
   "progressiveMainPromotion": true,
   "proportionalModularization": true
 }
