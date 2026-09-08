@@ -1,14 +1,16 @@
 # Stability Functional Isolation Freeze — 2026-09-08
 
-Status: **FREEZE CANDIDATE**
+Status: **FROZEN**
 
 Program: `stability-functional-isolation`
 Working branch: `audit/stability-functional-isolation`
-Runtime anchor under freeze validation: `9da9b798c624e3db6bcf933d85ed19892997bf5f`
+Runtime anchor: `9da9b798c624e3db6bcf933d85ed19892997bf5f`
+Freeze-gate commit: `f17e102e3e9b612e86da020ba3ab880b16f5741c`
+Freeze-gate run: `34270610710`
 
 ## Scope
 
-This freeze records the regression/stability baseline required by the blocking stability directives. It does not add a user-facing feature, expand file-format fidelity, or authorize PPT-P2/XLS-S1/XLS-S2 work before the freeze gate completes.
+This freeze records the regression/stability baseline required by the blocking stability directives. It does not add a user-facing feature, expand file-format fidelity, or change the InkDOS 2.0.12 functional release scope.
 
 The audited workspaces are:
 
@@ -36,7 +38,7 @@ The frozen baseline preserves these rules:
 
 ## Evidence entering freeze
 
-The six workspace stability audits completed before this freeze candidate. Their regression gates cover command/control independence, relevant history/state behavior, representative open/save/reopen paths where applicable, clean boot, and Chromium/Firefox/WebKit support to the defined level.
+The six workspace stability audits completed before this freeze. Their regression gates cover command/control independence, relevant history/state behavior, representative open/save/reopen paths where applicable, clean boot, and Chromium/Firefox/WebKit support to the defined level.
 
 The integrated cross-suite run `34270011352` passed:
 
@@ -49,10 +51,20 @@ The stability program also discovered and fixed objective regressions, including
 
 ## Freeze gate
 
-The repository is not considered frozen merely because this document exists. `.github/workflows/stability-freeze-regression.yml` must pass on the freeze-candidate commit. The gate aggregates the six workspace stability contracts, cross-suite contract, security configuration regression, architecture/suite contract validation, and the complete primary browser stability matrix.
+The aggregate freeze gate at commit `f17e102e3e9b612e86da020ba3ab880b16f5741c`, workflow run `34270610710`, passed all required jobs:
 
-Only after that gate is green may `STABILITY_STATE.json` transition to `active: false` and this document transition from **FREEZE CANDIDATE** to **FROZEN**.
+- suite architecture and offline contract validation;
+- all frozen static workspace/cross-suite contracts;
+- PDF.js security configuration regression;
+- complete primary stability browser suite in Chromium;
+- complete primary stability browser suite in Firefox;
+- complete primary stability browser suite in WebKit;
+- all preserved `*roundtrip.py` format/persistence regressions in Chromium.
+
+`STABILITY_STATE.json` therefore records the stability program as inactive and frozen. The final metadata-only freeze commit must itself remain green under the same `stability-freeze-regression.yml` workflow; a future red run invalidates the frozen status until explained and corrected.
 
 ## Post-freeze rule
 
-After the final freeze, later feature development must run the feature's own tests plus the frozen workspace regression gate and cross-suite bootstrap/offline/isolation gate. A new feature is not approved solely because its own happy path works.
+Later feature development must run the feature's own tests plus the applicable frozen workspace regression gate and the cross-suite bootstrap/offline/isolation gate. A feature is not approved solely because its own happy path works.
+
+The previously recorded roadmap may resume only under a subsequent authorized development phase. This freeze does not itself advance PPT-P2, XLS-S1 or XLS-S2.
