@@ -1,0 +1,97 @@
+name: Pre-phase architecture audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+      - 'polish/**'
+    paths-ignore:
+      - 'CHECKSUMS.sha256'
+      - 'SOURCE_LOCK.json'
+      - 'BUILD_INFO.json'
+      - 'SOURCE_MANIFEST.json'
+      - 'RELEASE_MANIFEST.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-pre-phase-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  architecture:
+    name: Physical isolation and clean snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch main baseline
+        run: git fetch origin main:refs/remotes/origin/main --force
+
+      - name: Check diff hygiene
+        run: git diff --check origin/main...HEAD
+
+      - name: Enforce one-workspace phase scope
+        run: python scripts/validate_phase_scope.py --base origin/main
+
+      - name: Run clean-snapshot release validation
+        run: python scripts/run_release_validation.py
+
+  frozen-roundtrips:
+    name: Frozen baseline browser roundtrips
+    needs: architecture
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          python -m playwright install --with-deps chromium
+
+      - name: DOC-D1 roundtrip
+        run: python tests/test_doc_d1_roundtrip.py
+
+      - name: DOC-D2 review and structure roundtrip
+        run: python tests/test_doc_d2_p1_roundtrip.py
+
+      - name: DOC-D2 sections roundtrip
+        run: python tests/test_doc_d2_sections_roundtrip.py
+
+      - name: DOC-D2 RTF conversion roundtrip
+        run: python tests/test_doc_d2_rtf_roundtrip.py
+
+      - name: PPT-P1 imported slide structure roundtrip
+        run: python tests/test_ppt_p1_structure_roundtrip.py
+
+      - name: PPT-P1 objects and geometry roundtrip
+        run: python tests/test_ppt_p1_objects_roundtrip.py

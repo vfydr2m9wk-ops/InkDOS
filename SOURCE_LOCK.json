@@ -53,7 +53,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "c34797c470734d92754158950ed3f4220ff5be6b21dfca2bc2533032f99c59ec",
+      "nonIndexTreeSha256": "f3788d0edba435bb0433b43919980a36988430be06bd914eef0a13f492c32c0c",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",

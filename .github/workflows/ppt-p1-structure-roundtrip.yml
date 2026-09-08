@@ -1,0 +1,58 @@
+name: PPT-P1 home editing roundtrip
+
+on:
+  push:
+    branches:
+      - 'feature/ppt-p1-*'
+    paths:
+      - 'apps/presentations/**'
+      - 'tests/test_ppt_p1_structure_contract.py'
+      - 'tests/test_ppt_p1_structure_roundtrip.py'
+      - 'tests/test_ppt_p1_objects_contract.py'
+      - 'tests/test_ppt_p1_objects_roundtrip.py'
+      - 'requirements-ci.txt'
+      - '.github/workflows/ppt-p1-structure-roundtrip.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/presentations/**'
+      - 'tests/test_ppt_p1_structure_contract.py'
+      - 'tests/test_ppt_p1_structure_roundtrip.py'
+      - 'tests/test_ppt_p1_objects_contract.py'
+      - 'tests/test_ppt_p1_objects_roundtrip.py'
+      - 'requirements-ci.txt'
+      - '.github/workflows/ppt-p1-structure-roundtrip.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ppt-p1-home-editing-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  roundtrip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          python -m playwright install --with-deps chromium
+      - name: Run PPT-P1 structure contract
+        run: python tests/test_ppt_p1_structure_contract.py
+      - name: Run PPT-P1 object contract
+        run: python tests/test_ppt_p1_objects_contract.py
+      - name: Run PPT-P1 imported structure roundtrip
+        run: python tests/test_ppt_p1_structure_roundtrip.py
+      - name: Run PPT-P1 objects and geometry roundtrip
+        run: python tests/test_ppt_p1_objects_roundtrip.py
