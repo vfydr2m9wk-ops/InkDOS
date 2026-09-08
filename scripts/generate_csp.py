@@ -21,8 +21,8 @@ ENTRY_POINTS = (
 )
 
 # Generated CSP metadata is emitted as its own indented line only when the
-# charset tag itself starts on an indented/formatted line. Compact entry points
-# keep the CSP tag adjacent to the charset tag so strip/reinsert is byte-stable.
+# charset tag itself occupies a whitespace-only formatted line. Compact entry
+# points keep the CSP tag adjacent so strip/reinsert is byte-stable.
 CSP_META_LINE_RE = re.compile(
     r'(?mi)^[ \t]*<meta\s+[^>]*http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>[ \t]*(?:\r?\n)?'
 )
@@ -81,11 +81,16 @@ def policy_for(text_without_csp: str) -> str:
 def insertion_for(text: str, charset: re.Match[str], meta: str) -> str:
     """Return a CSP insertion that preserves the entry point's local layout."""
     line_start = text.rfind("\n", 0, charset.start()) + 1
+    line_end = text.find("\n", charset.end())
+    if line_end < 0:
+        line_end = len(text)
     prefix = text[line_start : charset.start()]
-    # A charset tag is considered pretty/formatted only when everything before
-    # it on the same physical line is indentation. Merely having an earlier
-    # newline is insufficient (the TXT bundle is compact after its first line).
-    if prefix.strip():
+    suffix = text[charset.end() : line_end]
+    # Pretty mode is safe only when the charset occupies its own physical line:
+    # both sides of it may contain indentation/whitespace, but no other markup.
+    # This deliberately classifies both the compact TXT bundle and Spreadsheet
+    # (where viewport follows charset on the same line) as compact.
+    if prefix.strip() or suffix.strip():
         return meta
     return "\n" + prefix + meta
 
