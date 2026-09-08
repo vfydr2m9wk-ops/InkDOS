@@ -17,17 +17,14 @@ META_RE = re.compile(
     r'<meta\s+[^>]*http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>',
     re.IGNORECASE,
 )
-CONTENT_RE = re.compile(
-    r'content=["\'](?P<content>.*?)["\']\s*>',
-    re.IGNORECASE | re.DOTALL,
-)
+CONTENT_RE = re.compile(r'content="(?P<content>[^"]*)"', re.IGNORECASE)
 
 
 def assert_policy(rendered: str, label: str) -> None:
     metas = META_RE.findall(rendered)
     assert len(metas) == 1, f"{label}: expected exactly one CSP meta tag, got {len(metas)}"
     match = CONTENT_RE.search(metas[0])
-    assert match, f"{label}: CSP meta tag has no content policy"
+    assert match, f"{label}: CSP meta tag has no generated double-quoted content policy"
     policy = match.group("content")
     script_directive = next(
         (directive.strip() for directive in policy.split(";") if directive.strip().startswith("script-src ")),
