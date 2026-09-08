@@ -19,6 +19,7 @@ for token in [
     "register('slide.delete'",
     "register('slide.move'",
     "register('edit.insertText'",
+    "register('navigation.to'",
     "register('navigation.previous'",
     "register('navigation.next'",
 ]:
@@ -61,6 +62,8 @@ for forbidden in [
 assert 'slidePanelBtn' not in PANEL, 'Slide panel state still depends on a toolbar control id'
 assert "workspace.dataset.panelOpen=String(open)" in PANEL, 'Slide panel no longer projects its authoritative open state to workspace layout'
 assert "editor.sync()" in COMMANDS, 'Panel command does not request visual state projection after semantic toggle'
+assert "onNavigate:index=>{commands?.execute('navigation.to',index)" in APP, 'Thumbnail navigation does not route through the Presentations command registry'
+assert "session.setCurrentByIndex(index)" not in APP, 'App bootstrap still owns duplicate slide navigation semantics'
 assert "editor.install(commands)" in APP, 'Editing bindings are not wired to the command registry'
 assert "executeCommand:commands.execute" in APP, 'Presentations debug API does not expose independent command execution'
 assert "hasCommand:commands.has" in APP and "listCommands:commands.list" in APP, 'Presentations command registry is not introspectable for regression tests'

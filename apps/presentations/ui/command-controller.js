@@ -10,6 +10,7 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  function eachRun(o,fn){for(const p of o.paragraphs||[])for(const r of p.runs||[])fn(r,p)}
  function refresh({thumbs=true,center=true}={}){editor.rerender({thumbs,center});sync()}
  function format(label,mutator){const o=selected();if(!o||o.type!=='text')return false;history.transact(label,()=>mutator(o));refresh({thumbs:true,center:false});return true}
+ function navigateTo(value){const index=Number(value);if(!Number.isInteger(index)||index<0||index>=session.slides.length||index===session.currentIndex)return false;session.setCurrentByIndex(index);selection.clear();refresh({thumbs:false,center:true});panel.syncActive();return true}
  function installCommands(){
   register('file.new',()=>{if(session.dirty&&!global.confirm('Discard current in-memory changes and create a new presentation?'))return false;session.resetNew();history.reset();refresh();chrome.status('New presentation');return true});
   register('file.open',()=>fileOpen.requestOpen());
@@ -31,8 +32,9 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   register('format.bold',()=>format('Bold',o=>{o.bold=!o.bold;eachRun(o,r=>r.bold=o.bold)}),textEditable);
   register('format.italic',()=>format('Italic',o=>{o.italic=!o.italic;eachRun(o,r=>r.italic=o.italic)}),textEditable);
   register('format.alignment',value=>format('Alignment',o=>{o.align=value;for(const p of o.paragraphs||[])p.align=o.align}),textEditable);
-  register('navigation.previous',()=>{session.setCurrentByIndex(session.currentIndex-1);selection.clear();refresh({thumbs:false,center:true});panel.syncActive();return true},()=>session.active&&session.currentIndex>0);
-  register('navigation.next',()=>{session.setCurrentByIndex(session.currentIndex+1);selection.clear();refresh({thumbs:false,center:true});panel.syncActive();return true},()=>session.active&&session.currentIndex<session.slides.length-1);
+  register('navigation.to',navigateTo,()=>session.active);
+  register('navigation.previous',()=>execute('navigation.to',session.currentIndex-1),()=>session.active&&session.currentIndex>0);
+  register('navigation.next',()=>execute('navigation.to',session.currentIndex+1),()=>session.active&&session.currentIndex<session.slides.length-1);
  }
  function bindClick(id,command,...args){const node=$(id);if(node){node.dataset.command=command;node.onclick=()=>execute(command,...args)}return node}
  function installShareAction(){const saveBtn=$('saveMenuBtn');if(!saveBtn||$('shareMenuBtn'))return;const share=document.createElement('button');share.id='shareMenuBtn';share.className='menu-item';share.type='button';share.disabled=true;share.dataset.command='file.share';share.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint">PPTX</span>';saveBtn.insertAdjacentElement('afterend',share);share.onclick=async()=>{drawer.close({restoreFocus:false});await execute('file.share');sync()}}

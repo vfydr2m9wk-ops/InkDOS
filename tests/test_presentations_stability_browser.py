@@ -69,6 +69,7 @@ def main() -> None:
                 "slide.delete",
                 "slide.move",
                 "edit.insertText",
+                "navigation.to",
                 "navigation.previous",
                 "navigation.next",
             ):
@@ -102,13 +103,21 @@ def main() -> None:
             assert undone is True
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 2")
 
-            # Navigation must update the authoritative session rather than only visual state.
+            # Thumbnail and toolbar navigation share one semantic command path.
             page.click("#prevSlideBtn")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.currentIndex === 0")
-            page.click("#nextSlideBtn")
+            page.click("#slidePanelInner .slide-thumb:nth-child(2)")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.currentIndex === 1")
             active_thumb = page.locator("#slidePanelInner .slide-thumb.active")
             assert active_thumb.count() == 1
+            page.evaluate("() => document.getElementById('prevSlideBtn').remove()")
+            navigated = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('navigation.to', 0)")
+            assert navigated is True
+            page.wait_for_function("() => globalThis.__inkdosPresentations.session.currentIndex === 0")
+            page.evaluate("() => document.getElementById('nextSlideBtn').remove()")
+            navigated = page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('navigation.next')")
+            assert navigated is True
+            page.wait_for_function("() => globalThis.__inkdosPresentations.session.currentIndex === 1")
 
             # Panel state belongs to the panel; the toolbar control is only a binding/projection.
             page.evaluate("() => document.getElementById('slidePanelBtn').remove()")
