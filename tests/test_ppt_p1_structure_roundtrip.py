@@ -40,13 +40,15 @@ def main():
               const added=app.session.addSlide();setTitle(added,'Added');
               app.session.setCurrentByIndex(0);app.session.deleteCurrent();
               app.session.setCurrentByIndex(app.session.slides.length-1);app.session.moveCurrent(-2);app.session.markDirty();
+              const modelTitles=app.session.slides.map(s=>s.objects.filter(o=>o.type==='text').map(o=>o.text).join(' | '));
               await new Promise((resolve,reject)=>{if(NS.PptP1StructureWriter)return resolve();const s=document.createElement('script');s.src='io/ppt-p1-structure-writer.js';s.onload=resolve;s.onerror=reject;document.head.appendChild(s)});
               const built=await NS.PptxPreservationWriter.build(app.session),zip=await JSZip.loadAsync(built.bytes,{checkCRC32:true}),pres=await zip.file('ppt/presentation.xml').async('text'),rels=await zip.file('ppt/_rels/presentation.xml.rels').async('text');
               const pd=new DOMParser().parseFromString(pres,'application/xml'),rd=new DOMParser().parseFromString(rels,'application/xml'),ids=[...pd.getElementsByTagNameNS('*','sldId')],relMap=new Map([...rd.getElementsByTagNameNS('*','Relationship')].filter(x=>(x.getAttribute('Type')||'').endsWith('/slide')).map(x=>[x.getAttribute('Id'),x.getAttribute('Target')]));
               const order=ids.map(x=>{const a=[...x.attributes].find(a=>a.localName==='id'&&a.prefix==='r');return relMap.get(a?.value||x.getAttribute('r:id'))||''});
               const parts=built.receipt.slideMappings.map(x=>x.slidePart),decoded=await NS.PptxOpenController.decodePptx(built.bytes,'Roundtrip.pptx'),decodedTitles=decoded.slides.map(s=>s.objects.filter(o=>o.type==='text').map(o=>o.text).join(' | '));
               const reopened=await app.open(new File([built.bytes],'Roundtrip.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-              return{opened:!!opened,controls,originalParts,currentTitles:app.session.slides.map(s=>s.objects.filter(o=>o.type==='text').map(o=>o.text).join(' | ')),receipt:built.receipt,parts,order,decodedTitles,reopened:!!reopened,reopenedCount:app.session.slides.length,reopenedTitles:app.session.slides.map(s=>s.objects.filter(o=>o.type==='text').map(o=>o.text).join(' | '),),allParts:Object.keys(zip.files)};
+              const reopenedTitles=app.session.slides.map(s=>s.objects.filter(o=>o.type==='text').map(o=>o.text).join(' | '));
+              return{opened:!!opened,controls,originalParts,modelTitles,receipt:built.receipt,parts,order,decodedTitles,reopened:!!reopened,reopenedCount:app.session.slides.length,reopenedTitles,allParts:Object.keys(zip.files)};
             }""")
             browser.close()
         assert result['opened'] is True,result
@@ -58,12 +60,12 @@ def main():
         assert len(set(result['parts']))==4,result
         assert len(result['order'])==4,result
         assert all(('ppt/'+x) in result['allParts'] for x in result['order']),result
-        joined='\n'.join(result['decodedTitles'])
-        assert 'Alpha Copy' in joined and 'Added' in joined and 'Beta' in joined and 'Gamma' in joined,result
-        assert 'Alpha\n' not in joined,result
+        assert not any(t=='Alpha' or t.startswith('Alpha |') for t in result['modelTitles']),result
+        for titles in [result['decodedTitles'],result['reopenedTitles']]:
+            joined='\n'.join(titles)
+            assert 'Alpha Copy' in joined and 'Added' in joined and 'Beta' in joined and 'Gamma' in joined,result
+            assert not any(t=='Alpha' or t.startswith('Alpha |') for t in titles),result
         assert result['reopened'] is True and result['reopenedCount']==4,result
-        reopened='\n'.join(result['reopenedTitles'])
-        assert 'Alpha Copy' in reopened and 'Added' in reopened and 'Beta' in reopened and 'Gamma' in reopened,result
         print('PPT-P1 imported slide add/duplicate/delete/reorder roundtrip passed.')
     finally:
         server.terminate()
