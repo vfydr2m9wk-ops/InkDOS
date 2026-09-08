@@ -206,9 +206,12 @@ def main() -> None:
                 assert locator['chapter'] == 2, locator
                 assert locator['path'] == 'OEBPS/ch2.xhtml', locator
 
-                # A fresh reader boot must still resolve its navigation modules with network disabled.
+                # A fresh reader boot must still resolve its navigation modules with the origin unavailable.
+                # Stopping the HTTP server exercises the actual service-worker fallback and avoids
+                # Playwright/WebKit's internal failure when combining set_offline() with reload().
                 errors.clear()
-                context.set_offline(True)
+                stop_server(server)
+                server = None
                 page.reload(wait_until='load', timeout=20_000)
                 page.wait_for_function('() => !!globalThis.__InkEpubR4', timeout=15_000)
                 offline = page.evaluate("""() => ({
@@ -218,7 +221,6 @@ def main() -> None:
                     emptyState:!document.getElementById('emptyState').hidden,
                 })""")
                 assert all(offline.values()), (browser_name, offline)
-                context.set_offline(False)
 
                 if errors:
                     raise AssertionError('\n'.join(errors))
