@@ -16,33 +16,42 @@ on:
       - 'RELEASE_MANIFEST.json'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: inkdos-integrity-refresh-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  refresh:
+  prepare:
+    name: Generate and validate metadata without write credentials
     if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+    outputs:
+      base_sha: ${{ steps.patch.outputs.base_sha }}
+      changed: ${{ steps.patch.outputs.changed }}
+      patch_b64: ${{ steps.patch.outputs.patch_b64 }}
+      patch_sha256: ${{ steps.patch.outputs.patch_sha256 }}
     steps:
-      - name: Check out branch
-        uses: actions/checkout@v6
+      - name: Check out branch without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
 
       - name: Build Plain Text distribution
         run: python scripts/build_txt_bundle.py
 
-      - name: Refresh integrated app locks outside stability audit
+      - name: Refresh integrated app locks outside active stability audit
         shell: bash
         run: |
           python - <<'PY'
@@ -101,26 +110,115 @@ jobs:
       - name: Validate refreshed snapshot
         run: python scripts/run_release_validation.py
 
+      - name: Restrict generated changes to integrity outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          allowed='^(apps/txt/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          while IFS= read -r path; do
+            [[ -z "$path" ]] && continue
+            if ! [[ "$path" =~ $allowed ]]; then
+              echo "Integrity refresh produced an unauthorized path: $path" >&2
+              exit 1
+            fi
+          done < <(git diff --name-only)
+          git diff --check
+
+      - name: Export validated immutable patch
+        id: patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --binary -- \
+            apps/txt/index.html \
+            SOURCE_LOCK.json \
+            BUILD_INFO.json \
+            SOURCE_MANIFEST.json \
+            RELEASE_MANIFEST.json \
+            CHECKSUMS.sha256 > /tmp/integrity.patch
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          import base64, hashlib, subprocess
+          data = Path('/tmp/integrity.patch').read_bytes()
+          print('base_sha=' + subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip())
+          print('changed=' + ('true' if data else 'false'))
+          print('patch_sha256=' + hashlib.sha256(data).hexdigest())
+          print('patch_b64=' + base64.b64encode(data).decode('ascii'))
+          PY
+
       - name: Record validation handoff
         shell: bash
         run: |
           {
             echo '### Integrity refresh handoff'
             echo
-            echo 'Generated integrity metadata was validated before commit.'
-            echo 'If this workflow creates a bot-authored metadata commit on an open PR, that commit is not itself a substitute for the normal PR stability gates; the PR must still have a non-bot checkpoint head with all required gates green before promotion to main.'
+            echo 'Generated integrity metadata was produced and validated with read-only repository permissions.'
+            echo 'The write-capable job will only apply this validated patch to the same branch head and will not execute repository scripts.'
           } >> "$GITHUB_STEP_SUMMARY"
+
+  commit:
+    name: Apply validated metadata patch
+    needs: prepare
+    if: ${{ needs.prepare.outputs.changed == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Check out exact validated branch head
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+          fetch-depth: 0
+
+      - name: Verify branch has not changed
+        shell: bash
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+          BASE_SHA: ${{ needs.prepare.outputs.base_sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "$TARGET_BRANCH"
+          remote_sha="$(git rev-parse "origin/$TARGET_BRANCH")"
+          if [[ "$remote_sha" != "$BASE_SHA" ]]; then
+            echo "Branch changed after metadata validation; refusing stale write." >&2
+            exit 1
+          fi
+
+      - name: Apply validated metadata patch only
+        shell: bash
+        env:
+          PATCH_B64: ${{ needs.prepare.outputs.patch_b64 }}
+          PATCH_SHA256: ${{ needs.prepare.outputs.patch_sha256 }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$PATCH_B64" | base64 --decode > /tmp/integrity.patch
+          actual="$(sha256sum /tmp/integrity.patch | awk '{print $1}')"
+          [[ "$actual" == "$PATCH_SHA256" ]] || {
+            echo "Validated metadata patch SHA-256 mismatch." >&2
+            exit 1
+          }
+          git apply --check /tmp/integrity.patch
+          git apply /tmp/integrity.patch
+          allowed='^(apps/txt/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          while IFS= read -r path; do
+            [[ -z "$path" ]] && continue
+            if ! [[ "$path" =~ $allowed ]]; then
+              echo "Refusing unexpected metadata patch path: $path" >&2
+              exit 1
+            fi
+          done < <(git diff --name-only)
+          git diff --check
 
       - name: Commit refreshed metadata
         shell: bash
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add apps/txt/index.html SOURCE_LOCK.json BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json CHECKSUMS.sha256
-          if git diff --cached --quiet; then
-            echo "Integrity metadata already current."
-            exit 0
-          fi
+          git diff --cached --quiet && { echo "No metadata changes to commit."; exit 0; }
           git commit -m "Refresh InkDOS integrity metadata"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin "HEAD:$TARGET_BRANCH"
