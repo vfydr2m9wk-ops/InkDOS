@@ -147,7 +147,7 @@ def main() -> None:
             page.once("dialog", lambda dialog: dialog.accept())
             page.click("#pageDeleteBtn")
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 4", timeout=15000)
-            page.click("#closePageTools")
+            assert page.locator("#pageToolsPanel").is_hidden()
 
             final = page.evaluate(r"""() => {
               const d = globalThis.InkDOS2PdfP4.PdfStabilityDebug;
