@@ -1,0 +1,55 @@
+name: Cross-suite stability regression
+
+on:
+  push:
+    branches:
+      - "audit/stability-functional-isolation"
+    paths:
+      - "apps/**"
+      - "index.html"
+      - "manifest.webmanifest"
+      - "service-worker.js"
+      - "STABILITY_STATE.json"
+      - "tests/test_cross_suite_stability_*.py"
+      - ".github/workflows/cross-suite-stability-regression.yml"
+  pull_request:
+    paths:
+      - "apps/**"
+      - "index.html"
+      - "manifest.webmanifest"
+      - "service-worker.js"
+      - "STABILITY_STATE.json"
+      - "tests/test_cross_suite_stability_*.py"
+      - ".github/workflows/cross-suite-stability-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: python tests/test_cross_suite_stability_contract.py
+
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python tests/test_cross_suite_stability_browser.py

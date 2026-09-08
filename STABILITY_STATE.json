@@ -17,9 +17,11 @@
     "pdf",
     "documents",
     "presentations",
-    "txt"
+    "txt",
+    "epub",
+    "spreadsheets"
   ],
-  "currentWorkspace": "epub",
+  "currentWorkspace": "cross-suite",
   "progressiveMainPromotion": true,
   "proportionalModularization": true
 }
