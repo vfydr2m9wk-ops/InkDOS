@@ -25,18 +25,28 @@ def main():
             browser_name=os.environ.get('BROWSER','chromium')
             browser=getattr(pw,browser_name).launch(headless=True)
             page=browser.new_page(viewport={'width':1280,'height':900})
+            page.add_init_script("""
+              document.addEventListener('DOMContentLoaded',()=>{
+                document.querySelector('.fmt-btn[data-cmd="bold"]')?.remove();
+              },{once:true});
+            """)
             page.goto(BASE+'/apps/documents/',wait_until='load')
             page.wait_for_function('() => !!globalThis.InkDOS2Documents?.DocumentsDebug?.executeCommand')
             result=page.evaluate("""async()=>{
               const dbg=globalThis.InkDOS2Documents.DocumentsDebug;
               const before=dbg.listCommands();
+              const boldControlMissing=!document.querySelector('.fmt-btn[data-cmd="bold"]');
+              const formatCommandSurvived=dbg.hasCommand('format.bold');
               document.getElementById('newMenuBtn')?.remove();
               document.getElementById('undoBtn')?.remove();
               document.getElementById('redoBtn')?.remove();
-              const stillRegistered=['file.new','edit.undo','edit.redo'].every(id=>dbg.hasCommand(id));
+              const stillRegistered=['file.new','edit.undo','edit.redo','format.bold','format.fontName','format.lineSpacing','insert.image'].every(id=>dbg.hasCommand(id));
               await dbg.executeCommand('file.new');
               await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+              await dbg.executeCommand('format.bold');
               return {
+                boldControlMissing,
+                formatCommandSurvived,
                 stillRegistered,
                 commandCount:before.length,
                 pageCount:document.querySelectorAll('#pagesHost .doc-page').length,
@@ -45,8 +55,10 @@ def main():
               };
             }""")
             browser.close()
+        assert result['boldControlMissing'] is True,result
+        assert result['formatCommandSurvived'] is True,result
         assert result['stillRegistered'] is True,result
-        assert result['commandCount']>=10,result
+        assert result['commandCount']>=20,result
         assert result['pageCount']>=1,result
         assert result['welcomeHidden'] is True,result
         print(f"Documents command/control browser isolation passed on {os.environ.get('BROWSER','chromium')}.")
