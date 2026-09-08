@@ -98,6 +98,16 @@ jobs:
       - name: Validate refreshed snapshot
         run: python scripts/run_release_validation.py
 
+      - name: Record validation handoff
+        shell: bash
+        run: |
+          {
+            echo '### Integrity refresh handoff'
+            echo
+            echo 'Generated integrity metadata was validated before commit.'
+            echo 'If this workflow creates a bot-authored metadata commit on an open PR, that commit is not itself a substitute for the normal PR stability gates; the PR must still have a non-bot checkpoint head with all required gates green before promotion to main.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Commit refreshed metadata
         shell: bash
         run: |
