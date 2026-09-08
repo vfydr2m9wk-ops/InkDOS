@@ -20,8 +20,15 @@ ENTRY_POINTS = (
     Path("apps/epub/index.html"),
 )
 
+# Generated CSP metadata is emitted as its own indented line for formatted HTML.
+# Remove that whole line first so render(render(html)) is byte-for-byte stable.
+# The second expression handles compact/minified entry points where the tag may be
+# adjacent to other markup on the same line.
+CSP_META_LINE_RE = re.compile(
+    r'(?mi)^[ \t]*<meta\s+[^>]*http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>[ \t]*(?:\r?\n)?'
+)
 CSP_META_RE = re.compile(
-    r'<meta\s+[^>]*http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>\s*',
+    r'<meta\s+[^>]*http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>',
     re.IGNORECASE,
 )
 SCRIPT_RE = re.compile(
@@ -47,7 +54,9 @@ BASE_DIRECTIVES = (
 
 
 def strip_existing_csp(text: str) -> str:
-    return CSP_META_RE.sub("", text)
+    """Return the pre-CSP canonical HTML, preserving unrelated whitespace."""
+    without_lines = CSP_META_LINE_RE.sub("", text)
+    return CSP_META_RE.sub("", without_lines)
 
 
 def inline_script_hashes(text: str) -> list[str]:
@@ -79,7 +88,23 @@ def render(text: str) -> str:
         raise RuntimeError("Entry point does not contain a quoted meta charset tag")
     pretty = "\n" in clean[: charset.end() + 4]
     insertion = ("\n  " if pretty else "") + meta
-    return clean[: charset.end()] + insertion + clean[charset.end() :]
+    rendered = clean[: charset.end()] + insertion + clean[charset.end() :]
+    # Defensive invariant: generated CSP must be intrinsically idempotent.
+    # Do not recurse through render(); compare against one canonical strip/reinsert.
+    canonical_clean = strip_existing_csp(rendered)
+    canonical_charset = CHARSET_RE.search(canonical_clean)
+    if not canonical_charset:
+        raise RuntimeError("Generated CSP lost the meta charset tag")
+    canonical_pretty = "\n" in canonical_clean[: canonical_charset.end() + 4]
+    canonical_insertion = ("\n  " if canonical_pretty else "") + meta
+    canonical = (
+        canonical_clean[: canonical_charset.end()]
+        + canonical_insertion
+        + canonical_clean[canonical_charset.end() :]
+    )
+    if rendered != canonical:
+        raise RuntimeError("CSP renderer is not idempotent")
+    return rendered
 
 
 def process(path: Path, check: bool) -> bool:
