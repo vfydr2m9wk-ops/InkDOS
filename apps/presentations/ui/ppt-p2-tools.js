@@ -1,0 +1,17 @@
+(function(global){'use strict';
+const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
+const ALLOWED=new Set(['none','fade','push','wipe']);
+function create({session,history,commands,editor,chrome}={}){
+ let select=null,packageLoader=null;
+ function normalize(value){value=String(value||'none').toLowerCase();return ALLOWED.has(value)?value:'none'}
+ function editable(){return session.active&&session.sourceKind!=='ppt'&&!!session.currentSlide}
+ function ensurePackage(){if(NS.PptP2Package)return Promise.resolve(NS.PptP2Package);if(packageLoader)return packageLoader;packageLoader=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='io/ppt-p2-package.js';s.onload=()=>NS.PptP2Package?resolve(NS.PptP2Package):reject(new Error('PPT-P2 package module did not initialize.'));s.onerror=()=>reject(new Error('PPT-P2 package module could not be loaded locally.'));document.head.appendChild(s)});return packageLoader}
+ function setTransition(value){if(!editable())return false;const slide=session.currentSlide,next=normalize(value),current=normalize(slide.transition);if(current===next&&slide.transitionEdited===true)return false;history.transact('Slide transition',()=>{slide.transition=next;slide.transitionEdited=true});sync();editor?.sync?.();return true}
+ function insertControl(){if(document.getElementById('pptP2Transition')){select=document.getElementById('pptP2Transition');return select}const anchor=document.getElementById('deleteSlideBtn');const group=anchor?.closest('.tool-group');if(!group)return null;select=document.createElement('select');select.id='pptP2Transition';select.className='align-select';select.title='Slide transition';select.setAttribute('aria-label','Slide transition');select.dataset.command='slide.transition.set';select.innerHTML='<option value="none">No transition</option><option value="fade">Fade</option><option value="push">Push</option><option value="wipe">Wipe</option>';select.onchange=e=>commands.execute('slide.transition.set',e.target.value);group.appendChild(select);return select}
+ function sync(){select=select||document.getElementById('pptP2Transition');if(!select)return;select.disabled=!commands.isEnabled('slide.transition.set');select.value=normalize(session.currentSlide?.transition);select.title=!session.active?'Create or open a presentation first':session.sourceKind==='ppt'?'Legacy PPT is read-only':'Slide transition'}
+ async function hydrate(){const P2=await ensurePackage();if(session.sourceKind!=='pptx'||!session.sourceBytes?.length){for(const slide of session.slides||[]){if(!slide.transition)slide.transition='none';if(slide.transitionEdited!==true)slide.transitionEdited=false}sync();return[]}const parts=session.slides.map(slide=>slide.sourcePart).filter(Boolean);if(parts.length!==session.slides.length)return[];const values=await P2.readSlideTransitions(session.sourceBytes,parts);values.forEach((value,index)=>{const slide=session.slides[index];if(!slide)return;slide.transition=normalize(value);slide.transitionEdited=false});sync();return values}
+ function install(){if(!commands||typeof commands.register!=='function'||typeof commands.execute!=='function'||typeof commands.isEnabled!=='function')throw new TypeError('Presentations command registry with external registration is required');commands.register('slide.transition.set',setTransition,editable);insertControl();sync()}
+ return Object.freeze({install,sync,hydrate,setTransition,get select(){return select}})
+}
+NS.PptP2Tools=Object.freeze({create});
+})(globalThis);
