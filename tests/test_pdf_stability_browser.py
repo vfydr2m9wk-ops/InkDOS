@@ -81,8 +81,11 @@ def main() -> None:
             page.wait_for_function("() => document.querySelectorAll('.pdf-search-result').length === 5", timeout=10000)
             assert page.locator(".pdf-search-result").first.get_attribute("data-command") == "reader.search.reveal"
             assert page.locator("#pdfSearchNext").get_attribute("data-command") == "reader.search.next"
+            # Dynamic result controls must be attached before registry binding; clicking a rendered result must execute reveal.
+            page.click('.pdf-search-result[data-result-index="2"]')
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 3")
             page.click("#pdfSearchNext")
-            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 2")
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 4")
             page.click("#pdfSearchBtn")
             assert page.locator("#pdfSearchPanel").is_hidden()
             page.evaluate("() => document.getElementById('pdfRotateViewBtn').remove()")
