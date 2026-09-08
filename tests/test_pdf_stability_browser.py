@@ -77,12 +77,22 @@ def main() -> None:
             page.evaluate(r"""async () => { const r=globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry; await r.execute('reader.rotate-view'); await r.execute('reader.rotate-view'); await r.execute('reader.rotate-view'); }""")
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.rotation === 0")
 
+            # Navigation controls, tabs, block controls and dynamic thumbnails all route through commands.
+            nav_commands = page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
+            for command in ("pdf.navigation.toggle","pdf.navigation.close","pdf.navigation.tab.outline","pdf.navigation.tab.pages","pdf.navigation.page.go"):
+                assert command in nav_commands
+            assert page.locator("#navPanelBtn").get_attribute("data-command") == "pdf.navigation.toggle"
+            assert page.locator("#closeNavigation").get_attribute("data-command") == "pdf.navigation.close"
             page.click("#navPanelBtn")
             assert "active" in (page.locator("#outlineTab").get_attribute("class") or "").split()
             assert "active" not in (page.locator("#pagesPane").get_attribute("class") or "").split()
             page.click("#pagesTab")
             assert "active" in (page.locator("#pagesTab").get_attribute("class") or "").split()
-            page.click("#closeNavigation")
+            page.wait_for_function("() => document.querySelectorAll('#thumbGrid .thumb-card').length === 5")
+            assert page.locator('#thumbGrid .thumb-card[data-page="3"]').get_attribute("data-command") == "pdf.navigation.page.go"
+            page.click('#thumbGrid .thumb-card[data-page="3"]')
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 3")
+            assert page.locator("#navigationPanel").is_hidden()
             page.click("#navPanelBtn")
             assert "active" in (page.locator("#outlineTab").get_attribute("class") or "").split()
             page.click("#closeNavigation")

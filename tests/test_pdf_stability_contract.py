@@ -9,8 +9,12 @@ def main():
     app=text(PDF/"app.js");editor=text(PDF/"pdfjs"/"editor-adapter.js");nav=text(PDF/"ui"/"navigation-controller.js");layout=text(PDF/"view"/"page-layout.js");commands=text(PDF/"ui"/"command-controller.js");registry=text(PDF/"runtime"/"commands"/"command-registry.js");bindings=text(PDF/"ui"/"command-bindings.js");rail=text(PDF/"ui"/"toolbar-rail.js");mode=text(PDF/"modes"/"mode-controller.js");mode_bindings=text(PDF/"ui"/"mode-bindings.js");reader_ui=text(PDF/"ui"/"reader-tools.js");reader_runtime=text(PDF/"features"/"reader"/"reader-runtime.js");page_ui=text(PDF/"ui"/"page-tools.js");page_runtime=text(PDF/"features"/"page-tools"/"page-tools-runtime.js")
     actions={"move":text(PDF/"features"/"page-tools"/"actions"/"move-page.js"),"rotate":text(PDF/"features"/"page-tools"/"actions"/"rotate-page.js"),"delete":text(PDF/"features"/"page-tools"/"actions"/"delete-page.js"),"extract":text(PDF/"features"/"page-tools"/"actions"/"extract-page.js"),"split":text(PDF/"features"/"page-tools"/"actions"/"split-pdf.js"),"merge":text(PDF/"features"/"page-tools"/"actions"/"merge-pdfs.js")}
     assert "editingstateschanged" in editor and "annotationeditorstateschanged" in editor
-    assert "DEFAULT_TAB='outline'" in nav and "open(DEFAULT_TAB)" in nav
-    assert "$('navPanelBtn').onclick" not in nav and "anchor?.isConnected" in nav and "navPanelBtn:'pdf.navigation.toggle'" in bindings and "pdf.navigation.toggle" in commands and "navigation.toggle" in commands
+    assert "DEFAULT_TAB='outline'" in nav and "open(DEFAULT_TAB)" in nav and "anchor?.isConnected" in nav
+    for forbidden in ("$('closeNavigation').onclick","$('outlineTab').onclick","$('pagesTab').onclick","$('thumbPrevBlock').onclick","$('thumbNextBlock').onclick","b.onclick=","card.onclick="): assert forbidden not in nav
+    assert "registry?.bindElement" in nav and "pdf.navigation.outline.go" in nav and "pdf.navigation.page.go" in nav
+    for command in ("pdf.navigation.toggle","pdf.navigation.close","pdf.navigation.tab.outline","pdf.navigation.tab.pages","pdf.navigation.thumb.previous","pdf.navigation.thumb.next","pdf.navigation.outline.go","pdf.navigation.page.go"): assert command in bindings
+    assert "navPanelBtn:'pdf.navigation.toggle'" in bindings and "closeNavigation:'pdf.navigation.close'" in bindings
+    assert "pdf.navigation.toggle',{" not in commands and "navigation.toggle" not in commands
     assert "userScrollEpoch" in layout and "sameMetrics" in layout and "userEpoch===this.userScrollEpoch" in layout and "scrollIntoView" not in layout
     for path in ("runtime/commands/command-registry.js","ui/command-bindings.js","ui/toolbar-rail.js","ui/mode-bindings.js","features/reader/reader-runtime.js","features/page-tools/page-tools-runtime.js"): assert path in app
     for name in ("move-page.js","rotate-page.js","delete-page.js","extract-page.js","split-pdf.js","merge-pdfs.js"): assert name in app
