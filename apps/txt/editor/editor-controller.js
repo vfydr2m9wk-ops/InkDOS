@@ -19,7 +19,6 @@ function create({elements:E,state}={}){
   function applyPolicy(){NS.TxtPolicy.apply(E.editor,{wrap:state.wrap,fontSize:state.fontSize});document.dispatchEvent(new CustomEvent('inkdos:txt-view-policy',{detail:{wrap:state.wrap,fontSize:state.fontSize}}))}
   function doUndo(){const v=state.history.undo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
   function doRedo(){const v=state.history.redo();if(v===null)return;E.editor.value=v;state.session.mutate();updateMeta();scheduleCheckpoint()}
-  function toggleFind(on){E.findbar.hidden=on===undefined?!E.findbar.hidden:!on;if(!E.findbar.hidden){E.findInput.focus();E.findInput.select();requestAnimationFrame(()=>E.findbar.scrollIntoView({inline:'nearest',block:'nearest'}))}}
   function clampFontSize(size){const n=Math.round(Number(size));return Number.isFinite(n)?Math.max(4,Math.min(28,n)):16}
   function setViewFont(size){state.fontSize=clampFontSize(size);applyPolicy();updateMeta();scheduleCheckpoint();setStatus(`Editor view: ${state.fontSize} pt · TXT/XML stores text, not font formatting`,'state-ok')}
   function adjustFont(delta){setViewFont(clampFontSize(state.fontSize+delta))}
@@ -37,7 +36,7 @@ function create({elements:E,state}={}){
   function setWrap(next){state.wrap=!!next;applyPolicy();updateMeta();scheduleCheckpoint()}
   function setMetrics(m){state.metrics=m;document.body.dataset.viewport=m.availableWidth.toFixed(0)+'x'+m.availableHeight.toFixed(0)}
   function debug(){return {changeIndent,applyListFamily,continueListOnEnter,clampFontSize,titleCenterError:()=>NS.AppFrame.centerError(E.title),viewport:()=>state.metrics,toolbarOverflow:()=>({clientWidth:E.toolbar.clientWidth,scrollWidth:E.toolbar.scrollWidth,scrollLeft:E.toolbar.scrollLeft})}}
-  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,doUndo,doRedo,toggleFind,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
+  return Object.freeze({state,setStatus,setTitle,showEditor,applyPolicy,updateMeta,updateCursor,markChanged,setCheckpointHandler,doUndo,doRedo,setViewFont,adjustFont,selectAll,copySelection,pasteClipboard,applyListFamily,changeIndent,continueListOnEnter,handleTitleChange,setWrap,setMetrics,clampFontSize,debug});
 }
 NS.TxtEditorController=Object.freeze({create});
 })(globalThis);

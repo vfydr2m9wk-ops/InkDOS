@@ -160,11 +160,12 @@ def main() -> None:
 
     for needle in [
         'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
+        'function toggleFind(on)',
+        "commands.register('find.open',()=>toggleFind(true))",
+        "commands.register('find.close',()=>toggleFind(false))",
+        "commands.register('find.toggle',()=>toggleFind())",
         'function openTools(){beforeOpen();syncTools()',
         "if(!E.textToolsAnchor)throw new Error('TXT_TOOL_ANCHOR_MISSING');E.toolbar.insertBefore(ui.toolsBtn,E.textToolsAnchor)",
-        "commands.register('find.open'",
-        "commands.register('find.close'",
-        "commands.register('find.toggle'",
         "commands.register('find.next'",
         "commands.register('find.prev'",
         "commands.register('replace.one'",
@@ -184,6 +185,7 @@ def main() -> None:
     ]:
         require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
     for forbidden in [
+        'editor.toggleFind',
         'nextElementSibling',
         'controls',
         'E.listBtn',
@@ -197,7 +199,7 @@ def main() -> None:
         "ui.encodingSelect.onchange=()=>{const next=",
         "ui.bomToggle.onchange=()=>{if(state.bom",
     ]:
-        forbid(t1, forbidden, f'Plain Text T1 must not depend on sibling DOM order/controls or bind semantic behavior to a specific control: {forbidden}')
+        forbid(t1, forbidden, f'Plain Text T1 must not delegate Find visibility or depend on sibling DOM order/controls: {forbidden}')
 
     for needle in [
         'P=NS.TxtPolicy',
@@ -275,7 +277,10 @@ def main() -> None:
         require(editor, needle, f'Plain Text editor baseline missing: {needle}')
     for forbidden in [
         'function find(step)',
-        ',find,toggleFind,',
+        'function toggleFind',
+        'toggleFind,',
+        'E.findbar',
+        'E.findInput',
         'E.wrap.setAttribute',
         'E.wrap.classList.toggle',
         'E.font.value=',
@@ -284,7 +289,7 @@ def main() -> None:
         'E.saveBtn',
         'E.shareBtn',
     ]:
-        forbid(editor, forbidden, f'Plain Text editor must not duplicate Find or own control projection: {forbidden}')
+        forbid(editor, forbidden, f'Plain Text editor must not own Find UI or control projection: {forbidden}')
 
     for needle in [
         'function initializeEmptyState()',
