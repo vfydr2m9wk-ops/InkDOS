@@ -4,7 +4,7 @@ The six installed application trees come from these canonical FINAL archives and
 
 - Documents — original `InkDOS-2.0-Phase2-Documents-App04-FINAL.zip` baseline plus the approved DOC-D1 Home Document Essentials and DOC-D2 Documents P1 + Legacy Import increments.
 - Spreadsheets — `InkDOS-2.0-Phase2-Spreadsheets-App05-FINAL.zip`
-- Presentations — `InkDOS-2.0-Phase2-Presentations-App05-FINAL.zip`
+- Presentations — original `InkDOS-2.0-Phase2-Presentations-App05-FINAL.zip` baseline plus the approved PPT-P1 PPTX Home Editing increment.
 - Plain Text — original App01 baseline plus the approved TXT-T1 Editing Essentials and TXT-T2 Structured XML increments.
 - EPUB Reader — original App02 baseline plus the approved EPUB-E1 Navigation & Retrieval and EPUB-E2 Notes & Reading Library increments.
 - PDF Workspace — accepted P4.2 baseline plus approved PDF-P1 Reader Completion and PDF-P2 Page Tools increments.
@@ -21,6 +21,7 @@ Approved and frozen in sequence:
 6. PDF-P2 — Page Tools
 7. DOC-D1 — Home Document Essentials
 8. DOC-D2 — Documents P1 + Legacy Import
+9. PPT-P1 — PPTX Home Editing
 
 PDF-P2 closes the planned domestic PDF functional scope: local page reorder, permanent rotation, deletion, extraction, split and merge. Its app-local vendor dependencies remain under `apps/pdf/vendor/`; the external smoke test is kept outside the distributable app tree. The suite service worker lists the required PDF P1/P2 runtime resources so the PWA shell can remain offline-capable.
 
@@ -30,6 +31,10 @@ DOC-D2 extends that frozen baseline with browser spellcheck integration, comment
 
 DOC-D2 also adds local RTF import for a conservative domestic subset. RTF is normalized into the Documents model and saved only as DOCX; legacy RTF bytes are not retained as an output source. A Chromium conversion test verifies RTF open → edit → DOCX serialization → OOXML inspection → DOCX reopen. Binary Word 97–2003 `.doc` import is deliberately deferred because its OLE/CFB, FIB, piece-table and formatting-table parser surface is disproportionate to current home-use benefit. This deferral is explicitly allowed by the DOC-D2 roadmap; `.doc` export remains out of scope.
 
-The next permitted functional cycle is **PPT-P1 — PPTX Home Editing**. Documents and all previously frozen workspaces must not receive additional functional work during PPT-P1 unless an objective regression requires reopening a frozen baseline.
+PPT-P1 establishes the domestic PPTX editing baseline on top of the existing Presentations reader/editor. New presentations and imported PPTX files support slide add/duplicate/delete/reorder; text insertion/editing; local image insertion; rectangle, rounded-rectangle, ellipse and line shapes; contextual move/resize/rotate controls; basic fill/border/text colors; bullet lists; and basic Title + Content, Two Content and Section Header layouts. Imported PPTX uses app-local package-preserving structure/object writers rather than flattening the source package. Chromium tests verify real file-input open, hit-tested geometry interaction, PPTX serialization, ZIP/XML inspection, decoder re-import and app reopening. Unsupported complex imported objects remain preserved rather than being exposed as unsafe editable equivalents, and legacy `.ppt` remains read-only until PPT-P2.
+
+The suite service worker includes the PPT-P1 structure writer, object writer and contextual tool module so this baseline remains available in the installed offline shell.
+
+The next permitted functional cycle is **PPT-P2 — Presentation Completion + PPT Import**. Presentations PPT-P1 and all previously frozen workspaces must not receive additional functional work during PPT-P2 except for objective regressions required to complete or protect the authorized PPT-P2 scope.
 
 Exact SHA-256 values and integration hashes for installed trees are recorded in `SOURCE_LOCK.json` and `CHECKSUMS.sha256`.
