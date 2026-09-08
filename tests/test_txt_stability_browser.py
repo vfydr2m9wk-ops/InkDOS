@@ -245,6 +245,21 @@ def main() -> None:
             assert semantic_storage['bomControl'] is False, semantic_storage
             assert semantic_storage['lineEndingControl'] is False, semantic_storage
 
+            # Transient popovers coordinate through bootstrap callbacks, not T1 sibling-control bindings.
+            page.click('#textToolsBtn')
+            assert page.locator('#textToolsMenu').is_visible()
+            page.click('#listBtn')
+            assert page.locator('#textToolsMenu').is_hidden()
+            assert page.locator('#listMenu').is_visible()
+            page.click('#textToolsBtn')
+            assert page.locator('#listMenu').is_hidden()
+            assert page.locator('#textToolsMenu').is_visible()
+            page.evaluate("() => document.getElementById('listBtn').remove()")
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT1.closeTools()")
+            page.click('#textToolsBtn')
+            assert page.locator('#textToolsMenu').is_visible()
+            page.evaluate("() => InkDOS2.TxtAppDebug.txtT1.closeTools()")
+
             # T2 XML tools survive removal of the remaining T1 shell and follow semantic view policy.
             page.evaluate("() => InkDOS2.TxtAppDebug.txtT1.setLineNumbers(true)")
             page.evaluate("() => {document.getElementById('textToolsMenu')?.remove();document.getElementById('textToolsBtn')?.remove()}")

@@ -6,7 +6,7 @@ function create(E=collect()){
   function positionListMenu(){const r=E.listBtn.getBoundingClientRect(),menu=E.listMenu;menu.hidden=false;menu.style.left=Math.max(8,Math.min(innerWidth-350,r.left))+'px';menu.style.top=Math.min(innerHeight-220,r.bottom+6)+'px';E.listBtn.setAttribute('aria-expanded','true')}
   function closeListMenu(){E.listMenu.hidden=true;E.listBtn.setAttribute('aria-expanded','false')}
   function toggleListMenu(){if(E.listMenu.hidden)positionListMenu();else closeListMenu()}
-  function bind({editor,files,state,commands},frameMenu){
+  function bind({editor,files,state,commands},frameMenu,{beforeListOpen=()=>{}}={}){
     if(!commands)throw new Error('TxtControls requires semantic commands');
     const execute=(id,...args)=>commands.execute(id,...args);
     E.editor.addEventListener('input',editor.markChanged);for(const ev of ['keyup','click','select'])E.editor.addEventListener(ev,editor.updateCursor);
@@ -14,7 +14,7 @@ function create(E=collect()){
     E.title.addEventListener('change',editor.handleTitleChange);
     E.newBtn.onclick=()=>{frameMenu.close();execute('file.new')};E.openBtn.onclick=()=>{frameMenu.close();execute('file.open.request')};E.fileInput.onchange=()=>Promise.resolve(execute('file.open',E.fileInput.files[0])).catch(e=>editor.setStatus(e.message,'state-error')).finally(()=>{E.fileInput.value='';if(!state.loaded&&E.startState)E.startState.hidden=false});E.saveBtn.onclick=()=>{frameMenu.close();Promise.resolve(execute('file.save')).catch(e=>editor.setStatus('Export failed: '+e.message,'state-error'))};E.shareBtn.onclick=()=>{frameMenu.close();Promise.resolve(execute('file.share')).catch(e=>editor.setStatus('Share failed: '+e.message,'state-error'))};
     E.undoBtn.onclick=()=>execute('history.undo');E.redoBtn.onclick=()=>execute('history.redo');E.wrap.onclick=()=>execute('view.wrap.toggle');E.font.addEventListener('change',()=>execute('view.font.set',E.font.value));E.font.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();execute('view.font.set',E.font.value);E.editor.focus()}});E.fontDown.onclick=()=>execute('view.font.adjust',-1);E.fontUp.onclick=()=>execute('view.font.adjust',1);
-    E.outdent.onclick=()=>execute('outline.indent',-1);E.indent.onclick=()=>execute('outline.indent',1);E.listBtn.onclick=toggleListMenu;for(const btn of E.listMenu.querySelectorAll('[data-list-family]'))btn.onclick=()=>{execute('outline.list',btn.dataset.listFamily);closeListMenu()};
+    E.outdent.onclick=()=>execute('outline.indent',-1);E.indent.onclick=()=>execute('outline.indent',1);E.listBtn.onclick=()=>{if(E.listMenu.hidden)beforeListOpen();toggleListMenu()};for(const btn of E.listMenu.querySelectorAll('[data-list-family]'))btn.onclick=()=>{execute('outline.list',btn.dataset.listFamily);closeListMenu()};
     E.findBtn.onclick=()=>execute('find.toggle');E.findClose.onclick=()=>execute('find.close');E.findNext.onclick=()=>execute('find.next',E.findInput.value);E.findPrev.onclick=()=>execute('find.prev',E.findInput.value);E.findInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();execute(e.shiftKey?'find.prev':'find.next',E.findInput.value)}if(e.key==='Escape'){e.stopPropagation();execute('find.close')}});
     E.selectAll.onclick=()=>execute('selection.all');E.copy.onclick=()=>execute('clipboard.copy');E.paste.onclick=()=>execute('clipboard.paste');
     E.discardCancel.onclick=()=>files.resolveDiscard(false);E.discardContinue.onclick=()=>files.resolveDiscard(true);E.modalBackdrop.onclick=()=>files.resolveDiscard(false);

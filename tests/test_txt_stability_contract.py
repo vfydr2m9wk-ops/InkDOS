@@ -82,8 +82,8 @@ def main() -> None:
         'NS.TxtEditorController.create',
         'NS.TxtFileController.create',
         'NS.TxtCommands.create',
-        'NS.TxtT1Essentials.create({elements:E,state,editor,files,controls,commands})',
-        'controls.bind({editor,files,state,commands}',
+        'NS.TxtT1Essentials.create({elements:E,state,editor,files,commands,beforeOpen:()=>{controls.closeListMenu();t2?.close()}})',
+        'controls.bind({editor,files,state,commands},frameMenu,{beforeListOpen:()=>{t1?.closeTools();t2?.close()}})',
         'NS.TxtT2XmlTools.create({elements:E,state,editor,files,commands,beforeOpen:()=>t1?.closeTools()})',
         'NS.TxtAppDebug=Object.freeze({state,commands',
         'files.initialize()',
@@ -112,12 +112,14 @@ def main() -> None:
         forbid(commands, forbidden, f'Plain Text semantic commands must not own control DOM: {forbidden}')
 
     for needle in [
+        'function bind({editor,files,state,commands},frameMenu,{beforeListOpen=()=>{}}={})',
         'E.editor.addEventListener',
         "E.undoBtn.onclick=()=>execute('history.undo')",
         "E.redoBtn.onclick=()=>execute('history.redo')",
         "E.wrap.onclick=()=>execute('view.wrap.toggle')",
         "E.outdent.onclick=()=>execute('outline.indent',-1)",
         "E.indent.onclick=()=>execute('outline.indent',1)",
+        'if(E.listMenu.hidden)beforeListOpen()',
         "E.findBtn.onclick=()=>execute('find.toggle')",
         "E.findClose.onclick=()=>execute('find.close')",
         "E.findNext.onclick=()=>execute('find.next',E.findInput.value)",
@@ -143,6 +145,8 @@ def main() -> None:
         forbid(controls, forbidden, f'Plain Text controls still own semantic behavior: {forbidden}')
 
     for needle in [
+        'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',
+        'function openTools(){beforeOpen();syncTools()',
         "commands.register('find.open'",
         "commands.register('find.close'",
         "commands.register('find.toggle'",
@@ -165,6 +169,9 @@ def main() -> None:
     ]:
         require(t1, needle, f'Plain Text T1 semantic command contract missing: {needle}')
     for forbidden in [
+        'controls',
+        'E.listBtn',
+        'closeListMenu',
         'E.findPrev.onclick=',
         'E.findNext.onclick=',
         "E.wrap.addEventListener('click'",
@@ -174,7 +181,7 @@ def main() -> None:
         "ui.encodingSelect.onchange=()=>{const next=",
         "ui.bomToggle.onchange=()=>{if(state.bom",
     ]:
-        forbid(t1, forbidden, f'Plain Text T1 must not bind semantic behavior to a specific control implementation: {forbidden}')
+        forbid(t1, forbidden, f'Plain Text T1 must not depend on sibling controls or bind semantic behavior to a specific control: {forbidden}')
 
     for needle in [
         'function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={})',

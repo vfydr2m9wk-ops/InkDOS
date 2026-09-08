@@ -2,7 +2,7 @@
 const NS=g.InkDOS2=g.InkDOS2||{};
 const LINE_NUMBER_LIMIT=10000;
 const LINE_NUMBER_KEY='inkdos2:txt:lineNumbers';
-function create({elements:E,state,editor,files,controls,commands}={}){
+function create({elements:E,state,editor,files,commands,beforeOpen=()=>{}}={}){
   if(!E||!state||!editor||!files||!commands)throw new Error('TxtT1Essentials requires elements, state, editor, files and commands');
   const ui={};let lineNumbers=false,lineRenderFrame=0;
   function injectStyles(){if(document.getElementById('txtT1Styles'))return;const style=document.createElement('style');style.id='txtT1Styles';style.textContent=`
@@ -47,11 +47,11 @@ function create({elements:E,state,editor,files,controls,commands}={}){
     ui.bomToggle.onchange=()=>commands.execute('storage.bom.set',ui.bomToggle.checked);
     ui.lineEndingSelect.onchange=()=>{const map={lf:'\n',crlf:'\r\n',cr:'\r'};commands.execute('storage.lineEnding.set',map[ui.lineEndingSelect.value]||'\n')};
     ui.lineNumbersToggle.onchange=()=>setLineNumbers(ui.lineNumbersToggle.checked);
-    document.addEventListener('pointerdown',e=>{if(!ui.tools.hidden&&!ui.tools.contains(e.target)&&!ui.toolsBtn.contains(e.target))closeTools()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!ui.tools.hidden){e.preventDefault();closeTools()}});E.listBtn.addEventListener('click',closeTools);g.addEventListener('resize',()=>{if(!ui.tools.hidden)positionTools();scheduleLineNumbers()});
+    document.addEventListener('pointerdown',e=>{if(!ui.tools.hidden&&!ui.tools.contains(e.target)&&!ui.toolsBtn.contains(e.target))closeTools()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!ui.tools.hidden){e.preventDefault();closeTools()}});g.addEventListener('resize',()=>{if(!ui.tools.hidden)positionTools();scheduleLineNumbers()});
   }
   function syncTools(){if(!ui.encodingSelect)return;ui.encodingSelect.value=state.encoding||'utf-8';ui.bomToggle.checked=!!state.bom;ui.lineEndingSelect.value=state.lineEnding==='\r\n'?'crlf':state.lineEnding==='\r'?'cr':'lf';ui.lineNumbersToggle.checked=lineNumbers}
   function positionTools(){const r=ui.toolsBtn.getBoundingClientRect(),width=Math.min(320,innerWidth-24);ui.tools.style.left=Math.max(12,Math.min(innerWidth-width-12,r.left))+'px';ui.tools.style.top=Math.min(innerHeight-ui.tools.offsetHeight-12,r.bottom+6)+'px'}
-  function openTools(){controls?.closeListMenu?.();syncTools();ui.tools.hidden=false;ui.toolsBtn.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{positionTools();ui.goLineInput.focus();ui.goLineInput.select()})}
+  function openTools(){beforeOpen();syncTools();ui.tools.hidden=false;ui.toolsBtn.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{positionTools();ui.goLineInput.focus();ui.goLineInput.select()})}
   function closeTools(){if(!ui.tools)return;ui.tools.hidden=true;ui.toolsBtn?.setAttribute('aria-expanded','false')}
   function goToLine(){const total=E.editor.value.split('\n').length,raw=Math.round(Number(ui.goLineInput.value));if(!Number.isFinite(raw)||raw<1){editor.setStatus('Enter a valid line number','state-warn');return}const line=Math.max(1,Math.min(total,raw)),parts=E.editor.value.split('\n');let pos=0;for(let i=1;i<line;i++)pos+=parts[i-1].length+1;E.editor.focus();E.editor.setSelectionRange(pos,pos);editor.updateCursor();editor.setStatus(`Moved to line ${line} of ${total}`,'state-ok');closeTools()}
   function installLineNumbers(){ui.gutter=make('div',{id:'lineNumberGutter',className:'t1-line-gutter',hidden:true,'aria-hidden':'true'});ui.layer=make('div',{id:'lineNumberLayer',className:'t1-line-layer'});ui.gutter.appendChild(ui.layer);ui.mirror=make('div',{id:'lineNumberMirror',className:'t1-line-mirror','aria-hidden':'true'});E.surface.insertBefore(ui.gutter,E.editor);E.surface.appendChild(ui.mirror);try{lineNumbers=localStorage.getItem(LINE_NUMBER_KEY)==='true'}catch(_){}setLineNumbers(lineNumbers,{quiet:true});E.editor.addEventListener('scroll',syncLineNumberScroll,{passive:true});E.editor.addEventListener('input',scheduleLineNumbers);E.editor.addEventListener('focus',scheduleLineNumbers);document.addEventListener('inkdos:txt-view-policy',scheduleLineNumbers);}
