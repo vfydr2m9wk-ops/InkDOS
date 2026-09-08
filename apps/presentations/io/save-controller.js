@@ -2,13 +2,14 @@
 const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,chrome}={}){
   let busy=false,p1Loader=null;
-  function ensureP1Writer(){if(NS.PptP1StructureWriter)return Promise.resolve();if(p1Loader)return p1Loader;p1Loader=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='io/ppt-p1-structure-writer.js';s.onload=()=>NS.PptP1StructureWriter?resolve():reject(new Error('PPT-P1 structure writer did not initialize.'));s.onerror=()=>reject(new Error('PPT-P1 structure writer could not be loaded locally.'));document.head.appendChild(s)});return p1Loader}
+  function loadLocal(src,test,label){if(test())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=()=>test()?resolve():reject(new Error(label+' did not initialize.'));s.onerror=()=>reject(new Error(label+' could not be loaded locally.'));document.head.appendChild(s)})}
+  function ensureP1Writer(){if(NS.PptP1StructureWriter&&NS.PptP1ObjectWriter)return Promise.resolve();if(p1Loader)return p1Loader;p1Loader=(async()=>{await loadLocal('io/ppt-p1-structure-writer.js',()=>!!NS.PptP1StructureWriter,'PPT-P1 structure writer');await loadLocal('io/ppt-p1-object-writer.js',()=>!!NS.PptP1ObjectWriter,'PPT-P1 object writer')})();return p1Loader}
   async function buildCopy(sharing=false){
     if(!session.active)throw new Error('No presentation is open.');
     if(session.sourceKind==='ppt')throw new Error('Legacy PPT is read-only. Share and Save Copy are available for new presentations and PPTX files.');
-    let bytes,receipt={mode:'generated-pptx'};
+    await ensureP1Writer();let bytes,receipt={mode:'generated-pptx-home-editing'};
     if(session.sourceKind==='pptx'){
-      await ensureP1Writer();chrome.status(sharing?'Preparing PPTX to share…':'Preparing PPTX copy…');
+      chrome.status(sharing?'Preparing PPTX to share…':'Preparing PPTX copy…');
       const result=await NS.PptxPreservationWriter.build(session);bytes=result.bytes;receipt=result.receipt;
     }else{
       chrome.status(sharing?'Building PPTX to share…':'Building PPTX copy…');bytes=await NS.PptxWriter.build(session);
@@ -23,24 +24,14 @@ function create({session,chrome}={}){
       if(delivery.deliveryConfirmed){
         if(session.sourceKind==='pptx')session.acceptConfirmedPptx(bytes,receipt);else session.dirty=false;
         chrome.status('PPTX copy saved');
-      }else{
-        chrome.status('PPTX copy generated · delivery requested');
-      }
-      chrome.title();
-      return {...delivery,bytes,receipt};
-    }catch(e){if(e?.code!=='cancelled')chrome.showError(e,{name:session.fileName});return null}
-    finally{busy=false}
+      }else chrome.status('PPTX copy generated · delivery requested');
+      chrome.title();return {...delivery,bytes,receipt};
+    }catch(e){if(e?.code!=='cancelled')chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
   }
   async function share(){
     if(!session.active||busy)return null;busy=true;
-    try{
-      const {bytes,receipt,blob}=await buildCopy(true);
-      const delivery=await NS.FileDelivery.share(blob,session.fileName);
-      chrome.status('PPTX sent to Share Sheet');
-      chrome.title();
-      return {...delivery,bytes,receipt};
-    }catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName});return null}
-    finally{busy=false}
+    try{const {bytes,receipt,blob}=await buildCopy(true);const delivery=await NS.FileDelivery.share(blob,session.fileName);chrome.status('PPTX sent to Share Sheet');chrome.title();return {...delivery,bytes,receipt}}
+    catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
   }
   return Object.freeze({save,share,buildCopy,ensureP1Writer})
 }
