@@ -27,16 +27,21 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - name: Validate PPT-P2 functional phase
+      - name: Validate PPT-P2 roadmap state
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           state=json.loads(Path('FUNCTIONAL_STATE.json').read_text(encoding='utf-8'))
           assert state['transitionGateRequired'] is True
-          assert state['currentPhase']=={'id':'PPT-P2','workspace':'presentations','status':'active'}
-          assert 'PPT-P1' in state['completedPhases']
-          assert state['nextPhase']=={'id':'XLS-S1','workspace':'spreadsheets'}
+          active=state.get('currentPhase') or {}
+          completed=set(state.get('completedPhases') or [])
+          if active.get('id')=='PPT-P2':
+              assert active=={'id':'PPT-P2','workspace':'presentations','status':'active'}
+              assert state['nextPhase']=={'id':'XLS-S1','workspace':'spreadsheets'}
+          else:
+              assert 'PPT-P2' in completed
+          assert 'PPT-P1' in completed
           PY
       - name: Validate PPT-P2 completion contracts
         run: |
