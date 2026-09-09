@@ -16,6 +16,7 @@ def require(text: str, needle: str, label: str) -> None:
 def main() -> None:
     package = read("apps/presentations/io/ppt-p2-package.js")
     tools = read("apps/presentations/ui/ppt-p2-tools.js")
+    writer = read("apps/presentations/io/pptx-preservation-writer.js")
     session = read("apps/presentations/engine/presentation-session.js")
     save = read("apps/presentations/io/save-controller.js")
 
@@ -48,8 +49,19 @@ def main() -> None:
         "notesInput.dataset.command='slide.notes.set'",
         "slide.theme=themeOf",
         "themes.push(slide.theme)",
+        "commands.register('table.style.set'",
+        "function setTableStyle(",
+        "kind:'table.style'",
     ):
         require(tools, needle, "PPT-P2 tools contract")
+
+    for needle in (
+        "function normalizeTableStyleId(",
+        "function setTableStyleId(",
+        "if(kind==='table.style')",
+        "row/column/merge/fill/border/style operations",
+    ):
+        require(writer, needle, "PPT-P2 table style preservation contract")
 
     for needle in (
         "const DEFAULT_THEME=Object.freeze",
