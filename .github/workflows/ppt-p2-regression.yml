@@ -38,6 +38,8 @@ jobs:
           assert 'PPT-P1' in state['completedPhases']
           assert state['nextPhase']=={'id':'XLS-S1','workspace':'spreadsheets'}
           PY
+      - name: Validate PPT-P2 completion contracts
+        run: python tests/test_ppt_p2_contract.py
       - name: Check PPT-P2 runtime syntax
         run: |
           node --check apps/presentations/app.js
@@ -65,3 +67,4 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps ${{ matrix.browser }}
       - run: python tests/test_ppt_p2_transitions_browser.py
+      - run: python tests/test_ppt_p2_notes_browser.py
