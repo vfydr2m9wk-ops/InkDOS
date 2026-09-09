@@ -66,6 +66,11 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-ci.txt
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Isolate unrelated Chrome apt source
+        run: |
+          while IFS= read -r source; do
+            sudo mv "$source" "$source.inkdos-disabled"
+          done < <(grep -RIl 'dl\.google\.com/linux/chrome-stable' /etc/apt/sources.list.d 2>/dev/null || true)
       - name: Install Playwright browser with bounded retry
         shell: bash
         run: |
@@ -102,6 +107,11 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-ci.txt
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Isolate unrelated Chrome apt source
+        run: |
+          while IFS= read -r source; do
+            sudo mv "$source" "$source.inkdos-disabled"
+          done < <(grep -RIl 'dl\.google\.com/linux/chrome-stable' /etc/apt/sources.list.d 2>/dev/null || true)
       - run: python -m playwright install --with-deps chromium
       - name: Run all preserved format round-trips
         shell: bash
