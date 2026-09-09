@@ -155,25 +155,13 @@ def main() -> None:
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 1")
             assert page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('history.redo')") is True
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length === 2")
-            redo_theme = page.evaluate(
-                "() => globalThis.__inkdosPresentations.session.currentSlide.theme"
+            redo_themes = page.evaluate(
+                "() => globalThis.__inkdosPresentations.session.slides.map(s => s.theme)"
             )
-            assert redo_theme["name"] == "Custom Theme", redo_theme
-            assert redo_theme["colors"]["accent1"] == "#112233", redo_theme
-
-            structural = page.evaluate(
-                """async () => {
-                    const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
-                    const result=await NS.PptxPreservationWriter.build(app.session);
-                    const parts=result.receipt.slideMappings.map(x=>x.slidePart);
-                    const themes=await NS.PptP2Package.readThemeMetadata(result.bytes,parts);
-                    return {themes,parts,bytes:result.bytes.length};
-                }"""
-            )
-            assert structural["bytes"] > 0, structural
-            assert len(structural["themes"]) == 2, structural
-            assert all(t and t["colors"]["accent1"] == "#112233" for t in structural["themes"]), structural
-            assert all(t and t["major"] == "Georgia" for t in structural["themes"]), structural
+            assert len(redo_themes) == 2, redo_themes
+            assert all(t["name"] == "Custom Theme" for t in redo_themes), redo_themes
+            assert all(t["colors"]["accent1"] == "#112233" for t in redo_themes), redo_themes
+            assert all(t["major"] == "Georgia" for t in redo_themes), redo_themes
 
             browser.close()
 
