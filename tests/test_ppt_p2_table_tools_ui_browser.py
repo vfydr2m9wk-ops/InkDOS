@@ -70,7 +70,7 @@ def main() -> None:
                 fixture,
             )
             page.wait_for_selector(".slide-table")
-            page.click('[data-table-row="0"][data-table-col="0"] .table-cell-content')
+            page.click('[data-table-row="0"][data-table-col="0"]')
             page.wait_for_function("() => !document.getElementById('pptP2TableToolsBtn').disabled")
             page.click("#pptP2TableToolsBtn")
             assert page.locator("#pptP2TableToolsPanel").is_visible()
