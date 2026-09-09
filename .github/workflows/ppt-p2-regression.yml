@@ -39,13 +39,16 @@ jobs:
           assert state['nextPhase']=={'id':'XLS-S1','workspace':'spreadsheets'}
           PY
       - name: Validate PPT-P2 completion contracts
-        run: python tests/test_ppt_p2_contract.py
+        run: |
+          python tests/test_ppt_p2_contract.py
+          python tests/test_ppt_p2_table_tools_ui_contract.py
       - name: Check PPT-P2 runtime syntax
         run: |
           node --check apps/presentations/app.js
           node --check apps/presentations/engine/presentation-session.js
           node --check apps/presentations/ui/command-controller.js
           node --check apps/presentations/ui/ppt-p2-tools.js
+          node --check apps/presentations/ui/ppt-p2-table-tools-ui.js
           node --check apps/presentations/io/ppt-p2-package.js
           node --check apps/presentations/io/pptx-open-controller.js
           node --check apps/presentations/io/pptx-preservation-writer.js
