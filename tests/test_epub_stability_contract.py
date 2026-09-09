@@ -69,7 +69,7 @@ def main() -> None:
         if ref.startswith(('http://', 'https://', '//')):
             continue
         require(service_worker, f'"./apps/epub/{ref}"', 'EPUB offline shell')
-    require(service_worker, 'inkdos-v2.0.12-stability-epub-seq87', 'EPUB offline cache rotation')
+    require(service_worker, 'inkdos-v2.0.12-stability-epub-seq88', 'EPUB offline cache rotation')
 
     for element_id in (
         'toolbar', 'fileInput', 'readerStage', 'readerSurface', 'emptyState',

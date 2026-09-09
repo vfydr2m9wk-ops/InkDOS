@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-epub-seq87';
+const CACHE_NAME='inkdos-v2.0.12-stability-epub-seq88';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -155,6 +155,7 @@ const APP_SHELL=[
   "./apps/presentations/io/ppt-legacy-reader.js",
   "./apps/presentations/io/ppt-p1-object-writer.js",
   "./apps/presentations/io/ppt-p1-structure-writer.js",
+  "./apps/presentations/io/ppt-p2-package.js",
   "./apps/presentations/io/pptx-open-controller.js",
   "./apps/presentations/io/pptx-preservation-writer.js",
   "./apps/presentations/io/pptx-writer.js",
@@ -172,6 +173,7 @@ const APP_SHELL=[
   "./apps/presentations/ui/editing-controller.js",
   "./apps/presentations/ui/editor.css",
   "./apps/presentations/ui/ppt-p1-tools.js",
+  "./apps/presentations/ui/ppt-p2-tools.js",
   "./apps/presentations/ui/slide-panel-controller.js",
   "./apps/presentations/ui/zoom-controls.js",
   "./apps/presentations/vendor/jszip.min.js",
