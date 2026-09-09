@@ -42,6 +42,7 @@ jobs:
         run: |
           python tests/test_ppt_p2_contract.py
           python tests/test_ppt_p2_table_tools_ui_contract.py
+          python tests/test_ppt_p2_tables_closure_contract.py
       - name: Check PPT-P2 runtime syntax
         run: |
           node --check apps/presentations/app.js
