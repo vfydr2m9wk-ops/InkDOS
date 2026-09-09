@@ -57,7 +57,7 @@ def main() -> None:
         require(writer, f"kind==='{kind}'", "Tables package-preservation replay")
 
     require(tools, "session.sourceKind==='pptx'", "Tables writable-source gate")
-    require(tools, "table.pptP2Imported", "Tables mapped-import gate")
+    require(tools, "!!table?.pptP2Imported", "Tables mapped-import gate")
     require(ui, "app.executeCommand(command,...args)", "Table Tools command dispatch")
     require(ui, "document.addEventListener('pointerdown',rememberCell,true)", "Table Tools pointer selection boundary")
     require(ui, "document.addEventListener('focusin',rememberCell,true)", "Table Tools focus selection boundary")
