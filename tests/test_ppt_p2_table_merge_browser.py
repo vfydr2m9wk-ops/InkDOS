@@ -98,7 +98,8 @@ def main() -> None:
                     app.executeCommand('table.cell.text.set',t.id,1,1,'BLOCK');
                     const blocked=app.executeCommand('table.cells.merge',t.id,0,0,1,1);
                     app.executeCommand('history.undo');
-                    return {blocked,text:t.rows[1].cells[1].text};
+                    const current=app.session.currentSlide.objects.find(o=>o.type==='table');
+                    return {blocked,text:current.rows[1].cells[1].text};
                 }"""
             )
             assert rejected == {"blocked": False, "text": ""}, rejected
