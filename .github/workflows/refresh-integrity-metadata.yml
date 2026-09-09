@@ -54,6 +54,13 @@ jobs:
       - name: Generate hash-based CSP metadata
         run: python scripts/generate_csp.py
 
+      - name: Record verified PDF.js worker delta for security migration
+        if: ${{ github.ref_name == 'audit/stability-functional-isolation' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/security_analyze_pdfjs_worker.py > docs/security/PDFJS_WORKER_DELTA.txt
+
       - name: Refresh integrated app locks outside active stability audit
         shell: bash
         run: |
@@ -117,7 +124,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|docs/security/PDFJS_WORKER_DELTA\.txt|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
           while IFS= read -r path; do
             [[ -z "$path" ]] && continue
             if ! [[ "$path" =~ $allowed ]]; then
@@ -140,6 +147,7 @@ jobs:
             apps/pdf/index.html \
             apps/txt/index.html \
             apps/epub/index.html \
+            docs/security/PDFJS_WORKER_DELTA.txt \
             SOURCE_LOCK.json \
             BUILD_INFO.json \
             SOURCE_MANIFEST.json \
@@ -162,7 +170,7 @@ jobs:
           {
             echo '### Integrity refresh handoff'
             echo
-            echo 'Generated entry-point/CSP and integrity metadata was produced and validated with read-only repository permissions.'
+            echo 'Generated entry-point/CSP, PDF.js migration evidence, and integrity metadata were produced and validated with read-only repository permissions.'
             echo 'The write-capable job will only apply this validated patch to the same branch head and will not execute repository scripts.'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -210,7 +218,7 @@ jobs:
           }
           git apply --check /tmp/integrity.patch
           git apply /tmp/integrity.patch
-          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|docs/security/PDFJS_WORKER_DELTA\.txt|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
           while IFS= read -r path; do
             [[ -z "$path" ]] && continue
             if ! [[ "$path" =~ $allowed ]]; then
@@ -236,6 +244,7 @@ jobs:
             apps/pdf/index.html \
             apps/txt/index.html \
             apps/epub/index.html \
+            docs/security/PDFJS_WORKER_DELTA.txt \
             SOURCE_LOCK.json \
             BUILD_INFO.json \
             SOURCE_MANIFEST.json \
