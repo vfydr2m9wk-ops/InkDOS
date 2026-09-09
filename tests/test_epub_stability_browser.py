@@ -91,6 +91,63 @@ def build_epub(path: Path) -> None:
             zf.writestr(name, data, compress_type=zipfile.ZIP_STORED)
 
 
+def write_single_chapter_epub(path: Path, chapter: str, *, extra_entries: tuple[tuple[str, str], ...] = ()) -> None:
+    container = '''<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
+</container>'''
+    opf = '''<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="book-id">urn:inkdos:epub-security</dc:identifier>
+    <dc:title>Security Fixture</dc:title>
+    <dc:language>en</dc:language>
+  </metadata>
+  <manifest><item id="c1" href="ch1.xhtml" media-type="application/xhtml+xml"/></manifest>
+  <spine><itemref idref="c1"/></spine>
+</package>'''
+    with zipfile.ZipFile(path, 'w') as zf:
+        zf.writestr('mimetype', 'application/epub+zip', compress_type=zipfile.ZIP_STORED)
+        zf.writestr('META-INF/container.xml', container, compress_type=zipfile.ZIP_STORED)
+        zf.writestr('OEBPS/content.opf', opf, compress_type=zipfile.ZIP_STORED)
+        zf.writestr('OEBPS/ch1.xhtml', chapter, compress_type=zipfile.ZIP_STORED)
+        for name, data in extra_entries:
+            zf.writestr(name, data, compress_type=zipfile.ZIP_STORED)
+
+
+def build_malicious_epub(path: Path) -> None:
+    chapter = '''<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Security</title></head><body>
+<h1 id="security">Security Chapter</h1>
+<script>globalThis.__INKDOS_EPUB_XSS=1</script>
+<style>body{display:none}</style>
+<iframe src="https://attacker.invalid/frame"></iframe>
+<object data="https://attacker.invalid/object"></object>
+<svg xmlns="http://www.w3.org/2000/svg" onload="globalThis.__INKDOS_EPUB_XSS=1"><script>globalThis.__INKDOS_EPUB_XSS=1</script></svg>
+<form action="https://attacker.invalid/form"><input autofocus="autofocus" onfocus="globalThis.__INKDOS_EPUB_XSS=1"/></form>
+<p onclick="globalThis.__INKDOS_EPUB_XSS=1">Visible safe text. <a href="javascript:globalThis.__INKDOS_EPUB_XSS=1">Blocked JS link</a> <a href="https://attacker.invalid/link">Blocked external link</a></p>
+<p><img src="https://attacker.invalid/pixel.png" alt="Remote image blocked"/></p>
+</body></html>'''
+    write_single_chapter_epub(path, chapter)
+
+
+def build_entity_epub(path: Path) -> None:
+    chapter = '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [<!ENTITY xxe "ENTITY SHOULD NOT LOAD">]>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Entity</title></head><body>
+<h1>Entity Fixture</h1><p>&xxe;</p>
+</body></html>'''
+    write_single_chapter_epub(path, chapter)
+
+
+def build_traversal_epub(path: Path) -> None:
+    chapter = '''<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Traversal</title></head><body>
+<h1>Traversal Fixture</h1><p>This content must never commit.</p>
+</body></html>'''
+    write_single_chapter_epub(path, chapter, extra_entries=(('../escape.txt', 'must-not-escape'),))
+
+
 def main() -> None:
     browser_name = os.environ.get('BROWSER', 'chromium').strip().lower()
     if browser_name not in {'chromium', 'firefox', 'webkit'}:
@@ -107,7 +164,13 @@ def main() -> None:
         wait_port()
         with tempfile.TemporaryDirectory() as td:
             epub_path = Path(td) / 'regression.epub'
+            malicious_path = Path(td) / 'malicious.epub'
+            entity_path = Path(td) / 'entity.epub'
+            traversal_path = Path(td) / 'traversal.epub'
             build_epub(epub_path)
+            build_malicious_epub(malicious_path)
+            build_entity_epub(entity_path)
+            build_traversal_epub(traversal_path)
             with sync_playwright() as pw:
                 browser = getattr(pw, browser_name).launch(headless=True)
                 context = browser.new_context(viewport={'width': 1360, 'height': 900})
@@ -211,6 +274,77 @@ def main() -> None:
                 assert not page.locator('#shareBtn').is_disabled()
                 text = page.locator('#readerSurface').inner_text()
                 assert 'Chapter One' in text and 'Chapter Two' in text and 'Alpha beta gamma' in text, text
+
+                # Hostile EPUB regression: active content and external resources must be projected
+                # into inert local reader nodes without executing script or making remote requests.
+                security_errors: list[str] = []
+                external_requests: list[str] = []
+                security_page = context.new_page()
+                security_page.on('pageerror', lambda exc: security_errors.append(f'pageerror: {exc}'))
+                security_page.on('console', lambda msg: security_errors.append(f'console.error: {msg.text}') if msg.type == 'error' else None)
+                security_page.on('request', lambda request: external_requests.append(request.url) if request.url.startswith('https://attacker.invalid') else None)
+                security_page.goto(BASE + '/apps/epub/', wait_until='load')
+                security_page.wait_for_function('() => !!globalThis.__InkEpubR4')
+                security_page.evaluate('() => { globalThis.__INKDOS_EPUB_XSS = 0; }')
+                security_page.set_input_files('#fileInput', str(malicious_path))
+                security_page.wait_for_function("""() => {
+                    const s=globalThis.__InkEpubR4.state();
+                    return s.fileName==='malicious.epub' && s.book && s.book.chapters.length===1;
+                }""")
+                hostile = security_page.evaluate("""() => {
+                    const surface=document.getElementById('readerSurface');
+                    return {
+                        xss:globalThis.__INKDOS_EPUB_XSS,
+                        blockedNodes:surface.querySelectorAll('script,style,iframe,object,embed,form,input,button,video,audio,canvas,svg,math,link').length,
+                        anchors:surface.querySelectorAll('a').length,
+                        remoteImages:surface.querySelectorAll('img[src^="http://"],img[src^="https://"],img[src^="//"]').length,
+                        text:surface.innerText,
+                        readerLinks:[...surface.querySelectorAll('.reader-link')].map(x=>({text:x.textContent,kind:x.dataset.linkKind,href:x.dataset.linkHref||''})),
+                    };
+                }""")
+                assert hostile['xss'] == 0, (browser_name, hostile)
+                assert hostile['blockedNodes'] == 0 and hostile['anchors'] == 0 and hostile['remoteImages'] == 0, (browser_name, hostile)
+                assert 'Visible safe text.' in hostile['text'] and 'Remote image blocked' in hostile['text'], (browser_name, hostile)
+                assert any(x['text'] == 'Blocked JS link' and x['kind'] == 'external' and x['href'].startswith('javascript:') for x in hostile['readerLinks']), hostile
+                assert any(x['text'] == 'Blocked external link' and x['kind'] == 'external' and x['href'].startswith('https://attacker.invalid/') for x in hostile['readerLinks']), hostile
+                assert external_requests == [], (browser_name, external_requests)
+
+                before_url = security_page.url
+                security_page.locator('#readerSurface .reader-link', has_text='Blocked JS link').click()
+                security_page.wait_for_function("() => document.getElementById('chapterState').textContent.includes('External links are disabled')")
+                assert security_page.url == before_url, (browser_name, security_page.url)
+                assert security_page.evaluate('() => globalThis.__INKDOS_EPUB_XSS') == 0, browser_name
+                assert external_requests == [], (browser_name, external_requests)
+
+                security_page.locator('#readerSurface .reader-link', has_text='Blocked external link').click()
+                assert security_page.url == before_url, (browser_name, security_page.url)
+                assert external_requests == [], (browser_name, external_requests)
+
+                # Entity/DOCTYPE and ZIP traversal failures must be transactional: a rejected
+                # candidate cannot replace the already committed safe projection.
+                security_page.set_input_files('#fileInput', str(entity_path))
+                security_page.wait_for_function("() => /xml-(entity|doctype)/.test(document.getElementById('chapterState').textContent)")
+                entity_probe = security_page.evaluate("""() => ({
+                    fileName:globalThis.__InkEpubR4.state().fileName,
+                    title:globalThis.__InkEpubR4.state().book && globalThis.__InkEpubR4.state().book.title,
+                    text:document.getElementById('readerSurface').innerText,
+                })""")
+                assert entity_probe['fileName'] == 'malicious.epub' and entity_probe['title'] == 'Security Fixture', entity_probe
+                assert 'Visible safe text.' in entity_probe['text'], entity_probe
+
+                security_page.set_input_files('#fileInput', str(traversal_path))
+                security_page.wait_for_function("() => document.getElementById('chapterState').textContent.includes('unsafe-path')")
+                traversal_probe = security_page.evaluate("""() => ({
+                    fileName:globalThis.__InkEpubR4.state().fileName,
+                    title:globalThis.__InkEpubR4.state().book && globalThis.__InkEpubR4.state().book.title,
+                    text:document.getElementById('readerSurface').innerText,
+                })""")
+                assert traversal_probe['fileName'] == 'malicious.epub' and traversal_probe['title'] == 'Security Fixture', traversal_probe
+                assert 'Visible safe text.' in traversal_probe['text'], traversal_probe
+                assert external_requests == [], (browser_name, external_requests)
+                if security_errors:
+                    raise AssertionError('\n'.join(security_errors))
+                security_page.close()
 
                 # Semantic reading flow survives removal of its toolbar controls.
                 page.click('#scrollBtn')
