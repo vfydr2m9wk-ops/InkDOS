@@ -86,26 +86,29 @@ def main() -> None:
             saved = page.evaluate("""async () => {
                 const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
                 const result=await NS.PptxPreservationWriter.build(app.session),zip=await JSZip.loadAsync(result.bytes,{checkCRC32:true});
+                globalThis.__inkdosTableStyleRoundtripBytes=result.bytes.slice();
                 const xml=await zip.file('ppt/slides/slide1.xml').async('text'),doc=new DOMParser().parseFromString(xml,'application/xml');
                 const all=(n,name)=>[...(n?.getElementsByTagName('*')||[])].filter(x=>x.localName===name);
                 const frame=all(doc,'graphicFrame').find(f=>all(f,'cNvPr').some(n=>n.getAttribute('id')==='93'));
                 const tbl=all(frame,'tbl')[0],tblPr=all(tbl,'tblPr')[0],styles=all(tblPr,'tableStyleId');
-                return {bytes:Array.from(result.bytes),style:styles[0]?.textContent||'',styleCount:styles.length,firstRow:tblPr?.getAttribute('firstRow'),bandRow:tblPr?.getAttribute('bandRow'),text:all(tbl,'t').map(n=>n.textContent||'').join(''),receipt:result.receipt};
+                return {style:styles[0]?.textContent||'',styleCount:styles.length,firstRow:tblPr?.getAttribute('firstRow'),bandRow:tblPr?.getAttribute('bandRow'),text:all(tbl,'t').map(n=>n.textContent||'').join(''),receipt:result.receipt,byteLength:result.bytes.byteLength};
             }""")
             assert saved["style"] == NEW_STYLE, saved
             assert saved["styleCount"] == 1, saved
             assert saved["firstRow"] == "1", saved
             assert saved["bandRow"] == "1", saved
             assert saved["text"] == "Styled cell", saved
+            assert saved["byteLength"] > 0, saved
             assert saved["receipt"]["modifiedSlideParts"] == ["ppt/slides/slide1.xml"], saved
             assert saved["receipt"]["modifiedObjects"][0]["operations"][0]["kind"] == "table.style", saved
 
-            reopened = page.evaluate("""async bytes => {
-                const app=globalThis.__inkdosPresentations;
-                const file=new File([new Uint8Array(bytes)],'table-style-roundtrip.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
+            reopened = page.evaluate("""async () => {
+                const app=globalThis.__inkdosPresentations,bytes=globalThis.__inkdosTableStyleRoundtripBytes;
+                if(!(bytes instanceof Uint8Array)||!bytes.byteLength)throw new Error('Roundtrip PPTX bytes are unavailable');
+                const file=new File([bytes],'table-style-roundtrip.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
                 await app.open(file);
                 return app.session.currentSlide.objects.find(o=>o.type==='table')?.styleId||'';
-            }""", saved["bytes"])
+            }""")
             assert reopened == NEW_STYLE, reopened
             assert not errors, errors
             browser.close()
