@@ -49,13 +49,13 @@ jobs:
       contents: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
           cache: pip
@@ -95,23 +95,28 @@ jobs:
           python scripts/check_no_legacy_runtime.py
           python scripts/run_release_validation.py
 
-  apply-update:
-    name: Apply update package
+  validate-update:
+    name: Validate update package without write credentials
     if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
-      contents: write
-      pages: write
+      contents: read
+    outputs:
+      package_name: ${{ steps.package.outputs.package_name }}
+      sha256: ${{ steps.package.outputs.sha256 }}
+      base_sha: ${{ steps.package.outputs.base_sha }}
+      label: ${{ steps.report.outputs.label }}
     steps:
-      - name: Check out main
-        uses: actions/checkout@v6
+      - name: Check out main without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: main
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
           cache: pip
@@ -137,7 +142,7 @@ jobs:
           PY
           fi
 
-      - name: Select and inspect update package
+      - name: Select immutable package input
         id: package
         shell: bash
         env:
@@ -160,135 +165,136 @@ jobs:
             fi
             package="${packages[0]}"
           fi
-
           cp -- "${package}" /tmp/update-package.zip
-          PACKAGE_NAME="${package}" python - <<'PY'
-          from pathlib import Path, PurePosixPath
-          import json
-          import os
-          import stat
-          import zipfile
+          echo "package_name=${package}" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum /tmp/update-package.zip | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "base_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-          package = Path('/tmp/update-package.zip')
-          seen = set()
-          total = 0
-          with zipfile.ZipFile(package) as archive:
-              infos = archive.infolist()
-              if len(infos) > 10_000:
-                  raise SystemExit('Update ZIP has too many entries.')
-              names = {item.filename for item in infos}
-              if 'patch-manifest.json' not in names:
-                  raise SystemExit('Update ZIP is missing patch-manifest.json.')
-              if 'files/scripts/apply_update_package.py' not in names:
-                  raise SystemExit('Update ZIP must supply files/scripts/apply_update_package.py.')
-              for item in infos:
-                  raw = item.filename.rstrip('/')
-                  if not raw:
-                      continue
-                  path = PurePosixPath(raw)
-                  if path.is_absolute() or any(part in {'', '.', '..'} for part in path.parts) or '\\' in raw:
-                      raise SystemExit(f'Unsafe ZIP path: {item.filename}')
-                  folded = raw.casefold()
-                  if folded in seen:
-                      raise SystemExit(f'Duplicate or case-colliding ZIP path: {item.filename}')
-                  seen.add(folded)
-                  total += item.file_size
-                  if item.file_size > 128 * 1024 * 1024 or total > 512 * 1024 * 1024:
-                      raise SystemExit('ZIP size limits exceeded.')
-                  mode = (item.external_attr >> 16) & 0o170000
-                  if mode == stat.S_IFLNK:
-                      raise SystemExit(f'Symbolic links are not allowed: {item.filename}')
-                  if raw.startswith('files/.github/workflows/'):
-                      raise SystemExit(
-                          'Update packages cannot create or modify GitHub workflow files. '
-                          'Install workflow changes manually as a one-time bootstrap.'
-                      )
-              manifest = json.loads(archive.read('patch-manifest.json').decode('utf-8'))
-              if manifest.get('product') != 'InkDOS':
-                  raise SystemExit('The selected ZIP is not an InkDOS update package.')
-              if manifest.get('allowWorkflowChanges'):
-                  raise SystemExit('allowWorkflowChanges is forbidden in stable update packages.')
-              if 'DELETE.txt' in names:
-                  for line in archive.read('DELETE.txt').decode('utf-8').splitlines():
-                      value = line.strip()
-                      if value and not value.startswith('#') and value.startswith('.github/workflows/'):
-                          raise SystemExit('Update packages cannot delete GitHub workflow files.')
-              Path('/tmp/update-package-manifest.json').write_text(
-                  json.dumps(manifest, indent=2, ensure_ascii=False) + '\n',
-                  encoding='utf-8',
-              )
-          print(f"Selected {os.environ['PACKAGE_NAME']} for transactional validation.")
-          PY
-
-          sha="$(sha256sum /tmp/update-package.zip | awk '{print $1}')"
-          label="$(python -c "import json; print(json.load(open('/tmp/update-package-manifest.json'))['packageLabel'])")"
-          echo "original_name=${package}" >> "$GITHUB_OUTPUT"
-          echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
-          echo "label=${label}" >> "$GITHUB_OUTPUT"
-          echo "SHA-256: ${sha}"
-          echo "The root ZIP is retained until validation succeeds."
-
-      - name: Prepare package updater
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import zipfile
-          with zipfile.ZipFile('/tmp/update-package.zip') as archive:
-              Path('/tmp/apply_update_package.py').write_bytes(
-                  archive.read('files/scripts/apply_update_package.py')
-              )
-          PY
-          chmod +x /tmp/apply_update_package.py
-
-      - name: Apply package transaction
-        id: apply
+      - name: Validate package transaction with trusted updater
+        id: validate_package
         shell: bash
         env:
-          DRY_RUN: ${{ inputs.dry_run }}
           VALIDATION_PROFILE: ${{ inputs.validation_profile }}
         run: |
-          set -uo pipefail
+          set -euo pipefail
           args=(
             --package /tmp/update-package.zip
             --repo "${GITHUB_WORKSPACE}"
             --report /tmp/update-report.json
+            --dry-run
           )
-          if [[ "${DRY_RUN}" == "true" ]]; then
-            args+=(--dry-run)
-          fi
           if [[ "${VALIDATION_PROFILE}" != "package" ]]; then
             args+=(--validation-profile "${VALIDATION_PROFILE}")
           fi
-          set +e
-          python /tmp/apply_update_package.py "${args[@]}" 2>&1 | tee /tmp/update-transaction.log
-          status=${PIPESTATUS[0]}
-          set -e
-          echo "exit_code=${status}" >> "$GITHUB_OUTPUT"
-          exit "${status}"
+          python scripts/apply_update_package.py "${args[@]}"
+
+      - name: Export validated package metadata
+        id: report
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          report = json.loads(Path('/tmp/update-report.json').read_text(encoding='utf-8'))
+          print(f"label={report['packageLabel']}")
+          PY
+
+      - name: Write validation summary
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          from pathlib import Path
+          import json
+          try:
+              report = json.loads(Path('/tmp/update-report.json').read_text(encoding='utf-8'))
+          except Exception:
+              report = {}
+          status = report.get('status', 'failed')
+          print('## InkDOS update validation')
+          print()
+          print(f"- Status: **{status}**")
+          print(f"- Package SHA-256: `${{ steps.package.outputs.sha256 }}`")
+          if report.get('packageLabel'):
+              print(f"- Package: `{report['packageLabel']}`")
+          if report.get('validationProfile'):
+              print(f"- Validation profile: `{report['validationProfile']}`")
+          if report.get('error'):
+              print(f"- Error: `{report['error']}`")
+          print('- Repository write credentials: **not granted to this job**')
+          PY
+
+  apply-update:
+    name: Apply prevalidated package
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.dry_run }}
+    needs:
+      - validate-update
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - name: Check out the exact validated main commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ needs.validate-update.outputs.base_sha }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+
+      - name: Reverify immutable package bytes
+        shell: bash
+        env:
+          PACKAGE_NAME: ${{ needs.validate-update.outputs.package_name }}
+          EXPECTED_SHA256: ${{ needs.validate-update.outputs.sha256 }}
+          EXPECTED_BASE_SHA: ${{ needs.validate-update.outputs.base_sha }}
+        run: |
+          set -euo pipefail
+          [[ "$(git rev-parse HEAD)" == "${EXPECTED_BASE_SHA}" ]] || {
+            echo "Validated base commit mismatch." >&2
+            exit 1
+          }
+          [[ -f "${PACKAGE_NAME}" ]] || {
+            echo "Validated package is missing from the validated base commit." >&2
+            exit 1
+          }
+          actual="$(sha256sum "${PACKAGE_NAME}" | awk '{print $1}')"
+          [[ "${actual}" == "${EXPECTED_SHA256}" ]] || {
+            echo "Package SHA-256 changed after validation." >&2
+            exit 1
+          }
+          cp -- "${PACKAGE_NAME}" /tmp/update-package.zip
+
+      - name: Apply with repository-trusted updater only
+        id: apply
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/apply_update_package.py \
+            --package /tmp/update-package.zip \
+            --repo "${GITHUB_WORKSPACE}" \
+            --report /tmp/update-report.json \
+            --validation-profile none
 
       - name: Commit and push applied update
         id: commit
-        if: ${{ !inputs.dry_run && steps.apply.outcome == 'success' }}
         shell: bash
         env:
-          PACKAGE_NAME: ${{ steps.package.outputs.original_name }}
-          PACKAGE_LABEL: ${{ steps.package.outputs.label }}
+          PACKAGE_NAME: ${{ needs.validate-update.outputs.package_name }}
+          PACKAGE_LABEL: ${{ needs.validate-update.outputs.label }}
+          BASE_SHA: ${{ needs.validate-update.outputs.base_sha }}
         run: |
           set -euo pipefail
-          exec > >(tee /tmp/commit-push.log) 2>&1
-
-          if [[ -n "$(git diff --name-only -- .github/workflows)" ]]; then
-            echo "Refusing to commit: the transaction changed GitHub workflow files." >&2
-            exit 1
-          fi
 
           git fetch --no-tags origin main
-          local_base="$(git rev-parse HEAD)"
           remote_base="$(git rev-parse origin/main)"
-          if [[ "${local_base}" != "${remote_base}" ]]; then
-            echo "main changed while the update was running. Start a new run against the latest main." >&2
+          if [[ "${remote_base}" != "${BASE_SHA}" ]]; then
+            echo "main changed after package validation. Start a new validation run." >&2
             exit 1
           fi
 
@@ -297,8 +303,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
 
-          if git diff --cached --name-only | grep -q '^.github/workflows/'; then
-            echo "Refusing to commit staged workflow changes." >&2
+          if git diff --cached --name-only | grep -Eiq '^(\.github/|scripts/|tests/|requirements-ci\.txt$|pyproject\.toml$|pytest\.ini$|tox\.ini$|\.coveragerc$)'; then
+            echo "Refusing to commit a trusted control-plane mutation from an update package." >&2
             exit 1
           fi
           if git diff --cached --quiet; then
@@ -312,7 +318,6 @@ jobs:
 
       - name: Request GitHub Pages rebuild
         id: pages
-        if: ${{ steps.commit.outcome == 'success' }}
         continue-on-error: true
         shell: bash
         env:
@@ -321,51 +326,24 @@ jobs:
           set -euo pipefail
           gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
 
-      - name: Write final Actions summary
+      - name: Write application summary
         if: always()
         shell: bash
         run: |
           python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           from pathlib import Path
           import json
-
-          def load(path):
-              try:
-                  return json.loads(Path(path).read_text(encoding='utf-8'))
-              except Exception:
-                  return {}
-
-          manifest = load('/tmp/update-package-manifest.json')
-          report = load('/tmp/update-report.json')
-          apply_outcome = '${{ steps.apply.outcome }}'
-          commit_outcome = '${{ steps.commit.outcome }}'
-          pages_outcome = '${{ steps.pages.outcome }}'
-          dry_run = '${{ inputs.dry_run }}' == 'true'
-          label = report.get('packageLabel') or manifest.get('packageLabel') or 'unknown'
-
-          if apply_outcome != 'success':
-              status = 'Failed during validation — repository transaction rolled back'
-          elif dry_run:
-              status = 'Validated only — repository unchanged'
-          elif commit_outcome != 'success':
-              status = 'Validation passed, but commit/push failed — remote repository unchanged'
-          else:
-              status = 'Applied, committed, and pushed successfully'
-
-          print(f'## InkDOS update {label}')
+          try:
+              report = json.loads(Path('/tmp/update-report.json').read_text(encoding='utf-8'))
+          except Exception:
+              report = {}
+          print('## InkDOS update application')
           print()
-          print(f'- Status: **{status}**')
-          print(f"- Target: `{report.get('targetRelease') or manifest.get('targetRelease', 'unknown')}`")
-          print(f"- Sequence: `{report.get('sequence') or manifest.get('sequence', 'unknown')}`")
-          print(f"- Validation: `{report.get('validationProfile') or manifest.get('validationProfile', 'unknown')}`")
-          print(f"- Package SHA-256: `${{ steps.package.outputs.sha256 }}`")
-          if '${{ steps.commit.outputs.commit_sha }}':
-              print(f"- Commit: `${{ steps.commit.outputs.commit_sha }}`")
-          if commit_outcome == 'success':
-              pages_text = 'requested' if pages_outcome == 'success' else 'not requested successfully; code update remains valid'
-              print(f'- GitHub Pages rebuild: **{pages_text}**')
-          print(f"- Files copied or replaced: `{len(report.get('copied', []))}`")
-          print(f"- Paths deleted: `{len(report.get('deleted', []))}`")
-          if report.get('error'):
-              print(f"- Transaction error: `{report['error']}`")
+          print(f"- Package: `${{ needs.validate-update.outputs.label }}`")
+          print(f"- Package SHA-256: `${{ needs.validate-update.outputs.sha256 }}`")
+          print(f"- Validated base: `${{ needs.validate-update.outputs.base_sha }}`")
+          print(f"- Apply status: **{report.get('status', 'unknown')}**")
+          print(f"- Commit: `${{ steps.commit.outputs.commit_sha }}`")
+          print('- Candidate validation occurred in a separate read-only job.')
+          print('- This write-capable job executed only the repository-trusted updater.')
           PY
