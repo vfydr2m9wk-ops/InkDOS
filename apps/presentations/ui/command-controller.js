@@ -63,3 +63,9 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  return Object.freeze({install,sync,refresh,requestNew:()=>execute('file.new'),register,execute,isEnabled,has:id=>registry.has(id),list:()=>[...registry.keys()],get drawer(){return drawer},get zoomPopover(){return zoomPopover}})
 }
 NS.CommandController=Object.freeze({create});})(globalThis);
+
+(function(global){'use strict';
+if(global.InkDOS2Presentations?.PptP2TableToolsUi||document.querySelector('script[data-ppt-p2-table-tools-ui]'))return;
+const source=document.currentScript?.src;
+const script=document.createElement('script');script.src=source?new URL('ppt-p2-table-tools-ui.js',source).href:'ui/ppt-p2-table-tools-ui.js';script.async=false;script.dataset.pptP2TableToolsUi='true';script.onerror=()=>console.error(new Error('PPT-P2 table tools UI could not be loaded locally.'));(document.head||document.documentElement).appendChild(script);
+})(globalThis);
