@@ -76,6 +76,9 @@ jobs:
       - name: Install browser test dependencies
         run: |
           python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          while IFS= read -r source; do
+            sudo mv "$source" "$source.inkdos-disabled"
+          done < <(grep -RIl 'dl\.google\.com/linux/chrome-stable' /etc/apt/sources.list.d 2>/dev/null || true)
           python -m playwright install --with-deps chromium
 
       - name: DOC-D1 roundtrip
