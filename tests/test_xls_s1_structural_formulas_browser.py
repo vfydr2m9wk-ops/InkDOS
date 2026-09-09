@@ -51,12 +51,15 @@ def main() -> None:
                 const api=globalThis.__inkdosSpreadsheetsS1, NS=globalThis.InkDOS2Spreadsheets;
                 await api.openController.newWorkbook();
                 const book=api.session.book, data=book.sheets[0];
-                data.name='Data';data.maxR=Math.max(data.maxR,5);data.maxC=Math.max(data.maxC,3);
+                data.name='Data';data.maxR=Math.max(data.maxR,5);data.maxC=Math.max(data.maxC,6);
                 const cell=(v,f='')=>({v,f,styleId:0,style:{font:{},border:{}},t:f?'n':(typeof v==='number'?'n':'s'),display:f?'='+f:String(v)});
                 data.cells.set('A1',cell(10));data.cells.set('A2',cell(20));data.cells.set('A3',cell(30));
                 data.cells.set('B1',cell('', 'SUM(A1:A3)'));
                 data.cells.set('C1',cell('', 'LOG10(100)+A2'));
                 data.cells.set('D1',cell('', 'IF(A1="A2",A3,0)'));
+                data.cells.set('E1',cell('', 'sum(a1:a3)'));
+                data.cells.set('F1',cell('', 'SUM(A1 : A3)'));
+                data.cells.set('G1',cell('', 'Table1[B1]'));
                 const summary=globalThis.LocalXLSX.createBlank().sheets[0];
                 summary.name='Summary';summary.maxR=Math.max(summary.maxR,4);summary.maxC=Math.max(summary.maxC,2);
                 summary.cells.set('A1',cell('', 'SUM(Data!A1:A3)'));
@@ -69,6 +72,9 @@ def main() -> None:
                     local:data.cells.get('B1')?.f,
                     functionLike:data.cells.get('C1')?.f,
                     quotedLiteral:data.cells.get('D1')?.f,
+                    lowercase:data.cells.get('E1')?.f,
+                    spacedRange:data.cells.get('F1')?.f,
+                    structured:data.cells.get('G1')?.f,
                     external:summary.cells.get('A1')?.f,
                     externalSingle:summary.cells.get('B1')?.f,
                     absolute:summary.cells.get('C1')?.f,
@@ -98,6 +104,9 @@ def main() -> None:
                     inserted,deleted,afterInsert,afterUndo,afterRedo,afterDelete,afterDeleteUndo,afterDeleteRedo,
                     roundtrip:{
                         data:parsedData?.cells.get('B1')?.f||'',
+                        lowercase:parsedData?.cells.get('E1')?.f||'',
+                        spacedRange:parsedData?.cells.get('F1')?.f||'',
+                        structured:parsedData?.cells.get('G1')?.f||'',
                         summary:parsedSummary?.cells.get('A1')?.f||'',
                         single:parsedSummary?.cells.get('B1')?.f||'',
                         absolute:parsedSummary?.cells.get('C1')?.f||'',
@@ -114,6 +123,9 @@ def main() -> None:
                 "local": "SUM(A1:A4)",
                 "functionLike": "LOG10(100)+A3",
                 "quotedLiteral": 'IF(A1="A2",A4,0)',
+                "lowercase": "sum(A1:A4)",
+                "spacedRange": "SUM(A1:A4)",
+                "structured": "Table1[B1]",
                 "external": "SUM(Data!A1:A4)",
                 "externalSingle": "Data!A3",
                 "absolute": "SUM('Data'!$A$1:$A$4)",
@@ -122,6 +134,9 @@ def main() -> None:
                 "local": "SUM(A1:A3)",
                 "functionLike": "LOG10(100)+A2",
                 "quotedLiteral": 'IF(A1="A2",A3,0)',
+                "lowercase": "sum(a1:a3)",
+                "spacedRange": "SUM(A1 : A3)",
+                "structured": "Table1[B1]",
                 "external": "SUM(Data!A1:A3)",
                 "externalSingle": "Data!A2",
                 "absolute": "SUM('Data'!$A$1:$A$3)",
@@ -131,6 +146,9 @@ def main() -> None:
                 "local": "SUM(A1:A2)",
                 "functionLike": "LOG10(100)+#REF!",
                 "quotedLiteral": 'IF(A1="A2",A2,0)',
+                "lowercase": "sum(A1:A2)",
+                "spacedRange": "SUM(A1:A2)",
+                "structured": "Table1[B1]",
                 "external": "SUM(Data!A1:A2)",
                 "externalSingle": "#REF!",
                 "absolute": "SUM('Data'!$A$1:$A$2)",
@@ -138,6 +156,9 @@ def main() -> None:
             assert result["afterDeleteUndo"] == result["afterInsert"], result
             assert result["afterDeleteRedo"] == result["afterDelete"], result
             assert result["roundtrip"]["data"] == "SUM(A1:A4)", result
+            assert result["roundtrip"]["lowercase"] == "sum(A1:A4)", result
+            assert result["roundtrip"]["spacedRange"] == "SUM(A1:A4)", result
+            assert result["roundtrip"]["structured"] == "Table1[B1]", result
             assert result["roundtrip"]["summary"] == "SUM(Data!A1:A4)", result
             assert result["roundtrip"]["single"] == "Data!A3", result
             assert result["roundtrip"]["absolute"] == "SUM('Data'!$A$1:$A$4)", result
