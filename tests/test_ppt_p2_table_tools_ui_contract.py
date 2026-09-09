@@ -22,7 +22,7 @@ def forbid(text: str, needle: str, label: str) -> None:
 
 def main() -> None:
     ui = read("apps/presentations/ui/ppt-p2-table-tools-ui.js")
-    index = read("apps/presentations/index.html")
+    app = read("apps/presentations/app.js")
     service_worker = read("service-worker.js")
 
     require(ui, "app.hasCommand?.('table.style.set')", "Table Tools command readiness")
@@ -56,10 +56,12 @@ def main() -> None:
     ):
         forbid(ui, forbidden, "Table Tools semantic isolation")
 
-    tools_pos = index.index('src="ui/ppt-p2-tools.js"')
-    table_ui_pos = index.index('src="ui/ppt-p2-table-tools-ui.js"')
-    if table_ui_pos <= tools_pos:
-        raise AssertionError("Table Tools UI must load after semantic PPT-P2 tools")
+    require(app, "function loadP2TableToolsUi()", "Table Tools bootstrap")
+    require(app, "s.src='ui/ppt-p2-table-tools-ui.js'", "Table Tools bootstrap")
+    install_pos = app.index("p2Tools.install()")
+    load_pos = app.index("await loadP2TableToolsUi()")
+    if load_pos <= install_pos:
+        raise AssertionError("Table Tools UI must load after semantic PPT-P2 commands are installed")
 
     require(service_worker, '"./apps/presentations/ui/ppt-p2-table-tools-ui.js"', "Table Tools offline shell")
 
