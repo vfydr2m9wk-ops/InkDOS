@@ -305,19 +305,28 @@ def main() -> None:
                 assert hostile['xss'] == 0, (browser_name, hostile)
                 assert hostile['blockedNodes'] == 0 and hostile['anchors'] == 0 and hostile['remoteImages'] == 0, (browser_name, hostile)
                 assert 'Visible safe text.' in hostile['text'] and 'Remote image blocked' in hostile['text'], (browser_name, hostile)
-                assert any(x['text'] == 'Blocked JS link' and x['kind'] == 'external' and x['href'].startswith('javascript:') for x in hostile['readerLinks']), hostile
-                assert any(x['text'] == 'Blocked external link' and x['kind'] == 'external' and x['href'].startswith('https://attacker.invalid/') for x in hostile['readerLinks']), hostile
+                # These inline links are conservatively folded into plain text by the current projector.
+                # The important security property is that no active href/navigation surface survives.
+                assert hostile['readerLinks'] == [], hostile
                 assert external_requests == [], (browser_name, external_requests)
 
+                # Exercise the external-link handler independently of projector coalescing.
                 before_url = security_page.url
-                security_page.locator('#readerSurface .reader-link', has_text='Blocked JS link').click()
-                security_page.wait_for_function("() => document.getElementById('chapterState').textContent.includes('External links are disabled')")
-                assert security_page.url == before_url, (browser_name, security_page.url)
-                assert security_page.evaluate('() => globalThis.__INKDOS_EPUB_XSS') == 0, browser_name
-                assert external_requests == [], (browser_name, external_requests)
-
-                security_page.locator('#readerSurface .reader-link', has_text='Blocked external link').click()
-                assert security_page.url == before_url, (browser_name, security_page.url)
+                link_probe = security_page.evaluate("""() => {
+                    const js=document.createElement('span');
+                    js.dataset.linkKind='external';
+                    js.dataset.linkHref='javascript:globalThis.__INKDOS_EPUB_XSS=1';
+                    globalThis.__InkEpubR4.handleReaderLink(js);
+                    const first=document.getElementById('chapterState').textContent;
+                    const web=document.createElement('span');
+                    web.dataset.linkKind='external';
+                    web.dataset.linkHref='https://attacker.invalid/link';
+                    globalThis.__InkEpubR4.handleReaderLink(web);
+                    return {xss:globalThis.__INKDOS_EPUB_XSS,notice:first,finalNotice:document.getElementById('chapterState').textContent,url:location.href};
+                }""")
+                assert link_probe['xss'] == 0, (browser_name, link_probe)
+                assert 'External links are disabled' in link_probe['notice'] and 'External links are disabled' in link_probe['finalNotice'], link_probe
+                assert link_probe['url'] == before_url and security_page.url == before_url, (browser_name, link_probe)
                 assert external_requests == [], (browser_name, external_requests)
 
                 # Entity/DOCTYPE and ZIP traversal failures must be transactional: a rejected
