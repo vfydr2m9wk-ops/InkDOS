@@ -86,3 +86,4 @@ jobs:
       - run: python tests/test_ppt_p2_table_merge_browser.py
       - run: python tests/test_ppt_p2_table_format_browser.py
       - run: python tests/test_ppt_p2_table_style_browser.py
+      - run: python tests/test_ppt_p2_table_tools_ui_browser.py
