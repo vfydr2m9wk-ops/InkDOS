@@ -16,11 +16,18 @@ def require(text: str, needle: str, label: str) -> None:
 def main() -> None:
     package = read("apps/presentations/io/ppt-p2-package.js")
     tools = read("apps/presentations/ui/ppt-p2-tools.js")
+    session = read("apps/presentations/engine/presentation-session.js")
     save = read("apps/presentations/io/save-controller.js")
 
     for needle in (
         "readSlideMetadata",
         "readSlideNotes",
+        "readThemeMetadata",
+        "themeMetadata",
+        "themeForSlide",
+        "'/slideLayout'",
+        "'/slideMaster'",
+        "'/theme'",
         "applySpeakerNotes",
         "applySlideCompletion",
         "notesSlideXml",
@@ -39,8 +46,19 @@ def main() -> None:
         "pptP2NotesBtn",
         "pptP2NotesInput",
         "notesInput.dataset.command='slide.notes.set'",
+        "slide.theme=themeOf",
+        "themes.push(slide.theme)",
     ):
         require(tools, needle, "PPT-P2 tools contract")
+
+    for needle in (
+        "const DEFAULT_THEME=Object.freeze",
+        "function cloneTheme",
+        "theme:cloneTheme(theme)",
+        "theme:this.currentSlide?.theme||DEFAULT_THEME",
+        "DEFAULT_THEME,cloneTheme",
+    ):
+        require(session, needle, "PPT-P2 theme model contract")
 
     require(save, "PptP2Package.applySlideCompletion", "PPT-P2 save contract")
     require(save, "slide.notesEdited=false", "PPT-P2 confirmed PPTX baseline contract")

@@ -1,11 +1,16 @@
 {
   "schemaVersion": 1,
   "program": "security-remediation",
-  "active": true,
-  "securityGate": "blocked",
+  "active": false,
+  "securityGate": "deferred",
+  "status": "accepted-baseline",
   "baseBranch": "main",
+  "acceptedBaselineCommit": "41f61045a0f2474010ba4cc9cd470ace0d06f916",
+  "roadmapResumePhase": "PPT-P2",
+  "decision": "The broad security-remediation program was intentionally stopped at the consolidated hardened baseline because further audit expansion no longer had sufficient development value relative to cost. This does not assert that all residual security risk has been eliminated.",
+  "residualRiskPolicy": "Preserve the merged hardening and its regression coverage. Concrete reachable High/Critical vulnerabilities or security regressions discovered during functional development remain blocking and must be corrected before promotion, but the broad security audit no longer blocks the functional roadmap.",
   "scopePolicy": "functional-plus-explicit-security-exceptions",
-  "allowedExactPaths": [
+  "historicalAllowedExactPaths": [
     "index.html",
     "apps/documents/index.html",
     "apps/spreadsheets/index.html",
@@ -15,7 +20,7 @@
     "apps/epub/index.html",
     "apps/pdf/io/file-open-controller.js"
   ],
-  "rationale": {
+  "historicalRationale": {
     "index.html": "Hash-based Content Security Policy remediation for the suite Home entry point.",
     "apps/documents/index.html": "Hash-based Content Security Policy remediation for the Documents entry point.",
     "apps/spreadsheets/index.html": "Hash-based Content Security Policy remediation for the Spreadsheets entry point.",
@@ -23,6 +28,6 @@
     "apps/pdf/index.html": "Hash-based Content Security Policy remediation for the PDF entry point.",
     "apps/txt/index.html": "Hash-based Content Security Policy remediation for the Plain Text entry point.",
     "apps/epub/index.html": "Hash-based Content Security Policy remediation for the EPUB entry point.",
-    "apps/pdf/io/file-open-controller.js": "Temporary PDF security hardening while the vendored PDF.js migration is completed."
+    "apps/pdf/io/file-open-controller.js": "Temporary PDF security hardening while the vendored PDF.js migration was being completed."
   }
 }

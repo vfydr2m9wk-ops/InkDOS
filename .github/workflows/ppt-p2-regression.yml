@@ -43,6 +43,7 @@ jobs:
       - name: Check PPT-P2 runtime syntax
         run: |
           node --check apps/presentations/app.js
+          node --check apps/presentations/engine/presentation-session.js
           node --check apps/presentations/ui/command-controller.js
           node --check apps/presentations/ui/ppt-p2-tools.js
           node --check apps/presentations/io/ppt-p2-package.js
@@ -68,3 +69,4 @@ jobs:
       - run: python -m playwright install --with-deps ${{ matrix.browser }}
       - run: python tests/test_ppt_p2_transitions_browser.py
       - run: python tests/test_ppt_p2_notes_browser.py
+      - run: python tests/test_ppt_p2_theme_browser.py
