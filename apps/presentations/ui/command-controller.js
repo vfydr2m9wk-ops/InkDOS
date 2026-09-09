@@ -65,11 +65,7 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
 NS.CommandController=Object.freeze({create});})(globalThis);
 
 (function(global){'use strict';
-function loadPptP2TableToolsUi(){
- const app=global.__inkdosPresentations;
- if(!app?.hasCommand?.('table.style.set')){setTimeout(loadPptP2TableToolsUi,40);return}
- if(global.InkDOS2Presentations?.PptP2TableToolsUi||document.querySelector('script[data-ppt-p2-table-tools-ui]'))return;
- const script=document.createElement('script');script.src='ui/ppt-p2-table-tools-ui.js';script.dataset.pptP2TableToolsUi='true';script.onerror=()=>console.error(new Error('PPT-P2 table tools UI could not be loaded locally.'));document.head.appendChild(script);
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadPptP2TableToolsUi,{once:true});else loadPptP2TableToolsUi();
+if(global.InkDOS2Presentations?.PptP2TableToolsUi||document.querySelector('script[data-ppt-p2-table-tools-ui]'))return;
+const source=document.currentScript?.src;
+const script=document.createElement('script');script.src=source?new URL('ppt-p2-table-tools-ui.js',source).href:'ui/ppt-p2-table-tools-ui.js';script.async=false;script.dataset.pptP2TableToolsUi='true';script.onerror=()=>console.error(new Error('PPT-P2 table tools UI could not be loaded locally.'));(document.head||document.documentElement).appendChild(script);
 })(globalThis);
