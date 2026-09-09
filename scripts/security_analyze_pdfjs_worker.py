@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Identify the exact InkDOS delta against upstream PDF.js 3.11.174.
 
-Read-only security migration diagnostic. The upstream npm tarball is accepted
-only after its published SHA-512 SRI has been verified.
+Read-only security migration diagnostic. Both the local modified worker and the
+upstream npm tarball are accepted only after their documented cryptographic
+hashes have been verified.
 """
 from __future__ import annotations
 
@@ -15,6 +16,7 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 CURRENT = ROOT / "apps/pdf/vendor/pdfjs/pdf.worker.min.js"
+EXPECTED_CURRENT_SHA256 = "7a623a54c2ad7b7be0ce90fed307f5aa41d09c15a6ab529d408f6ae53cf10d5c"
 URL = "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-3.11.174.tgz"
 EXPECTED_SRI = "TdTZPf1trZ8/UFu5Cx/GXB7GZM30LT+wWUNfsi6Bq8ePLnb+woNKtDymI2mxZYBpMbonNFqKmiz684DIfnd8dA=="
 MEMBER = "package/build/pdf.worker.min.js"
@@ -32,10 +34,22 @@ def fetch() -> bytes:
 def extract(tgz: bytes) -> bytes:
     with tarfile.open(fileobj=io.BytesIO(tgz), mode="r:gz") as archive:
         member = archive.getmember(MEMBER)
+        if not member.isfile():
+            raise SystemExit(f"upstream {MEMBER} is not a regular file")
         fh = archive.extractfile(member)
         if fh is None:
             raise SystemExit(f"missing {MEMBER}")
         return fh.read()
+
+
+def verified_current() -> bytes:
+    current = CURRENT.read_bytes()
+    actual = hashlib.sha256(current).hexdigest()
+    if actual != EXPECTED_CURRENT_SHA256:
+        raise SystemExit(
+            f"vendored worker SHA-256 mismatch: expected {EXPECTED_CURRENT_SHA256}, got {actual}"
+        )
+    return current
 
 
 def common_prefix(a: bytes, b: bytes) -> int:
@@ -59,7 +73,7 @@ def printable(data: bytes) -> str:
 
 
 def main() -> None:
-    current = CURRENT.read_bytes()
+    current = verified_current()
     upstream = extract(fetch())
     prefix = common_prefix(current, upstream)
     suffix = common_suffix(current, upstream, prefix)
