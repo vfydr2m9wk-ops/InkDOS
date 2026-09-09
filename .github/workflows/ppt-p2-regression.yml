@@ -48,6 +48,7 @@ jobs:
           node --check apps/presentations/ui/ppt-p2-tools.js
           node --check apps/presentations/io/ppt-p2-package.js
           node --check apps/presentations/io/pptx-open-controller.js
+          node --check apps/presentations/io/pptx-preservation-writer.js
           node --check apps/presentations/io/save-controller.js
           node --check apps/presentations/presentation/slideshow-controller.js
           node --check apps/presentations/view/slide-surface.js
@@ -75,3 +76,4 @@ jobs:
       - run: python tests/test_ppt_p2_tables_browser.py
       - run: python tests/test_ppt_p2_table_structure_browser.py
       - run: python tests/test_ppt_p2_table_merge_browser.py
+      - run: python tests/test_ppt_p2_table_format_browser.py
