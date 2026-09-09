@@ -15,7 +15,7 @@ function create({session,chrome}={}){
     }else{
       chrome.status(sharing?'Building PPTX to share…':'Building PPTX copy…');bytes=await NS.PptxWriter.build(session);
     }
-    await ensureP2Package();bytes=await NS.PptP2Package.applySlideTransitions(session,bytes,receipt);
+    await ensureP2Package();bytes=await NS.PptP2Package.applySlideCompletion(session,bytes,receipt);
     return {bytes,receipt,blob:new Blob([bytes],{type:NS.FileDelivery.MIME})};
   }
   async function save(){
@@ -24,8 +24,10 @@ function create({session,chrome}={}){
       const {bytes,receipt,blob}=await buildCopy(false);
       const delivery=await NS.FileDelivery.deliver(blob,session.fileName);
       if(delivery.deliveryConfirmed){
-        if(session.sourceKind==='pptx')session.acceptConfirmedPptx(bytes,receipt);else session.dirty=false;
-        for(const slide of session.slides||[])slide.transitionEdited=false;
+        if(session.sourceKind==='pptx'){
+          session.acceptConfirmedPptx(bytes,receipt);
+          for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false}
+        }else session.dirty=false;
         chrome.status('PPTX copy saved');
       }else chrome.status('PPTX copy generated · delivery requested');
       chrome.title();return {...delivery,bytes,receipt};
