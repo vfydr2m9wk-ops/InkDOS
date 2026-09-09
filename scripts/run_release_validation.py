@@ -5,6 +5,7 @@ ROOT=Path(__file__).resolve().parents[1]
 CMDS=[
  [sys.executable,'scripts/check_no_legacy_runtime.py'],
  [sys.executable,'scripts/build_txt_bundle.py','--check'],
+ [sys.executable,'tests/test_csp_contract.py'],
  ['node','tests/test_pdf_p2_page_tools.cjs'],
  [sys.executable,'tests/test_doc_d1_contract.py'],
  [sys.executable,'tests/test_doc_d2_p1_contract.py'],

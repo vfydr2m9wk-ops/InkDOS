@@ -7,6 +7,8 @@ import argparse
 import re
 import sys
 
+from generate_csp import render as render_csp
+
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "apps/txt/page.template.html"
 OUTPUT = ROOT / "apps/txt/index.html"
@@ -42,7 +44,11 @@ def build() -> str:
     page = SCRIPT_MARKER.sub(inline_script, page)
     if "<!-- SCRIPT " in page or "<!-- STYLES -->" in page:
         raise SystemExit("Unexpanded Plain Text bundle marker remains")
-    return page
+
+    # CSP is part of the final deterministic TXT artifact. This keeps the
+    # bundle's --check mode aligned with the security post-processing applied
+    # to every InkDOS entry point.
+    return render_csp(page)
 
 
 def first_difference(a: str, b: str) -> int | None:

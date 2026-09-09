@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "program": "security-remediation",
+  "active": true,
+  "securityGate": "blocked",
+  "baseBranch": "main",
+  "scopePolicy": "functional-plus-explicit-security-exceptions",
+  "allowedExactPaths": [
+    "index.html",
+    "apps/documents/index.html",
+    "apps/spreadsheets/index.html",
+    "apps/presentations/index.html",
+    "apps/pdf/index.html",
+    "apps/txt/index.html",
+    "apps/epub/index.html",
+    "apps/pdf/io/file-open-controller.js"
+  ],
+  "rationale": {
+    "index.html": "Hash-based Content Security Policy remediation for the suite Home entry point.",
+    "apps/documents/index.html": "Hash-based Content Security Policy remediation for the Documents entry point.",
+    "apps/spreadsheets/index.html": "Hash-based Content Security Policy remediation for the Spreadsheets entry point.",
+    "apps/presentations/index.html": "Hash-based Content Security Policy remediation for the Presentations entry point.",
+    "apps/pdf/index.html": "Hash-based Content Security Policy remediation for the PDF entry point.",
+    "apps/txt/index.html": "Hash-based Content Security Policy remediation for the Plain Text entry point.",
+    "apps/epub/index.html": "Hash-based Content Security Policy remediation for the EPUB entry point.",
+    "apps/pdf/io/file-open-controller.js": "Temporary PDF security hardening while the vendored PDF.js migration is completed."
+  }
+}
