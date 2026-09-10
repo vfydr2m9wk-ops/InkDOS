@@ -40,7 +40,7 @@ def main():
         require(pagination,needle,f'DOC-D2 column pagination contract missing: {needle}')
     for needle in ['MAX_BYTES','MAX_BLOCKS','MAX_DEPTH','windows-1252','fonttbl','colortbl','\\u','hardPageBreakBefore','RtfImporter']:
         require(rtf,needle,f'DOC-D2 RTF importer contract missing: {needle}')
-    for needle in ["/\\.rtf$/i",'RtfImporter.parse','legacyOutputName','sourceBuffer:isDocx?buffer:null',"kind:isRtf?'rtf':'docx'",'Save copy creates DOCX']:
+    for needle in ["/\\.rtf$/i",'RtfImporter.parse','legacyOutputName','sourceBuffer:isDocx||isDoc?buffer:null',"kind:isDoc?'doc':isRtf?'rtf':'docx'",'Save copy creates DOCX']:
         require(opener,needle,f'DOC-D2 RTF open/save contract missing: {needle}')
     for needle in ['engine/d2-docx-extension.js','engine/d2-sections-extension.js','io/rtf-importer.js','ui/d2-tools.js','ui/d2-sections.js','ui/d2-tools.css','D2Tools.create','D2Sections.create',"fileInput.accept='.docx,.rtf"]:
         require(app,needle,f'DOC-D2 P1 app-local loader missing: {needle}')
