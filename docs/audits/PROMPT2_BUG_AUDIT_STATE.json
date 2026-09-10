@@ -1,13 +1,13 @@
 {
   "program": "prompt2-virtual-user-exhaustive-bug-audit",
   "reference_baseline_sha": "1986ae0fd81c94fa8202c10d9dea6fcd11d807af",
-  "audited_main_sha": "1986ae0fd81c94fa8202c10d9dea6fcd11d807af",
-  "active_workspace": "presentations",
-  "next_audit_action": "Complete CI verification for INKBUG-0001, then continue Presentations font/text scaling and save/reopen fidelity audit.",
+  "audited_main_sha": "de4e645681eef80a2cbac51b9a823dc18873f7ee",
+  "active_workspace": "spreadsheets",
+  "next_audit_action": "Audit Spreadsheets dirty Open/New/Home and browser-unload behavior against the mandatory Save/Discard/Cancel contract, deduplicating any parallel stale findings before fixing; then resume Presentations fidelity audit.",
   "bugs": {
     "INKBUG-0001": {
       "title": "PPTX normal AutoFit line-spacing reduction lost on text rewrite",
-      "status": "FIXED_PENDING_VERIFICATION",
+      "status": "FIXED_VERIFIED",
       "severity": "medium",
       "environment": "InkDOS 2.0.12 source/package-preservation path; synthetic OOXML normAutofit fixture semantics",
       "reproduction": "Open an imported PPTX text box whose bodyPr contains normAutofit with lnSpcReduction=20000, edit its text, then Save Copy. The preservation writer removed the original autofit node and recreated it with lnSpcReduction=0.",
@@ -18,7 +18,27 @@
       "root_cause": "apps/presentations/io/pptx-preservation-writer.js:setBodyPr discarded the pre-existing normAutofit lnSpcReduction before rebuilding bodyPr.",
       "red_test_commit": "0b86e21bd615829209e6c7edeb94fd56a2f6b45d",
       "fix_commit": "36682c509f8dba6c14a8340c6614bd25d15dd72d",
-      "verification": "pending full InkDOS validation"
+      "merged_main_sha": "33e6e7b63e2b52d75be91155892ea485f9e636d3",
+      "verification": "PR #65 merged after full candidate workflows succeeded; main advanced to signed merge 33e6e7b63e2b52d75be91155892ea485f9e636d3."
+    },
+    "INKBUG-0002": {
+      "title": "Documents can abandon dirty edits without Save/Discard/Cancel on replacement or Home navigation",
+      "status": "FIXED_VERIFIED",
+      "severity": "high",
+      "environment": "InkDOS Documents; GitHub Actions Ubuntu 24.04; Playwright Chromium, Firefox and WebKit stability matrix",
+      "reproduction": "Create or open a document, make it dirty, then request New/Open or click the suite Home link. Baseline replacement exposed only a binary discard confirmation; baseline Home followed the raw href before an InkDOS guard.",
+      "expected": "Dirty in-app abandonment must present explicit Save, Discard and Cancel semantics; Save must finish successfully before navigation, Discard may navigate without saving, Cancel must retain the same dirty editor state. Browser-level unload may use beforeunload. Clean navigation must not prompt.",
+      "actual_baseline": "New/Open offered only Cancel plus a destructive continue action; Home navigated immediately with no InkDOS-controlled dirty-state interception; there was no beforeunload guard.",
+      "user_impact": "Unsaved document edits could be lost when replacing the document or leaving Documents.",
+      "data_integrity_impact": "High: current unsaved editor state could be abandoned silently or without an available save-before-exit path.",
+      "root_cause": "The Documents session dialog was boolean, replacement authorization could not await completed file delivery, and the Home/browser navigation path had no dirty-state guard.",
+      "red_test_commits": [
+        "da86d55de5ff0071624b95876c3c703ff9b156b7",
+        "0b9be2eb4126c140d0cc370c495a6d2fa158ec5e"
+      ],
+      "candidate_sha": "abbd2f3347875af0153d59d3142194a1a0b44d17",
+      "merged_main_sha": "de4e645681eef80a2cbac51b9a823dc18873f7ee",
+      "verification": "Validation run 34478851403 passed repository contracts, format-preservation round-trips, stability Chromium/Firefox/WebKit and feature Chromium/Firefox/WebKit. Chromium stability log explicitly reports Documents command/control and unsaved-exit browser isolation passed. Regression covers Cancel, Discard, successful Save/download before replacement, save cancellation, repeated requests/no duplicate dialog, clean no-prompt, dirty Home interception and browser beforeunload."
     }
   }
 }
