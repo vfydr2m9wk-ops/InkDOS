@@ -143,6 +143,10 @@ def main() -> None:
 
             # Writer -> parser round-trip must preserve the edited cell, and the same
             # generated XLSX must be accepted transactionally by FileOpenController.
+            # This block is intentionally not a dirty-navigation test. Clear only the
+            # session dirty flag before reopening the synthetic copy so the dedicated
+            # Save/Discard/Cancel regression owns that contract and this legacy test
+            # cannot deadlock waiting for an unattended modal decision.
             roundtrip = page.evaluate("""async () => {
                 const api=globalThis.__inkdosSpreadsheetsS1;
                 const blob=await globalThis.LocalXLSX.saveCopy(api.session.book);
@@ -153,6 +157,8 @@ def main() -> None:
                     type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                     lastModified:Date.now(),
                 });
+                const cleaned=api.session.markClean(api.session.revision);
+                if(!cleaned) throw new Error('Could not isolate round-trip from dirty-navigation contract');
                 const result=await api.openController.handle(file);
                 const reopened=api.session.activeSheet().cells.get('A1');
                 return {
