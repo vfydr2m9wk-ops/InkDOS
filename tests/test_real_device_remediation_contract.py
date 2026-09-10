@@ -73,3 +73,10 @@ def test_pptx_text_style_cascade_uses_placeholder_fallbacks():
     assert "fallback.color" in source
     assert "function bodyInfo(txBody,fallback={})" in source
     assert "...bodyInfo(tx,inherit||{})" in source
+
+
+def test_pptx_normal_autofit_preserves_line_spacing_reduction_when_text_is_rewritten():
+    writer = read("apps/presentations/io/pptx-preservation-writer.js")
+    assert "const priorNorm=child(body,'normAutofit')" in writer
+    assert "attr(priorNorm,'lnSpcReduction','0')" in writer
+    assert "n.setAttribute('lnSpcReduction',lineSpacingReduction)" in writer
