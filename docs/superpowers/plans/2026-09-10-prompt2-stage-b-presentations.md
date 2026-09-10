@@ -32,7 +32,7 @@
 - Consumes: slide `widthEmu`, `heightEmu`, and object EMU bounds.
 - Produces: thumbnail paper with matching slide ratio and object coordinates scaled to the actual thumbnail viewport.
 
-- [ ] Add a failing contract/browser regression proving non-16:9 slides and resized portrait thumbnails do not use a hard-coded `160px` geometry basis.
+- [x] Add a failing contract/browser regression proving non-16:9 slides and resized portrait thumbnails do not use a hard-coded `160px` geometry basis.
 - [ ] Run the focused regression and record the expected RED.
 - [ ] Replace the fixed projection basis with one derived from the thumbnail paper geometry while keeping the slide's own aspect ratio.
 - [ ] Run Presentations contract + browser regression and record GREEN.
@@ -98,3 +98,9 @@
 - [ ] Re-fetch `main`, `preview`, issue #63, open Prompt-2 PRs and candidate branch; stop on drift/race.
 - [ ] Promote `preview` only to a fully launchable candidate, then merge only on complete GREEN evidence.
 - [ ] Verify post-merge `main` and persist exact SHAs/evidence/status in issue #63.
+
+## Execution checkpoint
+
+- RED-first thumbnail fidelity contract was committed at `d0cc61b650aac46431e2e10f7ab19e852ca97563`.
+- A valid RED observation is still pending: the first PR validation stopped at clean-snapshot/integrity checks before static contracts could execute because the original generic `audit/**` branch did not trigger the repository's integrity-refresh workflow.
+- The canonical Stage-B trail is therefore `fix/prompt2-stage-b-presentations`, which is covered by the existing validated integrity-metadata refresh workflow. This is an infrastructure-alignment change only; the permanent workflow is not being weakened or broadened.
