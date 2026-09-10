@@ -18,9 +18,10 @@
     "documents",
     "presentations",
     "txt",
-    "epub"
+    "epub",
+    "spreadsheets"
   ],
-  "currentWorkspace": "spreadsheets",
+  "currentWorkspace": "cross-suite",
   "freezeCandidate": {
     "date": "2026-09-08",
     "runtimeAnchor": "9da9b798c624e3db6bcf933d85ed19892997bf5f",
