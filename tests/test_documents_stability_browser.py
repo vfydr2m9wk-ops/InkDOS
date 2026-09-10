@@ -54,13 +54,35 @@ def main():
                 status:document.getElementById('statusText')?.textContent||''
               };
             }""")
+            assert result['boldControlMissing'] is True,result
+            assert result['formatCommandSurvived'] is True,result
+            assert result['stillRegistered'] is True,result
+            assert result['commandCount']>=20,result
+            assert result['pageCount']>=1,result
+            assert result['welcomeHidden'] is True,result
+
+            unsaved=page.evaluate("""async()=>{
+              const app=globalThis.InkDOS2Documents.DocumentsApp;
+              const dbg=globalThis.InkDOS2Documents.DocumentsDebug;
+              app.session.markDirty();
+              const pending=dbg.executeCommand('file.new');
+              await new Promise(r=>setTimeout(r,50));
+              const panel=document.getElementById('sessionReplacePanel');
+              const snapshot={
+                visible:!!panel && panel.hidden===false,
+                hasSave:!!document.getElementById('sessionReplaceSave'),
+                hasDiscard:!!document.getElementById('sessionReplaceDiscard'),
+                hasCancel:!!document.getElementById('sessionReplaceCancel')
+              };
+              document.getElementById('sessionReplaceCancel')?.click();
+              await pending;
+              return snapshot;
+            }""")
+            assert unsaved['visible'] is True,unsaved
+            assert unsaved['hasSave'] is True,unsaved
+            assert unsaved['hasDiscard'] is True,unsaved
+            assert unsaved['hasCancel'] is True,unsaved
             browser.close()
-        assert result['boldControlMissing'] is True,result
-        assert result['formatCommandSurvived'] is True,result
-        assert result['stillRegistered'] is True,result
-        assert result['commandCount']>=20,result
-        assert result['pageCount']>=1,result
-        assert result['welcomeHidden'] is True,result
         print(f"Documents command/control browser isolation passed on {os.environ.get('BROWSER','chromium')}.")
     finally:
         server.terminate()
