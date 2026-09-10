@@ -14,8 +14,8 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  function installCommands(){
   register('file.new',()=>{if(session.dirty&&!global.confirm('Discard current in-memory changes and create a new presentation?'))return false;session.resetNew();history.reset();onStructureChange?.();refresh();chrome.status('New presentation');return true});
   register('file.open',()=>fileOpen.requestOpen());
-  register('file.save',()=>save.save(),()=>session.active&&session.sourceKind!=='ppt');
-  register('file.share',()=>save.share(),()=>session.active&&session.sourceKind!=='ppt');
+  register('file.save',()=>save.save(),()=>session.active);
+  register('file.share',()=>save.share(),()=>session.active);
   register('file.rename',value=>{const next=chrome.normalizeName(value);if(next!==session.fileName){history.transact('Rename presentation',()=>session.fileName=next);sync();return true}chrome.title();return false},()=>session.active&&session.sourceKind!=='ppt');
   register('appearance.set',value=>NS.Appearance.set(value));
   register('presentation.present.current',()=>slideshow.open(false),()=>session.active);
@@ -38,11 +38,13 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  }
  function bindClick(id,command,...args){const node=$(id);if(node){node.dataset.command=command;node.onclick=()=>execute(command,...args)}return node}
  function installShareAction(){const saveBtn=$('saveMenuBtn');if(!saveBtn||$('shareMenuBtn'))return;const share=document.createElement('button');share.id='shareMenuBtn';share.className='menu-item';share.type='button';share.disabled=true;share.dataset.command='file.share';share.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint">PPTX</span>';saveBtn.insertAdjacentElement('afterend',share);share.onclick=async()=>{drawer.close({restoreFocus:false});await execute('file.share');sync()}}
+ function legacyNotice(){let note=$('legacyPptNotice');if(!note){note=document.createElement('div');note.id='legacyPptNotice';note.hidden=true;note.setAttribute('role','status');note.style.cssText='display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 12px;background:#fff3cd;color:#3d3300;border-bottom:1px solid #e5c76a;font:600 13px/1.35 system-ui,-apple-system,sans-serif;position:relative;z-index:24';const text=document.createElement('span');text.textContent='Legacy PowerPoint (.ppt) opened read-only. Save an editable .pptx copy to edit in InkDOS.';const button=document.createElement('button');button.type='button';button.textContent='Save editable PPTX copy';button.style.cssText='border:1px solid currentColor;border-radius:7px;background:transparent;color:inherit;padding:5px 9px;font:inherit;cursor:pointer';button.onclick=()=>execute('file.save');note.append(text,button);(document.querySelector('.toolstrip-shell')||document.querySelector('.framebar')||document.body).insertAdjacentElement('afterend',note)}return note}
  function sync(){
   chrome.title();chrome.stats();
   const active=session.active,legacy=session.sourceKind==='ppt',canExport=isEnabled('file.save');
-  const saveBtn=$('saveMenuBtn');if(saveBtn){saveBtn.disabled=!canExport;saveBtn.title=!active?'Create or open a presentation first.':legacy?'Legacy PPT is read-only.':'Save PPTX copy'}
-  const share=$('shareMenuBtn');if(share){share.disabled=!isEnabled('file.share');share.title=!active?'Create or open a presentation first.':legacy?'Legacy PPT is read-only.':'Share PPTX'}
+  const saveBtn=$('saveMenuBtn');if(saveBtn){saveBtn.disabled=!canExport;saveBtn.title=!active?'Create or open a presentation first.':legacy?'Save an editable PPTX copy':'Save PPTX copy'}
+  const share=$('shareMenuBtn');if(share){share.disabled=!isEnabled('file.share');share.title=!active?'Create or open a presentation first.':legacy?'Share an editable PPTX copy':'Share PPTX'}
+  const notice=legacyNotice();notice.hidden=!(active&&legacy);
   const title=$('titleText');if(title)title.readOnly=!isEnabled('file.rename');
   const present=$('presentBtn');if(present)present.disabled=!isEnabled('presentation.present.current');const presentStart=$('presentStartMenuBtn');if(presentStart)presentStart.disabled=!isEnabled('presentation.present.start');
   editor.sync()
