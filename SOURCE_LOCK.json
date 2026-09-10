@@ -53,7 +53,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "3ba839cd6d313d826bc75bce7c837877c026cebc88a0f2ed8611c08d3c7925f1",
+      "nonIndexTreeSha256": "52ec8c3d787c2060508403337347770cfb3458b7557e1fefbcde041dbeecec7f",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -72,7 +72,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "a54484e4c8bcfc2aeac36416eb33fba415a94266426f4ce077bb855913f1459e"
+      "integratedIndexSha256": "22395a04ef29a65b2871231d18846ac5c3e60fb4fc4a958ac55f99dcf7f3ba1d"
     },
     "txt": {
       "sourcePackage": "TXT-FINAL.zip",
