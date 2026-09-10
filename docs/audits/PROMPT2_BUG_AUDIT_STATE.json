@@ -3,7 +3,14 @@
   "reference_baseline_sha": "1986ae0fd81c94fa8202c10d9dea6fcd11d807af",
   "audited_main_sha": "de4e645681eef80a2cbac51b9a823dc18873f7ee",
   "active_workspace": "spreadsheets",
-  "next_audit_action": "Audit Spreadsheets dirty Open/New/Home and browser-unload behavior against the mandatory Save/Discard/Cancel contract, deduplicating any parallel stale findings before fixing; then resume Presentations fidelity audit.",
+  "next_audit_action": "Repair the current repository integrity metadata gate on top of live main b50e012b3991740dbbb0a9c5473cf789e1b28774, then resume Spreadsheets dirty Open/New/Home/browser-unload verification before returning to the real-device Presentations priority queue.",
+  "repository_gate": {
+    "status": "INTEGRITY_METADATA_REPAIR_IN_PROGRESS",
+    "observed_main_sha": "b50e012b3991740dbbb0a9c5473cf789e1b28774",
+    "reason": "Main validation run 34479179452 failed because CHECKSUMS.sha256 was stale for docs/audits/PROMPT2_BUG_AUDIT_STATE.json after the audit-state checkpoint commit.",
+    "repair_branch": "fix/prompt2-integrity-checkpoint",
+    "policy": "Metadata-only repair; no runtime/source behavior changes. The repository's Refresh integrity metadata workflow must regenerate and validate the integrity outputs before this gate can be cleared."
+  },
   "bugs": {
     "INKBUG-0001": {
       "title": "PPTX normal AutoFit line-spacing reduction lost on text rewrite",
