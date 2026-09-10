@@ -91,3 +91,7 @@ def test_pptx_normal_autofit_preserves_line_spacing_reduction_when_text_is_rewri
     assert "const priorNorm=child(body,'normAutofit')" in writer
     assert "attr(priorNorm,'lnSpcReduction','0')" in writer
     assert "n.setAttribute('lnSpcReduction',lineSpacingReduction)" in writer
+
+
+if __name__ == "__main__":
+    test_legacy_ppt_save_promotes_confirmed_copy_into_editable_session()
