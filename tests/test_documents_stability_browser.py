@@ -141,6 +141,33 @@ def main():
               return {result,dialogOpen:!!document.querySelector('#sessionReplacePanel:not([hidden])'),before:!!before};
             }""")
             assert clean_result=={'result':True,'dialogOpen':False,'before':False},clean_result
+            page.close()
+
+            # RED continuation: actual suite Home must be guarded before dirty data can be abandoned.
+            home=browser.new_page(viewport={'width':1280,'height':900},accept_downloads=True)
+            home.goto(BASE+'/apps/documents/?suite=1',wait_until='load')
+            home.wait_for_function('() => !!globalThis.InkDOS2Documents?.DocumentsApp')
+            home.evaluate("""async()=>{
+              const app=globalThis.InkDOS2Documents.DocumentsApp;
+              await app.newDocument();
+              app.session.markDirty();
+              globalThis.__inkdosHomeDocumentId=app.session.documentId;
+            }""")
+            home.locator('a[aria-label="Home"]').click()
+            home.wait_for_selector('#sessionReplacePanel:not([hidden])')
+            assert '/apps/documents/' in home.url,home.url
+            assert home.locator('#sessionReplacePanel .error-actions button').all_text_contents()==['Cancel','Discard','Save']
+            home.get_by_role('button',name='Cancel').click()
+            assert home.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is True
+            assert home.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.documentId===globalThis.__inkdosHomeDocumentId') is True
+
+            # Browser-level refresh/unload is separate and should request the platform-native warning while dirty.
+            unload_guard=home.evaluate("""()=>{
+              const ev=new Event('beforeunload',{cancelable:true});
+              return {dispatchResult:window.dispatchEvent(ev),defaultPrevented:ev.defaultPrevented};
+            }""")
+            assert unload_guard['dispatchResult'] is False and unload_guard['defaultPrevented'] is True,unload_guard
+            home.close()
             browser.close()
         print(f"Documents command/control and unsaved-exit browser isolation passed on {os.environ.get('BROWSER','chromium')}.")
     finally:
