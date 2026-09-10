@@ -65,6 +65,17 @@ def test_legacy_ppt_has_fidelity_and_editable_copy_path():
     assert "Save editable PPTX copy" in commands
 
 
+def test_legacy_ppt_save_promotes_confirmed_copy_into_editable_session():
+    save = read("apps/presentations/io/save-controller.js")
+    app = read("apps/presentations/app.js")
+    assert "promoteLegacyPpt" in save
+    assert "await promoteLegacyPpt({bytes,fileName,receipt})" in save
+    assert "sourceKind==='ppt'" in save
+    assert "SaveController.create({session,chrome,promoteLegacyPpt:" in app
+    assert "fileOpen.openFile(new File([bytes],fileName" in app
+    assert "open the .pptx copy to edit" not in save
+
+
 def test_pptx_text_style_cascade_uses_placeholder_fallbacks():
     source = read("apps/presentations/io/pptx-open-controller.js")
     assert "function runStyle(rPr,def,theme,map,fallback={})" in source
