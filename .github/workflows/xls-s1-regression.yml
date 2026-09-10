@@ -57,4 +57,7 @@ jobs:
             sudo mv "$source" "$source.inkdos-disabled"
           done < <(grep -RIl 'dl\.google\.com/linux/chrome-stable' /etc/apt/sources.list.d 2>/dev/null || true)
       - run: python -m playwright install --with-deps ${{ matrix.browser }}
-      - run: python tests/test_xls_s1_structural_formulas_browser.py
+      - name: Validate XLS-S1 structural formula browser regressions
+        run: |
+          python tests/test_xls_s1_structural_formulas_browser.py
+          python tests/test_xls_s1_structural_columns_browser.py
