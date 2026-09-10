@@ -7,7 +7,7 @@
     mutate(){this.revision+=1;this.dirty=true;return this.revision;}
     sourceOpened(hash){this.revision=0;this.operationId+=1;this.sourceHash=hash||null;this.dirty=false;this.checkpointRevision=null;this.exportRevision=null;}
     markCheckpoint(rev){if(Number.isInteger(rev)&&rev<=this.revision)this.checkpointRevision=rev;}
-    markExport(rev){if(Number.isInteger(rev)&&rev<=this.revision)this.exportRevision=rev;}
+    markExport(rev){if(Number.isInteger(rev)&&rev<=this.revision){this.exportRevision=rev;if(rev===this.revision)this.dirty=false;}}
     snapshot(){return Object.freeze({sessionId:this.sessionId,documentId:this.documentId,revision:this.revision,operationId:this.operationId,sourceHash:this.sourceHash,dirty:this.dirty,checkpointRevision:this.checkpointRevision,exportRevision:this.exportRevision});}
   }
   function cryptoId(){if(g.crypto&&g.crypto.randomUUID)return g.crypto.randomUUID();return 'id-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);}
