@@ -15,19 +15,19 @@
     "DOC-D2",
     "PPT-P1",
     "PPT-P2",
-    "XLS-S1"
+    "XLS-S1",
+    "XLS-S2"
   ],
   "currentPhase": {
-    "id": "XLS-S2",
-    "workspace": "spreadsheets",
+    "id": "Audit",
+    "workspace": "cross-suite",
     "status": "active"
   },
   "nextPhase": {
-    "id": "Audit",
-    "workspace": "cross-suite"
+    "id": "Freeze",
+    "workspace": "suite"
   },
   "remainingPhases": [
-    "Audit",
     "Freeze"
   ]
 }
