@@ -7,13 +7,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 state = json.loads((ROOT / 'FUNCTIONAL_STATE.json').read_text(encoding='utf-8'))
 current = state['currentPhase']
+completed = state['completedPhases']
 if current == {'id': 'XLS-S1', 'workspace': 'spreadsheets', 'status': 'active'}:
-    assert 'XLS-S1' not in state['completedPhases']
-elif current == {'id': 'XLS-S2', 'workspace': 'spreadsheets', 'status': 'active'}:
-    assert 'XLS-S1' in state['completedPhases']
+    assert 'XLS-S1' not in completed
 else:
-    raise AssertionError(f'unexpected spreadsheet roadmap state: {current!r}')
-assert 'PPT-P2' in state['completedPhases']
+    successors = {
+        ('XLS-S2', 'spreadsheets'),
+        ('Audit', 'cross-suite'),
+        ('Freeze', 'suite'),
+    }
+    assert (current.get('id'), current.get('workspace')) in successors, (
+        f'unexpected spreadsheet roadmap state: {current!r}'
+    )
+    assert current.get('status') == 'active'
+    assert 'XLS-S1' in completed
+assert 'PPT-P2' in completed
 
 editor = (ROOT / 'apps/spreadsheets/engine/workbook-editor.js').read_text(encoding='utf-8')
 for needle in (
