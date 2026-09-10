@@ -7,17 +7,36 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACES = ["pdf", "documents", "presentations", "txt", "epub", "spreadsheets"]
 RUNTIME_ANCHOR = "9da9b798c624e3db6bcf933d85ed19892997bf5f"
+SUPERSEDED = "superseded-by-user-device-remediation"
 
 
 def main() -> None:
     state = json.loads((ROOT / "STABILITY_STATE.json").read_text(encoding="utf-8"))
     assert state["program"] == "stability-functional-isolation", state
-    assert state["currentWorkspace"] == "freeze", state
-    assert state["completedWorkspaces"] == WORKSPACES, state
+    assert state["active"] in {True, False}, state
+
     candidate = state.get("freezeCandidate") or {}
     assert candidate.get("runtimeAnchor") == RUNTIME_ANCHOR, candidate
-    assert candidate.get("status") in {"candidate", "frozen"}, candidate
-    assert state["active"] in {True, False}
+
+    remediation = state.get("remediation") or {}
+    remediation_active = (
+        state.get("active") is True
+        and candidate.get("status") == SUPERSEDED
+        and remediation.get("requiresCrossSuiteRevalidation") is True
+    )
+
+    if remediation_active:
+        completed = state.get("completedWorkspaces") or []
+        assert completed == WORKSPACES[: len(completed)], state
+        assert len(completed) <= len(WORKSPACES), state
+        expected_current = WORKSPACES[len(completed)] if len(completed) < len(WORKSPACES) else "cross-suite"
+        assert state.get("currentWorkspace") == expected_current, state
+        assert remediation.get("startedAt"), remediation
+        assert remediation.get("reason"), remediation
+    else:
+        assert state["currentWorkspace"] == "freeze", state
+        assert state["completedWorkspaces"] == WORKSPACES, state
+        assert candidate.get("status") in {"candidate", "frozen"}, candidate
 
     baseline = (ROOT / "docs" / "STABILITY-FREEZE-2026-09-08.md").read_text(encoding="utf-8")
     assert RUNTIME_ANCHOR in baseline
@@ -55,7 +74,7 @@ def main() -> None:
     missing = [path for path in required if not (ROOT / path).is_file()]
     assert not missing, "Missing freeze-gate artifacts:\n" + "\n".join(missing)
 
-    print("Stability freeze contract: OK")
+    print("Stability freeze/remediation lifecycle contract: OK")
 
 
 if __name__ == "__main__":
