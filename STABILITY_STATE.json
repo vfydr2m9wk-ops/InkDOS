@@ -21,19 +21,19 @@
     "epub",
     "spreadsheets"
   ],
-  "currentWorkspace": "cross-suite",
+  "currentWorkspace": "freeze",
   "freezeCandidate": {
-    "date": "2026-09-08",
-    "runtimeAnchor": "9da9b798c624e3db6bcf933d85ed19892997bf5f",
-    "crossSuiteRun": 34270011352,
-    "freezeGateCommit": "f17e102e3e9b612e86da020ba3ab880b16f5741c",
-    "freezeGateRun": 34270610710,
-    "status": "superseded-by-user-device-remediation"
+    "date": "2026-09-10",
+    "runtimeAnchor": "44896f583d14dba6ba00b4ee1311f85ed513ad8a",
+    "crossSuiteRun": 34457839525,
+    "status": "candidate"
   },
   "remediation": {
     "reason": "Real-device audit found PDF kinetic-scroll jumps, Presentation fidelity/read-only conversion gaps, TXT large-file stalls, EPUB selection annotation UX gaps, and Spreadsheet color loss.",
     "startedAt": "2026-09-10",
-    "requiresCrossSuiteRevalidation": true
+    "completedAt": "2026-09-10",
+    "requiresCrossSuiteRevalidation": false,
+    "crossSuiteRevalidatedRun": 34457839525
   },
   "progressiveMainPromotion": true,
   "proportionalModularization": true
