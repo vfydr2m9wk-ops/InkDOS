@@ -119,6 +119,20 @@ def stability_scope(path: Path, base_ref: str) -> tuple[str, set[str]] | None:
         return None
 
     current = state.get("currentWorkspace")
+    if current == "cross-suite":
+        candidate = state.get("freezeCandidate") or {}
+        remediation = state.get("remediation") or {}
+        if completed != order:
+            raise SystemExit(
+                "Cross-suite remediation requires every workspace to be completed in audit order; "
+                f"expected completedWorkspaces={order}, got {completed}"
+            )
+        if candidate.get("status") != "superseded-by-user-device-remediation":
+            raise SystemExit("Cross-suite remediation requires the prior freeze candidate to be superseded")
+        if remediation.get("requiresCrossSuiteRevalidation") is not True:
+            raise SystemExit("Cross-suite remediation requires requiresCrossSuiteRevalidation=true")
+        return "stability:cross-suite", set(order)
+
     if current not in WORKSPACES or current not in order:
         raise SystemExit("Invalid currentWorkspace in STABILITY_STATE.json")
     current_index = order.index(current)
