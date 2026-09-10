@@ -28,6 +28,12 @@ def stability_changes():
         if candidate.get('status')!='superseded-by-user-device-remediation' or remediation.get('requiresCrossSuiteRevalidation') is not True:
             raise SystemExit('Invalid cross-suite remediation lifecycle in STABILITY_STATE.json')
         return set(order)
+    if current=='freeze':
+        candidate=state.get('freezeCandidate') or {}
+        if completed!=order: raise SystemExit('STABILITY_STATE.json is not ready for freeze validation')
+        if candidate.get('status')!='candidate' or not candidate.get('runtimeAnchor') or not candidate.get('crossSuiteRun'):
+            raise SystemExit('Invalid stability refreeze candidate lifecycle in STABILITY_STATE.json')
+        return set(order)
     if current not in ACTIVE or current not in order: raise SystemExit('Invalid currentWorkspace in STABILITY_STATE.json')
     if completed!=order[:order.index(current)]: raise SystemExit('STABILITY_STATE.json is not sequential')
     return set(completed)|{current}

@@ -1,17 +1,19 @@
 # Frozen application baselines
 
-The six installed application trees come from these canonical FINAL archives and approved increments:
+The active frozen domestic-use baseline is the 2026-09-10 refreeze documented in `docs/STABILITY-FREEZE-2026-09-10.md`. The earlier 2026-09-08 freeze remains historical evidence and no longer represents the active runtime baseline.
 
-- Documents — original `InkDOS-2.0-Phase2-Documents-App04-FINAL.zip` baseline plus the approved DOC-D1 Home Document Essentials and DOC-D2 Documents P1 + Legacy Import increments.
-- Spreadsheets — `InkDOS-2.0-Phase2-Spreadsheets-App05-FINAL.zip`
-- Presentations — original `InkDOS-2.0-Phase2-Presentations-App05-FINAL.zip` baseline plus the approved PPT-P1 PPTX Home Editing increment.
-- Plain Text — original App01 baseline plus the approved TXT-T1 Editing Essentials and TXT-T2 Structured XML increments.
-- EPUB Reader — original App02 baseline plus the approved EPUB-E1 Navigation & Retrieval and EPUB-E2 Notes & Reading Library increments.
-- PDF Workspace — accepted P4.2 baseline plus approved PDF-P1 Reader Completion and PDF-P2 Page Tools increments.
+## Canonical workspace lineage
 
-## Functional development freeze order
+- Documents — original `InkDOS-2.0-Phase2-Documents-App04-FINAL.zip` baseline plus approved DOC-D1 and DOC-D2 increments.
+- Spreadsheets — original `InkDOS-2.0-Phase2-Spreadsheets-App05-FINAL.zip` baseline plus approved XLS-S1 and XLS-S2 increments.
+- Presentations — original `InkDOS-2.0-Phase2-Presentations-App05-FINAL.zip` baseline plus approved PPT-P1 and PPT-P2 increments.
+- Plain Text — original App01 baseline plus approved TXT-T1 and TXT-T2 increments.
+- EPUB Reader — original App02 baseline plus approved EPUB-E1 and EPUB-E2 increments.
+- PDF Workspace — accepted P4.2 baseline plus approved PDF-P1 and PDF-P2 increments.
 
-Approved and frozen in sequence:
+## Completed functional order
+
+The approved roadmap progressed in this order:
 
 1. TXT-T1 — Editing Essentials
 2. TXT-T2 — Structured Text / XML
@@ -22,29 +24,30 @@ Approved and frozen in sequence:
 7. DOC-D1 — Home Document Essentials
 8. DOC-D2 — Documents P1 + Legacy Import
 9. PPT-P1 — PPTX Home Editing
+10. PPT-P2 — Presentation Completion + PPT Import
+11. XLS-S1 — Spreadsheet structural integrity, formulas, worksheet semantics and save/reopen preservation
+12. XLS-S2 — domestic formatting, basic printing and spreadsheet fidelity/closure polish
+13. Audit — integrated cross-suite closure audit
+14. Freeze — final stability refreeze
 
-PDF-P2 closes the planned domestic PDF functional scope: local page reorder, permanent rotation, deletion, extraction, split and merge. Its app-local vendor dependencies remain under `apps/pdf/vendor/`; the external smoke test is kept outside the distributable app tree. The suite service worker lists the required PDF P1/P2 runtime resources so the PWA shell can remain offline-capable.
+## Workspace scope retained by the freeze
 
-DOC-D1 establishes the domestic Documents authoring baseline on top of the existing paged DOCX editor: text color and highlight; strikethrough, subscript and superscript; find/replace; Letter/A4/Legal paper sizes; portrait/landscape orientation; margins; header/footer text; page numbering; explicit page breaks; and browser print/PDF handoff. DOCX persistence is implemented through an app-local OOXML extension over the existing parser/writer. A Chromium round-trip test verifies generated OOXML, parser re-import and reopening in the Documents workspace, including page layout, header/footer, PAGE field, page break and the added run formatting.
+PDF-P2 closes the planned domestic PDF functional scope around local page operations. DOC-D1/DOC-D2 provide the approved domestic Documents authoring, review/structure and conservative legacy-import baseline. PPT-P1/PPT-P2 provide the approved Presentations editing/completion baseline, while unsupported or complex imported objects remain subject to the documented preservation and fidelity limits. XLS-S1/XLS-S2 establish the approved spreadsheet domestic-use baseline, including structural/formula/worksheet semantics and the supported formatting/printing closure scope.
 
-DOC-D2 extends that frozen baseline with browser spellcheck integration, comments, footnotes, automatic TOC, additional styles, table operations, next-page sections and one-to-three-column layouts. The review/structure and section capabilities are persisted through app-local WordprocessingML extensions and protected by Chromium writer → OOXML → parser → reopen tests.
+Plain Text and EPUB retain their approved T1/T2 and E1/E2 capabilities. The 2026-09-10 real-device remediation is also part of the active baseline: PDF kinetic-scroll behavior, EPUB contextual annotations, Spreadsheet color fidelity, TXT large-file handling and Presentation fidelity/conversion paths are protected by their applicable regression contracts.
 
-DOC-D2 also adds local RTF import for a conservative domestic subset. RTF is normalized into the Documents model and saved only as DOCX; legacy RTF bytes are not retained as an output source. A Chromium conversion test verifies RTF open → edit → DOCX serialization → OOXML inspection → DOCX reopen. Binary Word 97–2003 `.doc` import is deliberately deferred because its OLE/CFB, FIB, piece-table and formatting-table parser surface is disproportionate to current home-use benefit. This deferral is explicitly allowed by the DOC-D2 roadmap; `.doc` export remains out of scope.
+## Stability Functional Isolation Refreeze — 2026-09-10
 
-PPT-P1 establishes the domestic PPTX editing baseline on top of the existing Presentations reader/editor. New presentations and imported PPTX files support slide add/duplicate/delete/reorder; text insertion/editing; local image insertion; rectangle, rounded-rectangle, ellipse and line shapes; contextual move/resize/rotate controls; basic fill/border/text colors; bullet lists; and basic Title + Content, Two Content and Section Header layouts. Imported PPTX uses app-local package-preserving structure/object writers rather than flattening the source package. Chromium tests verify real file-input open, hit-tested geometry interaction, PPTX serialization, ZIP/XML inspection, decoder re-import and app reopening. Unsupported complex imported objects remain preserved rather than being exposed as unsafe editable equivalents, and legacy `.ppt` remains read-only until PPT-P2.
+Frozen functional runtime anchor: `44896f583d14dba6ba00b4ee1311f85ed513ad8a`.
 
-The suite service worker includes the PPT-P1 structure writer, object writer and contextual tool module so this baseline remains available in the installed offline shell.
+Cross-suite remediation revalidation run: `34457839525`.
 
-## Stability Functional Isolation Freeze — 2026-09-08
+Freeze candidate validation commit: `7e852032e21a35710e4fcb3a0c33d0f76ff609e6`.
 
-The six functional baselines above are additionally protected by the frozen `stability-functional-isolation` regression baseline recorded in `docs/STABILITY-FREEZE-2026-09-08.md`.
+Aggregate freeze candidate run: `34458997715`.
 
-The stability freeze covers PDF, Documents, Presentations, Plain Text, EPUB Reader and Spreadsheets in sequence, followed by an integrated cross-suite frame/bootstrap/offline audit. Its aggregate gate protects command/control independence, app-local responsibility boundaries, proportional modularity, browser behavior, offline bootstrap, security configuration and preserved file-format round-trips.
+The freeze protects command/control independence, app-local responsibility boundaries, proportional modularity, browser behavior, offline bootstrap, security configuration and preserved file-format round-trips. Exact integrity values and installed-tree hashes remain recorded in `SOURCE_LOCK.json` and `CHECKSUMS.sha256`.
 
-The frozen runtime anchor is `9da9b798c624e3db6bcf933d85ed19892997bf5f`. The aggregate freeze candidate passed workflow run `34270610710` at commit `f17e102e3e9b612e86da020ba3ab880b16f5741c` across static contracts, preservation round-trips, Chromium, Firefox and WebKit.
+## Scope boundary
 
-Future feature phases must preserve this baseline. A later feature is not approved solely by its own tests; its applicable workspace stability regression and cross-suite offline/isolation regression remain part of the acceptance gate.
-
-The next previously permitted functional cycle remains **PPT-P2 — Presentation Completion + PPT Import**, subject to a subsequent authorized development phase. The stability freeze itself does not start PPT-P2, XLS-S1 or XLS-S2.
-
-Exact SHA-256 values and integration hashes for installed trees are recorded in `SOURCE_LOCK.json` and `CHECKSUMS.sha256`.
+This baseline is for the implemented domestic-use feature set. It does not claim exhaustive DOCX/XLS/XLSX/PPT/PPTX/EPUB/PDF fidelity or parity with full desktop office suites. Future bug fixes discovered by user testing must preserve the frozen contracts and require fresh regression evidence before integration.

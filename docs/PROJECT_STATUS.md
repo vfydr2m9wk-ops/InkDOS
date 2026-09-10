@@ -2,40 +2,28 @@
 
 Release: **InkDOS 2.0.12**
 
-Six installed independent workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB Reader and PDF Workspace. InkDOS 2.0.12 preserves the existing appearance, empty-workspace, Share, single-delivery Save and PDF frame contracts while making standalone app extraction an explicit validated property.
+Status: **domestic-use roadmap frozen on 2026-09-10**.
 
-## Stability baseline
+InkDOS contains six installed independent workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB Reader and PDF Workspace. The functional roadmap completed TXT-T1, TXT-T2, EPUB-E1, EPUB-E2, PDF-P1, PDF-P2, DOC-D1, DOC-D2, PPT-P1, PPT-P2, XLS-S1, XLS-S2 and the integrated Audit before entering the final Freeze phase.
 
-The blocking `stability-functional-isolation` program completed its six-workspace audit plus the integrated cross-suite frame/bootstrap/offline audit on 2026-09-08. The frozen baseline is recorded in `docs/STABILITY-FREEZE-2026-09-08.md` and enforced by `.github/workflows/stability-freeze-regression.yml`.
+## Current frozen baseline
 
-The aggregate freeze candidate passed suite architecture/offline validation, all frozen static contracts, the PDF.js security configuration regression, preserved format round-trips, and the complete primary stability browser suite in Chromium, Firefox and WebKit. The stability work does not change the 2.0.12 functional release scope or claim broader file-format fidelity.
+The active stability baseline is documented in `docs/STABILITY-FREEZE-2026-09-10.md`. Its functional runtime anchor is `44896f583d14dba6ba00b4ee1311f85ed513ad8a`, produced by the approved real-device remediation merge. The freeze candidate was validated at commit `7e852032e21a35710e4fcb3a0c33d0f76ff609e6` by aggregate Stability freeze regression run `34458997715`.
 
-## Standalone and suite integration
+`STABILITY_STATE.json` records the stability program as inactive/frozen after all six workspace audits and cross-suite revalidation. The aggregate freeze gate protects suite architecture/offline behavior, frozen static contracts, PDF.js security configuration, preserved format round-trips and the primary stability browser matrix in Chromium, Firefox and WebKit.
 
-Each workspace remains physically rooted under its own `apps/<workspace>/` directory and retains its own runtime, state and I/O implementation. Home is now an optional bridge: the suite launcher adds `suite=1` to workspace navigation, and the corresponding app-local frame module exposes the Home action only in that integrated context. When opened directly or extracted, the workspace removes the Home target from its active frame without requiring a suite runtime.
+## Real-device remediation included
 
-The release gate now copies each workspace to an isolated temporary directory, verifies that its non-Home entry resources resolve within that app root, scans for cross-app runtime references, and checks that the offline service-worker shell contains no missing files. This directly covers the strict-standalone gap identified during the previous modularity audit.
+The frozen runtime includes the post-audit fixes for PDF kinetic/continuous scrolling, EPUB selection Highlight/Note actions, Spreadsheet theme/indexed/tint and table-style color handling, TXT large-file operation, and Presentation legacy-PPT/PPTX fidelity and conversion behavior. These are regression-backed domestic-use improvements; they are not a claim of exhaustive Office, EPUB or PDF compatibility.
 
-## EPUB polish
+## Architecture and integration
 
-EPUB previously had good logical separation but several core modules were physically flattened at the app root. Version 2.0.12 moves those existing responsibilities into app-private directories without intentionally changing algorithms:
+Each workspace remains physically rooted under its own `apps/<workspace>/` directory and retains app-local runtime, state and I/O responsibilities. Home remains an optional suite bridge. Semantic features are not owned by toolbar button placement, and the command/state/persistence boundaries remain part of the frozen regression contract.
 
-- package reading and EPUB writing under `io/`;
-- book model, content projection and annotation projection under `engine/`;
-- annotation persistence under `state/`;
-- rendering under `view/`;
-- start-state presentation CSS under `ui/`.
-
-`app.js` remains the composition layer, while `index.html` now loads the physically separated modules. The old flattened module copies are absent, and the release gate requires the new EPUB layout.
-
-## Preserved contracts
-
-Appearance remains horizontally synchronized through `inkdos2:appearance`, while every workspace retains its app-local appearance key and controller. Save and Share remain unavailable until a real active document/book/PDF exists according to each workspace's private state. The 2.0.11 one-Save/one-delivery rule remains active in Documents, Spreadsheets, Presentations, Plain Text and PDF.
-
-The frozen stability baseline additionally requires that semantic commands remain independent of their visual controls where applicable, frame/toolbar layout not own editor semantics, app-local responsibility boundaries remain intact, and all six workspaces continue to bootstrap through the root offline shell.
+The root service worker keeps the installed suite available through the validated offline shell. Package-preserving writers and round-trip tests are used where supported; unsupported imported structures are preserved conservatively where the existing contracts permit rather than silently presented as fully editable equivalents.
 
 ## Scope boundary
 
-This release is code-structure polish. It does not claim broader DOCX/XLSX/PPTX/EPUB/PDF compatibility or LibreOffice-level fidelity. Format expansion remains a later per-workspace task and must preserve the same app-private parser/writer boundaries and the frozen stability gates.
+The completed roadmap targets practical domestic use, not exhaustive parity with Microsoft Office, LibreOffice or every feature of DOCX/XLS/XLSX/PPT/PPTX/EPUB/PDF. Known limitations remain authoritative in `docs/KNOWN_LIMITATIONS.md`.
 
-PDF otherwise retains the user-accepted P4.2 functional baseline. See `PDF-CLOSURE-AUDIT.md` for its verification scope.
+The next development stage is user testing and bug correction against this frozen baseline. Any future fix must keep the stability, architecture, persistence, offline and cross-browser gates intact.
