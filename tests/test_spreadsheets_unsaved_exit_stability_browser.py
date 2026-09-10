@@ -63,7 +63,10 @@ def main():
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is False
 
-            # Save delivery completes before replacement proceeds.
+            # Save delivery completes before replacement proceeds. Force the download
+            # transport here so this assertion is deterministic across Playwright hosts;
+            # picker cancellation/write-failure paths are tested explicitly below.
+            page.evaluate("()=>{globalThis.showSaveFilePicker=undefined}")
             page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;api.editor.editor.commitValue('save-me',0,0);globalThis.__inkdosPending=api.openController.newWorkbook()}""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
             with page.expect_download() as info:
