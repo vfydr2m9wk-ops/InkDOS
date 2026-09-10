@@ -54,14 +54,30 @@ def main():
                 status:document.getElementById('statusText')?.textContent||''
               };
             }""")
+            assert result['boldControlMissing'] is True,result
+            assert result['formatCommandSurvived'] is True,result
+            assert result['stillRegistered'] is True,result
+            assert result['commandCount']>=20,result
+            assert result['pageCount']>=1,result
+            assert result['welcomeHidden'] is True,result
+
+            # INKBUG-0002 reproduction: a dirty in-app replacement must expose
+            # explicit Save / Discard / Cancel semantics, not a binary Continue.
+            page.evaluate("""()=>{
+              const app=globalThis.InkDOS2Documents.DocumentsApp;
+              app.session.markDirty();
+              globalThis.__inkdosPendingReplacement=app.newDocument();
+            }""")
+            page.wait_for_selector('#sessionReplacePanel:not([hidden])')
+            labels=page.locator('#sessionReplacePanel .error-actions button').all_text_contents()
+            assert labels==['Cancel','Discard','Save'],labels
+            page.get_by_role('button',name='Cancel').click()
+            page.wait_for_function('() => globalThis.__inkdosPendingReplacement instanceof Promise')
+            cancelled=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
+            assert cancelled is False,cancelled
+            assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is True
             browser.close()
-        assert result['boldControlMissing'] is True,result
-        assert result['formatCommandSurvived'] is True,result
-        assert result['stillRegistered'] is True,result
-        assert result['commandCount']>=20,result
-        assert result['pageCount']>=1,result
-        assert result['welcomeHidden'] is True,result
-        print(f"Documents command/control browser isolation passed on {os.environ.get('BROWSER','chromium')}.")
+        print(f"Documents command/control and unsaved-exit browser isolation passed on {os.environ.get('BROWSER','chromium')}.")
     finally:
         server.terminate()
         try:server.wait(timeout=3)
