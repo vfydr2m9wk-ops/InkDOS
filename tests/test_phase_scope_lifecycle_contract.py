@@ -16,6 +16,7 @@ spec.loader.exec_module(scope)
 
 ORDER = ["pdf", "documents", "presentations", "txt", "epub", "spreadsheets"]
 ANCHOR = "test-runtime-anchor"
+ROADMAP = scope.FUNCTIONAL_ROADMAP
 
 
 def state(*, completed=None, status="frozen") -> dict:
@@ -30,27 +31,33 @@ def state(*, completed=None, status="frozen") -> dict:
     }
 
 
-def functional_state(
-    *,
-    completed: list[str],
-    phase: str,
-    workspace: str,
-    next_phase: str,
-    next_workspace: str,
-) -> dict:
-    return {
+def functional_state(phase: str) -> dict:
+    index = next(i for i, item in enumerate(ROADMAP) if item[0] == phase)
+    current_phase, workspace = ROADMAP[index]
+    value = {
         "schemaVersion": 1,
         "roadmap": "home-functional",
         "architectureContract": "physical-workspace-isolation",
         "transitionGateRequired": True,
-        "completedPhases": completed,
-        "currentPhase": {"id": phase, "workspace": workspace, "status": "active"},
-        "nextPhase": {"id": next_phase, "workspace": next_workspace},
+        "completedPhases": [item[0] for item in ROADMAP[:index]],
+        "currentPhase": {"id": current_phase, "workspace": workspace, "status": "active"},
     }
+    if index + 1 < len(ROADMAP):
+        next_phase, next_workspace = ROADMAP[index + 1]
+        value["nextPhase"] = {"id": next_phase, "workspace": next_workspace}
+    return value
 
 
 def write_state(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value), encoding="utf-8")
+
+
+def expect_rejected(callback, message: str) -> None:
+    try:
+        callback()
+    except SystemExit:
+        return
+    raise AssertionError(message)
 
 
 def main() -> None:
@@ -62,84 +69,70 @@ def main() -> None:
             frozen = state()
             write_state(path, frozen)
 
-            # Before the frozen anchor reaches main, the promotion PR is allowed to
-            # contain the six audited workspaces as one stability-freeze scope.
             scope.base_state = lambda _base: {}
             pending = scope.stability_scope(path, "origin/main")
             assert pending == ("stability:freeze", set(ORDER)), pending
 
-            # Once the same frozen anchor is already in main, stability no longer
-            # overrides the functional roadmap. Future work must return to the
-            # normal one-workspace FUNCTIONAL_STATE scope.
             scope.base_state = lambda _base: frozen
             integrated = scope.stability_scope(path, "origin/main")
             assert integrated is None, integrated
 
-            # An incomplete freeze must never receive the multi-workspace promotion
-            # allowance, even when the anchor is not yet in main.
             scope.base_state = lambda _base: {}
             write_state(path, state(completed=ORDER[:-1]))
-            try:
-                scope.stability_scope(path, "origin/main")
-            except SystemExit:
-                pass
-            else:
-                raise AssertionError("Incomplete frozen stability state was accepted")
+            expect_rejected(
+                lambda: scope.stability_scope(path, "origin/main"),
+                "Incomplete frozen stability state was accepted",
+            )
 
             write_state(path, state(status="candidate"))
-            try:
-                scope.stability_scope(path, "origin/main")
-            except SystemExit:
-                pass
-            else:
-                raise AssertionError("Non-frozen inactive stability state was accepted")
+            expect_rejected(
+                lambda: scope.stability_scope(path, "origin/main"),
+                "Non-frozen inactive stability state was accepted",
+            )
 
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "FUNCTIONAL_STATE.json"
-            base = functional_state(
-                completed=["XLS-S1"],
-                phase="XLS-S2",
-                workspace="spreadsheets",
-                next_phase="Audit",
-                next_workspace="cross-suite",
-            )
-            promoted = functional_state(
-                completed=["XLS-S1", "XLS-S2"],
-                phase="Audit",
-                workspace="cross-suite",
-                next_phase="Freeze",
-                next_workspace="suite",
-            )
-            write_state(path, promoted)
-            scope.base_json_state = lambda _base, filename: base if filename == "FUNCTIONAL_STATE.json" else {}
+            xls_s1 = functional_state("XLS-S1")
+            xls_s2 = functional_state("XLS-S2")
+            audit = functional_state("Audit")
 
-            # The PR that promotes XLS-S2 may already mark Audit active, but its app
-            # delta must still be checked against the outgoing spreadsheets scope.
+            write_state(path, audit)
+            scope.base_json_state = lambda _base, filename: xls_s2 if filename == "FUNCTIONAL_STATE.json" else {}
             transition = scope.functional_scope(path, "origin/main")
             assert transition == ("XLS-S2", {"spreadsheets"}), transition
 
-            # Once the promoted state is also in main, Audit is metadata/test-only by
-            # default and must not silently open all six app trees.
-            scope.base_json_state = lambda _base, filename: promoted if filename == "FUNCTIONAL_STATE.json" else {}
-            audit = scope.functional_scope(path, "origin/main")
-            assert audit == ("Audit", set()), audit
+            # Main can legitimately lag one state-only transition while both
+            # completed functional slices belong to the same physical workspace.
+            scope.base_json_state = lambda _base, filename: xls_s1 if filename == "FUNCTIONAL_STATE.json" else {}
+            multi = scope.functional_scope(path, "origin/main")
+            assert multi == ("XLS-S1→XLS-S2", {"spreadsheets"}), multi
 
-            # A transition cannot skip recording completion of the outgoing phase.
-            broken = dict(promoted)
-            broken["completedPhases"] = ["XLS-S1"]
+            scope.base_json_state = lambda _base, filename: audit if filename == "FUNCTIONAL_STATE.json" else {}
+            integrated_audit = scope.functional_scope(path, "origin/main")
+            assert integrated_audit == ("Audit", set()), integrated_audit
+
+            # A multi-step promotion may never silently span different app roots.
+            ppt_p2 = functional_state("PPT-P2")
+            scope.base_json_state = lambda _base, filename: ppt_p2 if filename == "FUNCTIONAL_STATE.json" else {}
+            expect_rejected(
+                lambda: scope.functional_scope(path, "origin/main"),
+                "Cross-workspace multi-phase promotion was accepted",
+            )
+
+            # Sequential state remains canonical: missing a completed phase is invalid.
+            broken = functional_state("Audit")
+            broken["completedPhases"] = broken["completedPhases"][:-1]
             write_state(path, broken)
-            scope.base_json_state = lambda _base, filename: base if filename == "FUNCTIONAL_STATE.json" else {}
-            try:
-                scope.functional_scope(path, "origin/main")
-            except SystemExit:
-                pass
-            else:
-                raise AssertionError("Functional transition without outgoing completion was accepted")
+            scope.base_json_state = lambda _base, filename: xls_s1 if filename == "FUNCTIONAL_STATE.json" else {}
+            expect_rejected(
+                lambda: scope.functional_scope(path, "origin/main"),
+                "Functional state with a skipped completion was accepted",
+            )
     finally:
         scope.base_state = original_base_state
         scope.base_json_state = original_base_json_state
 
-    print("Phase-scope freeze and functional transition lifecycle contract: OK")
+    print("Phase-scope freeze and canonical functional transition lifecycle contract: OK")
 
 
 if __name__ == "__main__":

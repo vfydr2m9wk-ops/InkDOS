@@ -9,6 +9,22 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACES = {"documents", "spreadsheets", "presentations", "pdf", "txt", "epub"}
+FUNCTIONAL_ROADMAP = [
+    ("TXT-T1", "txt"),
+    ("TXT-T2", "txt"),
+    ("EPUB-E1", "epub"),
+    ("EPUB-E2", "epub"),
+    ("PDF-P1", "pdf"),
+    ("PDF-P2", "pdf"),
+    ("DOC-D1", "documents"),
+    ("DOC-D2", "documents"),
+    ("PPT-P1", "presentations"),
+    ("PPT-P2", "presentations"),
+    ("XLS-S1", "spreadsheets"),
+    ("XLS-S2", "spreadsheets"),
+    ("Audit", "cross-suite"),
+    ("Freeze", "suite"),
+]
 GLOBAL_ALLOWED_EXACT = {
     "FUNCTIONAL_STATE.json",
     "STABILITY_STATE.json",
@@ -84,10 +100,6 @@ def stability_scope(path: Path, base_ref: str) -> tuple[str, set[str]] | None:
     if any(item not in WORKSPACES for item in completed) or len(completed) != len(set(completed)):
         raise SystemExit("Invalid completedWorkspaces in STABILITY_STATE.json")
 
-    # A completed stability program governs only the PR that is promoting that
-    # frozen baseline into the selected base. Once the same runtime anchor is
-    # already present in base, normal future development falls back to
-    # FUNCTIONAL_STATE.json and the one-workspace rule becomes authoritative again.
     if active is False and state.get("currentWorkspace") == "freeze":
         anchor = frozen_anchor(state)
         if not anchor:
@@ -119,59 +131,64 @@ def stability_scope(path: Path, base_ref: str) -> tuple[str, set[str]] | None:
     return f"stability:{current}", set(completed) | {current}
 
 
-def _functional_phase_scope(state: dict) -> tuple[str, str, set[str]]:
+def _functional_position(state: dict) -> tuple[int, str, str, set[str]]:
     if state.get("transitionGateRequired") is not True:
         raise SystemExit("FUNCTIONAL_STATE.json must require the transition architecture gate")
     current = state.get("currentPhase") or {}
-    workspace = current.get("workspace")
     phase = current.get("id")
-    status = current.get("status")
-    if not isinstance(phase, str) or not phase or status != "active":
+    workspace = current.get("workspace")
+    if current.get("status") != "active":
         raise SystemExit("Invalid currentPhase/workspace in FUNCTIONAL_STATE.json")
-    if workspace in WORKSPACES:
-        return phase, workspace, {workspace}
-    if phase == "Audit" and workspace == "cross-suite":
-        return phase, workspace, set()
-    if phase == "Freeze" and workspace == "suite":
-        return phase, workspace, set()
-    raise SystemExit("Invalid currentPhase/workspace in FUNCTIONAL_STATE.json")
+    try:
+        index = FUNCTIONAL_ROADMAP.index((phase, workspace))
+    except ValueError as exc:
+        raise SystemExit("Invalid currentPhase/workspace in FUNCTIONAL_STATE.json") from exc
+
+    completed = state.get("completedPhases")
+    expected_completed = [item[0] for item in FUNCTIONAL_ROADMAP[:index]]
+    if completed != expected_completed:
+        raise SystemExit(
+            "FUNCTIONAL_STATE.json must advance sequentially; "
+            f"expected completedPhases={expected_completed}, got {completed}"
+        )
+
+    expected_next = FUNCTIONAL_ROADMAP[index + 1] if index + 1 < len(FUNCTIONAL_ROADMAP) else None
+    declared_next = state.get("nextPhase")
+    if expected_next is not None:
+        if not isinstance(declared_next, dict) or (declared_next.get("id"), declared_next.get("workspace")) != expected_next:
+            raise SystemExit("FUNCTIONAL_STATE.json nextPhase does not match the canonical roadmap")
+    elif declared_next not in (None, {}):
+        raise SystemExit("Final functional phase must not declare another nextPhase")
+
+    allowed = {workspace} if workspace in WORKSPACES else set()
+    return index, phase, workspace, allowed
 
 
 def functional_scope(path: Path, base_ref: str) -> tuple[str, set[str]]:
     if not path.is_file():
         raise SystemExit(f"Missing functional roadmap state: {path.name}")
     state = load_json(path)
-    head_phase, head_workspace, head_allowed = _functional_phase_scope(state)
+    head_index, head_phase, _head_workspace, head_allowed = _functional_position(state)
 
     base = base_json_state(base_ref, path.name)
     if not base:
         return head_phase, head_allowed
-    base_phase, base_workspace, base_allowed = _functional_phase_scope(base)
+    base_index, base_phase, _base_workspace, _base_allowed = _functional_position(base)
 
-    # A promotion PR may already record the next phase as active in the branch.
-    # Its functional delta still belongs to the phase that is active in main,
-    # so validate that outgoing phase rather than accidentally widening scope to
-    # the post-transition Audit/Freeze pseudo-workspaces.
-    if (head_phase, head_workspace) != (base_phase, base_workspace):
-        base_completed = base.get("completedPhases")
-        head_completed = state.get("completedPhases")
-        if not isinstance(base_completed, list) or not isinstance(head_completed, list):
-            raise SystemExit("Invalid completedPhases in FUNCTIONAL_STATE.json")
-        if len(base_completed) != len(set(base_completed)) or len(head_completed) != len(set(head_completed)):
-            raise SystemExit("Duplicate completed phase in FUNCTIONAL_STATE.json")
-        if head_completed != [*base_completed, base_phase]:
-            raise SystemExit(
-                "FUNCTIONAL_STATE.json transition must complete exactly the phase active in base; "
-                f"expected completedPhases={[*base_completed, base_phase]}, got {head_completed}"
-            )
-        base_next = base.get("nextPhase") or {}
-        if (base_next.get("id"), base_next.get("workspace")) != (head_phase, head_workspace):
-            raise SystemExit(
-                "FUNCTIONAL_STATE.json transition does not match the next phase declared in base"
-            )
-        return base_phase, base_allowed
+    if head_index < base_index:
+        raise SystemExit("FUNCTIONAL_STATE.json cannot regress behind the integrated base")
+    if head_index == base_index:
+        return head_phase, head_allowed
 
-    return head_phase, head_allowed
+    promoted = FUNCTIONAL_ROADMAP[base_index:head_index]
+    promoted_apps = {workspace for _phase, workspace in promoted if workspace in WORKSPACES}
+    if len(promoted_apps) > 1:
+        raise SystemExit(
+            "A single promotion cannot span functional changes in multiple workspaces; "
+            f"promoted workspaces={sorted(promoted_apps)}"
+        )
+    label = promoted[0][0] if len(promoted) == 1 else f"{promoted[0][0]}→{promoted[-1][0]}"
+    return label, promoted_apps
 
 
 def security_exact_exceptions(path: Path) -> set[str]:
