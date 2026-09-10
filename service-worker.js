@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.0.12-stability-epub-seq89';
+const CACHE_NAME='inkdos-v2.0.12-stability-remediation-1';
 const APP_SHELL=[
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
@@ -125,6 +125,7 @@ const APP_SHELL=[
   "./apps/spreadsheets/io/worksheet-package.js",
   "./apps/spreadsheets/io/xls-biff8-engine.js",
   "./apps/spreadsheets/io/xlsx-engine.js",
+  "./apps/spreadsheets/io/xlsx-color-fidelity.js",
   "./apps/spreadsheets/module.json",
   "./apps/spreadsheets/runtime/frame/app-frame.css",
   "./apps/spreadsheets/runtime/frame/frame-menu.js",
