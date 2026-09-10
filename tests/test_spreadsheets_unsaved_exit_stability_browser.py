@@ -25,7 +25,7 @@ def main():
         with sync_playwright() as pw:
             browser=getattr(pw,browser_name).launch(headless=True)
             page=browser.new_page(viewport={'width':1280,'height':900},accept_downloads=True)
-            page.goto(BASE+'/apps/spreadsheets/',wait_until='load')
+            page.goto(BASE+'/apps/spreadsheets/?suite=1',wait_until='load')
             page.wait_for_function('() => !!globalThis.__inkdosSpreadsheetsS1')
             page.evaluate("""async()=>{
               const api=globalThis.__inkdosSpreadsheetsS1;
@@ -74,6 +74,30 @@ def main():
 
             # Cancelled save must not replace the workbook.
             page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;api.editor.editor.commitValue('stay',0,0);globalThis.__inkdosBookId=api.session.documentId;globalThis.showSaveFilePicker=async()=>{throw new DOMException('cancelled','AbortError')};globalThis.__inkdosPending=api.openController.newWorkbook()}""")
+            page.wait_for_selector('#sessionReplacePanel:not([hidden])')
+            page.get_by_role('button',name='Save').click()
+            assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
+
+            # Failed save must also block replacement and preserve dirty state.
+            page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;globalThis.__inkdosBookId=api.session.documentId;globalThis.showSaveFilePicker=async()=>({createWritable:async()=>{throw new Error('synthetic write failure')}});globalThis.__inkdosPending=api.openController.newWorkbook()}""")
+            page.wait_for_selector('#sessionReplacePanel:not([hidden])')
+            page.get_by_role('button',name='Save').click()
+            assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
+
+            # A revision that becomes stale while Save is in flight must never navigate.
+            page.evaluate("""()=>{
+              const api=globalThis.__inkdosSpreadsheetsS1;
+              globalThis.__inkdosBookId=api.session.documentId;
+              globalThis.showSaveFilePicker=async()=>({createWritable:async()=>({
+                write:async()=>{api.editor.editor.commitValue('newer-change',0,1)},
+                close:async()=>{}
+              })});
+              globalThis.__inkdosPending=api.openController.newWorkbook();
+            }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
             page.get_by_role('button',name='Save').click()
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
