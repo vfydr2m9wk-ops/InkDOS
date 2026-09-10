@@ -1,6 +1,6 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
-function create({session,chrome}={}){
+function create({session,chrome,promoteLegacyPpt}={}){
   let busy=false,p1Loader=null,p2Loader=null;
   function loadLocal(src,test,label){if(test())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=()=>test()?resolve():reject(new Error(label+' did not initialize.'));s.onerror=()=>reject(new Error(label+' could not be loaded locally.'));document.head.appendChild(s)})}
   function ensureP1Writer(){if(NS.PptP1StructureWriter&&NS.PptP1ObjectWriter)return Promise.resolve();if(p1Loader)return p1Loader;p1Loader=(async()=>{await loadLocal('io/ppt-p1-structure-writer.js',()=>!!NS.PptP1StructureWriter,'PPT-P1 structure writer');await loadLocal('io/ppt-p1-object-writer.js',()=>!!NS.PptP1ObjectWriter,'PPT-P1 object writer')})();return p1Loader}
@@ -21,15 +21,18 @@ function create({session,chrome}={}){
   async function save(){
     if(!session.active||busy)return null;busy=true;
     try{
+      const legacyPpt=session.sourceKind==='ppt';
       const {bytes,receipt,blob,fileName}=await buildCopy(false);
       const delivery=await NS.FileDelivery.deliver(blob,fileName);
       if(delivery.deliveryConfirmed){
-        if(session.sourceKind==='pptx'){
+        if(legacyPpt){
+          if(typeof promoteLegacyPpt!=='function'||await promoteLegacyPpt({bytes,fileName,receipt})===false)chrome.status('Editable PPTX copy saved · could not switch to editable copy');
+        }else if(session.sourceKind==='pptx'){
           session.acceptConfirmedPptx(bytes,receipt);
           for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false}
-        }else if(session.sourceKind!=='ppt')session.dirty=false;
-        chrome.status(session.sourceKind==='ppt'?'Editable PPTX copy saved · open the .pptx copy to edit':'PPTX copy saved');
-      }else chrome.status(session.sourceKind==='ppt'?'Editable PPTX copy generated · delivery requested':'PPTX copy generated · delivery requested');
+          chrome.status('PPTX copy saved');
+        }else{session.dirty=false;chrome.status('PPTX copy saved')}
+      }else chrome.status(legacyPpt?'Editable PPTX copy generated · delivery requested':'PPTX copy generated · delivery requested');
       chrome.title();return {...delivery,bytes,receipt,fileName};
     }catch(e){if(e?.code!=='cancelled')chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
   }
