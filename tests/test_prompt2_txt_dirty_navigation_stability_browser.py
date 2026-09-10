@@ -50,34 +50,92 @@ def main() -> None:
 
             page.click("#startNew")
             editor = page.locator("#editor")
+            home = page.locator('a[aria-label="Home"]')
+            assert home.count() == 1
             editor.fill("unsaved prompt 2 change")
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.session.dirty === true")
 
-            # INKBUG-001: in-app Home navigation must be guarded before leaving.
-            home = page.locator("#homeBtn")
-            assert home.count() == 1, "Plain Text Home control must expose a guarded semantic target"
+            # INKBUG-001: dirty in-app Home must stop before navigation and expose
+            # one InkDOS-controlled Save / Discard / Cancel decision.
             home.click()
             assert page.url.endswith("/apps/txt/"), page.url
             assert page.locator("#discardDialog").is_visible()
+            assert page.locator("#discardDialog").count() == 1
             assert page.locator("#discardSave").is_visible()
             assert page.locator("#discardContinue").is_visible()
             assert page.locator("#discardCancel").is_visible()
 
-            # Cancel keeps the editor and dirty state intact.
+            # Repeated activation cannot create a second dialog or navigate early.
+            page.evaluate("() => document.querySelector('a[aria-label=\"Home\"]').click()")
+            assert page.locator("#discardDialog").count() == 1
+            assert page.url.endswith("/apps/txt/"), page.url
+
+            # Cancel keeps editor content and dirty state intact.
             page.click("#discardCancel")
             assert page.url.endswith("/apps/txt/"), page.url
             assert editor.input_value() == "unsaved prompt 2 change"
             assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
 
-            # Successful Save clears only the saved revision and then continues navigation.
+            # Failed Save does not navigate, discard, or clear dirty state.
+            page.evaluate(
+                """() => {
+                    InkDOS2.FileDelivery.deliver = async () => {
+                        const e = new Error('synthetic write failure');
+                        e.code = 'write-failed';
+                        throw e;
+                    };
+                }"""
+            )
+            home.click()
+            page.click("#discardSave")
+            page.wait_for_function("() => document.getElementById('status').textContent.includes('synthetic write failure')")
+            assert page.url.endswith("/apps/txt/"), page.url
+            assert page.locator("#discardDialog").is_visible()
+            assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
+            page.click("#discardCancel")
+
+            # Save cancellation likewise keeps the editing context intact.
+            page.evaluate(
+                """() => {
+                    InkDOS2.FileDelivery.deliver = async () => {
+                        const e = new Error('synthetic cancellation');
+                        e.code = 'cancelled';
+                        throw e;
+                    };
+                }"""
+            )
+            home.click()
+            page.click("#discardSave")
+            page.wait_for_function("() => document.getElementById('status').textContent.includes('Save cancelled')")
+            assert page.url.endswith("/apps/txt/"), page.url
+            assert page.locator("#discardDialog").is_visible()
+            assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
+            page.click("#discardCancel")
+
+            # An async Save of an older revision must not clear a newer edit.
+            page.evaluate(
+                """() => {
+                    let resolveDelivery;
+                    InkDOS2.FileDelivery.deliver = () => new Promise(resolve => { resolveDelivery = resolve; });
+                    globalThis.__resolvePrompt2Save = () => resolveDelivery({
+                        fileName: 'Untitled.txt', method: 'file-system-access', deliveryConfirmed: true,
+                        bytes: 1, sha256: 'b'.repeat(64),
+                    });
+                    globalThis.__prompt2Save = InkDOS2.TxtAppDebug.commands.execute('file.save');
+                }"""
+            )
+            editor.fill("newer change while save is pending")
+            page.evaluate("() => globalThis.__resolvePrompt2Save()")
+            page.evaluate("() => globalThis.__prompt2Save")
+            assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
+
+            # Successful Save of the current revision clears dirty and only then
+            # permits the requested Home navigation.
             page.evaluate(
                 """() => {
                     InkDOS2.FileDelivery.deliver = async (blob, fileName) => ({
-                        fileName,
-                        method: 'file-system-access',
-                        deliveryConfirmed: true,
-                        bytes: blob.size,
-                        sha256: 'a'.repeat(64),
+                        fileName, method: 'file-system-access', deliveryConfirmed: true,
+                        bytes: blob.size, sha256: 'a'.repeat(64),
                     });
                 }"""
             )
@@ -91,8 +149,14 @@ def main() -> None:
             page.click("#startNew")
             page.locator("#editor").fill("discard me")
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.session.dirty === true")
-            page.click("#homeBtn")
+            page.locator('a[aria-label="Home"]').click()
             page.click("#discardContinue")
+            page.wait_for_url(BASE + "/index.html")
+
+            # Clean Home navigation is immediate and does not show an unnecessary prompt.
+            page.goto(BASE + "/apps/txt/", wait_until="load")
+            page.wait_for_function("() => document.body.dataset.runtimeReady === 'true' && !!globalThis.InkDOS2?.TxtAppDebug")
+            page.locator('a[aria-label="Home"]').click()
             page.wait_for_url(BASE + "/index.html")
 
             browser.close()
