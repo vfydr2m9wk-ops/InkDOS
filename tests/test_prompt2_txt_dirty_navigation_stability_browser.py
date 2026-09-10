@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8789
 BASE = f"http://127.0.0.1:{PORT}"
+TXT = BASE + "/apps/txt/?suite=1"
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -24,6 +25,10 @@ def wait_port(timeout: float = 10.0) -> None:
                 return
         time.sleep(0.1)
     raise RuntimeError("Local test server did not start")
+
+
+def assert_txt_context(page) -> None:
+    assert page.url.startswith(BASE + "/apps/txt/"), page.url
 
 
 def main() -> None:
@@ -45,20 +50,20 @@ def main() -> None:
             page = browser.new_page(viewport={"width": 1360, "height": 900})
             page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
             page.on("console", lambda msg: errors.append(f"console.error: {msg.text}") if msg.type == "error" else None)
-            page.goto(BASE + "/apps/txt/", wait_until="load")
+            page.goto(TXT, wait_until="load")
             page.wait_for_function("() => document.body.dataset.runtimeReady === 'true' && !!globalThis.InkDOS2?.TxtAppDebug")
 
             page.click("#startNew")
             editor = page.locator("#editor")
             home = page.locator('a[aria-label="Home"]')
-            assert home.count() == 1
+            assert home.count() == 1 and home.is_visible()
             editor.fill("unsaved prompt 2 change")
             page.wait_for_function("() => InkDOS2.TxtAppDebug.state.session.dirty === true")
 
             # INKBUG-001: dirty in-app Home must stop before navigation and expose
             # one InkDOS-controlled Save / Discard / Cancel decision.
             home.click()
-            assert page.url.endswith("/apps/txt/"), page.url
+            assert_txt_context(page)
             assert page.locator("#discardDialog").is_visible()
             assert page.locator("#discardDialog").count() == 1
             assert page.locator("#discardSave").is_visible()
@@ -68,11 +73,11 @@ def main() -> None:
             # Repeated activation cannot create a second dialog or navigate early.
             page.evaluate("() => document.querySelector('a[aria-label=\"Home\"]').click()")
             assert page.locator("#discardDialog").count() == 1
-            assert page.url.endswith("/apps/txt/"), page.url
+            assert_txt_context(page)
 
             # Cancel keeps editor content and dirty state intact.
             page.click("#discardCancel")
-            assert page.url.endswith("/apps/txt/"), page.url
+            assert_txt_context(page)
             assert editor.input_value() == "unsaved prompt 2 change"
             assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
 
@@ -89,7 +94,7 @@ def main() -> None:
             home.click()
             page.click("#discardSave")
             page.wait_for_function("() => document.getElementById('status').textContent.includes('synthetic write failure')")
-            assert page.url.endswith("/apps/txt/"), page.url
+            assert_txt_context(page)
             assert page.locator("#discardDialog").is_visible()
             assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
             page.click("#discardCancel")
@@ -107,7 +112,7 @@ def main() -> None:
             home.click()
             page.click("#discardSave")
             page.wait_for_function("() => document.getElementById('status').textContent.includes('Save cancelled')")
-            assert page.url.endswith("/apps/txt/"), page.url
+            assert_txt_context(page)
             assert page.locator("#discardDialog").is_visible()
             assert page.evaluate("() => InkDOS2.TxtAppDebug.state.session.dirty") is True
             page.click("#discardCancel")
@@ -144,7 +149,7 @@ def main() -> None:
             page.wait_for_url(BASE + "/index.html")
 
             # Re-enter, dirty again, and verify explicit Discard proceeds without saving.
-            page.goto(BASE + "/apps/txt/", wait_until="load")
+            page.goto(TXT, wait_until="load")
             page.wait_for_function("() => document.body.dataset.runtimeReady === 'true' && !!globalThis.InkDOS2?.TxtAppDebug")
             page.click("#startNew")
             page.locator("#editor").fill("discard me")
@@ -154,7 +159,7 @@ def main() -> None:
             page.wait_for_url(BASE + "/index.html")
 
             # Clean Home navigation is immediate and does not show an unnecessary prompt.
-            page.goto(BASE + "/apps/txt/", wait_until="load")
+            page.goto(TXT, wait_until="load")
             page.wait_for_function("() => document.body.dataset.runtimeReady === 'true' && !!globalThis.InkDOS2?.TxtAppDebug")
             page.locator('a[aria-label="Home"]').click()
             page.wait_for_url(BASE + "/index.html")
