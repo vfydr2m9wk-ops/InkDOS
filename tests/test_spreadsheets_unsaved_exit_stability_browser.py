@@ -91,6 +91,12 @@ def main():
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
 
+            # The expected synthetic write failure raises the app error overlay. Dismiss
+            # it before the next independent scenario so it cannot intercept later UI.
+            page.wait_for_selector('#errorOverlay:not([hidden])')
+            page.get_by_role('button',name='Close').click()
+            page.wait_for_selector('#errorOverlay',state='hidden')
+
             # A revision that becomes stale while Save is in flight must never navigate.
             page.evaluate("""()=>{
               const api=globalThis.__inkdosSpreadsheetsS1;
