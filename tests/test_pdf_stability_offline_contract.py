@@ -24,11 +24,13 @@ DYNAMIC_PDF_ASSETS = (
     "features/page-tools/actions/merge-pdfs.js",
 )
 
+
 def main() -> None:
     app = (PDF / "app.js").read_text(encoding="utf-8")
     service_worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
     root_index = (ROOT / "index.html").read_text(encoding="utf-8")
-    workflow = (ROOT / ".github" / "workflows" / "pdf-stability-regression.yml").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github" / "workflows" / "stability-freeze-regression.yml").read_text(encoding="utf-8")
+    release_validation = (ROOT / "scripts" / "run_release_validation.py").read_text(encoding="utf-8")
 
     for relative in DYNAMIC_PDF_ASSETS:
         assert relative in app, f"PDF bootstrap no longer references expected dynamic asset: {relative}"
@@ -38,11 +40,16 @@ def main() -> None:
     assert '"./apps/pdf/"' in service_worker, "Canonical PDF directory navigation is not handled offline"
     assert '"./apps/pdf/index.html"' in service_worker
     assert "navigator.serviceWorker.register('./service-worker.js'" in root_index
+
+    # The permanent aggregate validator owns PDF regression coverage after
+    # legacy per-workspace workflow consolidation.
     assert "service-worker.js" in workflow
     assert "test_pdf_stability_offline.py" in workflow
-    assert "test_pdf_p2_page_tools.cjs" in workflow
+    assert "scripts/run_release_validation.py" in workflow
+    assert "test_pdf_p2_page_tools.cjs" in release_validation
 
     print("PDF offline/static shell contract passed.")
+
 
 if __name__ == "__main__":
     main()
