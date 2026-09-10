@@ -69,7 +69,8 @@ def main() -> None:
         if ref.startswith(('http://', 'https://', '//')):
             continue
         require(service_worker, f'"./apps/epub/{ref}"', 'EPUB offline shell')
-    require(service_worker, 'inkdos-v2.0.12-stability-epub-seq89', 'EPUB offline cache rotation')
+    if not re.search(r"const CACHE_NAME='inkdos-v2\.0\.12-stability-[^']+'", service_worker):
+        raise AssertionError('EPUB offline cache rotation: missing current stability cache name')
 
     for element_id in (
         'toolbar', 'fileInput', 'readerStage', 'readerSurface', 'emptyState',

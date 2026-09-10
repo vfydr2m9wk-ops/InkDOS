@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "program": "stability-functional-isolation",
-  "active": false,
+  "active": true,
   "workingBranch": "audit/stability-functional-isolation",
   "auditOrder": [
     "pdf",
@@ -21,14 +21,19 @@
     "epub",
     "spreadsheets"
   ],
-  "currentWorkspace": "freeze",
+  "currentWorkspace": "cross-suite",
   "freezeCandidate": {
     "date": "2026-09-08",
     "runtimeAnchor": "9da9b798c624e3db6bcf933d85ed19892997bf5f",
     "crossSuiteRun": 34270011352,
     "freezeGateCommit": "f17e102e3e9b612e86da020ba3ab880b16f5741c",
     "freezeGateRun": 34270610710,
-    "status": "frozen"
+    "status": "superseded-by-user-device-remediation"
+  },
+  "remediation": {
+    "reason": "Real-device audit found PDF kinetic-scroll jumps, Presentation fidelity/read-only conversion gaps, TXT large-file stalls, EPUB selection annotation UX gaps, and Spreadsheet color loss.",
+    "startedAt": "2026-09-10",
+    "requiresCrossSuiteRevalidation": true
   },
   "progressiveMainPromotion": true,
   "proportionalModularization": true

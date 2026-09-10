@@ -21,6 +21,13 @@ def stability_changes():
     if state.get('program')!='stability-functional-isolation': raise SystemExit('Invalid active stability program')
     order=[item for item in state.get('auditOrder',[]) if item in ACTIVE]
     current=state.get('currentWorkspace'); completed=state.get('completedWorkspaces',[])
+    if current=='cross-suite':
+        candidate=state.get('freezeCandidate') or {}
+        remediation=state.get('remediation') or {}
+        if completed!=order: raise SystemExit('STABILITY_STATE.json is not ready for cross-suite validation')
+        if candidate.get('status')!='superseded-by-user-device-remediation' or remediation.get('requiresCrossSuiteRevalidation') is not True:
+            raise SystemExit('Invalid cross-suite remediation lifecycle in STABILITY_STATE.json')
+        return set(order)
     if current not in ACTIVE or current not in order: raise SystemExit('Invalid currentWorkspace in STABILITY_STATE.json')
     if completed!=order[:order.index(current)]: raise SystemExit('STABILITY_STATE.json is not sequential')
     return set(completed)|{current}
