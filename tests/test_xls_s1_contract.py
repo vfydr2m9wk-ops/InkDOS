@@ -6,7 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 state = json.loads((ROOT / 'FUNCTIONAL_STATE.json').read_text(encoding='utf-8'))
-assert state['currentPhase'] == {'id': 'XLS-S1', 'workspace': 'spreadsheets', 'status': 'active'}
+current = state['currentPhase']
+if current == {'id': 'XLS-S1', 'workspace': 'spreadsheets', 'status': 'active'}:
+    assert 'XLS-S1' not in state['completedPhases']
+elif current == {'id': 'XLS-S2', 'workspace': 'spreadsheets', 'status': 'active'}:
+    assert 'XLS-S1' in state['completedPhases']
+else:
+    raise AssertionError(f'unexpected spreadsheet roadmap state: {current!r}')
 assert 'PPT-P2' in state['completedPhases']
 
 editor = (ROOT / 'apps/spreadsheets/engine/workbook-editor.js').read_text(encoding='utf-8')
