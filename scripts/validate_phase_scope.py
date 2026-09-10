@@ -52,9 +52,9 @@ def frozen_anchor(state: dict) -> str | None:
     return anchor if isinstance(anchor, str) and anchor else None
 
 
-def base_state(base_ref: str) -> dict:
+def base_json_state(base_ref: str, filename: str) -> dict:
     try:
-        raw = git("show", f"{base_ref}:STABILITY_STATE.json")
+        raw = git("show", f"{base_ref}:{filename}")
     except subprocess.CalledProcessError:
         return {}
     try:
@@ -62,6 +62,10 @@ def base_state(base_ref: str) -> dict:
     except json.JSONDecodeError:
         return {}
     return value if isinstance(value, dict) else {}
+
+
+def base_state(base_ref: str) -> dict:
+    return base_json_state(base_ref, "STABILITY_STATE.json")
 
 
 def stability_scope(path: Path, base_ref: str) -> tuple[str, set[str]] | None:
@@ -115,18 +119,59 @@ def stability_scope(path: Path, base_ref: str) -> tuple[str, set[str]] | None:
     return f"stability:{current}", set(completed) | {current}
 
 
-def functional_scope(path: Path) -> tuple[str, set[str]]:
-    if not path.is_file():
-        raise SystemExit(f"Missing functional roadmap state: {path.name}")
-    state = load_json(path)
+def _functional_phase_scope(state: dict) -> tuple[str, str, set[str]]:
     if state.get("transitionGateRequired") is not True:
         raise SystemExit("FUNCTIONAL_STATE.json must require the transition architecture gate")
     current = state.get("currentPhase") or {}
     workspace = current.get("workspace")
     phase = current.get("id")
-    if workspace not in WORKSPACES or not phase:
+    status = current.get("status")
+    if not isinstance(phase, str) or not phase or status != "active":
         raise SystemExit("Invalid currentPhase/workspace in FUNCTIONAL_STATE.json")
-    return phase, {workspace}
+    if workspace in WORKSPACES:
+        return phase, workspace, {workspace}
+    if phase == "Audit" and workspace == "cross-suite":
+        return phase, workspace, set()
+    if phase == "Freeze" and workspace == "suite":
+        return phase, workspace, set()
+    raise SystemExit("Invalid currentPhase/workspace in FUNCTIONAL_STATE.json")
+
+
+def functional_scope(path: Path, base_ref: str) -> tuple[str, set[str]]:
+    if not path.is_file():
+        raise SystemExit(f"Missing functional roadmap state: {path.name}")
+    state = load_json(path)
+    head_phase, head_workspace, head_allowed = _functional_phase_scope(state)
+
+    base = base_json_state(base_ref, path.name)
+    if not base:
+        return head_phase, head_allowed
+    base_phase, base_workspace, base_allowed = _functional_phase_scope(base)
+
+    # A promotion PR may already record the next phase as active in the branch.
+    # Its functional delta still belongs to the phase that is active in main,
+    # so validate that outgoing phase rather than accidentally widening scope to
+    # the post-transition Audit/Freeze pseudo-workspaces.
+    if (head_phase, head_workspace) != (base_phase, base_workspace):
+        base_completed = base.get("completedPhases")
+        head_completed = state.get("completedPhases")
+        if not isinstance(base_completed, list) or not isinstance(head_completed, list):
+            raise SystemExit("Invalid completedPhases in FUNCTIONAL_STATE.json")
+        if len(base_completed) != len(set(base_completed)) or len(head_completed) != len(set(head_completed)):
+            raise SystemExit("Duplicate completed phase in FUNCTIONAL_STATE.json")
+        if head_completed != [*base_completed, base_phase]:
+            raise SystemExit(
+                "FUNCTIONAL_STATE.json transition must complete exactly the phase active in base; "
+                f"expected completedPhases={[*base_completed, base_phase]}, got {head_completed}"
+            )
+        base_next = base.get("nextPhase") or {}
+        if (base_next.get("id"), base_next.get("workspace")) != (head_phase, head_workspace):
+            raise SystemExit(
+                "FUNCTIONAL_STATE.json transition does not match the next phase declared in base"
+            )
+        return base_phase, base_allowed
+
+    return head_phase, head_allowed
 
 
 def security_exact_exceptions(path: Path) -> set[str]:
@@ -188,7 +233,7 @@ def main() -> None:
 
     scope = stability_scope(ROOT / args.stability_state, args.base)
     mode = "stability" if scope else "functional"
-    phase, allowed_apps = scope or functional_scope(ROOT / args.state)
+    phase, allowed_apps = scope or functional_scope(ROOT / args.state, args.base)
     security_allowed = security_exact_exceptions(ROOT / args.security_state)
 
     changed = [p for p in git("diff", "--name-only", "--diff-filter=ACMRD", f"{args.base}...HEAD").splitlines() if p]
@@ -222,7 +267,7 @@ def main() -> None:
             print(f" - {item}")
         raise SystemExit(1)
 
-    apps = ", ".join(sorted(allowed_apps))
+    apps = ", ".join(sorted(allowed_apps)) or "none"
     security_note = f"; explicit security exceptions: {len(security_allowed)}" if security_allowed else ""
     print(
         f"Phase-scope audit passed for {phase} ({mode}); {len(changed)} changed paths "

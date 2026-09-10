@@ -30,12 +30,32 @@ def state(*, completed=None, status="frozen") -> dict:
     }
 
 
+def functional_state(
+    *,
+    completed: list[str],
+    phase: str,
+    workspace: str,
+    next_phase: str,
+    next_workspace: str,
+) -> dict:
+    return {
+        "schemaVersion": 1,
+        "roadmap": "home-functional",
+        "architectureContract": "physical-workspace-isolation",
+        "transitionGateRequired": True,
+        "completedPhases": completed,
+        "currentPhase": {"id": phase, "workspace": workspace, "status": "active"},
+        "nextPhase": {"id": next_phase, "workspace": next_workspace},
+    }
+
+
 def write_state(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value), encoding="utf-8")
 
 
 def main() -> None:
     original_base_state = scope.base_state
+    original_base_json_state = scope.base_json_state
     try:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "STABILITY_STATE.json"
@@ -73,10 +93,53 @@ def main() -> None:
                 pass
             else:
                 raise AssertionError("Non-frozen inactive stability state was accepted")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "FUNCTIONAL_STATE.json"
+            base = functional_state(
+                completed=["XLS-S1"],
+                phase="XLS-S2",
+                workspace="spreadsheets",
+                next_phase="Audit",
+                next_workspace="cross-suite",
+            )
+            promoted = functional_state(
+                completed=["XLS-S1", "XLS-S2"],
+                phase="Audit",
+                workspace="cross-suite",
+                next_phase="Freeze",
+                next_workspace="suite",
+            )
+            write_state(path, promoted)
+            scope.base_json_state = lambda _base, filename: base if filename == "FUNCTIONAL_STATE.json" else {}
+
+            # The PR that promotes XLS-S2 may already mark Audit active, but its app
+            # delta must still be checked against the outgoing spreadsheets scope.
+            transition = scope.functional_scope(path, "origin/main")
+            assert transition == ("XLS-S2", {"spreadsheets"}), transition
+
+            # Once the promoted state is also in main, Audit is metadata/test-only by
+            # default and must not silently open all six app trees.
+            scope.base_json_state = lambda _base, filename: promoted if filename == "FUNCTIONAL_STATE.json" else {}
+            audit = scope.functional_scope(path, "origin/main")
+            assert audit == ("Audit", set()), audit
+
+            # A transition cannot skip recording completion of the outgoing phase.
+            broken = dict(promoted)
+            broken["completedPhases"] = ["XLS-S1"]
+            write_state(path, broken)
+            scope.base_json_state = lambda _base, filename: base if filename == "FUNCTIONAL_STATE.json" else {}
+            try:
+                scope.functional_scope(path, "origin/main")
+            except SystemExit:
+                pass
+            else:
+                raise AssertionError("Functional transition without outgoing completion was accepted")
     finally:
         scope.base_state = original_base_state
+        scope.base_json_state = original_base_json_state
 
-    print("Phase-scope freeze lifecycle contract: OK")
+    print("Phase-scope freeze and functional transition lifecycle contract: OK")
 
 
 if __name__ == "__main__":
