@@ -6,6 +6,8 @@ COMMANDS = (ROOT / 'apps/presentations/ui/command-controller.js').read_text(enco
 BINDINGS = (ROOT / 'apps/presentations/ui/editing-controller.js').read_text(encoding='utf-8')
 PANEL = (ROOT / 'apps/presentations/ui/slide-panel-controller.js').read_text(encoding='utf-8')
 APP = (ROOT / 'apps/presentations/app.js').read_text(encoding='utf-8')
+HTML = (ROOT / 'apps/presentations/index.html').read_text(encoding='utf-8')
+P1_TOOLS = (ROOT / 'apps/presentations/ui/ppt-p1-tools.js').read_text(encoding='utf-8')
 
 for token in [
     "const registry=new Map()",
@@ -77,4 +79,32 @@ assert "const pw=160" not in PANEL, 'Thumbnail object geometry still depends on 
 assert "o.x/slide.widthEmu*100" in PANEL, 'Thumbnail horizontal geometry is not projected relative to the slide width'
 assert "o.y/slide.heightEmu*100" in PANEL, 'Thumbnail vertical geometry is not projected relative to the slide height'
 
-print('Presentations command/control and thumbnail fidelity contract passed.')
+# Prompt 2 Stage B approved toolbar redesign: keep stable command IDs while
+# exposing user-facing semantic groups and semantic/current-color affordances.
+for group_id, label in (
+    ('pptToolbarSlides', 'Slides'),
+    ('pptToolbarInsert', 'Insert'),
+    ('pptToolbarText', 'Text formatting'),
+    ('pptToolbarObjectStyle', 'Object style'),
+):
+    assert f'id="{group_id}"' in HTML, f'Presentations semantic toolbar host missing: {group_id}'
+    assert f'aria-label="{label}"' in HTML, f'Presentations semantic toolbar label missing: {label}'
+
+for control_id in (
+    'addSlideBtn', 'duplicateSlideBtn', 'deleteSlideBtn', 'insertTextBtn',
+    'fontSize', 'boldBtn', 'italicBtn', 'alignSelect', 'zoomMenuBtn', 'presentBtn',
+):
+    assert HTML.count(f'id="{control_id}"') == 1, f'Presentations toolbar control must remain unique: {control_id}'
+
+for control_id in (
+    'pptP1ImageBtn', 'pptP1Shape', 'pptP1TextColor', 'pptP1Fill',
+    'pptP1Border', 'pptP1Bullets', 'pptP1Layout',
+):
+    assert control_id in P1_TOOLS, f'Existing P1 control id was lost during toolbar redesign contract: {control_id}'
+
+assert 'ppt-p1-color-icon' in P1_TOOLS, 'Presentations color controls lack semantic icon structure'
+assert 'ppt-p1-color-swatch' in P1_TOOLS, 'Presentations color controls lack current-color indicator'
+assert '<svg' in P1_TOOLS, 'Presentations color controls do not use semantic SVG iconography'
+assert "'●'" not in P1_TOOLS and "'○'" not in P1_TOOLS, 'Presentations still exposes raw dot glyph color affordances'
+
+print('Presentations command/control, thumbnail fidelity, and toolbar semantic contract passed.')
