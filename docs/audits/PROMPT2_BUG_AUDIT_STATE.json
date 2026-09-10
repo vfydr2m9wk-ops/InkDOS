@@ -1,0 +1,24 @@
+{
+  "program": "prompt2-virtual-user-exhaustive-bug-audit",
+  "reference_baseline_sha": "1986ae0fd81c94fa8202c10d9dea6fcd11d807af",
+  "audited_main_sha": "1986ae0fd81c94fa8202c10d9dea6fcd11d807af",
+  "active_workspace": "presentations",
+  "next_audit_action": "Complete CI verification for INKBUG-0001, then continue Presentations font/text scaling and save/reopen fidelity audit.",
+  "bugs": {
+    "INKBUG-0001": {
+      "title": "PPTX normal AutoFit line-spacing reduction lost on text rewrite",
+      "status": "FIXED_PENDING_VERIFICATION",
+      "severity": "medium",
+      "environment": "InkDOS 2.0.12 source/package-preservation path; synthetic OOXML normAutofit fixture semantics",
+      "reproduction": "Open an imported PPTX text box whose bodyPr contains normAutofit with lnSpcReduction=20000, edit its text, then Save Copy. The preservation writer removed the original autofit node and recreated it with lnSpcReduction=0.",
+      "expected": "Text-only rewrite preserves the source lnSpcReduction value unless that formatting is explicitly changed.",
+      "actual_baseline": "setBodyPr() hard-coded lnSpcReduction to 0.",
+      "user_impact": "Vertical line spacing can change after save/reopen, altering wrapping or clipping.",
+      "data_integrity_impact": "PPTX remains structurally valid but source formatting metadata is mutated.",
+      "root_cause": "apps/presentations/io/pptx-preservation-writer.js:setBodyPr discarded the pre-existing normAutofit lnSpcReduction before rebuilding bodyPr.",
+      "red_test_commit": "0b86e21bd615829209e6c7edeb94fd56a2f6b45d",
+      "fix_commit": "36682c509f8dba6c14a8340c6614bd25d15dd72d",
+      "verification": "pending full InkDOS validation"
+    }
+  }
+}
