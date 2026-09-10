@@ -68,4 +68,13 @@ assert "editor.install(commands)" in APP, 'Editing bindings are not wired to the
 assert "executeCommand:commands.execute" in APP, 'Presentations debug API does not expose independent command execution'
 assert "hasCommand:commands.has" in APP and "listCommands:commands.list" in APP, 'Presentations command registry is not introspectable for regression tests'
 
-print('Presentations command/control isolation contract passed.')
+# Prompt 2 Stage B thumbnail fidelity: the paper already carries each slide's
+# true aspect ratio, so object projection must also be relative to that paper.
+# A fixed 160 px geometry basis diverges as CSS resizes landscape/portrait
+# thumbnail papers and can crop or misplace objects on real device layouts.
+assert "paper.style.aspectRatio=`${slide.widthEmu}/${slide.heightEmu}`" in PANEL, 'Thumbnail paper no longer follows the source slide aspect ratio'
+assert "const pw=160" not in PANEL, 'Thumbnail object geometry still depends on a hard-coded 160px paper width'
+assert "o.x/slide.widthEmu*100" in PANEL, 'Thumbnail horizontal geometry is not projected relative to the slide width'
+assert "o.y/slide.heightEmu*100" in PANEL, 'Thumbnail vertical geometry is not projected relative to the slide height'
+
+print('Presentations command/control and thumbnail fidelity contract passed.')
