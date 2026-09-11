@@ -2,7 +2,7 @@
 const NS=g.InkDOS2Epub=g.InkDOS2Epub||{};
 function create({elements:E,reader,navigation}={}){
  if(!E||!reader||!navigation)throw new Error('ReaderBindings requires elements, reader and navigation');
- let ro=null,touchStart=null,selectionTools=null;
+ let ro=null,touchStart=null,selectionTools=null,authorizedUnload=false;
  function closeSheets(except){for(const p of [E.appearance,E.highlight,E.toc])if(p!==except)p.hidden=true}
  function toggleSheet(panel){const opening=panel.hidden;closeSheets(opening?panel:null);panel.hidden=!opening}
  function state(){return reader.state()}
@@ -10,6 +10,9 @@ function create({elements:E,reader,navigation}={}){
  function syncSelectionTools(active){const bar=ensureSelectionTools();if(!active){bar.hidden=true;return}const sel=g.getSelection?.();if(!sel||!sel.rangeCount){bar.hidden=true;return}const rect=sel.getRangeAt(0).getBoundingClientRect();if(!rect||(!rect.width&&!rect.height)){bar.hidden=true;return}bar.hidden=false;bar.style.left=Math.max(76,Math.min(g.innerWidth-76,rect.left+rect.width/2))+'px';bar.style.top=Math.max(8,rect.top-10)+'px'}
  function install(){
   ensureSelectionTools();
+  const home=document.querySelector('a[aria-label="Home"]');
+  home?.addEventListener('click',async event=>{if(!reader.hasUnsavedEdits())return;event.preventDefault();const href=home.href;if(!(await reader.requestLeave()))return;authorizedUnload=true;g.location.assign(href)});
+  g.addEventListener('beforeunload',event=>{if(authorizedUnload){authorizedUnload=false;return}if(!reader.hasUnsavedEdits())return;event.preventDefault();event.returnValue=''});
   E.open.addEventListener('click',()=>E.file.click());
   E.openStart.addEventListener('click',()=>E.file.click());
   E.file.addEventListener('change',()=>{const file=E.file.files&&E.file.files[0];if(file)reader.openFile(file)});

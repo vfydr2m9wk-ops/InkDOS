@@ -3,9 +3,18 @@ const NS=global.InkDOS2Documents;if(!NS)throw new Error('Documents runtime names
 const $=id=>document.getElementById(id);
 function loadScript(src,test){if(test?.())return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('DOCUMENTS_LOCAL_ASSET_LOAD_FAILED: '+src));document.head.appendChild(s)})}
 function loadCss(href,key){if(document.querySelector('link[data-doc-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset['doc'+key.toUpperCase()]='1';document.head.appendChild(l)}
+function installDocxBooleanCompatibility(){
+ if(NS.DocxBooleanCompatibility?.installed||!NS.DocxParser?.parse||!NS.PackageReader?.open)return;
+ const original=NS.DocxParser.parse.bind(NS.DocxParser),falseValues=new Set(['0','false','off','no']);
+ function directChild(el,name){return Array.from(el?.children||[]).find(x=>x.localName===name)||null}
+ function attrValue(el){return String(el?.getAttribute('w:val')||el?.getAttribute('val')||el?.getAttributeNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main','val')||'').trim().toLowerCase()}
+ function sourceParagraph(children,block){const source=children[block.sourceIndex];if(!source)return null;if(source.localName==='p')return source;if(source.localName==='sdt'){const content=Array.from(source.getElementsByTagNameNS('*','sdtContent'))[0]||source,items=Array.from(content.children||[]).filter(x=>x.localName==='p'||x.localName==='tbl');const item=items[block.sourceSubIndex||0];return item?.localName==='p'?item:null}return null}
+ NS.DocxParser.parse=async function(buffer){const result=await original(buffer);try{const pkg=await NS.PackageReader.open(buffer),entry=(pkg.ordered||[]).find(x=>x.path==='word/document.xml'||x.path==='documents/document.xml');if(!entry)return result;const bytes=await pkg.read(entry.path),text=new TextDecoder('utf-8',{fatal:true}).decode(bytes),doc=new DOMParser().parseFromString(text,'application/xml');if(doc.getElementsByTagName('parsererror').length)return result;const body=Array.from(doc.getElementsByTagNameNS('*','body'))[0],children=Array.from(body?.children||[]);for(const block of result.blocks||[]){if(!Number.isFinite(block.sourceIndex))continue;const p=sourceParagraph(children,block),pPr=directChild(p,'pPr'),pageBreak=directChild(pPr,'pageBreakBefore');if(pageBreak&&falseValues.has(attrValue(pageBreak)))block.hardPageBreakBefore=false}}catch(error){console.warn('DOCX boolean compatibility normalization skipped.',error)}return result};
+ NS.DocxBooleanCompatibility=Object.freeze({installed:true});
+}
 async function loadD1(){loadCss('ui/d1-tools.css','d1');await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
 async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('io/rtf-importer.js',()=>!!NS.RtfImporter);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
-async function boot(){await loadScript('runtime/commands/document-commands.js',()=>!!NS.DocumentCommands);await loadD1();await loadD2();
+async function boot(){await loadScript('runtime/commands/document-commands.js',()=>!!NS.DocumentCommands);installDocxBooleanCompatibility();await loadD1();await loadD2();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');

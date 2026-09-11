@@ -14,6 +14,47 @@ def test_pdf_virtualization_reserves_geometry_and_preserves_anchor():
     assert "restoreAnchor" in source
     assert "userScrollEpoch" in source
     assert "policy.cssHeight" in source
+    assert "userScrollingUntil" in source
+    assert "deferTrim" in source
+    assert "if(this.isUserScrolling())this.deferTrim()" in source
+    assert "touchmove" in source
+
+
+def test_docx_explicit_false_page_break_is_not_promoted_to_hard_break():
+    app = read("apps/documents/app.js")
+    assert "installDocxBooleanCompatibility" in app
+    assert "falseValues=new Set(['0','false','off','no'])" in app
+    assert "pageBreakBefore" in app
+    assert "block.hardPageBreakBefore=false" in app
+    assert "installDocxBooleanCompatibility();await loadD1()" in app
+
+
+def test_txt_save_cleans_exact_revision_and_dirty_exit_is_three_way():
+    session = read("apps/txt/runtime/contracts/document-session.js")
+    io = read("apps/txt/io/txt-file-controller.js")
+    controls = read("apps/txt/ui/txt-controls.js")
+    assert "if(rev===this.revision)this.dirty=false" in session
+    assert "saveForReplacement" in io and "authorizeReplacement" in io
+    assert "choice==='save'" in io and "choice==='discard'" in io and "choice==='clean'" in io
+    assert "snap.revision===state.session.revision&&!state.session.dirty" in io
+    assert "discardSave" in controls and "files.resolveDiscard('save')" in controls
+    assert "files.resolveDiscard('discard')" in controls and "files.resolveDiscard('cancel')" in controls
+    assert "files.authorizeReplacement('Save changes before returning to InkDOS Home?')" in controls
+    assert "beforeunload" in controls
+
+
+def test_epub_dirty_annotations_gate_open_home_and_leave_until_save_finishes():
+    controls = read("apps/epub/ui/reader-controls.js")
+    bindings = read("apps/epub/ui/reader-bindings.js")
+    assert "hasUnsavedEdits" in controls
+    assert "saveForLeave" in controls and "requestLeave" in controls
+    assert "choice==='save'" in controls and "choice==='discard'" in controls and "choice==='clean'" in controls
+    assert "savedAnnotationRevision" in controls
+    assert "revision!==state.annotationRevision" in controls
+    assert "state.book&&hasUnsavedEdits()&&!(await requestLeave())" in controls
+    assert "reader.hasUnsavedEdits()" in bindings
+    assert "await reader.requestLeave()" in bindings
+    assert "beforeunload" in bindings
 
 
 def test_epub_selection_exposes_highlight_and_note_actions():
