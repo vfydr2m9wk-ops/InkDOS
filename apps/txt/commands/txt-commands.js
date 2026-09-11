@@ -12,6 +12,7 @@ function create({state,editor,files,requestOpen}={}){
   register('file.open',file=>files.openFile(file));
   register('file.save',()=>files.save(),()=>state.loaded);
   register('file.share',()=>files.shareCurrent(),()=>state.loaded);
+  register('file.leave',()=>files.authorizeLeave());
   register('history.undo',()=>editor.doUndo(),()=>state.history.canUndo);
   register('history.redo',()=>editor.doRedo(),()=>state.history.canRedo);
   register('view.wrap.toggle',()=>editor.setWrap(!state.wrap));
