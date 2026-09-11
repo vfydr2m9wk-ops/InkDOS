@@ -85,14 +85,19 @@ def main() -> None:
                 }""")
                 state = page.evaluate("""() => {
                     const s=globalThis.__InkEpubR4.state();
+                    const chapter=s.book?.chapters?.[0];
                     return {
                         title:s.book && s.book.title,
                         chapters:s.book && s.book.chapters.length,
+                        spineMediaType:s.book?.spine?.[0]?.mediaType || null,
+                        blockSources:(chapter?.blocks || []).map(block=>block.sourceId),
                         text:document.querySelector('#readerSurface')?.innerText || '',
                     };
                 }""")
                 assert state['title'] == 'SVG Spine Book', (browser_name, state)
                 assert state['chapters'] == 1, (browser_name, state)
+                assert state['spineMediaType'] == 'image/svg+xml', (browser_name, state)
+                assert state['blockSources'] == ['title', 'body'], (browser_name, state)
                 assert 'SVG Chapter' in state['text'], (browser_name, state)
                 assert 'Readable fixed-layout text.' in state['text'], (browser_name, state)
                 browser.close()
