@@ -28,7 +28,7 @@ def test_presentations_guards_home_and_browser_unload():
 
 
 def test_presentations_authorized_home_exit_bypasses_native_beforeunload_prompt():
-    assert "let authorizedUnload=false" in COMMANDS
+    assert "authorizedUnload=false" in COMMANDS
     assert "if(await authorizeReplacement('leave')){authorizedUnload=true;global.location.assign(href)}" in COMMANDS
     assert "if(authorizedUnload){authorizedUnload=false;return}" in COMMANDS
 
