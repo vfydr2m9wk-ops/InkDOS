@@ -20,7 +20,11 @@ function normalizePath(raw){
   if(!out.length)fail('unsafe-path','ZIP entry path resolves to empty');
   return out.join('/');
 }
-function decodeName(bytes){try{return new TextDecoder('utf-8',{fatal:true}).decode(bytes)}catch(_){fail('invalid-name','ZIP entry name is not valid UTF-8')}}
+const CP437_HIGH=Array.from('ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ');
+function decodeName(bytes,flags=0){
+  if(flags&0x0800){try{return new TextDecoder('utf-8',{fatal:true}).decode(bytes)}catch(_){fail('invalid-name','ZIP entry name is not valid UTF-8')}}
+  let out='';for(const b of bytes){if(b<0x80)out+=String.fromCharCode(b);else out+=CP437_HIGH[b-0x80]||'�'}return out;
+}
 function crc32(bytes){let c=0xffffffff;for(let i=0;i<bytes.length;i++){c^=bytes[i];for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return (c^0xffffffff)>>>0}
 let inflaterLoad=null;
 async function ensureBundledInflater(signal){abort(signal);if(global.pako&&typeof global.pako.inflateRaw==='function')return true;if(typeof document==='undefined')return false;if(!inflaterLoad){inflaterLoad=new Promise(resolve=>{const script=document.createElement('script');script.src='vendor/pako_inflate.min.js';script.async=false;script.addEventListener('load',()=>resolve(!!(global.pako&&typeof global.pako.inflateRaw==='function')),{once:true});script.addEventListener('error',()=>resolve(false),{once:true});(document.head||document.documentElement).appendChild(script)})}const ready=await inflaterLoad;abort(signal);return ready}
@@ -61,15 +65,15 @@ async function open(buffer,options={}){
     const need={size:rawSize===0xffffffff,compSize:rawCompSize===0xffffffff,localOffset:rawLocalOffset===0xffffffff,diskStart:rawDiskStart===0xffff},z=zip64EntryValues(bytes,view,p+46+nameLen,extraLen,need);
     const compSize=need.compSize?z.compSize:rawCompSize,size=need.size?z.size:rawSize,localOffset=need.localOffset?z.localOffset:rawLocalOffset,diskStart=need.diskStart?z.diskStart:rawDiskStart;
     if(diskStart)fail('multidisk','Multi-disk entry is not supported');
-    const rawName=decodeName(bytes.slice(p+46,p+46+nameLen)),path=normalizePath(rawName),isDirectory=rawName.endsWith('/');
+    const rawName=decodeName(bytes.slice(p+46,p+46+nameLen),flags),path=normalizePath(rawName),isDirectory=rawName.endsWith('/');
     if(entries.has(path))fail('duplicate-path','Duplicate normalized ZIP path: '+path);
     if(size>b.maxEntryUncompressedBytes)fail('entry-budget','ZIP entry exceeds single-entry budget: '+path);
     totalUncompressed+=size;if(totalUncompressed>b.maxTotalUncompressedBytes)fail('expanded-budget','EPUB declared expanded bytes exceed provisional budget');
     if(size>1024&&compSize>0&&size/compSize>b.maxCompressionRatio)fail('compression-ratio','Suspicious compression ratio in '+path);
     if(localOffset+30>centralOffset||u32(view,localOffset)!==0x04034b50)fail('invalid-zip','ZIP local header is invalid for '+path);
-    const localNameLen=u16(view,localOffset+26),localExtraLen=u16(view,localOffset+28),dataStart=localOffset+30+localNameLen+localExtraLen;
+    const localFlags=u16(view,localOffset+6),localNameLen=u16(view,localOffset+26),localExtraLen=u16(view,localOffset+28),dataStart=localOffset+30+localNameLen+localExtraLen;
     if(dataStart+compSize>centralOffset)fail('invalid-zip','ZIP entry data overlaps central directory: '+path);
-    const localName=normalizePath(decodeName(bytes.slice(localOffset+30,localOffset+30+localNameLen)));if(localName!==path)fail('invalid-zip','ZIP local/central path mismatch: '+path);
+    const localName=normalizePath(decodeName(bytes.slice(localOffset+30,localOffset+30+localNameLen),localFlags));if(localName!==path)fail('invalid-zip','ZIP local/central path mismatch: '+path);
     const rec=Object.freeze({path,rawName,method,flags,crc32:crc>>>0,compressedSize:compSize,uncompressedSize:size,localOffset,dataStart,isDirectory});entries.set(path,rec);ordered.push(rec);p+=46+nameLen+extraLen+commentLen;
   }
   if(p!==centralOffset+centralSize)fail('invalid-zip','ZIP central directory size does not match parsed entries');
