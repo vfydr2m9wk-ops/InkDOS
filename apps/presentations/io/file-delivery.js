@@ -13,10 +13,10 @@ async function share(blob,name){const file=toFile(blob,name);if(!canShare(file))
 async function download(blob,name){if(!(global.document&&global.URL&&URL.createObjectURL))fail('download-unavailable','Download is unavailable.');const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=safeName(name);a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000)}return {method:'download',deliveryConfirmed:false,fileName:safeName(name)}}
 async function deliverOnce(blob,name){const file=toFile(blob,name),local=!!(global.location&&global.location.protocol==='file:');
  if(local){if(canShare(file))return viaShare(blob,name,file);fail('local-delivery-unavailable','This local HTML viewer cannot deliver PPTX files. Open the app in a host with native file sharing enabled.')}
- // Apple touch hosts use one terminal native delivery route. Never follow an invoked Web Share operation with a second download.
+ // Any invoked delivery route is terminal for this Save action. A rejected Web Share promise does not prove that the host produced no file.
  if(isAppleTouchHost()&&canShare(file))return viaShare(blob,name,file)
- if(typeof global.showSaveFilePicker==='function'){try{return await picker(blob,name)}catch(e){if(e.code==='cancelled'||e.code==='write-failed')throw e;if(canShare(file))try{return await viaShare(blob,name,file)}catch(_){}return download(blob,name)}}
- if(canShare(file)){try{return await viaShare(blob,name,file)}catch(e){if(e.code==='cancelled')throw e;return download(blob,name)}}
+ if(typeof global.showSaveFilePicker==='function'){try{return await picker(blob,name)}catch(e){if(e.code==='cancelled'||e.code==='write-failed')throw e;if(canShare(file))return viaShare(blob,name,file);return download(blob,name)}}
+ if(canShare(file))return viaShare(blob,name,file)
  return download(blob,name)
 }
 function deliver(blob,name){return singleFlight(()=>deliverOnce(blob,name))}
