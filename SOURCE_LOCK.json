@@ -10,7 +10,7 @@
       "sourceTreeSha256BeforeIntegration": "483d12590e2f4bbb63356de90aa71b5a494ac4e1819e88d041d67eef578a1339",
       "sourceFileCount": 32,
       "sourceBytes": 254156,
-      "nonIndexTreeSha256": "fd2bf3209dd981f23505dfd6850383d789a01cd83dd606ac732e49f4ae915631",
+      "nonIndexTreeSha256": "048819a34ed28e27ccbb8bf99c0e3c670577600a4a9b3e97db6e9b357570c635",
       "originalIndexSha256": "f3303189f1361068c96eb6fa521913908301cfbbc45b287d2a6eeb8ec8adf9d7",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -30,7 +30,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "e46720401fe06a057d4300fcd75192e4226431d4d27a3c1734a34495541d6e89",
+      "nonIndexTreeSha256": "e3db75ba378a1720b928fe13c745497fe9a10795ac8c7e8ef9528c0b0b0ca0ac",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -53,7 +53,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "52ec8c3d787c2060508403337347770cfb3458b7557e1fefbcde041dbeecec7f",
+      "nonIndexTreeSha256": "48031988dd904ef735496770434de7a116b61c421c665fcdce173bb3fee5be13",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -80,7 +80,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "09773209fa6c8e3a8806ddb2ac280f05513068d42343cf644aea53e6bec470b5",
+      "nonIndexTreeSha256": "68ff9b78237380ee1044d548057eefc4432be9a78a8a1ff0fa3aaa3adc24ab26",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -93,7 +93,7 @@
         "runtime/services/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations; regenerate index.html deterministically",
         "runtime/frame/app-frame.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches; regenerate index.html deterministically"
       ],
-      "integratedIndexSha256": "8e455db671743a0b7641ac631e2d019fc64ee366eaeb4d00391a0f9a4c3619b9"
+      "integratedIndexSha256": "275133392601cc9786ef5319794fbdbb9e26b343356ddea3fbfd5ef77ab9555a"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
@@ -119,7 +119,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "925dd7caa20d069c5daed8e9f9bed8b4e5f3a76a3d4c1847578fc866232049cb",
+      "nonIndexTreeSha256": "19e4f424a889a7683a6659f77530462d5e027d15382053f9d59db9953fe4b0d5",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
