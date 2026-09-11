@@ -22,7 +22,7 @@ function deliveryError(code,message,cause){const e=new Error(message);e.name='In
 function share(blob,fileName){const file=toFile(blob,fileName);if(!canShareFile(file))return Promise.reject(deliveryError('share-unavailable','System file sharing is unavailable in this host.'));return viaShare(blob,fileName,file)}
 function deliverOnce(blob,fileName){const file=toFile(blob,fileName);const route=chooseRoute(file);/* Invoke exactly one chosen native route before any await so transient user activation remains available without duplicate delivery. */
 if(route==='web-share')return viaShare(blob,fileName,file);
-if(route==='file-system-access')return viaPicker(blob,fileName).catch(e=>{if(e.code==='cancelled'||e.code==='write-failed')throw e;if(canShareFile(file))return viaShare(blob,fileName,file).catch(()=>viaDownload(blob,fileName).catch(()=>{throw e}));return viaDownload(blob,fileName).catch(()=>{throw e})});
+if(route==='file-system-access')return viaPicker(blob,fileName).catch(e=>{if(e.code==='cancelled'||e.code==='write-failed')throw e;if(canShareFile(file))return viaShare(blob,fileName,file);return viaDownload(blob,fileName).catch(()=>{throw e})});
 return viaDownload(blob,fileName)}
 function deliver(blob,fileName){return singleFlight(()=>deliverOnce(blob,fileName))}
 NS.sha256=sha256;NS.FileDelivery={deliver,share,capabilities,safeName};})(globalThis);
