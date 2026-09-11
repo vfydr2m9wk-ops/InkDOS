@@ -11,6 +11,7 @@ CMDS=[
  [sys.executable,'tests/test_doc_d2_p1_contract.py'],
  [sys.executable,'tests/test_ppt_p1_structure_contract.py'],
  [sys.executable,'tests/test_ppt_p1_objects_contract.py'],
+ [sys.executable,'tests/test_epub_webkit_deflate_contract.py'],
  [sys.executable,'scripts/validate_repository.py'],
  [sys.executable,'scripts/validate_app_isolation.py'],
  [sys.executable,'scripts/audit_source.py'],
