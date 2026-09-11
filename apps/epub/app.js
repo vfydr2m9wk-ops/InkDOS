@@ -5,7 +5,7 @@ const frame=NS.LocalAppFrame.create({menuBtn:E.menu,drawer:E.drawer,backdrop:E.b
 const session=NS.BookSession.create(),renderer=NS.ReaderRenderer.create(),controls=NS.ReaderControls.create({elements:E,frame,renderer,session});
 const navigation=NS.ReaderNavigationTools.create({elements:E,session,reader:controls.api});
 const annotationModes=NS.AnnotationModes.create({reader:controls.api,session,elements:E});annotationModes.install();
-const bindings=NS.ReaderBindings.create({elements:E,reader:controls.api,navigation:navigation.api});bindings.install();annotationModes.finalizeLegacySelectionUi();
+const bindings=NS.ReaderBindings.create({elements:E,reader:controls.api,navigation:navigation.api,annotationModes});bindings.install();annotationModes.finalizeLegacySelectionUi();
 navigation.install();
 globalThis.__InkEpubR4=Object.freeze(Object.assign({},controls.api,{navigation:navigation.api,annotationModes:annotationModes.state}));
 NS.LocalAppFrame.installToolbarRail(E.toolbar);
