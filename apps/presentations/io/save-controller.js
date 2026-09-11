@@ -36,12 +36,34 @@ function create({session,chrome,promoteLegacyPpt}={}){
       chrome.title();return {...delivery,bytes,receipt,fileName};
     }catch(e){if(e?.code!=='cancelled')chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
   }
+  async function saveForReplacement(){
+    if(!session.active||!session.dirty)return true;
+    if(session.sourceKind==='ppt')return true;
+    if(busy)return false;
+    busy=true;const revision=session.revision;
+    try{
+      const kind=session.sourceKind;
+      const {bytes,receipt,blob,fileName}=await buildCopy(false);
+      chrome.status('Saving PPTX before navigation…');
+      await NS.FileDelivery.deliver(blob,fileName);
+      if(session.revision!==revision){chrome.status('Presentation changed while saving — navigation cancelled');return false}
+      if(kind==='pptx'){
+        if(!session.acceptConfirmedPptx(bytes,receipt))return false;
+        for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false}
+      }else session.dirty=false;
+      chrome.title();chrome.status('PPTX saved — continuing');
+      return !session.dirty;
+    }catch(e){
+      if(e?.code==='cancelled'){chrome.status('Save cancelled — navigation cancelled');return false}
+      chrome.showError(e,{name:session.fileName});chrome.status('Save failed — navigation cancelled');return false
+    }finally{busy=false}
+  }
   async function share(){
     if(!session.active||busy)return null;busy=true;
     try{const {bytes,receipt,blob,fileName}=await buildCopy(true);const delivery=await NS.FileDelivery.share(blob,fileName);chrome.status(session.sourceKind==='ppt'?'Editable PPTX copy sent to Share Sheet':'PPTX sent to Share Sheet');chrome.title();return {...delivery,bytes,receipt,fileName}}
     catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
   }
-  return Object.freeze({save,share,buildCopy,ensureP1Writer,ensureP2Package,outputName})
+  return Object.freeze({save,saveForReplacement,share,buildCopy,ensureP1Writer,ensureP2Package,outputName})
 }
 NS.SaveController=Object.freeze({create});
 })(globalThis);
