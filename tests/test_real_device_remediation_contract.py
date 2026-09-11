@@ -71,6 +71,8 @@ def test_legacy_ppt_preserves_explicit_font_family_metadata():
     assert "FontEntity:4023" in reader
     assert "function legacyFontTable(documentContainer)" in reader
     assert "fontRef=u16(data,p)" in reader
+    assert "allExplicit=true" in reader
+    assert "if(!allExplicit||refs.size!==1)return null" in reader
     assert "fontFamily:explicitFontFamily||'Arial'" in reader
 
 
