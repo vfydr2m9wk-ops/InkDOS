@@ -10,7 +10,8 @@ def test_epub_container_selects_an_existing_opf_rootfile_instead_of_blindly_usin
     assert "||candidates.find(x=>pkg.has(x.path))" in source
     assert "root=selectRootfile(cdoc,pkg)" in source
     assert "rootfile=els(cdoc,'rootfile')[0]" not in source
-    assert "NS.BookModel={build,parseXml,decodeXmlText,resolve,selectRootfile}" in source
+    assert "NS.BookModel={build,parseXml,decodeXmlText,resolve};" in source
+    assert "NS.BookModel.selectRootfile=selectRootfile;" in source
 
 
 def test_epub_container_rootfile_selection_keeps_path_validation_and_missing_package_failure():
