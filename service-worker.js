@@ -224,6 +224,7 @@ const APP_SHELL=[
   "./apps/epub/state/annotation-store.js",
   "./apps/epub/state/appearance.js",
   "./apps/epub/state/reading-state.js",
+  "./apps/epub/ui/annotation-modes.js",
   "./apps/epub/ui/reader-controls.css",
   "./apps/epub/ui/reader-controls.js",
   "./apps/epub/ui/reader-bindings.js",
