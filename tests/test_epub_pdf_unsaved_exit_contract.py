@@ -10,6 +10,7 @@ PDF_SAVE = (ROOT / "apps/pdf/io/save-controller.js").read_text()
 
 def test_epub_guards_dirty_open_home_and_browser_unload():
     assert "authorizeReplacement" in EPUB_BINDINGS
+    assert "if(!dirty())return true" in EPUB_BINDINGS
     assert "saveForReplacement" in EPUB_BINDINGS
     assert "decision==='save'" in EPUB_BINDINGS
     assert "decision==='discard'" in EPUB_BINDINGS
