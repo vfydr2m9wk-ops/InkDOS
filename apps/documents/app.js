@@ -9,7 +9,7 @@ async function boot(){await loadScript('runtime/commands/document-commands.js',(
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');
-fileInput.accept='.docx,.rtf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,text/rtf';const startCopy=welcome?.querySelector('.start-card p');if(startCopy)startCopy.textContent='Create a document or open a DOCX or RTF file locally.';
+fileInput.accept='.docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,text/rtf,application/msword';const startCopy=welcome?.querySelector('.start-card p');if(startCopy)startCopy.textContent='Create a document or open a DOCX, RTF or legacy DOC file locally.';
 const adapter=new NS.ContentViewportAdapter(viewport,pagesHost);
 let zoomControls=null;
 const zoom=new NS.ZoomController(adapter,pagesHost,info=>zoomControls?.update(info));
@@ -21,6 +21,7 @@ const editor=NS.EditorController.create({state,session,pagesHost,surface,chrome,
 const ruler=NS.RulerController.create({state,editor});
 const saveController=NS.SaveController.create({session,pagesHost,chrome});
 const fileOpen=NS.FileOpenController.create({state,session,fileInput,pagesHost,chrome,surface,editor,sessionDialog,saveController});
+saveController.setPromoter?.(fileOpen.openFile);
 zoomControls=NS.ZoomControls.create({zoom});
 const commandRegistry=NS.DocumentCommands.create({fileOpen,saveController,editor,navigation});
 const commands=NS.CommandController.create({session,pagesHost,chrome,fileOpen,editor,ruler,navigation,zoom,zoomControls,commands:commandRegistry});
