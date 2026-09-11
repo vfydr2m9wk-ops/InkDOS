@@ -22,6 +22,12 @@ def test_epub_guards_dirty_open_home_and_browser_unload():
     assert "requestOpen" in EPUB_BINDINGS
 
 
+def test_epub_authorized_home_exit_bypasses_native_beforeunload_prompt():
+    assert "let authorizedUnload=false" in EPUB_BINDINGS
+    assert "authorizedUnload=true;g.location.assign(href)" in EPUB_BINDINGS
+    assert "if(authorizedUnload){authorizedUnload=false;return}" in EPUB_BINDINGS
+
+
 def test_epub_replacement_save_is_revision_aware():
     assert "const revision=ready.annotationRevision" in EPUB_BINDINGS
     assert "after.annotationRevision!==revision" in EPUB_BINDINGS
@@ -60,6 +66,12 @@ def test_pdf_guards_dirty_open_and_home_with_three_way_choice():
     assert "decision==='cancel'" in PDF_COMMANDS
     assert "a[aria-label=\"Home\"]" in PDF_COMMANDS
     assert "await save.saveForReplacement()" in PDF_COMMANDS
+
+
+def test_pdf_authorized_home_exit_bypasses_native_beforeunload_prompt():
+    assert "let authorizedUnload=false" in PDF_APP
+    assert "commands.consumeAuthorizedUnload()" in PDF_APP
+    assert "authorizedUnload=true;global.location.assign(href)" in PDF_COMMANDS
 
 
 def test_pdf_replacement_save_is_snapshot_aware():

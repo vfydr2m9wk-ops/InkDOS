@@ -27,9 +27,16 @@ def test_presentations_guards_home_and_browser_unload():
     assert "homeLink" in COMMANDS
 
 
+def test_presentations_authorized_home_exit_bypasses_native_beforeunload_prompt():
+    assert "authorizedUnload=false" in COMMANDS
+    assert "if(await authorizeReplacement('leave')){authorizedUnload=true;global.location.assign(href)}" in COMMANDS
+    assert "if(authorizedUnload){authorizedUnload=false;return}" in COMMANDS
+
+
 if __name__ == "__main__":
     test_presentations_has_three_way_unsaved_decision_contract()
     test_presentations_blocks_replacement_until_save_completes()
     test_presentations_replacement_requires_confirmed_delivery()
     test_presentations_guards_home_and_browser_unload()
+    test_presentations_authorized_home_exit_bypasses_native_beforeunload_prompt()
     print("Presentations unsaved-exit contract: OK")
