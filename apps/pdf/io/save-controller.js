@@ -30,6 +30,26 @@ function create({session,getDocument,editor,chrome}={}){
    console.error(e);chrome.error(e);chrome.status('Save failed');return null;
   }finally{saving=false;setTimeout(()=>{if(['completed','cancelled','failed'].includes(document.documentElement.dataset.saveState))document.documentElement.dataset.saveState='idle'},1200)}
  }
+ async function saveForReplacement(){
+  if(!session.active||!session.dirty)return true;
+  if(saving)return false;
+  const doc=getDocument?.();if(!doc)return false;
+  editor.commit();const snapshotHash=doc.annotationStorage.serializable.hash;
+  saving=true;document.documentElement.dataset.saveState='saving';
+  try{
+   const result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes:session.sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Writing PDF before navigation…':phase==='validating'?'Validating PDF before navigation…':'Preparing PDF before navigation…')});
+   document.documentElement.dataset.saveState='delivering';chrome.status('Save PDF before continuing…');
+   await NS.FileDelivery.deliver(result.blob,result.fileName);
+   if(getDocument()!==doc)return false;
+   editor.commit();
+   if(doc.annotationStorage.serializable.hash!==snapshotHash){session.markDirty();chrome.dirty();chrome.status('PDF changed while saving — navigation cancelled');return false}
+   doc.annotationStorage.resetModified?.();session.markSaved();chrome.dirty();chrome.status('PDF saved — continuing');document.documentElement.dataset.saveState='completed';return true;
+  }catch(e){
+   if(getDocument()===doc){session.markDirty();chrome.dirty()}
+   document.documentElement.dataset.saveState=e?.name==='AbortError'||e?.code==='cancelled'?'cancelled':'failed';
+   chrome.status(document.documentElement.dataset.saveState==='cancelled'?'Save cancelled — navigation cancelled':'Save failed — navigation cancelled');return false;
+  }finally{saving=false;setTimeout(()=>{if(['completed','cancelled','failed'].includes(document.documentElement.dataset.saveState))document.documentElement.dataset.saveState='idle'},1200)}
+ }
  async function share(){
   if(!session.active||saving)return null;
   const doc=getDocument?.();if(!doc)return null;
@@ -51,6 +71,6 @@ function create({session,getDocument,editor,chrome}={}){
    console.error(e);chrome.error(e);chrome.status('Share failed');return null;
   }finally{saving=false;setTimeout(()=>{if(['completed','cancelled','failed'].includes(document.documentElement.dataset.saveState))document.documentElement.dataset.saveState='idle'},1200)}
  }
- return Object.freeze({save,share,get saving(){return saving}});
+ return Object.freeze({save,saveForReplacement,share,get saving(){return saving}});
 }
 NS.SaveController=Object.freeze({create});})(globalThis);
