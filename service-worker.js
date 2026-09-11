@@ -229,6 +229,7 @@ const APP_SHELL=[
   "./apps/epub/ui/reader-bindings.js",
   "./apps/epub/ui/navigation-tools.js",
   "./apps/epub/ui/start-state.css",
+  "./apps/epub/vendor/pako_inflate.min.js",
   "./apps/epub/view/reader-viewport.js",
   "./apps/epub/view/reader.css",
   "./apps/epub/view/renderer.js"
