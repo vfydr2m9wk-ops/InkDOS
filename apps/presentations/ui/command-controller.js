@@ -1,6 +1,6 @@
 (function(global){'use strict';const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,history,selection,chrome,fileOpen,save,editor,panel,slideshow,onStructureChange}={}){
- const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null;const registry=new Map();
+ const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null,unsavedDialog=null;const registry=new Map();
  function register(id,handler,isEnabled=()=>true){if(!id||typeof handler!=='function')throw new TypeError('Invalid Presentations command');registry.set(id,Object.freeze({handler,isEnabled}));return id}
  function isEnabled(id){const command=registry.get(id);return !!command&&command.isEnabled()!==false}
  function execute(id,...args){const command=registry.get(id);if(!command)throw new Error('PRESENTATIONS_COMMAND_NOT_REGISTERED: '+id);if(command.isEnabled()===false)return false;return command.handler(...args)}
@@ -11,9 +11,31 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  function refresh({thumbs=true,center=true}={}){editor.rerender({thumbs,center});sync()}
  function format(label,mutator){const o=selected();if(!o||o.type!=='text')return false;history.transact(label,()=>mutator(o));refresh({thumbs:true,center:false});return true}
  function navigateTo(value){const index=Number(value);if(!Number.isInteger(index)||index<0||index>=session.slides.length||index===session.currentIndex)return false;session.setCurrentByIndex(index);selection.clear();refresh({thumbs:false,center:true});panel.syncActive();return true}
+ function closeUnsavedDialog(choice){if(!unsavedDialog)return;const {node,resolve}=unsavedDialog;unsavedDialog=null;node.remove();resolve(choice)}
+ function decideUnsaved(message){
+  if(!session.dirty)return Promise.resolve('discard');
+  if(unsavedDialog)return Promise.resolve('cancel');
+  return new Promise(resolve=>{
+   const node=document.createElement('div');node.id='presentationsUnsavedDialog';node.className='error-overlay';node.setAttribute('role','dialog');node.setAttribute('aria-modal','true');node.setAttribute('aria-label','Unsaved changes');
+   node.innerHTML='<div class="error-card"><h2>Unsaved changes</h2><p>'+String(message||'Save your current presentation before continuing?')+'</p><div class="error-actions"><button type="button" data-choice="cancel">Cancel</button><button type="button" data-choice="discard">Discard</button><button type="button" class="retry-open" data-choice="save">Save</button></div></div>';
+   unsavedDialog={node,resolve};document.body.appendChild(node);
+   node.querySelectorAll('[data-choice]').forEach(button=>button.onclick=()=>closeUnsavedDialog(button.dataset.choice));
+   node.querySelector('[data-choice="cancel"]')?.focus();
+  })
+ }
+ async function authorizeReplacement(kind){
+  if(!session.dirty)return true;
+  const messages={new:'Save your current presentation before creating a new presentation?',open:'Save your current presentation before opening another presentation?',leave:'Save your current presentation before leaving Presentations?'};
+  const decision=await decideUnsaved(messages[kind]||messages.leave);
+  if(decision==='discard')return true;
+  if(decision!=='save')return false;
+  return !!(await save.saveForReplacement());
+ }
+ async function newPresentation(){if(!(await authorizeReplacement('new')))return false;session.resetNew();history.reset();onStructureChange?.();refresh();chrome.status('New presentation');return true}
+ async function openPresentation(){if(!(await authorizeReplacement('open')))return false;fileOpen.requestOpen();return true}
  function installCommands(){
-  register('file.new',()=>{if(session.dirty&&!global.confirm('Discard current in-memory changes and create a new presentation?'))return false;session.resetNew();history.reset();onStructureChange?.();refresh();chrome.status('New presentation');return true});
-  register('file.open',()=>fileOpen.requestOpen());
+  register('file.new',newPresentation);
+  register('file.open',openPresentation);
   register('file.save',()=>save.save(),()=>session.active);
   register('file.share',()=>save.share(),()=>session.active);
   register('file.rename',value=>{const next=chrome.normalizeName(value);if(next!==session.fileName){history.transact('Rename presentation',()=>session.fileName=next);sync();return true}chrome.title();return false},()=>session.active&&session.sourceKind!=='ppt');
@@ -49,20 +71,22 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   const present=$('presentBtn');if(present)present.disabled=!isEnabled('presentation.present.current');const presentStart=$('presentStartMenuBtn');if(presentStart)presentStart.disabled=!isEnabled('presentation.present.start');
   editor.sync()
  }
+ function installHomeGuard(){const homeLink=document.querySelector('a[aria-label="Home"]');if(!homeLink)return;homeLink.addEventListener('click',async e=>{if(!session.dirty)return;e.preventDefault();e.stopPropagation();const href=homeLink.href;if(await authorizeReplacement('leave'))global.location.assign(href)})}
+ function installUnloadGuard(){global.addEventListener('beforeunload',e=>{if(!session.dirty)return;e.preventDefault();e.returnValue=''})}
  function install(){
   drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});zoomPopover=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover')});
-  installShareAction();
-  const newBtn=bindClick('newMenuBtn','file.new');if(newBtn)newBtn.onclick=()=>{const accepted=execute('file.new');if(accepted!==false)drawer.close()};
-  const openBtn=bindClick('openMenuBtn','file.open');if(openBtn)openBtn.onclick=()=>{drawer.close({restoreFocus:false});execute('file.open')};
+  installShareAction();installHomeGuard();installUnloadGuard();
+  const newBtn=bindClick('newMenuBtn','file.new');if(newBtn)newBtn.onclick=async()=>{const accepted=await execute('file.new');if(accepted!==false)drawer.close()};
+  const openBtn=bindClick('openMenuBtn','file.open');if(openBtn)openBtn.onclick=async()=>{const accepted=await execute('file.open');if(accepted!==false)drawer.close({restoreFocus:false})};
   const saveBtn=bindClick('saveMenuBtn','file.save');if(saveBtn)saveBtn.onclick=async()=>{drawer.close({restoreFocus:false});await execute('file.save');sync()};
   document.querySelectorAll('[data-appearance-choice]').forEach(b=>{b.dataset.command='appearance.set';b.onclick=()=>execute('appearance.set',b.dataset.appearanceChoice)});
   const title=$('titleText');if(title)title.addEventListener('change',e=>{if(!isEnabled('file.rename')){chrome.title();return}execute('file.rename',e.target.value)});
   bindClick('presentBtn','presentation.present.current');const presentStart=bindClick('presentStartMenuBtn','presentation.present.start');if(presentStart)presentStart.onclick=()=>{drawer.close({restoreFocus:false});execute('presentation.present.start')};
-  document.addEventListener('keydown',e=>{const mod=e.metaKey||e.ctrlKey;if(!mod)return;const k=e.key.toLowerCase();if(k==='o'){e.preventDefault();execute('file.open')}else if(k==='n'){e.preventDefault();execute('file.new')}else if(k==='s'){e.preventDefault();execute('file.save')}else if(k==='z'&&!e.shiftKey&&!e.target.isContentEditable){e.preventDefault();execute('history.undo')}else if((k==='y'||(k==='z'&&e.shiftKey))&&!e.target.isContentEditable){e.preventDefault();execute('history.redo')}});
+  document.addEventListener('keydown',async e=>{const mod=e.metaKey||e.ctrlKey;if(!mod)return;const k=e.key.toLowerCase();if(k==='o'){e.preventDefault();await execute('file.open')}else if(k==='n'){e.preventDefault();await execute('file.new')}else if(k==='s'){e.preventDefault();await execute('file.save')}else if(k==='z'&&!e.shiftKey&&!e.target.isContentEditable){e.preventDefault();execute('history.undo')}else if((k==='y'||(k==='z'&&e.shiftKey))&&!e.target.isContentEditable){e.preventDefault();execute('history.redo')}});
   sync()
  }
  installCommands();
- return Object.freeze({install,sync,refresh,requestNew:()=>execute('file.new'),register,execute,isEnabled,has:id=>registry.has(id),list:()=>[...registry.keys()],get drawer(){return drawer},get zoomPopover(){return zoomPopover}})
+ return Object.freeze({install,sync,refresh,requestNew:()=>execute('file.new'),register,execute,isEnabled,has:id=>registry.has(id),list:()=>[...registry.keys()],decideUnsaved,authorizeReplacement,get drawer(){return drawer},get zoomPopover(){return zoomPopover}})
 }
 NS.CommandController=Object.freeze({create});})(globalThis);
 
