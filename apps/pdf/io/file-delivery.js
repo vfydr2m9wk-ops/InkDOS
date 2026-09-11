@@ -12,10 +12,10 @@ async function picker(blob,name){let h;try{h=await global.showSaveFilePicker({su
 async function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.hidden=true;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000);return {method:'download',fileName:name,deliveryConfirmed:false}}
 async function deliverOnce(blob,name){name=safeName(name);const file=toFile(blob,name),local=!!(global.location&&global.location.protocol==='file:');
  if(local&&canShare(file))return share(blob,name)
- // Apple touch hosts use one terminal native delivery route. Never follow an invoked Web Share operation with a second download.
+ // Any invoked delivery route is terminal for this Save action. A rejected Web Share promise does not prove that the host produced no file.
  if(isAppleTouchHost()&&canShare(file))return share(blob,name)
  if(typeof global.showSaveFilePicker==='function'){try{return await picker(blob,name)}catch(e){if(e?.name==='AbortError'||e.code==='write-failed')throw e}}
- if(canShare(file)){try{return await share(blob,name)}catch(e){if(e?.name==='AbortError')throw e}}
+ if(canShare(file))return share(blob,name)
  return download(blob,name)
 }
 function deliver(blob,name){return singleFlight(()=>deliverOnce(blob,name))}
