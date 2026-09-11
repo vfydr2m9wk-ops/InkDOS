@@ -1,6 +1,8 @@
 from pathlib import Path
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+MODULE = "apps/presentations/io/pptx-text-columns.js"
 
 
 def read(path: str) -> str:
@@ -8,32 +10,32 @@ def read(path: str) -> str:
 
 
 def test_pptx_multicolumn_text_is_preserved_and_rendered_across_views():
-    parser = read("apps/presentations/io/pptx-open-controller.js")
-    model = read("apps/presentations/engine/presentation-session.js")
-    surface = read("apps/presentations/view/slide-surface.js")
-    thumbs = read("apps/presentations/ui/slide-panel-controller.js")
-    slideshow = read("apps/presentations/presentation/slideshow-controller.js")
+    app = read("apps/presentations/app.js")
+    columns = read(MODULE)
 
-    # DrawingML a:bodyPr may define numCol/spcCol. Import must retain that
-    # geometry instead of flattening a multi-column text frame into one column.
-    assert "numCol" in parser
-    assert "columnCount" in parser
-    assert "spcCol" in parser
-    assert "columnSpacingEmu" in parser
+    # The runtime must load the local-only fidelity module; no network or
+    # backend conversion is allowed.
+    assert "io/pptx-text-columns.js" in app
+    assert "PptxTextColumns" in app
 
-    # The normalized text object and its preservation signature must keep the
-    # imported column geometry stable through session snapshots/edits/saves.
-    assert "columnCount" in model
-    assert "columnSpacingEmu" in model
-    assert "columnCount:sane(o.columnCount,1)" in model
+    # DrawingML a:bodyPr numCol/spcCol are read directly from the opened PPTX.
+    assert "numCol" in columns
+    assert "spcCol" in columns
+    assert "columnCount" in columns
+    assert "columnSpacingEmu" in columns
 
-    # Editor, thumbnail strip, and slideshow must all project the same column
-    # count. The editor/slideshow additionally constrain height so CSS columns
-    # flow vertically before advancing to the next column.
-    assert "style.columnCount" in surface
-    assert "style.columnGap" in surface
-    assert "style.columnFill='auto'" in surface
-    assert "style.height='100%'" in surface
-    assert "style.columnCount" in thumbs
-    assert "style.columnCount" in slideshow
-    assert "style.columnFill='auto'" in slideshow
+    # The same imported geometry is projected to editor, thumbnails, and
+    # slideshow so a multi-column frame is not flattened into one column.
+    assert "editorColumns" in columns
+    assert "thumbnailColumns" in columns
+    assert "slideshowColumns" in columns
+    assert "style.columnCount" in columns
+    assert "style.columnGap" in columns
+    assert "style.columnFill='auto'" in columns
+    assert "style.height='100%'" in columns
+
+    subprocess.run(["node", "--check", str(ROOT / MODULE)], check=True)
+
+
+if __name__ == "__main__":
+    test_pptx_multicolumn_text_is_preserved_and_rendered_across_views()
