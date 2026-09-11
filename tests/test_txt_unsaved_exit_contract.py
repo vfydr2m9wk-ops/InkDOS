@@ -36,8 +36,18 @@ def test_txt_guards_home_and_browser_unload():
     assert "beforeunload" in CONTROLS
 
 
+def test_txt_authorized_home_exit_bypasses_only_the_followup_native_unload_guard():
+    assert "authorizedUnload" in CONTROLS
+    assert "if(ok){authorizedUnload=true;g.location.href=E.homeLink.href}" in CONTROLS
+    assert "if(authorizedUnload)return" in CONTROLS
+    assert CONTROLS.index("if(ok){authorizedUnload=true;g.location.href=E.homeLink.href}") < CONTROLS.index("if(authorizedUnload)return")
+    assert "if(ok){authorizedUnload=true" in CONTROLS
+    assert "if(!ok)authorizedUnload" not in CONTROLS
+
+
 if __name__ == "__main__":
     test_txt_has_three_way_unsaved_decision_contract()
     test_txt_blocks_replacement_until_exact_save_completes()
     test_txt_guards_home_and_browser_unload()
+    test_txt_authorized_home_exit_bypasses_only_the_followup_native_unload_guard()
     print("Plain Text unsaved-exit contract: OK")
