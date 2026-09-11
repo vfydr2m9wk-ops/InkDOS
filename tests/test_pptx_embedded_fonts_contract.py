@@ -29,6 +29,11 @@ def test_pptx_embedded_fonts_are_loaded_locally_from_eot_payloads():
     assert "document.fonts.delete(face)" in source
     assert "clearFonts()" in source
 
+    # Embedded font resolution must remain package-local/offline and must not
+    # grow a network fallback that could leak document typography metadata.
+    assert "http://" not in source
+    assert "https://" not in source
+
     subprocess.run(["node", "--check", str(MODULE)], check=True)
 
 
