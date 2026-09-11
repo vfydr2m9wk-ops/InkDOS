@@ -76,6 +76,14 @@ def test_legacy_ppt_save_promotes_confirmed_copy_into_editable_session():
     assert "open the .pptx copy to edit" not in save
 
 
+def test_documents_picker_exposes_every_supported_document_import_format():
+    index = read("apps/documents/index.html")
+    opener = read("apps/documents/io/file-open-controller.js")
+    assert 'accept=".docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword"' in index
+    assert "Choose a DOCX, RTF or legacy DOC document" in opener
+    assert "Documents currently accepts DOCX, RTF and legacy DOC files." in opener
+
+
 def test_pptx_text_style_cascade_uses_placeholder_fallbacks():
     source = read("apps/presentations/io/pptx-open-controller.js")
     assert "function runStyle(rPr,def,theme,map,fallback={})" in source
