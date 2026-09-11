@@ -1,82 +1,55 @@
-# InkDOS 2.0.12
+# InkDOS 2.1.0
 
-InkDOS is a local-first, static browser productivity suite with six physically independent workspaces behind an optional Home launcher. Version 2.0.12 turns standalone extraction into an explicit release contract and restructures EPUB so its physical source layout matches its logical engine/state/I/O/view separation.
+InkDOS is a local-first, static browser productivity suite with six physically independent workspaces behind an optional Home launcher. It runs entirely client-side, requires no application backend or telemetry service, and keeps document processing in the browser.
 
-## Available workspaces
+Version 2.1.0 is the post-hardening release that consolidates the stability work performed after the 2.0.12 structural baseline. The current development focus is real-device acceptance: automated repository, format-preservation and browser regressions are part of the release gate, while host-specific behavior on iPad/XeOS still requires direct user confirmation where synthetic browsers cannot prove the full file-delivery or WebKit-host interaction path.
 
-| Workspace | Status | Formats |
+## Workspaces and format behavior
+
+| Workspace | Primary editable format | Additional input / behavior |
 | --- | --- | --- |
-| Documents | Available | DOCX |
-| Spreadsheets | Available | XLS / XLSX |
-| Presentations | Available | PPT / PPTX |
-| Plain Text | Available | TXT |
-| EPUB Reader | Available | EPUB |
-| PDF Workspace | Available | PDF |
+| Documents | DOCX | RTF imports into the editable document model. Legacy DOC opens through the local import-only reader and can be promoted by saving an editable DOCX copy; InkDOS does not write back to DOC. |
+| Spreadsheets | XLSX | Legacy XLS workbooks can be imported locally and saved as editable XLSX copies. |
+| Presentations | PPTX | Legacy PPT presentations can be imported locally and promoted to editable PPTX copies; PPT write-back is not provided. |
+| Plain Text | TXT | Local plain-text creation, editing and export. |
+| EPUB Reader | EPUB | Local reading, navigation, themes and annotations, with compatibility fallbacks for supported ZIP/EPUB structures. |
+| PDF Workspace | PDF | Local reading, annotations, page tools and PDF export; it is not a general-purpose existing-PDF text editor. |
 
-## Physical modularity and optional Home
+Format support is intentionally narrower than Microsoft Office or LibreOffice. A file extension being accepted does not imply exhaustive preservation of every feature defined by that format.
 
-Each workspace retains its own engine, state, I/O, frame, UI and view code. There is no shared application runtime root under `shared/`, `modules/` or `core/`, and no workspace is allowed to load another workspace's source files.
+## Architecture and optional Home
 
-The Home button is an optional integration bridge rather than a standalone dependency. Home launches a workspace with `suite=1`. Each app-local frame module keeps its Home action only when that opt-in marker is present; when a workspace is opened directly or extracted from the suite, the frame hides the Home control and removes its active `href`. No shared Home controller is required.
+Each workspace retains app-local runtime, state, I/O, UI and view responsibilities under `apps/<workspace>/`. There is no shared mutable office-document engine and no workspace is permitted to load another workspace's source tree as an application dependency.
 
-Release validation copies every workspace into an isolated temporary directory and verifies that all non-Home resources required by its entry page still resolve inside that copied app root. It also scans for cross-app runtime references and checks that every file listed in the offline `APP_SHELL` exists.
+Home is an optional suite bridge. It launches workspaces with `suite=1`; each app-local frame exposes the Home action only in that suite context. A workspace opened directly or extracted independently does not require the Home launcher to operate.
 
-## EPUB structure
+Release validation checks standalone app isolation, cross-app reference boundaries and the root offline shell.
 
-EPUB retains the same reader behavior while its previously flattened root modules are physically separated by responsibility:
+## Save, Share and unsaved-work semantics
 
-```text
-apps/epub/
-  app.js
-  index.html
-  assets/
-  engine/
-    annotations.js
-    book-model.js
-    content-projector.js
-  io/
-    epub-writer.js
-    file-delivery.js
-    package-reader.js
-  runtime/
-  session/
-  state/
-    annotation-store.js
-    appearance.js
-    reading-state.js
-  ui/
-    reader-controls.js
-    reader-controls.css
-    start-state.css
-  view/
-    reader-viewport.js
-    reader.css
-    renderer.js
-```
+Save and Share are separate operations. Share sends the current export through the host Share Sheet when supported; it does not by itself prove persistent storage.
 
-The 2.0.12 change is structural: package parsing, content projection, annotations, writing and rendering algorithms were moved without intentionally changing their behavior. The start-state styling was also removed from inline `index.html` CSS and placed in the EPUB-local UI layer.
+File-delivery code uses a single-flight / single-delivery contract to prevent overlapping Save actions from creating multiple host deliveries. Destructive Open/Home/leave flows use Save / Discard / Cancel guards. A Save path must reach the workspace's confirmed-delivery condition before the app clears dirty state or authorizes destructive navigation; failed, cancelled, stale or unconfirmed delivery keeps the work protected.
 
-## Appearance consistency
+Those contracts are regression-tested, but exact host behavior can differ on iPad/iPhone-style WebKit containers. Real-device confirmation therefore remains authoritative for issues such as duplicate host downloads, Share Sheet behavior and host-specific file-picker fallbacks.
 
-Home supports Light, Dark and System. Each workspace keeps its own app-private appearance controller and preference key. The selected value is communicated horizontally through `inkdos2:appearance`; an extracted app still has its local appearance behavior, while suite-wide synchronization naturally disappears when no peers are present.
+## Browser and device validation
 
-## Empty-workspace contract
+The automated release gate covers repository contracts, deterministic assets, format-preservation round trips and browser regressions in Chromium, Firefox and WebKit. Passing that matrix means the tested browser paths are green; it is not a claim that every embedded WebKit host behaves identically to Playwright WebKit.
 
-Opening a workspace does not itself create a document. Save and Share remain unavailable until that app has a real active document, workbook, presentation, text file, book or PDF according to its own state model. Presentations starts with zero slides and creates its first slide only after explicit New or successful Open.
+The current real-device acceptance cycle concentrates on iPad/XeOS behavior, especially file delivery, legacy PPT fidelity, EPUB compatibility and PDF host integration. Confirmed device findings are treated as higher-priority evidence when they differ from synthetic browser behavior.
 
-## Share and save semantics
+## Appearance and offline behavior
 
-Share and Save remain separate operations. Share exports the current file state through the host system Share Sheet when supported and does not itself confirm persistent storage.
+Home supports Light, Dark and System appearance. Each workspace retains its own appearance controller while the installed suite can synchronize the selected mode through `inkdos2:appearance`.
 
-The 2.0.11 single-delivery invariant remains in Documents, Spreadsheets, Presentations, Plain Text and PDF: Apple touch WebKit hosts can prefer file-based system Share for Save, and once a native picker has returned a destination handle a later write failure is terminal rather than starting a second delivery route.
+The root service worker provides the validated application shell under HTTP(S). Direct `file://` execution remains subject to the host browser's local-file policy and does not provide the same PWA/service-worker guarantees.
 
-## Format scope
+## Release and control-state files
 
-The modularity polish does not broaden file-format fidelity. InkDOS remains intentionally narrower than a full desktop office suite such as LibreOffice: its supported formats and preservation behavior are workspace-specific and should be expanded through each app's private parser/writer boundaries rather than through a shared document engine.
+`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.1.0 release identity.
 
-## Local-first
-
-There is no required backend, telemetry service or remote document-processing service. GitHub Pages is used only as a static host/PWA surface.
+`DEVELOPMENT_STATE.json` has a different purpose: it records the last transactional update-package sequence accepted by the updater. Its sequence/package label can therefore remain tied to an earlier package even when the public release identity has advanced through validated repository integration. Historical stability/freeze documents likewise retain the versions and commit anchors that were true when those records were produced.
 
 ## Repository layout
 
@@ -92,6 +65,7 @@ apps/
   pdf/
 docs/
 scripts/
+tests/
 ```
 
-See `docs/ARCHITECTURE.md`, `docs/PROJECT_STATUS.md`, and `docs/UPDATE_MODEL.md`.
+See `docs/ARCHITECTURE.md`, `docs/PROJECT_STATUS.md`, `docs/KNOWN_LIMITATIONS.md`, and `docs/UPDATE_MODEL.md` for the current architecture, status, limitations and update model.
