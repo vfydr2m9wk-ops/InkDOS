@@ -65,6 +65,17 @@ def test_legacy_ppt_has_fidelity_and_editable_copy_path():
     assert "Save editable PPTX copy" in commands
 
 
+def test_legacy_ppt_preserves_explicit_font_family_metadata():
+    reader = read("apps/presentations/io/ppt-legacy-reader.js")
+    assert "FontCollection:2005" in reader
+    assert "FontEntity:4023" in reader
+    assert "function legacyFontTable(documentContainer)" in reader
+    assert "fontRef=u16(data,p)" in reader
+    assert "allExplicit=true" in reader
+    assert "if(!allExplicit||refs.size!==1)return null" in reader
+    assert "fontFamily:explicitFontFamily||'Arial'" in reader
+
+
 def test_legacy_ppt_save_promotes_confirmed_copy_into_editable_session():
     save = read("apps/presentations/io/save-controller.js")
     app = read("apps/presentations/app.js")
