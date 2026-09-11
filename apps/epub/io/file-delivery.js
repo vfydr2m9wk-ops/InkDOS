@@ -1,5 +1,5 @@
 (function(g){'use strict';const NS=g.InkDOS2Epub=g.InkDOS2Epub||{};
-let deliveryInFlight=null;
+let deliveryInFlight=null,lastReceipt=null;
 function singleFlight(run){if(deliveryInFlight)return deliveryInFlight;let p;try{p=Promise.resolve(run())}catch(e){return Promise.reject(e)}deliveryInFlight=p;p.finally(()=>{if(deliveryInFlight===p)deliveryInFlight=null}).catch(()=>{});return p}
 function safeName(name){let n=String(name||'Book.epub').trim()||'Book.epub';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.epub$/i.test(n)?n:n+'.epub'}
 function toFile(blob,name){try{return new File([blob],safeName(name),{type:'application/epub+zip',lastModified:Date.now()})}catch(_){return null}}
@@ -10,6 +10,7 @@ async function picker(blob,name){let h;try{h=await showSaveFilePicker({suggested
 async function share(blob,name,file){try{await navigator.share({files:[file],title:safeName(name)});return {method:'web-share',fileName:safeName(name),deliveryConfirmed:false}}catch(e){if(e&&e.name==='AbortError')throw err('cancelled','Share cancelled.',e);throw err('share-blocked','System share unavailable.',e)}}
 async function download(blob,name){if(!(document&&URL&&URL.createObjectURL))throw err('download-unavailable','Download unavailable.');const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=safeName(name);a.hidden=true;document.body.append(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000)}return {method:'download',fileName:safeName(name),deliveryConfirmed:false}}
 function deliverOnce(blob,name){const f=toFile(blob,name),local=location&&location.protocol==='file:';if(isAppleTouchHost()&&canShare(f))return share(blob,name,f);if(local&&canShare(f))return share(blob,name,f).catch(e=>e.code==='cancelled'?Promise.reject(e):download(blob,name));if(typeof g.showSaveFilePicker==='function')return picker(blob,name).catch(e=>{if(e.code==='cancelled')throw e;if(canShare(f))return share(blob,name,f).catch(()=>download(blob,name));return download(blob,name)});if(canShare(f))return share(blob,name,f).catch(e=>e.code==='cancelled'?Promise.reject(e):download(blob,name));return download(blob,name)}
-function deliver(blob,name){return singleFlight(()=>deliverOnce(blob,name))}
+function deliver(blob,name){return singleFlight(()=>deliverOnce(blob,name)).then(receipt=>(lastReceipt=Object.freeze({...receipt}),receipt))}
+function lastDelivery(){return lastReceipt}
 function shareOnly(blob,name){const f=toFile(blob,name);return canShare(f)?share(blob,name,f):Promise.reject(err('share-unavailable','System file sharing unavailable.'))}
-NS.EpubFileDelivery={deliver,share:shareOnly,safeName};})(globalThis);
+NS.EpubFileDelivery={deliver,share:shareOnly,safeName,lastDelivery};})(globalThis);
