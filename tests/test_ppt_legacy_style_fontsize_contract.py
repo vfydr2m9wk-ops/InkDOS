@@ -6,11 +6,24 @@ READER = ROOT / "apps" / "presentations" / "io" / "ppt-legacy-reader.js"
 
 
 class LegacyPptStyleFontSizeContractTests(unittest.TestCase):
-    def test_reader_recognizes_style_text_prop_atom_and_character_font_size_mask(self):
+    def test_reader_recognizes_style_text_prop_atom_and_spec_character_font_size_mask(self):
         source = READER.read_text(encoding="utf-8")
         self.assertIn("StyleTextProp:4001", source)
         self.assertIn("function legacyCharacterFontSize", source)
-        self.assertIn("1<<13", source)
+        helper = source[source.index("function legacyCfException") : source.index("function legacyCharacterFontSize")]
+        self.assertIn("1<<17", helper)
+        self.assertNotIn("if(masks&(1<<13))", helper)
+
+    def test_character_exception_field_order_skips_typeface_before_size(self):
+        source = READER.read_text(encoding="utf-8")
+        helper = source[source.index("function legacyCfException") : source.index("function legacyCharacterFontSize")]
+        typeface = helper.index("masks&(1<<16)")
+        size = helper.index("masks&(1<<17)")
+        color = helper.index("masks&(1<<18)")
+        position = helper.index("masks&(1<<19)")
+        self.assertLess(typeface, size)
+        self.assertLess(size, color)
+        self.assertLess(color, position)
 
     def test_explicit_legacy_character_size_precedes_geometry_estimate(self):
         source = READER.read_text(encoding="utf-8")
