@@ -119,7 +119,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "4f49fefe025efc4a835a24fc90c0a5bf12bdeee4b71f0b2fbecb0f3abc953499",
+      "nonIndexTreeSha256": "54d10d7e97e2a07e981752d8eddedea8d281b81229d035fe982e937c4ce41b90",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
