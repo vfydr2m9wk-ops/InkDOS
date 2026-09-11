@@ -31,6 +31,20 @@ class FileDeliveryExactlyOnceContractTests(unittest.TestCase):
             "Plain Text selected Web Share route must be terminal",
         )
 
+    def test_concurrent_save_delivery_is_single_flight_suite_wide(self):
+        cases = (
+            ("apps/documents/io/file-delivery.js", "deliveryInFlight", "return singleFlight(()=>deliverOnce(blob,fileName))"),
+            ("apps/spreadsheets/io/file-delivery.js", "deliveryInFlight", "return singleFlight(()=>deliverOnce(blob,fileName))"),
+            ("apps/presentations/io/file-delivery.js", "deliveryInFlight", "return singleFlight(()=>deliverOnce(blob,name))"),
+            ("apps/pdf/io/file-delivery.js", "deliveryInFlight", "return singleFlight(()=>deliverOnce(blob,name))"),
+            ("apps/epub/io/file-delivery.js", "deliveryInFlight", "return singleFlight(()=>deliverOnce(blob,name))"),
+            ("apps/txt/runtime/services/file-delivery.js", "deliveryInFlight", "return singleFlight(()=>deliverOnce(blob,fileName))"),
+        )
+        for path, state_marker, wrapper_marker in cases:
+            source = self._read(path)
+            self.assertIn(state_marker, source, f"{path}: must retain one in-flight Save delivery")
+            self.assertIn(wrapper_marker, source, f"{path}: concurrent Save calls must share the in-flight delivery")
+
 
 if __name__ == "__main__":
     unittest.main()
