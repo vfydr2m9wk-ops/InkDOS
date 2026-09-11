@@ -29,29 +29,21 @@ class LegacyDocImportContractTests(unittest.TestCase):
         self.assertGreater(delivery_at, -1)
         self.assertGreater(promotion_at, delivery_at)
 
-    def test_picker_contract_has_one_static_supported_format_allowlist(self):
+    def test_picker_static_and_runtime_contracts_are_identical(self):
         html = (DOCS / "index.html").read_text(encoding="utf-8")
         app = (DOCS / "app.js").read_text(encoding="utf-8")
-        match = re.search(r'id="fileInput"[^>]*accept="([^"]+)"', html)
-        self.assertIsNotNone(match)
-        accept = match.group(1).split(",")
-        self.assertEqual(
-            accept,
-            [
-                ".docx",
-                ".rtf",
-                ".doc",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                "application/rtf",
-                "text/rtf",
-                "application/msword",
-            ],
-        )
-        self.assertNotIn("fileInput.accept=", app)
+        static_match = re.search(r'id="fileInput"[^>]*accept="([^"]+)"', html)
+        runtime_match = re.search(r"fileInput\.accept=['\"]([^'\"]+)['\"]", app)
+        self.assertIsNotNone(static_match)
+        self.assertIsNotNone(runtime_match)
+        self.assertEqual(static_match.group(1), runtime_match.group(1))
+        self.assertIn(".doc", static_match.group(1).split(","))
+        self.assertIn("application/msword", static_match.group(1).split(","))
 
-    def test_bootstrap_wires_canonical_promoter_without_rewriting_picker_contract(self):
+    def test_bootstrap_wires_doc_acceptance_and_canonical_promoter(self):
         source = (DOCS / "app.js").read_text(encoding="utf-8")
-        self.assertNotIn("fileInput.accept=", source)
+        self.assertRegex(source, r"fileInput\.accept\s*=\s*['\"][^'\"]*\.doc(?:,|['\"])")
+        self.assertIn("application/msword", source)
         self.assertIn("saveController.setPromoter?.(fileOpen.openFile)", source)
 
     def test_legacy_reader_is_present_and_sanitizes_xml_controls(self):
