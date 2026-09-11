@@ -3,7 +3,19 @@ const NS=global.InkDOS2Epub=global.InkDOS2Epub||{},P=NS.ContentProjector;
 function fail(code,message){const e=new Error(message);e.code=code;throw e}
 function abort(signal){if(signal&&signal.aborted)fail('aborted','EPUB operation aborted')}
 function stripDoctype(text){if(/<!ENTITY/i.test(text))fail('xml-entity','XML entity declarations are not allowed');if(/<!DOCTYPE[^>]*\[/i.test(text))fail('xml-doctype','XML internal subsets are not allowed');return text.replace(/<!DOCTYPE[^>]*>/ig,'')}
-function parseXml(bytes,label){let text;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes)}catch(_){fail('xml-encoding',label+' is not valid UTF-8')}text=stripDoctype(text);const doc=new DOMParser().parseFromString(text,'application/xml');if(Array.from(doc.getElementsByTagName('*')).some(x=>String(x.localName||'').toLowerCase()==='parsererror'))fail('xml-parse','Invalid '+label);return doc}
+function decodeXmlText(bytes,label){
+ const v=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes||0);let encoding='utf-8',start=0;
+ if(v.length>=2&&v[0]===0xff&&v[1]===0xfe){encoding='utf-16le';start=2}
+ else if(v.length>=2&&v[0]===0xfe&&v[1]===0xff){encoding='utf-16be';start=2}
+ else if(v.length>=2&&v[0]===0x3c&&v[1]===0x00)encoding='utf-16le';
+ else if(v.length>=2&&v[0]===0x00&&v[1]===0x3c)encoding='utf-16be';
+ try{
+  if(encoding==='utf-16le')return new TextDecoder('utf-16le',{fatal:true}).decode(v.subarray(start));
+  if(encoding==='utf-16be')return new TextDecoder('utf-16be',{fatal:true}).decode(v.subarray(start));
+  return new TextDecoder('utf-8',{fatal:true}).decode(v);
+ }catch(_){fail('xml-encoding',label+' is not valid UTF-8/UTF-16 XML')}
+}
+function parseXml(bytes,label){const text=decodeXmlText(bytes,label);const safe=stripDoctype(text);const doc=new DOMParser().parseFromString(safe,'application/xml');if(Array.from(doc.getElementsByTagName('*')).some(x=>String(x.localName||'').toLowerCase()==='parsererror'))fail('xml-parse','Invalid '+label);return doc}
 function els(root,name){return Array.from(root.getElementsByTagName('*')).filter(x=>String(x.localName||'').toLowerCase()===name)}
 function attr(el,name){if(!el)return null;for(const a of Array.from(el.attributes||[]))if(a.localName===name)return a.value;return null}
 function dirname(path){const i=path.lastIndexOf('/');return i<0?'':path.slice(0,i+1)}
@@ -20,5 +32,5 @@ async function build(pkg,options={}){const signal=options.signal||null;abort(sig
   if(!toc.length)toc=chapters.map(c=>({label:c.title,path:c.path,fragment:''}));
   return Object.freeze({title,rootfile:root,manifest:Object.freeze(Array.from(manifest.values()).map(x=>Object.freeze({...x,properties:Object.freeze(Array.from(x.properties))}))),spine:Object.freeze(spine.map(x=>Object.freeze({...x,properties:Object.freeze(Array.from(x.properties))}))),chapters:Object.freeze(chapters.map(c=>Object.freeze({...c,blocks:Object.freeze(c.blocks.map(b=>Object.freeze({...b,runs:Object.freeze(b.runs.map(r=>Object.freeze({...r})))})))}))),toc:Object.freeze(toc.map(x=>Object.freeze({...x}))),sourceBytes:pkg.sourceBytes.slice(0),sourceSize:pkg.inputBytes});
 }
-NS.BookModel={build,parseXml,resolve};
+NS.BookModel={build,parseXml,decodeXmlText,resolve};
 })(globalThis);
