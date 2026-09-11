@@ -3,6 +3,7 @@ const NS=g.InkDOS2Epub=g.InkDOS2Epub||{};
 function create({elements:E,reader,navigation,annotationModes}={}){
  if(!E||!reader||!navigation)throw new Error('ReaderBindings requires elements, reader and navigation');
  let ro=null,touchStart=null,selectionTools=null,unsavedDialog=null;
+ let authorizedUnload=false;
  function closeSheets(except){for(const p of [E.appearance,E.highlight,E.toc])if(p!==except)p.hidden=true}
  function toggleSheet(panel){const opening=panel.hidden;closeSheets(opening?panel:null);panel.hidden=!opening}
  function state(){return reader.state()}
@@ -82,8 +83,8 @@ function create({elements:E,reader,navigation,annotationModes}={}){
   E.viewport.addEventListener('touchstart',event=>{const current=state();if(current.flow!=='pages'||event.touches.length!==1)return;touchStart={x:event.touches[0].clientX,y:event.touches[0].clientY}},{passive:true});
   E.viewport.addEventListener('touchend',event=>{const current=state();if(!touchStart||current.flow!=='pages'||!event.changedTouches.length)return;const dx=event.changedTouches[0].clientX-touchStart.x,dy=event.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.35)reader.goPage(current.pageIndex+(dx<0?1:-1))},{passive:true});
   document.addEventListener('keydown',event=>{if(event.target&&event.target.closest&&event.target.closest('.reader-link'))return;const current=state();if(event.key==='ArrowRight'&&current.flow==='pages'){reader.goPage(current.pageIndex+1);event.preventDefault()}else if(event.key==='ArrowLeft'&&current.flow==='pages'){reader.goPage(current.pageIndex-1);event.preventDefault()}});
-  const home=document.querySelector('a[aria-label="Home"]');if(home)home.addEventListener('click',async event=>{if(!dirty())return;event.preventDefault();event.stopPropagation();const href=home.href;if(await authorizeReplacement('leave'))g.location.assign(href)});
-  g.addEventListener('beforeunload',event=>{if(!dirty())return;event.preventDefault();event.returnValue=''});
+  const home=document.querySelector('a[aria-label="Home"]');if(home)home.addEventListener('click',async event=>{if(!dirty())return;event.preventDefault();event.stopPropagation();const href=home.href;if(await authorizeReplacement('leave')){authorizedUnload=true;g.location.assign(href)}});
+  g.addEventListener('beforeunload',event=>{if(authorizedUnload){authorizedUnload=false;return}if(!dirty())return;event.preventDefault();event.returnValue=''});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)reader.persistCurrentPosition()});
   addEventListener('pagehide',()=>reader.persistCurrentPosition());
   ro=new ResizeObserver(()=>reader.viewportResized());ro.observe(E.viewport);reader.initialize();
