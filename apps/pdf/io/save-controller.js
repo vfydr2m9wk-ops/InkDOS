@@ -39,7 +39,8 @@ function create({session,getDocument,editor,chrome}={}){
   try{
    const result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes:session.sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Writing PDF before navigation…':phase==='validating'?'Validating PDF before navigation…':'Preparing PDF before navigation…')});
    document.documentElement.dataset.saveState='delivering';chrome.status('Save PDF before continuing…');
-   await NS.FileDelivery.deliver(result.blob,result.fileName);
+   const receipt=await NS.FileDelivery.deliver(result.blob,result.fileName);
+   if(!receipt?.deliveryConfirmed){session.markDirty();chrome.dirty();chrome.status('Save delivery was not confirmed — navigation cancelled');return false}
    if(getDocument()!==doc)return false;
    editor.commit();
    if(doc.annotationStorage.serializable.hash!==snapshotHash){session.markDirty();chrome.dirty();chrome.status('PDF changed while saving — navigation cancelled');return false}
