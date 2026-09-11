@@ -63,17 +63,33 @@ def main():
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is False
 
-            # Save delivery completes before replacement proceeds. Force the download
-            # transport here so this assertion is deterministic across Playwright hosts;
-            # picker cancellation/write-failure paths are tested explicitly below.
-            page.evaluate("()=>{globalThis.showSaveFilePicker=undefined}")
-            page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;api.editor.editor.commitValue('save-me',0,0);globalThis.__inkdosPending=api.openController.newWorkbook()}""")
+            # A confirmed File System Access write completes before replacement proceeds.
+            page.evaluate("""()=>{
+              const api=globalThis.__inkdosSpreadsheetsS1;
+              globalThis.showSaveFilePicker=async()=>({createWritable:async()=>({write:async()=>{},close:async()=>{}})});
+              api.editor.editor.commitValue('save-me',0,0);
+              globalThis.__inkdosPending=api.openController.newWorkbook();
+            }""")
+            page.wait_for_selector('#sessionReplacePanel:not([hidden])')
+            page.get_by_role('button',name='Save').click()
+            assert page.evaluate('async()=>await globalThis.__inkdosPending') is True
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is False
+
+            # A download request is not independently confirmed: replacement must remain blocked.
+            page.evaluate("""()=>{
+              const api=globalThis.__inkdosSpreadsheetsS1;
+              api.editor.editor.commitValue('download-unconfirmed',0,0);
+              globalThis.__inkdosBookId=api.session.documentId;
+              globalThis.showSaveFilePicker=undefined;
+              globalThis.__inkdosPending=api.openController.newWorkbook();
+            }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
             with page.expect_download() as info:
                 page.get_by_role('button',name='Save').click()
             assert info.value.suggested_filename.lower().endswith('.xlsx')
-            assert page.evaluate('async()=>await globalThis.__inkdosPending') is True
-            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is False
+            assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
+            assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
 
             # Cancelled save must not replace the workbook.
             page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;api.editor.editor.commitValue('stay',0,0);globalThis.__inkdosBookId=api.session.documentId;globalThis.showSaveFilePicker=async()=>{throw new DOMException('cancelled','AbortError')};globalThis.__inkdosPending=api.openController.newWorkbook()}""")
