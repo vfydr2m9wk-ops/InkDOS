@@ -55,13 +55,14 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text()); stability=stability_changes(); frozen=frozen_stability()
-    if v.get('version')!='2.0.12': raise SystemExit('Unexpected version')
+    version=v.get('version')
+    if version!='2.1.0': raise SystemExit('Unexpected version')
     if state.get('appliedSequence')!=80 or state.get('currentPackage')!='2.0.12-modularity-epub-polish': raise SystemExit('Unexpected development state')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
     for app in ACTIVE:
-        if f'./apps/{app}/index.html?v=2.0.12&amp;suite=1' not in home: raise SystemExit(f'Versioned suite Home route missing: {app}')
+        if f'./apps/{app}/index.html?v={version}&amp;suite=1' not in home: raise SystemExit(f'Versioned suite Home route missing: {app}')
         idx=ROOT/f'apps/{app}/index.html'; text=idx.read_text(encoding='utf-8')
         if '../../index.html' not in text or 'aria-label="Home"' not in text: raise SystemExit(f'Optional Home anchor missing: {app}')
         entry=lock['apps'][app]
@@ -99,10 +100,8 @@ def main():
         if marker not in pdf: raise SystemExit('PDF start gate missing: '+marker)
     if list((ROOT/'apps/pdf').rglob('*.pdf')) or (ROOT/'apps/pdf/tests').exists(): raise SystemExit('PDF distribution contains internal fixtures')
     sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
-    if stability or frozen:
-        if not re.search(r"const CACHE_NAME=['\"]inkdos-v2\.0\.12-stability-[^'\"]+['\"]",sw): raise SystemExit('Stability offline cache rotation missing')
-    elif "inkdos-v2.0.12-modularity-epub-polish-seq80" not in sw:
-        raise SystemExit('2.0.12 offline cache rotation missing')
+    if not re.search(rf"const CACHE_NAME=['\"]inkdos-v{re.escape(version)}-[^'\"]+['\"]",sw):
+        raise SystemExit(f'{version} offline cache rotation missing')
     forbidden=('suite-shell.js','file-router.js','recent-files.js','module-loader.js','shared/app-shell.js')
     for marker in forbidden:
         if marker in home: raise SystemExit(f'Legacy Home runtime reference: {marker}')

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -31,6 +32,7 @@ def main() -> None:
     session = read('apps/epub/session/book-session.js')
     package_reader = read('apps/epub/io/package-reader.js')
     service_worker = read('service-worker.js')
+    version = json.loads(read('VERSION.json'))['version']
 
     # The EPUB bootstrap is assembled from explicit responsibility modules.
     scripts = [
@@ -69,8 +71,8 @@ def main() -> None:
         if ref.startswith(('http://', 'https://', '//')):
             continue
         require(service_worker, f'"./apps/epub/{ref}"', 'EPUB offline shell')
-    if not re.search(r"const CACHE_NAME='inkdos-v2\.0\.12-stability-[^']+'", service_worker):
-        raise AssertionError('EPUB offline cache rotation: missing current stability cache name')
+    if not re.search(rf"const CACHE_NAME='inkdos-v{re.escape(version)}-[^']+'", service_worker):
+        raise AssertionError(f'EPUB offline cache rotation: missing current {version} cache name')
 
     for element_id in (
         'toolbar', 'fileInput', 'readerStage', 'readerSurface', 'emptyState',

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "project": "InkDOS",
-  "version": "2.0.12",
-  "releaseName": "InkDOS 2.0.12",
-  "releaseDate": "2026-09-07",
+  "version": "2.1.0",
+  "releaseName": "InkDOS 2.1.0",
+  "releaseDate": "2026-09-11",
   "releaseType": "Core Release",
   "entryPoints": {
     "documents": "apps/documents/index.html",
@@ -14,7 +14,7 @@
     "pdf": "apps/pdf/index.html"
   },
   "supportedFormats": [
-    "DOCX",
+    "DOC / DOCX / RTF",
     "XLS / XLSX",
     "PPT / PPTX",
     "TXT",

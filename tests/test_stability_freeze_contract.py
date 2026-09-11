@@ -56,11 +56,15 @@ def main() -> None:
     for phase in ("PPT-P2", "XLS-S1", "XLS-S2"):
         assert phase in baseline, phase
 
+    # The freeze lifecycle remains historical, but the installed offline cache belongs
+    # to the current public release. Do not force a stale 2.0.12 cache namespace after
+    # a validated release promotion.
+    version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))["version"]
     sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
-    assert "inkdos-v2.0.12-stability-" in sw, "Frozen baseline must retain a stability cache namespace"
+    assert f"inkdos-v{version}-" in sw, f"Current release cache namespace missing for {version}"
     validator = (ROOT / "scripts" / "validate_repository.py").read_text(encoding="utf-8")
     assert "def frozen_stability():" in validator
-    assert "if stability or frozen:" in validator
+    assert "re.escape(version)" in validator
     assert "candidate.get('status')=='frozen'" in validator
     assert "state.get('completedWorkspaces')==FROZEN_WORKSPACES" in validator
 

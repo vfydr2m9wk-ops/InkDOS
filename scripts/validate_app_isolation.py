@@ -9,6 +9,7 @@ import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
+VERSION=json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))['version']
 TEXT_SUFFIXES={'.html','.css','.js','.json','.webmanifest'}
 HOME_FRAME={
     'documents':'runtime/frame/frame-menu.js',
@@ -98,7 +99,7 @@ def validate_optional_home(app,errors):
 def validate_home_launcher(errors):
     home=(ROOT/'index.html').read_text(encoding='utf-8')
     for app in ACTIVE:
-        expected=f'./apps/{app}/index.html?v=2.0.12&amp;suite=1'
+        expected=f'./apps/{app}/index.html?v={VERSION}&amp;suite=1'
         if expected not in home:errors.append(f'Home: suite opt-in route missing for {app}')
 
 def validate_service_worker_shell(errors):
@@ -124,13 +125,13 @@ def validate_epub_layout(errors):
 
 def validate_source_lock_policy(errors):
     lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text(encoding='utf-8'))
-    if lock.get('release')!='2.0.12':errors.append('SOURCE_LOCK: release must be 2.0.12')
+    if lock.get('release')!=VERSION:errors.append(f'SOURCE_LOCK: release must match VERSION.json ({VERSION})')
     policy=lock.get('integrationPolicy','')
     for marker in ('suite=1','physically independent','EPUB','isolated'):
-        if marker not in policy:errors.append(f'SOURCE_LOCK: 2.0.12 integration policy missing {marker}')
+        if marker not in policy:errors.append(f'SOURCE_LOCK: integration policy missing {marker}')
     for app in ACTIVE:
         allowed='\n'.join(lock.get('apps',{}).get(app,{}).get('allowedIntegrationChanges',[]))
-        if '2.0.12' not in allowed or 'Home' not in allowed:
+        if 'Home' not in allowed:
             errors.append(f'SOURCE_LOCK: optional Home change not recorded for {app}')
     epub='\n'.join(lock.get('apps',{}).get('epub',{}).get('allowedIntegrationChanges',[]))
     for marker in ('structural refactor','io/','engine/','state/','view/'):
