@@ -14,7 +14,7 @@ def main() -> None:
     # EPUB permits a foreign resource in the spine when its manifest item provides
     # a fallback chain to an EPUB content document. The reader must resolve the
     # fallback instead of silently dropping every non-XHTML spine item.
-    require("const fallback=attr(item,'fallback')", 'Manifest fallback metadata')
+    require("fallback=attr(item,'fallback')", 'Manifest fallback metadata')
     require('fallback,properties', 'Manifest item fallback retention')
     require('function resolveSpineItem(item)', 'Spine fallback resolver')
     require("candidate.mediaType==='application/xhtml+xml'", 'Readable XHTML fallback acceptance')
