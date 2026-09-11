@@ -40,6 +40,13 @@ class LegacyDocImportContractTests(unittest.TestCase):
         self.assertIn(".doc", static_match.group(1).split(","))
         self.assertIn("application/msword", static_match.group(1).split(","))
 
+    def test_documents_has_one_beforeunload_owner_with_authorized_leave_bypass(self):
+        app = (DOCS / "app.js").read_text(encoding="utf-8")
+        commands = (DOCS / "ui" / "command-controller.js").read_text(encoding="utf-8")
+        self.assertEqual(app.count("beforeunload"), 1)
+        self.assertIn("authorizedUnload", app)
+        self.assertNotIn("beforeunload", commands)
+
     def test_bootstrap_wires_doc_acceptance_and_canonical_promoter(self):
         source = (DOCS / "app.js").read_text(encoding="utf-8")
         self.assertRegex(source, r"fileInput\.accept\s*=\s*['\"][^'\"]*\.doc(?:,|['\"])")
