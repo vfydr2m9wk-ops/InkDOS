@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.1.0 — 2026-09-11
+
+- Promote the current release identity to InkDOS 2.1.0 after the post-2.0.12 hardening cycle, while keeping historical freeze/audit records tied to the releases and commit anchors they actually describe.
+- Replace ambiguous Home descriptions with format-specific behavior: DOCX/XLSX/PPTX are the primary editable office formats; legacy DOC/XLS/PPT are import/conversion paths rather than native write-back formats; PDF is described as a read/annotate/export workspace.
+- Consolidate suite-wide unsaved-work handling so destructive Open/Home/leave flows use Save / Discard / Cancel and require confirmed delivery before clearing dirty state or authorizing navigation.
+- Consolidate single-flight / single-delivery protections intended to prevent overlapping Save requests and fallback chains from producing more than one host delivery for one deliberate Save action.
+- Extend legacy format handling with local DOC import and editable DOCX promotion, XLS-to-XLSX import/editing, and PPT-to-PPTX promotion with additional legacy presentation fidelity/clipping handling.
+- Extend PDF and EPUB annotation workflows with persistent annotation modes and pending-draft protection.
+- Harden EPUB package compatibility across WebKit/ZIP cases including local deflate fallback, URL/path normalization, Unicode/legacy ZIP names, rootfile/spine fallbacks and additional flow/SVG content projection cases.
+- Keep automated repository, format-preservation and browser validation across Chromium, Firefox and WebKit; explicitly distinguish this synthetic matrix from real-device acceptance on iPad/XeOS for host-specific delivery and rendering behavior.
+- Rotate Home cache-busting routes and the offline cache identity to the 2.1.0 release line.
+
 ## 2.0.12 — 2026-09-07
 
 - Make the Home bridge optional in all six workspaces: Home launches apps with `suite=1`, while each app-local frame hides the Home control and removes its target when opened directly or extracted standalone.
