@@ -45,7 +45,8 @@ function create({session,chrome,promoteLegacyPpt}={}){
       const kind=session.sourceKind;
       const {bytes,receipt,blob,fileName}=await buildCopy(false);
       chrome.status('Saving PPTX before navigation…');
-      await NS.FileDelivery.deliver(blob,fileName);
+      const delivery=await NS.FileDelivery.deliver(blob,fileName);
+      if(!delivery?.deliveryConfirmed){chrome.status('Save delivery was not confirmed — navigation cancelled');return false}
       if(session.revision!==revision){chrome.status('Presentation changed while saving — navigation cancelled');return false}
       if(kind==='pptx'){
         if(!session.acceptConfirmedPptx(bytes,receipt))return false;
