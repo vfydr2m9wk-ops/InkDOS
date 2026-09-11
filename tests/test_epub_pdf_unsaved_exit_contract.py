@@ -62,7 +62,9 @@ def test_pdf_pending_comment_draft_is_part_of_dirty_exit_contract():
     assert "function hasPendingCommentDraft" in PDF_COMMANDS
     assert "async function commitPendingCommentDraft" in PDF_COMMANDS
     assert "function discardPendingCommentDraft" in PDF_COMMANDS
+    assert "current!==baseline" in PDF_COMMANDS
     assert "session.dirty||hasPendingCommentDraft()" in PDF_COMMANDS
+    assert "if(!hasUnsavedWork())return true" in PDF_COMMANDS
     assert "await commitPendingCommentDraft()" in PDF_COMMANDS
     assert "discardPendingCommentDraft()" in PDF_COMMANDS
     assert "extensions.saveComment()" in PDF_COMMANDS
