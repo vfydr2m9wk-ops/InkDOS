@@ -1,4 +1,6 @@
 (function(g){'use strict';const NS=g.InkDOS2=g.InkDOS2||{};
+let deliveryInFlight=null;
+function singleFlight(run){if(deliveryInFlight)return deliveryInFlight;let p;try{p=Promise.resolve(run())}catch(e){return Promise.reject(e)}deliveryInFlight=p;p.finally(()=>{if(deliveryInFlight===p)deliveryInFlight=null}).catch(()=>{});return p}
 async function sha256(bytes){if(!(g.crypto&&g.crypto.subtle))return null;const buf=bytes instanceof ArrayBuffer?bytes:bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);const dig=await g.crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(dig),b=>b.toString(16).padStart(2,'0')).join('')}
 function safeName(name){let n=String(name||'Untitled.txt').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.txt$/i.test(n)?n:n+'.txt'}
 function toFile(blob,fileName){const name=safeName(fileName);try{return new File([blob],name,{type:blob.type||'text/plain',lastModified:Date.now()})}catch(_){return null}}
@@ -18,8 +20,9 @@ return finishReceipt({fileName:safeName(fileName),method:'web-share',deliveryCon
 async function viaDownload(blob,fileName){if(!(g.document&&g.URL&&URL.createObjectURL))throw deliveryError('download-unavailable','Download is unavailable in this host.');const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=safeName(fileName);a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000)}return finishReceipt({fileName:safeName(fileName),method:'download',deliveryConfirmed:false},blob)}
 function deliveryError(code,message,cause){const e=new Error(message);e.name='InkDOSDeliveryError';e.code=code;if(cause)e.cause=cause;return e}
 function share(blob,fileName){const file=toFile(blob,fileName);if(!canShareFile(file))return Promise.reject(deliveryError('share-unavailable','System file sharing is unavailable in this host.'));return viaShare(blob,fileName,file)}
-function deliver(blob,fileName){const file=toFile(blob,fileName);const route=chooseRoute(file);/* Invoke exactly one chosen native route before any await so transient user activation remains available without duplicate delivery. */
+function deliverOnce(blob,fileName){const file=toFile(blob,fileName);const route=chooseRoute(file);/* Invoke exactly one chosen native route before any await so transient user activation remains available without duplicate delivery. */
 if(route==='web-share')return viaShare(blob,fileName,file);
 if(route==='file-system-access')return viaPicker(blob,fileName).catch(e=>{if(e.code==='cancelled'||e.code==='write-failed')throw e;if(canShareFile(file))return viaShare(blob,fileName,file).catch(()=>viaDownload(blob,fileName).catch(()=>{throw e}));return viaDownload(blob,fileName).catch(()=>{throw e})});
 return viaDownload(blob,fileName)}
+function deliver(blob,fileName){return singleFlight(()=>deliverOnce(blob,fileName))}
 NS.sha256=sha256;NS.FileDelivery={deliver,share,capabilities,safeName};})(globalThis);
