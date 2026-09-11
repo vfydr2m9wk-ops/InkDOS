@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
+# Exact-state regression for destructive Plain Text navigation.
 ROOT = Path(__file__).resolve().parents[1]
 FILES = (ROOT / "apps/txt/io/txt-file-controller.js").read_text(encoding="utf-8")
 CONTROLS = (ROOT / "apps/txt/ui/txt-controls.js").read_text(encoding="utf-8")
