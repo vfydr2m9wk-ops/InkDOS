@@ -34,5 +34,6 @@ async function build(pkg,options={}){const signal=options.signal||null;abort(sig
   if(!toc.length)toc=chapters.map(c=>({label:c.title,path:c.path,fragment:''}));
   return Object.freeze({title,rootfile:root,manifest:Object.freeze(Array.from(manifest.values()).map(x=>Object.freeze({...x,properties:Object.freeze(Array.from(x.properties))}))),spine:Object.freeze(spine.map(x=>Object.freeze({...x,properties:Object.freeze(Array.from(x.properties))}))),chapters:Object.freeze(chapters.map(c=>Object.freeze({...c,blocks:Object.freeze(c.blocks.map(b=>Object.freeze({...b,runs:Object.freeze(b.runs.map(r=>Object.freeze({...r})))})))}))),toc:Object.freeze(toc.map(x=>Object.freeze({...x}))),sourceBytes:pkg.sourceBytes.slice(0),sourceSize:pkg.inputBytes});
 }
-NS.BookModel={build,parseXml,decodeXmlText,resolve,selectRootfile};
+NS.BookModel={build,parseXml,decodeXmlText,resolve};
+NS.BookModel.selectRootfile=selectRootfile;
 })(globalThis);
