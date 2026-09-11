@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -9,13 +10,13 @@ class LegacyDocImportContractTests(unittest.TestCase):
     def test_documents_loads_local_legacy_doc_reader(self):
         html = (DOCS / "index.html").read_text(encoding="utf-8")
         self.assertIn('src="io/legacy-doc-reader.js"', html)
-        self.assertRegex(html, r'accept="[^"]*\.doc(?:,|\")')
 
     def test_open_controller_accepts_doc_as_read_only_import(self):
         source = (DOCS / "io" / "file-open-controller.js").read_text(encoding="utf-8")
         self.assertIn("isDoc=/\\.doc$/i.test(file.name)", source)
         self.assertIn("NS.LegacyDocReader", source)
-        self.assertIn("kind:'doc'", source)
+        self.assertRegex(source, r"kind\s*:\s*isDoc\s*\?\s*['\"]doc['\"]")
+        self.assertIn("setLegacyMode(isDoc)", source)
         self.assertIn("Save editable DOCX copy", source)
 
     def test_save_controller_promotes_only_after_confirmed_delivery(self):
@@ -30,7 +31,7 @@ class LegacyDocImportContractTests(unittest.TestCase):
 
     def test_bootstrap_wires_doc_acceptance_and_canonical_promoter(self):
         source = (DOCS / "app.js").read_text(encoding="utf-8")
-        self.assertIn(".doc,", source)
+        self.assertRegex(source, r"fileInput\.accept\s*=\s*['\"][^'\"]*\.doc(?:,|['\"])")
         self.assertIn("application/msword", source)
         self.assertIn("saveController.setPromoter?.(fileOpen.openFile)", source)
 
