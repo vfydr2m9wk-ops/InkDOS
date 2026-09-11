@@ -53,7 +53,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "8d9a0fbeb89a9bb3ebe0ed9451a5cec67e23c842ed0514508cf1c12c9ae6f989",
+      "nonIndexTreeSha256": "62681b4fa89e5a6d10736e3fbb0b2f7ea148d72089acf7c2e7aec683217fc4cd",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -119,7 +119,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "54d10d7e97e2a07e981752d8eddedea8d281b81229d035fe982e937c4ce41b90",
+      "nonIndexTreeSha256": "f9b76b2dcbf7a076c07c0bfb67e40f64e123f414c48fc9c39c685b1df5b5b2a2",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",

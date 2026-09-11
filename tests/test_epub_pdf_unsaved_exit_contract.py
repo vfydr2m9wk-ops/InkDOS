@@ -58,6 +58,11 @@ def test_pdf_replacement_save_is_snapshot_aware():
     assert "annotationStorage.serializable.hash!==snapshotHash" in PDF_SAVE
 
 
+def test_pdf_replacement_requires_confirmed_delivery():
+    assert "receipt.deliveryConfirmed" in PDF_SAVE
+    assert "Save delivery was not confirmed" in PDF_SAVE
+
+
 def test_pdf_pending_comment_draft_is_part_of_dirty_exit_contract():
     assert "function hasPendingCommentDraft" in PDF_COMMANDS
     assert "async function commitPendingCommentDraft" in PDF_COMMANDS
