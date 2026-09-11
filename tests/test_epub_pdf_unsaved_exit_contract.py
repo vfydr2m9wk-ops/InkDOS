@@ -6,7 +6,6 @@ EPUB_MODES = (ROOT / "apps/epub/ui/annotation-modes.js").read_text()
 EPUB_BINDINGS = (ROOT / "apps/epub/ui/reader-bindings.js").read_text()
 PDF_APP = (ROOT / "apps/pdf/app.js").read_text()
 PDF_COMMANDS = (ROOT / "apps/pdf/ui/command-controller.js").read_text()
-PDF_REVIEW = (ROOT / "apps/pdf/extensions/review-annotations.js").read_text()
 PDF_SAVE = (ROOT / "apps/pdf/io/save-controller.js").read_text()
 
 
@@ -60,11 +59,11 @@ def test_pdf_replacement_save_is_snapshot_aware():
 
 
 def test_pdf_pending_comment_draft_is_part_of_dirty_exit_contract():
-    assert "hasPendingCommentDraft" in PDF_REVIEW
-    assert "commitPendingCommentDraft" in PDF_REVIEW
-    assert "discardPendingCommentDraft" in PDF_REVIEW
-    assert "extensions?.hasPendingCommentDraft?.()" in PDF_COMMANDS
-    assert "extensions.commitPendingCommentDraft()" in PDF_COMMANDS
-    assert "extensions?.discardPendingCommentDraft?.()" in PDF_COMMANDS
-    assert "extensions" in PDF_APP
+    assert "function hasPendingCommentDraft" in PDF_COMMANDS
+    assert "async function commitPendingCommentDraft" in PDF_COMMANDS
+    assert "function discardPendingCommentDraft" in PDF_COMMANDS
+    assert "session.dirty||hasPendingCommentDraft()" in PDF_COMMANDS
+    assert "await commitPendingCommentDraft()" in PDF_COMMANDS
+    assert "discardPendingCommentDraft()" in PDF_COMMANDS
+    assert "extensions.saveComment()" in PDF_COMMANDS
     assert "commands.hasUnsavedWork()" in PDF_APP
