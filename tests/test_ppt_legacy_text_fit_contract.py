@@ -30,6 +30,12 @@ class LegacyPptTextFitContractTests(unittest.TestCase):
         self.assertNotIn("session.markDirty", fit)
         self.assertIn("dataset.legacyTextFit", fit)
 
+    def test_fit_reacts_to_viewport_resize_without_mutating_model(self):
+        source = TOOLS.read_text(encoding="utf-8")
+        install = source[source.index("function install") : source.index("return Object.freeze")]
+        self.assertIn("addEventListener('resize',scheduleLegacyTextFit", install)
+        self.assertNotIn("session.markDirty", install)
+
 
 if __name__ == "__main__":
     unittest.main()
