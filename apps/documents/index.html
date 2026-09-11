@@ -76,7 +76,7 @@
       <div class="start-card">
         <img src="assets/documents.svg" class="start-icon" alt="">
         <h1>Documents</h1>
-        <p>Create a document or open a DOCX file locally.</p>
+        <p>Create a document or open a DOCX, RTF, or legacy DOC file locally.</p>
         <div class="start-actions"><button id="startNew" type="button">New document</button><button id="startOpen" class="primary" type="button">Open document</button></div>
       </div>
     </div>
@@ -88,7 +88,7 @@
     <span id="pageStatus">—</span>
   </footer>
 
-  <input id="fileInput" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+  <input id="fileInput" type="file" accept=".docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword" hidden>
 
   <div id="menuBackdrop" class="backdrop" hidden></div>
   <aside id="generalMenu" class="drawer general-drawer" role="dialog" aria-modal="true" aria-label="Documents menu" hidden>

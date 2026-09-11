@@ -22,7 +22,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "b9ecd467130d1e97bd45e7bb27e48e3afb90fc6078ef6e64924b6fe298a6ef23"
+      "integratedIndexSha256": "14662fdbfbc903511014fa76d4f07639952ba8d1299b5b638c8d3f5d81eb06cc"
     },
     "spreadsheets": {
       "sourcePackage": "Spreadsheets-FINAL.zip",
