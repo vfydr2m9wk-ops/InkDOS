@@ -159,6 +159,7 @@ const APP_SHELL=[
   "./apps/presentations/io/ppt-p1-structure-writer.js",
   "./apps/presentations/io/ppt-p2-package.js",
   "./apps/presentations/io/pptx-open-controller.js",
+  "./apps/presentations/io/pptx-text-columns.js",
   "./apps/presentations/io/pptx-preservation-writer.js",
   "./apps/presentations/io/pptx-writer.js",
   "./apps/presentations/io/save-controller.js",
