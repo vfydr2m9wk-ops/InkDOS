@@ -26,6 +26,13 @@ function decodeName(bytes,flags=0){
   let out='';for(const b of bytes){if(b<0x80)out+=String.fromCharCode(b);else out+=CP437_HIGH[b-0x80]||'�'}return out;
 }
 function crc32(bytes){let c=0xffffffff;for(let i=0;i<bytes.length;i++){c^=bytes[i];for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return (c^0xffffffff)>>>0}
+function unicodePathFromExtra(bytes,view,start,length,rawNameBytes,flags){
+  if(flags&0x0800)return null;
+  let p=start,end=start+length;
+  while(p+4<=end){const id=bytes[p]|bytes[p+1]<<8,n=bytes[p+2]|bytes[p+3]<<8;p+=4;if(p+n>end)fail('invalid-zip','Malformed ZIP extra field');if(id===0x7075&&n>=5&&bytes[p]===1&&u32(view,p+1)===(crc32(rawNameBytes)>>>0)){try{return new TextDecoder('utf-8',{fatal:true}).decode(bytes.slice(p+5,p+n))}catch(_){return null}}p+=n}
+  return null;
+}
+function decodedEntryName(bytes,view,nameStart,nameLen,extraStart,extraLen,flags){const rawNameBytes=bytes.slice(nameStart,nameStart+nameLen),unicodeName=unicodePathFromExtra(bytes,view,extraStart,extraLen,rawNameBytes,flags);return {rawNameBytes,rawName:decodeName(rawNameBytes,flags),name:unicodeName||decodeName(rawNameBytes,flags)}}
 let inflaterLoad=null;
 async function ensureBundledInflater(signal){abort(signal);if(global.pako&&typeof global.pako.inflateRaw==='function')return true;if(typeof document==='undefined')return false;if(!inflaterLoad){inflaterLoad=new Promise(resolve=>{const script=document.createElement('script');script.src='vendor/pako_inflate.min.js';script.async=false;script.addEventListener('load',()=>resolve(!!(global.pako&&typeof global.pako.inflateRaw==='function')),{once:true});script.addEventListener('error',()=>resolve(false),{once:true});(document.head||document.documentElement).appendChild(script)})}const ready=await inflaterLoad;abort(signal);return ready}
 async function inflateRaw(bytes,signal){abort(signal);if(await ensureBundledInflater(signal)){try{const out=new Uint8Array(global.pako.inflateRaw(bytes));abort(signal);return out}catch(e){fail('deflate-failed','The bundled EPUB decompressor could not inflate this entry.')}}if(typeof DecompressionStream!=='function')fail('deflate-unavailable','This host does not provide a compatible local EPUB decompressor');let ds;try{ds=new DecompressionStream('deflate-raw')}catch(_){fail('deflate-unavailable','This host cannot create a deflate-raw decompressor')}try{const ab=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer();abort(signal);return new Uint8Array(ab)}catch(e){fail('deflate-failed','The browser decompressor could not inflate this EPUB entry.')}}
@@ -65,7 +72,7 @@ async function open(buffer,options={}){
     const need={size:rawSize===0xffffffff,compSize:rawCompSize===0xffffffff,localOffset:rawLocalOffset===0xffffffff,diskStart:rawDiskStart===0xffff},z=zip64EntryValues(bytes,view,p+46+nameLen,extraLen,need);
     const compSize=need.compSize?z.compSize:rawCompSize,size=need.size?z.size:rawSize,localOffset=need.localOffset?z.localOffset:rawLocalOffset,diskStart=need.diskStart?z.diskStart:rawDiskStart;
     if(diskStart)fail('multidisk','Multi-disk entry is not supported');
-    const rawName=decodeName(bytes.slice(p+46,p+46+nameLen),flags),path=normalizePath(rawName),isDirectory=rawName.endsWith('/');
+    const centralName=decodedEntryName(bytes,view,p+46,nameLen,p+46+nameLen,extraLen,flags),rawName=centralName.rawName,path=normalizePath(centralName.name),isDirectory=centralName.name.endsWith('/');
     if(entries.has(path))fail('duplicate-path','Duplicate normalized ZIP path: '+path);
     if(size>b.maxEntryUncompressedBytes)fail('entry-budget','ZIP entry exceeds single-entry budget: '+path);
     totalUncompressed+=size;if(totalUncompressed>b.maxTotalUncompressedBytes)fail('expanded-budget','EPUB declared expanded bytes exceed provisional budget');
@@ -73,7 +80,7 @@ async function open(buffer,options={}){
     if(localOffset+30>centralOffset||u32(view,localOffset)!==0x04034b50)fail('invalid-zip','ZIP local header is invalid for '+path);
     const localFlags=u16(view,localOffset+6),localNameLen=u16(view,localOffset+26),localExtraLen=u16(view,localOffset+28),dataStart=localOffset+30+localNameLen+localExtraLen;
     if(dataStart+compSize>centralOffset)fail('invalid-zip','ZIP entry data overlaps central directory: '+path);
-    const localName=normalizePath(decodeName(bytes.slice(localOffset+30,localOffset+30+localNameLen),localFlags));if(localName!==path)fail('invalid-zip','ZIP local/central path mismatch: '+path);
+    const localEntryName=decodedEntryName(bytes,view,localOffset+30,localNameLen,localOffset+30+localNameLen,localExtraLen,localFlags),localName=normalizePath(localEntryName.name);if(localName!==path)fail('invalid-zip','ZIP local/central path mismatch: '+path);
     const rec=Object.freeze({path,rawName,method,flags,crc32:crc>>>0,compressedSize:compSize,uncompressedSize:size,localOffset,dataStart,isDirectory});entries.set(path,rec);ordered.push(rec);p+=46+nameLen+extraLen+commentLen;
   }
   if(p!==centralOffset+centralSize)fail('invalid-zip','ZIP central directory size does not match parsed entries');
