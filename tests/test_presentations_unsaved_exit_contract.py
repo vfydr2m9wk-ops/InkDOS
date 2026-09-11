@@ -16,6 +16,11 @@ def test_presentations_blocks_replacement_until_save_completes():
     assert "await save.saveForReplacement" in COMMANDS
 
 
+def test_presentations_replacement_requires_confirmed_delivery():
+    assert "delivery.deliveryConfirmed" in SAVE
+    assert "Save delivery was not confirmed" in SAVE
+
+
 def test_presentations_guards_home_and_browser_unload():
     assert "aria-label=\"Home\"" in (ROOT / "apps/presentations/index.html").read_text(encoding="utf-8")
     assert "beforeunload" in COMMANDS
@@ -25,5 +30,6 @@ def test_presentations_guards_home_and_browser_unload():
 if __name__ == "__main__":
     test_presentations_has_three_way_unsaved_decision_contract()
     test_presentations_blocks_replacement_until_save_completes()
+    test_presentations_replacement_requires_confirmed_delivery()
     test_presentations_guards_home_and_browser_unload()
     print("Presentations unsaved-exit contract: OK")
