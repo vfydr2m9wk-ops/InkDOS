@@ -13,7 +13,7 @@ async function viaShare(blob,fileName,file){try{await navigator.share({files:[fi
 async function share(blob,fileName){const file=toFile(blob,fileName);if(!canShare(file))fail('share-unavailable','System file sharing is unavailable in this host.');return viaShare(blob,fileName,file)}
 async function viaDownload(blob,fileName){if(!(global.document&&global.URL&&URL.createObjectURL))fail('download-unavailable','Download is unavailable in this host.');const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=safeName(fileName);a.rel='noopener';a.hidden=true;document.body.appendChild(a);try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000)}return Object.freeze({method:'download',fileName:safeName(fileName),deliveryConfirmed:false})}
 async function deliverOnce(blob,fileName){const file=toFile(blob,fileName),c=capabilities(blob,fileName);
- // Any invoked delivery route is terminal for this Save action. A rejected Web Share promise does not prove that the host produced no file.
+ // Exactly-once invariant: after Web Share is invoked, its outcome is terminal for this Save; only pre-invocation routing may fall back.
  if(c.local){if(c.share)return viaShare(blob,fileName,file);fail('local-delivery-unavailable','This HTML viewer blocks direct DOCX downloads. Use a browser/host with system file sharing enabled, or open the InkDOS app from its normal host.');}
  if(c.preferShareSave&&c.share)return viaShare(blob,fileName,file)
  if(c.fileSystem){try{return await viaPicker(blob,fileName)}catch(e){if(e.code==='cancelled'||e.code==='write-failed')throw e;if(c.share)return viaShare(blob,fileName,file);return viaDownload(blob,fileName)}}
