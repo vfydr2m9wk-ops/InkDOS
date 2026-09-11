@@ -1,6 +1,6 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Epub=global.InkDOS2Epub||{};
-const BLOCKED=new Set(['script','style','iframe','object','embed','form','input','button','video','audio','canvas','svg','math','link','meta']);
+const BLOCKED=new Set(['script','style','iframe','object','embed','form','input','button','video','audio','canvas','math','link','meta']);
 const STRUCTURAL=new Set(['div','section','article','main','header','footer','aside','nav','figure','figcaption','address','details','summary']);
 const IMAGE_TYPES=new Set(['image/png','image/jpeg','image/gif','image/webp']);
 function localName(el){return String(el&&el.localName||el&&el.tagName||'').toLowerCase()}
