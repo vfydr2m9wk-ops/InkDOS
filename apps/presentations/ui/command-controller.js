@@ -1,6 +1,6 @@
 (function(global){'use strict';const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,history,selection,chrome,fileOpen,save,editor,panel,slideshow,onStructureChange}={}){
- const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null,unsavedDialog=null;const registry=new Map();
+ const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null,unsavedDialog=null,authorizedUnload=false;const registry=new Map();
  function register(id,handler,isEnabled=()=>true){if(!id||typeof handler!=='function')throw new TypeError('Invalid Presentations command');registry.set(id,Object.freeze({handler,isEnabled}));return id}
  function isEnabled(id){const command=registry.get(id);return !!command&&command.isEnabled()!==false}
  function execute(id,...args){const command=registry.get(id);if(!command)throw new Error('PRESENTATIONS_COMMAND_NOT_REGISTERED: '+id);if(command.isEnabled()===false)return false;return command.handler(...args)}
@@ -71,8 +71,8 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   const present=$('presentBtn');if(present)present.disabled=!isEnabled('presentation.present.current');const presentStart=$('presentStartMenuBtn');if(presentStart)presentStart.disabled=!isEnabled('presentation.present.start');
   editor.sync()
  }
- function installHomeGuard(){const homeLink=document.querySelector('a[aria-label="Home"]');if(!homeLink)return;homeLink.addEventListener('click',async e=>{if(!session.dirty)return;e.preventDefault();e.stopPropagation();const href=homeLink.href;if(await authorizeReplacement('leave'))global.location.assign(href)})}
- function installUnloadGuard(){global.addEventListener('beforeunload',e=>{if(!session.dirty)return;e.preventDefault();e.returnValue=''})}
+ function installHomeGuard(){const homeLink=document.querySelector('a[aria-label="Home"]');if(!homeLink)return;homeLink.addEventListener('click',async e=>{if(!session.dirty)return;e.preventDefault();e.stopPropagation();const href=homeLink.href;if(await authorizeReplacement('leave')){authorizedUnload=true;global.location.assign(href)}})}
+ function installUnloadGuard(){global.addEventListener('beforeunload',e=>{if(authorizedUnload){authorizedUnload=false;return}if(!session.dirty)return;e.preventDefault();e.returnValue=''})}
  function install(){
   drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});zoomPopover=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover')});
   installShareAction();installHomeGuard();installUnloadGuard();
