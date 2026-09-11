@@ -21,9 +21,11 @@ function create({elements:E,reader,navigation,annotationModes}={}){
    card.append(title,text,actions);node.append(card);unsavedDialog={node,resolve};document.body.append(node);actions.querySelector('[data-choice="cancel"]')?.focus();
   })
  }
+ function commitPendingDraft(){return !annotationModes?.hasPendingNoteDraft()||annotationModes.commitPendingNote()}
+ async function saveCurrentCopy(){const before=state();if(!before.book)return false;if(!commitPendingDraft())return false;return await reader.saveCopy()}
  async function saveForReplacement(){
   const before=state();if(!before.book)return true;
-  if(annotationModes?.hasPendingNoteDraft()&&!annotationModes?.commitPendingNote())return false;
+  if(!commitPendingDraft())return false;
   const ready=state();if(!ready.annotationDirty)return true;
   const revision=ready.annotationRevision,ok=await reader.saveCopy();if(!ok)return false;
   const after=state();if(after.annotationRevision!==revision){reader.notice('Book changed while saving — navigation cancelled',4000);return false}
@@ -46,7 +48,7 @@ function create({elements:E,reader,navigation,annotationModes}={}){
   E.open.addEventListener('click',()=>requestOpen());
   E.openStart.addEventListener('click',()=>requestOpen());
   E.file.addEventListener('change',()=>{const file=E.file.files&&E.file.files[0];if(file)reader.openFile(file)});
-  E.save.addEventListener('click',()=>saveForReplacement());
+  E.save.addEventListener('click',()=>saveCurrentCopy());
   E.share.addEventListener('click',()=>reader.shareCopy());
   E.tocBtn.addEventListener('click',()=>{const opened=reader.toggleNavigationSheet();if(opened)navigation.showTab('contents')});
   E.tocClose.addEventListener('click',()=>reader.closeNavigationSheet());
@@ -85,7 +87,7 @@ function create({elements:E,reader,navigation,annotationModes}={}){
   addEventListener('pagehide',()=>reader.persistCurrentPosition());
   ro=new ResizeObserver(()=>reader.viewportResized());ro.observe(E.viewport);reader.initialize();
  }
- return Object.freeze({install,requestOpen,authorizeReplacement,saveForReplacement});
+ return Object.freeze({install,requestOpen,authorizeReplacement,saveForReplacement,saveCurrentCopy});
 }
 NS.ReaderBindings=Object.freeze({create});
 })(globalThis);
