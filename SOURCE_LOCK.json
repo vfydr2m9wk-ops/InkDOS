@@ -80,7 +80,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "5bac940dd5be6e5ba63c6682a0eaa8b5bb34ea970cbb711cd30c38a9b9272291",
+      "nonIndexTreeSha256": "c6e0a59a9b931f838c9b682dda8c067d40a4d34ab3e12dcc1f5cf4cd80dbd253",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -93,7 +93,7 @@
         "runtime/services/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations; regenerate index.html deterministically",
         "runtime/frame/app-frame.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches; regenerate index.html deterministically"
       ],
-      "integratedIndexSha256": "c65706ce77e10cd15f8c56b73183533f247b20d5513cf670781976ec8f416b3c"
+      "integratedIndexSha256": "bb46837545c02289be18772b930ed1aed6021206f1d42638a066a3d2de1cf0f8"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
