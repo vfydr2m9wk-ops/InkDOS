@@ -79,6 +79,7 @@ const APP_SHELL=[
   "./apps/documents/io/docx-writer.js",
   "./apps/documents/io/file-delivery.js",
   "./apps/documents/io/file-open-controller.js",
+  "./apps/documents/io/legacy-doc-reader.js",
   "./apps/documents/io/package-reader.js",
   "./apps/documents/io/rtf-importer.js",
   "./apps/documents/io/save-controller.js",
