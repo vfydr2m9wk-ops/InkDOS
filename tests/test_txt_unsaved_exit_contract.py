@@ -15,12 +15,14 @@ def test_txt_has_three_way_unsaved_decision_contract():
     assert "resolveDiscard('cancel')" in CONTROLS
 
 
-def test_txt_blocks_replacement_until_save_completes():
+def test_txt_blocks_replacement_until_exact_save_completes():
     assert "saveForReplacement" in FILES
     assert "await saveForReplacement()" in FILES
     assert "decision==='save'" in FILES
     assert "decision==='discard'" in FILES
     assert "decision==='cancel'" in FILES
+    assert "state.session.revision!==snap.revision" in FILES
+    assert "state.session.dirty=false" in FILES
 
 
 def test_txt_guards_home_and_browser_unload():
@@ -31,6 +33,6 @@ def test_txt_guards_home_and_browser_unload():
 
 if __name__ == "__main__":
     test_txt_has_three_way_unsaved_decision_contract()
-    test_txt_blocks_replacement_until_save_completes()
+    test_txt_blocks_replacement_until_exact_save_completes()
     test_txt_guards_home_and_browser_unload()
     print("Plain Text unsaved-exit contract: OK")
