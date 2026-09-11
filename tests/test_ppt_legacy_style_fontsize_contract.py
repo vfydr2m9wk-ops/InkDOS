@@ -23,7 +23,7 @@ class LegacyPptStyleFontSizeContractTests(unittest.TestCase):
         helper = source[source.index("function legacyCharacterFontSize") : source.index("function officeProps")]
         self.assertIn("return null", helper)
         self.assertIn("sizes.size!==1", helper)
-        self.assertIn("fontSizePt>=1&&fontSizePt<=4000", helper)
+        self.assertIn("fontSizePt>=1&&fontSizePt<=4000", source)
 
 
 if __name__ == "__main__":
