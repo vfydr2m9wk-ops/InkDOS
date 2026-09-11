@@ -100,21 +100,36 @@ def main():
             assert discarded is True,discarded
             assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is False
 
-            # Save: file delivery must happen before replacement resolves.
+            # Save: a confirmed File System Access write must happen before replacement resolves.
             page.evaluate("""()=>{
               const app=globalThis.InkDOS2Documents.DocumentsApp;
               app.session.markDirty();
-              try{delete globalThis.showSaveFilePicker}catch(_){}
+              globalThis.showSaveFilePicker=async()=>({createWritable:async()=>({write:async()=>{},close:async()=>{}})});
+              globalThis.__inkdosPendingReplacement=app.newDocument();
+            }""")
+            page.wait_for_selector('#sessionReplacePanel:not([hidden])')
+            page.get_by_role('button',name='Save').click()
+            saved=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
+            assert saved is True,saved
+            assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is False
+
+            # A download request is not independently confirmed: replacement must remain blocked.
+            page.evaluate("""()=>{
+              const app=globalThis.InkDOS2Documents.DocumentsApp;
+              app.session.markDirty();
+              globalThis.__inkdosDocumentId=app.session.documentId;
+              globalThis.showSaveFilePicker=undefined;
               globalThis.__inkdosPendingReplacement=app.newDocument();
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
             with page.expect_download() as download_info:
                 page.get_by_role('button',name='Save').click()
             download=download_info.value
-            saved=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
-            assert saved is True,saved
+            unconfirmed=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
+            assert unconfirmed is False,unconfirmed
             assert download.suggested_filename.lower().endswith('.docx'),download.suggested_filename
-            assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is False
+            assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is True
+            assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.documentId===globalThis.__inkdosDocumentId') is True
 
             # Save cancellation: do not navigate and preserve dirty state/document identity.
             page.evaluate("""()=>{

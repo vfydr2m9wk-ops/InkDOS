@@ -4,6 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EPUB_APP = (ROOT / "apps/epub/app.js").read_text()
 EPUB_MODES = (ROOT / "apps/epub/ui/annotation-modes.js").read_text()
 EPUB_BINDINGS = (ROOT / "apps/epub/ui/reader-bindings.js").read_text()
+EPUB_DELIVERY = (ROOT / "apps/epub/io/file-delivery.js").read_text()
 PDF_APP = (ROOT / "apps/pdf/app.js").read_text()
 PDF_COMMANDS = (ROOT / "apps/pdf/ui/command-controller.js").read_text()
 PDF_SAVE = (ROOT / "apps/pdf/io/save-controller.js").read_text()
@@ -24,7 +25,16 @@ def test_epub_guards_dirty_open_home_and_browser_unload():
 def test_epub_replacement_save_is_revision_aware():
     assert "const revision=ready.annotationRevision" in EPUB_BINDINGS
     assert "after.annotationRevision!==revision" in EPUB_BINDINGS
-    assert "await reader.saveCopy()" in EPUB_BINDINGS
+    assert "requireConfirmed(()=>reader.saveCopy())" in EPUB_BINDINGS
+
+
+def test_epub_replacement_requires_confirmed_delivery_before_dirty_is_cleared():
+    assert "lastReceipt=Object.freeze" in EPUB_DELIVERY
+    assert "lastDelivery" in EPUB_DELIVERY
+    assert "requireConfirmed" in EPUB_DELIVERY
+    assert "confirmedDepth>0&&!receipt.deliveryConfirmed" in EPUB_DELIVERY
+    assert "requireConfirmed(()=>reader.saveCopy())" in EPUB_BINDINGS
+    assert "Save delivery was not confirmed" in EPUB_BINDINGS
 
 
 def test_epub_pending_note_draft_is_part_of_replacement_authorization():

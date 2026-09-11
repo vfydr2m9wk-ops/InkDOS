@@ -27,7 +27,8 @@ function create({elements:E,reader,navigation,annotationModes}={}){
   const before=state();if(!before.book)return true;
   if(!commitPendingDraft())return false;
   const ready=state();if(!ready.annotationDirty)return true;
-  const revision=ready.annotationRevision,ok=await reader.saveCopy();if(!ok)return false;
+  const revision=ready.annotationRevision,ok=await NS.EpubFileDelivery.requireConfirmed(()=>reader.saveCopy());
+  if(!ok){const receipt=NS.EpubFileDelivery.lastDelivery?.();if(receipt&&!receipt.deliveryConfirmed)reader.notice('Save delivery was not confirmed — navigation cancelled',4000);return false}
   const after=state();if(after.annotationRevision!==revision){reader.notice('Book changed while saving — navigation cancelled',4000);return false}
   return true
  }

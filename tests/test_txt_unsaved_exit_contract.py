@@ -23,6 +23,10 @@ def test_txt_blocks_replacement_until_exact_save_completes():
     assert "decision==='discard'" in FILES
     assert "decision==='cancel'" in FILES
     assert "state.session.revision!==snap.revision" in FILES
+    assert "confirmedOnly" in FILES
+    assert "receipt?.deliveryConfirmed" in FILES
+    assert "Save delivery was not confirmed" in FILES
+    assert "save({confirmedOnly:true})" in FILES
     assert "state.session.dirty=false" in FILES
 
 
