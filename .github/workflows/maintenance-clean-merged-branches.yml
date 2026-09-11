@@ -1,0 +1,66 @@
+name: Maintenance - clean merged branches
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+
+jobs:
+  clean:
+    if: github.head_ref == 'maintenance/branch-cleanup-20260911'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Delete known merged branches only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+          branches=(
+            'fix/authorized-dirty-home-exits-pass3'
+            'fix/confirmed-save-exits-20260911'
+            'fix/doc-picker-contract-pass4'
+            'fix/epub-flow-content-projection'
+            'fix/epub-legacy-zip-names-pass3'
+            'fix/epub-rootfile-selection-pass3'
+            'fix/epub-spine-fallback'
+            'fix/epub-svg-spine'
+            'fix/epub-unicode-path-extra'
+            'fix/epub-url-reference-resolution-r11'
+            'fix/epub-xml-encoding-compat'
+            'fix/epub-zip64-compat'
+            'fix/exactly-once-terminal-share'
+            'fix/ppt-legacy-font-family'
+            'fix/ppt-legacy-style-fontsize'
+            'fix/prompt2-legacy-ppt-cfmask'
+            'fix/prompt2-legacy-ppt-text-margins'
+            'fix/spreadsheets-authorized-home-exit-pass3'
+            'fix/txt-authorized-dirty-home-exit'
+            'integrate/exactly-once-terminal-share'
+            'prompt3-ppt-font-family'
+            'third-pass-presentations-exit-guard'
+            'tmp/epub-xml-encoding-compat'
+            'verify/authorized-dirty-home-exits-pass3'
+          )
+          for b in "${branches[@]}"; do
+            if git show-ref --verify --quiet "refs/remotes/origin/$b"; then
+              if git merge-base --is-ancestor "refs/remotes/origin/$b" "refs/remotes/origin/main"; then
+                echo "DELETE $b"
+                git push origin --delete "$b"
+              else
+                echo "KEEP_UNMERGED $b"
+              fi
+            else
+              echo "MISSING $b"
+            fi
+          done
+      - name: Remove temporary maintenance branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push origin --delete "${GITHUB_HEAD_REF}"
