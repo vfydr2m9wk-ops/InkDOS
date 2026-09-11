@@ -36,8 +36,16 @@ def test_txt_guards_home_and_browser_unload():
     assert "beforeunload" in CONTROLS
 
 
+def test_txt_authorized_leave_commits_discard_before_native_unload():
+    expected = "register('file.leave',async()=>{const ok=await files.authorizeLeave();if(ok&&state.loaded)state.session.dirty=false;return ok});"
+    assert expected in COMMANDS
+    assert "if(ok)g.location.href=E.homeLink.href" in CONTROLS
+    assert "if(state.loaded&&state.session.dirty)" in CONTROLS
+
+
 if __name__ == "__main__":
     test_txt_has_three_way_unsaved_decision_contract()
     test_txt_blocks_replacement_until_exact_save_completes()
     test_txt_guards_home_and_browser_unload()
+    test_txt_authorized_leave_commits_discard_before_native_unload()
     print("Plain Text unsaved-exit contract: OK")
