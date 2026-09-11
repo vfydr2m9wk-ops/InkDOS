@@ -30,6 +30,7 @@ class PdfAnnotationModesContractTests(unittest.TestCase):
         self.assertIn("data-pdf-highlight-color", module)
         self.assertIn("setHighlightColor", module)
         self.assertIn("border-radius:50%", module)
+        self.assertIn("item.record.color=hexColor(highlightColor)", module)
 
     def test_pdf_note_mode_reuses_review_annotation_comment_store(self):
         module = read("apps/pdf/ui/annotation-modes.js")
@@ -41,10 +42,10 @@ class PdfAnnotationModesContractTests(unittest.TestCase):
 
     def test_pdf_delete_mode_removes_extension_annotations_intersecting_selection(self):
         module = read("apps/pdf/ui/annotation-modes.js")
-        review = read("apps/pdf/extensions/review-annotations.js")
         self.assertIn("deleteSelectedAnnotations", module)
-        self.assertIn("extensions.deleteSelection", module)
-        self.assertIn("deleteSelection", review)
+        self.assertIn("extensions.doc.annotationStorage", module)
+        self.assertIn("extensions.editor.addCommand", module)
+        self.assertIn("storage.remove(item.key)", module)
         self.assertIn("No saved annotation overlaps this selection.", module)
 
 
