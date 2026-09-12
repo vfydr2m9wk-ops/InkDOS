@@ -10,7 +10,7 @@
       "sourceTreeSha256BeforeIntegration": "483d12590e2f4bbb63356de90aa71b5a494ac4e1819e88d041d67eef578a1339",
       "sourceFileCount": 32,
       "sourceBytes": 254156,
-      "nonIndexTreeSha256": "aa1fc6734b99f3b1e3dfc7a1a46149dc30a7cbf331ef1a9fba1b8b353d55afdf",
+      "nonIndexTreeSha256": "1c154b78dc92c7d5bdf9c009efe308d705b160604b9f5e4c41e8044ace88b6f0",
       "originalIndexSha256": "f3303189f1361068c96eb6fa521913908301cfbbc45b287d2a6eeb8ec8adf9d7",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -22,7 +22,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "14662fdbfbc903511014fa76d4f07639952ba8d1299b5b638c8d3f5d81eb06cc"
+      "integratedIndexSha256": "f432d3672b304efc319a57efade80029206ed26c6a770ecea96bdc3258026139"
     },
     "spreadsheets": {
       "sourcePackage": "Spreadsheets-FINAL.zip",
@@ -30,7 +30,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "1d3b90d06016b52847157f2c3fd7d223e91654b385d7765ced819efaf046742c",
+      "nonIndexTreeSha256": "ee5c086489058475a25b9d1a413dafd19055055a1ef4c16365731cf969da7630",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -45,7 +45,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "a5ad19c3068de777d17aab9335f5c38703f4a2c3415451e73954a8a126b71283"
+      "integratedIndexSha256": "c7c79172a786a02bfce505d02cf1c9455433dd0e4e482eb74b6af155d1214726"
     },
     "presentations": {
       "sourcePackage": "Presentations-FINAL.zip",
@@ -53,7 +53,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "74b93e8b3ae961b4ee44f3b7c766c9505df2002b604a1a44aa53cff4b825d012",
+      "nonIndexTreeSha256": "6d36df4f35fb8ba6e5541f6dd10a11cc7c6c841beadd7caa2dbc391a2866b589",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -80,7 +80,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "b154faf097fc13fac421616096af632786661752483bcff2fc563aa4c883fe54",
+      "nonIndexTreeSha256": "6e54ab47cccf9b2ced2c7898a8aebe085bb25c2292dfd5b904eb4c542eee5edb",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -101,7 +101,7 @@
       "sourceTreeSha256BeforeIntegration": "d93aa9a078daab5662c5eeff20e594b1477bd865d2d303d5f44d2d884b0988e4",
       "sourceFileCount": 21,
       "sourceBytes": 92063,
-      "nonIndexTreeSha256": "0f37f4ce75555913426b2755dc9c36c3a2ce37450cfbf151acdd7cf1f75ff55c",
+      "nonIndexTreeSha256": "8a95005cde2c43197d248fd3c403d950bfde1b3e997b8dcc1ca49f85bbead00e",
       "originalIndexSha256": "0fa0bea76a9889d2bbec0d7dcef8b06d59c771fe0ab0597c7e840877e3be945d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -111,7 +111,7 @@
         "2.0.12 structural refactor: relocate PackageReader and EpubWriter to io/, ContentProjector/BookModel/ReaderAnnotations to engine/, AnnotationStore to state/, ReaderRenderer to view/, and move start-state CSS to ui/ without intentionally changing algorithms",
         "index.html: in 2.0.12 compose the relocated app-private modules from their responsibility directories and remove the retired flattened root module copies"
       ],
-      "integratedIndexSha256": "56383d955e3574b47d62140c28f722f5114d87be26c14c56c6de9f7d0b3aa163"
+      "integratedIndexSha256": "f74a9b77f5630608e0022e641f23b9305263913f8b109b99d1d5760052558e1c"
     },
     "pdf": {
       "sourcePackage": "InkDOS-2.0-PDF-P4.2-AUDITED.zip",
@@ -119,7 +119,7 @@
       "sourceTreeSha256BeforeIntegration": "cfc59790a566831b757b2a1995f5447f77f041114ebbc34383908f20a9e07144",
       "sourceFileCount": 39,
       "sourceBytes": 1519470,
-      "nonIndexTreeSha256": "7ddd87b021f5132689dfcf8484edf1c3ea512f6c0bb373e4373ba9a69a8e9998",
+      "nonIndexTreeSha256": "25ce911a488828a6142bbdf842d537f1f60867d7a9a1eb1ac9971a5c1450841f",
       "originalIndexSha256": "951494fafa400f45ca418cc14665579c0ba57c27d154af35ab167246c2d71cce",
       "allowedIntegrationChanges": [
         "app.js: remove internal __inkdosPdfP4 inspection hook",
@@ -137,7 +137,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "5207118488653582136fe4bb3bc46218df8f63f44d25ff12df5a8076ef7f5568",
+      "integratedIndexSha256": "4bea8d09546a93b118a73324ec623971798aa440594f648b6f394e41a066d928",
       "functionalBaseline": "P4.2 user-accepted",
       "status": "baseline-preserved-with-2.0.12-standalone-modularity-gate"
     }
