@@ -139,6 +139,14 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
     assert "npm install" not in workflow
 
 
+def test_tag_release_publishes_only_final_installer_files():
+    workflow = read(RELEASE_WORKFLOW)
+    assert "release-final" in workflow
+    for suffix in (".exe", ".msi", ".dmg", ".deb", ".AppImage", ".rpm"):
+        assert suffix in workflow
+    assert "find release-assets -type f -print0" not in workflow
+
+
 def test_generated_desktop_bundles_are_ignored_within_desktop_boundary():
     ignored = read(DESKTOP / ".gitignore")
     for marker in (
