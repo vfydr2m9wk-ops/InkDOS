@@ -103,3 +103,10 @@ def test_bundle_targets_cover_expected_installers():
     config = json.loads(read(TAURI / "tauri.conf.json"))
     targets = set(config["bundle"]["targets"])
     assert {"nsis", "msi", "app", "dmg", "deb", "appimage", "rpm"}.issubset(targets)
+
+
+if __name__ == "__main__":
+    tests = [value for name, value in sorted(globals().items()) if name.startswith("test_") and callable(value)]
+    for test in tests:
+        test()
+    print(f"desktop contract: {len(tests)} checks passed")
