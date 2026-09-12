@@ -24,12 +24,17 @@ class PdfAnnotationModesContractTests(unittest.TestCase):
         self.assertIn("Delete annotation mode armed", module)
         self.assertIn("document.addEventListener('selectionchange'", module)
 
-    def test_pdf_highlight_mode_has_persistent_color_palette(self):
+    def test_pdf_highlight_color_is_integrated_into_icon_and_palette_is_overlay(self):
         module = read("apps/pdf/ui/mode-bindings.js")
         self.assertIn("highlightColor", module)
         self.assertIn("pdfHighlightColor", module)
         self.assertIn("setHighlightColor", module)
-        self.assertIn("border-radius:50%", module)
+        self.assertIn("paletteOpen", module)
+        self.assertIn("positionPalette", module)
+        self.assertIn("palette.hidden=!paletteOpen", module)
+        self.assertIn("persistentHighlightBtn.style.setProperty('--pdf-highlight-color',highlightColor)", module)
+        self.assertIn("position:fixed", module)
+        self.assertIn("#persistentHighlightBtn svg{stroke:var(--pdf-highlight-color)}", module)
         self.assertIn("item.record.color=hexColor(highlightColor)", module)
 
     def test_pdf_note_mode_reuses_review_annotation_comment_store(self):
