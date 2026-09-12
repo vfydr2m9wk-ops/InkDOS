@@ -2,6 +2,11 @@ name: Bug report
 description: Report a reproducible InkDOS defect.
 title: "[Bug] "
 body:
+  - type: markdown
+    attributes:
+      value: |
+        **Privacy:** Do not attach real user files, screenshots, recordings, or private filenames.
+        Reproduce the defect with synthetic material whenever possible and remove any personal, medical, or educational data before posting.
   - type: input
     id: version
     attributes:
@@ -12,6 +17,7 @@ body:
     id: reproduction
     attributes:
       label: Reproduction steps
+      description: Describe the minimum synthetic reproduction. Do not paste confidential source content.
     validations:
       required: true
   - type: textarea
