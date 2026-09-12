@@ -10,11 +10,12 @@ def read(path):
 
 class DocxOnOffContractTests(unittest.TestCase):
     def test_docx_onoff_properties_respect_explicit_false_values(self):
-        parser = read("apps/documents/engine/docx-parser.js")
-        self.assertIn("function onOff(", parser)
-        self.assertIn("['0','false','off','no'].includes", parser)
-        self.assertIn("if(onOff(first(pPr,'pageBreakBefore')))out.pageBreakBefore=true;", parser)
-        self.assertIn("if(onOff(first(pPr,'keepNext')))out.keepNext=true;", parser)
+        app = read("apps/documents/app.js")
+        self.assertIn("function installDocxOnOffFix()", app)
+        self.assertIn("['0','false','off','no'].includes", app)
+        self.assertIn("block.hardPageBreakBefore=onOff(pageBreak)", app)
+        self.assertIn("block.keepNext=onOff(keepNext)", app)
+        self.assertIn("installDocxOnOffFix();", app)
 
 
 if __name__ == "__main__":
