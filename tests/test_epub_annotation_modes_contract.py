@@ -68,3 +68,12 @@ def test_epub_contents_is_icon_only_with_existing_accessible_name():
     assert '#tocBtn>span{display:none!important}' in css
     assert 'id="tocBtn"' in index
     assert 'aria-label="Contents"' in index
+
+
+if __name__ == "__main__":
+    test_epub_bootstrap_composes_dedicated_annotation_mode_module()
+    test_epub_uses_persistent_annotation_modes_instead_of_selection_first_bubble()
+    test_epub_highlight_color_is_integrated_into_icon_and_palette_does_not_shift_toolbar()
+    test_epub_note_mode_uses_compact_in_app_editor_and_existing_annotation_store()
+    test_epub_delete_mode_removes_overlapping_highlights_and_notes()
+    test_epub_contents_is_icon_only_with_existing_accessible_name()
