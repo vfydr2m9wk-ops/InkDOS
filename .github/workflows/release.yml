@@ -1,0 +1,161 @@
+name: InkDOS unified release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate tagged release
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Require tag commit to belong to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - name: Validate tag and desktop version
+        run: |
+          python desktop/scripts/release_version.py --check-tag "$GITHUB_REF_NAME"
+          python desktop/scripts/release_version.py --check-config
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Run clean-snapshot release validation
+        run: python scripts/run_release_validation.py
+      - name: Run desktop contract
+        run: python tests/test_tauri_desktop_contract.py
+      - name: Validate staged desktop runtime
+        run: python desktop/scripts/stage_web.py --check
+
+  build:
+    name: Build ${{ matrix.artifact }}
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: InkDOS-Windows
+            bundles: nsis,msi
+          - os: macos-latest
+            artifact: InkDOS-macOS
+            bundles: dmg
+          - os: ubuntu-22.04
+            artifact: InkDOS-Linux
+            bundles: deb,appimage,rpm
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+      - name: Install Linux Tauri prerequisites
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2" --locked
+      - name: Revalidate release metadata
+        run: |
+          python desktop/scripts/release_version.py --check-tag "$GITHUB_REF_NAME"
+          python desktop/scripts/release_version.py --check-config
+      - name: Stage InkDOS web runtime
+        run: python desktop/scripts/stage_web.py
+      - name: Generate desktop icons
+        working-directory: desktop/src-tauri
+        run: cargo tauri icon ../../assets/icons/office.png
+      - name: Check Tauri shell
+        working-directory: desktop/src-tauri
+        run: cargo check
+      - name: Build native installers
+        working-directory: desktop/src-tauri
+        run: cargo tauri build --bundles ${{ matrix.bundles }}
+      - name: Upload native bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: desktop/src-tauri/target/release/bundle/**
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Publish GitHub Release
+    needs: [validate, build]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: InkDOS-*
+          path: release-assets
+          merge-multiple: true
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          cat > release-notes.md <<EOF
+          # InkDOS ${VERSION}
+
+          One source version for the web/PWA and installable desktop editions.
+
+          Web edition: https://vfydr2m9wk-ops.github.io/InkDOS/
+
+          Desktop installers for Windows, macOS, and Linux are attached to this release. They were built from the same tagged commit as the web source.
+          EOF
+      - name: Publish release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          mapfile -d '' ASSETS < <(find release-assets -type f -print0)
+          if [ "${#ASSETS[@]}" -eq 0 ]; then
+            echo "No native release assets were downloaded." >&2
+            exit 1
+          fi
+          gh release create "$GITHUB_REF_NAME" "${ASSETS[@]}" \
+            --verify-tag \
+            --title "InkDOS ${VERSION}" \
+            --notes-file release-notes.md

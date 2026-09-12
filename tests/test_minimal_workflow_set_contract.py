@@ -6,7 +6,9 @@ WORKFLOWS = ROOT / ".github" / "workflows"
 
 EXPECTED = {
     "apply-inkdos-update.yml",
+    "desktop-tauri.yml",
     "refresh-integrity-metadata.yml",
+    "release.yml",
     "stability-freeze-regression.yml",
 }
 
@@ -49,9 +51,17 @@ def main() -> None:
 
     update = (WORKFLOWS / "apply-inkdos-update.yml").read_text(encoding="utf-8")
     integrity = (WORKFLOWS / "refresh-integrity-metadata.yml").read_text(encoding="utf-8")
+    desktop = (WORKFLOWS / "desktop-tauri.yml").read_text(encoding="utf-8")
+    release = (WORKFLOWS / "release.yml").read_text(encoding="utf-8")
+
     assert "contents: write" in update, "Transactional update workflow lost its write boundary."
     assert "contents: write" in integrity, "Integrity metadata workflow lost its write boundary."
     assert "permissions:\n  contents: read" in validator, "Permanent validator must remain read-only."
+    assert "permissions:\n  contents: read" in desktop, "Desktop validation/build workflow must remain read-only."
+    assert "permissions:\n  contents: read" in release, "Unified release workflow must default to read-only."
+    assert "publish:" in release and "contents: write" in release, (
+        "Unified release workflow must confine write access to its publication job."
+    )
 
     print("Minimal GitHub Actions workflow contract passed.")
 
