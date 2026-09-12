@@ -4,6 +4,7 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+SELF = Path(__file__).resolve()
 
 FORBIDDEN_USER_FILE_SUFFIXES = {
     ".doc", ".docx", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx",
@@ -86,7 +87,7 @@ def main() -> None:
     attachment_hits = []
     secret_hits = []
     for path in tracked:
-        if path.suffix.lower() not in TEXT_SUFFIXES:
+        if path.resolve() == SELF or path.suffix.lower() not in TEXT_SUFFIXES:
             continue
         try:
             text = path.read_text(encoding="utf-8")
