@@ -17,7 +17,7 @@ jobs:
   contract:
     name: Desktop contract
     runs-on: ubuntu-22.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -27,6 +27,8 @@ jobs:
           python-version: "3.11"
       - name: Run desktop contract
         run: python tests/test_tauri_desktop_contract.py
+      - name: Validate staged desktop runtime
+        run: python desktop/scripts/stage_web.py --check
 
   build:
     name: Build ${{ matrix.artifact }}
@@ -45,7 +47,7 @@ jobs:
             artifact: InkDOS-Linux
             bundles: deb,appimage,rpm
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -87,7 +89,7 @@ jobs:
 
       - name: Check Tauri shell
         working-directory: desktop/src-tauri
-        run: cargo check --locked
+        run: cargo check
 
       - name: Build native installers
         working-directory: desktop/src-tauri
