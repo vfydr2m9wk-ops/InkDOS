@@ -12,6 +12,18 @@ FORBIDDEN_USER_FILE_SUFFIXES = {
     ".mov", ".mp4", ".m4v", ".zip", ".7z", ".rar",
 }
 
+HISTORICAL_USER_CONTENT_SUFFIXES = {
+    ".doc", ".docx", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx",
+    ".pdf", ".epub", ".pages", ".numbers", ".key", ".heic", ".heif",
+    ".mov", ".mp4", ".m4v",
+}
+
+ARCHIVE_SUFFIXES = {".zip", ".7z", ".rar"}
+QA_ARCHIVE_TOKENS = {
+    "qa", "private", "lab", "fixture", "fixtures", "sample", "samples",
+    "screenshot", "screenshots", "testdata", "test-data",
+}
+
 FORBIDDEN_PATH_PARTS = {
     ".private", "private", "qa-private", "private-qa", "local-qa",
     "fixtures-private", "qa-screenshots", "screenshots",
@@ -63,6 +75,36 @@ def tracked_paths() -> list[Path]:
     return [ROOT / item for item in output.split("\0") if item]
 
 
+def historical_privacy_counts() -> tuple[int, int, int]:
+    """Return category counts only; never disclose historical paths in public CI."""
+    output = subprocess.check_output(
+        ["git", "rev-list", "--objects", "--all"], cwd=ROOT, text=True
+    )
+    content_hits: set[str] = set()
+    private_path_hits: set[str] = set()
+    qa_archive_hits: set[str] = set()
+
+    for line in output.splitlines():
+        if " " not in line:
+            continue
+        object_id, raw_path = line.split(" ", 1)
+        path = Path(raw_path)
+        suffix = path.suffix.lower()
+        lower_parts = {part.lower() for part in path.parts}
+        stem_tokens = {
+            token for token in re.split(r"[^a-z0-9-]+", path.stem.lower()) if token
+        }
+
+        if suffix in HISTORICAL_USER_CONTENT_SUFFIXES:
+            content_hits.add(object_id)
+        if lower_parts & FORBIDDEN_PATH_PARTS:
+            private_path_hits.add(object_id)
+        if suffix in ARCHIVE_SUFFIXES and stem_tokens & QA_ARCHIVE_TOKENS:
+            qa_archive_hits.add(object_id)
+
+    return len(content_hits), len(private_path_hits), len(qa_archive_hits)
+
+
 def main() -> None:
     tracked = tracked_paths()
 
@@ -104,6 +146,13 @@ def main() -> None:
         f"{attachment_hits}"
     )
     assert not secret_hits, f"Credential-like material found in tracked text: {secret_hits}"
+
+    history_content, history_private_paths, history_qa_archives = historical_privacy_counts()
+    assert (history_content, history_private_paths, history_qa_archives) == (0, 0, 0), (
+        "Historical privacy candidates detected without disclosing filenames: "
+        f"user-content objects={history_content}, private-path objects={history_private_paths}, "
+        f"QA-archive objects={history_qa_archives}. History rewrite requires separate approval."
+    )
 
     ignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
     missing_ignore = [rule for rule in REQUIRED_IGNORE_RULES if rule not in ignore]
