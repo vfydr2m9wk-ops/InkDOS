@@ -11,7 +11,7 @@ playwright-report/
 private-qa/
 qa-screenshots/
 
-# User document and media formats are not repository fixtures.
+# User document, media and QA archive formats are not repository fixtures.
 # Regression fixtures must be synthetic and generated in-memory or as test-only code.
 *.doc
 *.docx
@@ -30,6 +30,9 @@ qa-screenshots/
 *.mov
 *.mp4
 *.m4v
+*.zip
+*.7z
+*.rar
 
 # Local credentials and environment overrides.
 .env
