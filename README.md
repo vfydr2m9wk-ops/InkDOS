@@ -1,8 +1,12 @@
-# InkDOS 2.1.0
+# InkDOS 2.2.0
 
-InkDOS is a local-first, static browser productivity suite with six physically independent workspaces behind an optional Home launcher. It runs entirely client-side, requires no application backend or telemetry service, and keeps document processing in the browser.
+InkDOS is a local-first productivity suite with six physically independent workspaces behind an optional Home launcher. The same client-side HTML/CSS/JavaScript application is distributed as a web/PWA edition and as installable Tauri desktop editions, with no application backend or telemetry service.
 
-Version 2.1.0 is the post-hardening release that consolidates the stability work performed after the 2.0.12 structural baseline. The current development focus is real-device acceptance: automated repository, format-preservation and browser regressions are part of the release gate, while host-specific behavior on iPad/XeOS still requires direct user confirmation where synthetic browsers cannot prove the full file-delivery or WebKit-host interaction path.
+Version 2.2.0 promotes the unified web/PWA + desktop distribution to the stable release line. The Windows desktop path has been manually installed and confirmed working, while automated repository, format-preservation, browser and native packaging gates remain part of the release process.
+
+## Desktop edition
+
+The desktop edition uses Tauri v2 as a thin native host around the existing InkDOS workspaces. It uses native open/save dialogs and filesystem access where the desktop bridge is available, while preserving the browser/PWA fallback paths. Windows installation has been confirmed on a real machine for the 2.2.0 release line; macOS and Linux installers remain produced and validated by native CI runners.
 
 ## Workspaces and format behavior
 
@@ -47,7 +51,7 @@ The root service worker provides the validated application shell under HTTP(S). 
 
 ## Release and control-state files
 
-`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.1.0 release identity.
+`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.2.0 release identity.
 
 `DEVELOPMENT_STATE.json` has a different purpose: it records the last transactional update-package sequence accepted by the updater. Its sequence/package label can therefore remain tied to an earlier package even when the public release identity has advanced through validated repository integration. Historical stability/freeze documents likewise retain the versions and commit anchors that were true when those records were produced.
 

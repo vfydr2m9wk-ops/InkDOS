@@ -1,16 +1,18 @@
 # Project status
 
-Release: **InkDOS 2.1.0**
+Release: **InkDOS 2.2.0**
 
-Status: **post-hardening release; real-device acceptance in progress**.
+Status: **stable unified web/PWA + desktop release; real-device acceptance continues**.
 
 InkDOS contains six installed, physically independent workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB Reader and PDF Workspace. The original domestic-use functional roadmap (TXT-T1/T2, EPUB-E1/E2, PDF-P1/P2, DOC-D1/D2, PPT-P1/P2, XLS-S1/S2 and the integrated Audit/Freeze program) is complete as a historical implementation baseline. Current work is no longer broad feature construction; it is acceptance testing and evidence-driven correction against real files and real host behavior.
 
 ## Current release line
 
-InkDOS 2.1.0 consolidates the stability and compatibility work performed after the 2.0.12 structural release. The active release identity is defined by `VERSION.json`; generated build/source/release manifests are expected to match it.
+InkDOS 2.2.0 consolidates the stability and compatibility work performed after the 2.0.12 structural release. The active release identity is defined by `VERSION.json`; generated build/source/release manifests are expected to match it.
 
-The 2.0.12 freeze records remain historical evidence and are intentionally not rewritten to 2.1.0. In particular, `docs/STABILITY-FREEZE-2026-09-10.md`, the immutable regression anchors and earlier CI/run references continue to describe the state that actually existed when those records were created.
+The 2.2.0 line adds the installable Tauri desktop distribution to the public release identity without replacing the browser/PWA edition or rewriting workspace engines. The Windows installer has been manually installed and confirmed working; Windows, macOS and Linux packaging are also exercised by native CI runners.
+
+The 2.0.12 freeze records remain historical evidence and are intentionally not rewritten to 2.2.0. In particular, `docs/STABILITY-FREEZE-2026-09-10.md`, the immutable regression anchors and earlier CI/run references continue to describe the state that actually existed when those records were created.
 
 ## Automated validation
 
@@ -18,7 +20,7 @@ The release gate covers repository structure and source locks, standalone worksp
 
 A green synthetic matrix is necessary but not sufficient for host-specific acceptance. Playwright WebKit cannot fully prove behavior of an embedded iPad browser/container, system Share Sheet, native file-picker fallback or every WebKit host policy. Real iPad/XeOS observations therefore remain authoritative when a host-specific issue cannot be reproduced synthetically.
 
-## Hardening incorporated into the 2.1.0 line
+## Hardening incorporated into the 2.2.0 line
 
 The current line includes regression-backed work for:
 
@@ -56,4 +58,4 @@ The exact current limitations are maintained in `docs/KNOWN_LIMITATIONS.md`.
 
 `DEVELOPMENT_STATE.json` is the transactional updater's sequence ledger, not the public release number. Its `appliedSequence` and `currentPackage` identify the last accepted update package and should not be rewritten merely to make them resemble `VERSION.json`.
 
-`FUNCTIONAL_STATE.json` and `STABILITY_STATE.json` are lifecycle/control records for the completed roadmap and freeze program. The human-facing current stage is this document: **2.1.0 real-device acceptance and bug correction**.
+`FUNCTIONAL_STATE.json` and `STABILITY_STATE.json` are lifecycle/control records for the completed roadmap and freeze program. The human-facing current stage is this document: **2.2.0 real-device acceptance and bug correction**.

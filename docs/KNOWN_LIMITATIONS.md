@@ -1,9 +1,11 @@
 # Known limitations
 
-These limitations describe InkDOS 2.1.0. They distinguish an implemented code path from compatibility that has actually been confirmed on a specific host or file.
+These limitations describe InkDOS 2.2.0. They distinguish an implemented code path from compatibility that has actually been confirmed on a specific host or file.
 
 ## General
 
+- InkDOS 2.2.0 includes an installable Tauri desktop host. Windows installation has been manually confirmed; macOS/Linux packages are built on native CI runners, but that CI result is not a claim of manual acceptance on every desktop distribution or OS configuration.
+- The desktop host uses the operating system WebView rather than a custom rendering engine. Memory usage therefore includes the platform WebView/runtime in addition to InkDOS application code.
 - InkDOS is intentionally narrower than a full desktop office suite. Accepting a file extension does not imply exhaustive support for every construct permitted by that format.
 - Automated regression coverage includes Chromium, Firefox and WebKit, but an automated WebKit run is not equivalent to every embedded iPad/WebKit host. XeOS/iPad-specific behavior such as Share Sheet routing, native picker fallbacks and host download policy still requires real-device confirmation.
 - Service-worker/PWA caching requires HTTP(S). Direct `file://` execution depends on the host browser's local-file policy and does not provide the same offline-installation guarantees.

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "version": "2.1.0",
-  "generatedAt": "2026-09-11",
+  "version": "2.2.0",
+  "generatedAt": "2026-09-12",
   "entryPoint": "index.html",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "sourceLock": "SOURCE_LOCK.json",
