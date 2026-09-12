@@ -56,12 +56,21 @@ jobs:
           - os: windows-latest
             artifact: InkDOS-Windows
             bundles: nsis,msi
+            release_paths: |
+              desktop/src-tauri/target/release/bundle/nsis/*.exe
+              desktop/src-tauri/target/release/bundle/msi/*.msi
           - os: macos-latest
             artifact: InkDOS-macOS
             bundles: dmg
+            release_paths: |
+              desktop/src-tauri/target/release/bundle/dmg/*.dmg
           - os: ubuntu-22.04
             artifact: InkDOS-Linux
             bundles: deb,appimage,rpm
+            release_paths: |
+              desktop/src-tauri/target/release/bundle/deb/*.deb
+              desktop/src-tauri/target/release/bundle/appimage/*.AppImage
+              desktop/src-tauri/target/release/bundle/rpm/*.rpm
     runs-on: ${{ matrix.os }}
     timeout-minutes: 75
     steps:
@@ -106,11 +115,11 @@ jobs:
       - name: Build native installers
         working-directory: desktop/src-tauri
         run: cargo tauri build --bundles ${{ matrix.bundles }}
-      - name: Upload native bundles
+      - name: Upload final native installers
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
-          path: desktop/src-tauri/target/release/bundle/**
+          path: ${{ matrix.release_paths }}
           if-no-files-found: error
           retention-days: 30
 
@@ -129,6 +138,44 @@ jobs:
           pattern: InkDOS-*
           path: release-assets
           merge-multiple: true
+      - name: Select and validate final release installers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          root = Path('release-assets')
+          final = Path('release-final')
+          final.mkdir(exist_ok=True)
+
+          required = ('.exe', '.msi', '.dmg', '.deb', '.AppImage', '.rpm')
+          selected = {}
+          for suffix in required:
+              matches = sorted(p for p in root.rglob('*') if p.is_file() and p.name.endswith(suffix))
+              if len(matches) != 1:
+                  rendered = ', '.join(p.as_posix() for p in matches) or 'none'
+                  raise SystemExit(
+                      f'Expected exactly one {suffix} installer, found {len(matches)}: {rendered}'
+                  )
+              selected[suffix] = matches[0]
+
+          names = [path.name for path in selected.values()]
+          if len(names) != len(set(names)):
+              raise SystemExit('Final release installer basenames are not unique.')
+
+          for path in selected.values():
+              shutil.copy2(path, final / path.name)
+
+          final_files = sorted(p for p in final.iterdir() if p.is_file())
+          if len(final_files) != len(required):
+              raise SystemExit(f'Expected 6 final release assets, found {len(final_files)}.')
+
+          print('Validated final release assets:')
+          for path in final_files:
+              print(path.as_posix())
+          PY
       - name: Prepare release notes
         shell: bash
         run: |
@@ -150,12 +197,17 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
-          mapfile -d '' ASSETS < <(find release-assets -type f -print0)
-          if [ "${#ASSETS[@]}" -eq 0 ]; then
-            echo "No native release assets were downloaded." >&2
+          mapfile -d '' ASSETS < <(find release-final -maxdepth 1 -type f -print0)
+          if [ "${#ASSETS[@]}" -ne 6 ]; then
+            echo "Expected exactly 6 native release assets, found ${#ASSETS[@]}." >&2
             exit 1
           fi
           gh release create "$GITHUB_REF_NAME" "${ASSETS[@]}" \
             --verify-tag \
             --title "InkDOS ${VERSION}" \
             --notes-file release-notes.md
+          asset_count="$(gh release view "$GITHUB_REF_NAME" --json assets --jq '.assets | length')"
+          if [ "$asset_count" -ne 6 ]; then
+            echo "Published release contains ${asset_count} assets, expected 6." >&2
+            exit 1
+          fi
