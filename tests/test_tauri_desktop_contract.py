@@ -139,11 +139,11 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
     assert "npm install" not in workflow
 
 
-def test_generated_desktop_bundles_are_ignored():
-    ignored = read(ROOT / ".gitignore")
+def test_generated_desktop_bundles_are_ignored_within_desktop_boundary():
+    ignored = read(DESKTOP / ".gitignore")
     for marker in (
-        "desktop/web-dist/",
-        "desktop/src-tauri/target/",
+        "web-dist/",
+        "src-tauri/target/",
         "*.dmg",
         "*.AppImage",
         "*.msi",
