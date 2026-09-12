@@ -1,0 +1,30 @@
+name: Maintenance - delete merged Word fix branch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/maintenance-delete-word-fix-branch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  delete-merged-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+      - name: Verify and delete merged branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='fix/word-pagination-highlight-color-ui'
+          expected='b40b6bd87d7ef0dba505d7a6f416e464d936d96b'
+          git fetch origin "refs/heads/${branch}:refs/remotes/origin/${branch}"
+          actual="$(git rev-parse "refs/remotes/origin/${branch}")"
+          test "$actual" = "$expected"
+          git merge-base --is-ancestor "$actual" HEAD
+          git push origin --delete "$branch"
