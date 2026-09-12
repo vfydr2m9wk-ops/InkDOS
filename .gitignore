@@ -3,4 +3,35 @@ __pycache__/
 .venv/
 node_modules/
 test-results/
+playwright-report/
 .DS_Store
+
+# Local/private QA material must never be committed.
+.private/
+private-qa/
+qa-screenshots/
+
+# User document and media formats are not repository fixtures.
+# Regression fixtures must be synthetic and generated in-memory or as test-only code.
+*.doc
+*.docx
+*.rtf
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.pdf
+*.epub
+*.pages
+*.numbers
+*.key
+*.heic
+*.heif
+*.mov
+*.mp4
+*.m4v
+
+# Local credentials and environment overrides.
+.env
+.env.*
+!.env.example
