@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "project": "InkDOS",
-  "version": "2.1.0",
-  "releaseName": "InkDOS 2.1.0",
-  "releaseDate": "2026-09-11",
+  "version": "2.2.0",
+  "releaseName": "InkDOS 2.2.0",
+  "releaseDate": "2026-09-12",
   "releaseType": "Core Release",
   "entryPoints": {
     "documents": "apps/documents/index.html",

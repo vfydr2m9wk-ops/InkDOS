@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "InkDOS",
-  "release": "2.1.0",
+  "release": "2.2.0",
   "integrationPolicy": "Preserve six physically independent app roots. InkDOS 2.0.12 makes the Home bridge optional through each app's own frame module: Home launches with suite=1, while direct or extracted launches hide the Home action and remove its active href without requiring a shared suite runtime. EPUB is physically reorganized so existing package I/O, engine, state, view and UI responsibilities live in app-private directories without intentionally changing reader algorithms. Release validation must prove isolated entry-resource resolution, absence of cross-app/shared-runtime references, valid offline APP_SHELL paths and the required EPUB modular layout. Existing appearance, empty-state, single-delivery Save and PDF frame contracts remain intact.",
   "apps": {
     "documents": {
@@ -142,5 +142,5 @@
       "status": "baseline-preserved-with-2.0.12-standalone-modularity-gate"
     }
   },
-  "previousRelease": "2.0.11"
+  "previousRelease": "2.1.0"
 }

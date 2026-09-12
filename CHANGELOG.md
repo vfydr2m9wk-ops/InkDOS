@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.0 — 2026-09-12
+
+- Promote the unified InkDOS web/PWA and Tauri desktop distribution to the stable 2.2.0 release identity.
+- Confirm the installable Windows desktop path on a real machine while retaining native CI packaging for Windows, macOS and Linux.
+- Keep the existing client-side workspace engines unchanged; Tauri remains a thin native host that provides desktop open/save dialogs, filesystem delivery and OS integration.
+- Synchronize Home cache-busting routes, offline cache identity, release manifests, source locks, desktop package metadata and repository checksums to 2.2.0.
+- Preserve the existing browser/PWA edition and all release-validation contracts, including Chromium, Firefox, WebKit and format-preservation regressions.
+
 ## 2.1.0 — 2026-09-11
 
 - Promote the current release identity to InkDOS 2.1.0 after the post-2.0.12 hardening cycle, while keeping historical freeze/audit records tied to the releases and commit anchors they actually describe.
