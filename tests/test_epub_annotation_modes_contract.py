@@ -29,11 +29,18 @@ def test_epub_uses_persistent_annotation_modes_instead_of_selection_first_bubble
     assert "document.addEventListener('selectionchange'" in module
 
 
-def test_epub_highlight_color_stays_armed_and_palette_is_color_only():
+def test_epub_highlight_color_is_integrated_into_icon_and_palette_does_not_shift_toolbar():
     module = read("apps/epub/ui/annotation-modes.js")
     css = read("apps/epub/ui/reader-controls.css")
     assert "elements.highlightBtn.dataset.highlightColor=color" in module
     assert "button.dataset.highlightColor===color" in module
+    assert "positionHighlightPalette" in module
+    assert "paletteOpen" in module
+    assert "elements.highlight.hidden=!paletteOpen" in module
+    assert '#highlightBtn[data-highlight-color]::after' not in css
+    assert '#highlightBtn[data-highlight-color="yellow"]{color:#ffe36e}' in css
+    assert '.highlight-sheet.compact-color-popover' in css
+    assert 'position:fixed' in css
     assert '.highlight-choice>span:last-child{display:none!important}' in css
     assert '.highlight-swatch{width:28px;height:28px;border-radius:50%}' in css
 
