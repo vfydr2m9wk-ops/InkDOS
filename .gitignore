@@ -6,6 +6,14 @@ test-results/
 playwright-report/
 .DS_Store
 
+# Generated Tauri desktop staging/build outputs.
+desktop/web-dist/
+desktop/src-tauri/target/
+*.dmg
+*.AppImage
+*.msi
+*.rpm
+
 # Local/private QA material must never be committed.
 .private/
 private-qa/
