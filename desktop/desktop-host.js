@@ -1,7 +1,7 @@
 (function (g) {
   'use strict';
 
-  const tauri = g.__TAURI__;
+  const tauri = typeof window !== 'undefined' ? window.__TAURI__ : g.__TAURI__;
   if (!tauri || !tauri.dialog || !tauri.fs) return;
 
   const dialog = tauri.dialog;
