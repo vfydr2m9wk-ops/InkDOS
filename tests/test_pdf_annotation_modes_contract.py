@@ -32,7 +32,7 @@ class PdfAnnotationModesContractTests(unittest.TestCase):
         self.assertIn("paletteOpen", module)
         self.assertIn("positionPalette", module)
         self.assertIn("palette.hidden=!paletteOpen", module)
-        self.assertIn("persistentHighlightBtn.style.setProperty('--pdf-highlight-color',highlightColor)", module)
+        self.assertIn("highlightBtn.style.setProperty('--pdf-highlight-color',highlightColor)", module)
         self.assertIn("position:fixed", module)
         self.assertIn("#persistentHighlightBtn svg{stroke:var(--pdf-highlight-color)}", module)
         self.assertIn("item.record.color=hexColor(highlightColor)", module)
