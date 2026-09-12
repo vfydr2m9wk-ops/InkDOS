@@ -10,7 +10,7 @@ APPS = {
     "pdf": "PDF Workspace",
     "presentations": "Presentations",
     "spreadsheets": "Spreadsheets",
-    "txt": "Text Editor",
+    "txt": "Plain Text",
 }
 
 
@@ -18,23 +18,23 @@ def main() -> None:
     for app, title in APPS.items():
         app_root = ROOT / "apps" / app
         help_file = app_root / "help" / "help.js"
-        app_file = app_root / "app.js"
-
         assert help_file.is_file(), f"{app}: app-local help/help.js is required"
-        assert app_file.is_file(), f"{app}: app.js is required"
 
         help_source = help_file.read_text(encoding="utf-8")
-        app_source = app_file.read_text(encoding="utf-8")
-
-        assert "help/help.js" in app_source, f"{app}: app.js must load its own help module"
-        assert "optionalHelp" in app_source, f"{app}: Help must be loaded as an optional module"
         assert "data-inkdos-help-entry" in help_source, f"{app}: Help menu entry marker missing"
         assert 'data-icon="CircleHelp"' in help_source, f"{app}: CircleHelp icon marker missing"
         assert ">Help</span>" in help_source, f"{app}: Help label missing"
         assert "data-inkdos-help-dialog" in help_source, f"{app}: Help dialog marker missing"
         assert title in help_source, f"{app}: Help content must be app-specific"
 
-        # App Help must remain app-local: no cross-app imports or shared Help dependency.
+        # App Help stays inside its own app and is loaded explicitly by that app.
+        if app == "txt":
+            template = (app_root / "page.template.html").read_text(encoding="utf-8")
+            assert "<!-- SCRIPT apps/txt/help/help.js -->" in template, "txt: Help must be part of the deterministic local bundle"
+        else:
+            index = (app_root / "index.html").read_text(encoding="utf-8")
+            assert 'src="help/help.js"' in index, f"{app}: index must load its own Help module"
+
         assert "../../apps/" not in help_source, f"{app}: Help may not depend on another app"
         assert "../documents/" not in help_source
         assert "../epub/" not in help_source
