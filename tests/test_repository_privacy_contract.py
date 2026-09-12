@@ -9,7 +9,7 @@ SELF = Path(__file__).resolve()
 FORBIDDEN_USER_FILE_SUFFIXES = {
     ".doc", ".docx", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx",
     ".pdf", ".epub", ".pages", ".numbers", ".key", ".heic", ".heif",
-    ".mov", ".mp4", ".m4v",
+    ".mov", ".mp4", ".m4v", ".zip", ".7z", ".rar",
 }
 
 FORBIDDEN_PATH_PARTS = {
@@ -37,7 +37,7 @@ REQUIRED_IGNORE_RULES = (
     ".private/", "private-qa/", "qa-screenshots/", "playwright-report/",
     "*.doc", "*.docx", "*.rtf", "*.xls", "*.xlsx", "*.ppt", "*.pptx",
     "*.pdf", "*.epub", "*.pages", "*.numbers", "*.key", "*.heic", "*.heif",
-    "*.mov", "*.mp4", "*.m4v", ".env", ".env.*",
+    "*.mov", "*.mp4", "*.m4v", "*.zip", "*.7z", "*.rar", ".env", ".env.*",
 )
 
 REQUIRED_SECURITY_FRAGMENTS = (
@@ -72,7 +72,7 @@ def main() -> None:
         if path.suffix.lower() in FORBIDDEN_USER_FILE_SUFFIXES
     ]
     assert not forbidden_files, (
-        "User-document/media formats must not be tracked; use synthetic in-memory fixtures instead: "
+        "User-document/media/archive formats must not be tracked; use synthetic in-memory fixtures instead: "
         f"{forbidden_files}"
     )
 
