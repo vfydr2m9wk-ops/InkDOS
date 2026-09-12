@@ -17,7 +17,7 @@ APPS = {
     "pdf": "PDF Workspace",
     "presentations": "Presentations",
     "spreadsheets": "Spreadsheets",
-    "txt": "Text Editor",
+    "txt": "Plain Text",
 }
 
 
