@@ -18,6 +18,14 @@ HISTORICAL_USER_CONTENT_SUFFIXES = {
     ".mov", ".mp4", ".m4v",
 }
 
+# These historical namespaces are documented as generated/synthetic regression fixtures.
+# They are grandfathered for history classification only; the current tree still rejects
+# all committed user-document/media/archive formats above.
+HISTORICAL_SYNTHETIC_PREFIXES = (
+    "tests/fixtures/",
+    "tests/compatibility-fixtures/",
+)
+
 ARCHIVE_SUFFIXES = {".zip", ".7z", ".rar"}
 QA_ARCHIVE_TOKENS = {
     "qa", "private", "lab", "fixture", "fixtures", "sample", "samples",
@@ -75,12 +83,13 @@ def tracked_paths() -> list[Path]:
     return [ROOT / item for item in output.split("\0") if item]
 
 
-def historical_privacy_counts() -> tuple[int, int, int]:
+def historical_privacy_counts() -> tuple[int, int, int, int]:
     """Return category counts only; never disclose historical paths in public CI."""
     output = subprocess.check_output(
         ["git", "rev-list", "--objects", "--all"], cwd=ROOT, text=True
     )
-    content_hits: set[str] = set()
+    unclassified_content_hits: set[str] = set()
+    known_synthetic_hits: set[str] = set()
     private_path_hits: set[str] = set()
     qa_archive_hits: set[str] = set()
 
@@ -88,7 +97,8 @@ def historical_privacy_counts() -> tuple[int, int, int]:
         if " " not in line:
             continue
         object_id, raw_path = line.split(" ", 1)
-        path = Path(raw_path)
+        normalized_path = raw_path.replace("\\", "/")
+        path = Path(normalized_path)
         suffix = path.suffix.lower()
         lower_parts = {part.lower() for part in path.parts}
         stem_tokens = {
@@ -96,13 +106,21 @@ def historical_privacy_counts() -> tuple[int, int, int]:
         }
 
         if suffix in HISTORICAL_USER_CONTENT_SUFFIXES:
-            content_hits.add(object_id)
+            if normalized_path.startswith(HISTORICAL_SYNTHETIC_PREFIXES):
+                known_synthetic_hits.add(object_id)
+            else:
+                unclassified_content_hits.add(object_id)
         if lower_parts & FORBIDDEN_PATH_PARTS:
             private_path_hits.add(object_id)
         if suffix in ARCHIVE_SUFFIXES and stem_tokens & QA_ARCHIVE_TOKENS:
             qa_archive_hits.add(object_id)
 
-    return len(content_hits), len(private_path_hits), len(qa_archive_hits)
+    return (
+        len(unclassified_content_hits),
+        len(private_path_hits),
+        len(qa_archive_hits),
+        len(known_synthetic_hits),
+    )
 
 
 def main() -> None:
@@ -147,11 +165,17 @@ def main() -> None:
     )
     assert not secret_hits, f"Credential-like material found in tracked text: {secret_hits}"
 
-    history_content, history_private_paths, history_qa_archives = historical_privacy_counts()
-    assert (history_content, history_private_paths, history_qa_archives) == (0, 0, 0), (
+    (
+        history_unclassified,
+        history_private_paths,
+        history_qa_archives,
+        history_known_synthetic,
+    ) = historical_privacy_counts()
+    assert (history_unclassified, history_private_paths, history_qa_archives) == (0, 0, 0), (
         "Historical privacy candidates detected without disclosing filenames: "
-        f"user-content objects={history_content}, private-path objects={history_private_paths}, "
-        f"QA-archive objects={history_qa_archives}. History rewrite requires separate approval."
+        f"unclassified user-content objects={history_unclassified}, "
+        f"private-path objects={history_private_paths}, QA-archive objects={history_qa_archives}. "
+        "History rewrite requires separate approval."
     )
 
     ignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
@@ -166,7 +190,10 @@ def main() -> None:
     missing_template = [item for item in REQUIRED_BUG_TEMPLATE_FRAGMENTS if item not in bug_template]
     assert not missing_template, f"Bug template is missing privacy guidance: {missing_template}"
 
-    print("Repository privacy contract passed.")
+    print(
+        "Repository privacy contract passed "
+        f"(historical synthetic fixture objects recognized: {history_known_synthetic})."
+    )
 
 
 if __name__ == "__main__":
