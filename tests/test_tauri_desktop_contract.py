@@ -5,6 +5,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DESKTOP = ROOT / "desktop"
 TAURI = DESKTOP / "src-tauri"
 WORKFLOW = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
+RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "release.yml"
+RELEASE_VERSION = DESKTOP / "scripts" / "release_version.py"
 
 
 def read(path: Path) -> str:
@@ -16,7 +18,7 @@ def test_tauri_shell_configuration_matches_inkdos_release():
     version = json.loads(read(ROOT / "VERSION.json"))["version"]
     config = json.loads(read(TAURI / "tauri.conf.json"))
     assert config["productName"] == "InkDOS"
-    assert config["version"] == version == "2.1.0"
+    assert config["version"] == version
     assert config["identifier"] == "com.inkdos.desktop"
     assert config["build"]["frontendDist"] == "../web-dist"
     assert config["app"]["withGlobalTauri"] is True
@@ -79,9 +81,23 @@ def test_stager_injects_bridge_without_editing_source_html():
     assert "--check" in stager
 
 
-def test_native_build_workflow_targets_all_desktop_platforms_without_node():
+def test_release_version_utility_uses_version_json_as_authority():
+    utility = read(RELEASE_VERSION)
+    for marker in (
+        "VERSION.json",
+        "tauri.conf.json",
+        "--check-config",
+        "--sync-config",
+        "--check-tag",
+        "v{version}",
+    ):
+        assert marker in utility
+
+
+def test_native_build_workflow_targets_main_and_feature_branch_without_node():
     workflow = read(WORKFLOW)
     for marker in (
+        "main",
         "desktop-tauri",
         "windows-latest",
         "macos-latest",
@@ -92,11 +108,48 @@ def test_native_build_workflow_targets_all_desktop_platforms_without_node():
         "InkDOS-Linux",
         "libwebkit2gtk-4.1-dev",
         "python desktop/scripts/stage_web.py",
+        "python desktop/scripts/release_version.py --check-config",
     ):
         assert marker in workflow
     assert "setup-node" not in workflow
     assert "npm install" not in workflow
     assert "npm run" not in workflow
+
+
+def test_tag_release_workflow_builds_every_platform_before_publication():
+    workflow = read(RELEASE_WORKFLOW)
+    for marker in (
+        "v*.*.*",
+        "windows-latest",
+        "macos-latest",
+        "ubuntu-22.04",
+        "python desktop/scripts/release_version.py --check-tag",
+        "python desktop/scripts/release_version.py --check-config",
+        "InkDOS-Windows",
+        "InkDOS-macOS",
+        "InkDOS-Linux",
+        "actions/download-artifact@v4",
+        "contents: write",
+        "gh release create",
+        "https://vfydr2m9wk-ops.github.io/InkDOS/",
+    ):
+        assert marker in workflow
+    assert "needs: [validate, build]" in workflow or "needs:\n      - validate\n      - build" in workflow
+    assert "setup-node" not in workflow
+    assert "npm install" not in workflow
+
+
+def test_generated_desktop_bundles_are_ignored():
+    ignored = read(ROOT / ".gitignore")
+    for marker in (
+        "desktop/web-dist/",
+        "desktop/src-tauri/target/",
+        "*.dmg",
+        "*.AppImage",
+        "*.msi",
+        "*.rpm",
+    ):
+        assert marker in ignored
 
 
 def test_bundle_targets_cover_expected_installers():
