@@ -5,7 +5,17 @@ function loadScript(src,test){if(test?.())return Promise.resolve();return new Pr
 function loadCss(href,key){if(document.querySelector('link[data-doc-'+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset['doc'+key.toUpperCase()]='1';document.head.appendChild(l)}
 async function loadD1(){loadCss('ui/d1-tools.css','d1');await loadScript('engine/d1-docx-extension.js',()=>!!NS.D1DocxExtension);await loadScript('ui/d1-tools.js',()=>!!NS.D1Tools)}
 async function loadD2(){loadCss('ui/d2-tools.css','d2');await loadScript('engine/d2-docx-extension.js',()=>!!NS.D2DocxExtension);await loadScript('engine/d2-sections-extension.js',()=>!!NS.D2SectionsExtension);await loadScript('io/rtf-importer.js',()=>!!NS.RtfImporter);await loadScript('ui/d2-tools.js',()=>!!NS.D2Tools);await loadScript('ui/d2-sections.js',()=>!!NS.D2Sections)}
-async function boot(){await loadScript('runtime/commands/document-commands.js',()=>!!NS.DocumentCommands);await loadD1();await loadD2();
+function installDocxOnOffFix(){
+ if(NS.DocxOnOffFix||!NS.DocxParser||!global.JSZip)return;
+ const originalParse=NS.DocxParser.parse.bind(NS.DocxParser),W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+ const direct=(el,name)=>Array.from(el?.children||[]).find(x=>x.localName===name)||null;
+ const val=el=>el?(el.getAttributeNS(W,'val')||el.getAttribute('w:val')||el.getAttribute('val')||''):'';
+ const onOff=el=>{if(!el)return false;const raw=String(val(el)||'').trim().toLowerCase();return !['0','false','off','no'].includes(raw)};
+ const sourceParagraph=(bodyChildren,block)=>{const source=bodyChildren[block.sourceIndex];if(!source)return null;if(source.localName==='p')return source;if(source.localName==='sdt'){const content=direct(source,'sdtContent')||source,items=Array.from(content.children||[]).filter(x=>x.localName==='p'||x.localName==='tbl'),candidate=items[block.sourceSubIndex||0];return candidate?.localName==='p'?candidate:null}return null};
+ NS.DocxParser.parse=async function(buffer){const result=await originalParse(buffer);try{const zip=await global.JSZip.loadAsync(buffer),main=zip.file('word/document.xml')||zip.file('documents/document.xml');if(!main)return result;const text=await main.async('string');if(/<!DOCTYPE|<!ENTITY/i.test(text))return result;const doc=new DOMParser().parseFromString(text,'application/xml');if(doc.getElementsByTagName('parsererror').length)return result;const body=Array.from(doc.getElementsByTagNameNS('*','body'))[0],bodyChildren=Array.from(body?.children||[]);for(const block of result.blocks||[]){if(!Number.isFinite(block.sourceIndex))continue;const p=sourceParagraph(bodyChildren,block),pPr=direct(p,'pPr');if(!pPr)continue;const pageBreak=direct(pPr,'pageBreakBefore'),keepNext=direct(pPr,'keepNext');if(pageBreak)block.hardPageBreakBefore=onOff(pageBreak);if(keepNext)block.keepNext=onOff(keepNext)}}catch(error){console.warn('DOCX on/off repair skipped.',error)}return result};
+ NS.DocxOnOffFix=Object.freeze({installed:true});
+}
+async function boot(){installDocxOnOffFix();await loadScript('runtime/commands/document-commands.js',()=>!!NS.DocumentCommands);await loadD1();await loadD2();
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');
