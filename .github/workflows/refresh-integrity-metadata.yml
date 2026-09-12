@@ -8,7 +8,6 @@ on:
       - 'fix/**'
       - 'polish/**'
       - 'audit/stability-functional-isolation'
-      - 'desktop-tauri'
     paths-ignore:
       - 'CHECKSUMS.sha256'
       - 'SOURCE_LOCK.json'
