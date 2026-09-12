@@ -3,6 +3,7 @@ name: InkDOS Tauri desktop
 on:
   push:
     branches:
+      - main
       - desktop-tauri
   workflow_dispatch:
 
@@ -25,6 +26,8 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.11"
+      - name: Validate release metadata
+        run: python desktop/scripts/release_version.py --check-config
       - name: Run desktop contract
         run: python tests/test_tauri_desktop_contract.py
       - name: Validate staged desktop runtime
@@ -79,6 +82,9 @@ jobs:
 
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2" --locked
+
+      - name: Validate release metadata
+        run: python desktop/scripts/release_version.py --check-config
 
       - name: Stage InkDOS web runtime
         run: python desktop/scripts/stage_web.py
