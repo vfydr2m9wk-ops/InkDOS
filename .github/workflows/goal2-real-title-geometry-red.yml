@@ -26,5 +26,5 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install Chromium
         run: python -m playwright install --with-deps chromium
-      - name: Run focused real-title geometry regression
-        run: python tests/test_pptx_real_title_geometry_browser.py
+      - name: Run focused real-title multi-run geometry regression
+        run: python tests/test_pptx_real_title_multirun_geometry_browser.py
