@@ -14,7 +14,7 @@ BRIDGE = DESKTOP / "desktop-host.js"
 HEAD_TAG = "<head>"
 INJECTION = '<script src="/desktop-host.js"></script>'
 ROOT_FILES = ("index.html", "manifest.webmanifest", "service-worker.js", "VERSION.json")
-ROOT_DIRS = ("assets", "apps")
+ROOT_DIRS = ("assets", "apps", "shared")
 DOC_FILES = ("PROJECT_STATUS.md", "KNOWN_LIMITATIONS.md")
 
 
@@ -62,7 +62,7 @@ def _inject_bridge(destination: Path) -> int:
 
 
 def _validate(destination: Path) -> None:
-    required = [destination / "index.html", destination / "desktop-host.js", destination / "apps", destination / "assets"]
+    required = [destination / "index.html", destination / "desktop-host.js", destination / "apps", destination / "assets", destination / "shared"]
     missing = [path.relative_to(destination) for path in required if not path.exists()]
     if missing:
         raise RuntimeError(f"staged runtime is incomplete: {missing}")
