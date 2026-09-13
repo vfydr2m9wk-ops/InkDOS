@@ -2,29 +2,25 @@
 
 ## Status
 
-**NEEDS USER REVIEW — RUNTIME DEVELOPMENT FROZEN**
+**USER-APPROVED — 2026-09-13**
 
 This is a required pre-release correction to the Goal 1 CSV/TSV support. It is part of the same temporary intervention that freezes Goal 3 at:
 
 `6161eb20f7b5d8d7e58214c38c7c65202abe24c1`
 
-No Goal 3 implementation is discarded. Goal 3 resumes automatically after the adaptive-density, delimited-text, and Presentations functional corrections are validated.
+No Goal 3 implementation is discarded. Goal 3 resumes automatically after the delimited-text, adaptive-density, and Presentations functional corrections are validated.
 
 ## Confirmed defect
 
 The current Spreadsheet delimited-text implementation treats every `.csv` file as comma-delimited and every `.tsv` file as tab-delimited.
 
-The user supplied a real CSV whose first row is:
+A real regression file demonstrated a valid UTF-8 CSV using semicolon (`;`) as its field delimiter. Microsoft Excel opens it as four columns; InkDOS currently forces comma for `.csv`, so the same file is parsed incorrectly.
 
-`Username; Identifier;First name;Last name`
-
-The file is UTF-8 text and uses semicolon (`;`) as its field delimiter. Microsoft Excel opens it as four columns. InkDOS currently forces comma for `.csv`, so this valid CSV is parsed incorrectly.
-
-The save path has the same defect: every CSV is serialized with comma even if the source used another valid delimiter. Therefore simply fixing import would still allow a same-format save to silently rewrite the delimiter convention.
+The save path has the same defect: every CSV is serialized with comma even if the source used another valid delimiter. Therefore fixing import alone would still allow a same-format save to silently rewrite the delimiter convention.
 
 ## Product requirement
 
-Goal 1 promised editable CSV/TSV with same-format preservation where safe. For InkDOS 2.3, a CSV must not be defined as "comma only" in the implementation.
+Goal 1 promised editable CSV/TSV with same-format preservation where safe. For InkDOS 2.3, CSV must not be defined as "comma only" in the implementation.
 
 The correction must preserve the source file's delimited-text convention where it can be identified safely.
 
@@ -36,7 +32,7 @@ The correction must preserve the source file's delimited-text convention where i
 
 ### CSV
 
-For `.csv`, InkDOS must detect the delimiter from the decoded text rather than forcing comma.
+For `.csv`, InkDOS must detect the delimiter from decoded text rather than forcing comma.
 
 Supported CSV delimiter candidates for 2.3:
 
@@ -46,7 +42,7 @@ Supported CSV delimiter candidates for 2.3:
 
 The detector must be quote-aware. Delimiters inside quoted fields must not be counted as column separators.
 
-The detector should inspect a bounded sample of logical records and prefer the candidate that produces a stable multi-column shape across records. It must not use a naive `split()` or raw character count.
+The detector must inspect a bounded sample of logical records and prefer the candidate that produces a stable multi-column shape across records. It must not use a naive `split()` or raw character count.
 
 If no candidate produces convincing multi-column structure, fall back conservatively to comma so a legitimate one-column CSV still opens instead of being rejected.
 
@@ -83,9 +79,9 @@ The existing CSV/XLSX compatibility gate remains in force. Unsupported workbook 
 
 Existing supported BOM/encoding preservation must remain green.
 
-The correction should also avoid unnecessary line-ending normalization. If the source convention can be determined safely (`CRLF`, `LF`, or `CR`), store it and reuse it on same-format export.
+The correction must also avoid unnecessary line-ending normalization. If the source convention can be determined safely (`CRLF`, `LF`, or `CR`), store it and reuse it on same-format export.
 
-Do not silently replace undecodable text. If an unsupported/ambiguous byte encoding cannot be decoded without replacement/data loss, fail clearly rather than corrupting cell text.
+Do not silently replace undecodable text. If an unsupported or ambiguous byte encoding cannot be decoded without replacement/data loss, fail clearly rather than corrupting cell text.
 
 Broad legacy-codepage support is not required unless implemented with deterministic round-trip tests.
 
@@ -104,16 +100,16 @@ The existing real parser behavior remains required:
 
 Delimiter detection must not weaken any of those guarantees.
 
-## Real regression
+## Privacy-safe regression fixture
 
-The supplied semicolon CSV must be represented by a synthetic privacy-safe regression fixture with equivalent structure, not by committing the user's uploaded file.
+The user's uploaded CSV must not be committed. Use a synthetic fixture with equivalent structure.
 
-Required expected grid:
+Required expected grid for the representative semicolon case:
 
 - row 1: `Username` | ` Identifier` | `First name` | `Last name`
-- following rows remain four columns with their literal textual values
+- following rows remain four columns with literal textual values
 
-The leading space before `Identifier` is source data and must not be silently trimmed merely because the delimiter was detected.
+The leading space before `Identifier` is source data and must not be silently trimmed.
 
 ## Tests
 
@@ -158,4 +154,4 @@ Because data correctness takes precedence over cosmetic refinement, the temporar
 7. automatically resume Goal 3 from the preserved work and diagnostic evidence;
 8. continue Goal 3 → Goal 4 → final InkDOS 2.3 validation/release.
 
-No runtime implementation starts until this correction and the combined pre-release intervention are explicitly user-approved.
+The user approved this correction and the combined intervention on 2026-09-13. Runtime implementation may proceed immediately, subject to the concurrency/CI coordination rules.
