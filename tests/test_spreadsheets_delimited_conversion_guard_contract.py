@@ -31,7 +31,7 @@ def main() -> None:
     require(editor, "if(!await ensureXlsxFor('Delete worksheet'))return", 'Delete-sheet conversion guard')
 
     require(dialog, "confirmLabel='Confirm'", 'Two-action confirmation label support')
-    require(dialog, 'discard.hidden=true', 'Confirmation mode hides destructive discard action')
+    require(dialog, 'discard.hidden=!!confirmOnly', 'Confirmation mode hides destructive discard action')
     require(dialog, "return result==='save'", 'Confirmation resolves only from the explicit confirm action')
 
     require(service_worker, '"./apps/spreadsheets/io/delimited-text.js"', 'CSV/TSV codec offline shell entry')
