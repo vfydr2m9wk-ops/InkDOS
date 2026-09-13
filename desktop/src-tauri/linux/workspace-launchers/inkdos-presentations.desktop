@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=InkDOS Presentations
+Exec=InkDOS --workspace presentations
+Icon=/usr/share/inkdos/workspace-icons/presentations.png
+Terminal=false
+Categories=Office;
+X-InkDOS-Workspace=presentations
+X-InkDOS-SourceIcon=assets/icons/presentations.png
