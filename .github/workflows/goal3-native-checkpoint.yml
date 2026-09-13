@@ -73,9 +73,41 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+  macos-launchers:
+    name: Materialize macOS workspace launchers
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version '^2' --locked
+      - name: Generate macOS workspace launch entries
+        run: python desktop/scripts/generate_macos_workspace_launchers.py
+      - name: Verify generated macOS helper bundles
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find desktop/src-tauri/macos/workspace-launchers -path '*/Contents/MacOS/launcher' -type f | wc -l | tr -d ' ')" = "6"
+          test "$(find desktop/src-tauri/macos/workspace-launchers -path '*/Contents/Resources/icon.icns' -type f | wc -l | tr -d ' ')" = "6"
+          test "$(find desktop/src-tauri/macos/workspace-launchers -path '*/Contents/Info.plist' -type f | wc -l | tr -d ' ')" = "6"
+      - name: Upload generated macOS launchers
+        uses: actions/upload-artifact@v4
+        with:
+          name: goal3-macos-workspace-launchers
+          path: desktop/src-tauri/macos/workspace-launchers/*/Contents/**
+          if-no-files-found: error
+          retention-days: 1
+
   cargo-check:
     name: Tauri cargo check (${{ matrix.os }})
-    needs: workspace-icons
+    needs: [workspace-icons, macos-launchers]
     strategy:
       fail-fast: false
       matrix:
@@ -94,6 +126,12 @@ jobs:
         with:
           name: goal3-workspace-icons
           path: desktop/src-tauri/windows/workspace-icons
+      - name: Materialize macOS workspace launcher resources
+        if: runner.os == 'macOS'
+        uses: actions/download-artifact@v4
+        with:
+          name: goal3-macos-workspace-launchers
+          path: desktop/src-tauri/macos/workspace-launchers
       - name: Install Linux Tauri prerequisites
         if: runner.os == 'Linux'
         shell: bash
