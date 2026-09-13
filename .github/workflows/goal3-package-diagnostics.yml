@@ -1,0 +1,77 @@
+name: Goal 3 package diagnostics
+
+on:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - '.github/workflows/goal3-package-diagnostics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-goal3-package-diagnostics-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package-diagnostics:
+    name: Package diagnostics (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            bundles: nsis,msi
+          - os: ubuntu-22.04
+            bundles: deb,appimage,rpm
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install Linux Tauri prerequisites
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            rpm \
+            cpio
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version '^2' --locked
+      - name: Generate native workspace icons
+        run: python desktop/scripts/generate_workspace_icons.py
+      - name: Stage InkDOS web runtime
+        run: python desktop/scripts/stage_web.py
+      - name: Build native packages with diagnostics
+        working-directory: desktop/src-tauri
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo tauri build --bundles ${{ matrix.bundles }} 2>&1 | tee package-build.log
+      - name: Upload package build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goal3-package-diagnostics-${{ matrix.os }}
+          path: desktop/src-tauri/package-build.log
+          if-no-files-found: error
+          retention-days: 1
