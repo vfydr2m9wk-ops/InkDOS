@@ -38,7 +38,7 @@ def test_tauri_rust_dependencies_are_v2_and_node_free():
 
 def test_capability_is_explicit_and_has_no_broad_static_filesystem_scope():
     capability = json.loads(read(TAURI / "capabilities" / "default.json"))
-    assert set(capability["windows"]) == {"main", "file-*", "workspace-*"}
+    assert capability["windows"] == ["main"]
     permissions = capability["permissions"]
     required = {
         "core:default",

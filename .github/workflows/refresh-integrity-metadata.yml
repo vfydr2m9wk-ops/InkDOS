@@ -2,11 +2,6 @@ name: Refresh integrity metadata
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'feature/**'
-    paths:
-      - '.github/integrity-refresh-trigger'
 
 permissions:
   contents: read

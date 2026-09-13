@@ -31,11 +31,6 @@
     return parts[parts.length - 1] || 'Untitled';
   }
 
-  function extensionForName(name) {
-    const match = String(name || '').toLowerCase().match(/\.([^.\\/]+)$/);
-    return match ? match[1] : '';
-  }
-
   function extensionsFromTypes(types) {
     const extensions = new Set();
     for (const type of Array.isArray(types) ? types : []) {
@@ -54,7 +49,7 @@
     const extensions = new Set();
     for (const value of String(accept || '').split(',')) {
       const token = value.trim();
-      if (token.startsWith('.') && token.length > 1) extensions.add(token.slice(1).toLowerCase());
+      if (token.startsWith('.') && token.length > 1) extensions.add(token.slice(1));
     }
     return Array.from(extensions);
   }
@@ -120,57 +115,6 @@
     });
   };
 
-  async function fileFromNativePath(path) {
-    const bytes = await fs.readFile(path);
-    const name = basename(path);
-    return new File([bytes], name, { type: mimeForName(name), lastModified: Date.now() });
-  }
-
-  async function injectNativeFile(path) {
-    const input = document.querySelector('input[type="file"]');
-    if (!input) return false;
-    if (typeof g.DataTransfer !== 'function' || typeof g.File !== 'function') {
-      throw new Error('InkDOS desktop cannot inject the associated file in this webview.');
-    }
-
-    const allowed = extensionsFromAccept(input.accept);
-    const extension = extensionForName(path);
-    if (allowed.length && (!extension || !allowed.includes(extension))) {
-      throw new Error(`Unsupported file format: .${extension || '(none)'}`);
-    }
-
-    const transfer = new DataTransfer();
-    transfer.items.add(await fileFromNativePath(path));
-    input.files = transfer.files;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-    return true;
-  }
-
-  function autoOpenNativeInjectedFile() {
-    const path = g.__INKDOS_OPEN_PATH__;
-    if (!path) return;
-    delete g.__INKDOS_OPEN_PATH__;
-
-    let attempts = 0;
-    const tryInject = () => {
-      attempts += 1;
-      injectNativeFile(path).then(opened => {
-        if (!opened && attempts < 40) g.setTimeout(tryInject, 50);
-        else if (!opened) console.error('InkDOS desktop could not find this workspace file input.');
-      }).catch(error => {
-        console.error('InkDOS desktop associated-file open failed:', error);
-        if (dialog && typeof dialog.message === 'function') {
-          dialog.message(String(error && error.message ? error.message : error), {
-            title: 'InkDOS — Unsupported file',
-            kind: 'error'
-          }).catch(() => {});
-        }
-      });
-    };
-    tryInject();
-  }
-
   const nativeInputClick = g.HTMLInputElement && g.HTMLInputElement.prototype.click;
   if (nativeInputClick) {
     g.HTMLInputElement.prototype.click = function inkdosDesktopInputClick() {
@@ -193,7 +137,11 @@
         if (!selected) return;
         const paths = Array.isArray(selected) ? selected : [selected];
         const transfer = new DataTransfer();
-        for (const path of paths) transfer.items.add(await fileFromNativePath(path));
+        for (const path of paths) {
+          const bytes = await fs.readFile(path);
+          const name = basename(path);
+          transfer.items.add(new File([bytes], name, { type: mimeForName(name), lastModified: Date.now() }));
+        }
         input.files = transfer.files;
         input.dispatchEvent(new Event('input', { bubbles: true }));
         input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -204,8 +152,6 @@
       });
     };
   }
-
-  autoOpenNativeInjectedFile();
 
   if (opener && typeof opener.openUrl === 'function') {
     document.addEventListener('click', event => {

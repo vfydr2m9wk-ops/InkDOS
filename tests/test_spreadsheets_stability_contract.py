@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import posixpath
 import re
 from pathlib import Path
 
@@ -74,8 +73,7 @@ def main() -> None:
     for ref in local_refs:
         if ref.startswith(('http://', 'https://', '//')):
             continue
-        normalized = posixpath.normpath(posixpath.join('apps/spreadsheets', ref))
-        require(service_worker, f'"./{normalized}"', 'Spreadsheets offline shell')
+        require(service_worker, f'"./apps/spreadsheets/{ref}"', 'Spreadsheets offline shell')
 
     for marker in (
         'new NS.WorkbookSession()',

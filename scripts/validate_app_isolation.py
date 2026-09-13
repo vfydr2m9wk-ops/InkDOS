@@ -11,10 +11,6 @@ ROOT=Path(__file__).resolve().parents[1]
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 VERSION=json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))['version']
 TEXT_SUFFIXES={'.html','.css','.js','.json','.webmanifest'}
-APPROVED_SHARED_RUNTIME={
-    '../../shared/ui-density.css',
-    '../../shared/ui-density.js',
-}
 HOME_FRAME={
     'documents':'runtime/frame/frame-menu.js',
     'spreadsheets':'runtime/frame/frame-menu.js',
@@ -56,10 +52,6 @@ def ensure_within(base,target):
     try:target.relative_to(base);return True
     except ValueError:return False
 
-def approved_shared_runtime(value):
-    path=local_path(value)
-    return value in APPROVED_SHARED_RUNTIME and path in APPROVED_SHARED_RUNTIME
-
 def validate_isolated_copy(app,errors):
     source=ROOT/'apps'/app
     with tempfile.TemporaryDirectory(prefix=f'inkdos-{app}-') as td:
@@ -72,12 +64,6 @@ def validate_isolated_copy(app,errors):
             if is_home:
                 if path!='../../index.html':errors.append(f'{app}: unexpected Home target {value}')
                 continue
-            if approved_shared_runtime(value):
-                shared_target=(ROOT/'apps'/app/path).resolve()
-                shared_root=(ROOT/'shared').resolve()
-                if not ensure_within(shared_root,shared_target) or not shared_target.is_file():
-                    errors.append(f'{app}: approved shared runtime missing: {value}')
-                continue
             resolved=(isolated/path).resolve()
             if not ensure_within(isolated.resolve(),resolved):
                 errors.append(f'{app}: {tag} {key} escapes app root: {value}')
@@ -89,18 +75,13 @@ def validate_cross_app_references(app,errors):
     other=[name for name in ACTIVE if name!=app]
     patterns=[re.compile(rf'(?<![A-Za-z0-9_-])apps/{re.escape(name)}/') for name in other]
     patterns += [re.compile(rf'(?:\.\./)+{re.escape(name)}/') for name in other]
-    shared_pattern=re.compile(r"(?:\.\./)+shared/[A-Za-z0-9._/-]+(?:\?[^\s\"'<>]*)?")
-    forbidden_roots=('modules/','core/')
+    forbidden_roots=('shared/','modules/','core/')
     for path in root.rglob('*'):
         if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:continue
         text=path.read_text(encoding='utf-8',errors='ignore')
         rel=path.relative_to(ROOT).as_posix()
         for pattern in patterns:
             if pattern.search(text):errors.append(f'{app}: cross-app source reference in {rel}: {pattern.pattern}')
-        for match in shared_pattern.finditer(text):
-            value=match.group(0)
-            if not approved_shared_runtime(value):
-                errors.append(f'{app}: shared runtime reference in {rel}: {value}')
         for marker in forbidden_roots:
             if re.search(rf'(?:\.\./)+{re.escape(marker)}',text):errors.append(f'{app}: shared runtime reference in {rel}: {marker}')
 

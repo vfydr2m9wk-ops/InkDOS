@@ -3,7 +3,6 @@ import hashlib,json,re,unittest
 ROOT=Path(__file__).resolve().parents[1]
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 VERSION=json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))['version']
-APPROVED_SHARED_RUNTIME={'ui-density.css','ui-density.js'}
 class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -97,9 +96,7 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('if(isAppleTouchHost()&&canShare(file))',texts['presentations'])
         self.assertIn('if((local||c.preferShareSave)&&c.share)',texts['txt'])
         self.assertIn('if(isAppleTouchHost()&&canShare(file))',texts['pdf'])
-        shared=ROOT/'shared'
-        self.assertTrue(shared.is_dir())
-        self.assertEqual({p.relative_to(shared).as_posix() for p in shared.rglob('*') if p.is_file()},APPROVED_SHARED_RUNTIME)
+        self.assertFalse((ROOT/'shared').exists())
     def test_empty_state_file_action_contract(self):
         documents=(ROOT/'apps/documents/index.html').read_text(encoding='utf-8')
         self.assertRegex(documents,r'id="saveMenuBtn"[^>]*disabled')
@@ -176,10 +173,7 @@ class SuiteIntegration(unittest.TestCase):
         css=(ROOT/'assets/home.css').read_text(encoding='utf-8')
         self.assertIn('@media(max-width:720px)',css);self.assertIn('.workspace-grid{grid-template-columns:1fr',css)
     def test_no_cross_suite_runtime_roots(self):
-        for rel in ('modules','core'):self.assertFalse((ROOT/rel).exists(),rel)
-        shared=ROOT/'shared'
-        self.assertTrue(shared.is_dir())
-        self.assertEqual({p.relative_to(shared).as_posix() for p in shared.rglob('*') if p.is_file()},APPROVED_SHARED_RUNTIME)
+        for rel in ('shared','modules','core'):self.assertFalse((ROOT/rel).exists(),rel)
     def test_source_lock_has_six_apps(self):
         lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text(encoding='utf-8'))
         self.assertEqual(set(lock['apps']),set(ACTIVE))

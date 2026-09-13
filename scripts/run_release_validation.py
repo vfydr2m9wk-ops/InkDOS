@@ -19,8 +19,6 @@ CMDS=[
  [sys.executable,'tests/test_spreadsheets_delimited_conversion_guard_contract.py'],
  [sys.executable,'tests/test_spreadsheets_delimited_formula_paste_guard_contract.py'],
  [sys.executable,'tests/test_spreadsheets_delimited_edit_preservation_contract.py'],
- [sys.executable,'tests/test_tauri_goal3_workspace_contract.py'],
- [sys.executable,'tests/test_app_isolation_shared_density_contract.py'],
  [sys.executable,'tests/test_release_210_contract.py'],
  [sys.executable,'scripts/validate_repository.py'],
  [sys.executable,'scripts/validate_app_isolation.py'],

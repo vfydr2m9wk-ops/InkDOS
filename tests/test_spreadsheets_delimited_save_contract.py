@@ -13,16 +13,13 @@ def require(text: str, needle: str, label: str) -> None:
 
 def main() -> None:
     save_controller = (ROOT / 'apps/spreadsheets/io/save-controller.js').read_text(encoding='utf-8')
-    delimited_text = (ROOT / 'apps/spreadsheets/io/delimited-text.js').read_text(encoding='utf-8')
     file_delivery = (ROOT / 'apps/spreadsheets/io/file-delivery.js').read_text(encoding='utf-8')
 
-    require(save_controller, 'NS.DelimitedText.serialize(session.book)', 'Delimited normal-save routing')
+    require(save_controller, 'NS.DelimitedText.serialize', 'Delimited normal-save routing')
     require(save_controller, "session.sourceKind==='csv'||session.sourceKind==='tsv'", 'Delimited source-kind routing')
-    require(delimited_text, 'sheet.delimitedMeta||book.delimitedMeta||{}', 'Delimited session metadata authority')
-    require(delimited_text, "actualDelimiter=delimiter??meta.delimiter??','", 'Detected delimiter preservation')
-    require(delimited_text, 'actualLineEnding=lineEnding??meta.lineEnding', 'Delimited line-ending preservation')
-    require(delimited_text, 'actualBom=bom==null?!!meta.bom:!!bom', 'Delimited BOM preservation')
-    require(delimited_text, "actualEncoding=encoding||meta.encoding||'utf-8'", 'Delimited encoding preservation')
+    require(save_controller, "session.sourceKind==='tsv'?'\\t':','", 'CSV/TSV delimiter preservation')
+    require(save_controller, 'bom:session.book?.delimitedMeta?.bom', 'Delimited BOM preservation')
+    require(save_controller, 'encoding:session.book?.delimitedMeta?.encoding', 'Delimited encoding preservation')
     require(save_controller, 'sourceKind:session.sourceKind', 'Delivery source-kind propagation')
 
     require(file_delivery, "sourceKind==='csv'?'.csv':sourceKind==='tsv'?'.tsv':'.xlsx'", 'Delivery extension preservation')
