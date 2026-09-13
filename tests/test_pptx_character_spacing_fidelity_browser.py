@@ -30,8 +30,11 @@ def wait_port(timeout: float = 10.0) -> None:
 
 def main() -> None:
     browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
+    phase = os.environ.get("PPTX_TRACKING_PHASE", "all").strip().lower()
     if browser_name not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={browser_name}")
+    if phase not in {"all", "render", "preserve"}:
+        raise RuntimeError(f"Unsupported PPTX_TRACKING_PHASE={phase}")
 
     server = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(PORT), "--bind", "127.0.0.1"],
@@ -111,56 +114,55 @@ def main() -> None:
                 "() => globalThis.__inkdosPresentations.session.sourceKind === 'pptx'"
             )
 
-            imported = page.evaluate(
-                """marker => {
-                    const slide=globalThis.__inkdosPresentations.session.currentSlide;
-                    const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
-                    const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
-                    const span=Array.from(document.querySelectorAll('.slide-textbox .rich-text-content span')).find(el=>el.textContent===marker)||null;
-                    return {
-                        fontSizePt:run?.fontSizePt??null,
-                        charSpacingPt:run?.charSpacingPt??null,
-                        inlineLetterSpacing:span?.style?.letterSpacing||'',
-                        computedLetterSpacing:span?getComputedStyle(span).letterSpacing:null
-                    };
-                }""",
-                MARKER,
-            )
+            if phase in {"all", "render"}:
+                imported = page.evaluate(
+                    """marker => {
+                        const slide=globalThis.__inkdosPresentations.session.currentSlide;
+                        const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
+                        const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
+                        const span=Array.from(document.querySelectorAll('.slide-textbox .rich-text-content span')).find(el=>el.textContent===marker)||null;
+                        return {
+                            fontSizePt:run?.fontSizePt??null,
+                            charSpacingPt:run?.charSpacingPt??null,
+                            inlineLetterSpacing:span?.style?.letterSpacing||'',
+                            computedLetterSpacing:span?getComputedStyle(span).letterSpacing:null
+                        };
+                    }""",
+                    MARKER,
+                )
+                assert math.isclose(float(imported["fontSizePt"]), 112.5, abs_tol=0.001), imported
+                assert math.isclose(float(imported["charSpacingPt"]), -3.37, abs_tol=0.001), imported
+                assert imported["inlineLetterSpacing"] == "-3.37px", imported
+                assert imported["computedLetterSpacing"] == "-3.37px", imported
 
-            assert math.isclose(float(imported["fontSizePt"]), 112.5, abs_tol=0.001), imported
-            assert math.isclose(float(imported["charSpacingPt"]), -3.37, abs_tol=0.001), imported
-            # InkDOS maps one internal point to one CSS pixel for slide geometry and text.
-            # Tracking must use the same coordinate mapping; CSS pt would introduce a 4/3 scale error.
-            assert imported["inlineLetterSpacing"] == "-3.37px", imported
-            assert imported["computedLetterSpacing"] == "-3.37px", imported
-
-            preserved = page.evaluate(
-                """async marker => {
-                    const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
-                    const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
-                    const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
-                    if(!object||!run)throw new Error('Imported title run missing before preservation save');
-                    const edited=marker+'!';
-                    run.text=edited;
-                    object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');
-                    const result=await NS.PptxPreservationWriter.build(app.session);
-                    const zip=await JSZip.loadAsync(result.bytes,{checkCRC32:true});
-                    const xml=await zip.file('ppt/slides/slide1.xml').async('text');
-                    const doc=new DOMParser().parseFromString(xml,'application/xml');
-                    const runs=Array.from(doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','r'));
-                    const target=runs.find(r=>Array.from(r.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','t')).some(t=>t.textContent===edited));
-                    const rPr=target?Array.from(target.children).find(n=>n.localName==='rPr'):null;
-                    return {textFound:!!target,spc:rPr?.getAttribute('spc')??null};
-                }""",
-                MARKER,
-            )
-            assert preserved == {"textFound": True, "spc": "-337"}, preserved
+            if phase in {"all", "preserve"}:
+                preserved = page.evaluate(
+                    """async marker => {
+                        const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
+                        const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
+                        const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
+                        if(!object||!run)throw new Error('Imported title run missing before preservation save');
+                        const edited=marker+'!';
+                        run.text=edited;
+                        object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');
+                        const result=await NS.PptxPreservationWriter.build(app.session);
+                        const zip=await JSZip.loadAsync(result.bytes,{checkCRC32:true});
+                        const xml=await zip.file('ppt/slides/slide1.xml').async('text');
+                        const doc=new DOMParser().parseFromString(xml,'application/xml');
+                        const runs=Array.from(doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','r'));
+                        const target=runs.find(r=>Array.from(r.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','t')).some(t=>t.textContent===edited));
+                        const rPr=target?Array.from(target.children).find(n=>n.localName==='rPr'):null;
+                        return {textFound:!!target,spc:rPr?.getAttribute('spc')??null};
+                    }""",
+                    MARKER,
+                )
+                assert preserved == {"textFound": True, "spc": "-337"}, preserved
 
             browser.close()
 
         if errors:
-            raise AssertionError({"browser": browser_name, "errors": errors})
-        print(f"PPTX character-spacing fidelity regression passed on {browser_name}.")
+            raise AssertionError({"browser": browser_name, "phase": phase, "errors": errors})
+        print(f"PPTX character-spacing {phase} regression passed on {browser_name}.")
     finally:
         server.terminate()
         try:
