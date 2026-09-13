@@ -20,7 +20,7 @@ def main() -> None:
     policy = (APP / "txt-policy.js").read_text(encoding="utf-8")
     controller = (APP / "io" / "txt-file-controller.js").read_text(encoding="utf-8")
     editor = (APP / "editor" / "editor-controller.js").read_text(encoding="utf-8")
-    template = (APP / "page.template.html").read_text(encoding="utf-8")
+    controls = (APP / "ui" / "txt-controls.js").read_text(encoding="utf-8")
 
     # Exercise the shared policy as JavaScript rather than merely matching a regex.
     node_script = r'''
@@ -39,6 +39,7 @@ for (const name of ['sample.docx', 'sample.xlsx', 'sample.pptx', 'sample.pdf', '
   if (P.isSupportedName(name)) throw new Error('unexpected Plain Text support: ' + name);
 }
 if (!P.isXmlName('sample.XML')) throw new Error('XML safeguard detection regressed');
+if (P.accept !== supported.join(',')) throw new Error('Plain Text picker accept list does not match supported extensions');
 '''
     import json
     subprocess.run(
@@ -50,9 +51,7 @@ if (!P.isXmlName('sample.XML')) throw new Error('XML safeguard detection regress
     require(controller, "P.isSupportedName(file.name", "Plain Text open path must enforce the shared format allowlist")
     require(controller, "Unsupported file format", "Plain Text must reject unsupported files explicitly")
     require(editor, "P.isSupportedName(n)?n:n+'.txt'", "Plain Text rename/save path must preserve approved original extensions")
-
-    accept = ",".join(SUPPORTED)
-    require(template, f'accept="{accept}"', "Plain Text file picker must expose exactly the approved extension allowlist")
+    require(controls, "E.fileInput.accept=NS.TxtPolicy.accept", "Plain Text file picker must expose the shared approved extension allowlist")
 
     print("Plain Text 2.3 format expansion contract passed")
 
