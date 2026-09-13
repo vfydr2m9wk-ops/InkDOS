@@ -132,6 +132,28 @@ def main() -> None:
             assert imported["inlineLetterSpacing"] == "-3.37pt", imported
             assert imported["computedLetterSpacing"] not in {None, "", "normal"}, imported
 
+            preserved = page.evaluate(
+                """async marker => {
+                    const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
+                    const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
+                    const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
+                    if(!object||!run)throw new Error('Imported title run missing before preservation save');
+                    const edited=marker+'!';
+                    run.text=edited;
+                    object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');
+                    const result=await NS.PptxPreservationWriter.build(app.session);
+                    const zip=await JSZip.loadAsync(result.bytes,{checkCRC32:true});
+                    const xml=await zip.file('ppt/slides/slide1.xml').async('text');
+                    const doc=new DOMParser().parseFromString(xml,'application/xml');
+                    const runs=Array.from(doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','r'));
+                    const target=runs.find(r=>Array.from(r.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','t')).some(t=>t.textContent===edited));
+                    const rPr=target?Array.from(target.children).find(n=>n.localName==='rPr'):null;
+                    return {textFound:!!target,spc:rPr?.getAttribute('spc')??null};
+                }""",
+                MARKER,
+            )
+            assert preserved == {"textFound": True, "spc": "-337"}, preserved
+
             browser.close()
 
         if errors:
