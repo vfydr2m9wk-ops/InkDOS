@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: inkdos-goal3-native-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   contracts:
@@ -73,4 +73,14 @@ jobs:
         run: python desktop/scripts/stage_web.py
       - name: Check Tauri host
         working-directory: desktop/src-tauri
-        run: cargo check
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo check 2>&1 | tee cargo-check.log
+      - name: Upload cargo diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goal3-cargo-${{ matrix.os }}
+          path: desktop/src-tauri/cargo-check.log
+          if-no-files-found: error
