@@ -41,6 +41,18 @@ def test_desktop_bridge_auto_opens_only_the_native_injected_file():
         assert marker in bridge
 
 
+def test_workspace_launcher_file_args_are_bound_to_that_workspace_allowlist():
+    main = read(TAURI / "src" / "main.rs")
+    for marker in (
+        "workspace_supports_path",
+        "open_file_window_for_workspace",
+        "active_workspace",
+        "does not accept",
+    ):
+        assert marker in main
+    assert "open_file_window_for_workspace(app, workspace, path)" in main
+
+
 if __name__ == "__main__":
     tests = [value for name, value in sorted(globals().items()) if name.startswith("test_") and callable(value)]
     for test in tests:
