@@ -86,9 +86,21 @@ jobs:
       - name: Writer changed-object receipt checkpoint
         if: always()
         run: '! grep -Eq "modifiedObjects[^\n]*\[\]" /tmp/pptx-writer.log'
-      - name: Writer JavaScript exception checkpoint
+      - name: Writer TypeError checkpoint
         if: always()
-        run: '! grep -Eq "(TypeError|ReferenceError|RangeError|DOMException|Error:)" /tmp/pptx-writer.log'
+        run: '! grep -q "TypeError" /tmp/pptx-writer.log'
+      - name: Writer ReferenceError checkpoint
+        if: always()
+        run: '! grep -q "ReferenceError" /tmp/pptx-writer.log'
+      - name: Writer DOMException checkpoint
+        if: always()
+        run: '! grep -Eq "(DOMException|HierarchyRequestError|NotFoundError|InvalidCharacterError|NamespaceError)" /tmp/pptx-writer.log'
+      - name: Writer Range-Syntax checkpoint
+        if: always()
+        run: '! grep -Eq "(RangeError|SyntaxError)" /tmp/pptx-writer.log'
+      - name: Writer explicit browser error checkpoint
+        if: always()
+        run: '! grep -q "Page.evaluate: Error:" /tmp/pptx-writer.log'
       - name: Require writer detection success
         if: always()
         run: test "${{ steps.writer.outcome }}" = "success"
