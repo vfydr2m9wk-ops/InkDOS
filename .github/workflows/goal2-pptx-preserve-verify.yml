@@ -95,9 +95,12 @@ jobs:
       - name: Writer DOMException checkpoint
         if: always()
         run: '! grep -Eq "(DOMException|HierarchyRequestError|NotFoundError|InvalidCharacterError|NamespaceError)" /tmp/pptx-writer.log'
-      - name: Writer Range-Syntax checkpoint
+      - name: Writer RangeError checkpoint
         if: always()
-        run: '! grep -Eq "(RangeError|SyntaxError)" /tmp/pptx-writer.log'
+        run: '! grep -q "RangeError" /tmp/pptx-writer.log'
+      - name: Writer SyntaxError checkpoint
+        if: always()
+        run: '! grep -q "SyntaxError" /tmp/pptx-writer.log'
       - name: Writer explicit browser error checkpoint
         if: always()
         run: '! grep -q "Page.evaluate: Error:" /tmp/pptx-writer.log'
