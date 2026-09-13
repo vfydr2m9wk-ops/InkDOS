@@ -33,13 +33,41 @@ fn workspace_for_id(workspace: &str) -> Result<String, String> {
         .ok_or_else(|| format!("InkDOS workspace '{workspace}' has no desktop route."))
 }
 
-fn workspace_for_path(path: &Path) -> Result<(String, String), String> {
-    let extension = path
-        .extension()
+fn path_extension(path: &Path) -> Result<String, String> {
+    path.extension()
         .and_then(|value| value.to_str())
         .map(|value| value.to_ascii_lowercase())
-        .ok_or_else(|| "Unsupported file format: the selected file has no extension.".to_string())?;
+        .ok_or_else(|| "Unsupported file format: the selected file has no extension.".to_string())
+}
 
+fn workspace_supports_path(workspace: &str, path: &Path) -> Result<String, String> {
+    let extension = path_extension(path)?;
+    let workspaces = workspace_manifest()?;
+    let entry = workspaces
+        .get(workspace)
+        .ok_or_else(|| format!("Unsupported InkDOS workspace: {workspace}"))?;
+    let supports_extension = entry
+        .get("extensions")
+        .and_then(|value| value.as_array())
+        .map(|extensions| {
+            extensions.iter().any(|candidate| {
+                candidate
+                    .as_str()
+                    .map(|candidate| candidate.eq_ignore_ascii_case(&extension))
+                    .unwrap_or(false)
+            })
+        })
+        .unwrap_or(false);
+
+    if !supports_extension {
+        return Err(format!("InkDOS {workspace} does not accept .{extension} files."));
+    }
+
+    workspace_for_id(workspace)
+}
+
+fn workspace_for_path(path: &Path) -> Result<(String, String), String> {
+    let extension = path_extension(path)?;
     let workspaces = workspace_manifest()?;
     for (workspace, entry) in &workspaces {
         let supports_extension = entry
@@ -83,12 +111,12 @@ fn open_workspace_window(app: &tauri::AppHandle, workspace: &str) -> Result<(), 
     Ok(())
 }
 
-fn open_file_window(app: &tauri::AppHandle, path: PathBuf) -> Result<(), String> {
-    if !path.is_file() {
-        return Err(format!("File not found: {}", path.display()));
-    }
-
-    let (workspace, route) = workspace_for_path(&path)?;
+fn open_file_window_at_route(
+    app: &tauri::AppHandle,
+    workspace: &str,
+    route: String,
+    path: PathBuf,
+) -> Result<(), String> {
     let sequence = FILE_WINDOW_SEQUENCE.fetch_add(1, Ordering::Relaxed);
     let label = format!("file-{sequence}");
     let file_name = path
@@ -112,6 +140,28 @@ fn open_file_window(app: &tauri::AppHandle, path: PathBuf) -> Result<(), String>
         .set_focus()
         .map_err(|error| format!("InkDOS opened {file_name} but could not focus its window: {error}"))?;
     Ok(())
+}
+
+fn open_file_window(app: &tauri::AppHandle, path: PathBuf) -> Result<(), String> {
+    if !path.is_file() {
+        return Err(format!("File not found: {}", path.display()));
+    }
+
+    let (workspace, route) = workspace_for_path(&path)?;
+    open_file_window_at_route(app, &workspace, route, path)
+}
+
+fn open_file_window_for_workspace(
+    app: &tauri::AppHandle,
+    workspace: &str,
+    path: PathBuf,
+) -> Result<(), String> {
+    if !path.is_file() {
+        return Err(format!("File not found: {}", path.display()));
+    }
+
+    let route = workspace_supports_path(workspace, &path)?;
+    open_file_window_at_route(app, workspace, route, path)
 }
 
 fn show_open_error(app: &tauri::AppHandle, message: String) {
@@ -139,11 +189,13 @@ where
     let args: Vec<String> = args.into_iter().collect();
     let mut opened = 0;
     let mut index = 0;
+    let mut active_workspace: Option<String> = None;
 
     while index < args.len() {
         let raw = &args[index];
         if raw == "--workspace" {
             if let Some(workspace) = args.get(index + 1) {
+                active_workspace = Some(workspace.clone());
                 match open_workspace_window(app, workspace) {
                     Ok(()) => opened += 1,
                     Err(error) => show_open_error(app, error),
@@ -158,7 +210,12 @@ where
 
         let path = PathBuf::from(raw);
         if !is_current_executable(&path) && path.is_file() {
-            match open_file_window(app, path) {
+            let result = if let Some(workspace) = active_workspace.as_deref() {
+                open_file_window_for_workspace(app, workspace, path)
+            } else {
+                open_file_window(app, path)
+            };
+            match result {
                 Ok(()) => opened += 1,
                 Err(error) => show_open_error(app, error),
             }
