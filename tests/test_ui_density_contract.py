@@ -65,6 +65,9 @@ def main() -> None:
     require(service_worker, '"./shared/ui-density.js"', 'Adaptive density offline JS')
     require(service_worker, '"./shared/ui-density.css"', 'Adaptive density offline CSS')
 
+    stage_web = (ROOT / 'desktop/scripts/stage_web.py').read_text(encoding='utf-8')
+    require(stage_web, 'ROOT_DIRS = ("assets", "apps", "shared")', 'Desktop staging must include shared runtime')
+
     probe = r'''
 const fs=require('fs');
 const vm=require('vm');
