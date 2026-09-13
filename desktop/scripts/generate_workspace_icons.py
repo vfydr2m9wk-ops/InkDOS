@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Materialize native workspace icons from the canonical InkDOS icon sources.
 
-This runs only as an explicit desktop bundle hook. It does not touch the canonical
-assets; it derives Windows ICOs (and the other standard Tauri icon outputs) into
-an ignored packaging directory used by the installed workspace launchers.
+The canonical visual assets remain under assets/icons. This helper derives native
+packaging formats into desktop/src-tauri/windows/workspace-icons so those exact
+visual sources can be used by Windows launch shortcuts.
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ def main() -> None:
         output.mkdir(parents=True, exist_ok=True)
         subprocess.run(
             ["cargo", "tauri", "icon", str(source), "--output", str(output)],
-            cwd=TAURI_DIR,
+            cwd=ROOT,
             check=True,
         )
 

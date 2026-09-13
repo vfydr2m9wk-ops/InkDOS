@@ -46,6 +46,31 @@ jobs:
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
 
+  workspace-icons:
+    name: Materialize canonical workspace icons
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version '^2' --locked
+      - name: Generate native workspace icons from canonical sources
+        run: python desktop/scripts/generate_workspace_icons.py
+      - name: Upload generated workspace ICOs
+        uses: actions/upload-artifact@v4
+        with:
+          name: goal3-workspace-icons
+          path: desktop/src-tauri/windows/workspace-icons/*/icon.ico
+          if-no-files-found: error
+          retention-days: 1
+
   cargo-check:
     name: Tauri cargo check (${{ matrix.os }})
     strategy:
