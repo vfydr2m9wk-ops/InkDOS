@@ -30,8 +30,9 @@ def main() -> None:
     require(formula_bar, 'await beforeCommit?.(value)', 'Formula Bar awaits conversion decision')
 
     # Formula-producing operations and percentage formatting cannot remain in CSV/TSV.
-    require(editor, "['sum','average','min','max','count','percent'].includes(kind)", 'Operation representability guard')
-    require(editor, "ensureXlsxFor(kind==='percent'?'Percentage formatting':'Formulas')", 'Operation conversion prompt')
+    require(editor, "['sum','average','min','max','count'].includes(kind)", 'Formula-operation representability guard')
+    require(editor, "kind==='percent'?'Percentage formatting':''", 'Percentage-format representability guard')
+    require(editor, "ensureXlsxFor(feature)", 'Operation conversion prompt')
 
     print('Spreadsheets CSV/TSV formula and semantic-paste guards: OK')
 
