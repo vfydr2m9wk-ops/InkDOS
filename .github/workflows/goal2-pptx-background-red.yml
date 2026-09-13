@@ -47,7 +47,7 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            page.evaluate(\n                """async bytes => {'
-          insert='            print("synthetic generation checkpoint passed")\n            browser.close()\n            return\n\n'
+          insert='            browser.close()\n            return\n\n'
           if src.count(needle)!=1: raise SystemExit('synthetic probe anchor mismatch')
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
@@ -61,38 +61,44 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            state = page.evaluate('
-          insert='            print("open import checkpoint passed")\n            browser.close()\n            return\n\n'
+          insert='            browser.close()\n            return\n\n'
           if src.count(needle)!=1: raise SystemExit('open probe anchor mismatch')
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_probe.py
           rm tests/_goal2_probe.py
-      - name: Capture preservation model diagnostic
-        id: modeldiag
-        continue-on-error: true
+      - name: Probe PresentationModel textSignature call
         env:
           PPTX_PRESERVE_DIAGNOSTIC: model
         run: |
-          set -o pipefail
-          python tests/test_pptx_character_spacing_preservation_diagnostic.py 2>&1 | tee /tmp/pptx-model-diagnostic.log
-      - name: Synthetic title lookup checkpoint
-        if: always()
-        run: '! grep -q "Synthetic title run not found" /tmp/pptx-model-diagnostic.log'
-      - name: Synthetic run-properties checkpoint
-        if: always()
-        run: '! grep -q "Synthetic title run properties not found" /tmp/pptx-model-diagnostic.log'
-      - name: Imported title lookup checkpoint
-        if: always()
-        run: '! grep -q "Imported title run missing" /tmp/pptx-model-diagnostic.log'
-      - name: Model import spacing checkpoint
-        if: always()
-        run: '! grep -q "assert math.isclose(float(state\[\"charSpacingPt\"\])" /tmp/pptx-model-diagnostic.log'
-      - name: Model source-signature checkpoint
-        if: always()
-        run: '! grep -q "assert state\[\"sourceChanged\"\] is True" /tmp/pptx-model-diagnostic.log'
-      - name: Require model diagnostic success
-        if: always()
-        run: test "${{ steps.modeldiag.outcome }}" = "success"
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            sig_probe = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                if(!object)throw new Error('Signature probe object missing');\n                return NS.PresentationModel.textSignature(object);\n            }""", MARKER)\n            assert isinstance(sig_probe, str) and sig_probe\n            browser.close()\n            return\n\n'''
+          if src.count(needle)!=1: raise SystemExit('signature probe anchor mismatch')
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe imported text mutation
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            mutation_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;\n                if(!object||!run)throw new Error('Mutation probe run missing');\n                run.text=marker+'!';\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\n');\n                return object.text;\n            }""", MARKER)\n            assert mutation_probe.endswith('!')\n            browser.close()\n            return\n\n'''
+          if src.count(needle)!=1: raise SystemExit('mutation probe anchor mismatch')
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Diagnostic preservation model checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
       - name: Diagnostic preservation build checkpoint
         env:
           PPTX_PRESERVE_DIAGNOSTIC: build
