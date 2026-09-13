@@ -1,6 +1,6 @@
 {
   "documents": {
-    "extensions": ["docx"],
+    "extensions": ["doc", "docx", "rtf"],
     "route": "apps/documents/index.html",
     "icon": "assets/icons/documents.svg"
   },
@@ -10,7 +10,7 @@
     "icon": "assets/icons/spreadsheets.svg"
   },
   "presentations": {
-    "extensions": ["pptx"],
+    "extensions": ["ppt", "pptx"],
     "route": "apps/presentations/index.html",
     "icon": "assets/icons/presentations.png"
   },
