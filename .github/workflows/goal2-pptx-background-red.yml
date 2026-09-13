@@ -8,6 +8,7 @@ on:
       - 'tests/test_pptx_slide_background_fidelity_browser.py'
       - 'tests/test_pptx_character_spacing_fidelity_browser.py'
       - 'apps/presentations/io/pptx-open-controller.js'
+      - 'apps/presentations/io/pptx-preservation-writer.js'
       - 'apps/presentations/engine/presentation-session.js'
       - 'apps/presentations/view/slide-surface.js'
       - '.github/workflows/goal2-pptx-background-red.yml'
