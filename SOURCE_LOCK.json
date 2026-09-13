@@ -30,7 +30,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "227f0e6a943f4944727b64c11a24955c2c53a8916d40fd906cc94e0657394e5b",
+      "nonIndexTreeSha256": "3b56ce1e678fbb5195461b969e52ef7ba6ac00ac0e47bd0dfd9ba8dfed5f2a6c",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -45,7 +45,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "c7c79172a786a02bfce505d02cf1c9455433dd0e4e482eb74b6af155d1214726"
+      "integratedIndexSha256": "ece3fc07e0006f61ed9f54ad8363b234cdc88b5939351429c9c01881b0d86297"
     },
     "presentations": {
       "sourcePackage": "Presentations-FINAL.zip",
