@@ -1,0 +1,37 @@
+name: Intervention CSV focused
+
+on:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - '.github/workflows/intervention-csv-focused.yml'
+      - 'tests/test_spreadsheets_delimited_text_contract.py'
+      - 'apps/spreadsheets/io/delimited-text.js'
+      - 'apps/spreadsheets/io/file-open-controller.js'
+      - 'apps/spreadsheets/io/save-controller.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-intervention-csv-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  focused-contract:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run focused CSV TSV contract
+        run: python tests/test_spreadsheets_delimited_text_contract.py
