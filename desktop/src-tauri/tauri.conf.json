@@ -69,6 +69,16 @@
         "ext": ["txt", "xml", "md", "markdown", "json", "jsonl", "ndjson", "yaml", "yml", "log", "ini", "cfg", "conf", "toml", "properties"]
       }
     ],
+    "macOS": {
+      "files": {
+        "Helpers/InkDOS Documents.app": "./macos/workspace-launchers/InkDOS Documents.app",
+        "Helpers/InkDOS Spreadsheets.app": "./macos/workspace-launchers/InkDOS Spreadsheets.app",
+        "Helpers/InkDOS Presentations.app": "./macos/workspace-launchers/InkDOS Presentations.app",
+        "Helpers/InkDOS PDF.app": "./macos/workspace-launchers/InkDOS PDF.app",
+        "Helpers/InkDOS EPUB.app": "./macos/workspace-launchers/InkDOS EPUB.app",
+        "Helpers/InkDOS Plain Text.app": "./macos/workspace-launchers/InkDOS Plain Text.app"
+      }
+    },
     "linux": {
       "deb": {
         "files": {
