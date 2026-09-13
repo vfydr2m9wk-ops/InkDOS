@@ -64,16 +64,16 @@ The selected preference is shared across the suite and persisted locally. No acc
 
 `Auto` resolves to an effective density at workspace startup.
 
-Recommended rule:
+The initial deterministic rule is:
 
-- use **Desktop** when the viewport is large enough for desktop chrome and the primary pointing environment reports a fine pointer with hover capability;
+- use **Desktop** when the usable viewport width is at least **900 CSS px** and `matchMedia('(hover: hover) and (pointer: fine)')` matches;
 - otherwise use **Mobile**.
 
-Initial threshold: approximately 800–900 CSS px of usable width. The implementation may tune the exact threshold during browser testing, but it must not use operating-system names as the primary decision mechanism.
+The rule intentionally uses interaction capability and available width rather than operating-system names. The 900 px threshold may only be changed later as an explicit product adjustment backed by browser/device testing, not silently during implementation.
 
 The effective mode is chosen when the workspace loads and remains stable for that page session. Resizing a window does not continuously flip between Desktop and Mobile because spontaneous layout changes during editing would be disruptive.
 
-A new workspace/page load may resolve Auto again from the current environment.
+A new workspace/page load resolves Auto again from the current environment.
 
 ### Desktop override
 
@@ -116,13 +116,15 @@ The intended visual result is **the current InkDOS interface at desktop-appropri
 
 ## Home screen
 
-Home participates in the same global preference so the behavior is coherent across the suite, but it should receive only modest desktop compaction.
+Home participates in the same global preference so the behavior is coherent across the suite, but it receives only modest desktop compaction.
+
+Home exposes Auto / Desktop / Mobile through its existing settings control and writes the same suite-wide preference used by all workspaces.
 
 The main value of Desktop density is inside workspaces, where vertical and horizontal pixels directly affect editing space.
 
 ## Architecture
 
-A small shared, client-side density authority should own:
+A small shared, client-side density authority owns:
 
 - preference values: `auto`, `desktop`, `mobile`;
 - local persistence;
@@ -133,9 +135,9 @@ A small shared, client-side density authority should own:
 
 The preferred implementation is a shared local runtime module used by Home and all six workspaces. It must remain static/offline-safe and must not introduce any network dependency.
 
-CSS should consume the root density attribute through variables or narrowly scoped selectors. Existing workspace HTML and command wiring should remain unchanged unless a control cannot be compacted safely through styling alone.
+CSS consumes the root density attribute through variables or narrowly scoped selectors. Existing workspace HTML and command wiring remain unchanged unless a control cannot be compacted safely through styling alone.
 
-The implementation should favor shared density tokens for common frame dimensions while allowing small workspace-specific adjustments where a toolbar or navigation rail has unique geometry.
+The implementation favors shared density tokens for common frame dimensions while allowing small workspace-specific adjustments where a toolbar or navigation rail has unique geometry.
 
 ## Persistence
 
@@ -146,15 +148,15 @@ Conceptually:
 - stored preference: `auto | desktop | mobile`;
 - effective mode: `desktop | mobile`.
 
-The stored preference and effective mode are distinct. `Auto` must remain visible as the selected menu option even when it currently resolves to Desktop or Mobile.
+The stored preference and effective mode are distinct. `Auto` remains visible as the selected menu option even when it currently resolves to Desktop or Mobile.
 
-If local storage is unavailable, fall back to `auto` for that session without blocking the app.
+If local storage is unavailable, the application falls back to `auto` for that session without blocking startup.
 
 ## Menu behavior
 
 Each workspace hamburger menu exposes the same three-option Interface selector.
 
-Changing the setting should:
+Changing the setting must:
 
 1. save the suite-wide preference locally;
 2. resolve/apply the new effective density immediately on the current page;
@@ -162,13 +164,13 @@ Changing the setting should:
 4. avoid reloading the document or workspace;
 5. avoid resetting selection, history, zoom, dirty state, or file session state.
 
-Home should expose the same setting through its existing settings/menu surface if practical. If Home has no hamburger menu, it may use its existing settings control while writing the same suite-wide preference.
+Home exposes the same three options through its existing settings control.
 
 ## Accessibility and interaction constraints
 
 Desktop compaction must not make controls difficult to target with a mouse/trackpad. Mobile density must preserve touch-friendly targets.
 
-Both modes must preserve:
+Both modes preserve:
 
 - keyboard navigation;
 - focus visibility;
@@ -196,8 +198,8 @@ The feature must:
 Verify:
 
 - first run defaults to Auto;
-- typical desktop environment resolves to Desktop;
-- typical touch/mobile environment resolves to Mobile;
+- viewport >= 900 CSS px plus fine pointer + hover resolves to Desktop;
+- a narrower viewport or coarse/non-hover primary pointer resolves to Mobile;
 - Desktop override persists across workspaces and reloads;
 - Mobile override persists across workspaces and reloads;
 - returning to Auto removes the forced override behavior;
@@ -224,8 +226,8 @@ Include at least representative desktop and narrow/touch viewport tests. Device 
 The feature is complete when:
 
 1. `Auto` is the default suite-wide mode.
-2. A normal desktop browser opens workspaces with compact Desktop frame density without user action.
-3. A normal mobile/touch browser opens with the current Mobile density without user action.
+2. A desktop-like environment (>= 900 CSS px, fine pointer, hover) opens workspaces with compact Desktop frame density without user action.
+3. Other environments open with Mobile density without user action.
 4. The hamburger/settings control provides Auto / Desktop / Mobile manual override.
 5. The preference is shared across InkDOS workspaces and saved locally.
 6. Desktop density visibly increases usable editor space without changing document/cell/slide/page content scale.
