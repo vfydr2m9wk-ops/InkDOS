@@ -39,34 +39,35 @@ def main() -> None:
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
 
             # Safari/WebKit can reject fileInput.click() once the original user
-            # gesture crosses an async boundary. Record whether InkDOS requests
-            # the picker during the synchronous click dispatch or only later.
-            page.evaluate(
+            # gesture crosses an async boundary. dispatchEvent() itself is
+            # synchronous, so record whether InkDOS requests the picker before
+            # that dispatch returns rather than inferring timing from microtasks.
+            timing = page.evaluate(
                 r"""() => {
                     const button = document.querySelector('#openStartBtn');
                     const input = document.querySelector('#fileInput');
-                    window.__pdfOpenTiming = { phase: 'idle', clicks: 0, clickPhase: null };
-                    button.addEventListener('click', () => {
-                        window.__pdfOpenTiming.phase = 'sync';
-                        queueMicrotask(() => {
-                            if (window.__pdfOpenTiming.phase === 'sync') {
-                                window.__pdfOpenTiming.phase = 'async';
-                            }
-                        });
-                    }, { capture: true });
+                    const state = { dispatching: true, clicks: 0, clickPhase: null };
+                    window.__pdfOpenTiming = state;
                     input.click = () => {
-                        window.__pdfOpenTiming.clicks += 1;
-                        window.__pdfOpenTiming.clickPhase = window.__pdfOpenTiming.phase;
+                        state.clicks += 1;
+                        state.clickPhase = state.dispatching ? 'sync' : 'async';
                     };
+                    button.dispatchEvent(new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window,
+                    }));
+                    state.dispatching = false;
+                    return {...state};
                 }"""
             )
-            page.click("#openStartBtn")
             page.wait_for_timeout(50)
-            timing = page.evaluate("() => window.__pdfOpenTiming")
+            after = page.evaluate("() => ({...window.__pdfOpenTiming})")
             assert timing["clicks"] == 1, timing
             assert timing["clickPhase"] == "sync", (
                 f"Open PDF picker crossed an async boundary on {browser_name}: {timing}"
             )
+            assert after["clicks"] == 1, after
             browser.close()
         print(f"PDF Open picker user-gesture regression passed on {browser_name}.")
     finally:
