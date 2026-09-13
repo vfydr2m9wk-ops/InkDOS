@@ -17,7 +17,7 @@ for token in [
 
 # Direct object-body movement must share the existing gesture/history path.
 assert 'startObjectMove' in SURFACE, 'Selected objects cannot start a direct body drag.'
-assert "kind:'move'" in SURFACE, 'Direct object drag does not reuse the move gesture.'
+assert "beginGesture('move'" in SURFACE, 'Direct object drag does not reuse the move gesture.'
 assert "history.commitFromBefore(label,before)" in SURFACE, 'Gesture history contract was lost.'
 
 # Text content may overflow its own nominal box, but the slide itself remains clipped.
