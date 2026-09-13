@@ -5,7 +5,7 @@
 - Canonical spec: `docs/superpowers/specs/2026-09-13-inkdos-2.3-design.md`
 - Approval: `USER-APPROVED`
 - Current `main`: `9b1848629e8a86c4513785595014ab32fe168a06`
-- Open development PR: #132, `InkDOS 2.3 Goal 1 — format expansion`
+- Open development PR: #132, `InkDOS 2.3 — Goal 2 PPTX fidelity`
 - Canonical development branch: `feature/inkdos-2.3`
 
 ## Sequence state
@@ -13,7 +13,7 @@
 The sequence is fixed and must not be restarted or reordered.
 
 1. Goal 1 — editable format coverage: **COMPLETE — VERIFIED**
-2. Goal 2 — PPTX/PowerPoint fidelity: **READY — NOT STARTED**
+2. Goal 2 — PPTX/PowerPoint fidelity: **IN PROGRESS — TARGETED REAL-REGRESSION GREEN**
 3. Goal 3 — desktop associations/launchers/native windows: **NOT STARTED**
 4. Goal 4 — manual-only updater: **NOT STARTED**
 
@@ -134,10 +134,26 @@ Goal 1 acceptance criteria are **VERIFIED COMPLETE**. Original-format preservati
 - Current `main`: `9b1848629e8a86c4513785595014ab32fe168a06`.
 - PR #132 remains draft while the overall InkDOS 2.3 development sequence continues.
 - Goal 1: **COMPLETE — VERIFIED**.
-- Goal 2: **READY — NOT STARTED**.
+- Goal 2: **IN PROGRESS — TARGETED REAL-REGRESSION GREEN**.
 
 ## Next work
 
-Proceed to Goal 2 only: diagnose and fix PPTX/PowerPoint fidelity using the supplied real regression first, then focused synthetic regression tests. Use systematic debugging to isolate fidelity root causes and TDD for every production change. Do not begin Goal 3 until Goal 2 has its own verified checkpoint.
+Continue Goal 2 only: run the coherent cross-browser/repository checkpoint validation with the retained real-title, character-spacing, normAutofit, background, and preservation regressions. Do not begin Goal 3 until Goal 2 is COMPLETE — VERIFIED.
 
 At the end of each Goal, update this document with the final head SHA, tests executed, pass/fail state, blockers/limitations, and checkpoint validation result.
+
+
+## Goal 2 targeted fidelity checkpoint — 2026-09-13
+
+The supplied real regression `5 Anticonvulsivantes_e_antipsic_ticos_bipolares.pptx` was inspected directly before the final synthetic fixture was frozen. Slide 1 uses the title `Anticonvulsi­vantes & antipsicóticos` as three Arial Bold 112.5 pt runs, each with `spc=-337`, 92% paragraph line spacing, 2 pt text insets, the original soft hyphen, and a bare `normAutofit` element.
+
+Systematic debugging isolated a concrete importer defect: a bare `normAutofit` has no `fontScale` attribute, but `Number(null)` made the importer clamp the missing value to 0.35. This incorrectly scaled 112.5 pt title text and -3.37 tracking to 35% size.
+
+- RED isolated at head `22b473f574c7c34912ba8475fce9c7b67cf5d7a3`: `tests/test_pptx_norm_autofit_default_scale_browser.py` observed `autoFitScale=0.35` and rendered letter spacing `-1.1795px`.
+- Minimal production fix: `41b58c439a41cab9345e192ac82b05c8778f773d`, defaulting a missing `normAutofit@fontScale` to 1 while retaining explicit PowerPoint scale values.
+- Fix verification run: GitHub Actions `34746864039` — PASS for the isolated normAutofit regression, existing character-spacing regression, slide-background regression, and importer syntax.
+- Final real-title synthetic regression: `tests/test_pptx_real_title_fidelity_browser.py`, frozen from the actual slide 1 XML metrics rather than an approximate title.
+- Exact real-title verification run: GitHub Actions `34747079211` — PASS. The imported title retains three runs, U+00AD soft hyphen, `spc=-337` / `-3.37px` tracking, 92% line spacing, scale 1, and the expected two-line geometry. The same run also passed the isolated normAutofit, character-spacing, and slide-background regressions.
+- Superseded diagnostic fixtures and one-shot workflows were removed in `df809a3320f749c46b2acbd6cb9bc92ae7454791`.
+
+Goal 2 is not yet declared complete. The remaining gate is the coherent Goal-sized cross-browser/repository validation required by the approved cadence, followed by checkpoint review. Goal 3 remains untouched.
