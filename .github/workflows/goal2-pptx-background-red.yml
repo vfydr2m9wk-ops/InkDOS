@@ -47,6 +47,27 @@ jobs:
         run: |
           set -o pipefail
           python tests/test_pptx_character_spacing_preservation_diagnostic.py 2>&1 | tee /tmp/pptx-model-diagnostic.log
+      - name: Synthetic title lookup checkpoint
+        if: always()
+        run: |
+          if grep -q "Synthetic title run not found" /tmp/pptx-model-diagnostic.log; then
+            echo "Synthetic title run lookup failed." >&2
+            exit 1
+          fi
+      - name: Synthetic run-properties checkpoint
+        if: always()
+        run: |
+          if grep -q "Synthetic title run properties not found" /tmp/pptx-model-diagnostic.log; then
+            echo "Synthetic title run properties lookup failed." >&2
+            exit 1
+          fi
+      - name: Imported title lookup checkpoint
+        if: always()
+        run: |
+          if grep -q "Imported title run missing" /tmp/pptx-model-diagnostic.log; then
+            echo "Imported title run lookup failed." >&2
+            exit 1
+          fi
       - name: Model import spacing checkpoint
         if: always()
         run: |
@@ -54,7 +75,6 @@ jobs:
             echo "Character-spacing import assertion failed." >&2
             exit 1
           fi
-          echo "Character-spacing import assertion did not fail."
       - name: Model source-signature checkpoint
         if: always()
         run: |
@@ -62,11 +82,9 @@ jobs:
             echo "Source-signature change detection assertion failed." >&2
             exit 1
           fi
-          echo "Source-signature change detection assertion did not fail."
       - name: Require model diagnostic success
         if: always()
-        run: |
-          test "${{ steps.modeldiag.outcome }}" = "success"
+        run: test "${{ steps.modeldiag.outcome }}" = "success"
       - name: Diagnostic preservation build checkpoint
         env:
           PPTX_PRESERVE_DIAGNOSTIC: build
