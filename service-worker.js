@@ -122,6 +122,7 @@ const APP_SHELL=[
   "./apps/spreadsheets/engine/workbook-session.js",
   "./apps/spreadsheets/help/help.js",
   "./apps/spreadsheets/index.html",
+  "./apps/spreadsheets/io/delimited-text.js",
   "./apps/spreadsheets/io/file-delivery.js",
   "./apps/spreadsheets/io/file-open-controller.js",
   "./apps/spreadsheets/io/package-validator.js",
