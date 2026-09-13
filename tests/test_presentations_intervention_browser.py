@@ -87,7 +87,7 @@ def main() -> None:
                 """() => {
                     const app=globalThis.__inkdosPresentations;
                     const o=app.selection.getObject(app.session);
-                    return {x:o.x,y:o.y};
+                    return {id:o.id,x:o.x,y:o.y};
                 }"""
             )
             box = textbox.bounding_box()
@@ -98,20 +98,23 @@ def main() -> None:
             page.mouse.move(sx + 40, sy + 30, steps=4)
             page.mouse.up()
             after = page.evaluate(
-                """() => {
+                """id => {
                     const app=globalThis.__inkdosPresentations;
-                    const o=app.selection.getObject(app.session);
-                    return {x:o.x,y:o.y};
-                }"""
+                    const o=app.session.currentSlide.objects.find(item=>item.id===id);
+                    return o ? {id:o.id,x:o.x,y:o.y} : null;
+                }""",
+                before['id'],
             )
+            assert after is not None, (browser_name, before)
             assert (after['x'], after['y']) != (before['x'], before['y']), (browser_name, before, after)
             assert page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('history.undo')") is True
             restored = page.evaluate(
-                """() => {
+                """id => {
                     const app=globalThis.__inkdosPresentations;
-                    const o=app.selection.getObject(app.session);
-                    return {x:o.x,y:o.y};
-                }"""
+                    const o=app.session.currentSlide.objects.find(item=>item.id===id);
+                    return o ? {id:o.id,x:o.x,y:o.y} : null;
+                }""",
+                before['id'],
             )
             assert restored == before, (browser_name, before, restored)
             browser.close()
