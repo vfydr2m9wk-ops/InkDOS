@@ -73,6 +73,7 @@ jobs:
 
   cargo-check:
     name: Tauri cargo check (${{ matrix.os }})
+    needs: workspace-icons
     strategy:
       fail-fast: false
       matrix:
@@ -86,6 +87,11 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
+      - name: Materialize canonical workspace icon resources
+        uses: actions/download-artifact@v4
+        with:
+          name: goal3-workspace-icons
+          path: desktop/src-tauri/windows/workspace-icons
       - name: Install Linux Tauri prerequisites
         if: runner.os == 'Linux'
         shell: bash
