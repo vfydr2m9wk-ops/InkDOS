@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/intervention-csv-focused.yml'
       - 'tests/test_spreadsheets_delimited_text_contract.py'
+      - 'tests/test_spreadsheets_delimited_text_stability_browser.py'
       - 'apps/spreadsheets/io/delimited-text.js'
       - 'apps/spreadsheets/io/file-open-controller.js'
       - 'apps/spreadsheets/io/save-controller.js'
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   focused-contract:
     runs-on: ubuntu-22.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -30,8 +31,39 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install test dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Run focused CSV TSV contract
         run: python tests/test_spreadsheets_delimited_text_contract.py
+
+  chromium-browser:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      BROWSER: chromium
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install test dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Isolate unrelated Chrome apt source
+        shell: bash
+        run: |
+          while IFS= read -r source; do
+            sudo mv "$source" "$source.inkdos-disabled"
+          done < <(grep -RIl 'dl\.google\.com/linux/chrome-stable' /etc/apt/sources.list.d 2>/dev/null || true)
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Run semicolon CSV browser regression
+        run: python tests/test_spreadsheets_delimited_text_stability_browser.py
