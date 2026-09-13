@@ -2,7 +2,7 @@
 Type=Application
 Name=InkDOS PDF
 Exec=InkDOS --workspace pdf
-Icon=/usr/share/inkdos/workspace-icons/pdf.svg
+Icon=inkdos-pdf
 Terminal=false
 Categories=Office;
 X-InkDOS-Workspace=pdf

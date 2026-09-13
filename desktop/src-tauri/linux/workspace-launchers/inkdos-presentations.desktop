@@ -2,7 +2,7 @@
 Type=Application
 Name=InkDOS Presentations
 Exec=InkDOS --workspace presentations
-Icon=/usr/share/inkdos/workspace-icons/presentations.png
+Icon=inkdos-presentations
 Terminal=false
 Categories=Office;
 X-InkDOS-Workspace=presentations
