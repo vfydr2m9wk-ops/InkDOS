@@ -1,0 +1,53 @@
+name: Goal 2 real-title fidelity finalize
+
+on:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - '.github/workflows/goal2-real-title-finalize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-clean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BROWSER: chromium
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Verify final real-title fidelity regression
+        run: python tests/test_pptx_real_title_fidelity_browser.py
+      - name: Verify isolated normAutofit regression
+        run: python tests/test_pptx_norm_autofit_default_scale_browser.py
+      - name: Verify character-spacing regression
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Verify slide-background regression
+        run: python tests/test_pptx_slide_background_fidelity_browser.py
+      - name: Remove superseded diagnostics and one-shot workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/inkdos-2.3
+          test "$(git rev-parse origin/feature/inkdos-2.3)" = "${GITHUB_SHA}" || { echo 'Branch advanced during verification run' >&2; exit 1; }
+          git rm -f \
+            tests/test_pptx_real_title_geometry_browser.py \
+            tests/test_pptx_real_title_multirun_geometry_browser.py \
+            .github/workflows/goal2-real-title-geometry-red.yml \
+            .github/workflows/goal2-real-title-finalize.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'test: finalize PPTX real-title fidelity regression'
+          git push origin HEAD:feature/inkdos-2.3
