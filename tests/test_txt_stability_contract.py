@@ -238,13 +238,16 @@ def main() -> None:
         forbid(t2, forbidden, f'Plain Text T2 must not depend on persistence, duplicate storage policy, or depend on sibling/view/storage DOM: {forbidden}')
 
     for needle in [
+        "const SUPPORTED=Object.freeze(['.txt','.xml','.md','.markdown','.json','.jsonl','.ndjson','.yaml','.yml','.log','.ini','.cfg','.conf','.toml','.properties'])",
+        'const accept=SUPPORTED.join',
+        'function isSupportedName(name)',
         'function apply(editor,{wrap,fontSize})',
         'function isXmlName(name)',
         'function declaredXmlEncoding(text)',
         'function xmlEncodingCompatible(declared,encoding)',
         'function xmlEncodingLabel(encoding)',
         'function assertXmlStorage({fileName,text,encoding,bom}={})',
-        'Object.freeze({apply,isXmlName,declaredXmlEncoding,xmlEncodingCompatible,xmlEncodingLabel,assertXmlStorage})',
+        'Object.freeze({SUPPORTED,accept,apply,isSupportedName,isXmlName,declaredXmlEncoding,xmlEncodingCompatible,xmlEncodingLabel,assertXmlStorage})',
     ]:
         require(policy, needle, f'Plain Text policy authority missing: {needle}')
 
