@@ -129,8 +129,10 @@ def main() -> None:
 
             assert math.isclose(float(imported["fontSizePt"]), 112.5, abs_tol=0.001), imported
             assert math.isclose(float(imported["charSpacingPt"]), -3.37, abs_tol=0.001), imported
-            assert imported["inlineLetterSpacing"] == "-3.37pt", imported
-            assert imported["computedLetterSpacing"] not in {None, "", "normal"}, imported
+            # InkDOS maps one internal point to one CSS pixel for slide geometry and text.
+            # Tracking must use the same coordinate mapping; CSS pt would introduce a 4/3 scale error.
+            assert imported["inlineLetterSpacing"] == "-3.37px", imported
+            assert imported["computedLetterSpacing"] == "-3.37px", imported
 
             preserved = page.evaluate(
                 """async marker => {
