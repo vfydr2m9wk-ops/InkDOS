@@ -2,7 +2,7 @@
 from __future__ import annotations
 import os, socket, subprocess, sys, time
 from pathlib import Path
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8794
@@ -37,15 +37,38 @@ def main() -> None:
             page = browser.new_page(viewport={"width": 1024, "height": 768})
             page.goto(BASE + "/apps/pdf/", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
-            try:
-                with page.expect_file_chooser(timeout=2500):
-                    page.click("#openStartBtn")
-            except PlaywrightTimeoutError as exc:
-                raise AssertionError(
-                    f"Open PDF did not synchronously produce a file chooser on {browser_name}"
-                ) from exc
+
+            # Safari/WebKit can reject fileInput.click() once the original user
+            # gesture crosses an async boundary. Record whether InkDOS requests
+            # the picker during the synchronous click dispatch or only later.
+            page.evaluate(
+                r"""() => {
+                    const button = document.querySelector('#openStartBtn');
+                    const input = document.querySelector('#fileInput');
+                    window.__pdfOpenTiming = { phase: 'idle', clicks: 0, clickPhase: null };
+                    button.addEventListener('click', () => {
+                        window.__pdfOpenTiming.phase = 'sync';
+                        queueMicrotask(() => {
+                            if (window.__pdfOpenTiming.phase === 'sync') {
+                                window.__pdfOpenTiming.phase = 'async';
+                            }
+                        });
+                    }, { capture: true });
+                    input.click = () => {
+                        window.__pdfOpenTiming.clicks += 1;
+                        window.__pdfOpenTiming.clickPhase = window.__pdfOpenTiming.phase;
+                    };
+                }"""
+            )
+            page.click("#openStartBtn")
+            page.wait_for_timeout(50)
+            timing = page.evaluate("() => window.__pdfOpenTiming")
+            assert timing["clicks"] == 1, timing
+            assert timing["clickPhase"] == "sync", (
+                f"Open PDF picker crossed an async boundary on {browser_name}: {timing}"
+            )
             browser.close()
-        print(f"PDF Open button file chooser regression passed on {browser_name}.")
+        print(f"PDF Open picker user-gesture regression passed on {browser_name}.")
     finally:
         server.terminate()
         try:
