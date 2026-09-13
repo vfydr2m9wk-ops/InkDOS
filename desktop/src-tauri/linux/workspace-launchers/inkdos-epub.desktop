@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=InkDOS EPUB
+Exec=InkDOS --workspace epub
+Icon=/usr/share/inkdos/workspace-icons/epub.svg
+Terminal=false
+Categories=Office;
+X-InkDOS-Workspace=epub
+X-InkDOS-SourceIcon=assets/icons/epub.svg

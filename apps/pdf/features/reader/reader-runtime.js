@@ -1,0 +1,19 @@
+(function(global){'use strict';
+const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{},MAX_RESULTS=1000,MAX_INDEX_PAGES=2000;
+function create({session,getDocument,layout,chrome,onChange,onStatus}={}){
+ let query='',results=[],cursor=-1,searchToken=0,pageTexts=new Map();
+ function inspect(){return Object.freeze({query,results:Object.freeze(results.map(r=>Object.freeze({...r}))),cursor})}
+ function emit(){onChange?.(inspect())}
+ function status(text){onStatus?.(String(text||''))}
+ function resetDocument(){searchToken++;pageTexts.clear();query='';results=[];cursor=-1;emit();status('')}
+ async function pageText(doc,n,token){if(pageTexts.has(n))return pageTexts.get(n);const p=await doc.getPage(n);if(token!==searchToken)throw new DOMException('Search cancelled','AbortError');const tc=await p.getTextContent({normalizeWhitespace:true});const text=(tc.items||[]).map(x=>x.str||'').join(' ').replace(/\s+/g,' ').trim();pageTexts.set(n,text);return text}
+ function snippet(text,index,len){const a=Math.max(0,index-55),b=Math.min(text.length,index+len+85);return(a?'…':'')+text.slice(a,b)+(b<text.length?'…':'')}
+ async function reveal(index){if(!results.length)return false;cursor=(Number(index)+results.length)%results.length;const r=results[cursor];await layout.goToPage(r.page,{smooth:true});emit();chrome.status(`Match ${cursor+1} of ${results.length} · page ${r.page}`);return true}
+ async function search(value){const doc=getDocument?.(),q=String(value||'').trim();query=q;results=[];cursor=-1;emit();status('');if(!q||!doc)return false;const token=++searchToken,indexed=Math.min(doc.numPages,MAX_INDEX_PAGES),needle=q.toLocaleLowerCase();status('Searching…');try{for(let n=1;n<=indexed&&results.length<MAX_RESULTS;n++){const text=await pageText(doc,n,token),low=text.toLocaleLowerCase();let from=0;while(results.length<MAX_RESULTS){const i=low.indexOf(needle,from);if(i<0)break;results.push({page:n,index:i,snippet:snippet(text,i,q.length)});from=i+Math.max(1,needle.length)}if(token!==searchToken)return false;if(n%12===0){status(`Searching… ${n}/${indexed}`);await new Promise(r=>setTimeout(r,0))}}if(token!==searchToken)return false;cursor=results.length?0:-1;emit();status(results.length?`${results.length}${results.length>=MAX_RESULTS?'+':''} match${results.length===1?'':'es'}`:'No matches');if(results.length)await reveal(cursor);return true}catch(e){if(e?.name==='AbortError')return false;console.error(e);status('Search failed');chrome.status('PDF search failed');return false}}
+ function step(delta){if(!results.length)return false;return reveal((cursor<0?0:cursor)+Number(delta||0))}
+ async function rotate(delta=90){if(!session.active)return false;await layout.rotateView(delta);chrome.status(`View rotated ${layout.rotation}°`);return layout.rotation}
+ function print(){if(!session.active||!session.sourceBytes?.length)return false;if(session.dirty&&!global.confirm('Unsaved annotations are not included in browser printing. Print the opened PDF anyway?'))return false;const blob=new Blob([session.sourceBytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),frame=document.createElement('iframe');frame.style.cssText='position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none';frame.onload=()=>{setTimeout(()=>{try{frame.contentWindow?.focus();frame.contentWindow?.print()}catch(e){console.error(e);chrome.status('Browser printing is unavailable')}setTimeout(()=>{URL.revokeObjectURL(url);frame.remove()},60000)},250)};frame.src=url;document.body.appendChild(frame);chrome.status('Preparing print dialog…');return true}
+ return Object.freeze({resetDocument,search,reveal,step,rotate,print,inspect,get results(){return results.slice()},get cursor(){return cursor}})
+}
+NS.ReaderRuntime=Object.freeze({create,MAX_RESULTS,MAX_INDEX_PAGES});
+})(globalThis);

@@ -1,0 +1,104 @@
+INKDOS DEVELOPMENT DIRECTIVE
+ID: INKDOS-DD-2026-09-08-AUTONOMOUS-STABILITY-MODULARIZATION
+Date: 2026-09-08
+Status: ACTIVE / BLOCKING
+Category: Development directive / development prompt
+
+PURPOSE
+Continue the InkDOS stability and modularization program autonomously. Do not pause after each internal cleanup increment and do not advance the functional roadmap until the stability gate is completed and frozen.
+
+MANDATORY RULES
+
+1. AUTONOMOUS CONTINUATION
+The development agent must continue the stability audit, refactor, regression-test and cleanup cycle without requiring a new user confirmation after each internal increment.
+The agent must stop functional roadmap progression while any stability, coupling, regression or architectural boundary defect remains.
+
+2. PHYSICAL FUNCTIONAL MODULARITY
+Modularity must exist in source-code boundaries, not only conceptually.
+Each workspace must remain physically independent.
+Inside each workspace, the following layers must be separable:
+- App Frame / shell
+- Toolbar / command surface
+- Command registry / command router
+- Individual feature modules
+- Viewport / renderer
+- Session / history / state
+- Persistence / import / export
+
+3. BUTTONS ARE NOT FUNCTIONS
+A UI control is only a command binding.
+Moving, hiding, deleting or replacing a button must not destroy the underlying command.
+A function must not depend on its visual position, neighboring controls, a toolbar DOM order, or unrelated feature installation.
+A command must be callable independently of its control when technically appropriate.
+
+4. FEATURE ISOLATION
+Each meaningful function must have a narrow ownership boundary.
+Installing or removing one feature module must not silently disable unrelated commands.
+Feature state and event listeners must be cleaned up explicitly.
+Avoid global mutable state and cross-feature DOM assumptions.
+
+5. REGRESSION-FIRST DEVELOPMENT
+Every reproduced regression should receive an automated regression test before or together with its fix whenever feasible.
+Existing frozen capabilities are contractual.
+New code is not approved merely because the new feature works.
+The complete frozen regression set must remain green before integration/freeze.
+
+6. USER MANUAL TESTING IS SECONDARY
+The user must not be the primary regression-test system.
+Manual iPad/XeOS testing remains useful for real-device quality, but routine functional correctness must be established through automated gates.
+
+7. AUDIT ORDER
+Continue in this order unless a blocking cross-suite issue requires intervention:
+1. PDF Workspace
+2. Documents
+3. Presentations
+4. Plain Text
+5. EPUB Reader
+6. Spreadsheets
+7. Cross-suite frame/bootstrap/offline/service-worker audit
+8. Stability freeze
+
+8. PDF PRIORITY REGRESSIONS
+The PDF audit must include:
+- Undo
+- Redo
+- Delete selected annotation/object
+- Delete page
+- Mouse-wheel / trackpad scrolling
+- Scroll after editing
+- Scroll after opening/closing contextual panels
+- Scroll after zoom and navigation
+- Navigation panel default = Index/Outline
+- Pages tab remains available
+- Save/open/reopen
+- Existing PDF-P1/P2 regression tests
+- Offline loading
+- Command/control decoupling
+
+9. PHASE TRANSITION GATE
+No functional roadmap phase may resume until:
+- current app stability audit passes;
+- physical module boundaries are accepted;
+- command/control decoupling is tested;
+- frozen regression tests pass;
+- cross-suite isolation passes;
+- offline shell/integrity checks pass;
+- the stability baseline is documented and frozen.
+
+10. DEVELOPMENT DIRECTIVE RECORD
+Every future material InkDOS development directive or development prompt must be written to a dated TXT file under the user's Library:
+  /InkDOS/Development Directives/
+and should also be versioned under:
+  docs/development-directives/
+when it governs repository development.
+
+11. PRESERVE SUSPENDED ROADMAP WORK
+The existing PPT-P2 work must remain preserved but suspended until this stability program is complete.
+Do not merge or advance PPT-P2, XLS-S1, XLS-S2, final Audit or Freeze during the stability program.
+
+12. INTEGRATION POLICY
+Prefer grouped logical commits after local/test validation rather than many speculative pushes.
+Use squash integration where appropriate to prevent diagnostic commit noise in main.
+A red workflow is a blocking signal until explained and resolved; do not normalize repeated failing CI.
+
+END DIRECTIVE

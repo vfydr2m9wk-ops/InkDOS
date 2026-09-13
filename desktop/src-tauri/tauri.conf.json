@@ -1,0 +1,147 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "InkDOS",
+  "mainBinaryName": "InkDOS",
+  "version": "2.2.0",
+  "identifier": "com.inkdos.desktop",
+  "build": {
+    "frontendDist": "../web-dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "InkDOS",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 900,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi", "app", "dmg", "deb", "appimage", "rpm"],
+    "category": "Productivity",
+    "shortDescription": "Local-first productivity suite",
+    "longDescription": "InkDOS is a local-first productivity suite for documents, spreadsheets, presentations, PDF, EPUB and plain text workflows.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "name": "documents",
+        "description": "InkDOS Documents",
+        "ext": ["doc", "docx", "rtf"]
+      },
+      {
+        "name": "spreadsheets",
+        "description": "InkDOS Spreadsheets",
+        "ext": ["xls", "xlsx", "csv", "tsv"]
+      },
+      {
+        "name": "presentations",
+        "description": "InkDOS Presentations",
+        "ext": ["ppt", "pptx"]
+      },
+      {
+        "name": "pdf",
+        "description": "InkDOS PDF",
+        "ext": ["pdf"]
+      },
+      {
+        "name": "epub",
+        "description": "InkDOS EPUB",
+        "ext": ["epub"]
+      },
+      {
+        "name": "txt",
+        "description": "InkDOS Plain Text",
+        "ext": ["txt", "xml", "md", "markdown", "json", "jsonl", "ndjson", "yaml", "yml", "log", "ini", "cfg", "conf", "toml", "properties"]
+      }
+    ],
+    "macOS": {
+      "files": {
+        "Helpers/InkDOS Documents.app": "./macos/workspace-launchers/InkDOS Documents.app",
+        "Helpers/InkDOS Spreadsheets.app": "./macos/workspace-launchers/InkDOS Spreadsheets.app",
+        "Helpers/InkDOS Presentations.app": "./macos/workspace-launchers/InkDOS Presentations.app",
+        "Helpers/InkDOS PDF.app": "./macos/workspace-launchers/InkDOS PDF.app",
+        "Helpers/InkDOS EPUB.app": "./macos/workspace-launchers/InkDOS EPUB.app",
+        "Helpers/InkDOS Plain Text.app": "./macos/workspace-launchers/InkDOS Plain Text.app"
+      }
+    },
+    "linux": {
+      "deb": {
+        "files": {
+          "/usr/share/applications/inkdos-documents.desktop": "./linux/workspace-launchers/inkdos-documents.desktop",
+          "/usr/share/applications/inkdos-spreadsheets.desktop": "./linux/workspace-launchers/inkdos-spreadsheets.desktop",
+          "/usr/share/applications/inkdos-presentations.desktop": "./linux/workspace-launchers/inkdos-presentations.desktop",
+          "/usr/share/applications/inkdos-pdf.desktop": "./linux/workspace-launchers/inkdos-pdf.desktop",
+          "/usr/share/applications/inkdos-epub.desktop": "./linux/workspace-launchers/inkdos-epub.desktop",
+          "/usr/share/applications/inkdos-txt.desktop": "./linux/workspace-launchers/inkdos-txt.desktop",
+          "/usr/share/inkdos/workspace-icons/documents.svg": "../../assets/icons/documents.svg",
+          "/usr/share/inkdos/workspace-icons/spreadsheets.svg": "../../assets/icons/spreadsheets.svg",
+          "/usr/share/inkdos/workspace-icons/presentations.png": "../../assets/icons/presentations.png",
+          "/usr/share/inkdos/workspace-icons/pdf.svg": "../../assets/icons/pdf.svg",
+          "/usr/share/inkdos/workspace-icons/epub.svg": "../../assets/icons/epub.svg",
+          "/usr/share/inkdos/workspace-icons/txt.svg": "../../assets/icons/txt.svg"
+        }
+      },
+      "rpm": {
+        "files": {
+          "/usr/share/applications/inkdos-documents.desktop": "./linux/workspace-launchers/inkdos-documents.desktop",
+          "/usr/share/applications/inkdos-spreadsheets.desktop": "./linux/workspace-launchers/inkdos-spreadsheets.desktop",
+          "/usr/share/applications/inkdos-presentations.desktop": "./linux/workspace-launchers/inkdos-presentations.desktop",
+          "/usr/share/applications/inkdos-pdf.desktop": "./linux/workspace-launchers/inkdos-pdf.desktop",
+          "/usr/share/applications/inkdos-epub.desktop": "./linux/workspace-launchers/inkdos-epub.desktop",
+          "/usr/share/applications/inkdos-txt.desktop": "./linux/workspace-launchers/inkdos-txt.desktop",
+          "/usr/share/inkdos/workspace-icons/documents.svg": "../../assets/icons/documents.svg",
+          "/usr/share/inkdos/workspace-icons/spreadsheets.svg": "../../assets/icons/spreadsheets.svg",
+          "/usr/share/inkdos/workspace-icons/presentations.png": "../../assets/icons/presentations.png",
+          "/usr/share/inkdos/workspace-icons/pdf.svg": "../../assets/icons/pdf.svg",
+          "/usr/share/inkdos/workspace-icons/epub.svg": "../../assets/icons/epub.svg",
+          "/usr/share/inkdos/workspace-icons/txt.svg": "../../assets/icons/txt.svg"
+        }
+      },
+      "appimage": {
+        "files": {
+          "/usr/share/applications/inkdos-documents.desktop": "./linux/workspace-launchers/inkdos-documents.desktop",
+          "/usr/share/applications/inkdos-spreadsheets.desktop": "./linux/workspace-launchers/inkdos-spreadsheets.desktop",
+          "/usr/share/applications/inkdos-presentations.desktop": "./linux/workspace-launchers/inkdos-presentations.desktop",
+          "/usr/share/applications/inkdos-pdf.desktop": "./linux/workspace-launchers/inkdos-pdf.desktop",
+          "/usr/share/applications/inkdos-epub.desktop": "./linux/workspace-launchers/inkdos-epub.desktop",
+          "/usr/share/applications/inkdos-txt.desktop": "./linux/workspace-launchers/inkdos-txt.desktop",
+          "/usr/share/inkdos/workspace-icons/documents.svg": "../../assets/icons/documents.svg",
+          "/usr/share/inkdos/workspace-icons/spreadsheets.svg": "../../assets/icons/spreadsheets.svg",
+          "/usr/share/inkdos/workspace-icons/presentations.png": "../../assets/icons/presentations.png",
+          "/usr/share/inkdos/workspace-icons/pdf.svg": "../../assets/icons/pdf.svg",
+          "/usr/share/inkdos/workspace-icons/epub.svg": "../../assets/icons/epub.svg",
+          "/usr/share/inkdos/workspace-icons/txt.svg": "../../assets/icons/txt.svg"
+        }
+      }
+    },
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "installerHooks": "./windows/workspace-launchers.nsh"
+      },
+      "wix": {
+        "fragmentPaths": ["./windows/workspace-launchers.wxs"],
+        "componentGroupRefs": ["InkDOSWorkspaceLaunchers"]
+      }
+    }
+  }
+}

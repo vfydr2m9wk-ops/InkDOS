@@ -1,0 +1,55 @@
+{
+  "id": "./index.html",
+  "name": "InkDOS",
+  "short_name": "InkDOS",
+  "description": "Local-first offline productivity workspaces.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f8",
+  "theme_color": "#f2f5f8",
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "./assets/icons/office.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/office.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Documents",
+      "url": "./apps/documents/index.html"
+    },
+    {
+      "name": "Spreadsheets",
+      "url": "./apps/spreadsheets/index.html"
+    },
+    {
+      "name": "Presentations",
+      "url": "./apps/presentations/index.html"
+    },
+    {
+      "name": "Plain Text",
+      "url": "./apps/txt/index.html"
+    },
+    {
+      "name": "EPUB Reader",
+      "url": "./apps/epub/index.html"
+    },
+    {
+      "name": "PDF Workspace",
+      "url": "./apps/pdf/index.html"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Icon Id="InkDOSDocumentsIcon" SourceFile="windows\workspace-icons\documents\icon.ico" />
+    <Icon Id="InkDOSSpreadsheetsIcon" SourceFile="windows\workspace-icons\spreadsheets\icon.ico" />
+    <Icon Id="InkDOSPresentationsIcon" SourceFile="windows\workspace-icons\presentations\icon.ico" />
+    <Icon Id="InkDOSPdfIcon" SourceFile="windows\workspace-icons\pdf\icon.ico" />
+    <Icon Id="InkDOSEpubIcon" SourceFile="windows\workspace-icons\epub\icon.ico" />
+    <Icon Id="InkDOSTxtIcon" SourceFile="windows\workspace-icons\txt\icon.ico" />
+  </Fragment>
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Directory Id="InkDOSWorkspaceIconsFolder" Name="workspace-icons">
+        <Directory Id="InkDOSDocumentsIconFolder" Name="documents">
+          <Component Id="InkDOSDocumentsIconResource" Guid="*">
+            <File Id="InkDOSDocumentsIconFile" Source="windows\workspace-icons\documents\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSSpreadsheetsIconFolder" Name="spreadsheets">
+          <Component Id="InkDOSSpreadsheetsIconResource" Guid="*">
+            <File Id="InkDOSSpreadsheetsIconFile" Source="windows\workspace-icons\spreadsheets\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSPresentationsIconFolder" Name="presentations">
+          <Component Id="InkDOSPresentationsIconResource" Guid="*">
+            <File Id="InkDOSPresentationsIconFile" Source="windows\workspace-icons\presentations\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSPdfIconFolder" Name="pdf">
+          <Component Id="InkDOSPdfIconResource" Guid="*">
+            <File Id="InkDOSPdfIconFile" Source="windows\workspace-icons\pdf\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSEpubIconFolder" Name="epub">
+          <Component Id="InkDOSEpubIconResource" Guid="*">
+            <File Id="InkDOSEpubIconFile" Source="windows\workspace-icons\epub\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSTxtIconFolder" Name="txt">
+          <Component Id="InkDOSTxtIconResource" Guid="*">
+            <File Id="InkDOSTxtIconFile" Source="windows\workspace-icons\txt\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Directory Id="InkDOSWorkspaceProgramsFolder" Name="InkDOS">
+        <Component Id="InkDOSDocumentsLauncher" Guid="*">
+          <Shortcut Id="InkDOSDocumentsShortcut" Name="InkDOS Documents" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace documents" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSDocumentsIcon" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="documents" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+        <Component Id="InkDOSSpreadsheetsLauncher" Guid="*">
+          <Shortcut Id="InkDOSSpreadsheetsShortcut" Name="InkDOS Spreadsheets" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace spreadsheets" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSSpreadsheetsIcon" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="spreadsheets" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+        <Component Id="InkDOSPresentationsLauncher" Guid="*">
+          <Shortcut Id="InkDOSPresentationsShortcut" Name="InkDOS Presentations" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace presentations" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSPresentationsIcon" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="presentations" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+        <Component Id="InkDOSPdfLauncher" Guid="*">
+          <Shortcut Id="InkDOSPdfShortcut" Name="InkDOS PDF" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace pdf" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSPdfIcon" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="pdf" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+        <Component Id="InkDOSEpubLauncher" Guid="*">
+          <Shortcut Id="InkDOSEpubShortcut" Name="InkDOS EPUB" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace epub" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSEpubIcon" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="epub" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+        <Component Id="InkDOSTxtLauncher" Guid="*">
+          <Shortcut Id="InkDOSTxtShortcut" Name="InkDOS Plain Text" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace txt" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSTxtIcon" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="txt" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="InkDOSWorkspaceLaunchers">
+      <ComponentRef Id="InkDOSDocumentsLauncher" />
+      <ComponentRef Id="InkDOSSpreadsheetsLauncher" />
+      <ComponentRef Id="InkDOSPresentationsLauncher" />
+      <ComponentRef Id="InkDOSPdfLauncher" />
+      <ComponentRef Id="InkDOSEpubLauncher" />
+      <ComponentRef Id="InkDOSTxtLauncher" />
+      <ComponentRef Id="InkDOSDocumentsIconResource" />
+      <ComponentRef Id="InkDOSSpreadsheetsIconResource" />
+      <ComponentRef Id="InkDOSPresentationsIconResource" />
+      <ComponentRef Id="InkDOSPdfIconResource" />
+      <ComponentRef Id="InkDOSEpubIconResource" />
+      <ComponentRef Id="InkDOSTxtIconResource" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

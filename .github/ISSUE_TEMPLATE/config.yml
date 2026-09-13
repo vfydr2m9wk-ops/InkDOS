@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security
+    url: https://github.com/vfydr2m9wk-ops/InkDOS/security
+    about: Report security issues privately.

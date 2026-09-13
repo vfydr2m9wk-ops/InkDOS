@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=InkDOS Plain Text
+Exec=InkDOS --workspace txt
+Icon=/usr/share/inkdos/workspace-icons/txt.svg
+Terminal=false
+Categories=Office;
+X-InkDOS-Workspace=txt
+X-InkDOS-SourceIcon=assets/icons/txt.svg
