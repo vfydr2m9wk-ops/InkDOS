@@ -6,9 +6,9 @@ WORKSPACES = ROOT / "desktop" / "workspaces.json"
 TAURI_CONFIG = ROOT / "desktop" / "src-tauri" / "tauri.conf.json"
 
 EXPECTED = {
-    "documents": ({"docx"}, "assets/icons/documents.svg"),
+    "documents": ({"doc", "docx", "rtf"}, "assets/icons/documents.svg"),
     "spreadsheets": ({"xls", "xlsx", "csv", "tsv"}, "assets/icons/spreadsheets.svg"),
-    "presentations": ({"pptx"}, "assets/icons/presentations.png"),
+    "presentations": ({"ppt", "pptx"}, "assets/icons/presentations.png"),
     "pdf": ({"pdf"}, "assets/icons/pdf.svg"),
     "epub": ({"epub"}, "assets/icons/epub.svg"),
     "txt": ({
