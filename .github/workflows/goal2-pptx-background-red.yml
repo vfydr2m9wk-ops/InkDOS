@@ -7,6 +7,7 @@ on:
     paths:
       - 'tests/test_pptx_slide_background_fidelity_browser.py'
       - 'tests/test_pptx_character_spacing_fidelity_browser.py'
+      - 'tests/test_pptx_character_spacing_preservation_diagnostic.py'
       - 'apps/presentations/io/pptx-open-controller.js'
       - 'apps/presentations/io/pptx-preservation-writer.js'
       - 'apps/presentations/engine/presentation-session.js'
@@ -38,7 +39,19 @@ jobs:
         env:
           PPTX_TRACKING_PHASE: render
         run: python tests/test_pptx_character_spacing_fidelity_browser.py
-      - name: Run PPTX character-spacing preservation regression
+      - name: Diagnostic preservation model checkpoint
         env:
-          PPTX_TRACKING_PHASE: preserve
-        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+      - name: Diagnostic preservation build checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: build
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+      - name: Diagnostic preservation text checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: text
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+      - name: Diagnostic preservation spc checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: spc
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
