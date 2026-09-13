@@ -22,7 +22,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "f432d3672b304efc319a57efade80029206ed26c6a770ecea96bdc3258026139"
+      "integratedIndexSha256": "3facd01c2b9172eceebe12f44fa85be0b9115200d57ebfb9083b3abd1008ec25"
     },
     "spreadsheets": {
       "sourcePackage": "Spreadsheets-FINAL.zip",
@@ -30,7 +30,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "40a38447efc6af0fa5f0a1eecc86f7d42d99b28fb5220130728414411068705d",
+      "nonIndexTreeSha256": "0f4ac557f4a6161996d08d21b93da5d848f90c80fd257ad16d689aa8fc26ec5a",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -45,7 +45,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "ece3fc07e0006f61ed9f54ad8363b234cdc88b5939351429c9c01881b0d86297"
+      "integratedIndexSha256": "61984f973a41b3e277b71fc0ba0dbfc827079857692bdcbd4401881e84b775f2"
     },
     "presentations": {
       "sourcePackage": "Presentations-FINAL.zip",
@@ -53,7 +53,7 @@
       "sourceTreeSha256BeforeIntegration": "9c8e2028d2bcc3f5b120dac0eee77c4ebbbe109d188b710b84059001a5ef5eae",
       "sourceFileCount": 29,
       "sourceBytes": 241833,
-      "nonIndexTreeSha256": "b0f9f414f1379fb2546a832c0bcea2004c4482f03152612ac950ca8ab22619af",
+      "nonIndexTreeSha256": "ca2a216005a07f56ad1000adf87b264917b8673c8ae70f125eaef4a81faee5f2",
       "originalIndexSha256": "149d04b735e449a8b3543669518f5a43d80362fdde9aaa1d380e03d3eb99a4e8",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -72,7 +72,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "5449b621982a818309cbc787c1e08fccf57ab42dd95ae532e3ebafe796219a45"
+      "integratedIndexSha256": "f939fb30fe8f766d5b382a75173c312042d70ae5c4b3270002ae63cf2224893e"
     },
     "txt": {
       "sourcePackage": "TXT-FINAL.zip",
@@ -80,7 +80,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "094f23ba300947dc5ce0744e92c4edb66c8dd3fc1bcaf62ab8b8b9573d16f69e",
+      "nonIndexTreeSha256": "d38e8217f53326393bfc9d4f9c77019e6d6d3ef593436b0bd32800f144ee984d",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -93,7 +93,7 @@
         "runtime/services/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations; regenerate index.html deterministically",
         "runtime/frame/app-frame.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches; regenerate index.html deterministically"
       ],
-      "integratedIndexSha256": "64bc6a85c4997b0a62f82c0f1143eff82aa06901a00781b343c9456a9eba0ec7"
+      "integratedIndexSha256": "e6a4748ccac0e1563bf0cbf348142e2010de903199c9176903241fd907692d0a"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",
@@ -111,7 +111,7 @@
         "2.0.12 structural refactor: relocate PackageReader and EpubWriter to io/, ContentProjector/BookModel/ReaderAnnotations to engine/, AnnotationStore to state/, ReaderRenderer to view/, and move start-state CSS to ui/ without intentionally changing algorithms",
         "index.html: in 2.0.12 compose the relocated app-private modules from their responsibility directories and remove the retired flattened root module copies"
       ],
-      "integratedIndexSha256": "f74a9b77f5630608e0022e641f23b9305263913f8b109b99d1d5760052558e1c"
+      "integratedIndexSha256": "54d5372b6a84ea6a865dcd57f8b539f1466eca6b26618423e9dc54385e3c2ea0"
     },
     "pdf": {
       "sourcePackage": "InkDOS-2.0-PDF-P4.2-AUDITED.zip",
@@ -137,7 +137,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "4bea8d09546a93b118a73324ec623971798aa440594f648b6f394e41a066d928",
+      "integratedIndexSha256": "f8eda9fcd84c935f9b9001f6ba198d68f91533ff81f02aa7c938e9645ddc5977",
       "functionalBaseline": "P4.2 user-accepted",
       "status": "baseline-preserved-with-2.0.12-standalone-modularity-gate"
     }
