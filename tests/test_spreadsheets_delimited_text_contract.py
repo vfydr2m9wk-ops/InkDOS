@@ -14,6 +14,11 @@ def require(text: str, needle: str, label: str) -> None:
         raise AssertionError(f'{label}: missing {needle!r}')
 
 
+def forbid(text: str, needle: str, label: str) -> None:
+    if needle in text:
+        raise AssertionError(f'{label}: forbidden {needle!r}')
+
+
 def main() -> None:
     if not MODULE.is_file():
         raise AssertionError('CSV/TSV codec missing: apps/spreadsheets/io/delimited-text.js')
@@ -32,6 +37,8 @@ def main() -> None:
     require(file_open, 'NS.DelimitedText.parse', 'Spreadsheets delimited open path')
     require(file_open, "sourceKind==='csv'", 'Spreadsheets CSV source routing')
     require(file_open, "sourceKind==='tsv'", 'Spreadsheets TSV source routing')
+    forbid(file_open, "delimiter:sourceKind==='tsv'?'\\t':','", 'CSV open must not force comma')
+    require(file_open, "sourceKind==='tsv'?{delimiter:'\\t',fileName:file.name}:{fileName:file.name}", 'CSV/TSV source-aware parse options')
     require(workbook_session, "sourceKind==='csv'", 'WorkbookSession CSV naming')
     require(workbook_session, "sourceKind==='tsv'", 'WorkbookSession TSV naming')
 
@@ -40,6 +47,8 @@ def main() -> None:
     require(save_controller, "title:'Convert to XLSX?'", 'Delimited save conversion warning')
     require(save_controller, 'session.convertToXlsx()', 'Delimited save explicit XLSX conversion')
     require(save_controller, '{sourceKind:session.sourceKind}', 'Delimited delivery source kind')
+    forbid(save_controller, "delimiter:session.sourceKind==='tsv'?'\\t':','", 'Delimited save must not force extension-based delimiter')
+    require(save_controller, 'NS.DelimitedText.serialize(session.book)', 'Delimited save must use preserved source metadata')
     require(app, 'session,dialog,', 'Save controller receives in-app confirmation dialog')
 
     probe = r'''
