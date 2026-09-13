@@ -4,9 +4,9 @@
 
 - Canonical spec: `docs/superpowers/specs/2026-09-13-inkdos-2.3-design.md`
 - Approval: `USER-APPROVED`
-- Base `main` before this pass: `4d9b21478309f84d1437605cd57b55744643b882`
-- Existing InkDOS 2.3 branch before approval materialization: `feature/inkdos-2.3` at `3712d8d296bae8d486fa92c43d280c8907f90759`
+- Current `main` observed before the 2026-09-13 formula/paste guard mutation: `9b1848629e8a86c4513785595014ab32fe168a06`
 - Open development PR: #132, `InkDOS 2.3 Goal 1 — format expansion`
+- Goal 1 branch: `feature/inkdos-2.3`
 
 ## Sequence state
 
@@ -32,43 +32,60 @@ InkDOS 2.3 is developed in coherent Goal-sized batches rather than as a sequence
 
 ## Preserved Goal 1 work
 
-The existing branch work is retained; it is not to be reset merely because the approval gate was clarified. The branch is ahead of `main` and already contains TDD work and Plain Text implementation changes, including the initial RED contract commit `14edf384fee683c6f59817ef9c3a652c1c9515fa` and subsequent follow-up commits.
+The existing branch work is retained; it is not to be reset merely because the approval gate was clarified. The initial Goal 1 RED contract commit `14edf384fee683c6f59817ef9c3a652c1c9515fa` and all subsequent work remain in branch history.
 
-Current changed Goal 1 areas include:
+### Plain Text
 
-- `apps/txt/txt-policy.js`
-- `apps/txt/io/txt-file-controller.js`
-- `apps/txt/editor/editor-controller.js`
-- `apps/txt/index.html`
-- `tests/test_txt_format_expansion_contract.py`
-- historical integrity metadata refresh commits produced before the batch-cadence policy change
+Plain Text format expansion is implemented for the approved raw-text family while retaining extension-preserving save behavior and explicit unsupported-format rejection.
 
-## 2026-09-13 Goal 1 continuation checkpoint
+### CSV/TSV codec and integration
 
-- Canonical design/spec materialized and explicitly marked `USER-APPROVED`.
-- Goal 1 implementation plan recorded at `docs/superpowers/plans/2026-09-13-inkdos-2.3-goal1-format-coverage.md`.
+Completed Goal 1 work includes:
+
 - CSV/TSV RED codec contract: `d523b830837ff661637c51916cd44df42d6b1e8f`.
 - Release-validation registration for the CSV/TSV contract: `dff4bd2c231d4fe2bcc5e4e98a4e759266af8b6e`.
 - CSV/TSV codec GREEN implementation: `d3039d7497f4e0a67c4f89b3ac544947a2c5fcc6`.
-- Integration RED contract for picker/open/session routing: `1943f332c04874d288350468ac5e70b122b1189e`; CI `InkDOS integrity and update` run 829 failed as expected before integration was complete.
+- Integration RED contract for picker/open/session routing: `1943f332c04874d288350468ac5e70b122b1189e`.
 - CSV/TSV source-name/session preservation: `c93d3c7b82c640f0d34169e5301123b5a43b37f0`.
 - CSV/TSV file-open routing: `e8c6a2b46c4c90124dd8cb849ee8bb619d1f986f`.
 - Spreadsheets picker/script graph integration: `3d661df6a09ca9800bd37d45573dbec53451dc1d`.
 - Last pre-policy automated integrity checkpoint: `135810d451af6f8e4befabc1d23a5affd2bba379`.
+- Same-format CSV/TSV Save/Share behavior, source extension/MIME/delimiter/BOM/encoding preservation where supported, explicit CSV/TSV → XLSX conversion, and representability guards for formatting/merges/dimensions/worksheet add-delete are present on the current branch before the formula/paste guard cycle.
 
-### Tests/evidence
+### Codec evidence already obtained
 
 - The codec RED was reproduced because `apps/spreadsheets/io/delimited-text.js` did not exist.
 - The codec behavior test then passed after implementation for quoted fields, embedded delimiters, embedded newlines, escaped quotes, UTF-8 BOM round-trip, TSV delimiter handling, and leading-zero strings.
-- CI after the integration RED contract reported failure, confirming the test was exercising missing integration rather than passing against pre-existing behavior.
-- Automatic integrity refresh after source changes is now intentionally disabled; the next full integrity refresh belongs to the coherent Goal 1 checkpoint.
+- The earlier integration RED was observed before its corresponding implementation.
 
-### Current blocker before the next Goal 1 TDD cycle
+## 2026-09-13 formula/paste representability TDD cycle
 
-`apps/spreadsheets/index.html` now loads `io/delimited-text.js`, but `service-worker.js` does not yet include `./apps/spreadsheets/io/delimited-text.js` in `APP_SHELL`. The existing Spreadsheets stability contract requires all local scripts referenced by the workspace to be present in the offline shell. Therefore Goal 1 is intentionally not marked complete and the save/conversion work must not be treated as verified until the offline-shell inconsistency is corrected and the relevant targeted checks pass.
+The focused RED contract is `tests/test_spreadsheets_delimited_formula_paste_guard_contract.py`. Before production changes, source inspection confirmed the required guard hooks were absent from `apps/spreadsheets/ui/editor-controller.js` and `apps/spreadsheets/ui/formula-bar.js`.
+
+Implemented GREEN candidate changes:
+
+- `fcd8bc1093ab8012044f392c38efa8a5beacacc6` — Formula Bar gained an async `beforeCommit` gate, so formula entry can be canceled before workbook mutation.
+- `6af70258f17915938ea2065fe6b4e30bdbb173a0` — direct/grid formula commits, plain-text formula paste, semantic formula/rich-style paste, aggregate formula operations, and percentage formatting now route through the existing explicit `ensureXlsxFor(...)` conversion gate before mutating a CSV/TSV session.
+- Ordinary value-only CSV/TSV edits and value-only paste remain on the original delimited format path and do not force conversion.
+- Semantic rich-paste detection ignores empty/default style containers but treats formulas, dirty/non-default style state, or nonzero style IDs as XLSX-requiring content.
+- Canceling the conversion prompt prevents the guarded formula/style mutation instead of silently degrading or converting the source format.
+
+### Verification state for this cycle
+
+- Source inspection after the writes confirms the RED contract's required hooks/labels are present in both production controllers.
+- A local exact-head test execution was attempted by materializing the feature-branch files from `raw.githubusercontent.com`, but the execution environment could not resolve that host (`curl: (6) Could not resolve host: raw.githubusercontent.com`). This is an environment/network limitation, not a test result.
+- Therefore the focused contract is **not yet claimed PASS** and Goal 1 remains **IN PROGRESS**.
+- No Goal 2 work has started.
+
+## Current branch checkpoint
+
+- Production-code head after the formula/paste guard implementation: `6af70258f17915938ea2065fe6b4e30bdbb173a0`.
+- The branch was based on PR-head `9d6bed792cba03e705cef2a04012bd4016bc5eb7` for this TDD cycle.
+- The current `main` observed before mutation was `9b1848629e8a86c4513785595014ab32fe168a06`.
+- PR #132 remains the Goal 1 development PR.
 
 ## Next work
 
-Continue Goal 1 from this checkpoint. First synchronize the Spreadsheets offline shell with `io/delimited-text.js` and run the focused contracts. Then proceed with TDD for same-format CSV/TSV save and the explicit XLSX-conversion warning/guard for features not representable in CSV/TSV. Continue implementing the complete Goal 1 scope before the next heavy GitHub checkpoint. Do not begin Goal 2 until Plain Text plus CSV/TSV behavior is verified against the canonical spec.
+Remain in Goal 1. Execute the focused formula/paste guard contract as soon as an exact-head runnable environment is available, fix any resulting regression before expanding scope, then complete the remaining Goal 1 representability review. At the coherent Goal 1 checkpoint, reconcile current `main` policy changes, refresh integrity metadata once, run the relevant cross-platform/repository validation suite, update this document with final exact SHAs/tests/results, and only then unlock Goal 2.
 
-At the end of each Goal, update this document with the final head SHA, tests executed, pass/fail state, blockers/limitations, and the checkpoint validation result.
+At the end of each Goal, update this document with the final head SHA, tests executed, pass/fail state, blockers/limitations, and checkpoint validation result.
