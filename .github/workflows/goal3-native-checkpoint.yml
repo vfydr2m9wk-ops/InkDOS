@@ -8,6 +8,7 @@ on:
       - '.github/workflows/goal3-native-checkpoint.yml'
       - 'desktop/src-tauri/**'
       - 'desktop/workspaces.json'
+      - 'desktop/launchers.json'
       - 'desktop/scripts/**'
       - 'tests/test_tauri_goal3_*.py'
       - 'tests/test_tauri_desktop_contract.py'
@@ -34,6 +35,8 @@ jobs:
           python-version: '3.11'
       - name: Run workspace and association contract
         run: python tests/test_tauri_goal3_workspace_contract.py
+      - name: Run workspace launcher contract
+        run: python tests/test_tauri_goal3_workspace_launchers_contract.py
       - name: Run native multiwindow contract
         run: python tests/test_tauri_goal3_native_window_contract.py
       - name: Run baseline desktop contract
