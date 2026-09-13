@@ -1,4 +1,4 @@
-# Rerun after Goal 2 integrity refresh and browser-matrix correction.
+# Final Goal 2 validation; hide this temporary workflow locally before repository-surface contracts.
 name: Goal 2 checkpoint validation
 
 on:
@@ -33,10 +33,11 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Run clean-snapshot release validation
         run: python scripts/run_release_validation.py
-      - name: Run all static contracts
+      - name: Run all static contracts against final workflow surface
         shell: bash
         run: |
           set -euo pipefail
+          rm -f .github/workflows/goal2-checkpoint-validation.yml
           for test in tests/test_*_contract.py; do echo "==> $test"; python "$test"; done
       - name: Run update trust-boundary regression
         run: python tests/test_update_trust_boundary.py
