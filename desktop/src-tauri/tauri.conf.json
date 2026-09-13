@@ -36,6 +36,38 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "fileAssociations": [
+      {
+        "name": "documents",
+        "description": "InkDOS Documents",
+        "ext": ["docx"]
+      },
+      {
+        "name": "spreadsheets",
+        "description": "InkDOS Spreadsheets",
+        "ext": ["xls", "xlsx", "csv", "tsv"]
+      },
+      {
+        "name": "presentations",
+        "description": "InkDOS Presentations",
+        "ext": ["pptx"]
+      },
+      {
+        "name": "pdf",
+        "description": "InkDOS PDF",
+        "ext": ["pdf"]
+      },
+      {
+        "name": "epub",
+        "description": "InkDOS EPUB",
+        "ext": ["epub"]
+      },
+      {
+        "name": "txt",
+        "description": "InkDOS Plain Text",
+        "ext": ["txt", "xml", "md", "markdown", "json", "jsonl", "ndjson", "yaml", "yml", "log", "ini", "cfg", "conf", "toml", "properties"]
+      }
+    ],
     "windows": {
       "webviewInstallMode": {
         "type": "downloadBootstrapper",
