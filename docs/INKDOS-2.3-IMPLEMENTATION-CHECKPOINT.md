@@ -5,155 +5,104 @@
 - Canonical spec: `docs/superpowers/specs/2026-09-13-inkdos-2.3-design.md`
 - Approval: `USER-APPROVED`
 - Current `main`: `9b1848629e8a86c4513785595014ab32fe168a06`
-- Open development PR: #132, `InkDOS 2.3 — Goal 2 PPTX fidelity`
 - Canonical development branch: `feature/inkdos-2.3`
+- Open development PR: #132
+- Fixed sequence: Goal 1 → Goal 2 → Goal 3 → Goal 4. Do not restart or reorder.
 
 ## Sequence state
 
-The sequence is fixed and must not be restarted or reordered.
-
 1. Goal 1 — editable format coverage: **COMPLETE — VERIFIED**
-2. Goal 2 — PPTX/PowerPoint fidelity: **IN PROGRESS — TARGETED REAL-REGRESSION GREEN**
-3. Goal 3 — desktop associations/launchers/native windows: **NOT STARTED**
+2. Goal 2 — PPTX/PowerPoint fidelity: **COMPLETE — VERIFIED**
+3. Goal 3 — desktop associations/launchers/native windows: **IN PROGRESS**
 4. Goal 4 — manual-only updater: **NOT STARTED**
 
-## Development cadence — USER-APPROVED 2026-09-13
+## Development cadence
 
-InkDOS 2.3 is developed in coherent Goal-sized batches rather than as a sequence of GitHub micro-checkpoints.
+- TDD remains mandatory: targeted RED first, minimal implementation, then GREEN.
+- Use systematic debugging for defects.
+- Run coherent Goal-sized repository/cross-platform validation before declaring a Goal complete.
+- Keep the PR draft while InkDOS 2.3 is incomplete.
+- Preserve local-first/no telemetry/no backend behavior.
+- Do not begin Goal 4 until Goal 3 is COMPLETE — VERIFIED.
 
-- Continue implementing within the current Goal without waiting for GitHub Actions after each small TDD step.
-- Targeted/local tests remain mandatory while implementing risky or data-preservation behavior.
-- Do not refresh integrity metadata automatically after each feature/fix push.
-- Run the integrity metadata refresh manually at a coherent Goal checkpoint.
-- Run the full GitHub validation suite at Goal checkpoints and after integration to `main`, not on every draft-PR synchronization.
-- Keep the development PR in draft while the Goal is incomplete.
-- Preserve the approved order: Goal 1 → Goal 2 → Goal 3 → Goal 4 → final 2.3.0 validation.
-- A Goal is not complete until its acceptance criteria and relevant regression coverage have been reviewed, even though intermediate GitHub Actions are intentionally reduced.
+## Goal 1 completion evidence
 
-## Preserved Goal 1 work
+Goal 1 retained the approved Plain Text family and CSV/TSV spreadsheet behavior, including same-extension save, quoted fields, embedded delimiters/newlines, BOM/encoding preservation, leading-zero strings, explicit XLSX conversion guards, formula/paste representability guards, and unsupported-format rejection.
 
-The existing branch work is retained; it is not to be reset merely because the approval gate was clarified. The initial Goal 1 RED contract commit `14edf384fee683c6f59817ef9c3a652c1c9515fa` and all subsequent work remain in branch history.
+Key preserved checkpoints:
 
-### Plain Text
+- Initial Plain Text RED: `14edf384fee683c6f59817ef9c3a652c1c9515fa`.
+- CSV/TSV codec RED: `d523b830837ff661637c51916cd44df42d6b1e8f`.
+- CSV/TSV codec GREEN: `d3039d7497f4e0a67c4f89b3ac544947a2c5fcc6`.
+- CSV/TSV integration RED: `1943f332c04874d288350468ac5e70b122b1189e`.
+- Formula Bar conversion gate: `fcd8bc1093ab8012044f392c38efa8a5beacacc6`.
+- Grid/paste/formula representability gates: `6af70258f17915938ea2065fe6b4e30bdbb173a0`.
+- UTF-16/BOM encoding RED: `060eba634d7f11fa98be0f36ff4b1c6e6329b040`.
+- Encoding MIME fix: `5aec957fe55f7c9a50b37481df3e9d6acb45f157`.
+- Main ancestry reconciliation: `addaa0d707835b072925ae5926684f87823f9fa9`.
 
-Plain Text format expansion is implemented for the approved raw-text family while retaining extension-preserving save behavior and explicit unsupported-format rejection.
+Final Goal 1 validation:
 
-### CSV/TSV codec and integration
+- Validation SHA: `f91b0fa3119932e3d73ed5e8feacca4e3a5296b4`.
+- GitHub Actions run: `34742310953`.
+- Result: all eight jobs PASS, including repository contracts, clean-snapshot validation, Chromium/Firefox/WebKit stability, Chromium/Firefox/WebKit feature regressions, and format-preservation round trips.
+- Post-validation CI-policy restoration: `fffc187e4bc819e33e17f28f5a4a39c2e12b7ec9`; runtime/product/test content was unchanged.
 
-Completed Goal 1 work includes:
+Goal 1 conclusion: **COMPLETE — VERIFIED**.
 
-- CSV/TSV RED codec contract: `d523b830837ff661637c51916cd44df42d6b1e8f`.
-- Release-validation registration for the CSV/TSV contract: `dff4bd2c231d4fe2bcc5e4e98a4e759266af8b6e`.
-- CSV/TSV codec GREEN implementation: `d3039d7497f4e0a67c4f89b3ac544947a2c5fcc6`.
-- Integration RED contract for picker/open/session routing: `1943f332c04874d288350468ac5e70b122b1189e`.
-- CSV/TSV source-name/session preservation: `c93d3c7b82c640f0d34169e5301123b5a43b37f0`.
-- CSV/TSV file-open routing: `e8c6a2b46c4c90124dd8cb849ee8bb619d1f986f`.
-- Spreadsheets picker/script graph integration: `3d661df6a09ca9800bd37d45573dbec53451dc1d`.
-- Same-format CSV/TSV Save/Share behavior, source extension/MIME/delimiter/BOM/encoding preservation where supported, explicit CSV/TSV → XLSX conversion, and representability guards for formatting/merges/dimensions/worksheet add-delete are present.
-- Direct-edit leading-zero/text preservation RED: `b4ba14c1af81d00d0c3b05326c21a68a82915741`.
-- Direct-edit preservation implementation: `634688a3a731c3af5730370341f55d3286af8e93`.
-- Direct-edit preservation contract registration: `96b68b76d5938844a41bf3124b2c2c16f29ec652`.
+## Goal 2 completion evidence
 
-### Codec evidence
+The supplied real PowerPoint regression was used to drive the fidelity investigation. Slide 1's title uses three Arial Bold 112.5 pt runs, `spc=-337`, 92% line spacing, 2 pt insets, a U+00AD soft hyphen, and bare `normAutofit`.
 
-- The codec RED was reproduced because `apps/spreadsheets/io/delimited-text.js` did not exist.
-- The codec behavior test then passed after implementation for quoted fields, embedded delimiters, embedded newlines, escaped quotes, UTF-8 BOM round-trip, TSV delimiter handling, and leading-zero strings.
-- The earlier integration RED was observed before its corresponding implementation.
+Systematic debugging isolated a concrete importer defect: bare `normAutofit` has no `fontScale`, but the importer treated the missing value as zero and clamped it to 0.35, incorrectly shrinking text and tracking.
 
-## 2026-09-13 formula/paste representability TDD cycle
+Key checkpoints:
 
-The focused RED contract is `tests/test_spreadsheets_delimited_formula_paste_guard_contract.py`. Before production changes, source inspection confirmed the required guard hooks were absent from `apps/spreadsheets/ui/editor-controller.js` and `apps/spreadsheets/ui/formula-bar.js`.
+- Isolated normAutofit RED head: `22b473f574c7c34912ba8475fce9c7b67cf5d7a3`.
+- Minimal normAutofit fix: `41b58c439a41cab9345e192ac82b05c8778f773d`.
+- Focused fix run: `34746864039` — PASS.
+- Real-title synthetic regression: `tests/test_pptx_real_title_fidelity_browser.py`, frozen from the real slide metrics rather than an approximation.
+- Exact real-title run: `34747079211` — PASS, retaining three runs, U+00AD soft hyphen, `spc=-337` / `-3.37px` tracking, 92% line spacing, scale 1, and expected two-line geometry.
+- Superseded one-shot diagnostics removed in `df809a3320f749c46b2acbd6cb9bc92ae7454791`.
 
-Implemented GREEN changes:
+Final Goal 2 validation:
 
-- `fcd8bc1093ab8012044f392c38efa8a5beacacc6` — Formula Bar gained an async `beforeCommit` gate, so formula entry can be canceled before workbook mutation.
-- `6af70258f17915938ea2065fe6b4e30bdbb173a0` — direct/grid formula commits, plain-text formula paste, semantic formula/rich-style paste, aggregate formula operations, and percentage formatting route through the explicit `ensureXlsxFor(...)` conversion gate before mutating a CSV/TSV session.
-- Ordinary value-only CSV/TSV edits and value-only paste remain on the original delimited format path and do not force conversion.
-- Semantic rich-paste detection ignores empty/default style containers but treats formulas, dirty/non-default style state, or nonzero style IDs as XLSX-requiring content.
-- Canceling the conversion prompt prevents the guarded formula/style mutation instead of silently degrading or converting the source format.
+- Validation SHA: `2da4badcdd115f8070af976d49b7e4770bc81125`.
+- GitHub Actions run: `34747495167`.
+- Result: all eight jobs PASS, including repository contracts, format round trips, Chromium/Firefox/WebKit stability, and feature regressions with the retained PowerPoint fidelity regressions on all three engines.
 
-## 2026-09-13 encoding-preservation TDD cycle
+Goal 2 conclusion: **COMPLETE — VERIFIED**. Goal 3 was not started before this validation passed.
 
-Representability review found a concrete encoding metadata defect: UTF-16LE/UTF-16BE bytes and BOM were preserved by the delimited serializer, but the generated Blob MIME type always declared `charset=utf-8`.
+## Goal 3 current work
 
-- RED reproduced against the pre-fix codec: parsing a BOM-marked UTF-16LE CSV returned `encoding=utf-16le`, but serializing it produced `text/csv;charset=utf-8`.
-- RED contract committed first: `060eba634d7f11fa98be0f36ff4b1c6e6329b040`, `tests/test_spreadsheets_delimited_encoding_contract.py`.
-- Minimal production fix: `5aec957fe55f7c9a50b37481df3e9d6acb45f157` now derives the CSV/TSV MIME charset from the actual preserved encoding.
-- Focused behavior probes after the fix passed for UTF-16LE, UTF-16BE, BOM preservation, leading-zero string preservation, and the existing UTF-8 CSV round-trip/MIME behavior.
-- All Goal 1 focused contracts, including Plain Text, codec, encoding, same-format save, conversion guards, formula/paste guards, and direct-edit preservation, are registered in `scripts/run_release_validation.py`.
+Goal 3 is now the only active implementation scope. The architecture remains one installed InkDOS application/host, with no central tab system and no duplicated full executables.
 
-## Main ancestry reconciliation
+TDD checkpoints completed so far:
 
-Current `main` advanced by workflow-policy commits during Goal 1. Before reconciliation, the affected workflow files were verified byte-identical by blob SHA between the branch and current `main`. A no-content merge commit `addaa0d707835b072925ae5926684f87823f9fa9` reconciled the Goal 1 branch with `main` `9b1848629e8a86c4513785595014ab32fe168a06` without discarding Goal 1 work.
+- `6549ab2efcb8d43378865f84a23aafb1b121f1fb` — RED contract establishing a single native workspace routing authority. RED was reproduced because `desktop/workspaces.json` did not exist.
+- `65543f9b05b8b9c7515c97d86d623e721255825c` — GREEN implementation of `desktop/workspaces.json`, mapping each approved extension to exactly one workspace, route, and the existing workspace icon path.
+- `d80ccf31fee6046a0d1f4b8319b88dc39901b09c` — RED contract requiring Tauri bundle file associations to match the workspace authority. RED was reproduced because `bundle.fileAssociations` was absent.
+- `07c57726518d695a52bd9dcbeea80365fa9711f6` — GREEN Tauri `bundle.fileAssociations` registration for Documents, Spreadsheets, Presentations, PDF, EPUB, and Plain Text extension families while retaining one `InkDOS` product/bundle identifier.
+- `c98c51cd2c1e81f47ebf26154dbb65b112c848f9` — registers the Goal 3 routing/association contract in `scripts/run_release_validation.py`.
 
-## Goal 1 final verification — 2026-09-13
+Focused local contract probes observed the routing authority RED/GREEN and the Tauri association RED/GREEN transitions. A coherent Goal 3 native-runner checkpoint has not yet been run and Goal 3 is therefore not complete.
 
-Systematic debugging of the coherent Goal 1 checkpoint found two stale static contracts rather than product regressions:
+## Goal 3 remaining acceptance work
 
-- Desktop CI policy contract: fixed in `771f6a2bd13b21e87748411f3cb823d3623a5a89` so the test reflects the approved main/manual-checkpoint build policy instead of requiring a permanent `desktop-tauri` branch trigger.
-- Plain Text stability policy authority contract: fixed in `812a1985c7007325b863aa89f2b24f7367b5c6c2` so the stability contract recognizes the approved 2.3 policy authority (`SUPPORTED`, `accept`, `isSupportedName`) without weakening the existing XML/storage authority checks.
+Continue Goal 3 only, in TDD order:
 
-Integrity metadata was regenerated and validated after the final test alignment, producing metadata head `00ad69e825794cf74c299df874d273acdf11edca`.
+1. Native launch routing for associated files with strict extension rejection and a clear unsupported-format notification.
+2. One native window per opened file, including subsequent opens while InkDOS is already running, while retaining one application host/installation.
+3. Workspace-specific installed launch entries using the existing workspace icons exactly; no six-installation or duplicate-executable model.
+4. Per-workspace allowlist verification end to end, including no redirect on unsupported extension.
+5. Native/cross-platform build and repository checkpoint validation before declaring Goal 3 COMPLETE — VERIFIED.
 
-Final canonical validation was GitHub Actions run **#793**, run id `34742310953`, on validation SHA `f91b0fa3119932e3d73ed5e8feacca4e3a5296b4`. All eight jobs completed successfully:
+## Current checkpoint
 
-1. Repository contracts — **PASS**
-   - clean-snapshot release validation — PASS
-   - all static contracts — PASS
-   - update trust-boundary regression — PASS
-   - security configuration regression — PASS
-   - consolidated runtime syntax — PASS
-2. Stability browser suite — Chromium — **PASS**
-3. Stability browser suite — Firefox — **PASS**
-4. Stability browser suite — WebKit — **PASS**
-5. Feature browser regressions — Chromium — **PASS**
-6. Feature browser regressions — Firefox — **PASS**
-7. Feature browser regressions — WebKit — **PASS**
-8. Format preservation round-trips — **PASS**
-
-The focused Goal 1 tests were also observed green inside the clean-snapshot/static-contract validation, including:
-
-- Plain Text 2.3 format expansion.
-- CSV/TSV codec/routing/save/compatibility.
-- UTF-16 encoding/BOM preservation.
-- CSV/TSV same-format save.
-- explicit XLSX conversion guards.
-- formula and semantic-paste guards.
-- direct-edit text/leading-zero preservation.
-
-After the validation-trigger commit, the repository's checkpoint-only CI policy was restored in `fffc187e4bc819e33e17f28f5a4a39c2e12b7ec9`. The only difference between validated SHA `f91b0fa3119932e3d73ed5e8feacca4e3a5296b4` and restored-policy SHA `fffc187e4bc819e33e17f28f5a4a39c2e12b7ec9` is `.github/workflows/stability-freeze-regression.yml`, restoring the approved main/manual-checkpoint trigger policy; no runtime/product/test content differs.
-
-### Goal 1 acceptance conclusion
-
-Goal 1 acceptance criteria are **VERIFIED COMPLETE**. Original-format preservation, explicit conversion behavior, browser regressions, repository contracts, and preservation round-trips are green. No Goal 2 production work occurred before this checkpoint.
-
-## Current branch checkpoint
-
-- Goal 1 final validation SHA: `f91b0fa3119932e3d73ed5e8feacca4e3a5296b4`.
-- Goal 1 post-validation policy-restored SHA before this documentation update: `fffc187e4bc819e33e17f28f5a4a39c2e12b7ec9`.
-- Current `main`: `9b1848629e8a86c4513785595014ab32fe168a06`.
-- PR #132 remains draft while the overall InkDOS 2.3 development sequence continues.
+- `main`: `9b1848629e8a86c4513785595014ab32fe168a06`.
 - Goal 1: **COMPLETE — VERIFIED**.
-- Goal 2: **IN PROGRESS — TARGETED REAL-REGRESSION GREEN**.
+- Goal 2: **COMPLETE — VERIFIED** at `2da4badcdd115f8070af976d49b7e4770bc81125`, run `34747495167`.
+- Goal 3: **IN PROGRESS**.
+- Goal 4: **NOT STARTED**.
 
-## Next work
-
-Continue Goal 2 only: run the coherent cross-browser/repository checkpoint validation with the retained real-title, character-spacing, normAutofit, background, and preservation regressions. Do not begin Goal 3 until Goal 2 is COMPLETE — VERIFIED.
-
-At the end of each Goal, update this document with the final head SHA, tests executed, pass/fail state, blockers/limitations, and checkpoint validation result.
-
-
-## Goal 2 targeted fidelity checkpoint — 2026-09-13
-
-The supplied real regression `5 Anticonvulsivantes_e_antipsic_ticos_bipolares.pptx` was inspected directly before the final synthetic fixture was frozen. Slide 1 uses the title `Anticonvulsi­vantes & antipsicóticos` as three Arial Bold 112.5 pt runs, each with `spc=-337`, 92% paragraph line spacing, 2 pt text insets, the original soft hyphen, and a bare `normAutofit` element.
-
-Systematic debugging isolated a concrete importer defect: a bare `normAutofit` has no `fontScale` attribute, but `Number(null)` made the importer clamp the missing value to 0.35. This incorrectly scaled 112.5 pt title text and -3.37 tracking to 35% size.
-
-- RED isolated at head `22b473f574c7c34912ba8475fce9c7b67cf5d7a3`: `tests/test_pptx_norm_autofit_default_scale_browser.py` observed `autoFitScale=0.35` and rendered letter spacing `-1.1795px`.
-- Minimal production fix: `41b58c439a41cab9345e192ac82b05c8778f773d`, defaulting a missing `normAutofit@fontScale` to 1 while retaining explicit PowerPoint scale values.
-- Fix verification run: GitHub Actions `34746864039` — PASS for the isolated normAutofit regression, existing character-spacing regression, slide-background regression, and importer syntax.
-- Final real-title synthetic regression: `tests/test_pptx_real_title_fidelity_browser.py`, frozen from the actual slide 1 XML metrics rather than an approximate title.
-- Exact real-title verification run: GitHub Actions `34747079211` — PASS. The imported title retains three runs, U+00AD soft hyphen, `spc=-337` / `-3.37px` tracking, 92% line spacing, scale 1, and the expected two-line geometry. The same run also passed the isolated normAutofit, character-spacing, and slide-background regressions.
-- Superseded diagnostic fixtures and one-shot workflows were removed in `df809a3320f749c46b2acbd6cb9bc92ae7454791`.
-
-Goal 2 is not yet declared complete. The remaining gate is the coherent Goal-sized cross-browser/repository validation required by the approved cadence, followed by checkpoint review. Goal 3 remains untouched.
+At the end of Goal 3, record the exact validation SHA, tests/workflows executed, pass/fail state, release-artifact implications, and any remaining blocker before unlocking Goal 4.
