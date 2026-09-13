@@ -108,15 +108,23 @@ jobs:
       - name: Run repository static contracts applicable during intervention
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          failures=0
           for test in tests/test_*_contract.py; do
             if [[ "$test" == "tests/test_minimal_workflow_set_contract.py" ]]; then
               echo "==> deferring $test until temporary Goal 3/intervention workflows are removed"
               continue
             fi
             echo "==> $test"
-            python "$test"
+            if ! python "$test"; then
+              echo "::error title=Static contract failed::$test"
+              failures=$((failures + 1))
+            fi
           done
+          if (( failures > 0 )); then
+            echo "Static contract failures: $failures"
+            exit 1
+          fi
       - name: Check intervention runtime syntax
         shell: bash
         run: |
