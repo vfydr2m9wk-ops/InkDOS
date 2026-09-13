@@ -17,15 +17,15 @@ concurrency:
 
 jobs:
   package-diagnostics:
-    name: Package diagnostics (${{ matrix.os }})
+    name: Package diagnostics (${{ matrix.os }} / ${{ matrix.bundles }})
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: windows-latest
-            bundles: nsis,msi
+            bundles: msi
           - os: ubuntu-22.04
-            bundles: deb,appimage,rpm
+            bundles: appimage
     runs-on: ${{ matrix.os }}
     timeout-minutes: 80
     steps:
@@ -61,17 +61,21 @@ jobs:
         run: python desktop/scripts/generate_workspace_icons.py
       - name: Stage InkDOS web runtime
         run: python desktop/scripts/stage_web.py
-      - name: Build native packages with diagnostics
+      - name: Build failing bundle with verbose diagnostics
         working-directory: desktop/src-tauri
         shell: bash
+        env:
+          RUST_BACKTRACE: '1'
         run: |
           set -o pipefail
-          cargo tauri build --bundles ${{ matrix.bundles }} 2>&1 | tee package-build.log
+          cargo tauri build --verbose --bundles ${{ matrix.bundles }} 2>&1 | tee package-build.log
       - name: Upload package build diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: goal3-package-diagnostics-${{ matrix.os }}
-          path: desktop/src-tauri/package-build.log
-          if-no-files-found: error
+          name: goal3-package-diagnostics-${{ matrix.os }}-${{ matrix.bundles }}
+          path: |
+            desktop/src-tauri/package-build.log
+            desktop/src-tauri/target/release/wix/x64/main.wxs
+          if-no-files-found: warn
           retention-days: 1
