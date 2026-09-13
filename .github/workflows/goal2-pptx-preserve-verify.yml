@@ -73,18 +73,7 @@ jobs:
           PPTX_TRACKING_PHASE: build
         run: |
           set -o pipefail
-          python - <<'PY'
-          from pathlib import Path
-          src=Path('tests/test_pptx_character_spacing_fidelity_browser.py').read_text()
-          old=r"object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');"
-          new=r"object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\n');"
-          count=src.count(old)
-          if count != 1:
-              raise SystemExit(f'expected one writer newline harness match, found {count}')
-          Path('tests/_goal2_writer.py').write_text(src.replace(old,new,1))
-          PY
-          python tests/_goal2_writer.py 2>&1 | tee /tmp/pptx-writer.log
-          rm -f tests/_goal2_writer.py
+          python tests/test_pptx_character_spacing_fidelity_browser.py 2>&1 | tee /tmp/pptx-writer.log
       - name: Writer structure checkpoint
         if: always()
         run: '! grep -Eq "(An imported PPTX source package is required|Save Copy is blocked|Source slide part is missing)" /tmp/pptx-writer.log'
