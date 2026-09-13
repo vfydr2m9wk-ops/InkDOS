@@ -61,7 +61,7 @@ function cells(book){
   for(const [ref,cell] of sheet.cells.entries())out[ref]=cell.v;
   return out;
 }
-const csv='\ufeffid,name,notes\r\n00123,"Doe, Jane","line 1\nline 2"\r\n00007,"He said ""hello""",plain\r\n';
+const csv='\ufeffid,name,notes,empty\r\n00123,"Doe, Jane","line 1\nline 2",\r\n00007,"He said ""hello""",plain,\r\n';
 const parsed=codec.parse(enc.encode(csv).buffer,{delimiter:',',fileName:'sample.csv'});
 const tsv=codec.parse(enc.encode('code\tlabel\n0009\t"alpha\tbeta"\n').buffer,{delimiter:'\t',fileName:'sample.tsv'});
 const round=codec.serialize(parsed.book,{delimiter:',',bom:parsed.bom,encoding:parsed.encoding});
@@ -83,6 +83,7 @@ const payload={
   csvSource:parsed.sourceKind,
   tsvSource:tsv.sourceKind,
   mime:round.type,
+  cols:reparsed.book.delimitedMeta.cols,
   initiallyCompatible,
   formulaCompatibility,
   styleCompatibility,
@@ -101,7 +102,7 @@ process.stdout.write(JSON.stringify(payload));
     result = json.loads(completed.stdout)
 
     expected_csv = {
-        'A1': 'id', 'B1': 'name', 'C1': 'notes',
+        'A1': 'id', 'B1': 'name', 'C1': 'notes', 'D1': 'empty',
         'A2': '00123', 'B2': 'Doe, Jane', 'C2': 'line 1\nline 2',
         'A3': '00007', 'B3': 'He said "hello"', 'C3': 'plain',
     }
@@ -111,6 +112,8 @@ process.stdout.write(JSON.stringify(payload));
     }
     if result['csv'] != expected_csv:
         raise AssertionError(f'CSV semantic round-trip mismatch: {result["csv"]!r}')
+    if result['cols'] != 4:
+        raise AssertionError(f'Trailing empty CSV column was not preserved: {result["cols"]!r}')
     if result['tsv'] != expected_tsv:
         raise AssertionError(f'TSV parse mismatch: {result["tsv"]!r}')
     if result['bom'] is not True:
