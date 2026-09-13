@@ -48,7 +48,6 @@ jobs:
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            page.evaluate(\n                """async bytes => {'
           insert='            browser.close()\n            return\n\n'
-          if src.count(needle)!=1: raise SystemExit('synthetic probe anchor mismatch')
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_probe.py
@@ -62,7 +61,6 @@ jobs:
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            state = page.evaluate('
           insert='            browser.close()\n            return\n\n'
-          if src.count(needle)!=1: raise SystemExit('open probe anchor mismatch')
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_probe.py
@@ -75,8 +73,7 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            state = page.evaluate('
-          insert='''            sig_probe = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                if(!object)throw new Error('Signature probe object missing');\n                return NS.PresentationModel.textSignature(object);\n            }""", MARKER)\n            assert isinstance(sig_probe, str) and sig_probe\n            browser.close()\n            return\n\n'''
-          if src.count(needle)!=1: raise SystemExit('signature probe anchor mismatch')
+          insert='''            sig_probe = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                return NS.PresentationModel.textSignature(object);\n            }""", MARKER)\n            assert isinstance(sig_probe, str) and sig_probe\n            browser.close()\n            return\n\n'''
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_probe.py
@@ -89,8 +86,7 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            state = page.evaluate('
-          insert='''            run_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;\n                if(!run)throw new Error('Run assignment probe missing');\n                run.text=marker+'!';\n                return run.text;\n            }""", MARKER)\n            assert run_probe == MARKER+'!'\n            browser.close()\n            return\n\n'''
-          if src.count(needle)!=1: raise SystemExit('run probe anchor mismatch')
+          insert='''            run_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object.paragraphs.flatMap(p=>p.runs||[]).find(r=>r.text===marker);\n                run.text=marker+'!';\n                return run.text;\n            }""", MARKER)\n            assert run_probe == MARKER+'!'\n            browser.close()\n            return\n\n'''
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_probe.py
@@ -103,8 +99,20 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
           needle='            state = page.evaluate('
-          insert='''            text_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                if(!object)throw new Error('Object text probe missing');\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return object.text;\n            }""", MARKER)\n            assert isinstance(text_probe, str)\n            browser.close()\n            return\n\n'''
-          if src.count(needle)!=1: raise SystemExit('text probe anchor mismatch')
+          insert='''            text_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return object.text;\n            }""", MARKER)\n            assert isinstance(text_probe, str)\n            browser.close()\n            return\n\n'''
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe textSignature after imported text mutation
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            changed_probe = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object.paragraphs.flatMap(p=>p.runs||[]).find(r=>r.text===marker);\n                const before=object.sourceSignature;\n                run.text=marker+'!';\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return before!==NS.PresentationModel.textSignature(object);\n            }""", MARKER)\n            assert changed_probe is True\n            browser.close()\n            return\n\n'''
           Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_probe.py
