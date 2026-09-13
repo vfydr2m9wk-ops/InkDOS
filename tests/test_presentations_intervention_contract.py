@@ -15,10 +15,20 @@ for token in [
 ]:
     assert token in SURFACE, f'Presentations intervention contract missing: {token}'
 
-# Direct object-body movement must share the existing gesture/history path.
+# Direct object-body movement must share the existing pointer gesture/history path.
 assert 'startObjectMove' in SURFACE, 'Selected objects cannot start a direct body drag.'
 assert "beginGesture('move'" in SURFACE, 'Direct object drag does not reuse the move gesture.'
+assert "addEventListener('pointerdown'" in SURFACE, 'Object movement is not pointer-based for mouse/trackpad/touch.'
 assert "history.commitFromBefore(label,before)" in SURFACE, 'Gesture history contract was lost.'
+
+# Touch must have an explicit route into text editing without conflating editing with movement.
+for token in [
+    'lastTouchTextTap',
+    'maybeEnterTouchTextEdit',
+    "e.pointerType!=='touch'",
+    'enterTextEdit(o.id)',
+]:
+    assert token in SURFACE, f'Presentations touch interaction contract missing: {token}'
 
 # Text content may overflow its own nominal box, but the slide itself remains clipped.
 assert '.slide-canvas' in CSS and 'overflow:hidden' in CSS, 'Slide boundary clipping must remain.'
