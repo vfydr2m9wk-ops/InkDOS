@@ -2,18 +2,6 @@ name: Refresh integrity metadata
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'feature/**'
-      - 'fix/**'
-      - 'polish/**'
-      - 'audit/stability-functional-isolation'
-    paths-ignore:
-      - 'CHECKSUMS.sha256'
-      - 'SOURCE_LOCK.json'
-      - 'BUILD_INFO.json'
-      - 'SOURCE_MANIFEST.json'
-      - 'RELEASE_MANIFEST.json'
 
 permissions:
   contents: read
