@@ -2,6 +2,9 @@ name: Refresh integrity metadata
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/inkdos-2.3
 
 permissions:
   contents: read
