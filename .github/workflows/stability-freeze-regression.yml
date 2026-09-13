@@ -5,8 +5,7 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '.github/workflows/**'
+      - feature/inkdos-2.3
 
 permissions:
   contents: read
@@ -65,6 +64,7 @@ jobs:
           node --check apps/presentations/ui/command-controller.js
           node --check apps/presentations/ui/editing-controller.js
           node --check apps/presentations/ui/slide-panel-controller.js
+          node --check apps/presentations/ui/ppt-p1-tools.js
           node --check apps/presentations/ui/ppt-p2-tools.js
           node --check apps/presentations/ui/ppt-p2-table-tools-ui.js
           node --check apps/presentations/io/ppt-p2-package.js
