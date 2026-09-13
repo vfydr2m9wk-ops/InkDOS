@@ -9,9 +9,29 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULE = ROOT / 'apps/spreadsheets/io/delimited-text.js'
 
 
+def require(text: str, needle: str, label: str) -> None:
+    if needle not in text:
+        raise AssertionError(f'{label}: missing {needle!r}')
+
+
 def main() -> None:
     if not MODULE.is_file():
         raise AssertionError('CSV/TSV codec missing: apps/spreadsheets/io/delimited-text.js')
+
+    file_open = (ROOT / 'apps/spreadsheets/io/file-open-controller.js').read_text(encoding='utf-8')
+    workbook_session = (ROOT / 'apps/spreadsheets/engine/workbook-session.js').read_text(encoding='utf-8')
+    index = (ROOT / 'apps/spreadsheets/index.html').read_text(encoding='utf-8')
+
+    # Integration contract: CSV/TSV must route into Spreadsheets and preserve
+    # their source kind/name rather than being silently promoted to XLSX.
+    for marker in ('.csv', '.tsv'):
+        require(index, marker, 'Spreadsheets file picker')
+    require(index, 'src="io/delimited-text.js"', 'Spreadsheets script graph')
+    require(file_open, 'NS.DelimitedText.parse', 'Spreadsheets delimited open path')
+    require(file_open, "sourceKind==='csv'", 'Spreadsheets CSV source routing')
+    require(file_open, "sourceKind==='tsv'", 'Spreadsheets TSV source routing')
+    require(workbook_session, "sourceKind==='csv'", 'WorkbookSession CSV naming')
+    require(workbook_session, "sourceKind==='tsv'", 'WorkbookSession TSV naming')
 
     probe = r'''
 const fs=require('fs');
@@ -43,7 +63,6 @@ const payload={
 };
 process.stdout.write(JSON.stringify(payload));
 '''
-    # Wrap in an async IIFE so Blob.arrayBuffer() can be awaited in Node.
     probe = '(async()=>{' + probe + '})().catch(e=>{console.error(e);process.exit(1)})'
     completed = subprocess.run(
         ['node', '-e', probe, str(MODULE)],
@@ -76,7 +95,7 @@ process.stdout.write(JSON.stringify(payload));
     if result['mime'] != 'text/csv;charset=utf-8':
         raise AssertionError(f'Unexpected CSV MIME type: {result["mime"]!r}')
 
-    print('Spreadsheets CSV/TSV codec contract: OK')
+    print('Spreadsheets CSV/TSV codec and open-routing contract: OK')
 
 
 if __name__ == '__main__':
