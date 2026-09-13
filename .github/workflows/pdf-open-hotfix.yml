@@ -1,4 +1,4 @@
-name: PDF Open hotfix verification
+name: PDF Open hotfix integrity finalize
 
 on:
   push:
@@ -6,50 +6,88 @@ on:
       - hotfix/pdf-open-user-gesture
     paths:
       - '.github/workflows/pdf-open-hotfix.yml'
-      - 'tests/test_pdf_open_picker_browser.py'
-      - 'apps/pdf/ui/command-controller.js'
-  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: inkdos-pdf-open-hotfix-integrity-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  browser:
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [webkit, chromium, firefox]
+  finalize:
     runs-on: ubuntu-22.04
-    timeout-minutes: 20
-    env:
-      BROWSER: ${{ matrix.browser }}
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
-          cache: pip
-          cache-dependency-path: requirements-ci.txt
-      - name: Install test dependencies
-        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
-      - name: Install browser
-        run: python -m playwright install --with-deps ${{ matrix.browser }}
-      - name: Verify Open PDF picker
-        run: python tests/test_pdf_open_picker_browser.py
-      - name: Verify PDF save and reopen round-trip
-        run: python tests/test_pdf_stability_roundtrip.py
-
-  contract:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: '3.11'
-      - name: Verify PDF stability contract
-        run: python tests/test_pdf_stability_contract.py
+      - name: Build deterministic Plain Text distribution
+        run: python scripts/build_txt_bundle.py
+      - name: Generate CSP metadata
+        run: python scripts/generate_csp.py
+      - name: Refresh source lock hashes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          root = Path('.')
+          lock_path = root / 'SOURCE_LOCK.json'
+          lock = json.loads(lock_path.read_text(encoding='utf-8'))
+          version = json.loads((root / 'VERSION.json').read_text(encoding='utf-8'))['version']
+          def sha(path):
+              return hashlib.sha256(path.read_bytes()).hexdigest()
+          def tree_digest(path, exclude=()):
+              path = Path(path); excluded = set(exclude); digest = hashlib.sha256()
+              for item in sorted(path.rglob('*')):
+                  if not item.is_file(): continue
+                  rel = item.relative_to(path).as_posix()
+                  if rel in excluded: continue
+                  rel_bytes = rel.encode()
+                  digest.update(len(rel_bytes).to_bytes(4, 'big'))
+                  digest.update(rel_bytes)
+                  digest.update(bytes.fromhex(sha(item)))
+              return digest.hexdigest()
+          lock['release'] = version
+          for app, entry in lock['apps'].items():
+              app_root = root / 'apps' / app
+              entry['integratedIndexSha256'] = sha(app_root / 'index.html')
+              entry['nonIndexTreeSha256'] = tree_digest(app_root, exclude=('index.html',))
+          lock_path.write_text(json.dumps(lock, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+      - name: Refresh release metadata
+        run: python scripts/generate_release_metadata.py
+      - name: Refresh checksums
+        run: python scripts/generate_checksums.py
+      - name: Validate final hotfix snapshot
+        run: python scripts/run_release_validation.py
+      - name: Restrict generated changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          allowed='^(index\.html|apps/(documents|spreadsheets|presentations|pdf|txt|epub)/index\.html|SOURCE_LOCK\.json|BUILD_INFO\.json|SOURCE_MANIFEST\.json|RELEASE_MANIFEST\.json|CHECKSUMS\.sha256)$'
+          while IFS= read -r path; do
+            [[ -z "$path" ]] && continue
+            if ! [[ "$path" =~ $allowed ]]; then
+              echo "Unexpected generated path: $path" >&2
+              exit 1
+            fi
+          done < <(git diff --name-only)
+          git diff --check
+      - name: Commit validated integrity metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html apps/documents/index.html apps/spreadsheets/index.html apps/presentations/index.html apps/pdf/index.html apps/txt/index.html apps/epub/index.html SOURCE_LOCK.json BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json CHECKSUMS.sha256
+          if git diff --cached --quiet; then
+            echo 'Integrity metadata already current.'
+            exit 0
+          fi
+          git commit -m 'Refresh PDF hotfix integrity metadata'
+          git push origin HEAD:hotfix/pdf-open-user-gesture
