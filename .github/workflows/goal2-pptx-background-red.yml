@@ -39,10 +39,34 @@ jobs:
         env:
           PPTX_TRACKING_PHASE: render
         run: python tests/test_pptx_character_spacing_fidelity_browser.py
-      - name: Diagnostic preservation model checkpoint
+      - name: Capture preservation model diagnostic
+        id: modeldiag
+        continue-on-error: true
         env:
           PPTX_PRESERVE_DIAGNOSTIC: model
-        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+        run: |
+          set -o pipefail
+          python tests/test_pptx_character_spacing_preservation_diagnostic.py 2>&1 | tee /tmp/pptx-model-diagnostic.log
+      - name: Model import spacing checkpoint
+        if: always()
+        run: |
+          if grep -q "assert math.isclose(float(state\[\"charSpacingPt\"\])" /tmp/pptx-model-diagnostic.log; then
+            echo "Character-spacing import assertion failed." >&2
+            exit 1
+          fi
+          echo "Character-spacing import assertion did not fail."
+      - name: Model source-signature checkpoint
+        if: always()
+        run: |
+          if grep -q "assert state\[\"sourceChanged\"\] is True" /tmp/pptx-model-diagnostic.log; then
+            echo "Source-signature change detection assertion failed." >&2
+            exit 1
+          fi
+          echo "Source-signature change detection assertion did not fail."
+      - name: Require model diagnostic success
+        if: always()
+        run: |
+          test "${{ steps.modeldiag.outcome }}" = "success"
       - name: Diagnostic preservation build checkpoint
         env:
           PPTX_PRESERVE_DIAGNOSTIC: build
