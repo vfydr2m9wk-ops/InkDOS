@@ -28,9 +28,6 @@ on:
       - 'InkDOS-update-v*.zip'
       - 'InkDOS-update-v*.zip.sha256'
       - '.github/workflows/**'
-  pull_request:
-    branches:
-      - main
 
 permissions:
   contents: read
