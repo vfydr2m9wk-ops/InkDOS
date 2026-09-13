@@ -9,6 +9,15 @@ GENERATOR_PATH = ROOT / "desktop" / "scripts" / "generate_macos_workspace_launch
 MACOS_LAUNCHER_ROOT = TAURI_DIR / "macos" / "workspace-launchers"
 DESKTOP_BUILD_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
 
+DISPLAY_NAMES = {
+    "documents": "Documents",
+    "spreadsheets": "Spreadsheets",
+    "presentations": "Presentations",
+    "pdf": "PDF",
+    "epub": "EPUB",
+    "txt": "Plain Text",
+}
+
 
 def main() -> None:
     launchers = json.loads(LAUNCHERS_PATH.read_text(encoding="utf-8"))
@@ -19,9 +28,6 @@ def main() -> None:
 
     macos = config["bundle"].get("macOS", {})
     files = macos.get("files", {})
-    assert files.get("Helpers/InkDOS Workspace Launchers") == "./macos/workspace-launchers", (
-        "the single InkDOS.app bundle must embed lightweight workspace launchers under Contents/Helpers"
-    )
 
     generator = GENERATOR_PATH.read_text(encoding="utf-8")
     assert 'launcher["icon"]' in generator
@@ -29,11 +35,22 @@ def main() -> None:
     assert "icon.icns" in generator
     assert "--workspace" in generator
     assert "../../../../MacOS/InkDOS" in generator
+    assert "clang" in generator, "macOS launch entries must use a tiny native stub, not a duplicated InkDOS host"
 
     for workspace, launcher in launchers.items():
         assert launcher["executable"] == "InkDOS"
         assert launcher["icon"].startswith("assets/icons/")
         assert workspace in generator, f"macOS launcher generator must materialize {workspace}"
+
+        app_name = f"InkDOS {DISPLAY_NAMES[workspace]}.app"
+        destination = f"Helpers/{app_name}"
+        source = f"./macos/workspace-launchers/{app_name}"
+        assert files.get(destination) == source, (
+            f"macOS bundle must embed {app_name} directly under Contents/Helpers"
+        )
+        assert (MACOS_LAUNCHER_ROOT / app_name).exists(), (
+            f"tracked staging directory missing for {app_name}"
+        )
 
     workflow = DESKTOP_BUILD_WORKFLOW_PATH.read_text(encoding="utf-8")
     generation_token = "python desktop/scripts/generate_macos_workspace_launchers.py"
