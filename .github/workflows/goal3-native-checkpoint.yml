@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: inkdos-goal3-native-${{ github.ref }}
@@ -73,29 +72,5 @@ jobs:
       - name: Stage InkDOS web runtime
         run: python desktop/scripts/stage_web.py
       - name: Check Tauri host
-        id: cargo_check
         working-directory: desktop/src-tauri
-        shell: bash
-        run: |
-          set +e
-          cargo check 2>&1 | tee cargo-check.log
-          status=${PIPESTATUS[0]}
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          exit "$status"
-      - name: Surface Linux cargo failure for diagnosis
-        if: failure() && runner.os == 'Linux' && steps.cargo_check.outputs.status != '0'
-        working-directory: desktop/src-tauri
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          {
-            echo '### Goal 3 Linux cargo diagnostic'
-            echo
-            echo 'Exact head: `${{ github.sha }}`'
-            echo
-            echo '```text'
-            grep -E -A 8 -B 3 '(^error(\[|:)|error: could not compile)' cargo-check.log | tail -n 160 || tail -n 160 cargo-check.log
-            echo '```'
-          } > cargo-diagnostic.md
-          gh pr comment 132 --body-file cargo-diagnostic.md
+        run: cargo check
