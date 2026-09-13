@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - feature/inkdos-2.3
     paths-ignore:
       - '.github/workflows/**'
 
