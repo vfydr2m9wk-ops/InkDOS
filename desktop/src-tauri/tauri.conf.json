@@ -40,7 +40,7 @@
       {
         "name": "documents",
         "description": "InkDOS Documents",
-        "ext": ["docx"]
+        "ext": ["doc", "docx", "rtf"]
       },
       {
         "name": "spreadsheets",
@@ -50,7 +50,7 @@
       {
         "name": "presentations",
         "description": "InkDOS Presentations",
-        "ext": ["pptx"]
+        "ext": ["ppt", "pptx"]
       },
       {
         "name": "pdf",
