@@ -8,6 +8,7 @@ class WorkbookSession{
  commitCandidate(candidate,id){if(!this.isCurrent(id))return false;this.book=candidate.book;this.sourceKind=candidate.sourceKind||'xlsx';this.fileName=safeName(candidate.fileName||candidate.book?.fileName,this.sourceKind);this.book.fileName=this.fileName;this.documentId=candidate.documentId||('book-'+Date.now());this.dirty=false;this.revision++;return true}
  newBook(book){this.operationId++;this.book=book;book.loaded=true;book.fileName='Untitled.xlsx';this.fileName='Untitled.xlsx';this.documentId='new-'+Date.now();this.sourceKind='new';this.dirty=false;this.revision++}
  rename(name){const next=safeName(name,this.sourceKind);if(next!==this.fileName){this.fileName=next;if(this.book)this.book.fileName=next;this.markDirty()}return next}
+ convertToXlsx(){if(this.sourceKind!=='csv'&&this.sourceKind!=='tsv')return false;this.sourceKind='xlsx';this.fileName=safeName(this.fileName,'xlsx');if(this.book)this.book.fileName=this.fileName;this.markDirty();return true}
  markDirty(){this.dirty=true;this.revision++;return this.revision}
  markClean(expectedRevision){if(Number.isInteger(expectedRevision)&&expectedRevision!==this.revision)return false;this.dirty=false;return true}
  activeSheet(){return this.book?.sheets?.[this.book.active||0]||null}
