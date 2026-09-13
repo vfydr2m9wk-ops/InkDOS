@@ -25,8 +25,6 @@ def main() -> None:
     index = (ROOT / 'apps/spreadsheets/index.html').read_text(encoding='utf-8')
     service_worker = (ROOT / 'service-worker.js').read_text(encoding='utf-8')
 
-    # Integration contract: CSV/TSV must route into Spreadsheets and preserve
-    # their source kind/name rather than being silently promoted to XLSX.
     for marker in ('.csv', '.tsv'):
         require(index, marker, 'Spreadsheets file picker')
     require(index, 'src="io/delimited-text.js"', 'Spreadsheets script graph')
@@ -37,8 +35,6 @@ def main() -> None:
     require(workbook_session, "sourceKind==='csv'", 'WorkbookSession CSV naming')
     require(workbook_session, "sourceKind==='tsv'", 'WorkbookSession TSV naming')
 
-    # Same-format save must use the delimited serializer, while the final safety
-    # gate prevents XLSX-only state from being silently flattened into text.
     require(save_controller, 'NS.DelimitedText.serialize', 'Delimited same-format save')
     require(save_controller, 'NS.DelimitedText.compatibility', 'Delimited save compatibility gate')
     require(save_controller, "title:'Convert to XLSX?'", 'Delimited save conversion warning')
@@ -64,6 +60,8 @@ function cells(book){
 const csv='\ufeffid,name,notes,empty\r\n00123,"Doe, Jane","line 1\nline 2",\r\n00007,"He said ""hello""",plain,\r\n';
 const parsed=codec.parse(enc.encode(csv).buffer,{delimiter:',',fileName:'sample.csv'});
 const tsv=codec.parse(enc.encode('code\tlabel\n0009\t"alpha\tbeta"\n').buffer,{delimiter:'\t',fileName:'sample.tsv'});
+const semi='Username; Identifier;First name;Last name\nuser01;1001;Alex;Morgan\nuser02;0007;Taylor;Lee\n';
+const semiParsed=codec.parse(enc.encode(semi).buffer,{fileName:'sample.csv'});
 const round=codec.serialize(parsed.book,{delimiter:',',bom:parsed.bom,encoding:parsed.encoding});
 const reparsed=codec.parse(await round.arrayBuffer(),{delimiter:',',fileName:'round.csv'});
 const initiallyCompatible=codec.compatibility(parsed.book);
@@ -79,6 +77,8 @@ const sheetCompatibility=codec.compatibility(parsed.book);
 const payload={
   csv:cells(reparsed.book),
   tsv:cells(tsv.book),
+  semicolon:cells(semiParsed.book),
+  semicolonDelimiter:semiParsed.book.delimitedMeta.delimiter,
   bom:parsed.bom,
   csvSource:parsed.sourceKind,
   tsvSource:tsv.sourceKind,
@@ -110,12 +110,21 @@ process.stdout.write(JSON.stringify(payload));
         'A1': 'code', 'B1': 'label',
         'A2': '0009', 'B2': 'alpha\tbeta',
     }
+    expected_semicolon = {
+        'A1': 'Username', 'B1': ' Identifier', 'C1': 'First name', 'D1': 'Last name',
+        'A2': 'user01', 'B2': '1001', 'C2': 'Alex', 'D2': 'Morgan',
+        'A3': 'user02', 'B3': '0007', 'C3': 'Taylor', 'D3': 'Lee',
+    }
     if result['csv'] != expected_csv:
         raise AssertionError(f'CSV semantic round-trip mismatch: {result["csv"]!r}')
     if result['cols'] != 4:
         raise AssertionError(f'Trailing empty CSV column was not preserved: {result["cols"]!r}')
     if result['tsv'] != expected_tsv:
         raise AssertionError(f'TSV parse mismatch: {result["tsv"]!r}')
+    if result['semicolon'] != expected_semicolon:
+        raise AssertionError(f'Semicolon CSV detection mismatch: {result["semicolon"]!r}')
+    if result['semicolonDelimiter'] != ';':
+        raise AssertionError(f'Semicolon CSV delimiter was not retained: {result["semicolonDelimiter"]!r}')
     if result['bom'] is not True:
         raise AssertionError('UTF-8 BOM must be detected and preserved')
     if result['csvSource'] != 'csv' or result['tsvSource'] != 'tsv':
