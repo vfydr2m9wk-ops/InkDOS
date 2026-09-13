@@ -3,7 +3,7 @@
   "identifier": "main-desktop",
   "description": "Least-privilege desktop file dialogs and user-selected file access for InkDOS.",
   "local": true,
-  "windows": ["main"],
+  "windows": ["main", "file-*"],
   "permissions": [
     "core:default",
     "dialog:allow-open",
