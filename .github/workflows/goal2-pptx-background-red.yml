@@ -49,39 +49,31 @@ jobs:
           python tests/test_pptx_character_spacing_preservation_diagnostic.py 2>&1 | tee /tmp/pptx-model-diagnostic.log
       - name: Synthetic title lookup checkpoint
         if: always()
-        run: |
-          if grep -q "Synthetic title run not found" /tmp/pptx-model-diagnostic.log; then
-            echo "Synthetic title run lookup failed." >&2
-            exit 1
-          fi
+        run: '! grep -q "Synthetic title run not found" /tmp/pptx-model-diagnostic.log'
       - name: Synthetic run-properties checkpoint
         if: always()
-        run: |
-          if grep -q "Synthetic title run properties not found" /tmp/pptx-model-diagnostic.log; then
-            echo "Synthetic title run properties lookup failed." >&2
-            exit 1
-          fi
+        run: '! grep -q "Synthetic title run properties not found" /tmp/pptx-model-diagnostic.log'
       - name: Imported title lookup checkpoint
         if: always()
-        run: |
-          if grep -q "Imported title run missing" /tmp/pptx-model-diagnostic.log; then
-            echo "Imported title run lookup failed." >&2
-            exit 1
-          fi
+        run: '! grep -q "Imported title run missing" /tmp/pptx-model-diagnostic.log'
       - name: Model import spacing checkpoint
         if: always()
-        run: |
-          if grep -q "assert math.isclose(float(state\[\"charSpacingPt\"\])" /tmp/pptx-model-diagnostic.log; then
-            echo "Character-spacing import assertion failed." >&2
-            exit 1
-          fi
+        run: '! grep -q "assert math.isclose(float(state\[\"charSpacingPt\"\])" /tmp/pptx-model-diagnostic.log'
       - name: Model source-signature checkpoint
         if: always()
-        run: |
-          if grep -q "assert state\[\"sourceChanged\"\] is True" /tmp/pptx-model-diagnostic.log; then
-            echo "Source-signature change detection assertion failed." >&2
-            exit 1
-          fi
+        run: '! grep -q "assert state\[\"sourceChanged\"\] is True" /tmp/pptx-model-diagnostic.log'
+      - name: Playwright timeout checkpoint
+        if: always()
+        run: '! grep -q "TimeoutError" /tmp/pptx-model-diagnostic.log'
+      - name: Browser JavaScript exception checkpoint
+        if: always()
+        run: '! grep -q "playwright.*Error" /tmp/pptx-model-diagnostic.log'
+      - name: Python type-value exception checkpoint
+        if: always()
+        run: '! grep -Eq "(TypeError|ValueError|KeyError|AttributeError|RuntimeError):" /tmp/pptx-model-diagnostic.log'
+      - name: Unexpected assertion checkpoint
+        if: always()
+        run: '! grep -q "AssertionError" /tmp/pptx-model-diagnostic.log'
       - name: Require model diagnostic success
         if: always()
         run: test "${{ steps.modeldiag.outcome }}" = "success"
