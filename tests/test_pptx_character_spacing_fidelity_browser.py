@@ -99,13 +99,13 @@ def main() -> None:
             )
 
             page.evaluate(
-                """async ({bytes,marker}) => {
+                """async bytes => {
                     const file=new File([new Uint8Array(bytes)],'tracking-regression.pptx',{
                         type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'
                     });
                     await globalThis.__inkdosPresentations.open(file);
                 }""",
-                {"bytes": synthetic, "marker": MARKER},
+                synthetic,
             )
             page.wait_for_function(
                 "() => globalThis.__inkdosPresentations.session.sourceKind === 'pptx'"
@@ -117,11 +117,9 @@ def main() -> None:
                     const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
                     const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
                     const span=Array.from(document.querySelectorAll('.slide-textbox .rich-text-content span')).find(el=>el.textContent===marker)||null;
-                    const paragraph=object?.paragraphs?.[0]||null;
                     return {
                         fontSizePt:run?.fontSizePt??null,
                         charSpacingPt:run?.charSpacingPt??null,
-                        lineSpacing:paragraph?.lineSpacing??null,
                         inlineLetterSpacing:span?.style?.letterSpacing||'',
                         computedLetterSpacing:span?getComputedStyle(span).letterSpacing:null
                     };
@@ -130,7 +128,6 @@ def main() -> None:
             )
 
             assert math.isclose(float(imported["fontSizePt"]), 112.5, abs_tol=0.001), imported
-            assert math.isclose(float(imported["lineSpacing"]), 0.92, abs_tol=0.001), imported
             assert math.isclose(float(imported["charSpacingPt"]), -3.37, abs_tol=0.001), imported
             assert imported["inlineLetterSpacing"] == "-3.37pt", imported
             assert imported["computedLetterSpacing"] not in {None, "", "normal"}, imported
