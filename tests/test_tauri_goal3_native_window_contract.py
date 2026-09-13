@@ -23,9 +23,9 @@ def test_single_host_forwards_subsequent_file_opens_into_distinct_native_windows
         assert marker in main
 
 
-def test_file_windows_receive_same_least_privilege_capability():
+def test_native_file_and_workspace_windows_receive_same_least_privilege_capability():
     capability = json.loads(read(TAURI / "capabilities" / "default.json"))
-    assert set(capability["windows"]) == {"main", "file-*"}
+    assert set(capability["windows"]) == {"main", "file-*", "workspace-*"}
 
 
 def test_desktop_bridge_auto_opens_only_the_native_injected_file():
