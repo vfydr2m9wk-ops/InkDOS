@@ -6,6 +6,11 @@ on:
       - feature/inkdos-2.3
     paths:
       - '.github/workflows/goal3-native-checkpoint.yml'
+      - 'desktop/src-tauri/**'
+      - 'desktop/workspaces.json'
+      - 'desktop/scripts/**'
+      - 'tests/test_tauri_goal3_*.py'
+      - 'tests/test_tauri_desktop_contract.py'
   workflow_dispatch:
 
 permissions:
