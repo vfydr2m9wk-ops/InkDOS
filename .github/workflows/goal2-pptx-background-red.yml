@@ -39,6 +39,34 @@ jobs:
         env:
           PPTX_TRACKING_PHASE: render
         run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Probe preservation synthetic generation
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            page.evaluate(\n                """async bytes => {'
+          insert='            print("synthetic generation checkpoint passed")\n            browser.close()\n            return\n\n'
+          if src.count(needle)!=1: raise SystemExit('synthetic probe anchor mismatch')
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe preservation open-import
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='            print("open import checkpoint passed")\n            browser.close()\n            return\n\n'
+          if src.count(needle)!=1: raise SystemExit('open probe anchor mismatch')
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
       - name: Capture preservation model diagnostic
         id: modeldiag
         continue-on-error: true
@@ -62,27 +90,6 @@ jobs:
       - name: Model source-signature checkpoint
         if: always()
         run: '! grep -q "assert state\[\"sourceChanged\"\] is True" /tmp/pptx-model-diagnostic.log'
-      - name: Playwright timeout checkpoint
-        if: always()
-        run: '! grep -q "TimeoutError" /tmp/pptx-model-diagnostic.log'
-      - name: JavaScript missing-function checkpoint
-        if: always()
-        run: '! grep -q "is not a function" /tmp/pptx-model-diagnostic.log'
-      - name: JavaScript undefined-property checkpoint
-        if: always()
-        run: '! grep -Eq "Cannot read propert(y|ies) of (undefined|null)" /tmp/pptx-model-diagnostic.log'
-      - name: JavaScript reference checkpoint
-        if: always()
-        run: '! grep -Eq "(ReferenceError|is not defined)" /tmp/pptx-model-diagnostic.log'
-      - name: Browser JavaScript exception checkpoint
-        if: always()
-        run: '! grep -q "playwright.*Error" /tmp/pptx-model-diagnostic.log'
-      - name: Python type-value exception checkpoint
-        if: always()
-        run: '! grep -Eq "(TypeError|ValueError|KeyError|AttributeError|RuntimeError):" /tmp/pptx-model-diagnostic.log'
-      - name: Unexpected assertion checkpoint
-        if: always()
-        run: '! grep -q "AssertionError" /tmp/pptx-model-diagnostic.log'
       - name: Require model diagnostic success
         if: always()
         run: test "${{ steps.modeldiag.outcome }}" = "success"
