@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import os
 import socket
 import subprocess
 import sys
@@ -27,6 +28,10 @@ def wait_port(timeout: float = 10.0) -> None:
 
 
 def main() -> None:
+    browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
+    if browser_name not in {"chromium", "firefox", "webkit"}:
+        raise RuntimeError(f"Unsupported BROWSER={browser_name}")
+
     server = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(PORT), "--bind", "127.0.0.1"],
         cwd=ROOT,
@@ -36,7 +41,7 @@ def main() -> None:
     try:
         wait_port()
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=True)
+            browser = getattr(pw, browser_name).launch(headless=True)
             page = browser.new_page(viewport={"width": 1360, "height": 900})
             page.goto(BASE + "/apps/presentations/", wait_until="load")
             page.wait_for_function("() => !!globalThis.__inkdosPresentations?.session")
@@ -86,7 +91,7 @@ def main() -> None:
             assert abs(float(state["charSpacingPt"]) - (-3.37)) < 0.0001, state
             assert state["letterSpacing"] == "-3.37px", state
             browser.close()
-            print(f"PPTX normAutofit default-scale regression passed: {state}")
+            print(f"PPTX normAutofit default-scale regression passed on {browser_name}: {state}")
     finally:
         server.terminate()
         try:
