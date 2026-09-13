@@ -55,6 +55,19 @@ Key checkpoints:
 
 Goal 2 conclusion: **COMPLETE — VERIFIED — IN MAIN**.
 
+## Pre-release intervention completion evidence
+
+The USER-APPROVED pre-release intervention is **COMPLETE — VERIFIED** and Goal 3 is resumed without resetting or discarding preserved desktop work.
+
+- Behavioral intervention candidate `8a9882c3ae6b9a6b312b422a3b5e84a84b96011b`, run `34769710562`: CSV/TSV delimiter preservation, adaptive interface density, Presentations interaction/overflow corrections, preserved-format round trips and Chromium/Firefox/WebKit matrices PASS.
+- Integrity validation exposed two stale isolation guards; focused RED/GREEN work limited the shared-runtime exception to only `shared/ui-density.css` and `shared/ui-density.js`, while continuing to reject all other shared runtime content.
+- PDF Open regression was corrected without weakening user-gesture requirements: runtime fix `b97903ccd3f08e15f5c53e7b49c00632d660ffca`, corrected dispatch-boundary regression harness `0ad1a0b1d52b857dffd19a96e298f82f6dbb875e`, focused run `34783270095` PASS on Chromium, Firefox and WebKit.
+- Final integrity sentinel `1e544292978c55b6de4ed534d27c31fd26a3ee55` triggered run `34783348746`; generation/validation and write-capable application jobs both PASS.
+- Validated generated metadata was committed by GitHub Actions as `da334a58502bbb144dbcf9c424c25b720e4f558b` (`Refresh InkDOS integrity metadata`).
+- The refreshed snapshot covers `SOURCE_LOCK.json`, generated entry-point/CSP metadata, release metadata and `CHECKSUMS.sha256` under the repository-native integrity workflow.
+
+Intervention conclusion: **COMPLETE — VERIFIED** at generated-metadata head `da334a58502bbb144dbcf9c424c25b720e4f558b`. Goal 3 resumes from all preserved work and diagnostics; the old frozen SHA is evidence only and is never used to reset the branch.
+
 ## Goal 3 completed subpasses
 
 Goal 3 remains the only active implementation scope. The architecture is one installed InkDOS application/host, no central tab system and no duplicated full executables.
@@ -100,30 +113,37 @@ Goal 3 remains the only active implementation scope. The architecture is one ins
 - `7de57294d024e81fcbf8d2f398e4ba0644bf7521` — native verification for six launcher executables, six `Info.plist` files and six canonical `icon.icns` files.
 - Run `34760575409` confirmed Windows icon materialization and macOS launcher materialization GREEN. That run's contract job was RED only because the next strict-allowlist test had already been introduced.
 
-### Strict workspace allowlist / no-reroute cycle — current
+### Strict workspace allowlist / no-reroute cycle
 
 - `7cbae6aac57ff08c88692b2a3f422f6617796a79` — RED extending `tests/test_tauri_goal3_native_window_contract.py` so workspace launcher file arguments must remain bound to that workspace's allowlist and must not silently reroute.
 - Run `34760575409` reproduced the RED specifically in `Run native multiwindow contract`; launcher materialization remained GREEN.
 - Root cause: `handle_launch_args` opened `--workspace <id>` but then processed following file paths through the global `open_file_window`, allowing extension-based routing to a different workspace.
 - `f5f1e63932ffe2ab0a22e8d1b0809dbc1848720a` — minimal fix: preserve an `active_workspace`, validate files through `workspace_supports_path`, and open them with `open_file_window_for_workspace`; global routing remains only for file opens without a workspace context.
-- Run `34761367400`: the Goal 3 contracts job is GREEN, including workspace/association, workspace launcher, installed launcher, macOS launcher, native multiwindow, baseline desktop and staged-runtime checks. Icon/macOS materialization and cross-platform cargo jobs were still running at this checkpoint, so the full run is not yet claimed GREEN.
+- Run `34761367400`: Goal 3 contracts GREEN. Subsequent package diagnostics isolated the remaining installer/package defects below.
 
-Goal 3 therefore remains **IN PROGRESS** and Goal 4 remains locked.
+### Preserved native package diagnostics
+
+- Frozen-work diagnostic run `34765293954` remains valid evidence and is now actionable after intervention completion.
+- Windows MSI: Tauri main executable and WiX sources compile, but `light.exe` fails with `LGHT0094` because custom `desktop/src-tauri/windows/workspace-launchers.wxs` references unresolved `Directory:INSTALLFOLDER`.
+- Linux AppImage: prerequisite/native staging succeeds, then the AppImage path fails in `linuxdeploy`; exact log evidence must be retained before applying its fix.
+- No diagnostic response was applied while the intervention freeze was active.
 
 ## Goal 3 remaining acceptance work
 
-1. Obtain the completed result for run `34761367400`, including Windows/Ubuntu/macOS `cargo check` after the strict-allowlist fix.
-2. Exercise/verify strict per-workspace allowlists and no-reroute behavior together with installed launch routing at the strongest practical native test level.
-3. Build and inspect Windows/macOS/Linux installer/package artifacts, including installed launch entries/icons and one-host/no-duplicate-executable constraints.
-4. Run the coherent Goal 3 repository/cross-platform checkpoint and record the exact final validation SHA/run before declaring **COMPLETE — VERIFIED**.
-5. Only then unlock Goal 4.
+1. Fix the Windows MSI WiX linker defect with a targeted RED, minimal packaging correction and exact-head verification.
+2. Extract and fix the exact Linux AppImage/linuxdeploy failure with a separate targeted regression; do not infer the failure from category alone.
+3. Exercise/verify strict per-workspace allowlists and no-reroute behavior together with installed launch routing at the strongest practical native test level.
+4. Build and inspect Windows/macOS/Linux installer/package artifacts, including installed launch entries/icons and one-host/no-duplicate-executable constraints.
+5. Run the coherent Goal 3 repository/cross-platform checkpoint and record the exact final validation SHA/run before declaring **COMPLETE — VERIFIED**.
+6. Only then unlock Goal 4.
 
 ## Current checkpoint
 
 - `main`: `690021d6577b7eb337016e0d19af9310fd6f424a`.
+- Pre-release intervention: **COMPLETE — VERIFIED**; final generated-metadata head `da334a58502bbb144dbcf9c424c25b720e4f558b`, integrity run `34783348746` PASS.
 - Goal 1: **COMPLETE — VERIFIED — IN MAIN**.
 - Goal 2: **COMPLETE — VERIFIED — IN MAIN**.
-- Goal 3: **IN PROGRESS**; strict workspace allowlist fix candidate `f5f1e63932ffe2ab0a22e8d1b0809dbc1848720a`; run `34761367400` has a GREEN contracts job while native materialization/cross-platform validation remains in progress at checkpoint time.
+- Goal 3: **IN PROGRESS — RESUMED** from preserved desktop work and package diagnostics; no reset to the frozen SHA.
 - Goal 4: **NOT STARTED**.
 
 At the end of Goal 3, record the exact validation SHA, tests/workflows executed, pass/fail state, release-artifact implications and any remaining blocker before unlocking Goal 4.
