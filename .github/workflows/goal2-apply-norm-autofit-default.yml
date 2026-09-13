@@ -1,0 +1,65 @@
+name: Goal 2 apply normAutofit default fix
+
+on:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - '.github/workflows/goal2-apply-norm-autofit-default.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BROWSER: chromium
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Apply normAutofit missing-fontScale default
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('apps/presentations/io/pptx-open-controller.js')
+          text=path.read_text(encoding='utf-8')
+          old="else if(norm){autoFit='normal';autoFitScale=Math.max(.35,Math.min(1.5,num(attr(norm,'fontScale'),100000)/100000))}"
+          new="else if(norm){const scale=attr(norm,'fontScale',null);autoFit='normal';autoFitScale=Math.max(.35,Math.min(1.5,scale==null?1:num(scale,100000)/100000))}"
+          count=text.count(old)
+          if count != 1:
+              raise SystemExit(f'expected exactly one normAutofit match, found {count}')
+          path.write_text(text.replace(old,new),encoding='utf-8')
+          PY
+      - name: Syntax check PPTX importer
+        run: node --check apps/presentations/io/pptx-open-controller.js
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Verify isolated normAutofit regression
+        run: python tests/test_pptx_norm_autofit_default_scale_browser.py
+      - name: Verify character-spacing regression
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Verify slide-background regression
+        run: python tests/test_pptx_slide_background_fidelity_browser.py
+      - name: Commit tested production fix and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/inkdos-2.3
+          test "$(git rev-parse origin/feature/inkdos-2.3)" = "${GITHUB_SHA}" || { echo 'Branch advanced during patch run' >&2; exit 1; }
+          git rm .github/workflows/goal2-apply-norm-autofit-default.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add apps/presentations/io/pptx-open-controller.js
+          git commit -m 'fix: default bare PPTX normAutofit to full scale'
+          git push origin HEAD:feature/inkdos-2.3
