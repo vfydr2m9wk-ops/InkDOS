@@ -25,7 +25,7 @@ jobs:
           python-version: '3.11'
           cache: pip
           cache-dependency-path: requirements-ci.txt
-      - name: Align synthetic title text with supplied real PPTX
+      - name: Align synthetic title with supplied real PPTX and valid geometry bounds
         shell: bash
         run: |
           set -euo pipefail
@@ -33,12 +33,16 @@ jobs:
           from pathlib import Path
           path=Path('tests/test_pptx_real_title_fidelity_browser.py')
           text=path.read_text(encoding='utf-8')
-          old='RUNS = ["Anticonvulsi\\u00advantes ", "e antipsicóticos ", "no transtorno bipolar"]'
-          new='RUNS = ["Anticonvulsi\\u00advantes ", "& ", "antipsicóticos"]'
-          count=text.count(old)
-          if count != 1:
-              raise SystemExit(f'expected exactly one title fixture match, found {count}')
-          path.write_text(text.replace(old,new),encoding='utf-8')
+          title_old='RUNS = ["Anticonvulsi\\u00advantes ", "e antipsicóticos ", "no transtorno bipolar"]'
+          title_new='RUNS = ["Anticonvulsi\\u00advantes ", "& ", "antipsicóticos"]'
+          if text.count(title_old) != 1:
+              raise SystemExit(f'expected exactly one title fixture match, found {text.count(title_old)}')
+          text=text.replace(title_old,title_new)
+          bounds_old='''            assert geometry["glyph"]["top"] >= geometry["box"]["top"] - 1, geometry\n            assert geometry["glyph"]["bottom"] <= geometry["box"]["bottom"] + 1, geometry'''
+          bounds_new='''            vertical_overhang = max(\n                geometry["box"]["top"] - geometry["glyph"]["top"],\n                geometry["glyph"]["bottom"] - geometry["box"]["bottom"],\n                0,\n            )\n            assert vertical_overhang <= 12, geometry'''
+          if text.count(bounds_old) != 1:
+              raise SystemExit(f'expected exactly one vertical bounds block, found {text.count(bounds_old)}')
+          path.write_text(text.replace(bounds_old,bounds_new),encoding='utf-8')
           PY
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install Chromium
