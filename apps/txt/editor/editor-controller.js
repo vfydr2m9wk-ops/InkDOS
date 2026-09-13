@@ -1,12 +1,12 @@
 (function(g){'use strict';
-const NS=g.InkDOS2=g.InkDOS2||{};const O=NS.TxtOutlineModel;
+const NS=g.InkDOS2=g.InkDOS2||{};const O=NS.TxtOutlineModel,P=NS.TxtPolicy;
 function create({elements:E,state}={}){
   if(!E||!E.editor||!state)throw new Error('TxtEditorController requires UI elements and state');
   let checkpointHandler=()=>Promise.resolve();
   function setCheckpointHandler(fn){checkpointHandler=typeof fn==='function'?fn:()=>Promise.resolve()}
   function lineName(x){return x==='\r\n'?'CRLF':x==='\r'?'CR':'LF'}
   function encName(){return state.encoding.toUpperCase()+(state.bom?' + BOM':'')}
-  function normName(v){let n=String(v||'').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.(?:txt|xml)$/i.test(n)?n:n+'.txt'}
+  function normName(v){let n=String(v||'').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return P.isSupportedName(n)?n:n+'.txt'}
   function setTitle(v){state.fileName=normName(v);E.title.value=state.fileName;document.title=state.fileName+' — InkDOS Plain Text';document.dispatchEvent(new CustomEvent('inkdos:txt-file-kind',{detail:{fileName:state.fileName}}))}
   function setStatus(msg,cls=''){E.status.textContent=msg;E.status.className='status-item'+(cls?' '+cls:'')}
   function cursorPosition(){const pos=E.editor.selectionStart||0;if(state.largeFile)return {offset:pos};const before=E.editor.value.slice(0,pos),lines=before.split('\n');return {line:lines.length,column:lines[lines.length-1].length+1}}

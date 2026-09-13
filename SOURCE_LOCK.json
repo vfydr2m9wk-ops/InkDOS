@@ -30,7 +30,7 @@
       "sourceTreeSha256BeforeIntegration": "84134880b6623a625beb200d29c7f6cddc7270c3e09a942e5eecc6bb454d7323",
       "sourceFileCount": 38,
       "sourceBytes": 339284,
-      "nonIndexTreeSha256": "d4c312d53397188738a3e3004c72e9dd4dbaa7541ad237772af7d523f8045ca2",
+      "nonIndexTreeSha256": "40a38447efc6af0fa5f0a1eecc86f7d42d99b28fb5220130728414411068705d",
       "originalIndexSha256": "a3a097274a50ea6dc8d94dc2b784eef839b768e1a077e5c08c622d20e8774d9d",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -45,7 +45,7 @@
         "io/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations",
         "runtime/frame/frame-menu.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches"
       ],
-      "integratedIndexSha256": "c7c79172a786a02bfce505d02cf1c9455433dd0e4e482eb74b6af155d1214726"
+      "integratedIndexSha256": "ece3fc07e0006f61ed9f54ad8363b234cdc88b5939351429c9c01881b0d86297"
     },
     "presentations": {
       "sourcePackage": "Presentations-FINAL.zip",
@@ -80,7 +80,7 @@
       "sourceTreeSha256BeforeIntegration": "f2c7d5d2c054ea3da71de0e12eeab885b90b9a685fa506b9f249649c48b09edb",
       "sourceFileCount": 25,
       "sourceBytes": 154424,
-      "nonIndexTreeSha256": "83198d4ded301d85e730ab07f5df3da85ae46456453fca78f890994710f9860f",
+      "nonIndexTreeSha256": "094f23ba300947dc5ce0744e92c4edb66c8dd3fc1bcaf62ab8b8b9573d16f69e",
       "originalIndexSha256": "c14d0e9082bf5b44571f3b2e9e78e0eaa1daa2bd5e83b2381201a4a11a0c14ab",
       "allowedIntegrationChanges": [
         "index.html: add Home anchor to ../../index.html",
@@ -93,7 +93,7 @@
         "runtime/services/file-delivery.js: in 2.0.11 prefer one-shot file Share for Save on Apple touch hosts and make picker write-failed terminal to prevent duplicate destinations; regenerate index.html deterministically",
         "runtime/frame/app-frame.js: in 2.0.12 make the Home bridge opt-in through suite=1 and remove the active Home href for direct/standalone launches; regenerate index.html deterministically"
       ],
-      "integratedIndexSha256": "7ec31011334424e035c960a3e0b8b73c1a234a72147103e15e87d75daef21d1e"
+      "integratedIndexSha256": "64bc6a85c4997b0a62f82c0f1143eff82aa06901a00781b343c9456a9eba0ec7"
     },
     "epub": {
       "sourcePackage": "EPUB-FINAL.zip",

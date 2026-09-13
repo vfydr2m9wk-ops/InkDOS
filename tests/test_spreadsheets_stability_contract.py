@@ -16,6 +16,11 @@ def require(text: str, needle: str, label: str) -> None:
         raise AssertionError(f'{label}: missing {needle!r}')
 
 
+def require_any(text: str, needles: tuple[str, ...], label: str) -> None:
+    if not any(needle in text for needle in needles):
+        raise AssertionError(f'{label}: missing one of {needles!r}')
+
+
 def forbid(text: str, needle: str, label: str) -> None:
     if needle in text:
         raise AssertionError(f'{label}: forbidden {needle!r}')
@@ -89,10 +94,11 @@ def main() -> None:
     forbid(app, "document.createElement('style')", 'Spreadsheets bootstrap frame isolation')
 
     # EditorController owns semantic orchestration and a stable command facade;
-    # ChromeController owns toolbar DOM binding/projection.
+    # ChromeController owns toolbar DOM binding/projection. Formatting commands may
+    # use the guarded registration path so CSV/TSV can require explicit XLSX promotion.
+    require_any(editor_controller, ("register('format.bold'", "registerGuarded('format.bold'"), 'Spreadsheets bold command facade')
+    require_any(editor_controller, ("register('format.italic'", "registerGuarded('format.italic'"), 'Spreadsheets italic command facade')
     for marker in (
-        "register('format.bold'",
-        "register('format.italic'",
         "register('edit.undo'",
         "register('edit.redo'",
         "register('file.save'",

@@ -1,0 +1,135 @@
+name: Goal 2 PPTX fidelity targeted
+
+on:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - 'tests/test_pptx_slide_background_fidelity_browser.py'
+      - 'tests/test_pptx_character_spacing_fidelity_browser.py'
+      - 'tests/test_pptx_character_spacing_preservation_diagnostic.py'
+      - 'apps/presentations/io/pptx-open-controller.js'
+      - 'apps/presentations/io/pptx-preservation-writer.js'
+      - 'apps/presentations/engine/presentation-session.js'
+      - 'apps/presentations/view/slide-surface.js'
+      - '.github/workflows/goal2-pptx-background-red.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  pptx-fidelity-targeted:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BROWSER: chromium
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Run PPTX background fidelity regression
+        run: python tests/test_pptx_slide_background_fidelity_browser.py
+      - name: Run PPTX character-spacing render regression
+        env:
+          PPTX_TRACKING_PHASE: render
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Probe preservation synthetic generation
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            page.evaluate(\n                """async bytes => {'
+          insert='            browser.close()\n            return\n\n'
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe preservation open-import
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='            browser.close()\n            return\n\n'
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe PresentationModel textSignature call
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            sig_probe = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                return NS.PresentationModel.textSignature(object);\n            }""", MARKER)\n            assert isinstance(sig_probe, str) and sig_probe\n            browser.close()\n            return\n\n'''
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe imported run text assignment
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            run_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object.paragraphs.flatMap(p=>p.runs||[]).find(r=>r.text===marker);\n                run.text=marker+'!';\n                return run.text;\n            }""", MARKER)\n            assert run_probe == MARKER+'!'\n            browser.close()\n            return\n\n'''
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe imported object text recompute
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            text_probe = page.evaluate("""marker => {\n                const app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return object.text;\n            }""", MARKER)\n            assert isinstance(text_probe, str)\n            browser.close()\n            return\n\n'''
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Probe textSignature after imported text mutation
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('tests/test_pptx_character_spacing_preservation_diagnostic.py').read_text()
+          needle='            state = page.evaluate('
+          insert='''            changed_probe = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object.paragraphs.flatMap(p=>p.runs||[]).find(r=>r.text===marker);\n                const before=object.sourceSignature;\n                run.text=marker+'!';\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return before!==NS.PresentationModel.textSignature(object);\n            }""", MARKER)\n            assert changed_probe is True\n            browser.close()\n            return\n\n'''
+          Path('tests/_goal2_probe.py').write_text(src.replace(needle,insert+needle,1))
+          PY
+          python tests/_goal2_probe.py
+          rm tests/_goal2_probe.py
+      - name: Diagnostic preservation model checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: model
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+      - name: Diagnostic preservation build checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: build
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+      - name: Diagnostic preservation text checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: text
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
+      - name: Diagnostic preservation spc checkpoint
+        env:
+          PPTX_PRESERVE_DIAGNOSTIC: spc
+        run: python tests/test_pptx_character_spacing_preservation_diagnostic.py
