@@ -144,7 +144,7 @@ def main() -> None:
                         if(!object||!run)throw new Error('Imported title run missing before preservation save');
                         const edited=marker+'!';
                         run.text=edited;
-                        object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');
+                        object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\n');
                         const result=await NS.PptxPreservationWriter.build(app.session);
                         const modifiedObjects=result.receipt?.modifiedObjects||[];
                         if(!modifiedObjects.some(x=>x.kind==='existing-text')){
