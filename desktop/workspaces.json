@@ -1,0 +1,32 @@
+{
+  "documents": {
+    "extensions": ["docx"],
+    "route": "apps/documents/index.html",
+    "icon": "assets/icons/documents.svg"
+  },
+  "spreadsheets": {
+    "extensions": ["xls", "xlsx", "csv", "tsv"],
+    "route": "apps/spreadsheets/index.html",
+    "icon": "assets/icons/spreadsheets.svg"
+  },
+  "presentations": {
+    "extensions": ["pptx"],
+    "route": "apps/presentations/index.html",
+    "icon": "assets/icons/presentations.png"
+  },
+  "pdf": {
+    "extensions": ["pdf"],
+    "route": "apps/pdf/index.html",
+    "icon": "assets/icons/pdf.svg"
+  },
+  "epub": {
+    "extensions": ["epub"],
+    "route": "apps/epub/index.html",
+    "icon": "assets/icons/epub.svg"
+  },
+  "txt": {
+    "extensions": ["txt", "xml", "md", "markdown", "json", "jsonl", "ndjson", "yaml", "yml", "log", "ini", "cfg", "conf", "toml", "properties"],
+    "route": "apps/txt/index.html",
+    "icon": "assets/icons/txt.svg"
+  }
+}
