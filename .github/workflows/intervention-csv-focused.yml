@@ -9,6 +9,7 @@ on:
       - 'tests/test_spreadsheets_delimited_text_contract.py'
       - 'tests/test_spreadsheets_delimited_text_stability_browser.py'
       - 'tests/test_ui_density_contract.py'
+      - 'tests/test_ui_density_stability_browser.py'
       - 'shared/ui-density.js'
       - 'shared/ui-density.css'
       - 'apps/spreadsheets/io/delimited-text.js'
@@ -52,7 +53,7 @@ jobs:
 
   chromium-browser:
     runs-on: ubuntu-22.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       BROWSER: chromium
     steps:
@@ -76,3 +77,5 @@ jobs:
         run: python -m playwright install --with-deps chromium
       - name: Run semicolon CSV browser regression
         run: python tests/test_spreadsheets_delimited_text_stability_browser.py
+      - name: Run adaptive density browser regression
+        run: python tests/test_ui_density_stability_browser.py
