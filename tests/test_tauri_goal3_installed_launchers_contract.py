@@ -7,6 +7,7 @@ CONFIG_PATH = TAURI_DIR / "tauri.conf.json"
 LAUNCHERS_PATH = ROOT / "desktop" / "launchers.json"
 NSIS_HOOK_PATH = TAURI_DIR / "windows" / "workspace-launchers.nsh"
 WIX_FRAGMENT_PATH = TAURI_DIR / "windows" / "workspace-launchers.wxs"
+WINDOWS_ICON_DIR = TAURI_DIR / "windows" / "workspace-icons"
 LINUX_LAUNCHER_DIR = TAURI_DIR / "linux" / "workspace-launchers"
 
 
@@ -40,6 +41,25 @@ def main() -> None:
     wix_text = WIX_FRAGMENT_PATH.read_text(encoding="utf-8")
     _assert_workspace_tokens(nsis_text, launchers)
     _assert_workspace_tokens(wix_text, launchers)
+
+    # Windows shortcuts must use workspace-specific native ICOs generated from
+    # the exact canonical icon sources instead of falling back to InkDOS.exe.
+    for workspace, launcher in launchers.items():
+        icon_path = WINDOWS_ICON_DIR / workspace / "icon.ico"
+        icon_token = f"workspace-icons\\{workspace}\\icon.ico"
+        assert icon_token in nsis_text, (
+            f"NSIS shortcut for {workspace} must bind its workspace-specific native icon"
+        )
+        assert f"InkDOS{workspace.title().replace('-', '')}Icon" in wix_text, (
+            f"WiX must declare a workspace-specific icon id for {workspace}"
+        )
+        assert f"windows/workspace-icons/{workspace}/icon.ico" in json.dumps(bundle), (
+            f"bundle resources must install the generated Windows icon for {workspace}"
+        )
+        assert launcher["icon"].startswith("assets/icons/"), (
+            f"{workspace} native icon must remain derived from the canonical icon source"
+        )
+        assert not icon_path.exists() or icon_path.is_file()
 
     # Installed Linux packages need actual .desktop entries for every workspace.
     linux = bundle["linux"]
