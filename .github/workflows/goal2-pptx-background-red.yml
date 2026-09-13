@@ -1,4 +1,4 @@
-name: Goal 2 PPTX background RED
+name: Goal 2 PPTX fidelity targeted
 
 on:
   push:
@@ -6,13 +6,17 @@ on:
       - feature/inkdos-2.3
     paths:
       - 'tests/test_pptx_slide_background_fidelity_browser.py'
+      - 'tests/test_pptx_character_spacing_fidelity_browser.py'
+      - 'apps/presentations/io/pptx-open-controller.js'
+      - 'apps/presentations/engine/presentation-session.js'
+      - 'apps/presentations/view/slide-surface.js'
       - '.github/workflows/goal2-pptx-background-red.yml'
 
 permissions:
   contents: read
 
 jobs:
-  pptx-background-red:
+  pptx-fidelity-targeted:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -27,5 +31,7 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install Chromium
         run: python -m playwright install --with-deps chromium
-      - name: Run PPTX background fidelity RED
+      - name: Run PPTX background fidelity regression
         run: python tests/test_pptx_slide_background_fidelity_browser.py
+      - name: Run PPTX character-spacing fidelity regression
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
