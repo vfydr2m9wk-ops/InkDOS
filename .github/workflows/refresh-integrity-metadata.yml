@@ -2,6 +2,11 @@ name: Refresh integrity metadata
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - '.github/goal1-integrity-trigger'
 
 permissions:
   contents: read
