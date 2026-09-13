@@ -46,7 +46,7 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_fidelity_browser.py').read_text()
           needle='            if phase in {"all", "render"}:'
-          insert='''            eligibility = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const slide=app.session.currentSlide;\n                const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;\n                if(!object||!run)throw new Error('Eligibility object/run missing');\n                const before=object.sourceSignature;\n                run.text=marker+'!';\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return {\n                  hasSourceRef:!!object.sourceRef,\n                  sourcePart:object.sourceRef?.slidePart||null,\n                  slidePart:slide.sourcePart||null,\n                  signatureChanged:before!==NS.PresentationModel.textSignature(object),\n                  eligible:!!object.sourceRef && object.sourceRef.slidePart===slide.sourcePart && before!==NS.PresentationModel.textSignature(object)\n                };\n            }""", MARKER)\n            assert eligibility["hasSourceRef"] is True, eligibility\n            assert eligibility["sourcePart"] == eligibility["slidePart"], eligibility\n            assert eligibility["signatureChanged"] is True, eligibility\n            assert eligibility["eligible"] is True, eligibility\n            browser.close()\n            return\n\n'''
+          insert='''            eligibility = page.evaluate("""marker => {\n                const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;\n                const slide=app.session.currentSlide;\n                const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;\n                if(!object||!run)throw new Error('Eligibility object/run missing');\n                const before=object.sourceSignature;\n                run.text=marker+'!';\n                object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\\\\n');\n                return {hasSourceRef:!!object.sourceRef,sourcePart:object.sourceRef?.slidePart||null,slidePart:slide.sourcePart||null,signatureChanged:before!==NS.PresentationModel.textSignature(object),eligible:!!object.sourceRef && object.sourceRef.slidePart===slide.sourcePart && before!==NS.PresentationModel.textSignature(object)};\n            }""", MARKER)\n            assert eligibility["hasSourceRef"] is True, eligibility\n            assert eligibility["sourcePart"] == eligibility["slidePart"], eligibility\n            assert eligibility["signatureChanged"] is True, eligibility\n            assert eligibility["eligible"] is True, eligibility\n            browser.close()\n            return\n\n'''
           if src.count(needle)!=1: raise SystemExit('eligibility anchor mismatch')
           Path('tests/_goal2_eligibility.py').write_text(src.replace(needle,insert+needle,1))
           PY
@@ -60,16 +60,38 @@ jobs:
           from pathlib import Path
           src=Path('tests/test_pptx_character_spacing_fidelity_browser.py').read_text()
           needle='            if phase in {"all", "render"}:'
-          insert='''            mapping = page.evaluate("""async marker => {\n                const app=globalThis.__inkdosPresentations;\n                const slide=app.session.currentSlide;\n                const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                if(!object?.sourceRef)throw new Error('Mapping sourceRef missing');\n                const zip=await JSZip.loadAsync(app.session.sourceBytes,{checkCRC32:true});\n                const xml=await zip.file(object.sourceRef.slidePart).async('text');\n                const doc=new DOMParser().parseFromString(xml,'application/xml');\n                const shapes=Array.from(doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/presentationml/2006/main','sp'));\n                const shape=shapes.find(sp=>{\n                  const nv=Array.from(sp.children).find(n=>n.localName==='nvSpPr');\n                  const c=nv?Array.from(nv.children).find(n=>n.localName==='cNvPr'):null;\n                  return c?.getAttribute('id')===String(object.sourceRef.shapeId);\n                })||null;\n                const tx=shape?Array.from(shape.children).find(n=>n.localName==='txBody'):null;\n                return {shapeFound:!!shape,txBodyFound:!!tx,shapeId:String(object.sourceRef.shapeId||'')};\n            }""", MARKER)\n            assert mapping["shapeFound"] is True, mapping\n            assert mapping["txBodyFound"] is True, mapping\n            browser.close()\n            return\n\n'''
+          insert='''            mapping = page.evaluate("""async marker => {\n                const app=globalThis.__inkdosPresentations;\n                const slide=app.session.currentSlide;\n                const object=slide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));\n                if(!object?.sourceRef)throw new Error('Mapping sourceRef missing');\n                const zip=await JSZip.loadAsync(app.session.sourceBytes,{checkCRC32:true});\n                const xml=await zip.file(object.sourceRef.slidePart).async('text');\n                const doc=new DOMParser().parseFromString(xml,'application/xml');\n                const shapes=Array.from(doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/presentationml/2006/main','sp'));\n                const shape=shapes.find(sp=>{const nv=Array.from(sp.children).find(n=>n.localName==='nvSpPr');const c=nv?Array.from(nv.children).find(n=>n.localName==='cNvPr'):null;return c?.getAttribute('id')===String(object.sourceRef.shapeId);})||null;\n                const tx=shape?Array.from(shape.children).find(n=>n.localName==='txBody'):null;\n                return {shapeFound:!!shape,txBodyFound:!!tx,shapeId:String(object.sourceRef.shapeId||'')};\n            }""", MARKER)\n            assert mapping["shapeFound"] is True, mapping\n            assert mapping["txBodyFound"] is True, mapping\n            browser.close()\n            return\n\n'''
           if src.count(needle)!=1: raise SystemExit('mapping anchor mismatch')
           Path('tests/_goal2_mapping.py').write_text(src.replace(needle,insert+needle,1))
           PY
           python tests/_goal2_mapping.py
           rm tests/_goal2_mapping.py
-      - name: Character spacing writer detection
+      - name: Capture character spacing writer detection
+        id: writer
+        continue-on-error: true
         env:
           PPTX_TRACKING_PHASE: build
-        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+        run: |
+          set -o pipefail
+          python tests/test_pptx_character_spacing_fidelity_browser.py 2>&1 | tee /tmp/pptx-writer.log
+      - name: Writer structure checkpoint
+        if: always()
+        run: '! grep -Eq "(An imported PPTX source package is required|Save Copy is blocked|Source slide part is missing)" /tmp/pptx-writer.log'
+      - name: Writer mapping checkpoint
+        if: always()
+        run: '! grep -Eq "(could not be matched|not a writable text box)" /tmp/pptx-writer.log'
+      - name: Writer output validation checkpoint
+        if: always()
+        run: '! grep -Eq "(Preservation validation failed|Malformed .* XML)" /tmp/pptx-writer.log'
+      - name: Writer changed-object receipt checkpoint
+        if: always()
+        run: '! grep -Eq "modifiedObjects[^\n]*\[\]" /tmp/pptx-writer.log'
+      - name: Writer JavaScript exception checkpoint
+        if: always()
+        run: '! grep -Eq "(TypeError|ReferenceError|RangeError|DOMException|Error:)" /tmp/pptx-writer.log'
+      - name: Require writer detection success
+        if: always()
+        run: test "${{ steps.writer.outcome }}" = "success"
       - name: Character spacing rewritten text
         env:
           PPTX_TRACKING_PHASE: text
