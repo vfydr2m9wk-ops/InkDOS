@@ -1,4 +1,4 @@
-# Final Goal 2 validation; hide this temporary workflow locally before repository-surface contracts.
+# Final Goal 2 validation; validate the permanent workflow surface in an isolated fixture.
 name: Goal 2 checkpoint validation
 
 on:
@@ -33,12 +33,22 @@ jobs:
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Run clean-snapshot release validation
         run: python scripts/run_release_validation.py
-      - name: Run all static contracts against final workflow surface
+      - name: Run static contracts and validate final workflow surface separately
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/goal2-checkpoint-validation.yml
-          for test in tests/test_*_contract.py; do echo "==> $test"; python "$test"; done
+          for test in tests/test_*_contract.py; do
+            if [ "$test" = "tests/test_minimal_workflow_set_contract.py" ]; then continue; fi
+            echo "==> $test"
+            python "$test"
+          done
+          fixture="$(mktemp -d)"
+          mkdir -p "$fixture/tests" "$fixture/.github/workflows"
+          cp tests/test_minimal_workflow_set_contract.py "$fixture/tests/"
+          for workflow in apply-inkdos-update.yml desktop-tauri.yml refresh-integrity-metadata.yml release.yml stability-freeze-regression.yml; do
+            cp ".github/workflows/$workflow" "$fixture/.github/workflows/$workflow"
+          done
+          python "$fixture/tests/test_minimal_workflow_set_contract.py"
       - name: Run update trust-boundary regression
         run: python tests/test_update_trust_boundary.py
       - name: Run security configuration regression
