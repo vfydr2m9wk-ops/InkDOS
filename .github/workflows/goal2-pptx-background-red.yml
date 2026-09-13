@@ -34,5 +34,11 @@ jobs:
         run: python -m playwright install --with-deps chromium
       - name: Run PPTX background fidelity regression
         run: python tests/test_pptx_slide_background_fidelity_browser.py
-      - name: Run PPTX character-spacing fidelity regression
+      - name: Run PPTX character-spacing render regression
+        env:
+          PPTX_TRACKING_PHASE: render
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Run PPTX character-spacing preservation regression
+        env:
+          PPTX_TRACKING_PHASE: preserve
         run: python tests/test_pptx_character_spacing_fidelity_browser.py
