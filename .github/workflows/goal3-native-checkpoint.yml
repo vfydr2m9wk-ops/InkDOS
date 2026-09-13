@@ -165,3 +165,140 @@ jobs:
           name: goal3-cargo-${{ matrix.os }}
           path: desktop/src-tauri/cargo-check.log
           if-no-files-found: error
+
+  package-build:
+    name: Build and inspect package (${{ matrix.os }})
+    needs: [contracts, workspace-icons, macos-launchers, cargo-check]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: goal3-package-windows
+            bundles: nsis,msi
+          - os: macos-latest
+            artifact: goal3-package-macos
+            bundles: app,dmg
+          - os: ubuntu-22.04
+            artifact: goal3-package-linux
+            bundles: deb,appimage,rpm
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Materialize canonical workspace icon resources
+        uses: actions/download-artifact@v4
+        with:
+          name: goal3-workspace-icons
+          path: desktop/src-tauri/windows/workspace-icons
+      - name: Materialize macOS workspace launcher resources
+        if: runner.os == 'macOS'
+        uses: actions/download-artifact@v4
+        with:
+          name: goal3-macos-workspace-launchers
+          path: desktop/src-tauri/macos/workspace-launchers
+      - name: Install Linux Tauri prerequisites
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            rpm \
+            cpio
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version '^2' --locked
+      - name: Stage InkDOS web runtime
+        run: python desktop/scripts/stage_web.py
+      - name: Build native packages
+        working-directory: desktop/src-tauri
+        run: cargo tauri build --bundles ${{ matrix.bundles }}
+      - name: Inspect Windows package output
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bundle = 'desktop/src-tauri/target/release/bundle'
+          $nsis = Get-ChildItem "$bundle/nsis/*.exe" | Select-Object -First 1
+          $msi = Get-ChildItem "$bundle/msi/*.msi" | Select-Object -First 1
+          if (-not $nsis -or -not $msi) { throw 'Expected both NSIS and MSI installer artifacts.' }
+          $installDir = Join-Path $env:RUNNER_TEMP 'inkdos-goal3-install'
+          if (Test-Path $installDir) { Remove-Item -Recurse -Force $installDir }
+          Start-Process -FilePath $nsis.FullName -ArgumentList '/S', "/D=$installDir" -Wait
+          if (-not (Test-Path "$installDir/InkDOS.exe")) { throw 'Installed InkDOS.exe is missing.' }
+          $workspaces = @('documents','spreadsheets','presentations','pdf','epub','txt')
+          foreach ($workspace in $workspaces) {
+            if (-not (Test-Path "$installDir/workspace-icons/$workspace/icon.ico")) { throw "Missing installed $workspace workspace icon." }
+          }
+          $programs = Join-Path $env:APPDATA 'Microsoft/Windows/Start Menu/Programs/InkDOS'
+          $shortcutNames = @('InkDOS Documents.lnk','InkDOS Spreadsheets.lnk','InkDOS Presentations.lnk','InkDOS PDF.lnk','InkDOS EPUB.lnk','InkDOS Plain Text.lnk')
+          foreach ($shortcut in $shortcutNames) {
+            if (-not (Test-Path (Join-Path $programs $shortcut))) { throw "Missing installed workspace shortcut $shortcut" }
+          }
+          $fullExecutables = @(Get-ChildItem $installDir -Recurse -Filter '*.exe' | Where-Object { $_.Name -match '^InkDOS.*\.exe$' })
+          if ($fullExecutables.Count -ne 1 -or $fullExecutables[0].Name -ne 'InkDOS.exe') { throw 'Workspace launchers must not install duplicate InkDOS executables.' }
+      - name: Inspect macOS app bundle
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          app="$(find desktop/src-tauri/target/release/bundle/macos -maxdepth 1 -name 'InkDOS.app' -type d | head -n 1)"
+          test -n "$app"
+          test -x "$app/Contents/MacOS/InkDOS"
+          helpers="$app/Contents/Helpers"
+          test -d "$helpers"
+          test "$(find "$helpers" -maxdepth 1 -name 'InkDOS *.app' -type d | wc -l | tr -d ' ')" = "6"
+          test "$(find "$helpers" -path '*/Contents/MacOS/launcher' -type f | wc -l | tr -d ' ')" = "6"
+          test "$(find "$helpers" -path '*/Contents/Resources/icon.icns' -type f | wc -l | tr -d ' ')" = "6"
+          test "$(find "$app/Contents/MacOS" -maxdepth 1 -type f | wc -l | tr -d ' ')" = "1"
+          test "$(find desktop/src-tauri/target/release/bundle/dmg -name '*.dmg' -type f | wc -l | tr -d ' ')" -ge 1
+      - name: Inspect Linux package contents
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bundle=desktop/src-tauri/target/release/bundle
+          deb="$(find "$bundle/deb" -name '*.deb' -type f | head -n 1)"
+          rpm_pkg="$(find "$bundle/rpm" -name '*.rpm' -type f | head -n 1)"
+          appimage="$(find "$bundle/appimage" -name '*.AppImage' -type f | head -n 1)"
+          test -n "$deb" && test -n "$rpm_pkg" && test -n "$appimage"
+          deb_root="$RUNNER_TEMP/inkdos-deb"
+          rpm_root="$RUNNER_TEMP/inkdos-rpm"
+          mkdir -p "$deb_root" "$rpm_root"
+          dpkg-deb -x "$deb" "$deb_root"
+          (cd "$rpm_root" && rpm2cpio "$GITHUB_WORKSPACE/$rpm_pkg" | cpio -idmu)
+          for root in "$deb_root" "$rpm_root"; do
+            test "$(find "$root/usr/share/applications" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "6"
+            test "$(find "$root/usr/share/inkdos/workspace-icons" -type f | wc -l | tr -d ' ')" = "6"
+            binaries="$(find "$root/usr" -type f -perm -111 -name 'InkDOS*' | wc -l | tr -d ' ')"
+            test "$binaries" = "1"
+          done
+          chmod +x "$appimage"
+          appdir="$RUNNER_TEMP/inkdos-appimage"
+          mkdir -p "$appdir"
+          (cd "$appdir" && "$GITHUB_WORKSPACE/$appimage" --appimage-extract >/dev/null)
+          test "$(find "$appdir/squashfs-root/usr/share/applications" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "6"
+          test "$(find "$appdir/squashfs-root/usr/share/inkdos/workspace-icons" -type f | wc -l | tr -d ' ')" = "6"
+      - name: Upload inspected native bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: desktop/src-tauri/target/release/bundle/**
+          if-no-files-found: error
+          retention-days: 2
