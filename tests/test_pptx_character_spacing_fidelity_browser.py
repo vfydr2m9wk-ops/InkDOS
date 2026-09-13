@@ -33,7 +33,7 @@ def main() -> None:
     phase = os.environ.get("PPTX_TRACKING_PHASE", "all").strip().lower()
     if browser_name not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={browser_name}")
-    if phase not in {"all", "render", "preserve"}:
+    if phase not in {"all", "render", "preserve", "build", "text", "spc"}:
         raise RuntimeError(f"Unsupported PPTX_TRACKING_PHASE={phase}")
 
     server = subprocess.Popen(
@@ -135,7 +135,7 @@ def main() -> None:
                 assert imported["inlineLetterSpacing"] == "-3.37px", imported
                 assert imported["computedLetterSpacing"] == "-3.37px", imported
 
-            if phase in {"all", "preserve"}:
+            if phase in {"all", "preserve", "build", "text", "spc"}:
                 preserved = page.evaluate(
                     """async marker => {
                         const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
@@ -146,17 +146,35 @@ def main() -> None:
                         run.text=edited;
                         object.text=object.paragraphs.map(p=>(p.runs||[]).map(r=>r.text||'').join('')).join('\n');
                         const result=await NS.PptxPreservationWriter.build(app.session);
+                        const modifiedObjects=result.receipt?.modifiedObjects||[];
+                        if(!modifiedObjects.some(x=>x.kind==='existing-text')){
+                            return {stage:'build',modifiedObjects,textFound:false,spc:null};
+                        }
                         const zip=await JSZip.loadAsync(result.bytes,{checkCRC32:true});
                         const xml=await zip.file('ppt/slides/slide1.xml').async('text');
                         const doc=new DOMParser().parseFromString(xml,'application/xml');
                         const runs=Array.from(doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','r'));
                         const target=runs.find(r=>Array.from(r.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main','t')).some(t=>t.textContent===edited));
                         const rPr=target?Array.from(target.children).find(n=>n.localName==='rPr'):null;
-                        return {textFound:!!target,spc:rPr?.getAttribute('spc')??null};
+                        return {stage:'output',modifiedObjects,textFound:!!target,spc:rPr?.getAttribute('spc')??null};
                     }""",
                     MARKER,
                 )
-                assert preserved == {"textFound": True, "spc": "-337"}, preserved
+                assert any(x.get("kind") == "existing-text" for x in preserved["modifiedObjects"]), preserved
+                if phase == "build":
+                    print(f"PPTX character-spacing build regression passed on {browser_name}.")
+                    browser.close()
+                    return
+                assert preserved["textFound"] is True, preserved
+                if phase == "text":
+                    print(f"PPTX character-spacing text regression passed on {browser_name}.")
+                    browser.close()
+                    return
+                assert preserved["spc"] == "-337", preserved
+                if phase == "spc":
+                    print(f"PPTX character-spacing spc regression passed on {browser_name}.")
+                    browser.close()
+                    return
 
             browser.close()
 
