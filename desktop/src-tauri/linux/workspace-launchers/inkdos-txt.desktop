@@ -2,7 +2,7 @@
 Type=Application
 Name=InkDOS Plain Text
 Exec=InkDOS --workspace txt
-Icon=/usr/share/inkdos/workspace-icons/txt.svg
+Icon=inkdos-txt
 Terminal=false
 Categories=Office;
 X-InkDOS-Workspace=txt
