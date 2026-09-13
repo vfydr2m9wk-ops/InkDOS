@@ -9,6 +9,42 @@
     <Icon Id="InkDOSTxtIcon" SourceFile="windows\workspace-icons\txt\icon.ico" />
   </Fragment>
   <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Directory Id="InkDOSWorkspaceIconsFolder" Name="workspace-icons">
+        <Directory Id="InkDOSDocumentsIconFolder" Name="documents">
+          <Component Id="InkDOSDocumentsIconResource" Guid="*">
+            <File Id="InkDOSDocumentsIconFile" Source="windows\workspace-icons\documents\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSSpreadsheetsIconFolder" Name="spreadsheets">
+          <Component Id="InkDOSSpreadsheetsIconResource" Guid="*">
+            <File Id="InkDOSSpreadsheetsIconFile" Source="windows\workspace-icons\spreadsheets\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSPresentationsIconFolder" Name="presentations">
+          <Component Id="InkDOSPresentationsIconResource" Guid="*">
+            <File Id="InkDOSPresentationsIconFile" Source="windows\workspace-icons\presentations\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSPdfIconFolder" Name="pdf">
+          <Component Id="InkDOSPdfIconResource" Guid="*">
+            <File Id="InkDOSPdfIconFile" Source="windows\workspace-icons\pdf\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSEpubIconFolder" Name="epub">
+          <Component Id="InkDOSEpubIconResource" Guid="*">
+            <File Id="InkDOSEpubIconFile" Source="windows\workspace-icons\epub\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="InkDOSTxtIconFolder" Name="txt">
+          <Component Id="InkDOSTxtIconResource" Guid="*">
+            <File Id="InkDOSTxtIconFile" Source="windows\workspace-icons\txt\icon.ico" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
     <DirectoryRef Id="ProgramMenuFolder">
       <Directory Id="InkDOSWorkspaceProgramsFolder" Name="InkDOS">
         <Component Id="InkDOSDocumentsLauncher" Guid="*">
@@ -46,6 +82,12 @@
       <ComponentRef Id="InkDOSPdfLauncher" />
       <ComponentRef Id="InkDOSEpubLauncher" />
       <ComponentRef Id="InkDOSTxtLauncher" />
+      <ComponentRef Id="InkDOSDocumentsIconResource" />
+      <ComponentRef Id="InkDOSSpreadsheetsIconResource" />
+      <ComponentRef Id="InkDOSPresentationsIconResource" />
+      <ComponentRef Id="InkDOSPdfIconResource" />
+      <ComponentRef Id="InkDOSEpubIconResource" />
+      <ComponentRef Id="InkDOSTxtIconResource" />
     </ComponentGroup>
   </Fragment>
 </Wix>

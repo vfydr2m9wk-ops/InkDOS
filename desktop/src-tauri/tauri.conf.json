@@ -5,11 +5,7 @@
   "version": "2.2.0",
   "identifier": "com.inkdos.desktop",
   "build": {
-    "frontendDist": "../web-dist",
-    "beforeBundleCommand": {
-      "script": "python ../scripts/generate_workspace_icons.py",
-      "cwd": "."
-    }
+    "frontendDist": "../web-dist"
   },
   "app": {
     "withGlobalTauri": true,
@@ -41,14 +37,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": {
-      "windows/workspace-icons/documents/icon.ico": "workspace-icons/documents/icon.ico",
-      "windows/workspace-icons/spreadsheets/icon.ico": "workspace-icons/spreadsheets/icon.ico",
-      "windows/workspace-icons/presentations/icon.ico": "workspace-icons/presentations/icon.ico",
-      "windows/workspace-icons/pdf/icon.ico": "workspace-icons/pdf/icon.ico",
-      "windows/workspace-icons/epub/icon.ico": "workspace-icons/epub/icon.ico",
-      "windows/workspace-icons/txt/icon.ico": "workspace-icons/txt/icon.ico"
-    },
     "fileAssociations": [
       {
         "name": "documents",
