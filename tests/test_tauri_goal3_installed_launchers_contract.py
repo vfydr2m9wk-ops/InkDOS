@@ -8,6 +8,8 @@ LAUNCHERS_PATH = ROOT / "desktop" / "launchers.json"
 NSIS_HOOK_PATH = TAURI_DIR / "windows" / "workspace-launchers.nsh"
 WIX_FRAGMENT_PATH = TAURI_DIR / "windows" / "workspace-launchers.wxs"
 WINDOWS_ICON_DIR = TAURI_DIR / "windows" / "workspace-icons"
+ICON_GENERATOR_PATH = ROOT / "desktop" / "scripts" / "generate_workspace_icons.py"
+DESKTOP_BUILD_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
 LINUX_LAUNCHER_DIR = TAURI_DIR / "linux" / "workspace-launchers"
 
 
@@ -42,24 +44,58 @@ def main() -> None:
     _assert_workspace_tokens(nsis_text, launchers)
     _assert_workspace_tokens(wix_text, launchers)
 
-    # Windows shortcuts must use workspace-specific native ICOs generated from
-    # the exact canonical icon sources instead of falling back to InkDOS.exe.
+    # Windows shortcuts must use workspace-specific native ICOs derived from
+    # the exact canonical icon sources. Generated ICOs are build artifacts: they
+    # must be materialized before packaging, then embedded by NSIS/WiX directly.
+    assert ICON_GENERATOR_PATH.exists(), "workspace native-icon materializer must be retained"
+    generator_text = ICON_GENERATOR_PATH.read_text(encoding="utf-8")
+    assert 'launcher["icon"]' in generator_text
+    assert '"cargo", "tauri", "icon"' in generator_text
+    assert '"windows" / "workspace-icons"' in generator_text
+
+    assert '!define HOOK_FILE_DIR "${__FILEDIR__}"' in nsis_text, (
+        "NSIS hook must capture its own directory before macro expansion"
+    )
+
     for workspace, launcher in launchers.items():
-        icon_path = WINDOWS_ICON_DIR / workspace / "icon.ico"
         icon_token = f"workspace-icons\\{workspace}\\icon.ico"
         assert icon_token in nsis_text, (
             f"NSIS shortcut for {workspace} must bind its workspace-specific native icon"
         )
-        assert f"InkDOS{workspace.title().replace('-', '')}Icon" in wix_text, (
+        assert f'SetOutPath "$INSTDIR\\workspace-icons\\{workspace}"' in nsis_text
+        assert f'File /oname=icon.ico "${{HOOK_FILE_DIR}}\\workspace-icons\\{workspace}\\icon.ico"' in nsis_text, (
+            f"NSIS installer must embed the generated {workspace} ICO beside the shared host"
+        )
+
+        icon_id = f"InkDOS{workspace.title().replace('-', '')}Icon"
+        file_id = f"InkDOS{workspace.title().replace('-', '')}IconFile"
+        assert f'Icon Id="{icon_id}"' in wix_text, (
             f"WiX must declare a workspace-specific icon id for {workspace}"
         )
-        assert f"windows/workspace-icons/{workspace}/icon.ico" in json.dumps(bundle), (
-            f"bundle resources must install the generated Windows icon for {workspace}"
+        assert f'File Id="{file_id}"' in wix_text, (
+            f"WiX must install the generated workspace icon for {workspace}"
         )
+        assert f'Source="windows\\workspace-icons\\{workspace}\\icon.ico"' in wix_text
         assert launcher["icon"].startswith("assets/icons/"), (
             f"{workspace} native icon must remain derived from the canonical icon source"
         )
-        assert not icon_path.exists() or icon_path.is_file()
+
+    # Do not make cargo check depend on generated files via bundle.resources or
+    # a late beforeBundleCommand hook: Tauri validates resource paths during its
+    # Rust build script before that hook can run.
+    assert "beforeBundleCommand" not in config.get("build", {})
+    serialized_resources = json.dumps(bundle.get("resources", {}), sort_keys=True)
+    assert "windows/workspace-icons" not in serialized_resources
+
+    # The production desktop build must materialize native icons before both
+    # cargo check and native bundling.
+    workflow_text = DESKTOP_BUILD_WORKFLOW_PATH.read_text(encoding="utf-8")
+    generation_token = "python desktop/scripts/generate_workspace_icons.py"
+    cargo_check_token = "cargo check"
+    build_token = "cargo tauri build --bundles"
+    assert generation_token in workflow_text
+    assert workflow_text.index(generation_token) < workflow_text.index(cargo_check_token)
+    assert workflow_text.index(generation_token) < workflow_text.index(build_token)
 
     # Installed Linux packages need actual .desktop entries for every workspace.
     linux = bundle["linux"]
