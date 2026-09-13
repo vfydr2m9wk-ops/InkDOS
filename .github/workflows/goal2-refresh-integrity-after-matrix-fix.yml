@@ -1,0 +1,69 @@
+name: Goal 2 refresh integrity after matrix fix
+
+on:
+  push:
+    branches:
+      - feature/inkdos-2.3
+    paths:
+      - '.github/workflows/goal2-refresh-integrity-after-matrix-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Refresh integrity metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_txt_bundle.py
+          python scripts/generate_csp.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path('.')
+          lock_path=root/'SOURCE_LOCK.json'
+          lock=json.loads(lock_path.read_text(encoding='utf-8'))
+          version=json.loads((root/'VERSION.json').read_text(encoding='utf-8'))['version']
+          def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
+          def tree_digest(path,exclude=()):
+              path=Path(path); excluded=set(exclude); digest=hashlib.sha256()
+              for item in sorted(path.rglob('*')):
+                  if not item.is_file(): continue
+                  rel=item.relative_to(path).as_posix()
+                  if rel in excluded: continue
+                  rel_bytes=rel.encode(); digest.update(len(rel_bytes).to_bytes(4,'big')); digest.update(rel_bytes); digest.update(bytes.fromhex(sha(item)))
+              return digest.hexdigest()
+          lock['release']=version
+          for app,entry in lock['apps'].items():
+              app_root=root/'apps'/app
+              entry['integratedIndexSha256']=sha(app_root/'index.html')
+              entry['nonIndexTreeSha256']=tree_digest(app_root,exclude=('index.html',))
+          lock_path.write_text(json.dumps(lock,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+          PY
+          python scripts/generate_release_metadata.py
+          python scripts/generate_checksums.py
+          python tests/test_stability_freeze_contract.py
+          python scripts/run_release_validation.py
+          git diff --check
+      - name: Commit validated metadata and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/inkdos-2.3
+          test "$(git rev-parse origin/feature/inkdos-2.3)" = "${GITHUB_SHA}" || { echo 'Branch advanced during metadata refresh' >&2; exit 1; }
+          git rm .github/workflows/goal2-refresh-integrity-after-matrix-fix.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html apps/documents/index.html apps/spreadsheets/index.html apps/presentations/index.html apps/pdf/index.html apps/txt/index.html apps/epub/index.html SOURCE_LOCK.json BUILD_INFO.json SOURCE_MANIFEST.json RELEASE_MANIFEST.json CHECKSUMS.sha256
+          git commit -m 'chore: refresh integrity after Goal 2 matrix fix'
+          git push origin HEAD:feature/inkdos-2.3
