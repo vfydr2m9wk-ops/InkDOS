@@ -34,75 +34,92 @@ Key preserved checkpoints:
 - Initial Plain Text RED: `14edf384fee683c6f59817ef9c3a652c1c9515fa`.
 - CSV/TSV codec RED: `d523b830837ff661637c51916cd44df42d6b1e8f`.
 - CSV/TSV codec GREEN: `d3039d7497f4e0a67c4f89b3ac544947a2c5fcc6`.
-- CSV/TSV integration RED: `1943f332c04874d288350468ac5e70b122b1189e`.
-- Formula Bar conversion gate: `fcd8bc1093ab8012044f392c38efa8a5beacacc6`.
-- Grid/paste/formula representability gates: `6af70258f17915938ea2065fe6b4e30bdbb173a0`.
-- UTF-16/BOM encoding RED: `060eba634d7f11fa98be0f36ff4b1c6e6329b040`.
-- Encoding MIME fix: `5aec957fe55f7c9a50b37481df3e9d6acb45f157`.
-- Main ancestry reconciliation: `addaa0d707835b072925ae5926684f87823f9fa9`.
-
-Final Goal 1 validation:
-
-- Validation SHA: `f91b0fa3119932e3d73ed5e8feacca4e3a5296b4`.
-- GitHub Actions run: `34742310953`.
-- Result: all eight jobs PASS, including repository contracts, clean-snapshot validation, Chromium/Firefox/WebKit stability, Chromium/Firefox/WebKit feature regressions, and format-preservation round trips.
-- Post-validation CI-policy restoration: `fffc187e4bc819e33e17f28f5a4a39c2e12b7ec9`; runtime/product/test content was unchanged.
+- Formula/paste representability gates: `fcd8bc1093ab8012044f392c38efa8a5beacacc6` and `6af70258f17915938ea2065fe6b4e30bdbb173a0`.
+- UTF-16/BOM encoding RED/fix: `060eba634d7f11fa98be0f36ff4b1c6e6329b040` → `5aec957fe55f7c9a50b37481df3e9d6acb45f157`.
+- Final validation SHA: `f91b0fa3119932e3d73ed5e8feacca4e3a5296b4`, GitHub Actions run `34742310953`: all eight jobs PASS.
 
 Goal 1 conclusion: **COMPLETE — VERIFIED**.
 
 ## Goal 2 completion evidence
 
-The supplied real PowerPoint regression was used to drive the fidelity investigation. Slide 1's title uses three Arial Bold 112.5 pt runs, `spc=-337`, 92% line spacing, 2 pt insets, a U+00AD soft hyphen, and bare `normAutofit`.
-
-Systematic debugging isolated a concrete importer defect: bare `normAutofit` has no `fontScale`, but the importer treated the missing value as zero and clamped it to 0.35, incorrectly shrinking text and tracking.
+The supplied real PowerPoint regression drove the fidelity investigation. Systematic debugging isolated the bare `normAutofit` importer defect and retained the exact real-title geometry regression.
 
 Key checkpoints:
 
-- Isolated normAutofit RED head: `22b473f574c7c34912ba8475fce9c7b67cf5d7a3`.
-- Minimal normAutofit fix: `41b58c439a41cab9345e192ac82b05c8778f773d`.
-- Focused fix run: `34746864039` — PASS.
-- Real-title synthetic regression: `tests/test_pptx_real_title_fidelity_browser.py`, frozen from the real slide metrics rather than an approximation.
-- Exact real-title run: `34747079211` — PASS, retaining three runs, U+00AD soft hyphen, `spc=-337` / `-3.37px` tracking, 92% line spacing, scale 1, and expected two-line geometry.
-- Superseded one-shot diagnostics removed in `df809a3320f749c46b2acbd6cb9bc92ae7454791`.
+- Isolated normAutofit RED: `22b473f574c7c34912ba8475fce9c7b67cf5d7a3`.
+- Minimal fix: `41b58c439a41cab9345e192ac82b05c8778f773d`.
+- Real-title synthetic regression retained in `tests/test_pptx_real_title_fidelity_browser.py`.
+- Final validation SHA: `2da4badcdd115f8070af976d49b7e4770bc81125`, GitHub Actions run `34747495167`: all eight jobs PASS across repository contracts, round trips and Chromium/Firefox/WebKit regressions.
 
-Final Goal 2 validation:
+Goal 2 conclusion: **COMPLETE — VERIFIED**.
 
-- Validation SHA: `2da4badcdd115f8070af976d49b7e4770bc81125`.
-- GitHub Actions run: `34747495167`.
-- Result: all eight jobs PASS, including repository contracts, format round trips, Chromium/Firefox/WebKit stability, and feature regressions with the retained PowerPoint fidelity regressions on all three engines.
+## Goal 3 completed subpasses
 
-Goal 2 conclusion: **COMPLETE — VERIFIED**. Goal 3 was not started before this validation passed.
+Goal 3 remains the only active implementation scope. The architecture is one installed InkDOS application/host, no central tab system and no duplicated full executables.
 
-## Goal 3 current work
+### Routing, associations and native windows
 
-Goal 3 is now the only active implementation scope. The architecture remains one installed InkDOS application/host, with no central tab system and no duplicated full executables.
+- `6549ab2efcb8d43378865f84a23aafb1b121f1fb` — RED for a single native workspace routing authority.
+- `65543f9b05b8b9c7515c97d86d623e721255825c` — GREEN `desktop/workspaces.json` authority.
+- `d80ccf31fee6046a0d1f4b8319b88dc39901b09c` — RED requiring Tauri file associations.
+- `07c57726518d695a52bd9dcbeea80365fa9711f6` — GREEN `bundle.fileAssociations` while retaining one bundle identity.
+- `ad3e8b5008d77335a55f3e9ac696ef49202de42b` — RED for single-instance / one-native-window-per-file routing.
+- `76322a43be174cb39b43c291e90602f1487605b5` — baseline contract aligned with `main` + `file-*` native windows.
+- Native cross-platform checkpoint: `fe4df581c54f1f20ea1345eb30e42cca331c71bf`, run `34750381423`: Goal 3 contracts plus `cargo check` on Windows, Ubuntu and macOS PASS.
 
-TDD checkpoints completed so far:
+### Workspace launcher authority and host routing
 
-- `6549ab2efcb8d43378865f84a23aafb1b121f1fb` — RED contract establishing a single native workspace routing authority. RED was reproduced because `desktop/workspaces.json` did not exist.
-- `65543f9b05b8b9c7515c97d86d623e721255825c` — GREEN implementation of `desktop/workspaces.json`, mapping each approved extension to exactly one workspace, route, and the existing workspace icon path.
-- `d80ccf31fee6046a0d1f4b8319b88dc39901b09c` — RED contract requiring Tauri bundle file associations to match the workspace authority. RED was reproduced because `bundle.fileAssociations` was absent.
-- `07c57726518d695a52bd9dcbeea80365fa9711f6` — GREEN Tauri `bundle.fileAssociations` registration for Documents, Spreadsheets, Presentations, PDF, EPUB, and Plain Text extension families while retaining one `InkDOS` product/bundle identifier.
-- `c98c51cd2c1e81f47ebf26154dbb65b112c848f9` — registers the Goal 3 routing/association contract in `scripts/run_release_validation.py`.
+- `129ae31bb04a5eb6bd9752517a4234cf614485c4` — RED launcher contract.
+- `bd97f2cc388dcb40f6eae3bf6aa040d3523dc3dc` — `desktop/launchers.json`, six workspace entries, one `InkDOS` executable and canonical workspace icon paths.
+- `d73bac04e10b846ae1cff42e579262e467b640d2` — native `--workspace <id>` routing through the shared host.
+- `9d5776fe7ac1c56bc4d4456256b3473dfb0813f5` → `c255fe307844581064c4ccb0c6893ee8dc4abb3b` — RED/GREEN for least-privilege capabilities on `workspace-*` windows.
+- Pre-packaging launcher/native checkpoint head: `29173cc5c13c8e4a66c9e59637ae1e78d153accd`, run `34752483926`: launcher/routing/native contracts and `cargo check` on Windows, Ubuntu and macOS PASS.
 
-Focused local contract probes observed the routing authority RED/GREEN and the Tauri association RED/GREEN transitions. A coherent Goal 3 native-runner checkpoint has not yet been run and Goal 3 is therefore not complete.
+## Goal 3 installed-launcher subpass — current
+
+The previous launcher authority was declarative only. The current TDD subpass requires installer/package integration so workspace entries are actually installed.
+
+### RED
+
+- `8196980dca44c528ec9e0093d7a356512b8373ac` — adds `tests/test_tauri_goal3_installed_launchers_contract.py`.
+- `c37a0127347823d8c542ea0c7ba0e6c508958bbb` — registers the contract in the Goal 3 native checkpoint workflow.
+- Deterministic RED reproduced against the pre-implementation snapshot: `AssertionError: NSIS installer hook must create workspace launch shortcuts` because the required NSIS/WiX packaging integration did not exist.
+- GitHub Actions run `34753446080` for the RED workflow remains `pending` with zero assigned jobs; this is not counted as a CI result.
+
+### Candidate implementation
+
+- `c261fa7981bb393e395f7462746f5f7dc683b746` — NSIS Start Menu workspace shortcuts targeting the single `InkDOS.exe` with `--workspace <id>` and uninstall cleanup.
+- `00f66041816dacfb5c1ae1372cd7023259c5d67e` — MSI/WiX workspace shortcut component group targeting the same shared host.
+- Linux launcher entries added for Documents, Spreadsheets, Presentations, PDF, EPUB and Plain Text in commits `f9d80c0c03ef016e6af243782093e30f4ad470fb` through `b41f333f8cc4d5cd7b08611fa876be67471636a2`.
+- `0a0e4ef882bf66a8ac76c1f68d43cdef6397f4a6` — Tauri packaging wiring: explicit `mainBinaryName: "InkDOS"`, NSIS installer hook, WiX fragment, and DEB/RPM/AppImage installation of six `.desktop` entries plus the exact existing workspace icon assets.
+
+The `mainBinaryName` setting is required on Tauri v2 because `productName` no longer automatically renames the Cargo binary. Without it, launch entries could target `InkDOS` while Cargo emits `inkdos-desktop`.
+
+### Current validation/blockers
+
+- Current packaging candidate head before this checkpoint commit: `0a0e4ef882bf66a8ac76c1f68d43cdef6397f4a6`.
+- Goal 3 native run `34753566143` is currently `pending` with zero assigned jobs; no GREEN claim is made.
+- Linux launcher packages reference and install the exact existing workspace icon files.
+- Windows launch shortcuts are installed but per-workspace native icon materialization is not yet implemented/verified; default shortcut icon behavior is not accepted as satisfying the exact-icon requirement.
+- macOS still needs a workspace-specific installed launch-entry design that routes to the one InkDOS host without six full duplicate applications/executables.
+- Native installer artifacts have not yet been built/inspected for this installed-launcher subpass.
+
+Goal 3 therefore remains **IN PROGRESS** and Goal 4 remains locked.
 
 ## Goal 3 remaining acceptance work
 
-Continue Goal 3 only, in TDD order:
-
-1. Native launch routing for associated files with strict extension rejection and a clear unsupported-format notification.
-2. One native window per opened file, including subsequent opens while InkDOS is already running, while retaining one application host/installation.
-3. Workspace-specific installed launch entries using the existing workspace icons exactly; no six-installation or duplicate-executable model.
-4. Per-workspace allowlist verification end to end, including no redirect on unsupported extension.
-5. Native/cross-platform build and repository checkpoint validation before declaring Goal 3 COMPLETE — VERIFIED.
+1. Obtain targeted GREEN for the installed-launcher packaging contract and keep cross-platform `cargo check` green.
+2. Add/verify per-workspace Windows launcher icons derived from the existing canonical workspace icons without changing the visual assets.
+3. Implement and verify the macOS workspace launch-entry equivalent while retaining one InkDOS installation/host and no duplicated full executables.
+4. Verify strict per-workspace allowlists/no-redirect behavior end to end together with installed launch routing.
+5. Build/inspect native installer artifacts and run the coherent Goal 3 repository/cross-platform checkpoint before declaring **COMPLETE — VERIFIED**.
 
 ## Current checkpoint
 
 - `main`: `9b1848629e8a86c4513785595014ab32fe168a06`.
 - Goal 1: **COMPLETE — VERIFIED**.
 - Goal 2: **COMPLETE — VERIFIED** at `2da4badcdd115f8070af976d49b7e4770bc81125`, run `34747495167`.
-- Goal 3: **IN PROGRESS**.
+- Goal 3: **IN PROGRESS**; installed-launcher packaging candidate at `0a0e4ef882bf66a8ac76c1f68d43cdef6397f4a6`, validation pending.
 - Goal 4: **NOT STARTED**.
 
-At the end of Goal 3, record the exact validation SHA, tests/workflows executed, pass/fail state, release-artifact implications, and any remaining blocker before unlocking Goal 4.
+At the end of Goal 3, record the exact validation SHA, tests/workflows executed, pass/fail state, release-artifact implications and any remaining blocker before unlocking Goal 4.
