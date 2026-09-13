@@ -38,7 +38,15 @@ jobs:
         env:
           PPTX_TRACKING_PHASE: render
         run: python tests/test_pptx_character_spacing_fidelity_browser.py
-      - name: Character spacing preservation round-trip
+      - name: Character spacing writer detection
         env:
-          PPTX_TRACKING_PHASE: preserve
+          PPTX_TRACKING_PHASE: build
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Character spacing rewritten text
+        env:
+          PPTX_TRACKING_PHASE: text
+        run: python tests/test_pptx_character_spacing_fidelity_browser.py
+      - name: Character spacing serialized spc
+        env:
+          PPTX_TRACKING_PHASE: spc
         run: python tests/test_pptx_character_spacing_fidelity_browser.py
