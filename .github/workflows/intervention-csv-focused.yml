@@ -10,11 +10,15 @@ on:
       - 'tests/test_spreadsheets_delimited_text_stability_browser.py'
       - 'tests/test_ui_density_contract.py'
       - 'tests/test_ui_density_stability_browser.py'
+      - 'tests/test_presentations_intervention_contract.py'
+      - 'tests/test_presentations_intervention_browser.py'
       - 'shared/ui-density.js'
       - 'shared/ui-density.css'
       - 'apps/spreadsheets/io/delimited-text.js'
       - 'apps/spreadsheets/io/file-open-controller.js'
       - 'apps/spreadsheets/io/save-controller.js'
+      - 'apps/presentations/view/slide-surface.js'
+      - 'apps/presentations/view/presentation-surface.css'
       - 'index.html'
       - 'apps/**/index.html'
       - 'apps/txt/page.template.html'
@@ -50,6 +54,8 @@ jobs:
         run: python tests/test_spreadsheets_delimited_text_contract.py
       - name: Run adaptive density contract
         run: python tests/test_ui_density_contract.py
+      - name: Run Presentations intervention contract
+        run: python tests/test_presentations_intervention_contract.py
 
   browser-matrix:
     runs-on: ubuntu-22.04
@@ -84,3 +90,5 @@ jobs:
         run: python tests/test_spreadsheets_delimited_text_stability_browser.py
       - name: Run adaptive density browser regression
         run: python tests/test_ui_density_stability_browser.py
+      - name: Run Presentations intervention browser regression
+        run: python tests/test_presentations_intervention_browser.py
