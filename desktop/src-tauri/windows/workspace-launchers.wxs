@@ -9,7 +9,7 @@
     <Icon Id="InkDOSTxtIcon" SourceFile="windows\workspace-icons\txt\icon.ico" />
   </Fragment>
   <Fragment>
-    <DirectoryRef Id="INSTALLFOLDER">
+    <DirectoryRef Id="INSTALLDIR">
       <Directory Id="InkDOSWorkspaceIconsFolder" Name="workspace-icons">
         <Directory Id="InkDOSDocumentsIconFolder" Name="documents">
           <Component Id="InkDOSDocumentsIconResource" Guid="*">
@@ -48,27 +48,27 @@
     <DirectoryRef Id="ProgramMenuFolder">
       <Directory Id="InkDOSWorkspaceProgramsFolder" Name="InkDOS">
         <Component Id="InkDOSDocumentsLauncher" Guid="*">
-          <Shortcut Id="InkDOSDocumentsShortcut" Name="InkDOS Documents" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace documents" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSDocumentsIcon" IconIndex="0" />
+          <Shortcut Id="InkDOSDocumentsShortcut" Name="InkDOS Documents" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace documents" WorkingDirectory="INSTALLDIR" Icon="InkDOSDocumentsIcon" IconIndex="0" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="documents" Type="integer" Value="1" KeyPath="yes" />
         </Component>
         <Component Id="InkDOSSpreadsheetsLauncher" Guid="*">
-          <Shortcut Id="InkDOSSpreadsheetsShortcut" Name="InkDOS Spreadsheets" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace spreadsheets" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSSpreadsheetsIcon" IconIndex="0" />
+          <Shortcut Id="InkDOSSpreadsheetsShortcut" Name="InkDOS Spreadsheets" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace spreadsheets" WorkingDirectory="INSTALLDIR" Icon="InkDOSSpreadsheetsIcon" IconIndex="0" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="spreadsheets" Type="integer" Value="1" KeyPath="yes" />
         </Component>
         <Component Id="InkDOSPresentationsLauncher" Guid="*">
-          <Shortcut Id="InkDOSPresentationsShortcut" Name="InkDOS Presentations" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace presentations" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSPresentationsIcon" IconIndex="0" />
+          <Shortcut Id="InkDOSPresentationsShortcut" Name="InkDOS Presentations" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace presentations" WorkingDirectory="INSTALLDIR" Icon="InkDOSPresentationsIcon" IconIndex="0" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="presentations" Type="integer" Value="1" KeyPath="yes" />
         </Component>
         <Component Id="InkDOSPdfLauncher" Guid="*">
-          <Shortcut Id="InkDOSPdfShortcut" Name="InkDOS PDF" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace pdf" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSPdfIcon" IconIndex="0" />
+          <Shortcut Id="InkDOSPdfShortcut" Name="InkDOS PDF" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace pdf" WorkingDirectory="INSTALLDIR" Icon="InkDOSPdfIcon" IconIndex="0" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="pdf" Type="integer" Value="1" KeyPath="yes" />
         </Component>
         <Component Id="InkDOSEpubLauncher" Guid="*">
-          <Shortcut Id="InkDOSEpubShortcut" Name="InkDOS EPUB" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace epub" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSEpubIcon" IconIndex="0" />
+          <Shortcut Id="InkDOSEpubShortcut" Name="InkDOS EPUB" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace epub" WorkingDirectory="INSTALLDIR" Icon="InkDOSEpubIcon" IconIndex="0" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="epub" Type="integer" Value="1" KeyPath="yes" />
         </Component>
         <Component Id="InkDOSTxtLauncher" Guid="*">
-          <Shortcut Id="InkDOSTxtShortcut" Name="InkDOS Plain Text" Target="[INSTALLFOLDER]InkDOS.exe" Arguments="--workspace txt" WorkingDirectory="INSTALLFOLDER" Icon="InkDOSTxtIcon" IconIndex="0" />
+          <Shortcut Id="InkDOSTxtShortcut" Name="InkDOS Plain Text" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace txt" WorkingDirectory="INSTALLDIR" Icon="InkDOSTxtIcon" IconIndex="0" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="txt" Type="integer" Value="1" KeyPath="yes" />
         </Component>
       </Directory>
