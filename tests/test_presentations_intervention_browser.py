@@ -64,7 +64,7 @@ def main() -> None:
             page.evaluate(
                 """() => {
                     const content=document.querySelector('.slide-textbox.selected .rich-text-content');
-                    content.textContent='Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6';
+                    content.textContent=['Line 1','Line 2','Line 3','Line 4','Line 5','Line 6'].join(String.fromCharCode(10));
                     content.dispatchEvent(new InputEvent('input',{bubbles:true,inputType:'insertText',data:null}));
                 }"""
             )
