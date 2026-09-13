@@ -4,7 +4,7 @@
 
 - Canonical spec: `docs/superpowers/specs/2026-09-13-inkdos-2.3-design.md`
 - Approval: `USER-APPROVED`
-- Current `main` observed before the 2026-09-13 formula/paste guard mutation: `9b1848629e8a86c4513785595014ab32fe168a06`
+- Current `main`: `9b1848629e8a86c4513785595014ab32fe168a06`
 - Open development PR: #132, `InkDOS 2.3 Goal 1 — format expansion`
 - Goal 1 branch: `feature/inkdos-2.3`
 
@@ -50,7 +50,7 @@ Completed Goal 1 work includes:
 - CSV/TSV file-open routing: `e8c6a2b46c4c90124dd8cb849ee8bb619d1f986f`.
 - Spreadsheets picker/script graph integration: `3d661df6a09ca9800bd37d45573dbec53451dc1d`.
 - Last pre-policy automated integrity checkpoint: `135810d451af6f8e4befabc1d23a5affd2bba379`.
-- Same-format CSV/TSV Save/Share behavior, source extension/MIME/delimiter/BOM/encoding preservation where supported, explicit CSV/TSV → XLSX conversion, and representability guards for formatting/merges/dimensions/worksheet add-delete are present on the current branch before the formula/paste guard cycle.
+- Same-format CSV/TSV Save/Share behavior, source extension/MIME/delimiter/BOM/encoding preservation where supported, explicit CSV/TSV → XLSX conversion, and representability guards for formatting/merges/dimensions/worksheet add-delete are present.
 
 ### Codec evidence already obtained
 
@@ -73,19 +73,41 @@ Implemented GREEN candidate changes:
 ### Verification state for this cycle
 
 - Source inspection after the writes confirms the RED contract's required hooks/labels are present in both production controllers.
-- A local exact-head test execution was attempted by materializing the feature-branch files from `raw.githubusercontent.com`, but the execution environment could not resolve that host (`curl: (6) Could not resolve host: raw.githubusercontent.com`). This is an environment/network limitation, not a test result.
+- Exact-head repository materialization has repeatedly failed because the execution environment cannot resolve GitHub/raw.githubusercontent.com. This is an environment/network limitation, not a test result.
 - Therefore the focused contract is **not yet claimed PASS** and Goal 1 remains **IN PROGRESS**.
 - No Goal 2 work has started.
 
+## 2026-09-13 encoding-preservation TDD cycle
+
+Representability review found a concrete encoding metadata defect: UTF-16LE/UTF-16BE bytes and BOM were preserved by the delimited serializer, but the generated Blob MIME type always declared `charset=utf-8`.
+
+- RED reproduced against the pre-fix codec: parsing a BOM-marked UTF-16LE CSV returned `encoding=utf-16le`, but serializing it produced `text/csv;charset=utf-8`.
+- RED contract committed first: `060eba634d7f11fa98be0f36ff4b1c6e6329b040`, `tests/test_spreadsheets_delimited_encoding_contract.py`.
+- Minimal production fix: `5aec957fe55f7c9a50b37481df3e9d6acb45f157` now derives the CSV/TSV MIME charset from the actual preserved encoding.
+- Focused local behavior probes after the fix passed for UTF-16LE, UTF-16BE, BOM preservation, leading-zero string preservation, and the existing UTF-8 CSV round-trip/MIME behavior.
+- All Goal 1 focused contracts, including Plain Text, codec, encoding, same-format save, conversion guards, and formula/paste guards, are now registered in `scripts/run_release_validation.py` at `dd550241ad594fe56723d08f4cbefad368e703a4`.
+
+## Main ancestry reconciliation
+
+Current `main` had advanced by four workflow-policy commits since the original Goal 1 branch point. Before reconciliation, all four affected workflow files were verified byte-identical by blob SHA between the branch and current `main`:
+
+- `.github/workflows/apply-inkdos-update.yml` — `97b1ce732fd715a16ace9ca3f4a65bc4078cd129`
+- `.github/workflows/desktop-tauri.yml` — `a47436f0a322be5d942bcf162894a2a0eb900621`
+- `.github/workflows/refresh-integrity-metadata.yml` — `2bbb0099d6a9a83bbeee7f14b8fecfc6773e0996`
+- `.github/workflows/stability-freeze-regression.yml` — `a51cbfb80c3e2a214530b881182c4698e8ec6f35`
+
+A no-content merge commit `addaa0d707835b072925ae5926684f87823f9fa9` reconciled the Goal 1 branch with `main` `9b1848629e8a86c4513785595014ab32fe168a06`. After reconciliation the branch is 49 commits ahead and 0 behind `main`.
+
 ## Current branch checkpoint
 
-- Production-code head after the formula/paste guard implementation: `6af70258f17915938ea2065fe6b4e30bdbb173a0`.
-- The branch was based on PR-head `9d6bed792cba03e705cef2a04012bd4016bc5eb7` for this TDD cycle.
-- The current `main` observed before mutation was `9b1848629e8a86c4513785595014ab32fe168a06`.
-- PR #132 remains the Goal 1 development PR.
+- Current Goal 1 head before this documentation update: `addaa0d707835b072925ae5926684f87823f9fa9`.
+- Production-code head for the latest encoding fix: `5aec957fe55f7c9a50b37481df3e9d6acb45f157`.
+- Current `main`: `9b1848629e8a86c4513785595014ab32fe168a06`.
+- PR #132 remains the Goal 1 development PR and remains draft.
+- No PR-triggered workflow run exists for `addaa0d707835b072925ae5926684f87823f9fa9` under the current Goal-sized checkpoint policy.
 
 ## Next work
 
-Remain in Goal 1. Execute the focused formula/paste guard contract as soon as an exact-head runnable environment is available, fix any resulting regression before expanding scope, then complete the remaining Goal 1 representability review. At the coherent Goal 1 checkpoint, reconcile current `main` policy changes, refresh integrity metadata once, run the relevant cross-platform/repository validation suite, update this document with final exact SHAs/tests/results, and only then unlock Goal 2.
+Remain in Goal 1. Complete the final representability review, then perform the coherent Goal 1 integrity/full-validation checkpoint. The checkpoint must execute the registered Goal 1 contracts and broader repository validation, verify Home remains unchanged and no network path was added, refresh integrity metadata once, and record exact results. The unresolved environment limitation means no unexecuted contract may be reported as PASS. Only after the coherent Goal 1 checkpoint is verified may Goal 2 begin.
 
 At the end of each Goal, update this document with the final head SHA, tests executed, pass/fail state, blockers/limitations, and checkpoint validation result.
