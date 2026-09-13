@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKSPACES_PATH = ROOT / "desktop" / "workspaces.json"
 LAUNCHERS_PATH = ROOT / "desktop" / "launchers.json"
 MAIN_RS_PATH = ROOT / "desktop" / "src-tauri" / "src" / "main.rs"
+CAPABILITY_PATH = ROOT / "desktop" / "src-tauri" / "capabilities" / "default.json"
 
 
 def main() -> None:
@@ -32,6 +33,11 @@ def main() -> None:
     assert '"--workspace"' in main_rs, "native host must recognize the workspace-launch argument"
     assert "workspace_for_id" in main_rs, "workspace launches must validate against workspaces.json"
     assert "open_workspace_window" in main_rs, "workspace launch must open a native workspace window"
+
+    capability = json.loads(CAPABILITY_PATH.read_text(encoding="utf-8"))
+    assert "workspace-*" in capability["windows"], (
+        "workspace launcher windows must receive the same least-privilege desktop capability"
+    )
 
 
 if __name__ == "__main__":
