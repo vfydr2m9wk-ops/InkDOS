@@ -65,6 +65,15 @@ jobs:
       - name: Playwright timeout checkpoint
         if: always()
         run: '! grep -q "TimeoutError" /tmp/pptx-model-diagnostic.log'
+      - name: JavaScript missing-function checkpoint
+        if: always()
+        run: '! grep -q "is not a function" /tmp/pptx-model-diagnostic.log'
+      - name: JavaScript undefined-property checkpoint
+        if: always()
+        run: '! grep -Eq "Cannot read propert(y|ies) of (undefined|null)" /tmp/pptx-model-diagnostic.log'
+      - name: JavaScript reference checkpoint
+        if: always()
+        run: '! grep -Eq "(ReferenceError|is not defined)" /tmp/pptx-model-diagnostic.log'
       - name: Browser JavaScript exception checkpoint
         if: always()
         run: '! grep -q "playwright.*Error" /tmp/pptx-model-diagnostic.log'
