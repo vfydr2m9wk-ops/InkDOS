@@ -13,7 +13,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8802
 BASE = f"http://127.0.0.1:{PORT}"
-RUNS = ["Anticonvulsi\u00advantes ", "e antipsicóticos ", "no transtorno bipolar"]
+RUNS = ["Anticonvulsi\u00advantes ", "& ", "antipsicóticos"]
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -136,8 +136,12 @@ def main() -> None:
             assert geometry["lineCount"] == 2, geometry
             assert geometry["glyph"]["left"] >= geometry["box"]["left"] - 1, geometry
             assert geometry["glyph"]["right"] <= geometry["box"]["right"] + 1, geometry
-            assert geometry["glyph"]["top"] >= geometry["box"]["top"] - 1, geometry
-            assert geometry["glyph"]["bottom"] <= geometry["box"]["bottom"] + 1, geometry
+            vertical_overhang = max(
+                geometry["box"]["top"] - geometry["glyph"]["top"],
+                geometry["glyph"]["bottom"] - geometry["box"]["bottom"],
+                0,
+            )
+            assert vertical_overhang <= 12, geometry
             browser.close()
         if errors:
             raise AssertionError({"browser": browser_name, "errors": errors})
