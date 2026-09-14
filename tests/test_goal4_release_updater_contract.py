@@ -27,7 +27,8 @@ def main() -> int:
     require("createUpdaterArtifacts" not in (ROOT / "desktop" / "src-tauri" / "tauri.conf.json").read_text(encoding="utf-8"), "normal development/package builds must not require release signing secrets")
     require("--config" in workflow and "tauri.updater.release.conf.json" in workflow, "release build must merge the ephemeral updater config")
 
-    require("*.sig" in workflow, "release artifacts must include updater signatures")
+    signature_patterns = ("*.exe.sig", "*.app.tar.gz.sig", "*.AppImage.sig")
+    require(all(pattern in workflow for pattern in signature_patterns), "release artifacts must include Windows, macOS, and Linux updater signatures")
     require("*.app.tar.gz" in workflow, "macOS updater archive must be published")
     require("build_updater_manifest.py" in workflow, "publish job must generate latest.json")
     require("latest.json" in workflow, "latest.json must be published with the release")
