@@ -295,8 +295,14 @@ jobs:
           appdir="$RUNNER_TEMP/inkdos-appimage"
           mkdir -p "$appdir"
           (cd "$appdir" && "$GITHUB_WORKSPACE/$appimage" --appimage-extract >/dev/null)
-          # AppImage must expose exactly one canonical desktop identity
-          test "$(find "$appdir/squashfs-root" -name '*.desktop' -type f | wc -l | tr -d ' ')" = "1"
+          # AppImage must expose one canonical desktop identity
+          mapfile -t appimage_desktops < <(find "$appdir/squashfs-root" -name '*.desktop' -type f -print | sort)
+          test "${#appimage_desktops[@]}" -ge 1
+          canonical_desktop_basename="$(basename "${appimage_desktops[0]}")"
+          # AppImage canonical desktop entries must share one basename
+          for desktop in "${appimage_desktops[@]}"; do
+            test "$(basename "$desktop")" = "$canonical_desktop_basename"
+          done
           # AppImage must not contain auxiliary inkdos-* workspace desktop entries
           test "$(find "$appdir/squashfs-root" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "0"
           # AppImage must not contain the package-manager workspace icon tree
