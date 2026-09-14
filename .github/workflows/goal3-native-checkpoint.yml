@@ -288,7 +288,13 @@ jobs:
           rpm_cpio="$RUNNER_TEMP/inkdos.rpm.cpio"
           mkdir -p "$deb_root" "$rpm_root"
           dpkg-deb -x "$deb" "$deb_root"
+          set +e
           rpm2cpio "$rpm_pkg" > "$rpm_cpio"
+          rpm2cpio_status=$?
+          set -e
+          if [ "$rpm2cpio_status" -ne 0 ]; then
+            test -s "$rpm_cpio"
+          fi
           (cd "$rpm_root" && cpio -idmu < "$rpm_cpio")
           for root in "$deb_root"; do
             test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-documents.svg"
