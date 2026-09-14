@@ -83,7 +83,7 @@ def main() -> int:
                     };
                 }"""
             )
-            page.add_script_tag(path=str(ROOT / "desktop" / "desktop-host.js"))
+            page.add_script_tag(url=BASE + "/desktop/desktop-host.js")
             page.wait_for_selector("#inkdosUpdateButton")
 
             # Loading the desktop bridge alone must not perform a network-backed updater invocation.
