@@ -5,12 +5,84 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
 };
 
+use serde::Serialize;
 use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
+use tauri_plugin_updater::UpdaterExt;
 
 static FILE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static WORKSPACE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 const WORKSPACES_JSON: &str = include_str!("../../workspaces.json");
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct UpdateCheckResponse {
+    available: bool,
+    current_version: String,
+    latest_version: String,
+    notes: Option<String>,
+    pub_date: Option<String>,
+}
+
+#[tauri::command]
+async fn inkdos_check_for_updates(app: tauri::AppHandle) -> Result<UpdateCheckResponse, String> {
+    let current_version = app.package_info().version.to_string();
+    let updater = app
+        .updater()
+        .map_err(|error| format!("InkDOS updater is not configured: {error}"))?;
+    let update = updater
+        .check()
+        .await
+        .map_err(|error| format!("InkDOS could not check for updates: {error}"))?;
+
+    match update {
+        Some(update) => Ok(UpdateCheckResponse {
+            available: true,
+            current_version: update.current_version,
+            latest_version: update.version,
+            notes: update.body,
+            pub_date: update.date.map(|date| date.to_string()),
+        }),
+        None => Ok(UpdateCheckResponse {
+            available: false,
+            current_version: current_version.clone(),
+            latest_version: current_version,
+            notes: None,
+            pub_date: None,
+        }),
+    }
+}
+
+#[tauri::command]
+async fn inkdos_install_update(
+    app: tauri::AppHandle,
+    expected_version: String,
+) -> Result<(), String> {
+    if expected_version.trim().is_empty() {
+        return Err("InkDOS updater requires an explicitly approved version.".to_string());
+    }
+
+    let updater = app
+        .updater()
+        .map_err(|error| format!("InkDOS updater is not configured: {error}"))?;
+    let update = updater
+        .check()
+        .await
+        .map_err(|error| format!("InkDOS could not revalidate the update: {error}"))?
+        .ok_or_else(|| "The selected InkDOS update is no longer available. Check again.".to_string())?;
+
+    if update.version != expected_version {
+        return Err(format!(
+            "InkDOS update changed from {expected_version} to {}. Check again before installing.",
+            update.version
+        ));
+    }
+
+    update
+        .download_and_install(|_, _| {}, || {})
+        .await
+        .map_err(|error| format!("InkDOS could not install update {expected_version}: {error}"))
+}
 
 fn workspace_manifest() -> Result<serde_json::Map<String, serde_json::Value>, String> {
     let manifest: serde_json::Value = serde_json::from_str(WORKSPACES_JSON)
@@ -234,6 +306,11 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .invoke_handler(tauri::generate_handler![
+            inkdos_check_for_updates,
+            inkdos_install_update
+        ])
         .setup(|app| {
             let opened = handle_launch_args(app.handle(), std::env::args());
             if opened > 0 {
