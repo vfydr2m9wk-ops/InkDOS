@@ -75,3 +75,5 @@ jobs:
         if: steps.replay.outcome == 'failure'
         shell: pwsh
         run: exit 1
+
+# diagnostic sentinel: rerun against current Goal 3 head
