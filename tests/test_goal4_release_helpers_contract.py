@@ -82,11 +82,14 @@ def main() -> int:
         manifest = json.loads(output.read_text(encoding="utf-8"))
         require(manifest["version"] == "2.3.0", "manifest version must match the release version")
         require(manifest["notes"] == "InkDOS 2.3 release notes.\n", "manifest must preserve release notes")
-        require(set(manifest["platforms"]) == {"windows-x86_64", "darwin-x86_64", "linux-x86_64"}, "manifest must cover the supported desktop updater targets")
+        require(
+            set(manifest["platforms"]) == {"windows-x86_64", "darwin-aarch64", "linux-x86_64"},
+            "manifest must match the actual native runner architectures",
+        )
 
         expected_signatures = {
             "windows-x86_64": "WINDOWS_SIGNATURE",
-            "darwin-x86_64": "MACOS_SIGNATURE",
+            "darwin-aarch64": "MACOS_SIGNATURE",
             "linux-x86_64": "LINUX_SIGNATURE",
         }
         for platform, signature in expected_signatures.items():
