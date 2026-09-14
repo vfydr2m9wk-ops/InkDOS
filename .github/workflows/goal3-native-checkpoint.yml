@@ -43,6 +43,8 @@ jobs:
         run: python tests/test_tauri_goal3_macos_workspace_launchers_contract.py
       - name: Run native multiwindow contract
         run: python tests/test_tauri_goal3_native_window_contract.py
+      - name: Run AppImage inspection contract
+        run: python tests/test_tauri_goal3_appimage_inspection_contract.py
       - name: Run baseline desktop contract
         run: python tests/test_tauri_desktop_contract.py
       - name: Validate staged desktop runtime
@@ -293,8 +295,12 @@ jobs:
           appdir="$RUNNER_TEMP/inkdos-appimage"
           mkdir -p "$appdir"
           (cd "$appdir" && "$GITHUB_WORKSPACE/$appimage" --appimage-extract >/dev/null)
-          test "$(find "$appdir/squashfs-root/usr/share/applications" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "6"
-          test "$(find "$appdir/squashfs-root/usr/share/inkdos/workspace-icons" -type f | wc -l | tr -d ' ')" = "6"
+          # AppImage must expose exactly one canonical desktop identity
+          test "$(find "$appdir/squashfs-root" -name '*.desktop' -type f | wc -l | tr -d ' ')" = "1"
+          # AppImage must not contain auxiliary inkdos-* workspace desktop entries
+          test "$(find "$appdir/squashfs-root" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "0"
+          # AppImage must not contain the package-manager workspace icon tree
+          test ! -d "$appdir/squashfs-root/usr/share/inkdos/workspace-icons"
       - name: Upload inspected native bundles
         uses: actions/upload-artifact@v4
         with:
