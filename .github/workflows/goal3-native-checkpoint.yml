@@ -307,6 +307,14 @@ jobs:
           test "$(find "$appdir/squashfs-root" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "0"
           # AppImage must not contain the package-manager workspace icon tree
           test ! -d "$appdir/squashfs-root/usr/share/inkdos/workspace-icons"
+      - name: Upload Linux diagnostic bundles after failed inspection
+        if: failure() && runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: goal3-package-linux-diagnostic
+          path: desktop/src-tauri/target/release/bundle/**
+          if-no-files-found: error
+          retention-days: 1
       - name: Upload inspected native bundles
         uses: actions/upload-artifact@v4
         with:
