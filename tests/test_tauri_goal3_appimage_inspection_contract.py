@@ -19,14 +19,22 @@ def main() -> None:
         'test "$(find "$appdir/squashfs-root/usr/share/inkdos/workspace-icons" '
         "-type f | wc -l | tr -d ' ')\" = \"6\""
     )
+    physical_desktop_count_expectation = (
+        'test "$(find "$appdir/squashfs-root" -name \'*.desktop\' -type f | wc -l | tr -d \' \')" = "1"'
+    )
     assert obsolete_desktop_expectation not in workflow, (
         "AppImage inspection must not require six workspace .desktop entries"
     )
     assert obsolete_icon_expectation not in workflow, (
         "AppImage inspection must not require six workspace icons"
     )
+    assert physical_desktop_count_expectation not in workflow, (
+        "AppImage identity must not be inferred from the physical .desktop file count; "
+        "linuxdeploy can expose the same canonical desktop identity at multiple paths"
+    )
 
-    assert "AppImage must expose exactly one canonical desktop identity" in workflow
+    assert "AppImage must expose one canonical desktop identity" in workflow
+    assert "AppImage canonical desktop entries must share one basename" in workflow
     assert "AppImage must not contain auxiliary inkdos-* workspace desktop entries" in workflow
     assert "AppImage must not contain the package-manager workspace icon tree" in workflow
 
