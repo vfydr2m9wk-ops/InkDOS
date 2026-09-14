@@ -8,7 +8,7 @@ from urllib.parse import quote
 
 PLATFORMS = {
     "windows-x86_64": (".exe", ".exe.sig"),
-    "darwin-x86_64": (".app.tar.gz", ".app.tar.gz.sig"),
+    "darwin-aarch64": (".app.tar.gz", ".app.tar.gz.sig"),
     "linux-x86_64": (".AppImage", ".AppImage.sig"),
 }
 
