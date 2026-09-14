@@ -36,7 +36,9 @@ jobs:
         working-directory: desktop/src-tauri
         run: cargo tauri build --bundles msi
       - name: Replay WiX linker with visible diagnostics
+        id: replay
         if: steps.build.outcome == 'failure'
+        continue-on-error: true
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -56,9 +58,20 @@ jobs:
           }
           if ($code -eq 0) { throw 'Direct WiX link unexpectedly succeeded after Tauri MSI failure.' }
           exit $code
+      - name: Upload WiX linker diagnostic
+        if: always() && steps.build.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: goal3-wix-link-diagnostic
+          path: desktop/src-tauri/target/release/wix/**/light-diagnostic.log
+          if-no-files-found: error
       - name: Require MSI build success
         if: steps.build.outcome == 'success'
         shell: pwsh
         run: |
           $msi = Get-ChildItem 'desktop/src-tauri/target/release/bundle/msi/*.msi' | Select-Object -First 1
           if (-not $msi) { throw 'Expected MSI artifact.' }
+      - name: Preserve RED when WiX replay fails
+        if: steps.replay.outcome == 'failure'
+        shell: pwsh
+        run: exit 1
