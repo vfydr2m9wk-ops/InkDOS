@@ -80,6 +80,23 @@ def main() -> None:
     assert re.search(r'rpm2cpio "\$[^"\n]+" > "\$rpm_cpio"', workflow), (
         "RPM inspection must redirect rpm2cpio output to the staged CPIO file"
     )
+
+    # GitHub's rpm2cpio can emit a usable CPIO stream while returning non-zero
+    # for this Tauri-generated RPM. Do not let `set -e` abort before validating
+    # that payload. Capture the converter status, require a non-empty staged
+    # payload on non-zero, and let cpio be the integrity gate before assertions.
+    assert "set +e" in workflow, (
+        "RPM inspection must temporarily disable errexit while capturing rpm2cpio status"
+    )
+    assert 'rpm2cpio_status=$?' in workflow, (
+        "RPM inspection must capture rpm2cpio's exit status explicitly"
+    )
+    assert re.search(
+        r'set -e\s+if \[ "\$rpm2cpio_status" -ne 0 \]; then\s+test -s "\$rpm_cpio"',
+        workflow,
+    ), (
+        "A non-zero rpm2cpio status may continue only when it emitted a non-empty staged payload"
+    )
     assert 'cpio -idmu < "$rpm_cpio"' in workflow, (
         "RPM inspection must extract from the staged CPIO file in a separate command"
     )
