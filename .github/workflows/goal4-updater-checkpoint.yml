@@ -108,4 +108,4 @@ jobs:
         run: python desktop/scripts/stage_web.py
       - name: Check Tauri updater host
         working-directory: desktop/src-tauri
-        run: cargo check --locked
+        run: cargo check
