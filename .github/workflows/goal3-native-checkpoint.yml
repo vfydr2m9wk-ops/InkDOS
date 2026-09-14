@@ -276,6 +276,9 @@ jobs:
         run: |
           set -euo pipefail
           bundle=desktop/src-tauri/target/release/bundle
+          exec > >(tee "$bundle/linux-inspection-trace.log") 2>&1
+          export PS4='+ ${BASH_SOURCE}:${LINENO}: '
+          set -x
           deb="$(find "$bundle/deb" -name '*.deb' -type f | head -n 1)"
           rpm_pkg="$(find "$bundle/rpm" -name '*.rpm' -type f | head -n 1)"
           appimage="$(find "$bundle/appimage" -name '*.AppImage' -type f | head -n 1)"
