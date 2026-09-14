@@ -11,6 +11,7 @@ on:
       - 'desktop/src-tauri/src/main.rs'
       - 'desktop/src-tauri/tauri.conf.json'
       - 'desktop/scripts/build_updater_manifest.py'
+      - 'desktop/scripts/prepare_updater_release_config.py'
       - '.github/workflows/release.yml'
       - '.github/workflows/goal4-updater-checkpoint.yml'
   workflow_dispatch:
@@ -33,5 +34,13 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
-      - name: Run Goal 4 manual updater contract
-        run: python tests/test_goal4_desktop_updater_contract.py
+      - name: Run Goal 4 updater contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/test_goal4_*contract.py; do
+            echo "==> $test"
+            python "$test"
+          done
+      - name: Check desktop bridge syntax
+        run: node --check desktop/desktop-host.js
