@@ -124,10 +124,10 @@ def main() -> None:
     assert workflow_text.index(generation_token) < workflow_text.index(cargo_check_token)
     assert workflow_text.index(generation_token) < workflow_text.index(build_token)
 
-    # Installed Linux packages need actual .desktop entries for every workspace.
-    # freedesktop launchers reference an icon name, not an absolute private path;
-    # the canonical source asset is installed into the standard hicolor tree so
-    # linuxdeploy can resolve the launcher icon while building AppImage.
+    # Installed Linux package-manager formats need actual .desktop entries for
+    # every workspace. AppImage is a single portable application image: adding
+    # extra workspace desktop entries makes linuxdeploy choose one of them as
+    # the AppImage root identity instead of Tauri's canonical InkDOS entry.
     linux = bundle["linux"]
     for workspace, launcher in launchers.items():
         desktop_file = LINUX_LAUNCHER_DIR / f"inkdos-{workspace}.desktop"
@@ -147,7 +147,7 @@ def main() -> None:
             if icon_suffix == ".svg"
             else f"/usr/share/icons/hicolor/256x256/apps/inkdos-{workspace}{icon_suffix}"
         )
-        for target in ("deb", "rpm", "appimage"):
+        for target in ("deb", "rpm"):
             files = linux[target]["files"]
             assert files[destination] == source, (
                 f"{target} must install the {workspace} workspace launcher"
@@ -155,6 +155,14 @@ def main() -> None:
             assert files[icon_destination] == f"../../{launcher['icon']}", (
                 f"{target} must install {workspace}'s canonical icon in the freedesktop hicolor tree"
             )
+
+        appimage_files = linux["appimage"].get("files", {})
+        assert destination not in appimage_files, (
+            f"AppImage must not inject the {workspace} workspace desktop entry; linuxdeploy must use the canonical InkDOS entry"
+        )
+        assert icon_destination not in appimage_files, (
+            f"AppImage must not inject the {workspace} workspace icon as a second application identity"
+        )
 
     # No launcher may introduce a second InkDOS binary or application identity.
     serialized = json.dumps(bundle, sort_keys=True)
