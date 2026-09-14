@@ -25,6 +25,17 @@
       "csp": null
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "INKDOS_UPDATER_PUBLIC_KEY_REQUIRED",
+      "endpoints": [
+        "https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
   "bundle": {
     "active": true,
     "targets": ["nsis", "msi", "app", "dmg", "deb", "appimage", "rpm"],
