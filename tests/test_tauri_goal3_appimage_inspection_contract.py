@@ -38,6 +38,19 @@ def main() -> None:
     assert "AppImage must not contain auxiliary inkdos-* workspace desktop entries" in workflow
     assert "AppImage must not contain the package-manager workspace icon tree" in workflow
 
+    # Package-manager formats install workspace icons in the standard freedesktop
+    # hicolor application tree declared by tauri.conf.json. Their inspection must
+    # validate that actual installed location instead of a legacy custom tree that
+    # is not part of the bundle configuration.
+    obsolete_package_icon_root = 'find "$root/usr/share/inkdos/workspace-icons"'
+    hicolor_icon_check = 'test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-$workspace.png"'
+    assert obsolete_package_icon_root not in workflow, (
+        "DEB/RPM inspection must not require the removed /usr/share/inkdos/workspace-icons tree"
+    )
+    assert workflow.count(hicolor_icon_check) == 2, (
+        "DEB and RPM inspection must each verify every workspace icon in the freedesktop hicolor tree"
+    )
+
 
 if __name__ == "__main__":
     main()
