@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <Icon Id="InkDOSDocumentsIcon" SourceFile="windows\workspace-icons\documents\icon.ico" />
-    <Icon Id="InkDOSSpreadsheetsIcon" SourceFile="windows\workspace-icons\spreadsheets\icon.ico" />
-    <Icon Id="InkDOSPresentationsIcon" SourceFile="windows\workspace-icons\presentations\icon.ico" />
-    <Icon Id="InkDOSPdfIcon" SourceFile="windows\workspace-icons\pdf\icon.ico" />
-    <Icon Id="InkDOSEpubIcon" SourceFile="windows\workspace-icons\epub\icon.ico" />
-    <Icon Id="InkDOSTxtIcon" SourceFile="windows\workspace-icons\txt\icon.ico" />
+    <Icon Id="InkDOSDocumentsIcon" SourceFile="$(sys.SOURCEFILEDIR)workspace-icons\documents\icon.ico" />
+    <Icon Id="InkDOSSpreadsheetsIcon" SourceFile="$(sys.SOURCEFILEDIR)workspace-icons\spreadsheets\icon.ico" />
+    <Icon Id="InkDOSPresentationsIcon" SourceFile="$(sys.SOURCEFILEDIR)workspace-icons\presentations\icon.ico" />
+    <Icon Id="InkDOSPdfIcon" SourceFile="$(sys.SOURCEFILEDIR)workspace-icons\pdf\icon.ico" />
+    <Icon Id="InkDOSEpubIcon" SourceFile="$(sys.SOURCEFILEDIR)workspace-icons\epub\icon.ico" />
+    <Icon Id="InkDOSTxtIcon" SourceFile="$(sys.SOURCEFILEDIR)workspace-icons\txt\icon.ico" />
   </Fragment>
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="InkDOSWorkspaceIconsFolder" Name="workspace-icons">
         <Directory Id="InkDOSDocumentsIconFolder" Name="documents">
           <Component Id="InkDOSDocumentsIconResource" Guid="*">
-            <File Id="InkDOSDocumentsIconFile" Source="windows\workspace-icons\documents\icon.ico" KeyPath="yes" />
+            <File Id="InkDOSDocumentsIconFile" Source="$(sys.SOURCEFILEDIR)workspace-icons\documents\icon.ico" KeyPath="yes" />
           </Component>
         </Directory>
         <Directory Id="InkDOSSpreadsheetsIconFolder" Name="spreadsheets">
           <Component Id="InkDOSSpreadsheetsIconResource" Guid="*">
-            <File Id="InkDOSSpreadsheetsIconFile" Source="windows\workspace-icons\spreadsheets\icon.ico" KeyPath="yes" />
+            <File Id="InkDOSSpreadsheetsIconFile" Source="$(sys.SOURCEFILEDIR)workspace-icons\spreadsheets\icon.ico" KeyPath="yes" />
           </Component>
         </Directory>
         <Directory Id="InkDOSPresentationsIconFolder" Name="presentations">
           <Component Id="InkDOSPresentationsIconResource" Guid="*">
-            <File Id="InkDOSPresentationsIconFile" Source="windows\workspace-icons\presentations\icon.ico" KeyPath="yes" />
+            <File Id="InkDOSPresentationsIconFile" Source="$(sys.SOURCEFILEDIR)workspace-icons\presentations\icon.ico" KeyPath="yes" />
           </Component>
         </Directory>
         <Directory Id="InkDOSPdfIconFolder" Name="pdf">
           <Component Id="InkDOSPdfIconResource" Guid="*">
-            <File Id="InkDOSPdfIconFile" Source="windows\workspace-icons\pdf\icon.ico" KeyPath="yes" />
+            <File Id="InkDOSPdfIconFile" Source="$(sys.SOURCEFILEDIR)workspace-icons\pdf\icon.ico" KeyPath="yes" />
           </Component>
         </Directory>
         <Directory Id="InkDOSEpubIconFolder" Name="epub">
           <Component Id="InkDOSEpubIconResource" Guid="*">
-            <File Id="InkDOSEpubIconFile" Source="windows\workspace-icons\epub\icon.ico" KeyPath="yes" />
+            <File Id="InkDOSEpubIconFile" Source="$(sys.SOURCEFILEDIR)workspace-icons\epub\icon.ico" KeyPath="yes" />
           </Component>
         </Directory>
         <Directory Id="InkDOSTxtIconFolder" Name="txt">
           <Component Id="InkDOSTxtIconResource" Guid="*">
-            <File Id="InkDOSTxtIconFile" Source="windows\workspace-icons\txt\icon.ico" KeyPath="yes" />
+            <File Id="InkDOSTxtIconFile" Source="$(sys.SOURCEFILEDIR)workspace-icons\txt\icon.ico" KeyPath="yes" />
           </Component>
         </Directory>
       </Directory>
