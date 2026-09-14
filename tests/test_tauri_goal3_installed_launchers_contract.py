@@ -86,7 +86,16 @@ def main() -> None:
         assert f'File Id="{file_id}"' in wix_text, (
             f"WiX must install the generated workspace icon for {workspace}"
         )
-        assert f'Source="windows\\workspace-icons\\{workspace}\\icon.ico"' in wix_text
+        wix_icon_source = f'$(sys.SOURCEFILEDIR)workspace-icons\\{workspace}\\icon.ico'
+        assert f'SourceFile="{wix_icon_source}"' in wix_text, (
+            f"WiX Icon source for {workspace} must be anchored to the fragment directory"
+        )
+        assert f'Source="{wix_icon_source}"' in wix_text, (
+            f"WiX File source for {workspace} must be anchored to the fragment directory"
+        )
+        assert f'Source="windows\\workspace-icons\\{workspace}\\icon.ico"' not in wix_text, (
+            f"WiX must not resolve {workspace} icon relative to light.exe working directory"
+        )
         assert launcher["icon"].startswith("assets/icons/"), (
             f"{workspace} native icon must remain derived from the canonical icon source"
         )
