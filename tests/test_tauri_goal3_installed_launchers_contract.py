@@ -55,6 +55,13 @@ def main() -> None:
         assert 'Target="[INSTALLDIR]InkDOS.exe"' in wix_text
         assert 'WorkingDirectory="INSTALLDIR"' in wix_text
 
+    # The custom Start Menu directory lives in the user profile. WiX ICE64
+    # requires it to be represented in the RemoveFile table so uninstall can
+    # remove the directory after the workspace shortcuts are removed.
+    assert '<RemoveFolder Id="RemoveInkDOSWorkspaceProgramsFolder" On="uninstall" />' in wix_text, (
+        "WiX workspace launcher fragment must remove its per-user Start Menu directory on uninstall"
+    )
+
     # Windows shortcuts must use workspace-specific native ICOs derived from
     # the exact canonical icon sources. Generated ICOs are build artifacts: they
     # must be materialized before packaging, then embedded by NSIS/WiX directly.
