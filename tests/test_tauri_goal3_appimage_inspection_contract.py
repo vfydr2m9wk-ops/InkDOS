@@ -63,6 +63,17 @@ def main() -> None:
         "DEB/RPM inspection must not require the removed /usr/share/inkdos/workspace-icons tree"
     )
 
+    # Keep RPM conversion and extraction as separate commands. The runner uses
+    # `set -euo pipefail`; an inline rpm2cpio|cpio pipeline can fail before any
+    # package-content assertion even when the extracted payload is valid.
+    fragile_rpm_pipeline = 'rpm2cpio "$rpm_file" | cpio -idmu'
+    assert fragile_rpm_pipeline not in workflow, (
+        "RPM inspection must not couple rpm2cpio and cpio in a pipefail-sensitive pipeline"
+    )
+    assert 'rpm_cpio="$RUNNER_TEMP/inkdos-goal3-package.rpm.cpio"' in workflow
+    assert 'rpm2cpio "$rpm_file" > "$rpm_cpio"' in workflow
+    assert 'cpio -idmu < "$rpm_cpio"' in workflow
+
 
 if __name__ == "__main__":
     main()
