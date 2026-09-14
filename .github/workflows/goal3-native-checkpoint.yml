@@ -285,12 +285,14 @@ jobs:
           mkdir -p "$deb_root" "$rpm_root"
           dpkg-deb -x "$deb" "$deb_root"
           (cd "$rpm_root" && rpm2cpio "$GITHUB_WORKSPACE/$rpm_pkg" | cpio -idmu)
-          for root in "$deb_root" "$rpm_root"; do
-            for workspace in documents spreadsheets pdf epub txt; do
-              test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-$workspace.svg"
-            done
-            test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
+          for workspace in documents spreadsheets pdf epub txt; do
+            test -f "$deb_root/usr/share/icons/hicolor/scalable/apps/inkdos-$workspace.svg"
           done
+          test -f "$deb_root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
+          for workspace in documents spreadsheets pdf epub txt; do
+            test -f "$rpm_root/usr/share/icons/hicolor/scalable/apps/inkdos-$workspace.svg"
+          done
+          test -f "$rpm_root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
           for root in "$deb_root" "$rpm_root"; do
             test "$(find "$root/usr/share/applications" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "6"
             binaries="$(find "$root/usr" -type f -perm -111 -name 'InkDOS*' | wc -l | tr -d ' ')"
