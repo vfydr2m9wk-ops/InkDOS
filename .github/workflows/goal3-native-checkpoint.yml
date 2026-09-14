@@ -285,9 +285,11 @@ jobs:
           test -n "$deb" && test -n "$rpm_pkg" && test -n "$appimage"
           deb_root="$RUNNER_TEMP/inkdos-deb"
           rpm_root="$RUNNER_TEMP/inkdos-rpm"
+          rpm_cpio="$RUNNER_TEMP/inkdos.rpm.cpio"
           mkdir -p "$deb_root" "$rpm_root"
           dpkg-deb -x "$deb" "$deb_root"
-          (cd "$rpm_root" && rpm2cpio "$GITHUB_WORKSPACE/$rpm_pkg" | cpio -idmu)
+          rpm2cpio "$rpm_pkg" > "$rpm_cpio"
+          (cd "$rpm_root" && cpio -idmu < "$rpm_cpio")
           for root in "$deb_root"; do
             test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-documents.svg"
             test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-spreadsheets.svg"
