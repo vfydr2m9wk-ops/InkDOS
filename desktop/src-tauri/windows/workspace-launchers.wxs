@@ -49,6 +49,7 @@
       <Directory Id="InkDOSWorkspaceProgramsFolder" Name="InkDOS">
         <Component Id="InkDOSDocumentsLauncher" Guid="*">
           <Shortcut Id="InkDOSDocumentsShortcut" Name="InkDOS Documents" Target="[INSTALLDIR]InkDOS.exe" Arguments="--workspace documents" WorkingDirectory="INSTALLDIR" Icon="InkDOSDocumentsIcon" IconIndex="0" />
+          <RemoveFolder Id="RemoveInkDOSWorkspaceProgramsFolder" On="uninstall" />
           <RegistryValue Root="HKCU" Key="Software\InkDOS\WorkspaceLaunchers" Name="documents" Type="integer" Value="1" KeyPath="yes" />
         </Component>
         <Component Id="InkDOSSpreadsheetsLauncher" Guid="*">
