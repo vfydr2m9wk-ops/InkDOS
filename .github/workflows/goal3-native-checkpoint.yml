@@ -285,14 +285,22 @@ jobs:
           mkdir -p "$deb_root" "$rpm_root"
           dpkg-deb -x "$deb" "$deb_root"
           (cd "$rpm_root" && rpm2cpio "$GITHUB_WORKSPACE/$rpm_pkg" | cpio -idmu)
-          for workspace in documents spreadsheets pdf epub txt; do
-            test -f "$deb_root/usr/share/icons/hicolor/scalable/apps/inkdos-$workspace.svg"
+          for root in "$deb_root"; do
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-documents.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-spreadsheets.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-pdf.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-epub.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-txt.svg"
+            test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
           done
-          test -f "$deb_root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
-          for workspace in documents spreadsheets pdf epub txt; do
-            test -f "$rpm_root/usr/share/icons/hicolor/scalable/apps/inkdos-$workspace.svg"
+          for root in "$rpm_root"; do
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-documents.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-spreadsheets.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-pdf.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-epub.svg"
+            test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-txt.svg"
+            test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
           done
-          test -f "$rpm_root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"
           for root in "$deb_root" "$rpm_root"; do
             test "$(find "$root/usr/share/applications" -name 'inkdos-*.desktop' -type f | wc -l | tr -d ' ')" = "6"
             binaries="$(find "$root/usr" -type f -perm -111 -name 'InkDOS*' | wc -l | tr -d ' ')"
