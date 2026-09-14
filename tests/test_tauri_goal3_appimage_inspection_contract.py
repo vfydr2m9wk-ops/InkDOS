@@ -38,17 +38,29 @@ def main() -> None:
     assert "AppImage must not contain auxiliary inkdos-* workspace desktop entries" in workflow
     assert "AppImage must not contain the package-manager workspace icon tree" in workflow
 
-    # Package-manager formats install workspace icons in the standard freedesktop
-    # hicolor application tree declared by tauri.conf.json. Their inspection must
-    # validate that actual installed location instead of a legacy custom tree that
-    # is not part of the bundle configuration.
+    # Package-manager formats must inspect the actual freedesktop icon paths
+    # declared by tauri.conf.json. Five canonical workspace icons are SVGs in
+    # the scalable tree; Presentations is the existing PNG in 256x256.
+    obsolete_all_png_check = 'test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-$workspace.png"'
+    assert obsolete_all_png_check not in workflow, (
+        "DEB/RPM inspection must not pretend all workspace icons are 256x256 PNG files"
+    )
+
+    scalable_workspaces = ("documents", "spreadsheets", "pdf", "epub", "txt")
+    for workspace in scalable_workspaces:
+        expected = f'test -f "$root/usr/share/icons/hicolor/scalable/apps/inkdos-{workspace}.svg"'
+        assert workflow.count(expected) == 2, (
+            f"DEB and RPM inspection must verify the configured scalable SVG for {workspace}"
+        )
+
+    presentations = 'test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png"'
+    assert workflow.count(presentations) == 2, (
+        "DEB and RPM inspection must verify the configured Presentations PNG"
+    )
+
     obsolete_package_icon_root = 'find "$root/usr/share/inkdos/workspace-icons"'
-    hicolor_icon_check = 'test -f "$root/usr/share/icons/hicolor/256x256/apps/inkdos-$workspace.png"'
     assert obsolete_package_icon_root not in workflow, (
         "DEB/RPM inspection must not require the removed /usr/share/inkdos/workspace-icons tree"
-    )
-    assert workflow.count(hicolor_icon_check) == 2, (
-        "DEB and RPM inspection must each verify every workspace icon in the freedesktop hicolor tree"
     )
 
 
