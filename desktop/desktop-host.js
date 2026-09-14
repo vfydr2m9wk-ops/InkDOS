@@ -7,12 +7,14 @@
   const dialog = tauri.dialog;
   const fs = tauri.fs;
   const opener = tauri.opener;
+  const core = tauri.core;
 
   g.InkDOSDesktop = Object.freeze({
     host: 'tauri',
     nativeDialogs: true,
     nativeFilesystem: true,
-    deliveryConfirmed: true
+    deliveryConfirmed: true,
+    manualUpdater: !!(core && typeof core.invoke === 'function')
   });
   document.documentElement.dataset.inkdosHost = 'tauri';
 
@@ -171,6 +173,174 @@
     tryInject();
   }
 
+  function createUpdateModal() {
+    let overlay = document.getElementById('inkdosDesktopUpdateModal');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'inkdosDesktopUpdateModal';
+    overlay.hidden = true;
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'InkDOS update');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483600;display:none;place-items:center;padding:20px;background:rgba(0,0,0,.44)';
+
+    const card = document.createElement('section');
+    card.style.cssText = 'width:min(460px,100%);max-height:min(620px,90vh);overflow:auto;border:1px solid rgba(127,127,127,.35);border-radius:14px;padding:18px;background:Canvas;color:CanvasText;box-shadow:0 20px 60px rgba(0,0,0,.32);font:14px/1.45 system-ui,-apple-system,sans-serif';
+    const title = document.createElement('h2');
+    title.textContent = 'InkDOS update';
+    title.style.cssText = 'margin:0 0 10px;font-size:18px';
+    const status = document.createElement('p');
+    status.dataset.updateStatus = '1';
+    status.style.cssText = 'margin:0 0 12px';
+    const versions = document.createElement('div');
+    versions.dataset.updateVersions = '1';
+    versions.style.cssText = 'display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 12px';
+    const notes = document.createElement('pre');
+    notes.dataset.updateNotes = '1';
+    notes.style.cssText = 'display:none;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 14px;padding:10px;border-radius:9px;background:rgba(127,127,127,.10);font:13px/1.45 system-ui,-apple-system,sans-serif';
+    const actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap';
+    const cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.dataset.updateCancel = '1';
+    cancel.textContent = 'Cancel';
+    const install = document.createElement('button');
+    install.type = 'button';
+    install.dataset.updateInstall = '1';
+    install.textContent = 'Install';
+    install.hidden = true;
+    for (const button of [cancel, install]) {
+      button.style.cssText = 'min-height:36px;padding:6px 12px;border-radius:8px;border:1px solid rgba(127,127,127,.45);background:ButtonFace;color:ButtonText';
+    }
+    actions.append(cancel, install);
+    card.append(title, status, versions, notes, actions);
+    overlay.append(card);
+    document.body.append(overlay);
+    return overlay;
+  }
+
+  function showUpdateModal(overlay) {
+    overlay.hidden = false;
+    overlay.style.display = 'grid';
+  }
+
+  function hideUpdateModal(overlay) {
+    overlay.hidden = true;
+    overlay.style.display = 'none';
+  }
+
+  function setVersionRows(container, currentVersion, latestVersion) {
+    container.replaceChildren();
+    for (const [label, value] of [['Installed', currentVersion], ['Latest', latestVersion]]) {
+      const key = document.createElement('strong');
+      key.textContent = label;
+      const text = document.createElement('span');
+      text.textContent = String(value || '—');
+      container.append(key, text);
+    }
+  }
+
+  function installManualUpdaterUI() {
+    if (!core || typeof core.invoke !== 'function' || document.getElementById('inkdosUpdateButton')) return;
+
+    const button = document.createElement('button');
+    button.id = 'inkdosUpdateButton';
+    button.type = 'button';
+    button.title = 'Check for updates';
+    button.setAttribute('aria-label', 'Check for updates');
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M20 11a8 8 0 1 0-2.35 5.65"/><path d="M20 4v7h-7"/></svg><span data-update-label>Check for updates</span>';
+
+    const homeActions = document.querySelector('.home-appearance');
+    const drawer = document.getElementById('generalMenu');
+    if (homeActions) {
+      button.className = 'theme-button';
+      const label = button.querySelector('[data-update-label]');
+      if (label) label.style.display = 'none';
+      homeActions.insertBefore(button, homeActions.firstChild);
+    } else if (drawer) {
+      button.className = 'menu-item';
+      drawer.append(button);
+    } else {
+      button.style.cssText = 'position:fixed;right:12px;top:12px;z-index:2147483500;display:flex;align-items:center;gap:7px;min-height:34px;padding:6px 10px;border-radius:9px;border:1px solid rgba(127,127,127,.4);background:Canvas;color:CanvasText';
+      document.body.append(button);
+    }
+
+    const overlay = createUpdateModal();
+    const status = overlay.querySelector('[data-update-status]');
+    const versions = overlay.querySelector('[data-update-versions]');
+    const notes = overlay.querySelector('[data-update-notes]');
+    const install = overlay.querySelector('[data-update-install]');
+    const cancel = overlay.querySelector('[data-update-cancel]');
+    let approvedVersion = null;
+    let busy = false;
+
+    cancel.addEventListener('click', () => {
+      if (busy) return;
+      approvedVersion = null;
+      hideUpdateModal(overlay);
+    });
+
+    button.addEventListener('click', async () => {
+      if (busy) return;
+      busy = true;
+      button.disabled = true;
+      approvedVersion = null;
+      install.hidden = true;
+      install.disabled = false;
+      cancel.textContent = 'Cancel';
+      cancel.disabled = true;
+      status.textContent = 'Checking for updates…';
+      versions.replaceChildren();
+      notes.textContent = '';
+      notes.style.display = 'none';
+      showUpdateModal(overlay);
+      try {
+        const result = await core.invoke('inkdos_check_for_updates');
+        setVersionRows(versions, result && result.currentVersion, result && result.latestVersion);
+        if (result && result.available) {
+          approvedVersion = String(result.latestVersion || '');
+          status.textContent = `InkDOS ${approvedVersion} is available.`;
+          notes.textContent = String(result.notes || 'No release notes were provided.');
+          notes.style.display = 'block';
+          install.hidden = false;
+          cancel.textContent = 'Cancel';
+        } else {
+          status.textContent = "You're using the latest version.";
+          cancel.textContent = 'Close';
+        }
+      } catch (error) {
+        status.textContent = String(error && error.message ? error.message : error || 'InkDOS could not check for updates.');
+        cancel.textContent = 'Close';
+      } finally {
+        busy = false;
+        button.disabled = false;
+        cancel.disabled = false;
+      }
+    });
+
+    install.addEventListener('click', async () => {
+      if (busy || !approvedVersion) return;
+      busy = true;
+      install.disabled = true;
+      cancel.disabled = true;
+      const version = approvedVersion;
+      status.textContent = `Installing InkDOS ${version}…`;
+      try {
+        await core.invoke('inkdos_install_update', { expectedVersion: version });
+        status.textContent = `InkDOS ${version} was installed. Restart InkDOS to use the new version.`;
+        install.hidden = true;
+        cancel.textContent = 'Close';
+        approvedVersion = null;
+      } catch (error) {
+        status.textContent = String(error && error.message ? error.message : error || 'InkDOS could not install the update.');
+        install.disabled = false;
+      } finally {
+        busy = false;
+        cancel.disabled = false;
+      }
+    });
+  }
+
   const nativeInputClick = g.HTMLInputElement && g.HTMLInputElement.prototype.click;
   if (nativeInputClick) {
     g.HTMLInputElement.prototype.click = function inkdosDesktopInputClick() {
@@ -206,6 +376,8 @@
   }
 
   autoOpenNativeInjectedFile();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installManualUpdaterUI, { once: true });
+  else installManualUpdaterUI();
 
   if (opener && typeof opener.openUrl === 'function') {
     document.addEventListener('click', event => {
