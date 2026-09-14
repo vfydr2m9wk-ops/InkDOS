@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,14 +66,23 @@ def main() -> None:
 
     # Keep RPM conversion and extraction as separate commands. The runner uses
     # `set -euo pipefail`; an inline rpm2cpio|cpio pipeline can fail before any
-    # package-content assertion even when the extracted payload is valid.
+    # package-content assertion even when the extracted payload is valid. The
+    # exact temporary filename and RPM variable name are implementation details;
+    # the contract is that conversion is redirected to a staged CPIO file and
+    # extraction reads that staged file in a separate command.
     fragile_rpm_pipeline = 'rpm2cpio "$rpm_file" | cpio -idmu'
     assert fragile_rpm_pipeline not in workflow, (
         "RPM inspection must not couple rpm2cpio and cpio in a pipefail-sensitive pipeline"
     )
-    assert 'rpm_cpio="$RUNNER_TEMP/inkdos-goal3-package.rpm.cpio"' in workflow
-    assert 'rpm2cpio "$rpm_file" > "$rpm_cpio"' in workflow
-    assert 'cpio -idmu < "$rpm_cpio"' in workflow
+    assert re.search(r'rpm_cpio="\$RUNNER_TEMP/[^"\n]+\.cpio"', workflow), (
+        "RPM inspection must stage the converted payload in RUNNER_TEMP"
+    )
+    assert re.search(r'rpm2cpio "\$[^"\n]+" > "\$rpm_cpio"', workflow), (
+        "RPM inspection must redirect rpm2cpio output to the staged CPIO file"
+    )
+    assert 'cpio -idmu < "$rpm_cpio"' in workflow, (
+        "RPM inspection must extract from the staged CPIO file in a separate command"
+    )
 
 
 if __name__ == "__main__":
