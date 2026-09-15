@@ -22,7 +22,7 @@ jobs:
       - name: Move v2.3.0 to clean validated release commit
         shell: bash
         env:
-          RELEASE_SHA: 877aa46ac0fdbb58263fc346e5853854e21be354
+          RELEASE_SHA: 58a320cd2b32677f504e66397fc74d106501cb70
         run: |
           set -euo pipefail
           git fetch origin main --tags --force
