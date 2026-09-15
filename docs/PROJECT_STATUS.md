@@ -18,7 +18,7 @@ The desktop updater is Tauri-only and is hidden/inert in web/PWA. It performs no
 
 The release gate covers repository structure and source locks, standalone workspace isolation, deterministic assets, security/configuration contracts, preserved format round trips, browser regressions in Chromium, Firefox and WebKit, updater contracts, and native desktop packaging/integration checks.
 
-A green synthetic matrix is necessary but not sufficient for host-specific acceptance. Playwright WebKit cannot fully prove behavior of an embedded iPad browser/container, system Share Sheet, native file-picker fallback or every WebKit host policy. Real-device observations therefore remain authoritative when a host-specific issue cannot be reproduced synthetically.
+A green synthetic matrix is necessary but not sufficient for host-specific acceptance. Playwright WebKit cannot fully prove behavior of an embedded iPad browser/container, system Share Sheet, native file-picker fallback or every WebKit host policy. Real-device acceptance remains distinct from automated validation, and real-device observations remain authoritative when a host-specific issue cannot be reproduced synthetically.
 
 ## 2.3 release-candidate scope
 
