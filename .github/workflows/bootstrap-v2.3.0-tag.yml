@@ -1,4 +1,4 @@
-name: Dispatch InkDOS v2.3.0 release
+name: Dispatch InkDOS v2.3.0 integrity refresh
 
 on:
   push:
@@ -13,20 +13,16 @@ permissions:
 
 jobs:
   dispatch:
-    name: Dispatch official v2.3.0 release
+    name: Dispatch final integrity refresh
     runs-on: ubuntu-22.04
     steps:
-      - name: Verify release tag and dispatch
+      - name: Dispatch refresh on main
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_SHA: 983fb69f5d6ddd6dc5fb5cdc33db1588390d372e
         run: |
           set -euo pipefail
-          TAG_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/v2.3.0" --jq '.object.sha')"
-          test "$TAG_SHA" = "$RELEASE_SHA"
           gh api --method POST \
-            "repos/${GITHUB_REPOSITORY}/actions/workflows/release.yml/dispatches" \
-            -f ref=main \
-            -f 'inputs[release_tag]=v2.3.0'
-          echo "Dispatched official InkDOS v2.3.0 release workflow."
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/refresh-integrity-metadata.yml/dispatches" \
+            -f ref=main
+          echo "Dispatched final InkDOS 2.3.0 integrity refresh."
