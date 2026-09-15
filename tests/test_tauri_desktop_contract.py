@@ -70,6 +70,13 @@ def test_desktop_bridge_maps_native_open_save_and_external_links():
         assert marker in bridge
 
 
+def test_associated_file_delivery_waits_until_workspace_load_handlers_finish():
+    bridge = read(DESKTOP / "desktop-host.js")
+    assert "if (document.readyState === 'complete') g.setTimeout(autoOpenNativeInjectedFile, 0);" in bridge
+    assert "g.addEventListener('load', () => g.setTimeout(autoOpenNativeInjectedFile, 0), { once: true });" in bridge
+    assert "\n  autoOpenNativeInjectedFile();\n" not in bridge
+
+
 def test_stager_injects_bridge_without_editing_source_html():
     stager = read(DESKTOP / "scripts" / "stage_web.py")
     assert "desktop-host.js" in stager
