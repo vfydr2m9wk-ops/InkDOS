@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   dispatch:
-    name: Dispatch final integrity refresh
+    name: Dispatch final integrity refresh after validator fix
     runs-on: ubuntu-22.04
     steps:
       - name: Dispatch refresh on main
@@ -25,4 +25,4 @@ jobs:
           gh api --method POST \
             "repos/${GITHUB_REPOSITORY}/actions/workflows/refresh-integrity-metadata.yml/dispatches" \
             -f ref=main
-          echo "Dispatched final InkDOS 2.3.0 integrity refresh."
+          echo "Dispatched final InkDOS 2.3.0 integrity refresh after validator fix."
