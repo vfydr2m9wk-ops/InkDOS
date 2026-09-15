@@ -375,7 +375,8 @@
     };
   }
 
-  autoOpenNativeInjectedFile();
+  if (document.readyState === 'complete') g.setTimeout(autoOpenNativeInjectedFile, 0);
+  else g.addEventListener('load', () => g.setTimeout(autoOpenNativeInjectedFile, 0), { once: true });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installManualUpdaterUI, { once: true });
   else installManualUpdaterUI();
 
