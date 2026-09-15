@@ -1,19 +1,21 @@
-# InkDOS 2.2.0
+# InkDOS 2.3.0
 
 InkDOS is a local-first productivity suite with six physically independent workspaces behind an optional Home launcher. The same client-side HTML/CSS/JavaScript application is distributed as a web/PWA edition and as installable Tauri desktop editions, with no application backend or telemetry service.
 
-Version 2.2.0 promotes the unified web/PWA + desktop distribution to the stable release line. The Windows desktop path has been manually installed and confirmed working, while automated repository, format-preservation, browser and native packaging gates remain part of the release process.
+Version 2.3.0 advances the unified web/PWA + desktop stable line with the completed 2.3 workspace intervention and desktop packaging work, plus a manual-only desktop updater. The updater is desktop-only and performs no startup check, polling, telemetry, or background network activity; update network access begins only after the user explicitly chooses Check for updates. Final installed updater end-to-end validation remains a release gate and is not implied by repository-level validation.
 
 ## Desktop edition
 
-The desktop edition uses Tauri v2 as a thin native host around the existing InkDOS workspaces. It uses native open/save dialogs and filesystem access where the desktop bridge is available, while preserving the browser/PWA fallback paths. Windows installation has been confirmed on a real machine for the 2.2.0 release line; macOS and Linux installers remain produced and validated by native CI runners.
+The desktop edition uses Tauri v2 as a thin native host around the existing InkDOS workspaces. It uses native open/save dialogs and filesystem access where the desktop bridge is available, while preserving the browser/PWA fallback paths. Windows, macOS and Linux packaging are exercised by native CI runners, including package inspection, launchers, associations and multiwindow integration.
+
+The 2.3 desktop updater uses the signed Tauri updater path. It is hidden/inert in the web/PWA edition. On desktop, Check for updates is an explicit user action; when invoked, InkDOS compares the installed and latest versions and can present release notes. Installation remains a separate explicit action and can be cancelled. Signed metadata, artifacts and signatures are part of the updater trust boundary.
 
 ## Workspaces and format behavior
 
 | Workspace | Primary editable format | Additional input / behavior |
 | --- | --- | --- |
 | Documents | DOCX | RTF imports into the editable document model. Legacy DOC opens through the local import-only reader and can be promoted by saving an editable DOCX copy; InkDOS does not write back to DOC. |
-| Spreadsheets | XLSX | Legacy XLS workbooks can be imported locally and saved as editable XLSX copies. |
+| Spreadsheets | XLSX | Legacy XLS workbooks can be imported locally and saved as editable XLSX copies. CSV/TSV delimited-text handling preserves the detected delimiter through the supported local workflow. |
 | Presentations | PPTX | Legacy PPT presentations can be imported locally and promoted to editable PPTX copies; PPT write-back is not provided. |
 | Plain Text | TXT | Local plain-text creation, editing and export. |
 | EPUB Reader | EPUB | Local reading, navigation, themes and annotations, with compatibility fallbacks for supported ZIP/EPUB structures. |
@@ -27,7 +29,7 @@ Each workspace retains app-local runtime, state, I/O, UI and view responsibiliti
 
 Home is an optional suite bridge. It launches workspaces with `suite=1`; each app-local frame exposes the Home action only in that suite context. A workspace opened directly or extracted independently does not require the Home launcher to operate.
 
-Release validation checks standalone app isolation, cross-app reference boundaries and the root offline shell.
+Release validation checks standalone app isolation, cross-app reference boundaries and the root offline shell. The 2.3 intervention also preserves suite-wide adaptive interface density while keeping the workspaces physically independent.
 
 ## Save, Share and unsaved-work semantics
 
@@ -41,7 +43,7 @@ Those contracts are regression-tested, but exact host behavior can differ on iPa
 
 The automated release gate covers repository contracts, deterministic assets, format-preservation round trips and browser regressions in Chromium, Firefox and WebKit. Passing that matrix means the tested browser paths are green; it is not a claim that every embedded WebKit host behaves identically to Playwright WebKit.
 
-The current real-device acceptance cycle concentrates on iPad/XeOS behavior, especially file delivery, legacy PPT fidelity, EPUB compatibility and PDF host integration. Confirmed device findings are treated as higher-priority evidence when they differ from synthetic browser behavior.
+Real-device acceptance remains distinct from automated validation. Host-specific findings on iPad/XeOS and installed desktop packages are treated as higher-priority evidence when they differ from synthetic browser behavior. The signed installed updater end-to-end path is likewise a final release validation step rather than a repository-only claim.
 
 ## Appearance and offline behavior
 
@@ -51,7 +53,7 @@ The root service worker provides the validated application shell under HTTP(S). 
 
 ## Release and control-state files
 
-`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.2.0 release identity.
+`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.3.0 release identity after the integrity metadata refresh is completed.
 
 `DEVELOPMENT_STATE.json` has a different purpose: it records the last transactional update-package sequence accepted by the updater. Its sequence/package label can therefore remain tied to an earlier package even when the public release identity has advanced through validated repository integration. Historical stability/freeze documents likewise retain the versions and commit anchors that were true when those records were produced.
 
@@ -67,6 +69,7 @@ apps/
   txt/
   epub/
   pdf/
+desktop/
 docs/
 scripts/
 tests/
