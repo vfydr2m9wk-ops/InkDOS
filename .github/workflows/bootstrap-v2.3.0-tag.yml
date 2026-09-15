@@ -1,0 +1,39 @@
+name: Bootstrap InkDOS v2.3.0 tag
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/bootstrap-v2.3.0-tag.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: Create v2.3.0 release tag
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Verify and create tag
+        shell: bash
+        env:
+          RELEASE_SHA: 983fb69f5d6ddd6dc5fb5cdc33db1588390d372e
+        run: |
+          set -euo pipefail
+          git fetch origin main --tags
+          test "$(git rev-parse origin/main^)" = "$RELEASE_SHA" || {
+            echo "Expected release candidate is not the parent of the bootstrap commit." >&2
+            exit 1
+          }
+          test "$(git show "$RELEASE_SHA:VERSION.json" | python -c 'import json,sys; print(json.load(sys.stdin)["version"])')" = "2.3.0"
+          if git rev-parse -q --verify refs/tags/v2.3.0 >/dev/null; then
+            test "$(git rev-parse refs/tags/v2.3.0^{commit})" = "$RELEASE_SHA"
+            echo "v2.3.0 already points to the intended release commit."
+            exit 0
+          fi
+          git tag v2.3.0 "$RELEASE_SHA"
+          git push origin refs/tags/v2.3.0
