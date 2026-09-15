@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import posixpath
 import re
 from pathlib import Path
 
@@ -20,6 +21,14 @@ def require(text: str, needle: str, label: str) -> None:
 def forbid(text: str, needle: str, label: str) -> None:
     if needle in text:
         raise AssertionError(f'{label}: forbidden {needle!r}')
+
+
+def resolved_epub_shell_path(ref: str) -> str:
+    """Resolve an EPUB-relative URL the same way the browser does before cache lookup."""
+    normalized = posixpath.normpath(posixpath.join('apps/epub', ref))
+    if normalized == '..' or normalized.startswith('../'):
+        raise AssertionError(f'EPUB local dependency escapes app root unexpectedly: {ref!r}')
+    return './' + normalized.lstrip('/')
 
 
 def main() -> None:
@@ -63,14 +72,14 @@ def main() -> None:
         raise AssertionError('EPUB script graph is not in dependency order')
 
     # Every local runtime dependency referenced by the EPUB document must be
-    # explicitly known to the offline shell. A cached index without one of its
-    # scripts/styles is not a valid offline boot.
+    # explicitly known to the offline shell. Resolve relative URLs first so
+    # ../../shared/foo.js is checked against the canonical ./shared/foo.js cache key.
     local_refs = re.findall(r'<script[^>]+src="([^"?#]+)', index)
     local_refs += re.findall(r'<link[^>]+rel="stylesheet"[^>]+href="([^"?#]+)', index)
     for ref in local_refs:
         if ref.startswith(('http://', 'https://', '//')):
             continue
-        require(service_worker, f'"./apps/epub/{ref}"', 'EPUB offline shell')
+        require(service_worker, f'"{resolved_epub_shell_path(ref)}"', 'EPUB offline shell')
     if not re.search(rf"const CACHE_NAME='inkdos-v{re.escape(version)}-[^']+'", service_worker):
         raise AssertionError(f'EPUB offline cache rotation: missing current {version} cache name')
 

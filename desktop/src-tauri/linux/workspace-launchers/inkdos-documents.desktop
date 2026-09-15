@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=InkDOS Documents
+Exec=InkDOS --workspace documents
+Icon=inkdos-documents
+Terminal=false
+Categories=Office;
+X-InkDOS-Workspace=documents
+X-InkDOS-SourceIcon=assets/icons/documents.svg

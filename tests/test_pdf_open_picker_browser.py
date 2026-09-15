@@ -37,6 +37,11 @@ def main() -> None:
             page = browser.new_page(viewport={"width": 1024, "height": 768})
             page.goto(BASE + "/apps/pdf/", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
+
+            # Safari/WebKit can reject fileInput.click() once the original user
+            # gesture crosses an async boundary. dispatchEvent() itself is
+            # synchronous, so record whether InkDOS requests the picker before
+            # that dispatch returns rather than inferring timing from microtasks.
             timing = page.evaluate(
                 r"""() => {
                     const button = document.querySelector('#openStartBtn');

@@ -3,8 +3,6 @@ from pathlib import Path
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "2.2.0"
-DATE = "2026-09-12"
 APPS = ("documents", "spreadsheets", "presentations", "txt", "epub", "pdf")
 
 
@@ -18,10 +16,11 @@ def require(condition, message):
 
 
 version = load("VERSION.json")
-require(version.get("version") == VERSION, "VERSION.json must identify InkDOS 2.2.0")
+VERSION = version.get("version")
+DATE = version.get("date")
+require(VERSION and DATE, "VERSION.json must define the current release version and date")
 require(version.get("releaseName") == f"InkDOS {VERSION}", "VERSION.json releaseName mismatch")
-require(version.get("date") == DATE, "VERSION.json release date mismatch")
-require(version.get("releaseChannel") == "stable", "InkDOS 2.2.0 must remain on the stable channel")
+require(version.get("releaseChannel") == "stable", f"InkDOS {VERSION} must remain on the stable channel")
 require(version.get("components", {}).get("documents", {}).get("format") == "DOC / DOCX / RTF", "Documents format scope must include DOC, DOCX and RTF")
 
 build = load("BUILD_INFO.json")
@@ -38,9 +37,9 @@ require(source.get("generatedAt") == DATE, "SOURCE_MANIFEST.json generatedAt mis
 require(release.get("releaseDate") == DATE, "RELEASE_MANIFEST.json releaseDate mismatch")
 
 home = (ROOT / "index.html").read_text(encoding="utf-8")
-require(f"InkDOS {VERSION}" in home, "Home footer must show InkDOS 2.2.0")
+require(f"InkDOS {VERSION}" in home, f"Home footer must show InkDOS {VERSION}")
 for app in APPS:
-    require(f"./apps/{app}/index.html?v={VERSION}&amp;suite=1" in home, f"Home route is not versioned for 2.2.0: {app}")
+    require(f"./apps/{app}/index.html?v={VERSION}&amp;suite=1" in home, f"Home route is not versioned for {VERSION}: {app}")
 for text in (
     "Edit DOCX files locally; import RTF and legacy DOC into editable DOCX copies.",
     "Edit XLSX files locally; import legacy XLS workbooks into editable XLSX copies.",
@@ -52,17 +51,17 @@ for text in (
     require(text in home, f"Home capability copy missing: {text}")
 
 service_worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
-require("inkdos-v2.2.0-" in service_worker, "Service-worker cache must rotate to InkDOS 2.2.0")
+require(f"inkdos-v{VERSION}-" in service_worker, f"Service-worker cache must match InkDOS {VERSION}")
 
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
 status = (ROOT / "docs/PROJECT_STATUS.md").read_text(encoding="utf-8")
 limitations = (ROOT / "docs/KNOWN_LIMITATIONS.md").read_text(encoding="utf-8")
 changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-require(readme.startswith("# InkDOS 2.2.0\n"), "README must describe InkDOS 2.2.0")
+require(readme.startswith(f"# InkDOS {VERSION}\n"), f"README must describe InkDOS {VERSION}")
 require("real-device acceptance" in readme.lower(), "README must distinguish automated validation from real-device acceptance")
-require("Release: **InkDOS 2.2.0**" in status, "Project status release identity mismatch")
+require(f"Release: **InkDOS {VERSION}**" in status, "Project status release identity mismatch")
 require("real-device acceptance" in status.lower(), "Project status must identify the current acceptance stage")
 require("browser rendering matrix were not completed" not in limitations, "Known limitations contains a stale browser-matrix statement")
-require("## 2.2.0 — 2026-09-12" in changelog, "CHANGELOG must contain the 2.2.0 release entry")
+require(f"## {VERSION} — {DATE}" in changelog, f"CHANGELOG must contain the {VERSION} release entry")
 
-print("InkDOS 2.2.0 release identity and documentation contract passed.")
+print(f"InkDOS {VERSION} release identity and documentation contract passed.")
