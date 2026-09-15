@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.0 — 2026-09-14
+
+- Preserve CSV/TSV delimiter and format behavior across spreadsheet open/edit/save workflows, including the completed semicolon-delimited CSV correction.
+- Apply suite-wide adaptive interface density and retain the completed Presentations interaction/overflow and PDF Open work without discarding preserved Goal 3 changes.
+- Add the desktop/Tauri-only manual updater path: web/PWA remains inert, there are no startup checks, polling, telemetry or background network requests, and update network access begins only after an explicit Check for updates action.
+- Keep update installation separately explicit with current/latest state, release notes, Install/Cancel handling and signed Tauri v2 metadata/artifact/signature trust boundaries.
+- Advance Windows MSI, Linux AppImage and macOS native packaging, associations, launchers, multiwindow and package-inspection contracts to the verified pre-release checkpoint.
+- Promote release and offline cache identity to 2.3.0 while preserving local-first operation, no backend and no telemetry.
+- The final signed installed-updater end-to-end validation remains a release-completion gate and is not claimed complete by this changelog entry.
+
 ## 2.2.0 — 2026-09-12
 
 - Promote the unified InkDOS web/PWA and Tauri desktop distribution to the stable 2.2.0 release identity.
