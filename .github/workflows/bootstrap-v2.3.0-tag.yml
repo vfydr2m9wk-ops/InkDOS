@@ -1,4 +1,4 @@
-name: Publish validated InkDOS v2.3.0
+name: Publish clean InkDOS v2.3.0
 
 on:
   push:
@@ -13,20 +13,20 @@ permissions:
 
 jobs:
   publish:
-    name: Retag validated commit and dispatch release
+    name: Point v2.3.0 to clean release commit and dispatch publisher
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
-      - name: Move v2.3.0 to validated release commit
+      - name: Move v2.3.0 to clean validated release commit
         shell: bash
         env:
-          RELEASE_SHA: ba39b205fb3bed62af055bba9c196c6c5c99bdec
+          RELEASE_SHA: c8fb35e9a1d9d813b9b9b8db3b27aea9977415dd
         run: |
           set -euo pipefail
           git fetch origin main --tags --force
-          test "$(git rev-parse HEAD^)" = "$RELEASE_SHA"
+          git merge-base --is-ancestor "$RELEASE_SHA" HEAD
           test "$(git show "$RELEASE_SHA:VERSION.json" | python -c 'import json,sys; print(json.load(sys.stdin)["version"])')" = "2.3.0"
           git tag -f v2.3.0 "$RELEASE_SHA"
           git push --force origin refs/tags/v2.3.0
