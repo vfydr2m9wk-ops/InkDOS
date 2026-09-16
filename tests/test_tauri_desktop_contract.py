@@ -134,6 +134,7 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
         "ubuntu-22.04",
         "python desktop/scripts/release_version.py --check-tag",
         "python desktop/scripts/release_version.py --check-config",
+        "python desktop/scripts/generate_workspace_icons.py",
         "InkDOS-Windows",
         "InkDOS-macOS",
         "InkDOS-Linux",
@@ -143,6 +144,7 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
         "https://vfydr2m9wk-ops.github.io/InkDOS/",
     ):
         assert marker in workflow
+    assert workflow.index("python desktop/scripts/generate_workspace_icons.py") < workflow.index("cargo tauri build --bundles")
     assert "needs: [validate, build]" in workflow or "needs:\n      - validate\n      - build" in workflow
     assert "setup-node" not in workflow
     assert "npm install" not in workflow
