@@ -132,6 +132,11 @@ jobs:
       - name: Generate desktop icons
         working-directory: desktop/src-tauri
         run: cargo tauri icon ../../assets/icons/office.png
+      - name: Generate workspace native icons from canonical sources
+        run: python desktop/scripts/generate_workspace_icons.py
+      - name: Generate macOS workspace launch entries
+        if: runner.os == 'macOS'
+        run: python desktop/scripts/generate_macos_workspace_launchers.py
       - name: Check Tauri shell
         working-directory: desktop/src-tauri
         run: cargo check
