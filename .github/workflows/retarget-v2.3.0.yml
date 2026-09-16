@@ -1,4 +1,4 @@
-name: Refresh InkDOS 2.3 integrity checkpoint
+name: Retarget InkDOS 2.3 release tag
 
 on:
   push:
@@ -8,18 +8,30 @@ on:
       - '.github/workflows/retarget-v2.3.0.yml'
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 jobs:
-  dispatch-integrity-refresh:
+  retarget-and-dispatch:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:
-      - name: Dispatch repository integrity refresh on main
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Verify final 2.3.0 snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')" = "2.3.0"
+          python desktop/scripts/release_version.py --check-config
+          python scripts/verify_checksums.py
+      - name: Retarget v2.3.0 and dispatch unified release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh workflow run refresh-integrity-metadata.yml --repo vfydr2m9wk-ops/InkDOS --ref main
+          git tag -f v2.3.0 "$GITHUB_SHA"
+          git push origin refs/tags/v2.3.0 --force
+          gh workflow run release.yml --ref main -f release_tag=v2.3.0
