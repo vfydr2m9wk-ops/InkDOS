@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 from pathlib import Path
-
-from shared_runtime_policy import is_allowed_shared_relpath
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.shared_runtime_policy import is_allowed_shared_relpath
+
 FORBIDDEN_ROOTS = ('modules', 'core', 'legacy')
 
 
