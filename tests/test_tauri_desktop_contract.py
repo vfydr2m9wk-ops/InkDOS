@@ -6,6 +6,8 @@ DESKTOP = ROOT / "desktop"
 TAURI = DESKTOP / "src-tauri"
 WORKFLOW = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
 RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "release.yml"
+PROMOTION_WORKFLOW = ROOT / ".github" / "workflows" / "promote-release-tag.yml"
+PROMOTION_REQUEST = ROOT / ".github" / "release-promotion.json"
 RELEASE_VERSION = DESKTOP / "scripts" / "release_version.py"
 
 
@@ -25,12 +27,21 @@ def test_tauri_shell_configuration_matches_inkdos_release():
     assert config["app"]["windows"][0]["label"] == "main"
 
 
-def test_tauri_rust_dependencies_are_v2_and_node_free():
+def test_tauri_rust_dependencies_are_pinned_to_verified_release_versions():
     cargo = read(TAURI / "Cargo.toml")
-    assert 'tauri = { version = "2"' in cargo
-    assert 'tauri-plugin-dialog = "2"' in cargo
-    assert 'tauri-plugin-fs = "2"' in cargo
-    assert 'tauri-plugin-opener = "2"' in cargo
+    for marker in (
+        'rust-version = "1.98.1"',
+        'tauri-build = { version = "=2.6.3"',
+        'tauri = { version = "=2.11.5"',
+        'tauri-plugin-single-instance = "=2.4.4"',
+        'tauri-plugin-dialog = "=2.7.3"',
+        'tauri-plugin-fs = "=2.5.2"',
+        'tauri-plugin-opener = "=2.5.5"',
+        'tauri-plugin-updater = "=2.11.0"',
+        'serde = { version = "=1.0.229"',
+        'serde_json = "=1.0.151"',
+    ):
+        assert marker in cargo
     lowered = cargo.lower()
     assert "electron" not in lowered
     assert "node" not in lowered
@@ -77,7 +88,7 @@ def test_associated_file_delivery_waits_until_workspace_load_handlers_finish():
     assert "\n  autoOpenNativeInjectedFile();\n" not in bridge
 
 
-def test_stager_injects_bridge_without_editing_source_html():
+def test_stager_injects_bridge_without_editing_source_html_or_shipping_status_docs():
     stager = read(DESKTOP / "scripts" / "stage_web.py")
     assert "desktop-host.js" in stager
     assert "<head>" in stager
@@ -86,6 +97,7 @@ def test_stager_injects_bridge_without_editing_source_html():
     assert "apps" in stager
     assert "assets" in stager
     assert "--check" in stager
+    assert "PROJECT_STATUS.md" not in stager
 
 
 def test_release_version_utility_uses_version_json_as_authority():
@@ -101,34 +113,50 @@ def test_release_version_utility_uses_version_json_as_authority():
         assert marker in utility
 
 
-def test_native_build_workflow_targets_main_or_manual_checkpoint_without_node():
+def test_desktop_workflow_is_contract_only_without_duplicate_native_builds():
     workflow = read(WORKFLOW)
     for marker in (
         "main",
         "workflow_dispatch",
+        "runs-on: ubuntu-22.04",
+        "python desktop/scripts/stage_web.py --check",
+        "python desktop/scripts/release_version.py --check-config",
+        "python tests/test_tauri_desktop_contract.py",
+    ):
+        assert marker in workflow
+    for forbidden in (
+        "cargo tauri build",
         "windows-latest",
         "macos-latest",
-        "ubuntu-22.04",
-        "cargo tauri build",
         "InkDOS-Windows",
         "InkDOS-macOS",
         "InkDOS-Linux",
-        "libwebkit2gtk-4.1-dev",
-        "python desktop/scripts/stage_web.py",
-        "python desktop/scripts/release_version.py --check-config",
+        "dtolnay/rust-toolchain",
+        "cargo install tauri-cli",
+        "upload-artifact",
+        "strategy:",
+        "matrix:",
     ):
-        assert marker in workflow
-    assert "branches:\n      - desktop-tauri" not in workflow
-    assert "feature/inkdos-2.3" not in workflow
+        assert forbidden not in workflow
     assert "setup-node" not in workflow
     assert "npm install" not in workflow
     assert "npm run" not in workflow
 
 
+def test_release_has_one_tag_only_entrypoint_and_no_promotion_state():
+    workflow = read(RELEASE_WORKFLOW)
+    assert "v*.*.*" in workflow
+    assert "workflow_dispatch" not in workflow
+    assert "reuse_run_id" not in workflow
+    assert "inputs." not in workflow
+    assert "RELEASE_TAG: ${{ github.ref_name }}" in workflow
+    assert not PROMOTION_WORKFLOW.exists()
+    assert not PROMOTION_REQUEST.exists()
+
+
 def test_tag_release_workflow_builds_every_platform_before_publication():
     workflow = read(RELEASE_WORKFLOW)
     for marker in (
-        "v*.*.*",
         "windows-latest",
         "macos-latest",
         "ubuntu-22.04",
@@ -142,6 +170,9 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
         "contents: write",
         "gh release create",
         "https://vfydr2m9wk-ops.github.io/InkDOS/",
+        "dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87",
+        "toolchain: 1.98.1",
+        'cargo install tauri-cli --version "2.11.4" --locked',
     ):
         assert marker in workflow
     assert workflow.index("python desktop/scripts/generate_workspace_icons.py") < workflow.index("cargo tauri build --bundles")
@@ -150,12 +181,41 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
     assert "npm install" not in workflow
 
 
-def test_tag_release_publishes_only_final_installer_files():
+def test_release_builds_only_supported_installer_formats():
+    workflow = read(RELEASE_WORKFLOW)
+    for marker in (
+        "bundles: nsis",
+        "bundles: app,dmg",
+        "bundles: appimage",
+        "bundle/nsis/*.exe",
+        "bundle/dmg/*.dmg",
+        "bundle/macos/*.app.tar.gz",
+        "bundle/appimage/*.AppImage",
+    ):
+        assert marker in workflow
+    for forbidden in (
+        "bundles: nsis,msi",
+        "bundles: deb,appimage,rpm",
+        "bundle/msi/",
+        "bundle/deb/",
+        "bundle/rpm/",
+        "'.msi'",
+        "'.deb'",
+        "'.rpm'",
+    ):
+        assert forbidden not in workflow
+
+
+def test_tag_release_publishes_only_current_run_final_assets():
     workflow = read(RELEASE_WORKFLOW)
     assert "release-final" in workflow
-    for suffix in (".exe", ".msi", ".dmg", ".deb", ".AppImage", ".rpm"):
-        assert suffix in workflow
-    assert "find release-assets -type f -print0" not in workflow
+    assert "run-id:" not in workflow
+    assert "Download reused" not in workflow
+    assert "Download current-run native artifacts" in workflow
+    assert "Download current-run provenance" in workflow
+    assert "required_installers = ('.exe', '.dmg', '.AppImage')" in workflow
+    assert "updater_required = ('.exe.sig', '.app.tar.gz', '.app.tar.gz.sig', '.AppImage.sig')" in workflow
+    assert 'if [ "${#ASSETS[@]}" -lt 8 ]; then' in workflow
 
 
 def test_generated_desktop_bundles_are_ignored_within_desktop_boundary():
@@ -165,16 +225,17 @@ def test_generated_desktop_bundles_are_ignored_within_desktop_boundary():
         "src-tauri/target/",
         "*.dmg",
         "*.AppImage",
-        "*.msi",
-        "*.rpm",
     ):
         assert marker in ignored
 
 
-def test_bundle_targets_cover_expected_installers():
+def test_bundle_targets_cover_only_supported_installers():
     config = json.loads(read(TAURI / "tauri.conf.json"))
-    targets = set(config["bundle"]["targets"])
-    assert {"nsis", "msi", "app", "dmg", "deb", "appimage", "rpm"}.issubset(targets)
+    assert set(config["bundle"]["targets"]) == {"nsis", "app", "dmg", "appimage"}
+    assert "wix" not in config["bundle"].get("windows", {})
+    linux = config["bundle"].get("linux", {})
+    assert "deb" not in linux
+    assert "rpm" not in linux
 
 
 if __name__ == "__main__":

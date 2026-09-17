@@ -38,7 +38,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis", "msi", "app", "dmg", "deb", "appimage", "rpm"],
+    "targets": ["nsis", "app", "dmg", "appimage"],
     "category": "Productivity",
     "shortDescription": "Local-first productivity suite",
     "longDescription": "InkDOS is a local-first productivity suite for documents, spreadsheets, presentations, PDF, EPUB and plain text workflows.",
@@ -67,40 +67,11 @@
       }
     },
     "linux": {
-      "deb": {"files": {
-        "/usr/share/applications/inkdos-documents.desktop":"./linux/workspace-launchers/inkdos-documents.desktop",
-        "/usr/share/applications/inkdos-spreadsheets.desktop":"./linux/workspace-launchers/inkdos-spreadsheets.desktop",
-        "/usr/share/applications/inkdos-presentations.desktop":"./linux/workspace-launchers/inkdos-presentations.desktop",
-        "/usr/share/applications/inkdos-pdf.desktop":"./linux/workspace-launchers/inkdos-pdf.desktop",
-        "/usr/share/applications/inkdos-epub.desktop":"./linux/workspace-launchers/inkdos-epub.desktop",
-        "/usr/share/applications/inkdos-txt.desktop":"./linux/workspace-launchers/inkdos-txt.desktop",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-documents.svg":"../../assets/icons/documents.svg",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-spreadsheets.svg":"../../assets/icons/spreadsheets.svg",
-        "/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png":"../../assets/icons/presentations.png",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-pdf.svg":"../../assets/icons/pdf.svg",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-epub.svg":"../../assets/icons/epub.svg",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-txt.svg":"../../assets/icons/txt.svg"
-      }},
-      "rpm": {"files": {
-        "/usr/share/applications/inkdos-documents.desktop":"./linux/workspace-launchers/inkdos-documents.desktop",
-        "/usr/share/applications/inkdos-spreadsheets.desktop":"./linux/workspace-launchers/inkdos-spreadsheets.desktop",
-        "/usr/share/applications/inkdos-presentations.desktop":"./linux/workspace-launchers/inkdos-presentations.desktop",
-        "/usr/share/applications/inkdos-pdf.desktop":"./linux/workspace-launchers/inkdos-pdf.desktop",
-        "/usr/share/applications/inkdos-epub.desktop":"./linux/workspace-launchers/inkdos-epub.desktop",
-        "/usr/share/applications/inkdos-txt.desktop":"./linux/workspace-launchers/inkdos-txt.desktop",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-documents.svg":"../../assets/icons/documents.svg",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-spreadsheets.svg":"../../assets/icons/spreadsheets.svg",
-        "/usr/share/icons/hicolor/256x256/apps/inkdos-presentations.png":"../../assets/icons/presentations.png",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-pdf.svg":"../../assets/icons/pdf.svg",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-epub.svg":"../../assets/icons/epub.svg",
-        "/usr/share/icons/hicolor/scalable/apps/inkdos-txt.svg":"../../assets/icons/txt.svg"
-      }},
       "appimage": {"files": {}}
     },
     "windows": {
       "webviewInstallMode": {"type":"downloadBootstrapper","silent":true},
-      "nsis": {"installMode":"currentUser","installerHooks":"./windows/workspace-launchers.nsh"},
-      "wix": {"fragmentPaths":["./windows/workspace-launchers.wxs"],"componentGroupRefs":["InkDOSWorkspaceLaunchers"]}
+      "nsis": {"installMode":"currentUser","installerHooks":"./windows/workspace-launchers.nsh"}
     }
   }
 }
