@@ -1,0 +1,67 @@
+/* InkDOS 2.0 App Frame — shell geometry and generic frame controls only.
+   Ownership rule: this file may style the frame/chrome, never an app's content surface. */
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--frame-bg);font-family:var(--frame-ui);color:var(--frame-text);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
+.app-frame{height:100dvh;min-height:100%;width:100%;max-width:100vw;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;background:var(--frame-bg);overflow:hidden}
+
+.framebar{min-height:58px;display:flex;align-items:center;padding:var(--frame-safe-t) var(--frame-safe-r) 8px var(--frame-safe-l);background:var(--frame-chrome);border-bottom:1px solid var(--frame-line);box-shadow:0 2px 10px rgba(15,23,42,.045);position:relative;z-index:30}
+.frame-left{display:flex;align-items:center;gap:9px;min-width:0;max-width:38%;position:relative;z-index:2}
+.menu-btn{width:42px;height:42px;min-width:42px;border:1px solid transparent;border-radius:12px;display:grid;place-items:center;background:transparent;cursor:pointer;transition:background .14s ease,border-color .14s ease,transform .08s ease}
+.menu-btn:hover,.menu-btn:focus-visible{background:var(--frame-surface-soft);border-color:var(--frame-line);outline:none}.menu-btn:active{transform:translateY(1px) scale(.98)}
+.menu-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round}
+.app-mark{display:flex;align-items:center;gap:7px;min-width:0;color:var(--frame-muted);font-weight:650;font-size:14px}.app-icon{width:31px;height:31px;flex:0 0 auto;filter:var(--frame-app-icon-filter,none)}.app-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-pill-wrap{position:absolute;left:50%;transform:translateX(-50%);width:min(420px,44vw);max-width:calc(100% - 220px);height:39px;z-index:1}
+.file-pill{width:100%;height:100%;border:1px solid var(--frame-line);border-radius:11px;background:var(--frame-surface);display:block;padding:0 28px 0 18px;font-weight:730;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:var(--frame-control-inset);outline:none}
+.file-pill:focus{border-color:var(--frame-accent-focus);box-shadow:0 0 0 3px var(--frame-accent-ring);text-align:left}.dirty-dot{position:absolute;right:10px;top:50%;transform:translateY(-55%);color:var(--frame-accent-strong);font-size:20px;line-height:1;pointer-events:none}
+
+.toolstrip-shell{background:var(--frame-chrome);border-bottom:1px solid var(--frame-line);position:relative;z-index:20;overflow:hidden}.toolstrip-shell::after{content:"";position:absolute;top:0;right:0;bottom:0;width:30px;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),var(--frame-chrome-fade))}
+.toolstrip{width:100%;max-width:100vw;min-width:0;height:54px;display:flex;flex-flow:row nowrap;align-items:center;gap:7px;overflow-x:scroll;overflow-y:hidden;white-space:nowrap;padding:6px calc(var(--frame-safe-r) + 22px) 6px var(--frame-safe-l);scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;cursor:grab}.toolstrip:active{cursor:grabbing}.toolstrip::-webkit-scrollbar{display:none}
+.tool-btn{width:42px;height:42px;min-width:42px;flex:0 0 42px;border:1px solid var(--frame-line);border-radius:11px;background:var(--frame-surface);display:grid;place-items:center;cursor:pointer;box-shadow:var(--frame-control-inset)}.tool-btn:hover,.tool-btn:focus-visible{background:var(--frame-surface-soft);outline:none;border-color:var(--frame-line-strong)}.tool-btn:disabled{opacity:.42;cursor:default}.tool-btn.active{background:var(--frame-accent-soft);border-color:var(--frame-accent-border);color:var(--frame-accent-text)}.tool-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tool-btn.text-glyph{font-size:17px;font-weight:750;letter-spacing:-.02em}.compact-tool{font-size:20px}.tool-sep{width:1px;height:28px;background:var(--frame-line);margin:0 2px;flex:0 0 1px}
+
+.statusbar{min-height:34px;display:flex;align-items:center;gap:0;padding:0 var(--frame-safe-r) var(--frame-safe-b) var(--frame-safe-l);background:var(--frame-chrome);border-top:1px solid var(--frame-line);font-size:12px;color:var(--frame-muted);white-space:nowrap;overflow-x:auto;scrollbar-width:none;font-variant-numeric:tabular-nums}.statusbar::-webkit-scrollbar{display:none}.status-item{height:34px;display:inline-flex;align-items:center;padding:0 12px;border-right:1px solid var(--frame-divider);flex:0 0 auto}.status-item:first-child{padding-left:0}.status-spacer{flex:1 1 auto;min-width:22px}.internal-state{display:none!important}.state-ok{color:var(--frame-state-ok)}.state-warn{color:var(--frame-state-warn)}.state-error{color:var(--frame-state-error)}
+
+.backdrop{position:fixed;inset:0;background:var(--frame-overlay);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:100}.drawer{position:fixed;z-index:110;top:calc(var(--frame-safe-t) + 58px);left:var(--frame-safe-l);width:min(330px,calc(100vw - var(--frame-safe-l) - var(--frame-safe-r)));max-height:calc(100dvh - var(--frame-safe-t) - var(--frame-safe-b) - 82px);overflow:auto;background:var(--frame-surface);border:1px solid var(--frame-line);border-radius:18px;box-shadow:var(--frame-panel-shadow);padding:12px}.drawer[hidden],.backdrop[hidden]{display:none!important}.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:5px 5px 11px 7px;border-bottom:1px solid var(--frame-line);margin-bottom:6px}.drawer-title{display:flex;align-items:center;gap:8px;font-weight:760}.drawer-title .app-icon{width:31px;height:31px}.close-btn{width:36px;height:36px;border:0;border-radius:10px;background:transparent;display:grid;place-items:center;cursor:pointer}.close-btn:hover{background:var(--frame-surface-soft)}.close-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}.menu-list{display:grid;gap:3px}.menu-item{height:48px;border:0;border-radius:12px;background:transparent;display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;padding:0 11px;text-align:left;cursor:pointer;font-weight:650}.menu-item:hover,.menu-item:focus-visible{background:var(--frame-surface-soft);outline:none}.menu-item:disabled{opacity:.45;cursor:default}.menu-item svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.menu-item .hint{font-size:11px;font-weight:500;color:var(--frame-muted)}
+
+@media(max-width:640px){
+  .framebar{min-height:60px;padding-bottom:6px}.frame-left{gap:6px;max-width:105px}.app-name{display:none}.app-mark{gap:0}.app-icon{width:30px;height:30px}.menu-btn{width:40px;height:40px;min-width:40px}
+  .file-pill-wrap{height:40px;width:48vw;max-width:calc(100% - 196px);min-width:128px}.file-pill{padding:0 23px 0 9px;font-size:15px}.dirty-dot{right:7px}
+  .toolstrip{height:52px;padding-top:5px;padding-bottom:5px;gap:6px}.tool-btn{width:40px;height:40px;min-width:40px;flex-basis:40px;border-radius:10px}
+  .statusbar{font-size:11px}.status-item{height:32px;padding:0 9px}.status-detail{display:none}.drawer{top:calc(var(--frame-safe-t) + 62px);border-radius:17px}
+}
+@media(max-width:390px){.file-pill-wrap{width:47vw;max-width:164px;min-width:118px}.file-pill{font-size:14px}.frame-left{max-width:96px}.app-icon{width:28px;height:28px}}
+@media(max-width:340px){.file-pill-wrap{width:calc(100% - 196px);max-width:124px;min-width:118px}}
+@media(prefers-reduced-motion:reduce){.menu-btn{transition:none}}
+[hidden]{display:none!important}
+
+/* Desktop density contract D1 — local copy for TXT only. Touch/mobile geometry remains unchanged. */
+@media(min-width:900px) and (pointer:fine){
+  .framebar{min-height:46px;padding-top:4px;padding-bottom:4px}.frame-left{gap:7px}.menu-btn{width:34px;height:34px;min-width:34px;border-radius:9px}.menu-btn svg{width:18px;height:18px}.app-icon{width:26px;height:26px}.app-mark{font-size:13px}.file-pill-wrap{height:34px;width:min(420px,42vw)}.file-pill{border-radius:9px;font-size:14px}
+  .toolstrip{height:42px;padding-top:4px;padding-bottom:4px;gap:5px}.tool-btn{width:34px;height:34px;min-width:34px;flex-basis:34px;border-radius:9px}.tool-btn svg{width:17px;height:17px}.tool-btn.text-glyph{font-size:15px}.tool-sep{height:24px}
+  .statusbar{min-height:30px;font-size:11px}.status-item{height:30px;padding:0 10px}.drawer{top:calc(var(--frame-safe-t) + 48px);width:min(310px,calc(100vw - var(--frame-safe-l) - var(--frame-safe-r)));border-radius:14px;padding:10px}.drawer-title .app-icon{width:26px;height:26px}.close-btn{width:32px;height:32px}.menu-item{height:42px;border-radius:10px;font-size:13px}
+}
+
+/* App-local appearance selector. The controller is duplicated per app by design. */
+.menu-section{margin-top:9px;padding-top:10px;border-top:1px solid var(--frame-line)}
+.menu-section-label{padding:0 4px 7px;color:var(--frame-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.appearance-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--frame-surface-soft)}
+.appearance-choice{height:34px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--frame-muted);font-size:12px;font-weight:700;cursor:pointer}
+.appearance-choice.active{background:var(--frame-surface);border-color:var(--frame-line-strong);color:var(--frame-text);box-shadow:var(--frame-control-inset)}
+.appearance-choice:focus-visible{outline:2px solid var(--frame-accent-focus);outline-offset:1px}
+@media(min-width:900px) and (pointer:fine){.appearance-choice{height:30px;font-size:11px}}
+
+/* D3 visual normalization — generic frame geometry, aligned to the frozen Documents shell. */
+.framebar{min-height:calc(54px + var(--frame-safe-t));padding-top:var(--frame-safe-t);padding-bottom:5px;box-shadow:none}
+.frame-left{max-width:none}
+.title-icon{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);width:30px;height:30px;filter:var(--frame-app-icon-filter,none);pointer-events:none}
+.file-pill-wrap{width:min(420px,46vw);max-width:calc(100% - 150px);height:38px}
+.file-pill{background:color-mix(in srgb,var(--frame-chrome) 94%,transparent);padding:0 28px 0 12px;font-weight:650;box-shadow:none}
+.toolstrip-shell{box-shadow:none}.toolstrip{height:50px;padding-top:5px;padding-bottom:5px}
+.tool-btn{width:40px;height:40px;min-width:40px;flex-basis:40px;border-color:transparent;background:transparent;box-shadow:none}
+.tool-btn:hover,.tool-btn:focus-visible{background:var(--frame-surface-soft);border-color:var(--frame-line)}
+.tool-btn.active{background:var(--frame-accent-soft);border-color:transparent}
+.statusbar{min-height:calc(34px + var(--frame-safe-b));font-size:11px;gap:10px}.status-item{height:30px;padding:0 6px;border-right:0}.status-item:first-child{padding-left:0}
+.drawer-head{padding-bottom:8px}.menu-item{font-weight:600}
+@media(pointer:fine){
+  .framebar{min-height:calc(46px + var(--frame-safe-t));padding-top:var(--frame-safe-t);padding-bottom:4px}.menu-btn{width:36px;height:36px;min-width:36px}.menu-btn svg{width:19px;height:19px}.file-pill-wrap{height:34px}.title-icon{width:27px;height:27px}.toolstrip{height:42px;padding-top:4px;padding-bottom:4px}.tool-btn{width:34px;height:34px;min-width:34px;flex-basis:34px}.drawer{top:calc(var(--frame-safe-t) + 52px)}
+}
+@media(max-width:470px){.title-icon{display:none}.file-pill-wrap{width:50vw;max-width:calc(100% - 126px);min-width:118px}}

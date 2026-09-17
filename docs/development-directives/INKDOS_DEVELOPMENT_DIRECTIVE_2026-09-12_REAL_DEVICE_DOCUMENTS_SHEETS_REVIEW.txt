@@ -1,0 +1,45 @@
+INKDOS DEVELOPMENT DIRECTIVE
+ID: INKDOS-DD-2026-09-12-REAL-DEVICE-DOCUMENTS-SHEETS-REVIEW
+Date: 2026-09-12
+Status: ACTIVE / REVIEW IMPLEMENTATION
+Category: Real-device review consolidation / development prompt
+Scope: Documents and Spreadsheets only
+
+PURPOSE
+Consolidate the real-device Documents review with the Spreadsheets review and apply only the reproduced corrections, preserving the current architecture, local-first behavior, privacy boundaries, exactly-once delivery contract, dirty-state protections, format support, and unrelated frozen behavior.
+
+DOCUMENTS — SAVE / APPLE TOUCH HOST
+Observed behavior: a Documents Save routed through the Apple-touch Web Share path delivers the intended DOCX and can also expose a separate text item containing the exported file name. In the Files host this can materialize as an unwanted text document beside the intended saved copy.
+
+Required behavior:
+1. A Documents Web Share handoff must contain the exported DOCX file only. Do not attach title/text metadata beside the file payload on this route.
+2. Preserve the existing single-flight and terminal-delivery rules: one Save action may invoke at most one host delivery route.
+3. Preserve cancellation and error semantics. Do not add a second fallback after Web Share has been invoked.
+4. Do not claim that an iPhone/iPad browser can silently overwrite a source file opened through a normal file input when the host has not provided a writable file handle. The user-visible Save-copy behavior remains the safe fallback in such hosts.
+5. No Plain Text workspace, text export, or cross-workspace side effect may be triggered by Documents Save.
+
+SPREADSHEETS — MOBILE FORMULA ENTRY
+Observed behavior: on the mobile formula bar, the real-device SUM entry `=sum:A1;A2` reaches the workbook editor as a malformed formula and remains visibly uncalculated.
+
+Required behavior:
+1. Normalize the observed mobile shorthand before commit so `=sum:A1;A2` becomes canonical `=SUM(A1,A2)`.
+2. For the supported aggregate functions SUM, AVERAGE, MIN, MAX, and COUNT, accept the same colon-after-function shorthand and normalize semicolon argument separators to commas before commit.
+3. Preserve already valid formulas such as `=SUM(A1:A2)` and preserve non-formula text exactly; do not trim or rewrite ordinary cell text.
+4. Keep normalization at the formula-entry boundary. Do not globally rewrite imported workbook formulas or broaden the formula evaluator beyond this review.
+5. The existing Function selector behavior and workbook recalculation path remain unchanged.
+
+REGRESSION REQUIREMENTS
+- Add an automated regression proving Documents and Spreadsheets Web Share payloads are file-only and contain no title/text companion item.
+- Add an automated regression reproducing the mobile SUM entry and proving the editor receives `=SUM(A1,A2)`.
+- The regressions must fail against the pre-fix implementation and pass after the minimal production changes.
+- Existing exactly-once delivery, dirty-exit, XLS/XLSX/DOCX, integrity, privacy, and source-lock tests must not be weakened.
+
+IMPLEMENTATION LIMITS
+- No unrelated refactor.
+- No new network dependency.
+- No private QA filenames, document contents, screenshots, or recordings committed to the repository.
+- Keep Documents and Spreadsheets file-delivery modules isolated.
+- Any generated integrity metadata must be refreshed by the repository's trusted workflow rather than hand-edited.
+
+ACCEPTANCE
+The change is ready for merge only when the focused regressions are green, repository integrity metadata is current, the PR diff contains no private QA material, and the real-device fixes are limited to the reproduced behaviors above.

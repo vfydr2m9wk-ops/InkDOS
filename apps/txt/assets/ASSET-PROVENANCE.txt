@@ -1,0 +1,6 @@
+InkDOS official Plain Text icon
+Repository: vfydr2m9wk-ops/InkDOS
+Source path: assets/icons/txt.svg
+Git blob SHA: 0aec1abc7cc903f46e8a44a867c12ba26eabbaef
+
+Bundled unchanged in this visual microenvironment to prevent visual drift.

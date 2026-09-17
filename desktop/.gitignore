@@ -1,0 +1,8 @@
+web-dist/
+src-tauri/target/
+src-tauri/icons/
+src-tauri/windows/workspace-icons/
+*.dmg
+*.AppImage
+*.msi
+*.rpm

@@ -1,0 +1,201 @@
+[INKDOS DEVELOPMENT DIRECTIVE]
+[DEVELOPMENT PROMPT]
+Directive ID: INKDOS-DD-2026-09-07-STABILITY-FUNCTIONAL-ISOLATION
+Date: 2026-09-07
+Status: MANDATORY / BLOCKING
+Applies to: InkDOS 2.x and all future development unless explicitly superseded
+Repository: vfydr2m9wk-ops/InkDOS
+
+TITLE
+Stability, Functional Isolation, Regression Prevention, and Directive Archival Gate
+
+PURPOSE
+The purpose of InkDOS 2.0 is not merely to separate the six workspaces physically. It is to make the suite resistant to regression so that incremental changes do not break functions that were already working. A user must not be required to manually re-test every function after every update.
+
+This directive creates a mandatory stability and isolation gate before any further roadmap advancement.
+
+CURRENT DEVELOPMENT EFFECT
+1. Suspend forward functional roadmap progression immediately.
+2. The active PPT-P2 work is preserved but is not to be merged or advanced until the stability gate is completed and frozen.
+3. Create and use a dedicated audit branch: audit/stability-functional-isolation.
+4. Audit all six workspaces, prioritizing workspaces that have been modified most recently and any workspace with reported regressions.
+5. PDF Workspace is first because concrete regressions were reported: Undo not working, Delete not working, mouse-wheel/trackpad scrolling becoming stuck, and the navigation/context panel always opening on Pages instead of Index/Outline.
+6. No new user-facing feature work is allowed during this gate except changes strictly required to restore stability, isolation, testability, or previously intended behavior.
+
+CORE PRINCIPLE
+A feature must be removable, movable, disabled, or replaced without destabilizing unrelated features or the application shell.
+
+A button is not a feature. A toolbar is not a feature engine. A frame is not an editor. A viewport is not a command router. These responsibilities must remain separate.
+
+MANDATORY APPLICATION LAYERS
+Each workspace must preserve explicit local boundaries between at least the following responsibilities:
+
+A. APP FRAME / SHELL
+- Owns the fixed application frame, title area, Home access, global menu placement, status/footer slots, appearance shell, and top-level application lifecycle.
+- Must not implement document-format business logic.
+- Must not directly implement Undo, Delete, formatting, page manipulation, search, or editing semantics.
+
+B. TOOLBAR / COMMAND SURFACE
+- Owns only presentation of controls and stable command identifiers.
+- Moving a button to another toolbar group must not require changing the feature implementation.
+- Removing a button must not delete or corrupt the underlying command implementation.
+- Adding a second presentation of the same command must not duplicate business logic.
+- Toolbar DOM order must never be used as functional state.
+
+C. COMMAND REGISTRY / ROUTER
+- Every user command must have a stable app-local command ID.
+- UI controls bind to command IDs through a small binding layer or registry.
+- Command handlers must be callable and testable independently of the visual button.
+- Enabled/disabled/checked state must be supplied by the command or feature state provider rather than inferred by unrelated DOM elements.
+- Keyboard shortcuts must call the same command path as buttons whenever practical.
+- A command must not need to know where its button is located.
+
+D. FEATURE MODULES
+- Each feature owns its own state, lifecycle, command handlers, and DOM subtree/panel where applicable.
+- Preferred lifecycle contract: install/enable/disable/reset/dispose/inspect or an equivalent explicit contract.
+- A feature may communicate through explicit app-local contracts/events, not by reaching into unrelated feature internals.
+- A feature must not arbitrarily query or mutate another feature's private DOM.
+- Cross-feature access requires an explicit interface supplied by the owning feature.
+
+E. CONTENT / VIEWPORT / RENDERER
+- Owns document display, scrolling, zoom, layout, rendering, virtualization, and pointer/wheel behavior inside the content region.
+- Toolbar, menu, popover, and feature-panel code must not hijack normal viewport wheel/trackpad scrolling.
+- Only the viewport/navigation subsystem may intentionally reposition content.
+- Programmatic scroll locks must be short-lived, observable, and unable to strand the viewport in a non-responsive state.
+- Mouse wheel, trackpad, touch, keyboard scrolling, and programmatic navigation must be regression-tested where applicable.
+
+F. SESSION / HISTORY / PERSISTENCE
+- Owns active document state, dirty state, undo/redo history where the feature architecture requires it, open/save/reopen, and persistence contracts.
+- UI controls must consume history state; they must not create an independent history model.
+- A Save implementation must not silently alter unrelated document structures.
+
+DOM OWNERSHIP RULE
+Every feature must have an explicit DOM ownership boundary. A module may directly mutate:
+- its own root element;
+- explicit slots provided by the frame/toolbar binder;
+- elements passed to it as dependencies.
+It should not use broad global selectors to discover and manipulate unrelated features.
+
+BUTTON INDEPENDENCE RULE
+It must be possible, with a minimal declarative/UI-only change, to:
+- remove a button;
+- insert a button;
+- move a button to a different toolbar group;
+- render the same command in a menu instead of a toolbar;
+without altering the underlying feature engine and without breaking unrelated commands.
+
+A regression test must exercise at least one toolbar reorder/removal scenario for each workspace or prove equivalent command-surface independence statically.
+
+NO HIDDEN COUPLING RULE
+The following are architectural failures unless explicitly justified and tested:
+- functional behavior depending on sibling DOM order;
+- command handlers directly hard-coded into a monolithic app bootstrap when they belong to a feature;
+- one feature enabling/disabling another feature's buttons directly;
+- feature code calling document.querySelector/querySelectorAll across unrelated feature roots;
+- shared mutable globals used as implicit coordination channels;
+- multiple unrelated features installing conflicting document-level keydown/wheel/pointer handlers without arbitration;
+- toolbar layout code changing viewport/content behavior;
+- visual refactors that alter functional event ownership.
+
+DEFAULT-PANEL RULE
+Contextual panels must remember or use the intended default section deterministically. For PDF navigation, the preferred first/default view is Index/Outline, not Pages. Page thumbnails remain available as a secondary tab.
+
+STABILITY GATE — REQUIRED AUTOMATED COVERAGE
+A workspace cannot be declared frozen unless automated tests cover, as applicable:
+1. clean boot with no console/runtime errors;
+2. New/Open flow;
+3. open representative real-format fixture;
+4. every visible toolbar/menu command has a live registered handler;
+5. command can be invoked independently of its visual button where technically applicable;
+6. enabled/disabled state updates correctly;
+7. Undo and Redo perform an actual reversible mutation where supported;
+8. Delete removes the intended selected object/page/annotation where supported;
+9. mouse-wheel/trackpad/touch scrolling remains responsive after editing, panels, zoom, and programmatic navigation;
+10. contextual panels open, close, switch tabs, and reopen in the intended state;
+11. keyboard shortcut and button paths produce equivalent commands where applicable;
+12. Open -> modify -> Save -> reopen round-trip;
+13. Open -> Save without modification does not degrade the source unnecessarily;
+14. feature-panel opening/closing does not change viewport ownership;
+15. adding/removing/reordering a control does not break unrelated functions;
+16. no uncaught promise rejection or console error during the tested workflow;
+17. standalone extraction of the workspace remains functional;
+18. offline/local asset availability remains intact;
+19. WebKit is included in the browser regression matrix for functions that can be exercised by Playwright WebKit;
+20. Chromium and Firefox remain part of the compatibility matrix where practical.
+
+REGRESSION POLICY
+- Every bug discovered during this audit becomes an automated regression test before or together with its fix whenever technically feasible.
+- A previously frozen test must not be weakened merely to make a later phase pass.
+- If a legitimate behavior change requires altering a frozen test, the change must be explicit in the development directive/audit record.
+- Passing static/syntax tests alone is not sufficient for interactive controls.
+- User manual testing is useful for acceptance feedback but MUST NOT be the primary regression gate.
+
+AUDIT ORDER
+1. PDF Workspace — first, because of current confirmed/reported regressions.
+2. Documents — recently modified through DOC-D1/DOC-D2.
+3. Presentations — recently modified through PPT-P1 and active suspended PPT-P2 work.
+4. Plain Text — verify T1/T2 remained stable after later suite changes.
+5. EPUB Reader — verify E1/E2 remained stable after later suite changes.
+6. Spreadsheets — audit existing workbook/editor functions before XLS-S1 begins.
+7. Cross-suite frame/offline/bootstrap audit.
+8. Stability freeze.
+
+PDF-SPECIFIC CURRENT REGRESSION TARGETS
+The PDF audit must explicitly reproduce and test:
+- toolbar Undo button;
+- toolbar Redo button;
+- Delete selected annotation/object button;
+- Delete page function in Page Tools;
+- mouse wheel and trackpad scrolling before and after annotation operations;
+- scrolling before and after navigation panel/page-tools panel use;
+- scrolling after zoom and page navigation;
+- navigation panel opens on Index/Outline by default;
+- Pages tab remains available;
+- opening/closing/reordering toolbar controls does not affect PDF viewport scrolling or command behavior.
+
+FREEZE CRITERION
+No roadmap advancement is permitted until:
+- all six workspace audits are complete;
+- reported regressions are reproduced or disproven with evidence;
+- reproduced regressions are fixed and covered by tests;
+- functional isolation checks pass;
+- browser regression matrix passes to the defined support level;
+- the stability baseline is recorded and frozen.
+
+POST-GATE DEVELOPMENT RULE
+After the stability baseline is frozen, every future feature phase must run:
+- the feature's own new tests;
+- the complete frozen regression suite for that workspace;
+- suite shell/bootstrap/offline tests;
+- isolation tests proving other workspaces were not functionally modified.
+A feature phase cannot be merged solely because its new function works.
+
+DIRECTIVE ARCHIVAL RULE
+From this directive onward, every new development directive, development-policy change, roadmap-governance change, or development prompt that materially changes InkDOS implementation rules MUST produce a plain-text .txt artifact.
+
+Each directive TXT must:
+- begin with [INKDOS DEVELOPMENT DIRECTIVE] and [DEVELOPMENT PROMPT];
+- have a unique Directive ID and date;
+- state whether it is mandatory, advisory, blocking, or superseding;
+- contain the full operative development prompt/directive, not only a summary;
+- be stored persistently in the user's ChatGPT Library under the InkDOS development-directive area;
+- preferably also be committed to the InkDOS repository under a development-directives documentation path when the directive affects repository governance;
+- remain human-readable without requiring this chat history.
+
+RECOVERY RULE
+When a later chat must recover InkDOS development policy, the most recent non-superseded development-directive TXT files are authoritative together with the repository's current state. The developer must not rely only on conversational memory.
+
+DEVELOPER EXECUTION PROMPT
+Before implementing any new InkDOS feature:
+1. Read the current non-superseded development directives.
+2. Confirm the current frozen baseline and active workspace.
+3. Run the relevant frozen regression tests before making a functional change.
+4. Change only the intended feature/workspace.
+5. Keep frame, toolbar presentation, command routing, feature implementation, viewport, and persistence responsibilities separated.
+6. Add or update automated tests for the changed behavior.
+7. Run the full workspace regression suite after the change.
+8. Run isolation/offline/bootstrap gates.
+9. Do not advance if any previously working function regresses.
+10. Do not require the user to manually re-test the complete app after routine increments.
+
+END OF DIRECTIVE

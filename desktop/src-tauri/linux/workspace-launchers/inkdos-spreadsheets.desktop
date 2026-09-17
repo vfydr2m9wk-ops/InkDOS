@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=InkDOS Spreadsheets
+Exec=InkDOS --workspace spreadsheets
+Icon=inkdos-spreadsheets
+Terminal=false
+Categories=Office;
+X-InkDOS-Workspace=spreadsheets
+X-InkDOS-SourceIcon=assets/icons/spreadsheets.svg
