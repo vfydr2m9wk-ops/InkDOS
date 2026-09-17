@@ -15,13 +15,14 @@ The application runtime is intentionally small and explicit:
 
 ## Desktop builds and updates
 
-Windows, macOS and Linux packages are built with Tauri v2. The signed desktop updater uses GitHub Releases and the generated `latest.json` manifest. Update checking is explicit in the installed desktop application; installation remains a separate user action.
+Windows, macOS and Linux packages are built with Tauri v2. The supported installer set is NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. The signed desktop updater uses GitHub Releases and the generated `latest.json` manifest. Update checking is explicit in the installed desktop application; installation remains a separate user action.
 
 The GitHub Actions surface is intentionally limited to:
 
-- `.github/workflows/desktop-tauri.yml` — desktop contract and native builds.
-- `.github/workflows/promote-release-tag.yml` — controlled release-tag promotion.
-- `.github/workflows/release.yml` — validation, signed native builds, updater manifest and release publication.
+- `.github/workflows/desktop-tauri.yml` — desktop metadata, staging and contract validation only.
+- `.github/workflows/release.yml` — the single tag-triggered path for release validation, signed native builds, updater manifest generation and release publication.
+
+A release build starts only when an immutable tag matching `vX.Y.Z` is pushed. There is no separate promotion workflow or manual artifact-reuse publication path.
 
 See `docs/UPDATE_MODEL.md` for the current updater path.
 
