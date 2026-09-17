@@ -71,6 +71,12 @@ def main() -> None:
     require("Validate update package without write credentials" in apply, "read-only package validation boundary is missing")
     require("Apply prevalidated package" in apply, "write-scoped package apply boundary is missing")
 
+    refresh_path = ROOT / ".github" / "workflows" / "refresh-integrity-metadata.yml"
+    refresh = refresh_path.read_text(encoding="utf-8")
+    require("'feature/**'" in refresh, "integrity refresh lost feature-branch support")
+    require("'infra/**'" in refresh, "integrity refresh does not support infrastructure branches")
+    require("python scripts/generate_checksums.py" in refresh, "integrity refresh does not regenerate checksums")
+
     print("InkDOS CI flow contract: PASS")
 
 
