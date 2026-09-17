@@ -144,6 +144,10 @@ process.stdout.write(JSON.stringify(out));
     for entry in entries:
         require(entry.read_text(encoding="utf-8"), "../../shared/ui-density.js", f"Workspace bootstrap: {entry.relative_to(ROOT)}")
 
+    # Hidden full-screen layers must never remain hit-testable during first-open bootstrap.
+    for needle in (".backdrop[hidden]", ".loading-overlay[hidden]", ".error-overlay[hidden]", "pointer-events:none!important"):
+        require(css, needle, "Hidden overlay click guard")
+
     for needle in ("overflow-wrap", "max-inline-size", "text-overflow", "[data-settings-item]"):
         require(css, needle, "Long-label overflow guard")
 
