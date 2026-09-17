@@ -1,8 +1,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::{
+    collections::HashMap,
     path::{Path, PathBuf},
-    sync::atomic::{AtomicU64, Ordering},
+    sync::{
+        atomic::{AtomicU64, Ordering},
+        Mutex, OnceLock,
+    },
 };
 
 use serde::Serialize;
@@ -12,6 +16,8 @@ use tauri_plugin_updater::UpdaterExt;
 
 static FILE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static WORKSPACE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+static OPEN_FILE_TOKEN_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+static OPEN_FILE_TOKENS: OnceLock<Mutex<HashMap<String, PathBuf>>> = OnceLock::new();
 const WORKSPACES_JSON: &str = include_str!("../../workspaces.json");
 
 #[derive(Serialize)]
@@ -22,6 +28,57 @@ struct UpdateCheckResponse {
     latest_version: String,
     notes: Option<String>,
     pub_date: Option<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct NativeOpenFile {
+    name: String,
+    bytes: Vec<u8>,
+}
+
+fn open_file_tokens() -> &'static Mutex<HashMap<String, PathBuf>> {
+    OPEN_FILE_TOKENS.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn register_open_file(path: &Path) -> Result<String, String> {
+    let sequence = OPEN_FILE_TOKEN_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+    let token = format!("inkdos-open-{}-{sequence}", std::process::id());
+    let mut files = open_file_tokens()
+        .lock()
+        .map_err(|_| "InkDOS could not prepare the associated file.".to_string())?;
+    files.insert(token.clone(), path.to_path_buf());
+    Ok(token)
+}
+
+fn discard_open_file(token: &str) {
+    if let Ok(mut files) = open_file_tokens().lock() {
+        files.remove(token);
+    }
+}
+
+#[tauri::command]
+fn inkdos_read_open_file(token: String) -> Result<NativeOpenFile, String> {
+    let path = {
+        let mut files = open_file_tokens()
+            .lock()
+            .map_err(|_| "InkDOS could not access the associated file token.".to_string())?;
+        files
+            .remove(&token)
+            .ok_or_else(|| "The associated file token is invalid or has already been used.".to_string())?
+    };
+
+    if !path.is_file() {
+        return Err(format!("File not found: {}", path.display()));
+    }
+    let name = path
+        .file_name()
+        .and_then(|value| value.to_str())
+        .unwrap_or("InkDOS file")
+        .to_string();
+    let bytes = std::fs::read(&path)
+        .map_err(|error| format!("InkDOS could not read {name}: {error}"))?;
+    Ok(NativeOpenFile { name, bytes })
 }
 
 #[tauri::command]
@@ -194,19 +251,27 @@ fn open_file_window_at_route(
     let file_name = path
         .file_name()
         .and_then(|value| value.to_str())
-        .unwrap_or("InkDOS file");
-    let path_json = serde_json::to_string(&path.to_string_lossy().to_string())
-        .map_err(|error| format!("InkDOS could not prepare the file path: {error}"))?;
-    let initialization_script = format!("window.__INKDOS_OPEN_PATH__ = {path_json};");
+        .unwrap_or("InkDOS file")
+        .to_string();
+    let token = register_open_file(&path)?;
+    let token_json = serde_json::to_string(&token)
+        .map_err(|error| format!("InkDOS could not prepare the associated file token: {error}"))?;
+    let initialization_script = format!("window.__INKDOS_OPEN_TOKEN__ = {token_json};");
 
-    let window = WebviewWindowBuilder::new(app, &label, WebviewUrl::App(route.into()))
+    let window = match WebviewWindowBuilder::new(app, &label, WebviewUrl::App(route.into()))
         .title(format!("InkDOS {workspace} — {file_name}"))
         .inner_size(1280.0, 820.0)
         .min_inner_size(900.0, 600.0)
         .resizable(true)
         .initialization_script(initialization_script)
         .build()
-        .map_err(|error| format!("InkDOS could not open {file_name}: {error}"))?;
+    {
+        Ok(window) => window,
+        Err(error) => {
+            discard_open_file(&token);
+            return Err(format!("InkDOS could not open {file_name}: {error}"));
+        }
+    };
 
     window
         .set_focus()
@@ -308,6 +373,7 @@ fn main() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
+            inkdos_read_open_file,
             inkdos_check_for_updates,
             inkdos_install_update
         ])
