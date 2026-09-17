@@ -56,15 +56,24 @@ def main() -> None:
     for phase in ("PPT-P2", "XLS-S1", "XLS-S2"):
         assert phase in baseline, phase
 
-    # The freeze lifecycle remains historical, but the installed offline cache belongs
-    # to the current public release. Do not force a stale 2.0.12 cache namespace after
-    # a validated release promotion.
-    version = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))["version"]
+    # Freeze records are historical. Cache identity follows the active development
+    # line when present, while VERSION.json continues to identify the last public release.
+    version_info = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
+    version = version_info["version"]
+    development_version = version_info.get("developmentVersion")
     sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
-    assert f"inkdos-v{version}-" in sw, f"Current release cache namespace missing for {version}"
+    if development_version:
+        expected_cache = f"inkdos-v{development_version}-dev-"
+        cache_label = f"{development_version} development"
+    else:
+        expected_cache = f"inkdos-v{version}-"
+        cache_label = version
+    assert expected_cache in sw, f"Current cache namespace missing for {cache_label}"
+
     validator = (ROOT / "scripts" / "validate_repository.py").read_text(encoding="utf-8")
     assert "def frozen_stability():" in validator
-    assert "re.escape(version)" in validator
+    assert "developmentVersion" in validator
+    assert "re.escape(development_version)" in validator
     assert "candidate.get('status')=='frozen'" in validator
     assert "state.get('completedWorkspaces')==FROZEN_WORKSPACES" in validator
 
