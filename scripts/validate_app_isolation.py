@@ -5,11 +5,15 @@ from urllib.parse import urlsplit, unquote
 import json
 import re
 import shutil
+import sys
 import tempfile
 
-from shared_runtime_policy import is_allowed_shared_relpath
-
 ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0,str(ROOT))
+
+from scripts.shared_runtime_policy import is_allowed_shared_relpath
+
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 VERSION=json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))['version']
 TEXT_SUFFIXES={'.html','.css','.js','.json','.webmanifest'}
