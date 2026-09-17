@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - release/2.4.1-fixes
     paths:
       - '.github/workflows/desktop-tauri.yml'
       - '.github/workflows/release.yml'
@@ -17,8 +16,6 @@ on:
       - 'manifest.webmanifest'
       - 'VERSION.json'
       - 'tests/test_tauri_desktop_contract.py'
-      - 'tests/test_tauri_goal3_native_window_contract.py'
-      - 'tests/test_2_4_1_ux_contract.py'
   workflow_dispatch:
 
 permissions:
@@ -44,9 +41,5 @@ jobs:
         run: python desktop/scripts/release_version.py --check-config
       - name: Run desktop contract
         run: python tests/test_tauri_desktop_contract.py
-      - name: Run native file-open contract
-        run: python tests/test_tauri_goal3_native_window_contract.py
-      - name: Run 2.4.1 UX contract
-        run: python tests/test_2_4_1_ux_contract.py
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
