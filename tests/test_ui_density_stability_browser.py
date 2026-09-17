@@ -57,9 +57,7 @@ def root_state(page):
       density:document.documentElement.getAttribute('data-ui-density'),
       preference:document.documentElement.getAttribute('data-ui-density-preference'),
       controlCount:document.querySelectorAll('[data-inkdos-density-control]').length,
-      storageKey:globalThis.InkDOSUiDensity?.STORAGE_KEY||'',
-      stored:globalThis.InkDOSUiDensity?localStorage.getItem(globalThis.InkDOSUiDensity.STORAGE_KEY):null,
-      legacy:localStorage.getItem('inkdos2:ui-density'),
+      stored:localStorage.getItem('inkdos2:ui-density'),
       control:getComputedStyle(document.documentElement).getPropertyValue('--control').trim(),
       topbar:document.querySelector('.topbar')?.getBoundingClientRect().height||0
     })""")
@@ -90,11 +88,6 @@ def main() -> None:
                 assert state['density'] == 'desktop', (path, state)
                 assert state['preference'] == 'auto', (path, state)
                 assert state['controlCount'] == 1, (path, state)
-                if '/apps/' in path:
-                    app = path.split('/apps/', 1)[1].split('/', 1)[0]
-                    assert state['storageKey'] == f'inkdos2:{app}:ui-density', (path, state)
-                else:
-                    assert state['storageKey'] == 'inkdos2:ui-density', (path, state)
 
             page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => document.querySelectorAll('[data-inkdos-density-control]').length === 1")
@@ -108,41 +101,33 @@ def main() -> None:
               return {before,after:location.href,effective,
                 density:document.documentElement.dataset.uiDensity,
                 preference:globalThis.InkDOSUiDensity.preference,
-                storageKey:globalThis.InkDOSUiDensity.STORAGE_KEY,
-                stored:localStorage.getItem(globalThis.InkDOSUiDensity.STORAGE_KEY),
-                legacy:localStorage.getItem('inkdos2:ui-density'),
+                stored:localStorage.getItem('inkdos2:ui-density'),
                 control:getComputedStyle(document.documentElement).getPropertyValue('--control').trim()};
             }""")
             assert switched['before'] == switched['after'], switched
             assert switched['effective'] == 'mobile', switched
             assert switched['density'] == 'mobile', switched
             assert switched['preference'] == 'mobile', switched
-            assert switched['storageKey'] == 'inkdos2:documents:ui-density', switched
             assert switched['stored'] == 'mobile', switched
-            assert switched['legacy'] is None, switched
             assert switched['control'] == '42px', switched
 
-            # A choice in Documents must not alter Spreadsheets.
             page.goto(BASE + '/apps/spreadsheets/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
-            independent = root_state(page)
-            assert independent['density'] == 'desktop', independent
-            assert independent['preference'] == 'auto', independent
-            assert independent['stored'] is None, independent
-            assert independent['storageKey'] == 'inkdos2:spreadsheets:ui-density', independent
+            persisted = root_state(page)
+            assert persisted['density'] == 'mobile', persisted
+            assert persisted['preference'] == 'mobile', persisted
+            assert persisted['stored'] == 'mobile', persisted
 
-            # Returning to Documents restores only its own persisted preference.
-            page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
-            page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
-            returned = root_state(page)
-            assert returned['density'] == 'mobile', returned
-            assert returned['preference'] == 'mobile', returned
-            assert returned['stored'] == 'mobile', returned
-            page.evaluate("() => globalThis.InkDOSUiDensity.set('auto')")
-            reset = root_state(page)
-            assert reset['density'] == 'desktop', reset
-            assert reset['preference'] == 'auto', reset
-            assert reset['stored'] == 'auto', reset
+            returned = page.evaluate("""()=>({
+              effective:globalThis.InkDOSUiDensity.set('auto'),
+              density:document.documentElement.dataset.uiDensity,
+              preference:globalThis.InkDOSUiDensity.preference,
+              stored:localStorage.getItem('inkdos2:ui-density')
+            })""")
+            assert returned['effective'] == 'desktop', returned
+            assert returned['density'] == 'desktop', returned
+            assert returned['preference'] == 'auto', returned
+            assert returned['stored'] == 'auto', returned
             desktop_context.close()
 
             mobile_context = browser.new_context(viewport={'width': 720, 'height': 900})
