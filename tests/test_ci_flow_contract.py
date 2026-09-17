@@ -42,10 +42,16 @@ def main() -> None:
 
     no_legacy = (SCRIPTS / "check_no_legacy_runtime.py").read_text(encoding="utf-8")
     isolation = (SCRIPTS / "validate_app_isolation.py").read_text(encoding="utf-8")
-    for name, text in (("check_no_legacy_runtime.py", no_legacy), ("validate_app_isolation.py", isolation)):
+    suite_validator = (SCRIPTS / "validate_suite_contracts.py").read_text(encoding="utf-8")
+    for name, text in (
+        ("check_no_legacy_runtime.py", no_legacy),
+        ("validate_app_isolation.py", isolation),
+        ("validate_suite_contracts.py", suite_validator),
+    ):
         require("shared_runtime_policy" in text, f"{name} does not consume the central policy")
     require("ALLOWED_SHARED_FILES" not in no_legacy, "legacy validator still owns a private shared allowlist")
     require("APPROVED_SHARED_RUNTIME" not in isolation, "isolation validator still owns a private shared allowlist")
+    require("APPROVED_SHARED_RUNTIME" not in suite_validator, "suite validator still owns a private shared allowlist")
 
     repository_validator = (SCRIPTS / "validate_repository.py").read_text(encoding="utf-8")
     require("developmentVersion" in repository_validator, "repository validator does not distinguish development cache identity")
