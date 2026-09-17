@@ -1,0 +1,61 @@
+name: Promote release tag
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/release-promotion.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inkdos-release-tag-promotion
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Create validated release tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out promoted main commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate promotion request
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_ENV"
+          from pathlib import Path
+          import json
+          version = json.loads(Path('VERSION.json').read_text(encoding='utf-8'))['version']
+          request = json.loads(Path('.github/release-promotion.json').read_text(encoding='utf-8'))
+          tag = request.get('tag', '')
+          expected = f'v{version}'
+          if tag != expected:
+              raise SystemExit(f'release promotion mismatch: marker={tag!r}, expected={expected!r}')
+          if request.get('mode') != 'current-main-commit':
+              raise SystemExit('release promotion mode must be current-main-commit')
+          print(f'RELEASE_TAG={tag}')
+          PY
+
+      - name: Create immutable tag at this main commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin --tags
+          if git rev-parse -q --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
+            existing="$(git rev-list -n 1 "$RELEASE_TAG")"
+            if [ "$existing" != "$GITHUB_SHA" ]; then
+              echo "Tag $RELEASE_TAG already exists at $existing, not $GITHUB_SHA." >&2
+              exit 1
+            fi
+            echo "Tag $RELEASE_TAG already points to this commit."
+            exit 0
+          fi
+          git tag "$RELEASE_TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/$RELEASE_TAG"
