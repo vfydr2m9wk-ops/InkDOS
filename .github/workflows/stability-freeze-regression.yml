@@ -5,8 +5,30 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '.github/workflows/**'
+    paths:
+      - 'apps/**'
+      - 'shared/**'
+      - 'assets/**'
+      - 'index.html'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'VERSION.json'
+      - 'SOURCE_LOCK.json'
+      - 'STABILITY_STATE.json'
+      - 'FUNCTIONAL_STATE.json'
+      - 'DEVELOPMENT_STATE.json'
+      - 'requirements-ci.txt'
+      - 'scripts/validate_repository.py'
+      - 'scripts/validate_app_isolation.py'
+      - 'scripts/validate_suite_contracts.py'
+      - 'scripts/audit_source.py'
+      - 'tests/test_*stability*'
+      - 'tests/test_cross_suite_*'
+      - 'tests/test_*roundtrip.py'
+      - 'tests/test_ppt*_browser.py'
+      - 'tests/test_xls*_browser.py'
+      - 'tests/test_security_pdfjs_config.py'
+      - 'tests/test_update_trust_boundary.py'
 
 permissions:
   contents: read
