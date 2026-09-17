@@ -29,13 +29,29 @@ def main() -> None:
 
     require("paths:" in desktop_trigger, "desktop workflow is not path-aware")
     require("paths-ignore:" not in desktop_trigger, "desktop workflow still uses broad negative filtering")
-    for marker in ("'desktop/**'", "'apps/**'", "'shared/**'", "'service-worker.js'", "'VERSION.json'"):
+    for marker in (
+        "'desktop/**'",
+        "'apps/**'",
+        "'shared/**'",
+        "'service-worker.js'",
+        "'VERSION.json'",
+        "'docs/PROJECT_STATUS.md'",
+        "'docs/KNOWN_LIMITATIONS.md'",
+    ):
         require(marker in desktop_trigger, f"desktop trigger misses runtime dependency: {marker}")
     require("'tests/test_tauri_desktop_contract.py'" in desktop_trigger, "desktop contract changes do not trigger desktop validation")
 
     require("paths:" in stability_trigger, "stability workflow is not path-aware")
     require("paths-ignore:" not in stability_trigger, "stability workflow still uses broad negative filtering")
-    for marker in ("'apps/**'", "'shared/**'", "'service-worker.js'", "'STABILITY_STATE.json'", "'SOURCE_LOCK.json'"):
+    for marker in (
+        "'apps/**'",
+        "'shared/**'",
+        "'service-worker.js'",
+        "'STABILITY_STATE.json'",
+        "'SOURCE_LOCK.json'",
+        "'docs/STABILITY-FREEZE-2026-09-10.md'",
+        "'docs/STABILITY-FREEZE-2026-09-08.md'",
+    ):
         require(marker in stability_trigger, f"stability trigger misses runtime dependency: {marker}")
     require("'tests/test_*stability*'" in stability_trigger, "stability test changes do not trigger stability validation")
     require("'tests/test_cross_suite_*'" in stability_trigger, "cross-suite stability test changes do not trigger stability validation")
