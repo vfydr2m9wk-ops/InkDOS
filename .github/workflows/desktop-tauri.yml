@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/desktop-tauri.yml'
       - 'desktop/**'
       - 'apps/**'
       - 'shared/**'
