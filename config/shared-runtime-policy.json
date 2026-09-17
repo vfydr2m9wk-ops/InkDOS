@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "allowedFiles": [
+    "ui-density.css",
+    "ui-density.js"
+  ],
+  "allowedPrefixes": [
+    "localization/"
+  ]
+}
