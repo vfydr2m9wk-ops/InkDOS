@@ -1,14 +1,14 @@
-# InkDOS 2.3.0
+# InkDOS 2.4.0
 
 InkDOS is a local-first productivity suite with six physically independent workspaces behind an optional Home launcher. The same client-side HTML/CSS/JavaScript application is distributed as a web/PWA edition and as installable Tauri desktop editions, with no application backend or telemetry service.
 
-Version 2.3.0 advances the unified web/PWA + desktop stable line with the completed 2.3 workspace intervention and desktop packaging work, plus a manual-only desktop updater. The updater is desktop-only and performs no startup check, polling, telemetry, or background network activity; update network access begins only after the user explicitly chooses Check for updates. Final installed updater end-to-end validation remains a release gate and is not implied by repository-level validation.
+Version 2.4.0 promotes the completed 2.4 interface/localization work and the hardened CI/release pipeline to the stable line. It adds optional UI-only localization packages for Portuguese, Spanish, German, French, Simplified Chinese, Japanese and Russian; compact app-local Appearance / Interface / Language / Help settings; and first-open pointer/touch regression protection while preserving application logic, file-format semantics and local-first behavior. The release pipeline now validates the merge candidate before integration, separates read-only integrity validation from update-package application, performs signing preflight, records immutable build provenance and supports publish-only recovery from already validated artifacts.
 
 ## Desktop edition
 
 The desktop edition uses Tauri v2 as a thin native host around the existing InkDOS workspaces. It uses native open/save dialogs and filesystem access where the desktop bridge is available, while preserving the browser/PWA fallback paths. Windows, macOS and Linux packaging are exercised by native CI runners, including package inspection, launchers, associations and multiwindow integration.
 
-The 2.3 desktop updater uses the signed Tauri updater path. It is hidden/inert in the web/PWA edition. On desktop, Check for updates is an explicit user action; when invoked, InkDOS compares the installed and latest versions and can present release notes. Installation remains a separate explicit action and can be cancelled. Signed metadata, artifacts and signatures are part of the updater trust boundary.
+The desktop updater uses the signed Tauri updater path. It is hidden/inert in the web/PWA edition. On desktop, Check for updates is an explicit user action; when invoked, InkDOS compares the installed and latest versions and can present release notes. Installation remains a separate explicit action and can be cancelled. Signed metadata, artifacts and signatures are part of the updater trust boundary.
 
 ## Workspaces and format behavior
 
@@ -29,7 +29,13 @@ Each workspace retains app-local runtime, state, I/O, UI and view responsibiliti
 
 Home is an optional suite bridge. It launches workspaces with `suite=1`; each app-local frame exposes the Home action only in that suite context. A workspace opened directly or extracted independently does not require the Home launcher to operate.
 
-Release validation checks standalone app isolation, cross-app reference boundaries and the root offline shell. The 2.3 intervention also preserves suite-wide adaptive interface density while keeping the workspaces physically independent.
+Release validation checks standalone app isolation, cross-app reference boundaries and the root offline shell. InkDOS 2.4 keeps suite-wide adaptive interface density and localization as approved presentation-layer shared runtime while preserving the physical independence of the six workspaces.
+
+## Localization and compact settings
+
+English remains the native source interface. Optional locale packages change only visible labels and presentation/accessibility attributes (`title`, `aria-label`, `placeholder`) and fall back to the original English text when a translation is unavailable. Localization does not mutate IDs, command names, parser tokens, spreadsheet formulas, serialization keys, keyboard-command logic, document state or user content.
+
+Each workspace exposes a compact app-local settings strip in the order Appearance / Interface / Language / Help. Language and density preferences remain workspace-local; appearance keeps the existing suite preference behavior.
 
 ## Save, Share and unsaved-work semantics
 
@@ -53,7 +59,7 @@ The root service worker provides the validated application shell under HTTP(S). 
 
 ## Release and control-state files
 
-`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.3.0 release identity after the integrity metadata refresh is completed.
+`VERSION.json`, `BUILD_INFO.json`, `SOURCE_MANIFEST.json` and `RELEASE_MANIFEST.json` describe the current 2.4.0 release identity after the integrity metadata refresh is completed.
 
 `DEVELOPMENT_STATE.json` has a different purpose: it records the last transactional update-package sequence accepted by the updater. Its sequence/package label can therefore remain tied to an earlier package even when the public release identity has advanced through validated repository integration. Historical stability/freeze documents likewise retain the versions and commit anchors that were true when those records were produced.
 
