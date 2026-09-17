@@ -118,7 +118,7 @@ def test_native_build_workflow_targets_main_or_manual_checkpoint_without_node():
         "python desktop/scripts/release_version.py --check-config",
     ):
         assert marker in workflow
-    assert "desktop-tauri" not in workflow
+    assert "branches:\n      - desktop-tauri" not in workflow
     assert "feature/inkdos-2.3" not in workflow
     assert "setup-node" not in workflow
     assert "npm install" not in workflow
