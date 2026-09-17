@@ -13,7 +13,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8802
 BASE = f"http://127.0.0.1:{PORT}"
-RUNS = ["Anticonvulsi\u00advantes ", "& ", "antipsicóticos"]
+RUNS = ["Compatibili\u00addade ", "& ", "configurações avançadas"]
 
 
 def wait_port(timeout: float = 10.0) -> None:
