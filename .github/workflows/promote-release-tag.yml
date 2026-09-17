@@ -8,6 +8,7 @@ on:
       - '.github/release-promotion.json'
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -16,7 +17,7 @@ concurrency:
 
 jobs:
   promote:
-    name: Create validated release tag
+    name: Create or verify release tag and dispatch release
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -38,24 +39,65 @@ jobs:
           expected = f'v{version}'
           if tag != expected:
               raise SystemExit(f'release promotion mismatch: marker={tag!r}, expected={expected!r}')
-          if request.get('mode') != 'current-main-commit':
-              raise SystemExit('release promotion mode must be current-main-commit')
+          mode = request.get('mode')
+          if mode not in {'current-main-commit', 'existing-validated-tag'}:
+              raise SystemExit(f'unsupported release promotion mode: {mode!r}')
           print(f'RELEASE_TAG={tag}')
+          print(f'PROMOTION_MODE={mode}')
           PY
 
-      - name: Create immutable tag at this main commit
+      - name: Create or verify immutable release tag
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin --tags
+          git fetch origin main --tags
           if git rev-parse -q --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
             existing="$(git rev-list -n 1 "$RELEASE_TAG")"
-            if [ "$existing" != "$GITHUB_SHA" ]; then
-              echo "Tag $RELEASE_TAG already exists at $existing, not $GITHUB_SHA." >&2
+            git merge-base --is-ancestor "$existing" "$GITHUB_SHA" || {
+              echo "Existing tag $RELEASE_TAG is not an ancestor of current main." >&2
               exit 1
+            }
+            tagged_version="$(git show "$RELEASE_TAG:VERSION.json" | python -c 'import json,sys; print(json.load(sys.stdin)["version"])')"
+            [ "v$tagged_version" = "$RELEASE_TAG" ] || {
+              echo "Existing tag/version mismatch: $RELEASE_TAG vs $tagged_version." >&2
+              exit 1
+            }
+            if [ "$PROMOTION_MODE" = "current-main-commit" ] && [ "$existing" != "$GITHUB_SHA" ]; then
+              echo "Tag $RELEASE_TAG already exists at validated ancestor $existing; preserving it rather than moving it."
+            else
+              echo "Verified existing immutable tag $RELEASE_TAG at $existing."
             fi
-            echo "Tag $RELEASE_TAG already points to this commit."
-            exit 0
+          else
+            [ "$PROMOTION_MODE" = "current-main-commit" ] || {
+              echo "Tag $RELEASE_TAG does not exist; existing-validated-tag mode cannot create it." >&2
+              exit 1
+            }
+            git tag "$RELEASE_TAG" "$GITHUB_SHA"
+            git push origin "refs/tags/$RELEASE_TAG"
+            echo "Created $RELEASE_TAG at $GITHUB_SHA."
           fi
-          git tag "$RELEASE_TAG" "$GITHUB_SHA"
-          git push origin "refs/tags/$RELEASE_TAG"
+
+      - name: Dispatch unified release explicitly
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/release-dispatch.json
+          import json, os
+          print(json.dumps({
+              'ref': 'main',
+              'inputs': {
+                  'release_tag': os.environ['RELEASE_TAG'],
+                  'reuse_run_id': '',
+              },
+          }))
+          PY
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/release.yml/dispatches" \
+            --data-binary @/tmp/release-dispatch.json
+          echo "Dispatched unified release for $RELEASE_TAG."
