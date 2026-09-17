@@ -128,7 +128,18 @@
     return new File([bytes], name, { type: mimeForName(name), lastModified: Date.now() });
   }
 
-  async function injectNativeFile(path) {
+  async function fileFromNativeToken(token) {
+    if (!core || typeof core.invoke !== 'function') {
+      throw new Error('InkDOS desktop cannot resolve this associated file.');
+    }
+    const payload = await core.invoke('inkdos_read_open_file', { token });
+    const name = String(payload && payload.name ? payload.name : 'InkDOS file');
+    const raw = payload && payload.bytes;
+    const bytes = raw instanceof Uint8Array ? raw : new Uint8Array(Array.isArray(raw) ? raw : []);
+    return new File([bytes], name, { type: mimeForName(name), lastModified: Date.now() });
+  }
+
+  async function injectNativeFile(file) {
     const input = document.querySelector('input[type="file"]');
     if (!input) return false;
     if (typeof g.DataTransfer !== 'function' || typeof g.File !== 'function') {
@@ -136,13 +147,13 @@
     }
 
     const allowed = extensionsFromAccept(input.accept);
-    const extension = extensionForName(path);
+    const extension = extensionForName(file && file.name);
     if (allowed.length && (!extension || !allowed.includes(extension))) {
       throw new Error(`Unsupported file format: .${extension || '(none)'}`);
     }
 
     const transfer = new DataTransfer();
-    transfer.items.add(await fileFromNativePath(path));
+    transfer.items.add(file);
     input.files = transfer.files;
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -150,14 +161,16 @@
   }
 
   function autoOpenNativeInjectedFile() {
-    const path = g.__INKDOS_OPEN_PATH__;
-    if (!path) return;
-    delete g.__INKDOS_OPEN_PATH__;
+    const token = g.__INKDOS_OPEN_TOKEN__;
+    if (!token) return;
+    delete g.__INKDOS_OPEN_TOKEN__;
 
     let attempts = 0;
+    let filePromise = null;
     const tryInject = () => {
       attempts += 1;
-      injectNativeFile(path).then(opened => {
+      if (!filePromise) filePromise = fileFromNativeToken(token);
+      filePromise.then(file => injectNativeFile(file)).then(opened => {
         if (!opened && attempts < 40) g.setTimeout(tryInject, 50);
         else if (!opened) console.error('InkDOS desktop could not find this workspace file input.');
       }).catch(error => {
