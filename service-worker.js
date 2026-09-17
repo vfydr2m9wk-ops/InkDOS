@@ -1,8 +1,18 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.3.0-desktop-stable-1';
+const CACHE_NAME='inkdos-v2.4-dev-1';
 const APP_SHELL=[
   "./shared/ui-density.js",
   "./shared/ui-density.css",
+  "./shared/localization/ui-localization.js",
+  "./shared/localization/settings-strip.js",
+  "./shared/localization/localization.css",
+  "./shared/localization/locales/pt-BR.js",
+  "./shared/localization/locales/es.js",
+  "./shared/localization/locales/de.js",
+  "./shared/localization/locales/fr.js",
+  "./shared/localization/locales/zh-CN.js",
+  "./shared/localization/locales/ja.js",
+  "./shared/localization/locales/ru.js",
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
   "./apps/pdf/engine/page-tools-engine.js",
