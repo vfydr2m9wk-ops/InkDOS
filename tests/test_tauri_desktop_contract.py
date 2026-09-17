@@ -118,6 +118,7 @@ def test_desktop_workflow_is_contract_only_without_duplicate_native_builds():
     for marker in (
         "main",
         "workflow_dispatch",
+        "runs-on: ubuntu-22.04",
         "python desktop/scripts/stage_web.py --check",
         "python desktop/scripts/release_version.py --check-config",
         "python tests/test_tauri_desktop_contract.py",
@@ -127,13 +128,14 @@ def test_desktop_workflow_is_contract_only_without_duplicate_native_builds():
         "cargo tauri build",
         "windows-latest",
         "macos-latest",
-        "ubuntu-22.04",
         "InkDOS-Windows",
         "InkDOS-macOS",
         "InkDOS-Linux",
         "dtolnay/rust-toolchain",
         "cargo install tauri-cli",
         "upload-artifact",
+        "strategy:",
+        "matrix:",
     ):
         assert forbidden not in workflow
     assert "setup-node" not in workflow
