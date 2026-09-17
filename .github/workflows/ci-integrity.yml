@@ -1,5 +1,6 @@
 name: InkDOS integrity gate
 
+# Read-only merge gate: PRs and main use the same complete repository validation.
 on:
   pull_request:
   push:
