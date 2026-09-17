@@ -64,7 +64,8 @@ def main() -> None:
     for network_api in ("fetch(", "XMLHttpRequest", "WebSocket", "sendBeacon"):
         forbid(runtime, network_api, "Localization must stay local-only")
     require(runtime, "purgePackages", "Single selected locale residency")
-    require(runtime, "inkdosLocalePackage-", "Explicit locale package lifecycle")
+    require(runtime, "data-inkdos-locale-package", "Non-functional locale package lifecycle marker")
+    forbid(runtime, "inkdosLocalePackage-", "Locale package lifecycle must not create functional IDs")
 
     expected_files = {f"{code}.js" for code in LOCALES}
     actual_files = {p.name for p in LOCALE_DIR.glob("*.js")}
