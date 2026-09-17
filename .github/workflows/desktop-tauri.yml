@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - release/2.4.1-fixes
     paths:
       - '.github/workflows/desktop-tauri.yml'
       - '.github/workflows/release.yml'
