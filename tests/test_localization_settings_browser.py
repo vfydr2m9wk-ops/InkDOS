@@ -45,9 +45,9 @@ def snapshot_functional_attributes(page):
 
 
 def first_open_click_diagnostic(page, app: str) -> None:
-    menu = page.locator("#menuBtn")
+    menu = page.locator("#menuBtn,#menuButton")
     if menu.count() != 1:
-        raise AssertionError((app, "menu button missing"))
+        raise AssertionError((app, "menu button missing", menu.count()))
     box = menu.bounding_box()
     if not box:
         raise AssertionError((app, "menu button has no hit box"))
@@ -68,7 +68,7 @@ def first_open_click_diagnostic(page, app: str) -> None:
     page.touchscreen.tap(x, y)
     try:
         page.wait_for_function(
-            "() => { const d=document.querySelector('#generalMenu,aside.drawer'); return !!d && !d.hidden; }",
+            "() => Array.from(document.querySelectorAll('#generalMenu,#appDrawer,aside.drawer')).some(d => !d.hidden)",
             timeout=1200,
         )
     except PlaywrightTimeoutError as exc:
@@ -77,12 +77,12 @@ def first_open_click_diagnostic(page, app: str) -> None:
               readyState:document.readyState,
               settingsReady:!!globalThis.InkDOSSettingsStrip,
               localizationReady:!!globalThis.InkDOSLocalization,
-              drawerHidden:document.querySelector('#generalMenu,aside.drawer')?.hidden,
+              openDrawers:Array.from(document.querySelectorAll('#generalMenu,#appDrawer,aside.drawer')).map(el=>({id:el.id,hidden:el.hidden,display:getComputedStyle(el).display,pointerEvents:getComputedStyle(el).pointerEvents,zIndex:getComputedStyle(el).zIndex})),
               backdrops:Array.from(document.querySelectorAll('.backdrop')).map(el=>({id:el.id,hidden:el.hidden,display:getComputedStyle(el).display,pointerEvents:getComputedStyle(el).pointerEvents,zIndex:getComputedStyle(el).zIndex}))
             })"""
         )
         raise AssertionError((app, "first-open touch click did not open menu", layers, state)) from exc
-    page.locator("#closeMenuBtn").click()
+    page.locator("#generalMenu:not([hidden]) .close-btn,#appDrawer:not([hidden]) .close-btn,aside.drawer:not([hidden]) .close-btn").first.click()
 
 
 def open_menu(page) -> None:
