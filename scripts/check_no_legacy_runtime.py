@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.shared_runtime_policy import is_allowed_shared_relpath
+
 FORBIDDEN_ROOTS = ('modules', 'core', 'legacy')
-ALLOWED_SHARED_FILES = {'ui-density.js', 'ui-density.css'}
 
 
 def main():
@@ -14,7 +19,7 @@ def main():
         unexpected = sorted(
             path.relative_to(shared).as_posix()
             for path in shared.rglob('*')
-            if path.is_file() and path.relative_to(shared).as_posix() not in ALLOWED_SHARED_FILES
+            if path.is_file() and not is_allowed_shared_relpath(path.relative_to(shared).as_posix())
         )
         if unexpected:
             bad.extend(f'shared/{name}' for name in unexpected)
@@ -25,7 +30,7 @@ def main():
 
     if bad:
         raise SystemExit('Legacy/cross-suite runtime roots present: ' + ', '.join(bad))
-    print('No retired 1.x suite runtime roots are present; approved shared density assets are allowed.')
+    print('No retired 1.x suite runtime roots are present; approved shared presentation runtime is allowed.')
 
 
 if __name__ == '__main__':
