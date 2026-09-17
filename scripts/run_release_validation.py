@@ -22,6 +22,7 @@ CMDS=[
  [sys.executable,'tests/test_tauri_goal3_workspace_contract.py'],
  [sys.executable,'tests/test_app_isolation_shared_density_contract.py'],
  [sys.executable,'tests/test_release_210_contract.py'],
+ [sys.executable,'tests/test_release_pipeline_contract.py'],
  [sys.executable,'scripts/validate_repository.py'],
  [sys.executable,'scripts/validate_app_isolation.py'],
  [sys.executable,'scripts/audit_source.py'],
