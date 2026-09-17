@@ -1,7 +1,7 @@
 name: InkDOS integrity gate
 
 # Read-only merge gate: PRs and main use the same complete repository validation.
-# Workflow-only touch to verify bot-refreshed metadata on PR #138.
+# Workflow-only touch to verify bot-refreshed metadata on PR #139.
 on:
   pull_request:
   push:
