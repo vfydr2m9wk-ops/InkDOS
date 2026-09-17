@@ -47,6 +47,12 @@ def main() -> None:
     require("ALLOWED_SHARED_FILES" not in no_legacy, "legacy validator still owns a private shared allowlist")
     require("APPROVED_SHARED_RUNTIME" not in isolation, "isolation validator still owns a private shared allowlist")
 
+    repository_validator = (SCRIPTS / "validate_repository.py").read_text(encoding="utf-8")
+    require("developmentVersion" in repository_validator, "repository validator does not distinguish development cache identity")
+    require("version!='2.3.0'" not in repository_validator and 'version != "2.3.0"' not in repository_validator, "repository validator hardcodes a release version")
+    require("appliedSequence')!=80" not in repository_validator and 'appliedSequence") != 80' not in repository_validator, "repository validator hardcodes an updater sequence")
+    require("2.0.12-modularity-epub-polish" not in repository_validator, "repository validator hardcodes an updater package label")
+
     ci_path = ROOT / ".github" / "workflows" / "ci-integrity.yml"
     require(ci_path.is_file(), "dedicated CI integrity workflow is missing")
     ci = ci_path.read_text(encoding="utf-8")
