@@ -152,15 +152,15 @@ def main() -> None:
                 after = snapshot_functional_attributes(page)
                 assert after == before, (code, "functional identifiers changed")
                 assert page.locator("#titleText").input_value() == title_before, (code, "user/file name changed")
-                resident = page.evaluate("""()=>Array.from(document.querySelectorAll('script[id^="inkdosLocalePackage-"]')).map(x=>x.id)""")
-                assert resident == [f"inkdosLocalePackage-{code}"], (code, resident)
+                resident = page.evaluate("""()=>Array.from(document.querySelectorAll('script[data-inkdos-locale-package]')).map(x=>x.getAttribute('data-inkdos-locale-package'))""")
+                assert resident == [code], (code, resident)
                 bounds = page.evaluate("""()=>Array.from(document.querySelectorAll('.inkdos-settings-strip [data-settings-item]')).map(x=>{const r=x.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}})""")
                 for rect in bounds:
                     assert rect["left"] >= -1 and rect["right"] <= 1281, (code, rect)
                     assert rect["top"] >= -1 and rect["bottom"] <= 821, (code, rect)
 
             choose_language(page, "English", "en")
-            assert page.evaluate("() => document.querySelectorAll('script[id^=\"inkdosLocalePackage-\"]').length") == 0
+            assert page.evaluate("() => document.querySelectorAll('script[data-inkdos-locale-package]').length") == 0
             assert snapshot_functional_attributes(page) == before
 
             # Language and interface preferences are independent between workspaces.
