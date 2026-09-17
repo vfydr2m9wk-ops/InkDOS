@@ -1,0 +1,52 @@
+name: Cleanup legacy Actions runs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/cleanup-legacy-runs.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      CUTOFF: '2026-09-17T01:11:58Z'
+      CURRENT_RUN: ${{ github.run_id }}
+    steps:
+      - name: Delete completed workflow runs older than v2.3.0 publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          deleted=0
+          failed=0
+          tmp="$(mktemp)"
+          gh api --paginate "repos/$REPO/actions/runs?per_page=100" \
+            --jq '.workflow_runs[] | [.id, .status, .created_at, .name] | @tsv' > "$tmp"
+
+          while IFS=$'\t' read -r id status created name; do
+            [[ -z "$id" ]] && continue
+            [[ "$id" == "$CURRENT_RUN" ]] && continue
+            [[ "$status" == "completed" ]] || continue
+            [[ "$created" < "$CUTOFF" ]] || continue
+
+            if gh api --method DELETE "repos/$REPO/actions/runs/$id" >/dev/null; then
+              deleted=$((deleted + 1))
+              echo "Deleted run $id ($name, $created)"
+            else
+              failed=$((failed + 1))
+              echo "Failed to delete run $id ($name, $created)" >&2
+            fi
+            sleep 0.10
+          done < "$tmp"
+
+          echo "Deleted legacy runs: $deleted"
+          echo "Deletion failures: $failed"
+          [[ "$failed" -eq 0 ]]
