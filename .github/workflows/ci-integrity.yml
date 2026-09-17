@@ -1,7 +1,6 @@
 name: InkDOS integrity gate
 
 # Read-only merge gate: PRs and main use the same complete repository validation.
-# Workflow-only touch to verify bot-refreshed integrity metadata on PR #137.
 on:
   pull_request:
   push:
@@ -67,6 +66,9 @@ jobs:
 
       - name: Verify CI process contract
         run: python tests/test_ci_flow_contract.py
+
+      - name: Verify workflow trigger contract
+        run: python tests/test_ci_trigger_contract.py
 
       - name: Run complete integrity gate
         run: python scripts/run_release_validation.py
