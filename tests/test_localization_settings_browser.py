@@ -8,7 +8,7 @@ import sys
 import time
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8814
@@ -44,6 +44,47 @@ def snapshot_functional_attributes(page):
     }))""")
 
 
+def first_open_click_diagnostic(page, app: str) -> None:
+    menu = page.locator("#menuBtn")
+    if menu.count() != 1:
+        raise AssertionError((app, "menu button missing"))
+    box = menu.bounding_box()
+    if not box:
+        raise AssertionError((app, "menu button has no hit box"))
+    x = box["x"] + box["width"] / 2
+    y = box["y"] + box["height"] / 2
+    layers = page.evaluate(
+        """([x,y])=>document.elementsFromPoint(x,y).slice(0,8).map(el=>({
+          tag:el.tagName,
+          id:el.id||'',
+          cls:typeof el.className==='string'?el.className:'',
+          hidden:!!el.hidden,
+          pointerEvents:getComputedStyle(el).pointerEvents,
+          position:getComputedStyle(el).position,
+          zIndex:getComputedStyle(el).zIndex
+        }))""",
+        [x, y],
+    )
+    page.touchscreen.tap(x, y)
+    try:
+        page.wait_for_function(
+            "() => { const d=document.querySelector('#generalMenu,aside.drawer'); return !!d && !d.hidden; }",
+            timeout=1200,
+        )
+    except PlaywrightTimeoutError as exc:
+        state = page.evaluate(
+            """()=>({
+              readyState:document.readyState,
+              settingsReady:!!globalThis.InkDOSSettingsStrip,
+              localizationReady:!!globalThis.InkDOSLocalization,
+              drawerHidden:document.querySelector('#generalMenu,aside.drawer')?.hidden,
+              backdrops:Array.from(document.querySelectorAll('.backdrop')).map(el=>({id:el.id,hidden:el.hidden,display:getComputedStyle(el).display,pointerEvents:getComputedStyle(el).pointerEvents,zIndex:getComputedStyle(el).zIndex}))
+            })"""
+        )
+        raise AssertionError((app, "first-open touch click did not open menu", layers, state)) from exc
+    page.locator("#closeMenuBtn").click()
+
+
 def open_menu(page) -> None:
     page.locator("#menuBtn").click()
     page.wait_for_function("() => { const d=document.querySelector('#generalMenu,aside.drawer'); return !!d && !d.hidden; }")
@@ -72,6 +113,15 @@ def main() -> None:
         wait_port()
         with sync_playwright() as pw:
             browser = getattr(pw, browser_name).launch(headless=True)
+
+            # Regression for the reported first-open "film" over buttons: do not wait for 2.4 settings bootstrap.
+            touch_context = browser.new_context(viewport={"width": 390, "height": 844}, has_touch=True)
+            touch_page = touch_context.new_page()
+            for app, path in WORKSPACES:
+                touch_page.goto(BASE + path, wait_until="load")
+                first_open_click_diagnostic(touch_page, app)
+            touch_context.close()
+
             context = browser.new_context(viewport={"width": 1280, "height": 820})
             page = context.new_page()
 
