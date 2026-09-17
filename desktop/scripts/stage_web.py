@@ -15,7 +15,7 @@ HEAD_TAG = "<head>"
 INJECTION = '<script src="/desktop-host.js"></script>'
 ROOT_FILES = ("index.html", "manifest.webmanifest", "service-worker.js", "VERSION.json")
 ROOT_DIRS = ("assets", "apps", "shared")
-DOC_FILES = ("PROJECT_STATUS.md", "KNOWN_LIMITATIONS.md")
+DOC_FILES = ("KNOWN_LIMITATIONS.md",)
 
 
 def _copy_runtime(destination: Path) -> None:
