@@ -3,44 +3,52 @@ name: InkDOS Tauri desktop
 on:
   push:
     branches:
-      - release/2.4.1-fixes
+      - main
     paths:
       - '.github/workflows/desktop-tauri.yml'
+      - '.github/workflows/release.yml'
+      - 'desktop/**'
+      - 'apps/**'
+      - 'shared/**'
+      - 'assets/**'
+      - 'index.html'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'VERSION.json'
+      - 'tests/test_tauri_desktop_contract.py'
+      - 'tests/test_tauri_goal3_native_window_contract.py'
+      - 'tests/test_localization_settings_contract.py'
+      - 'tests/test_desktop_ux_contract.py'
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: inkdos-cache-rotation-${{ github.ref }}
-  cancel-in-progress: false
+  group: inkdos-tauri-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  rotate-cache:
-    name: Rotate 2.4.1 offline cache
+  contract:
+    name: Desktop contract
     runs-on: ubuntu-22.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          persist-credentials: true
-          ref: release/2.4.1-fixes
-      - name: Rotate service-worker cache identity
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('service-worker.js')
-          text = path.read_text(encoding='utf-8')
-          old = "const CACHE_NAME='inkdos-v2.4.0-1';"
-          new = "const CACHE_NAME='inkdos-v2.4.1-1';"
-          if old not in text:
-              raise SystemExit('expected 2.4.0 cache identity not found')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add service-worker.js
-          git diff --cached --check
-          git commit -m "release: rotate offline cache for 2.4.1"
-          git push origin HEAD:release/2.4.1-fixes
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+      - name: Validate release metadata
+        run: python desktop/scripts/release_version.py --check-config
+      - name: Run desktop contract
+        run: python tests/test_tauri_desktop_contract.py
+      - name: Run native associated-file contract
+        run: python tests/test_tauri_goal3_native_window_contract.py
+      - name: Run localization/settings contract
+        run: python tests/test_localization_settings_contract.py
+      - name: Run desktop UX contract
+        run: python tests/test_desktop_ux_contract.py
+      - name: Validate staged desktop runtime
+        run: python desktop/scripts/stage_web.py --check
