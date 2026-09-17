@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.0 — 2026-09-17
+
+- Add an optional UI-only localization layer for Portuguese, Spanish, German, French, Simplified Chinese, Japanese and Russian while keeping English as the native source interface and preserving functional attributes, parser tokens, formulas, serialization keys and user content.
+- Add compact app-local Appearance / Interface / Language / Help settings with workspace-local language/density persistence and English fallback for missing translations.
+- Add regression coverage preventing hidden first-open layers from intercepting pointer/touch input across Documents, Spreadsheets, Presentations, PDF, EPUB and Plain Text.
+- Centralize the approved shared-presentation-runtime policy and make the complete integrity gate run against pull-request merge candidates before integration.
+- Separate read-only CI from manual update-package application and make native desktop/stability workflows path-aware without weakening the universal integrity gate.
+- Harden the unified release pipeline with signing preflight, immutable build provenance, macOS app+dmg updater output, validated draft publication and publish-only recovery using previously validated artifacts.
+- Promote Home routes, desktop package metadata and the offline cache from the 2.4 development line to the stable 2.4.0 release identity.
+
 ## 2.3.0 — 2026-09-14
 
 - Preserve CSV/TSV delimiter and format behavior across spreadsheet open/edit/save workflows, including the completed semicolon-delimited CSV correction.
