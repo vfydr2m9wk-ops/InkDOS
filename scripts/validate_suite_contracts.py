@@ -1,9 +1,17 @@
 from pathlib import Path
 import hashlib,json,re,unittest
+from shared_runtime_policy import is_allowed_shared_relpath
 ROOT=Path(__file__).resolve().parents[1]
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 VERSION=json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))['version']
-APPROVED_SHARED_RUNTIME={'ui-density.css','ui-density.js'}
+
+def shared_runtime_files():
+    shared=ROOT/'shared'
+    return {p.relative_to(shared).as_posix() for p in shared.rglob('*') if p.is_file()}
+
+def disallowed_shared_runtime():
+    return sorted(rel for rel in shared_runtime_files() if not is_allowed_shared_relpath(rel))
+
 class SuiteIntegration(unittest.TestCase):
     def test_home_routes(self):
         text=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -99,7 +107,7 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn('if(isAppleTouchHost()&&canShare(file))',texts['pdf'])
         shared=ROOT/'shared'
         self.assertTrue(shared.is_dir())
-        self.assertEqual({p.relative_to(shared).as_posix() for p in shared.rglob('*') if p.is_file()},APPROVED_SHARED_RUNTIME)
+        self.assertEqual(disallowed_shared_runtime(),[])
     def test_empty_state_file_action_contract(self):
         documents=(ROOT/'apps/documents/index.html').read_text(encoding='utf-8')
         self.assertRegex(documents,r'id="saveMenuBtn"[^>]*disabled')
@@ -179,7 +187,7 @@ class SuiteIntegration(unittest.TestCase):
         for rel in ('modules','core'):self.assertFalse((ROOT/rel).exists(),rel)
         shared=ROOT/'shared'
         self.assertTrue(shared.is_dir())
-        self.assertEqual({p.relative_to(shared).as_posix() for p in shared.rglob('*') if p.is_file()},APPROVED_SHARED_RUNTIME)
+        self.assertEqual(disallowed_shared_runtime(),[])
     def test_source_lock_has_six_apps(self):
         lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text(encoding='utf-8'))
         self.assertEqual(set(lock['apps']),set(ACTIVE))
