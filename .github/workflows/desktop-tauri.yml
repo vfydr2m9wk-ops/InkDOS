@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - ci/simplify-release-pipeline
     paths:
       - '.github/workflows/desktop-tauri.yml'
       - '.github/workflows/release.yml'
