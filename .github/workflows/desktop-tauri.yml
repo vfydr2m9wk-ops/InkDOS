@@ -13,8 +13,6 @@ on:
       - 'service-worker.js'
       - 'manifest.webmanifest'
       - 'VERSION.json'
-      - 'docs/PROJECT_STATUS.md'
-      - 'docs/KNOWN_LIMITATIONS.md'
       - 'tests/test_tauri_desktop_contract.py'
   workflow_dispatch:
 
