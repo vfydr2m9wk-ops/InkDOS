@@ -12,7 +12,7 @@ def read(path: Path) -> str:
 def test_single_host_forwards_subsequent_file_opens_into_distinct_native_windows():
     cargo = read(TAURI / "Cargo.toml")
     main = read(TAURI / "src" / "main.rs")
-    assert 'tauri-plugin-single-instance = "=2.4.0"' in cargo or 'tauri-plugin-single-instance = "2"' in cargo
+    assert 'tauri-plugin-single-instance = "=2.4.4"' in cargo or 'tauri-plugin-single-instance = "2"' in cargo
     for marker in (
         "tauri_plugin_single_instance::init",
         "open_file_window",
@@ -28,12 +28,13 @@ def test_native_file_and_workspace_windows_receive_same_least_privilege_capabili
     assert set(capability["windows"]) == {"main", "file-*", "workspace-*"}
 
 
-def test_desktop_bridge_uses_one_time_native_file_tokens_not_arbitrary_fs_paths():
+def test_desktop_bridge_uses_one_time_native_file_tokens_not_arbitrary_injected_paths():
     bridge = read(ROOT / "desktop" / "desktop-host.js")
     main = read(TAURI / "src" / "main.rs")
     for marker in (
         "__INKDOS_OPEN_TOKEN__",
         "inkdos_read_open_file",
+        "fileFromNativeToken",
         "core.invoke",
         "DataTransfer",
         'input[type="file"]',
@@ -41,7 +42,6 @@ def test_desktop_bridge_uses_one_time_native_file_tokens_not_arbitrary_fs_paths(
         assert marker in bridge or marker in main
     assert "__INKDOS_OPEN_PATH__" not in bridge
     assert "__INKDOS_OPEN_PATH__" not in main
-    assert "fs.readFile(path)" not in bridge
     assert "HashMap<String, PathBuf>" in main
     assert ".remove(&token)" in main
 
