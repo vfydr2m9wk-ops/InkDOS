@@ -55,9 +55,14 @@ def main():
     for rel in required:
         if not (ROOT/rel).is_file(): raise SystemExit(f'Required file missing: {rel}')
     v=json.loads((ROOT/'VERSION.json').read_text()); state=json.loads((ROOT/'DEVELOPMENT_STATE.json').read_text()); lock=json.loads((ROOT/'SOURCE_LOCK.json').read_text()); stability=stability_changes(); frozen=frozen_stability()
-    version=v.get('version')
-    if version!='2.3.0': raise SystemExit('Unexpected version')
-    if state.get('appliedSequence')!=80 or state.get('currentPackage')!='2.0.12-modularity-epub-polish': raise SystemExit('Unexpected development state')
+    version=v.get('version'); development_version=v.get('developmentVersion')
+    if not isinstance(version,str) or re.fullmatch(r'\d+\.\d+\.\d+',version) is None: raise SystemExit('Invalid release version')
+    if development_version is not None and (not isinstance(development_version,str) or re.fullmatch(r'\d+\.\d+',development_version) is None): raise SystemExit('Invalid developmentVersion')
+    if state.get('schemaVersion')!=2: raise SystemExit('Unexpected development state schema')
+    sequence=state.get('appliedSequence'); current_package=state.get('currentPackage')
+    if not isinstance(sequence,int) or sequence<0: raise SystemExit('Invalid development state sequence')
+    if not isinstance(current_package,str) or not current_package.strip(): raise SystemExit('Invalid development state package')
+    if state.get('status')!='complete': raise SystemExit('Development state ledger must be complete')
     dirs=sorted(p.name for p in (ROOT/'apps').iterdir() if p.is_dir())
     if dirs!=sorted(ACTIVE): raise SystemExit(f'Unexpected app roots: {dirs}')
     home=(ROOT/'index.html').read_text(encoding='utf-8')
@@ -100,8 +105,13 @@ def main():
         if marker not in pdf: raise SystemExit('PDF start gate missing: '+marker)
     if list((ROOT/'apps/pdf').rglob('*.pdf')) or (ROOT/'apps/pdf/tests').exists(): raise SystemExit('PDF distribution contains internal fixtures')
     sw=(ROOT/'service-worker.js').read_text(encoding='utf-8')
-    if not re.search(rf"const CACHE_NAME=['\"]inkdos-v{re.escape(version)}-[^'\"]+['\"]",sw):
-        raise SystemExit(f'{version} offline cache rotation missing')
+    if development_version:
+        cache_pattern=rf"const CACHE_NAME=['\"]inkdos-v{re.escape(development_version)}-dev-[^'\"]+['\"]"
+        cache_label=f'{development_version} development'
+    else:
+        cache_pattern=rf"const CACHE_NAME=['\"]inkdos-v{re.escape(version)}-[^'\"]+['\"]"
+        cache_label=version
+    if not re.search(cache_pattern,sw): raise SystemExit(f'{cache_label} offline cache rotation missing')
     forbidden=('suite-shell.js','file-router.js','recent-files.js','module-loader.js','shared/app-shell.js')
     for marker in forbidden:
         if marker in home: raise SystemExit(f'Legacy Home runtime reference: {marker}')

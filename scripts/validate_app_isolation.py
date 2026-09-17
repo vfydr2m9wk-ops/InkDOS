@@ -5,16 +5,18 @@ from urllib.parse import urlsplit, unquote
 import json
 import re
 import shutil
+import sys
 import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0,str(ROOT))
+
+from scripts.shared_runtime_policy import is_allowed_shared_relpath
+
 ACTIVE=('documents','spreadsheets','presentations','txt','epub','pdf')
 VERSION=json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))['version']
 TEXT_SUFFIXES={'.html','.css','.js','.json','.webmanifest'}
-APPROVED_SHARED_RUNTIME={
-    '../../shared/ui-density.css',
-    '../../shared/ui-density.js',
-}
 HOME_FRAME={
     'documents':'runtime/frame/frame-menu.js',
     'spreadsheets':'runtime/frame/frame-menu.js',
@@ -58,7 +60,9 @@ def ensure_within(base,target):
 
 def approved_shared_runtime(value):
     path=local_path(value)
-    return value in APPROVED_SHARED_RUNTIME and path in APPROVED_SHARED_RUNTIME
+    prefix='../../shared/'
+    if path is None or not path.startswith(prefix):return False
+    return is_allowed_shared_relpath(path[len(prefix):])
 
 def validate_isolated_copy(app,errors):
     source=ROOT/'apps'/app

@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 'feature/**'
+      - 'infra/**'
     paths:
       - '.github/integrity-refresh-trigger'
 

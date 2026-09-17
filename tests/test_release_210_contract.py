@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import json
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 APPS = ("documents", "spreadsheets", "presentations", "txt", "epub", "pdf")
@@ -18,9 +19,12 @@ def require(condition, message):
 version = load("VERSION.json")
 VERSION = version.get("version")
 DATE = version.get("date")
+DEVELOPMENT_VERSION = version.get("developmentVersion")
 require(VERSION and DATE, "VERSION.json must define the current release version and date")
 require(version.get("releaseName") == f"InkDOS {VERSION}", "VERSION.json releaseName mismatch")
 require(version.get("releaseChannel") == "stable", f"InkDOS {VERSION} must remain on the stable channel")
+if DEVELOPMENT_VERSION is not None:
+    require(re.fullmatch(r"\d+\.\d+", DEVELOPMENT_VERSION) is not None, "developmentVersion must use major.minor form")
 require(version.get("components", {}).get("documents", {}).get("format") == "DOC / DOCX / RTF", "Documents format scope must include DOC, DOCX and RTF")
 
 build = load("BUILD_INFO.json")
@@ -51,7 +55,13 @@ for text in (
     require(text in home, f"Home capability copy missing: {text}")
 
 service_worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
-require(f"inkdos-v{VERSION}-" in service_worker, f"Service-worker cache must match InkDOS {VERSION}")
+if DEVELOPMENT_VERSION:
+    require(
+        f"inkdos-v{DEVELOPMENT_VERSION}-dev-" in service_worker,
+        f"Service-worker development cache must match InkDOS {DEVELOPMENT_VERSION} dev",
+    )
+else:
+    require(f"inkdos-v{VERSION}-" in service_worker, f"Service-worker cache must match InkDOS {VERSION}")
 
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
 status = (ROOT / "docs/PROJECT_STATUS.md").read_text(encoding="utf-8")
