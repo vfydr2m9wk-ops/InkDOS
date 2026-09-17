@@ -1,56 +1,35 @@
-# InkDOS architecture contract
+# InkDOS architecture
 
-InkDOS is a local-first suite composed of six physically independent workspaces: Documents, Spreadsheets, Presentations, PDF Workspace, Plain Text and EPUB Reader. Home is a launcher and optional navigation bridge; it is not a functional runtime, editor engine or file router.
+InkDOS is a local-first suite composed of six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. Home is an optional launcher and navigation bridge; it is not an editor engine or file router.
 
-## Physical ownership
+## Workspace ownership
 
-Each workspace owns its complete functional stack below `apps/<workspace>/`, including its engine/model, state, I/O, UI, view code and any third-party vendor dependencies it requires. A workspace must remain usable when extracted with its own files and served independently. Functional modules must not be placed in repository-level `shared/`, `runtime/` or `vendor/` trees.
+Each workspace owns its functional stack under `apps/<workspace>/`: model/engine code, state, I/O, UI, view code and any vendor libraries it requires. Runtime references from one workspace into a sibling workspace are forbidden.
 
-Deliberate duplication between apps is acceptable and preferred when it preserves failure isolation. Two workspaces needing equivalent behavior does not justify a shared functional engine.
+Deliberate duplication is acceptable when it preserves workspace isolation. Functional document engines do not belong in a repository-level shared runtime.
 
-## Cross-workspace boundary
+## Approved shared presentation layer
 
-Runtime references from one `apps/<workspace>/` tree into a sibling `apps/<other>/` tree are forbidden. The only suite-level relationship normally permitted from an extracted app is the optional Home navigation target. Appearance may exchange a preference value, but the implementation and fallback behavior remain app-local.
+`shared/` is restricted by `config/shared-runtime-policy.json`. It contains only the approved localization and interface-density presentation helpers. IDs, command names, parsers, spreadsheet formulas, serialization keys and user content remain app-owned.
 
-External libraries must have compatible licenses, preserve required notices, work entirely client-side/offline, avoid telemetry and live inside the app that consumes them.
+`scripts/shared_runtime_policy.py`, `scripts/check_no_legacy_runtime.py`, `scripts/validate_app_isolation.py` and `scripts/validate_suite_contracts.py` enforce this boundary.
 
-## Functional-cycle rule
+## Local-first behavior
 
-Only one workspace may receive functional changes in a development cycle. The active workspace and phase are recorded in `FUNCTIONAL_STATE.json`. During that cycle:
+Supported open, edit, conversion and save/export paths execute locally. There is no application backend or telemetry service. The root service worker provides the HTTP(S) offline shell; direct `file://` behavior remains subject to the host browser.
 
-- functional code changes are limited to `apps/<active-workspace>/**`;
-- sibling workspace trees are frozen unless an objective regression explicitly reopens a prior baseline;
-- Home (`index.html`, root `assets/` and launcher presentation) is frozen;
-- global changes are limited to tests, validation/workflow infrastructure, documentation, integrity metadata and the service-worker shell when required to expose app-local resources offline;
-- aesthetics are not redesigned as part of a functional increment.
+## Desktop host
 
-The phase-scope validator compares the branch against `main` and rejects sibling-app edits, shared functional/runtime roots and Home changes.
+`desktop/` is a thin Tauri v2 host around the web runtime. It adds native file dialogs/filesystem access, native windows, platform packaging and the signed Tauri updater while preserving browser/PWA fallbacks.
 
-## UI contract
+`VERSION.json` is the version authority. `desktop/scripts/release_version.py` verifies the Tauri configuration against it.
 
-Functional additions must reuse the existing workspace frame and interaction hierarchy: existing toolbar first, then toolbar popover/menu, then contextual side panel, and the hamburger menu only for global functions. New permanent bars or cross-app UI frameworks are not introduced during functional cycles.
+## Maintenance gates
 
-## Local-first and save integrity
+`scripts/run_release_validation.py` is the non-publishing release-validation entry point used by the release workflow. It executes focused structural and format contracts, app-isolation checks, privacy checks and desktop release-pipeline checks.
 
-No functional workspace requires a backend or telemetry service. Open, edit, search, conversion and supported save/export paths execute client-side. Generated modern formats must be validated by format-aware tests where practical, and supported edit flows must include open → edit → save → reopen coverage before a baseline is frozen.
+The repository no longer uses historical phase/freeze ledgers, source-lock snapshots, repository update ZIPs or generated whole-tree checksum ledgers as active maintenance control planes. Git history, focused regression tests, release provenance and signed updater artifacts are the maintained trust boundaries.
 
-The service-worker application shell may enumerate resources from all six apps, but this is distribution metadata rather than a shared runtime. Each enumerated resource remains physically owned by its workspace.
+## Privacy boundary
 
-## Transition gate
-
-Before a phase may be integrated or the next phase may start, the pre-phase architecture audit must pass. It performs:
-
-1. diff hygiene against `main`;
-2. one-workspace phase-scope enforcement;
-3. clean-snapshot repository, source, checksum, service-worker, suite-contract and physical-isolation validation;
-4. browser round-trips for frozen authoring baselines that have executable regression fixtures.
-
-A failing transition audit blocks phase advancement. The correction cycle is audit → isolate cause → minimal app-local correction → regression tests → full transition audit → freeze.
-
-## State and historical package metadata
-
-`DEVELOPMENT_STATE.json` and historical package/version metadata describe the earlier packaged release lineage and are not used as the functional-roadmap source of truth. `FUNCTIONAL_STATE.json` tracks the staged home-use roadmap and the active workspace. `SOURCE_LOCK.json` and `CHECKSUMS.sha256` continue to provide integrity evidence for the current repository snapshot.
-
-## Freeze discipline
-
-Frozen baselines are recorded in `docs/FROZEN_BASELINES.md`. A frozen workspace receives no new functional work outside its scheduled phase unless a reproducible regression requires reopening it. The final objective is stable domestic coverage with physical modularity and predictable round-trip behavior, not maximum feature count.
+Real user documents and private QA material must not be committed. `scripts/audit_source.py` and `tests/test_repository_privacy_contract.py` enforce source/privacy rules. Public bug reports must use synthetic material.
