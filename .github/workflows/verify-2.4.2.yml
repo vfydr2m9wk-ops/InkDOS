@@ -1,4 +1,4 @@
-# candidate full-release-gate-after-txt-rebuild
+# candidate final-full-release-gate
 name: Verify InkDOS 2.4.2 localization
 
 on:
