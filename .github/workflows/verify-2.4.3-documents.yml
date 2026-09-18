@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/verify-2.4.3-documents.yml'
       - 'tests/test_documents_243_interaction_browser.py'
+      - 'apps/documents/**'
 
 permissions:
   contents: read
