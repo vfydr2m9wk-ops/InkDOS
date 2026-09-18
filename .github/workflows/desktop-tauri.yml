@@ -20,6 +20,8 @@ on:
       - 'tests/test_localization_settings_contract.py'
       - 'tests/test_localization_completeness_contract.py'
       - 'tests/test_desktop_ux_contract.py'
+      - 'tests/test_documents_243_insert_table_cancel_contract.py'
+      - 'tests/test_documents_243_interaction_contract.py'
   workflow_dispatch:
 
 permissions:
@@ -53,5 +55,9 @@ jobs:
         run: python tests/test_localization_completeness_contract.py
       - name: Run desktop UX contract
         run: python tests/test_desktop_ux_contract.py
+      - name: Run Documents 2.4.3 interaction contracts
+        run: |
+          python tests/test_documents_243_insert_table_cancel_contract.py
+          python tests/test_documents_243_interaction_contract.py
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
