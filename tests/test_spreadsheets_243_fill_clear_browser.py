@@ -32,7 +32,7 @@ def cell_values(page, refs):
           const sheet=api.session.activeSheet();
           return refs.map(ref=>{
             const cell=sheet.cells.get(ref);
-            return {v:cell?.v??'',f:cell?.f??'',style:cell?.style||{}};
+            return {v:cell?.v??'',f:cell?.f??'',t:cell?.t??'',style:cell?.style||{}};
           });
         }""",
         refs,
@@ -106,14 +106,12 @@ def main():
             restored = cell_values(page, ["A1", "A2", "A3"])
             assert [x["v"] for x in restored] == [11, 22, 33], restored
 
-            # Backspace has the same clear semantics.
             select_range(page, 0, 0, 2, 0)
             page.locator("#contentViewport").focus()
             page.keyboard.press("Backspace")
             assert [x["v"] for x in cell_values(page, ["A1", "A2", "A3"])] == ["", "", ""]
             page.evaluate("()=>globalThis.__inkdosSpreadsheetsS1.editor.commands.execute('edit.undo')")
 
-            # Single numeric seed copies its value down by default.
             page.evaluate("""()=>{
               const api=globalThis.__inkdosSpreadsheetsS1, e=api.editor.editor;
               e.commitValue('2',0,0); api.editor.render({rebuild:true});
@@ -122,7 +120,6 @@ def main():
             drag_handle(page, "A4")
             assert [x["v"] for x in cell_values(page, ["A1", "A2", "A3", "A4"])] == [2, 2, 2, 2]
 
-            # Two numeric seeds continue their arithmetic series.
             page.evaluate("""()=>{
               const api=globalThis.__inkdosSpreadsheetsS1, e=api.editor.editor;
               e.commitValue('1',0,0); e.commitValue('2',1,0); api.editor.render({rebuild:true});
@@ -131,7 +128,6 @@ def main():
             drag_handle(page, "A5")
             assert [x["v"] for x in cell_values(page, ["A1", "A2", "A3", "A4", "A5"])] == [1, 2, 3, 4, 5]
 
-            # Ctrl + one numeric seed explicitly requests a +1 series.
             page.evaluate("""()=>{
               const api=globalThis.__inkdosSpreadsheetsS1, e=api.editor.editor;
               e.commitValue('7',0,1); api.editor.render({rebuild:true});
@@ -139,6 +135,32 @@ def main():
             select_range(page, 0, 1, 0, 1)
             drag_handle(page, "B4", ctrl=True)
             assert [x["v"] for x in cell_values(page, ["B1", "B2", "B3", "B4"])] == [7, 8, 9, 10]
+
+            # Imported boolean seeds must copy/cycle, never coerce TRUE/FALSE into a numeric series.
+            page.evaluate("""()=>{
+              const api=globalThis.__inkdosSpreadsheetsS1, s=api.session.activeSheet();
+              s.cells.set('C1',{v:true,f:'',t:'b',styleId:0,style:{},display:'TRUE'});
+              s.cells.set('C2',{v:false,f:'',t:'b',styleId:0,style:{},display:'FALSE'});
+              api.editor.render({rebuild:true});
+            }""")
+            select_range(page, 0, 2, 1, 2)
+            drag_handle(page, "C4")
+            logical = cell_values(page, ["C1", "C2", "C3", "C4"])
+            assert [x["v"] for x in logical] == [True, False, True, False], logical
+            assert [x["t"] for x in logical] == ["b", "b", "b", "b"], logical
+
+            # Imported numeric text must remain text and cycle rather than becoming numeric series cells.
+            page.evaluate("""()=>{
+              const api=globalThis.__inkdosSpreadsheetsS1, s=api.session.activeSheet();
+              s.cells.set('D1',{v:'1',f:'',t:'s',styleId:0,style:{},display:'1'});
+              s.cells.set('D2',{v:'2',f:'',t:'s',styleId:0,style:{},display:'2'});
+              api.editor.render({rebuild:true});
+            }""")
+            select_range(page, 0, 3, 1, 3)
+            drag_handle(page, "D4")
+            text = cell_values(page, ["D1", "D2", "D3", "D4"])
+            assert [x["v"] for x in text] == ["1", "2", "1", "2"], text
+            assert [x["t"] for x in text] == ["s", "s", "s", "s"], text
 
             browser.close()
         print("Spreadsheets 2.4.3 fill/clear browser regression passed.")
