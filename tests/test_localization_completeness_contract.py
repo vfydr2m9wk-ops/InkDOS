@@ -132,6 +132,8 @@ REQUIRED_DOCUMENTS_KEYS = {
     "Replace with",
     "Replace",
     "All",
+    "Settings",
+    "InkDOS keeps workspace editing local-first and offline-capable. Interface language changes presentation only; file content is never translated.",
 }
 
 REQUIRED_WORKSPACE_HELP_KEYS = {
@@ -245,6 +247,7 @@ def main() -> None:
     assert d1.count("data-inkdos-i18n-root") >= 2
     assert "InkDOSLocalization" in navigation
     assert "Page {page}" in navigation
+    assert "inkdos:language" in navigation
 
     spreadsheet_help = read("apps/spreadsheets/help/help.js")
     assert "<code>" not in spreadsheet_help, "Spreadsheets Help must keep translatable paragraphs intact"
