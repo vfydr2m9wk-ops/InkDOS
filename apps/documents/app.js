@@ -19,7 +19,7 @@ async function boot(){installDocxOnOffFix();await loadScript('runtime/commands/d
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');
-fileInput.accept='.docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword';const startCopy=welcome?.querySelector('.start-card p');if(startCopy)startCopy.textContent='Create a document or open a DOCX, RTF or legacy DOC file locally.';
+fileInput.accept='.docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword';
 const adapter=new NS.ContentViewportAdapter(viewport,pagesHost);
 let zoomControls=null;
 const zoom=new NS.ZoomController(adapter,pagesHost,info=>zoomControls?.update(info));
