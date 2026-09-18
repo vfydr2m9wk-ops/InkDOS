@@ -13,7 +13,7 @@ const LANGUAGES=Object.freeze([
 const VALID=new Set(LANGUAGES.map(item=>item.code));
 const ALLOWED_ATTRIBUTES=Object.freeze(['title','aria-label','placeholder']);
 const EXPLICIT_ROOT_SELECTOR='[data-inkdos-i18n-root]';
-const SAFE_ROOT_SELECTORS=Object.freeze(['header.topbar','.formatbar','.start-state','#generalMenu','.zoom-popover','.inkdos-settings-strip','.inkdos-settings-popover','.context-drawer .drawer-head','.context-drawer .sidebar-tabs','.context-drawer .search-box','.context-drawer .search-meta','#inkdosDesktopUpdateModal',EXPLICIT_ROOT_SELECTOR]);
+const SAFE_ROOT_SELECTORS=Object.freeze(['header.topbar','.formatbar','.start-state','.statusbar','#generalMenu','.zoom-popover','.inkdos-settings-strip','.inkdos-settings-popover','.context-drawer .drawer-head','.context-drawer .sidebar-tabs','.context-drawer .search-box','.context-drawer .search-meta','#inkdosDesktopUpdateModal',EXPLICIT_ROOT_SELECTOR]);
 const SKIP_SELECTOR='script,style,textarea,[contenteditable="true"],[data-inkdos-user-content]';
 const doc=typeof document!=='undefined'?document:null;
 const packages=root.InkDOSLocalePackages=root.InkDOSLocalePackages||Object.create(null);
