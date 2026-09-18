@@ -73,6 +73,7 @@ def main():
             def exercise(direction: str):
                 return page.evaluate("""async(direction)=>{
                   const app=globalThis.InkDOS2Documents.DocumentsApp;
+                  app.session.markSaved(app.session.revision);
                   await app.newDocument();
                   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
                   const p=document.querySelector('#pagesHost .page-content p');
