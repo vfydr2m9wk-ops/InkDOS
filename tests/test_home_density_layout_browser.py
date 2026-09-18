@@ -55,11 +55,21 @@ def inspect(page):
 
 
 def inspect_desktop_scale(browser, scale):
-    # Deterministic CSS/device-pixel scaling coverage analogous to Windows
-    # 100/125/150%. Native WebView2/device validation remains a release gate.
-    context = browser.new_context(viewport={"width": 1280, "height": 900}, device_scale_factor=scale)
+    # Model a fixed 1280x900 physical-pixel window at Windows 100/125/150%:
+    # DPR changes while the effective CSS viewport shrinks with scale. This
+    # exercises scaled layout geometry rather than repeating one CSS viewport.
+    physical_width, physical_height = 1280, 900
+    viewport = {
+        "width": round(physical_width / scale),
+        "height": round(physical_height / scale),
+    }
+    context = browser.new_context(viewport=viewport, device_scale_factor=scale)
     try:
-        data = inspect(context.new_page())
+        page = context.new_page()
+        data = inspect(page)
+        assert page.viewport_size == viewport, (scale, page.viewport_size, viewport)
+        assert round(viewport["width"] * scale) == physical_width, (scale, viewport)
+        assert round(viewport["height"] * scale) == physical_height, (scale, viewport)
         assert len({round(r["top"], 1) for r in data["rects"]}) == 1, (scale, data)
         heights = [r["height"] for r in data["rects"]]
         assert max(heights) - min(heights) <= 1, (scale, data)
@@ -84,7 +94,7 @@ def main():
             tops = [r["top"] for r in n["rects"]]
             assert tops[0] < tops[1] < tops[2], n
             context.close(); browser.close()
-        print("Home 2.4.3 density layout browser regression passed at 100%, 125%, and 150% scale.")
+        print("Home 2.4.3 density layout browser regression passed at effective Windows 100%, 125%, and 150% scale.")
     finally:
         server.terminate()
         try: server.wait(timeout=3)
