@@ -38,6 +38,7 @@ def main():
             page.click("#d1LayoutBtn")
             assert page.locator("#d1LayoutPanel").is_visible()
             assert page.locator("#d2Panel").is_hidden(), "Document Tools must close when Page Layout opens"
+            page.click("#d1LayoutClose")
 
             # Cancelled table insertion is a true no-op: no table, no dirty state, no history entry.
             table_cancel = page.evaluate("""async()=>{
