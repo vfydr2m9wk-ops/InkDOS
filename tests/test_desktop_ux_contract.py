@@ -19,7 +19,9 @@ def locale_keys(path: Path) -> set[str]:
 
 
 def test_release_version_is_consistent_across_desktop_metadata():
-    version = json.loads(read("VERSION.json"))["version"]
+    metadata = json.loads(read("VERSION.json"))
+    version = metadata["version"]
+    assert metadata["releaseName"] == f"InkDOS {version}"
     tauri = json.loads(read("desktop/src-tauri/tauri.conf.json"))["version"]
     cargo = read("desktop/src-tauri/Cargo.toml")
     package = cargo.split("[package]", 1)[1].split("[build-dependencies]", 1)[0]
