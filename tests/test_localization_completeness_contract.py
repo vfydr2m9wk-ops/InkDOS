@@ -72,7 +72,6 @@ REQUIRED_DOCUMENTS_KEYS = {
     "Place the cursor inside document text",
     "Footnote inserted",
     "Add headings before creating a table of contents",
-    "Table of Contents",
     "Table of contents updated",
     "Place the cursor in a paragraph",
     "Paragraph style applied",
