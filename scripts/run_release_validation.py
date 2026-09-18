@@ -24,6 +24,7 @@ CMDS = [
     [sys.executable, "tests/test_tauri_goal3_workspace_contract.py"],
     [sys.executable, "tests/test_tauri_goal3_native_window_contract.py"],
     [sys.executable, "tests/test_localization_settings_contract.py"],
+    [sys.executable, "tests/test_localization_completeness_contract.py"],
     [sys.executable, "tests/test_desktop_ux_contract.py"],
     [sys.executable, "tests/test_app_isolation_shared_density_contract.py"],
     [sys.executable, "tests/test_release_pipeline_contract.py"],

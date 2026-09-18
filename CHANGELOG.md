@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.4.2 — 2026-09-17
+
+- Replace partial selector-based localization with explicit translatable UI roots and a reusable parameterized translation API while continuing to exclude document/user content from localization.
+- Complete Documents localization for the start screen, Help, advanced document tools, page layout, navigation/search metadata and status text, including dynamic messages and live language switching.
+- Extend full Help localization across Spreadsheets, Presentations, PDF, EPUB and Plain Text, with aligned translation keysets for Portuguese, Spanish, German, French, Simplified Chinese, Japanese and Russian.
+- Remove the Documents boot-time English start-copy overwrite that bypassed the locale dictionary and keep dynamically created panels inside the localization lifecycle.
+- Rotate the desktop/source version, Home cache-busting routes and offline service-worker cache to 2.4.2 and add localization completeness to the permanent release/desktop validation gates.
+
 ## 2.4.0 — 2026-09-17
 
 - Add an optional UI-only localization layer for Portuguese, Spanish, German, French, Simplified Chinese, Japanese and Russian while keeping English as the native source interface and preserving functional attributes, parser tokens, formulas, serialization keys and user content.
