@@ -90,6 +90,48 @@ REQUIRED_DOCUMENTS_KEYS = {
     "character",
     "characters",
     "selected",
+    "Page",
+    "Page layout",
+    "Text color and effects",
+    "Text formatting",
+    "Text",
+    "Highlight",
+    "Strikethrough",
+    "Subscript",
+    "Superscript",
+    "Paper size",
+    "Letter",
+    "Legal",
+    "Orientation",
+    "Portrait",
+    "Landscape",
+    "Top margin (cm)",
+    "Right margin (cm)",
+    "Bottom margin (cm)",
+    "Left margin (cm)",
+    "Header",
+    "Footer",
+    "Optional header text",
+    "Optional footer text",
+    "Show page number in footer",
+    "Apply layout",
+    "Insert page break",
+    "Print / Export PDF",
+    "Print / Export PDF opens the browser print sheet; choose Save as PDF when the host provides it.",
+    "Sections and columns",
+    "Columns",
+    "Gap (px)",
+    "Section break",
+    "Section break starts the next section on a new page. Imported continuous sections are normalized to this next-page model while editing.",
+    "Page {page}",
+    "No headings were found.",
+    "0 results",
+    "{count} result",
+    "{count} results",
+    "{current} of {total}",
+    "Replace with",
+    "Replace",
+    "All",
 }
 
 
@@ -117,6 +159,12 @@ def main() -> None:
     for path in HELP_FILES:
         source = read(path)
         assert "data-inkdos-i18n-root" in source, f"{path} is not an explicit translation root"
+
+    d1 = read("apps/documents/ui/d1-tools.js")
+    navigation = read("apps/documents/ui/navigation-panel.js")
+    assert d1.count("data-inkdos-i18n-root") >= 2
+    assert "InkDOSLocalization" in navigation
+    assert "Page {page}" in navigation
 
     d2 = read("apps/documents/ui/d2-tools.js")
     assert "data-inkdos-i18n-root" in d2
