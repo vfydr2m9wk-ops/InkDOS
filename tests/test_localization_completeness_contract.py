@@ -83,6 +83,13 @@ REQUIRED_DOCUMENTS_KEYS = {
     "A table must keep at least one column",
     "Column deleted",
     "TOC update failed",
+    "New document created",
+    "Page {current} of {total}",
+    "word",
+    "words",
+    "character",
+    "characters",
+    "selected",
 }
 
 
@@ -118,7 +125,12 @@ def main() -> None:
         raise AssertionError("Documents dynamic status text still bypasses localization")
 
     start = read("apps/documents/index.html")
+    app = read("apps/documents/app.js")
+    surface = read("apps/documents/view/page-surface.js")
     assert "Create a document or open a DOCX, RTF, or legacy DOC file locally." in start
+    assert "startCopy.textContent" not in app, "boot must not overwrite translated start copy"
+    assert "Page {current} of {total}" in surface
+    assert "InkDOSLocalization" in surface
 
     locale_files = sorted(LOCALE_DIR.glob("*.js"))
     assert locale_files
