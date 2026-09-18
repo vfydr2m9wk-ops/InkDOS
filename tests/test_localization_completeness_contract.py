@@ -134,6 +134,86 @@ REQUIRED_DOCUMENTS_KEYS = {
     "All",
 }
 
+REQUIRED_WORKSPACE_HELP_KEYS = {
+    "Spreadsheets",
+    "Spreadsheets Help",
+    "Use this guide for workbook basics, formulas, supported functions, and local file handling.",
+    "Cells and ranges",
+    "Writing formulas",
+    "Supported functions",
+    "Formula errors",
+    "Editing tools",
+    "Create a new workbook or open an XLS/XLSX file from the hamburger menu. Select a cell and type directly, or use the formula bar above the grid.",
+    "Saving creates an XLSX copy; the original source file is not overwritten.",
+    "A cell reference combines a column and row, such as A1. A range joins two references with a colon, such as A1:A10.",
+    "Formulas can also reference another worksheet, for example Sheet2!B4. Sheet names with spaces can be quoted.",
+    "Start a formula with =. Examples: =A1+B1, =A1*2, =SUM(A1:A10), and =IF(A1,10,0).",
+    "Arithmetic supports +, -, *, /, %, parentheses, and cell references.",
+    "SUM adds numbers. AVERAGE calculates the mean. MIN and MAX return the smallest and largest numeric values. COUNT counts numeric values. PRODUCT multiplies numeric values. IF chooses between two values based on a condition.",
+    "Arguments may use commas or semicolons. Functions can accept individual cells, values, or ranges.",
+    "#REF! means a reference is invalid. #DIV/0! means a calculation has no valid divisor/value set. #VALUE! means the expression could not be evaluated. #CYCLE! means cells depend on each other in a circular reference.",
+    "The toolbar includes undo/redo, font controls, alignment, merge/unmerge, row and column insertion/deletion, gridline visibility, and common selection operations. The Functions menu inserts common function names into the formula workflow.",
+    "Presentations",
+    "Presentations Help",
+    "Use this guide to create or open presentations, edit slides and objects, and export or present the result.",
+    "Slides",
+    "Editing objects",
+    "Formatting and layout",
+    "Transitions and notes",
+    "Presenting",
+    "Saving",
+    "Create a new presentation from the hamburger menu or open a supported PowerPoint file. The slide panel shows the presentation structure and the main canvas shows the active slide.",
+    "Use the slide panel and slide commands to navigate, add, duplicate, reorder, or remove slides when those commands are available for the current presentation.",
+    "Select text, shapes, tables, or other supported slide objects before using the editing tools. Selection determines which formatting and structure commands are active.",
+    "The editing toolbar provides supported text, object, layout, table, and presentation tools. Zoom affects the workspace view only; it does not change the saved slide size.",
+    "Transition and notes tools are available for supported PowerPoint content. Use them from the presentation editing controls and verify the slide state before exporting.",
+    "Use Present from start to enter slideshow mode. Navigate through the deck using the slideshow controls, then exit to return to editing.",
+    "Save creates a local presentation copy containing the supported edits. Keep the exported file if you want to preserve changes outside the current browser session.",
+    "PDF Workspace",
+    "PDF Workspace Help",
+    "Use this guide for opening PDFs, navigating pages, changing the view, reviewing content, and using page tools.",
+    "Opening a PDF",
+    "Pages and navigation",
+    "View and reader tools",
+    "Review and annotations",
+    "Page tools",
+    "Use Open from the hamburger menu or start screen to choose a PDF. The file is parsed and rendered locally in the browser.",
+    "Use the page controls and navigation panel to move through the document. Zoom changes the workspace view without changing the PDF page dimensions.",
+    "Use Reader tools when you want a reading-oriented workflow. View controls can change how pages are presented without modifying the source document.",
+    "Review tools operate on the active PDF editing session. Commit or finish the current edit before switching files so the session state remains clear.",
+    "Page tools include supported operations such as moving, rotating, deleting, extracting, splitting, and merging pages. These operations create an edited document state and can affect the exported PDF.",
+    "Use Save when you want a local copy containing supported edits. InkDOS keeps the source file separate rather than silently overwriting it.",
+    "PDF rendering and editing are performed in the local app runtime. The document does not need to be sent to a remote PDF editor for the core workflow.",
+    "EPUB Reader",
+    "EPUB Reader Help",
+    "Use this guide to open EPUB books, navigate chapters, adjust reading appearance, and work with reading tools.",
+    "Opening a book",
+    "Navigation",
+    "Reading modes",
+    "Search, bookmarks, and highlights",
+    "Saving and sharing",
+    "Use Open from the hamburger menu or the start screen to choose an EPUB file. InkDOS reads the book locally in the browser.",
+    "Use Previous and Next to move through the book. The progress control lets you move through the current reading flow, while the table of contents provides structured chapter navigation when the EPUB includes one.",
+    "Use the page and scroll controls to choose the reading flow that is most comfortable for the current book and screen size.",
+    "The appearance tools adjust the reading view, including text size and font options. These controls change the reader presentation and do not rewrite the original EPUB content.",
+    "Use Search to find text when available, Bookmark to mark a reading position, and Highlight for supported text selections. The annotation indicator shows the current annotation state for the book.",
+    "When editing or annotation features create a changed book state, use the available Save or Share actions to export a local copy. Keep the exported file if you want those changes outside the current browser session.",
+    "Plain Text Help",
+    "Use this guide to edit TXT/XML files, control the editor view, work with outlines, and save a local copy.",
+    "Editing",
+    "Find",
+    "View controls",
+    "Lists and outlines",
+    "Encoding and line endings",
+    "Create a new text document or open a TXT/XML file from the hamburger menu. The editor keeps the document as plain text rather than applying rich-text formatting.",
+    "Type directly in the editor. Undo and redo track text changes. Select All, Copy, Paste, indentation, and list/outline controls operate on the current text selection or line.",
+    "Use Find to search the current document. Previous and Next move between matches, and the status indicator shows the active match state.",
+    "Wrap changes whether long lines wrap visually. The text-size controls change only the editor view; they do not add font information to the TXT/XML file.",
+    "The list tool inserts plain-text outline prefixes such as dashes, bullets, or numbered patterns. Because the file remains plain text, these markers are stored as normal characters.",
+    "The status bar shows the active encoding and line-ending mode. Keep these indicators in mind when working with files shared between operating systems or XML tooling.",
+    "Save copy exports the current text as a local file. Share uses the available platform sharing path when supported. The source file is not silently overwritten.",
+}
+
 
 def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
@@ -166,6 +246,9 @@ def main() -> None:
     assert "InkDOSLocalization" in navigation
     assert "Page {page}" in navigation
 
+    spreadsheet_help = read("apps/spreadsheets/help/help.js")
+    assert "<code>" not in spreadsheet_help, "Spreadsheets Help must keep translatable paragraphs intact"
+
     d2 = read("apps/documents/ui/d2-tools.js")
     assert "data-inkdos-i18n-root" in d2
     assert "InkDOSLocalization" in d2
@@ -186,7 +269,7 @@ def main() -> None:
     reference = next(iter(keysets.values()))
     for name, keys in keysets.items():
         assert keys == reference, f"locale key mismatch: {name}"
-        missing = REQUIRED_DOCUMENTS_KEYS - keys
+        missing = (REQUIRED_DOCUMENTS_KEYS | REQUIRED_WORKSPACE_HELP_KEYS) - keys
         assert not missing, f"{name} missing Documents translations: {sorted(missing)}"
 
     pt = read("shared/localization/locales/pt-BR.js")
