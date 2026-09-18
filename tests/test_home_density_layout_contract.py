@@ -22,8 +22,9 @@ def main() -> None:
     require(JS, "buttonFor('auto','Auto'", 'Home density order')
     require(JS, "buttonFor('desktop','Desktop'", 'Home density order')
     require(JS, "buttonFor('mobile','Smartphone'", 'Home density order')
-    require(JS, "densityIcon('desktop')", 'Desktop density icon')
-    require(JS, "densityIcon('mobile')", 'Smartphone density icon')
+    require(JS, "buttonFor('desktop','Desktop',{icon:true})", 'Desktop density icon request')
+    require(JS, "buttonFor('mobile','Smartphone',{icon:true})", 'Smartphone density icon request')
+    require(JS, "const glyph=densityIcon(mode)", 'Density icon rendering')
 
     # The Home menu must size controls from their content instead of forcing
     # three equal columns inside the narrow appearance popover.
