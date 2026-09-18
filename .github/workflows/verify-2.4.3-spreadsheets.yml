@@ -1,9 +1,17 @@
-name: Verify InkDOS 2.4.3 Spreadsheets RED
+name: Verify InkDOS 2.4.3 Spreadsheets
 
 on:
   push:
     branches:
+      - main
       - feat/2.4.3-spreadsheet-fill-clear
+    paths:
+      - '.github/workflows/verify-2.4.3-spreadsheets.yml'
+      - 'tests/test_spreadsheets_243_fill_clear_browser.py'
+      - 'apps/spreadsheets/**'
+  pull_request:
+    branches:
+      - main
     paths:
       - '.github/workflows/verify-2.4.3-spreadsheets.yml'
       - 'tests/test_spreadsheets_243_fill_clear_browser.py'
