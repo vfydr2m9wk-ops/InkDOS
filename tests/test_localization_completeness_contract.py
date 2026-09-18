@@ -255,6 +255,7 @@ def main() -> None:
     d2 = read("apps/documents/ui/d2-tools.js")
     assert "data-inkdos-i18n-root" in d2
     assert "InkDOSLocalization" in d2
+    assert "data-inkdos-user-content" in d2, "comment excerpts and bodies must never be translated"
     if re.search(r"chrome\.status\(\s*['\"]", d2):
         raise AssertionError("Documents dynamic status text still bypasses localization")
 
