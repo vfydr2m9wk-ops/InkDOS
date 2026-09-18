@@ -1,14 +1,17 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Documents=global.InkDOS2Documents||{};
-function create({session,pagesHost,chrome,fileOpen,editor,ruler,navigation,zoom,zoomControls,commands}={}){const $=id=>document.getElementById(id);let generalMenu=null,contextMenu=null,zoomMenu=null;
+function create({session,pagesHost,chrome,fileOpen,editor,ruler,navigation,zoom,zoomControls,commands}={}){const $=id=>document.getElementById(id),TRANSIENT_EVENT='inkdos:documents-transient-open';let generalMenu=null,contextMenu=null,zoomMenu=null;
  function execute(id,...args){if(id.startsWith('file.'))generalMenu?.close({restoreFocus:false});if(id==='panel.search')contextMenu?.open();return commands.execute(id,...args)}
  function bindClick(id,command,...args){const node=$(id);if(node)node.onclick=()=>execute(command,...args);return node}
  function installShareAction(){const save=$('saveMenuBtn');if(!save||$('shareMenuBtn'))return;const share=document.createElement('button');share.id='shareMenuBtn';share.className='menu-item';share.type='button';share.disabled=save.disabled;share.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg><span>Share</span><span class="hint">DOCX</span>';save.insertAdjacentElement('afterend',share);new MutationObserver(()=>share.disabled=save.disabled).observe(save,{attributes:true,attributeFilter:['disabled']});share.onclick=()=>execute('file.share')}
  function closeToolbarTransientExcept(control){if(control?.id!=='contextBtn'&&contextMenu?.isOpen)contextMenu.close({restoreFocus:false});if(control?.id!=='zoomMenuBtn'&&zoomMenu?.isOpen)zoomMenu.close()}
+ function announceOpen(owner){document.dispatchEvent(new CustomEvent(TRANSIENT_EVENT,{detail:{owner}}))}
+ function closeFrameTransientsExcept(owner){if(owner!=='general'&&generalMenu?.isOpen)generalMenu.close({restoreFocus:false});if(owner!=='context'&&contextMenu?.isOpen)contextMenu.close({restoreFocus:false});if(owner!=='zoom'&&zoomMenu?.isOpen)zoomMenu.close({restoreFocus:false})}
  function installFrame(){
-  generalMenu=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn'),exclusive:false,onOpen:()=>{if(contextMenu?.isOpen)contextMenu.close({restoreFocus:false});if(zoomMenu?.isOpen)zoomMenu.close()}});
-  contextMenu=NS.FrameUI.bindDrawer({trigger:$('contextBtn'),drawer:$('contextDrawer'),backdrop:$('contextBackdrop'),closeButton:$('closeContextBtn'),onOpen:()=>generalMenu.isOpen&&generalMenu.close({restoreFocus:false})});
-  zoomMenu=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover'),onOpen:()=>generalMenu.isOpen&&generalMenu.close({restoreFocus:false})});
+  generalMenu=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn'),exclusive:false,onOpen:()=>announceOpen('general')});
+  contextMenu=NS.FrameUI.bindDrawer({trigger:$('contextBtn'),drawer:$('contextDrawer'),backdrop:$('contextBackdrop'),closeButton:$('closeContextBtn'),onOpen:()=>announceOpen('context')});
+  zoomMenu=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover'),onOpen:()=>announceOpen('zoom')});
+  document.addEventListener(TRANSIENT_EVENT,e=>closeFrameTransientsExcept(e.detail?.owner));
   $('formatbar')?.addEventListener('click',event=>{const target=event.target instanceof Element?event.target.closest('button,select,label,input'):null;if(target)closeToolbarTransientExcept(target)},true);
   bindClick('newMenuBtn','file.new');bindClick('openMenuBtn','file.open');bindClick('saveMenuBtn','file.save');installShareAction();document.querySelectorAll('[data-appearance-choice]').forEach(b=>b.onclick=()=>NS.Appearance.set(b.dataset.appearanceChoice))
  }
