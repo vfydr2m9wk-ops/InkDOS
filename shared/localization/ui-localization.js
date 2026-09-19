@@ -12,7 +12,7 @@ const LANGUAGES=Object.freeze([
 ]);
 const VALID=new Set(LANGUAGES.map(item=>item.code));
 const ALLOWED_ATTRIBUTES=Object.freeze(['title','aria-label','placeholder']);
-const SAFE_ROOT_SELECTORS=Object.freeze(['header.topbar','.formatbar','.start-state','#generalMenu','.zoom-popover','.inkdos-settings-strip','.inkdos-settings-popover']);
+const SAFE_ROOT_SELECTORS=Object.freeze(['header.topbar','.formatbar','.start-state','#generalMenu','.zoom-popover','.inkdos-settings-strip','.inkdos-settings-popover','.context-drawer .drawer-head','.context-drawer .sidebar-tabs','.context-drawer .search-box','.context-drawer .search-meta','#inkdosDesktopUpdateModal']);
 const SKIP_SELECTOR='script,style,textarea,[contenteditable="true"],[data-inkdos-user-content]';
 const doc=typeof document!=='undefined'?document:null;
 const packages=root.InkDOSLocalePackages=root.InkDOSLocalePackages||Object.create(null);
@@ -25,7 +25,7 @@ function translateValue(source,key,fallback){return source&&Object.prototype.has
 function rememberText(node){if(!originalText.has(node))originalText.set(node,node.nodeValue);return originalText.get(node)}
 function rememberAttribute(element,name){let saved=originalAttributes.get(element);if(!saved){saved=Object.create(null);originalAttributes.set(element,saved)}if(!(name in saved))saved[name]=element.getAttribute(name);return saved[name]}
 function safeRoots(){if(!doc)return[];const roots=[];for(const selector of SAFE_ROOT_SELECTORS){for(const element of doc.querySelectorAll(selector)){if(!roots.includes(element))roots.push(element)}}return roots}
-function isSkipped(node,rootElement){const parent=node.parentElement;if(!parent)return true;if(parent.closest(SKIP_SELECTOR))return true;if(parent.closest('#contextDrawer,.context-drawer,.pages-host,.sheet-host,.slides-host,.pdf-pages,.epub-content,.editor-surface'))return true;return !rootElement.contains(parent)}
+function isSkipped(node,rootElement){const parent=node.parentElement;if(!parent)return true;if(parent.closest(SKIP_SELECTOR))return true;if(parent.closest('.pages-host,.sheet-host,.slides-host,.pdf-pages,.epub-content,.editor-surface'))return true;return !rootElement.contains(parent)}
 function translatedText(raw,source){if(typeof raw!=='string')return raw;const match=raw.match(/^(\s*)(.*?)(\s*)$/s);if(!match)return raw;const key=match[2];if(!key)return raw;return match[1]+translateValue(source,key,key)+match[3]}
 function applyText(rootElement,source){if(!doc?.createTreeWalker)return;const walker=doc.createTreeWalker(rootElement,4);let node;while((node=walker.nextNode())){if(isSkipped(node,rootElement))continue;const raw=rememberText(node);node.nodeValue=language===DEFAULT_LANGUAGE?raw:translatedText(raw,source)}}
 function applyAttributes(rootElement,source){for(const name of ALLOWED_ATTRIBUTES){for(const element of rootElement.querySelectorAll('['+name+']')){if(element.closest(SKIP_SELECTOR))continue;const raw=rememberAttribute(element,name);if(raw==null)continue;element.setAttribute(name,language===DEFAULT_LANGUAGE?raw:translateValue(source,raw,raw))}if(rootElement.hasAttribute?.(name)){const raw=rememberAttribute(rootElement,name);if(raw!=null)rootElement.setAttribute(name,language===DEFAULT_LANGUAGE?raw:translateValue(source,raw,raw))}}}
