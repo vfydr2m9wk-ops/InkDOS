@@ -30,5 +30,8 @@
 .inkdos-density-control button.active,.inkdos-density-control button[aria-checked="true"]{background:var(--accent-soft,rgba(47,111,237,.12));color:var(--accent,#2f6fed)}
 :root[data-ui-density="desktop"] .inkdos-density-control button{min-height:28px;padding:3px 6px;font-size:12px}
 .inkdos-density-divider{height:1px;margin:6px 8px;background:var(--line,#d7dde5)}
-.home-density-control{margin:4px 8px 8px}
+.home-density-control{grid-template-columns:max-content max-content max-content;justify-content:end;max-width:calc(100vw - 32px);margin:4px 8px 8px}
+.home-density-control button{display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.inkdos-density-icon{width:14px;height:14px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 #appearanceMenu .inkdos-density-label{padding:4px 10px 2px}
+@media(max-width:420px){.home-density-control{grid-template-columns:1fr;justify-content:stretch}.home-density-control button{justify-content:flex-start}}
