@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -28,6 +31,8 @@ jobs:
         run: python -m playwright install --with-deps chromium
       - name: Run clean-snapshot release validation
         run: python scripts/run_release_validation.py
+      - name: Run Documents 2.4.3 interaction regression
+        run: python tests/test_documents_243_interaction_browser.py
       - name: Run Home Windows-scale layout harness
         run: python tests/test_home_density_layout_browser.py
       - name: Run Spreadsheets 2.4.3 fill/clear regression
