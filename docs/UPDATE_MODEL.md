@@ -1,13 +1,39 @@
-# Update model
+# Desktop update model
 
-The 2.0 migration package uses `mode: full-snapshot`.
+InkDOS desktop updates use the signed Tauri updater for Windows, macOS and Linux.
 
-The updater creates a candidate tree from the package payload only. It does not copy any 1.x runtime file into the candidate. The sole inherited repository path is `.github/workflows/`, because the currently installed workflow is the protected bootloader that applies the package and is forbidden from being modified by an update ZIP.
+## Version authority
 
-The candidate is fully validated before the real checkout is changed. On apply, every old repository file not present in the 2.0 snapshot is removed, except `.git`, `.github/workflows/`, and the root update ZIP that the workflow itself removes after a successful transaction.
+`VERSION.json` is the product version authority. Desktop configuration is checked against it by `desktop/scripts/release_version.py`.
 
-Future packages may use `mode: incremental` and must still provide `files/scripts/apply_update_package.py` because the protected workflow extracts the updater from the package before execution.
+A public desktop release uses a matching immutable tag such as `v2.4.0`.
 
-## 2.0.3 PDF package
+## Build and publication path
 
-Incremental update: previous sequence 70 / version 2.0.2 → sequence 71 / version 2.0.3. The payload includes the unchanged transactional updater and updated six-app validation contracts. It does not modify workflows or permission controls. The old tests/test_suite_integration.py moves to scripts/validate_suite_contracts.py, retaining its release checks with PDF now active. No PDF test fixtures are installed.
+1. An immutable `vX.Y.Z` tag is pushed for a commit already contained in `main`.
+2. `.github/workflows/release.yml` validates the tagged source without write credentials.
+3. Native runners build the supported packages: NSIS/EXE on Windows, DMG on macOS and AppImage on Linux, plus the signed Tauri updater artifacts required by each platform.
+4. The release workflow records provenance for the tagged commit and artifacts produced by that same workflow run.
+5. Tauri updater artifacts are signed with the configured signing key.
+6. `desktop/scripts/build_updater_manifest.py` creates `latest.json`.
+7. The verified release assets and `latest.json` are uploaded to a draft GitHub Release and checked before that release is made public.
+
+There is no separate release-promotion workflow, promotion-state file, manual release dispatch or cross-run artifact-reuse path. `.github/workflows/desktop-tauri.yml` performs desktop contract/staging validation only; native release builds are owned exclusively by `.github/workflows/release.yml`.
+
+The installed application checks:
+
+`https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest/download/latest.json`
+
+The updater public key is embedded through the release configuration; private signing material remains in GitHub Actions secrets and is not stored in the repository.
+
+## Reproducible release toolchain
+
+Release CI pins the Rust toolchain to 1.98.1 and the Tauri CLI to 2.11.4, matching the last verified successful native build used to establish this baseline. Direct Tauri/Rust dependencies in `desktop/src-tauri/Cargo.toml` are pinned to the versions resolved by that build.
+
+## User action
+
+Update checking is explicit. Finding an update does not itself install it. Installation is a separate user action and can be cancelled.
+
+## Retired repository updater
+
+The former repository `InkDOS-update-v*.zip` transaction mechanism is not part of the maintained desktop update path. Its workflow, ledger, trust-boundary tests and source-snapshot metadata have been removed from `main`.

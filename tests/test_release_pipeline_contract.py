@@ -3,6 +3,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "release.yml"
+PROMOTION_WORKFLOW = ROOT / ".github" / "workflows" / "promote-release-tag.yml"
+PROMOTION_REQUEST = ROOT / ".github" / "release-promotion.json"
 
 
 def require(condition: bool, message: str) -> None:
@@ -19,17 +21,29 @@ def main() -> None:
     require("TAURI_SIGNING_PRIVATE_KEY_PASSWORD" in text, "signing password is not wired into preflight")
     require("TAURI_UPDATER_PUBLIC_KEY" in text, "updater public key is not validated before build")
 
+    require("v*.*.*" in text, "release workflow is not tag-triggered")
+    require("workflow_dispatch" not in text, "release workflow still exposes a manual publication path")
+    require("reuse_run_id" not in text, "release workflow still exposes cross-run artifact reuse")
+    require("inputs." not in text, "release workflow still depends on manual inputs")
+    require(not PROMOTION_WORKFLOW.exists(), "redundant release promotion workflow still exists")
+    require(not PROMOTION_REQUEST.exists(), "redundant release promotion state still exists")
+
+    require("bundles: nsis" in text, "Windows release build does not use NSIS")
     require("bundles: app,dmg" in text, "macOS release build does not request the updater app bundle")
+    require("bundles: appimage" in text, "Linux release build does not use AppImage")
     require("*.app.tar.gz" in text and "*.app.tar.gz.sig" in text, "macOS updater artifacts are not required")
+    require("bundles: nsis,msi" not in text, "MSI is still built")
+    require("bundles: deb,appimage,rpm" not in text, "DEB/RPM are still built")
 
-    require("reuse_run_id:" in text, "release workflow has no artifact-reuse input")
-    require("run-id: ${{ inputs.reuse_run_id }}" in text, "prior-run artifacts are not reusable")
-    require("github-token: ${{ github.token }}" in text, "cross-run artifact download lacks an Actions token")
     require("Release-Provenance" in text, "release artifacts lack immutable provenance")
-    require("Verify artifact provenance" in text, "publish-only retry does not verify artifact provenance")
-    require("actions: read" in text, "publish job cannot read artifacts from a prior run")
+    require("Verify artifact provenance" in text, "publish job does not verify artifact provenance")
+    require("Download current-run native artifacts" in text, "publish job does not use current-run artifacts")
+    require("Download current-run provenance" in text, "publish job does not use current-run provenance")
+    require("run-id:" not in text, "publish job can still select a prior workflow run")
+    require("github-token:" not in text, "publish job still has cross-run download wiring")
+    require("actions: read" in text, "publish job cannot read artifacts from its own run")
 
-    print("InkDOS resilient release pipeline contract: PASS")
+    print("InkDOS tag-only release pipeline contract: PASS")
 
 
 if __name__ == "__main__":

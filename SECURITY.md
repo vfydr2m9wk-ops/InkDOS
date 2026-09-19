@@ -1,6 +1,6 @@
 # Security
 
-InkDOS processes supported files locally in the browser. Do not attach confidential files to public bug reports.
+InkDOS processes supported files locally. Do not attach confidential files to public bug reports.
 
 ## Public QA privacy
 
@@ -12,6 +12,8 @@ Private QA material must not be committed to the repository or copied into relea
 
 If a report cannot be reproduced without confidential material, keep that material outside the public repository and reduce the report to an anonymized technical description before publication.
 
-## Update trust boundary
+## Desktop update trust boundary
 
-Update packages cannot create, modify or delete `.github/workflows/`. Full-snapshot updates are validated in a disposable candidate before the checkout is changed.
+Desktop releases are built from an immutable version tag. The release workflow validates the tagged source, builds native artifacts on platform runners, signs updater artifacts, records build provenance and verifies that provenance before publication.
+
+The Tauri updater public key may be configured in the built application. The signing private key and its password must remain GitHub Actions secrets and must never be committed to this repository.
