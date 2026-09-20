@@ -4,12 +4,16 @@ on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - main
+    paths:
+      - '.release/trigger-2.4.3'
 
 permissions:
-  contents: read
+  contents: write
 
 env:
-  RELEASE_TAG: ${{ github.ref_name }}
+  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.4.3' }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
@@ -23,9 +27,34 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Create authorized release tag from main trigger
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          test "$RELEASE_TAG" = "v$VERSION"
+          python - <<'PY'
+          import json
+          d=json.load(open('config/release-authorization.json', encoding='utf-8'))
+          version=json.load(open('VERSION.json', encoding='utf-8'))['version']
+          assert d['version']==version
+          assert d['explicitUserAuthorization'] is True
+          assert (d['windowsDeviceUpgradeValidated'] is True) != (d['windowsDeviceUpgradeWaived'] is True)
+          print(f"Authorized release trigger for InkDOS {version}.")
+          PY
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" > /tmp/tag.json 2>/dev/null; then
+            TAG_SHA="$(python -c 'import json; print(json.load(open("/tmp/tag.json"))["object"]["sha"])')"
+            test "$TAG_SHA" = "$GITHUB_SHA"
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs"               -f ref="refs/tags/$RELEASE_TAG"               -f sha="$GITHUB_SHA"
+          fi
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:

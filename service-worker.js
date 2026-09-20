@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.4.3-1';
+const CACHE_NAME='inkdos-v2.4.3-2';
 const APP_SHELL=[
   "./shared/ui-density.js",
   "./shared/ui-density.css",
