@@ -29,12 +29,16 @@ jobs:
         with:
           ref: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Create authorized clean 2.4.4 tag
+      - name: Bootstrap clean 2.4.4 tag through draft release
         if: github.ref == 'refs/heads/main'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          TARGET_SHA="8c5e8249f75c7a2ae8a9ff54de4683b10a01d0cc"
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
           test "$VERSION" = "2.4.4"
           test "$RELEASE_TAG" = "v$VERSION"
@@ -45,10 +49,13 @@ jobs:
           assert d['explicitUserAuthorization'] is True
           assert (d['windowsDeviceUpgradeValidated'] is True) != (d['windowsDeviceUpgradeWaived'] is True)
           PY
-          TARGET_SHA="$(git rev-parse HEAD^)"
-          test "$TARGET_SHA" = "8c5e8249f75c7a2ae8a9ff54de4683b10a01d0cc"
-          git tag "$RELEASE_TAG" "$TARGET_SHA"
-          git push origin "refs/tags/$RELEASE_TAG"
+          if ! gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            gh api --method POST "repos/$GITHUB_REPOSITORY/releases"               -f tag_name="$RELEASE_TAG"               -f target_commitish="$TARGET_SHA"               -f name="InkDOS 2.4.4 bootstrap"               -F draft=true > /tmp/bootstrap-release.json
+            RID="$(python -c 'import json; print(json.load(open("/tmp/bootstrap-release.json"))["id"])')"
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$RID"
+          fi
+          git fetch origin --force --tags
+          test "$(git rev-parse "$RELEASE_TAG^{commit}")" = "$TARGET_SHA"
           git checkout --detach "$TARGET_SHA"
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
