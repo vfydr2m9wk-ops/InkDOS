@@ -7,7 +7,7 @@ CONFIG_PATH = TAURI_DIR / "tauri.conf.json"
 LAUNCHERS_PATH = ROOT / "desktop" / "launchers.json"
 GENERATOR_PATH = ROOT / "desktop" / "scripts" / "generate_macos_workspace_launchers.py"
 MACOS_LAUNCHER_ROOT = TAURI_DIR / "macos" / "workspace-launchers"
-DESKTOP_BUILD_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
+RELEASE_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "release.yml"
 
 DISPLAY_NAMES = {
     "documents": "Documents",
@@ -52,7 +52,7 @@ def main() -> None:
             f"tracked staging directory missing for {app_name}"
         )
 
-    workflow = DESKTOP_BUILD_WORKFLOW_PATH.read_text(encoding="utf-8")
+    workflow = RELEASE_WORKFLOW_PATH.read_text(encoding="utf-8")
     generation_token = "python desktop/scripts/generate_macos_workspace_launchers.py"
     build_token = "cargo tauri build --bundles"
     assert generation_token in workflow, "production macOS build must materialize workspace launchers"

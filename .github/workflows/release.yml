@@ -45,6 +45,13 @@ jobs:
           python desktop/scripts/release_version.py --check-tag "$RELEASE_TAG"
           python desktop/scripts/release_version.py --check-config
 
+      - name: Validate final candidate version surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${RELEASE_TAG#v}"
+          python desktop/scripts/check_release_candidate.py --version "$VERSION"
+
       - name: Install validation dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
 
@@ -334,6 +341,16 @@ jobs:
                   print(path.as_posix())
           PY
 
+      - name: Validate release inventory and generate SHA-256 checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          python desktop/scripts/validate_release_inventory.py \
+            --version "$VERSION" \
+            --assets release-final \
+            --output release-final/SHA256SUMS
+
       - name: Prepare release notes
         shell: bash
         run: |
@@ -360,6 +377,19 @@ jobs:
             --assets release-final \
             --notes release-notes.md \
             --output release-final/latest.json
+
+      - name: Validate final release bundle coherence
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          python desktop/scripts/validate_release_bundle.py \
+            --version "$VERSION" \
+            --tag "$RELEASE_TAG" \
+            --assets release-final
+
+      - name: Validate explicit publication authorization
+        run: python desktop/scripts/validate_release_authorization.py --version "$(python -c 'import json; print(json.load(open("VERSION.json"))["version"])')" --assets release-final
 
       - name: Publish verified release transactionally
         shell: bash
@@ -392,14 +422,15 @@ jobs:
           gh release upload "$RELEASE_TAG" "${ASSETS[@]}" --clobber
 
           mapfile -t REMOTE_ASSETS < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name')
-          for path in "${ASSETS[@]}"; do
-            name="$(basename "$path")"
-            printf '%s\n' "${REMOTE_ASSETS[@]}" | grep -Fx "$name" >/dev/null || {
-              echo "Published draft is missing asset: $name" >&2
-              exit 1
-            }
-          done
-          printf '%s\n' "${REMOTE_ASSETS[@]}" | grep -Fx 'latest.json' >/dev/null
+          printf '%s\n' "${ASSETS[@]##*/}" | LC_ALL=C sort -u > /tmp/local-assets.txt
+          printf '%s\n' "${REMOTE_ASSETS[@]}" | LC_ALL=C sort -u > /tmp/remote-assets.txt
+          REMOTE_SORTED="$(cat /tmp/remote-assets.txt)"
+          if ! cmp -s /tmp/local-assets.txt /tmp/remote-assets.txt; then
+            echo "Refusing to promote draft with non-exact asset inventory." >&2
+            comm -3 /tmp/local-assets.txt /tmp/remote-assets.txt >&2 || true
+            exit 1
+          fi
+          printf '%s\n' "$REMOTE_SORTED" | grep -Fx 'latest.json' >/dev/null
 
           gh release edit "$RELEASE_TAG" \
             --draft=false \

@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DESKTOP = ROOT / "desktop"
 TAURI = DESKTOP / "src-tauri"
-WORKFLOW = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
+LEGACY_DESKTOP_WORKFLOW = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
 RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "release.yml"
 PROMOTION_WORKFLOW = ROOT / ".github" / "workflows" / "promote-release-tag.yml"
 PROMOTION_REQUEST = ROOT / ".github" / "release-promotion.json"
@@ -113,34 +113,21 @@ def test_release_version_utility_uses_version_json_as_authority():
         assert marker in utility
 
 
-def test_desktop_workflow_is_contract_only_without_duplicate_native_builds():
-    workflow = read(WORKFLOW)
+def test_legacy_desktop_workflow_is_absent_and_unified_release_owns_native_builds():
+    assert not LEGACY_DESKTOP_WORKFLOW.exists(), "legacy desktop-tauri workflow must not be reintroduced"
+    workflow = read(RELEASE_WORKFLOW)
     for marker in (
-        "main",
-        "workflow_dispatch",
-        "runs-on: ubuntu-22.04",
+        "v*.*.*",
         "python desktop/scripts/stage_web.py --check",
         "python desktop/scripts/release_version.py --check-config",
         "python tests/test_tauri_desktop_contract.py",
-    ):
-        assert marker in workflow
-    for forbidden in (
-        "cargo tauri build",
         "windows-latest",
         "macos-latest",
-        "InkDOS-Windows",
-        "InkDOS-macOS",
-        "InkDOS-Linux",
-        "dtolnay/rust-toolchain",
-        "cargo install tauri-cli",
-        "upload-artifact",
-        "strategy:",
-        "matrix:",
+        "ubuntu-22.04",
+        "cargo tauri build --bundles",
     ):
-        assert forbidden not in workflow
-    assert "setup-node" not in workflow
-    assert "npm install" not in workflow
-    assert "npm run" not in workflow
+        assert marker in workflow
+    assert "workflow_dispatch" not in workflow
 
 
 def test_release_has_one_tag_only_entrypoint_and_no_promotion_state():

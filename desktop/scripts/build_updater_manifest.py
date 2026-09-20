@@ -12,6 +12,11 @@ PLATFORMS = {
     "linux-x86_64": (".AppImage", ".AppImage.sig"),
 }
 
+VERSIONED_ARTIFACT_PREFIX = {
+    "windows-x86_64": "InkDOS_{version}_",
+    "linux-x86_64": "InkDOS_{version}_",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a static Tauri v2 updater manifest from signed release artifacts.")
@@ -34,6 +39,9 @@ def exactly_one(root: Path, suffix: str) -> Path:
 
 def main() -> int:
     args = parse_args()
+    expected_tag = f"v{args.version}"
+    if args.tag != expected_tag:
+        raise SystemExit(f"Updater tag/version mismatch: tag={args.tag!r}, expected {expected_tag!r}")
     assets = Path(args.assets)
     if not assets.is_dir():
         raise SystemExit(f"Updater asset directory does not exist: {assets}")
@@ -41,7 +49,17 @@ def main() -> int:
     platforms: dict[str, dict[str, str]] = {}
     for platform, (artifact_suffix, signature_suffix) in PLATFORMS.items():
         artifact = exactly_one(assets, artifact_suffix)
-        signature = exactly_one(assets, signature_suffix).read_text(encoding="utf-8").strip()
+        prefix_template = VERSIONED_ARTIFACT_PREFIX.get(platform)
+        if prefix_template and not artifact.name.startswith(prefix_template.format(version=args.version)):
+            raise SystemExit(
+                f"Updater artifact/version mismatch for {platform}: artifact={artifact.name!r}, version={args.version!r}"
+            )
+        signature_path = exactly_one(assets, signature_suffix)
+        if signature_path.name != artifact.name + ".sig":
+            raise SystemExit(
+                f"Updater artifact/signature mismatch for {platform}: artifact={artifact.name!r}, signature={signature_path.name!r}"
+            )
+        signature = signature_path.read_text(encoding="utf-8").strip()
         if not signature:
             raise SystemExit(f"Updater signature is empty for {artifact.name}")
         platforms[platform] = {

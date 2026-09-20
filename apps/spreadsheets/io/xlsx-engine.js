@@ -150,7 +150,7 @@ async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
   if(global.InkDOS2SpreadsheetPackageValidator)await global.InkDOS2SpreadsheetPackageValidator.validateXlsx(buffer,fileName);
   const zip=await JSZip.loadAsync(buffer,{checkCRC32:true}),read=async p=>zip.file(p)?zip.file(p).async('text'):'';
   const wbRaw=await read('xl/workbook.xml');if(!wbRaw)throw new Error('This is not a supported XLSX workbook');
-  const workbookXml=xml(wbRaw),relsRaw=await read('xl/_rels/workbook.xml.rels');if(!relsRaw)throw new Error('Workbook relationships are missing');
+  const workbookXml=xml(wbRaw),workbookPr=localOne(workbookXml,'workbookPr'),date1904=workbookPr?.getAttribute('date1904')==='1'||workbookPr?.getAttribute('date1904')==='true',relsRaw=await read('xl/_rels/workbook.xml.rels');if(!relsRaw)throw new Error('Workbook relationships are missing');
   const relsXml=xml(relsRaw),relMap={};relsXml.querySelectorAll('Relationship').forEach(r=>relMap[r.getAttribute('Id')]=r.getAttribute('Target'));
   const shared=[],ss=await read('xl/sharedStrings.xml');if(ss){const d=xml(ss);localAll(d,'si').forEach(si=>{let v='';localAll(si,'t').forEach(t=>v+=t.textContent);shared.push(v)})}
   const styles=parseStyles(await read('xl/styles.xml')),definedPrintAreas={};
@@ -179,13 +179,13 @@ async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
   }
   if(!sheets.length)throw new Error('No worksheets were found');resolveChartData(sheets);
   let active=+(localOne(workbookXml,'workbookView')?.getAttribute('activeTab')||0);active=Math.min(Math.max(0,active),sheets.length-1);if(sheets[active]?.state!=='visible'){const visible=sheets.findIndex(s=>s.state==='visible');if(visible>=0)active=visible}
-  return{zip,sheets,active,fileName,loaded:true,legacy:false,images:[],workbookXml:wbRaw};
+  return{zip,sheets,active,fileName,loaded:true,legacy:false,date1904,images:[],workbookXml:wbRaw};
 }
-function createBlank(){return{zip:null,sheets:[{name:'Sheet1',state:'visible',path:'xl/worksheets/sheet1.xml',xml:'',cells:new Map(),originalCells:new Map(),merges:[],originalMerges:[],widths:{},originalWidths:{},heights:{},originalHeights:{},defaultColWidth:68,defaultRowHeight:20,drawings:[],tables:[],maxR:99,maxC:25}],active:0,fileName:'Untitled.xlsx',loaded:false}}
+function createBlank(){return{zip:null,date1904:false,sheets:[{name:'Sheet1',state:'visible',path:'xl/worksheets/sheet1.xml',xml:'',cells:new Map(),originalCells:new Map(),merges:[],originalMerges:[],widths:{},originalWidths:{},heights:{},originalHeights:{},defaultColWidth:68,defaultRowHeight:20,drawings:[],tables:[],maxR:99,maxC:25}],active:0,fileName:'Untitled.xlsx',loaded:false}}
 function writeCell(doc,node,cell){
   const keep=[...node.children].filter(ch=>!['f','v','is'].includes(ch.localName));for(const ch of[...node.children])if(!keep.includes(ch))node.removeChild(ch);
   node.removeAttribute('t');if(cell.styleId)node.setAttribute('s',String(cell.styleId));else node.removeAttribute('s');
-  if(cell.f){const f=create(doc,'f');f.textContent=String(cell.f).replace(/^=/,'');node.appendChild(f);const cached=cell.calculated??cell.v;if(cached!==''&&cached!=null&&Number.isFinite(Number(cached))){const v=create(doc,'v');v.textContent=String(cached);node.appendChild(v)}return}
+  if(cell.f){const f=create(doc,'f');f.textContent=String(cell.f).replace(/^=/,'');node.appendChild(f);const cached=cell.calculated??cell.v;if(cached!==''&&cached!=null){const v=create(doc,'v');if(typeof cached==='boolean'){node.setAttribute('t','b');v.textContent=cached?'1':'0'}else if(typeof cached==='string'&&/^#(?:NULL!|DIV\/0!|VALUE!|REF!|NAME\?|NUM!|N\/A|SPILL!|CALC!)$/.test(cached)){node.setAttribute('t','e');v.textContent=cached}else if(typeof cached==='string'){node.setAttribute('t','str');v.textContent=cached}else if(typeof cached==='number'&&Number.isFinite(cached))v.textContent=String(cached);else return;node.appendChild(v)}return}
   if(typeof cell.v==='string'){
     node.setAttribute('t','inlineStr');const is=create(doc,'is'),t=create(doc,'t');t.setAttributeNS('http://www.w3.org/XML/1998/namespace','xml:space','preserve');t.textContent=cell.v;is.appendChild(t);node.appendChild(is);
   }else if(typeof cell.v==='boolean'){

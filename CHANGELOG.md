@@ -1,5 +1,12 @@
 # Changelog
 
+
+## 2.4.3 — 2026-09-20
+
+- Complete the Documents interaction fixes, responsive Home density work, and cumulative Spreadsheets fill/clear improvements.
+- Harden spreadsheet semantic type preservation across XLS/XLSX/CSV/TSV, formula evaluation, cached formula results, Undo/Redo bounds, display statistics, and delimited-text mutation paths.
+- Harden release readiness with deterministic validation, artifact inventory/coherence checks, transactional publication, updater-manifest validation, and explicit release authorization state.
+
 ## 2.4.2 — 2026-09-17
 
 - Replace partial selector-based localization with explicit translatable UI roots and a reusable parameterized translation API while continuing to exclude document/user content from localization.

@@ -230,9 +230,6 @@ def locale_keys(path: Path) -> set[str]:
 
 
 def main() -> None:
-    version = json.loads(read("VERSION.json"))["version"]
-    assert version == "2.4.2", f"expected 2.4.2 candidate, got {version}"
-
     runtime = read("shared/localization/ui-localization.js")
     assert "[data-inkdos-i18n-root]" in runtime
     assert "function t(" in runtime
@@ -291,7 +288,7 @@ def main() -> None:
     ):
         assert translated in pt, f"Portuguese visible coverage missing: {translated}"
 
-    print("InkDOS 2.4.2 localization completeness contract: OK")
+    print("InkDOS localization completeness contract: OK")
 
 
 if __name__ == "__main__":

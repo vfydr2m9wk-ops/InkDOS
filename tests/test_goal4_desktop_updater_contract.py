@@ -27,7 +27,8 @@ def main() -> int:
     web_home = WEB_HOME.read_text(encoding="utf-8")
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
 
-    require('tauri-plugin-updater = "2"' in cargo, "Goal 4 must use the official Tauri v2 updater plugin")
+    updater_dep = re.search(r'^tauri-plugin-updater\s*=\s*\"(?:=)?(2(?:\.\d+){0,2})\"$', cargo, re.M)
+    require(updater_dep is not None, "Goal 4 must use a compatible official Tauri v2 updater plugin")
     require("use tauri_plugin_updater::UpdaterExt;" in rust, "Rust updater commands must use UpdaterExt")
     require("inkdos_check_for_updates" in rust, "manual update-check command is missing")
     require("inkdos_install_update" in rust, "explicit update-install command is missing")

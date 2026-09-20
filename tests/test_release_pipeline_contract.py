@@ -21,6 +21,9 @@ def main() -> None:
     require("TAURI_SIGNING_PRIVATE_KEY_PASSWORD" in text, "signing password is not wired into preflight")
     require("TAURI_UPDATER_PUBLIC_KEY" in text, "updater public key is not validated before build")
 
+    require("check_release_candidate.py" in text, "release workflow does not fail closed on final candidate version surfaces")
+    require("--version \"$VERSION\"" in text, "release workflow does not validate candidate surfaces against the tag-derived version")
+
     require("v*.*.*" in text, "release workflow is not tag-triggered")
     require("workflow_dispatch" not in text, "release workflow still exposes a manual publication path")
     require("reuse_run_id" not in text, "release workflow still exposes cross-run artifact reuse")
