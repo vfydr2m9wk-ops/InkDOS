@@ -1,10 +1,11 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.4.3-2';
+const CACHE_NAME='inkdos-v2.4.4-1';
 const APP_SHELL=[
   "./shared/ui-density.js",
   "./shared/ui-density.css",
   "./shared/localization/ui-localization.js",
   "./shared/localization/settings-strip.js",
+  "./shared/localization/home-settings.js",
   "./shared/localization/localization.css",
   "./shared/localization/locales/pt-BR.js",
   "./shared/localization/locales/es.js",

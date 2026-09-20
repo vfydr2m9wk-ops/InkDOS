@@ -120,14 +120,14 @@ process.stdout.write(JSON.stringify(out));
     positions = [settings.find(marker) for marker in ordered]
     if any(pos < 0 for pos in positions) or positions != sorted(positions):
         raise AssertionError(f"Settings order mismatch: {positions}")
-    require(settings, "inkdos2:'+app+':language", "App-local language persistence")
-    forbid(settings, "inkdos2:language", "Language preference must not be suite-global")
+    require(settings, "LANGUAGE_KEY='inkdos2:language'", "Suite-global language persistence")
+    require(settings, "legacyLanguageKey", "Per-workspace language migration support")
     for marker in ("Getting started", "Keyboard shortcuts", "File compatibility", "Check for updates", "About InkDOS"):
         require(settings, marker, "Compact Help menu")
 
-    # Existing density behavior is retained, but workspace persistence is independently keyed.
-    require(density, "LEGACY_STORAGE_KEY='inkdos2:ui-density'", "Density migration key")
-    require(density, "'inkdos2:'+WORKSPACE+':ui-density'", "App-local density persistence")
+    # Density is now one suite-level preference, with migration from prior workspace-local keys.
+    require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Suite-global density persistence")
+    require(density, "LEGACY_WORKSPACE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':null", "Workspace density migration key")
     require(density, "localization/ui-localization.js", "Localization runtime bootstrap")
     require(density, "localization/settings-strip.js", "Settings strip bootstrap")
     require(density, "localization/localization.css", "Settings CSS bootstrap")
@@ -156,6 +156,7 @@ process.stdout.write(JSON.stringify(out));
     for asset in [
         '"./shared/localization/ui-localization.js"',
         '"./shared/localization/settings-strip.js"',
+        '"./shared/localization/home-settings.js"',
         '"./shared/localization/localization.css"',
         *[f'"./shared/localization/locales/{code}.js"' for code in LOCALES],
     ]:
