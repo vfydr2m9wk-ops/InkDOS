@@ -4,16 +4,12 @@ on:
   push:
     tags:
       - 'v*.*.*'
-    branches:
-      - main
-    paths:
-      - '.release/trigger-2.4.4'
 
 permissions:
-  contents: write
+  contents: read
 
 env:
-  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.4.4' }}
+  RELEASE_TAG: ${{ github.ref_name }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
@@ -27,36 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
+          ref: ${{ env.RELEASE_TAG }}
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Bootstrap clean 2.4.4 tag through draft release
-        if: github.ref == 'refs/heads/main'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          TARGET_SHA="8c5e8249f75c7a2ae8a9ff54de4683b10a01d0cc"
-          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
-          test "$VERSION" = "2.4.4"
-          test "$RELEASE_TAG" = "v$VERSION"
-          python - <<'PY'
-          import json
-          d=json.load(open('config/release-authorization.json', encoding='utf-8'))
-          assert d['version']=='2.4.4'
-          assert d['explicitUserAuthorization'] is True
-          assert (d['windowsDeviceUpgradeValidated'] is True) != (d['windowsDeviceUpgradeWaived'] is True)
-          PY
-          if ! gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
-            gh api --method POST "repos/$GITHUB_REPOSITORY/releases"               -f tag_name="$RELEASE_TAG"               -f target_commitish="$TARGET_SHA"               -f name="InkDOS 2.4.4 bootstrap"               -F draft=true > /tmp/bootstrap-release.json
-            RID="$(python -c 'import json; print(json.load(open("/tmp/bootstrap-release.json"))["id"])')"
-            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$RID"
-          fi
-          git fetch origin --force --tags
-          test "$(git rev-parse "$RELEASE_TAG^{commit}")" = "$TARGET_SHA"
-          git checkout --detach "$TARGET_SHA"
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
@@ -68,7 +37,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin main --force --tags
+          git fetch origin main --tags
           git merge-base --is-ancestor "${RELEASE_TAG}^{commit}" origin/main
 
       - name: Validate tag and desktop version
