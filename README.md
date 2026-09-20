@@ -1,4 +1,4 @@
-# InkDOS 2.4.0
+# InkDOS 2.4.3
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
 
