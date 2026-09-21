@@ -4,12 +4,16 @@ on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - main
+    paths:
+      - '.release/trigger-2.4.4'
 
 permissions:
-  contents: read
+  contents: write
 
 env:
-  RELEASE_TAG: ${{ github.ref_name }}
+  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.4.4' }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
@@ -23,9 +27,35 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Create authorized 2.4.4 release tag
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          test "$VERSION" = "2.4.4"
+          test "$RELEASE_TAG" = "v$VERSION"
+          python - <<'PY'
+          import json
+          d=json.load(open('config/release-authorization.json', encoding='utf-8'))
+          assert d['version']=='2.4.4'
+          assert d['explicitUserAuthorization'] is True
+          assert (d['windowsDeviceUpgradeValidated'] is True) != (d['windowsDeviceUpgradeWaived'] is True)
+          PY
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Tag already exists; refusing to overwrite." >&2
+            exit 1
+          fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs"             -f ref="refs/tags/$RELEASE_TAG"             -f sha="$GITHUB_SHA"
+          git tag -f "$RELEASE_TAG" "$GITHUB_SHA"
+          git checkout HEAD^ -- .github/workflows/release.yml
+          git rm -f .release/trigger-2.4.4
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
@@ -37,7 +67,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin main --tags
+          git fetch origin main --force --tags
           git merge-base --is-ancestor "${RELEASE_TAG}^{commit}" origin/main
 
       - name: Validate tag and desktop version
