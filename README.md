@@ -2,6 +2,10 @@
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
 
+## Resource efficiency
+
+In some informal local tests, InkDOS showed substantially lower application-attributed RAM usage than conventional desktop applications when opening comparable PDF and DOCX workloads. These observations are not standardized benchmarks and may vary depending on the operating system, runtime, document complexity and how background processes are accounted for. They nevertheless suggest that InkDOS's lightweight, local-first architecture has the potential to reduce memory overhead for common document workflows.
+
 ## Runtime
 
 The application runtime is intentionally small and explicit:
