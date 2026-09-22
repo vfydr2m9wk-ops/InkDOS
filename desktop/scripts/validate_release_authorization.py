@@ -40,21 +40,21 @@ def _validate_evidence(ep, version, assets):
     if e["observedBeforeVersion"]!=e["fromVersion"] or e["observedAfterVersion"]!=e["toVersion"]: raise SystemExit("Evidence does not bind observed pre/post upgrade versions")
     if e["webview2"] is not True: raise SystemExit("Evidence does not confirm WebView2 validation")
     if e["upgradeResult"]!="pass": raise SystemExit("Evidence does not record a passing upgrade")
-    required_steps={
-        "inAppUpdaterResult":"in-app updater", "userFilesIntegrityResult":"user-file integrity",
-        "regressionScenariosResult":"Windows regression scenarios", "displayScalingResult":"display scaling",
-        "rebootLaunchResult":"post-reboot launch", "updaterNoRepeatOfferResult":"updater no-repeat-offer",
+    required_steps = {
+        "inAppUpdaterResult": "in-app updater", "userFilesIntegrityResult": "user-file integrity",
+        "regressionScenariosResult": "Windows regression scenarios", "displayScalingResult": "display scaling",
+        "rebootLaunchResult": "post-reboot launch", "updaterNoRepeatOfferResult": "updater no-repeat-offer",
     }
-    for field,label in required_steps.items():
-        if e[field]!="pass": raise SystemExit(f"Evidence does not record a passing {label} validation")
-    if e["touchPenResult"] not in {"pass","not-applicable"}: raise SystemExit("Invalid touch/pen validation status")
+    for field, label in required_steps.items():
+        if e[field] != "pass": raise SystemExit(f"Evidence does not record a passing {label} validation")
+    if e["touchPenResult"] not in {"pass", "not-applicable"}: raise SystemExit("Invalid touch/pen validation status")
     if e["signatureVerified"] is not True: raise SystemExit("Evidence does not confirm updater signature verification")
     if not isinstance(e["signerSubject"],str) or not e["signerSubject"].strip(): raise SystemExit("Evidence does not identify the Authenticode signer subject")
     if not isinstance(e["signerThumbprint"],str) or not re.fullmatch(r"[0-9a-f]{40,64}",e["signerThumbprint"]): raise SystemExit("Evidence does not contain a valid Authenticode signer thumbprint")
-    if e["windowsArchitecture"] not in {"X64","Arm64","X86"}: raise SystemExit("Evidence does not record a supported Windows architecture")
-    for field,label in (("windowsVersion","Windows version"),("webview2Version","WebView2 version")):
+    if e["windowsArchitecture"] not in {"X64", "Arm64", "X86"}: raise SystemExit("Evidence does not record a supported Windows architecture")
+    for field, label in (("windowsVersion","Windows version"),("webview2Version","WebView2 version")):
         if not isinstance(e[field],str) or not e[field].strip(): raise SystemExit(f"Evidence does not record {label}")
-    if not isinstance(e["artifactName"],str) or not e["artifactName"].strip() or Path(e["artifactName"]).name!=e["artifactName"]: raise SystemExit("Invalid tested artifact name")
+    if not isinstance(e["artifactName"],str) or not e["artifactName"].strip() or Path(e["artifactName"]).name != e["artifactName"]: raise SystemExit("Invalid tested artifact name")
     if not e["artifactName"].lower().endswith(".exe"): raise SystemExit("Windows upgrade evidence must identify the tested EXE artifact")
     if not isinstance(e["artifactSha256"],str) or not SHA256_RE.fullmatch(e["artifactSha256"]): raise SystemExit("Invalid tested artifact SHA-256")
     artifact=assets/e["artifactName"]
@@ -63,7 +63,8 @@ def _validate_evidence(ep, version, assets):
     if actual_artifact!=e["artifactSha256"]: raise SystemExit("Tested Windows artifact SHA-256 mismatch")
     inventory=_read_inventory(assets)
     if inventory.get(e["artifactName"])!=actual_artifact: raise SystemExit("Tested Windows artifact is not bound to the validated release SHA256SUMS inventory")
-    try: stamp=datetime.fromisoformat(e["testedAtUtc"].replace("Z","+00:00"))
+    try:
+        stamp=datetime.fromisoformat(e["testedAtUtc"].replace("Z","+00:00"))
     except (AttributeError,ValueError): raise SystemExit("Invalid evidence test timestamp")
     if stamp.tzinfo is None or stamp.utcoffset()!=timezone.utc.utcoffset(stamp): raise SystemExit("Evidence timestamp must be UTC")
     if stamp > datetime.now(timezone.utc): raise SystemExit("Evidence timestamp cannot be in the future")

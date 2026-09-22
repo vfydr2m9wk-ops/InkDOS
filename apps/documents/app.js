@@ -43,6 +43,8 @@ NS.Appearance.install();
 zoom.install();
 fileOpen.install();
 commandRegistry.install();
+commandRegistry.register('insert.comment',()=>d2.openComments());
+commandRegistry.register('file.print',()=>d1.print());
 commands.install();
 d1.install();
 d2.install();

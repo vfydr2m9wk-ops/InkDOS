@@ -23,16 +23,16 @@ To validate staging without changing `web-dist`:
 python desktop/scripts/stage_web.py --check
 ```
 
-## Release artifacts
+## CI artifacts
 
-The single production pipeline is `.github/workflows/release.yml`, triggered only by a version tag (`v*.*.*`). It validates the tagged candidate, builds on native GitHub-hosted runners, signs Tauri updater artifacts, and publishes only artifacts produced by that same workflow run:
+Pushes to `desktop-tauri` run `.github/workflows/desktop-tauri.yml` on native GitHub-hosted runners. Successful builds upload:
 
-- `InkDOS-Windows`: NSIS setup `.exe` plus updater signature.
-- `InkDOS-macOS`: `.dmg` plus `.app.tar.gz` updater bundle and signature.
-- `InkDOS-Linux`: `.AppImage` plus updater signature.
+- `InkDOS-Windows`: NSIS setup `.exe` and WiX `.msi` bundles.
+- `InkDOS-macOS`: `.app` and `.dmg` bundles.
+- `InkDOS-Linux`: `.deb`, `.AppImage` and `.rpm` bundles.
 
-The bundle files are produced under `desktop/src-tauri/target/release/bundle/`, uploaded as workflow artifacts, and are intentionally not committed to Git.
+The bundle files are produced under `desktop/src-tauri/target/release/bundle/` and uploaded as workflow artifacts. They are intentionally not committed to Git.
 
 ## Signing
 
-Release builds require the configured Tauri updater signing key/password and updater public key. The release workflow performs a signing preflight before native builds and publishes only after validation and artifact-provenance checks succeed.
+Branch builds are unsigned development artifacts. Windows code signing and Apple Developer ID signing/notarization require platform credentials and are intentionally outside this branch's first implementation.

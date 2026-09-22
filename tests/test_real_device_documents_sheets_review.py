@@ -53,7 +53,7 @@ const editor={commitValue(value){committed=value}};
 globalThis.InkDOS2Spreadsheets.FormulaBar.create({nameBox,input,functions,session,selection,editor});
 input.value='=sum:A1;A2';
 input.fire('keydown',{key:'Enter',preventDefault(){}});
-process.stdout.write(JSON.stringify({committed}));
+setImmediate(()=>process.stdout.write(JSON.stringify({committed})));
 """
         proc = subprocess.run(
             ["node", "-e", script, str(formula_bar)],

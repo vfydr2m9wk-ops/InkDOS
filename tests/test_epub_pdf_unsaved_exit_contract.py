@@ -81,7 +81,7 @@ def test_pdf_replacement_save_is_snapshot_aware():
 
 
 def test_pdf_replacement_requires_confirmed_delivery():
-    assert "receipt.deliveryConfirmed" in PDF_SAVE
+    assert "receipt?.deliveryConfirmed" in PDF_SAVE or "receipt.deliveryConfirmed" in PDF_SAVE
     assert "Save delivery was not confirmed" in PDF_SAVE
 
 

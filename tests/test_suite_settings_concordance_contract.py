@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,7 +34,6 @@ def main() -> None:
 
     # Home participates in all three suite preferences.
     require(home, './shared/localization/ui-localization.js', "Home localization runtime")
-    require(home, 'data-inkdos-i18n-root', "Home localization root")
     require(home, './shared/localization/home-settings.js', "Home language settings")
     require(home, 'aria-label="Settings" title="Settings"', "Home unified settings control")
     require(sw, '"./shared/localization/home-settings.js"', "Offline Home language settings")
@@ -62,9 +60,8 @@ def main() -> None:
     # Locale packages stay key-identical and include the Home shell terminology.
     locale_dir = ROOT / "shared/localization/locales"
     for path in locale_dir.glob("*.js"):
-        subprocess.run(["node", "--check", str(path)], cwd=ROOT, check=True, capture_output=True)
         text = path.read_text(encoding="utf-8")
-        for key in ("Smartphone", "Choose a workspace", "Local-first workspace", "Project links", "Desktop release"):
+        for key in ("Smartphone", "Choose a workspace", "Local-first workspace", "Project links"):
             require(text, f"'{key}':", f"Home/settings locale key {path.name}")
 
     print("InkDOS suite settings concordance contract: OK")

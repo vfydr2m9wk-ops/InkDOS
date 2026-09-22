@@ -4,3 +4,6 @@
 @media(pointer:fine){.formula-bar{padding-top:4px;padding-bottom:4px}.formula-bar input,.formula-bar select{height:32px}}
 @media(max-width:720px){.formula-bar{grid-template-columns:62px 28px minmax(110px,1fr) auto}.formula-functions{max-width:90px}}
 @media(max-width:470px){.formula-bar{grid-template-columns:58px 26px minmax(100px,1fr)}.formula-functions{display:none}.formatbar{gap:5px}}
+.color-tool{display:inline-flex;align-items:center;gap:3px;height:28px;padding:0 4px;border:1px solid var(--line,#d0d0d0);border-radius:4px;font-size:12px;white-space:nowrap}.color-tool input[type=color]{width:20px;height:20px;padding:0;border:0;background:transparent;cursor:pointer}
+
+.sheet-drawing.chart{background:var(--panel);border:1px solid var(--line);padding:8px;overflow:hidden}.sheet-drawing.chart strong{display:block;font-size:12px}.chart-preview{height:calc(100% - 20px);display:flex;gap:5px;align-items:flex-end}.chart-series{height:100%;display:flex;align-items:flex-end;gap:2px;flex:1}.chart-series i{display:block;min-width:4px;flex:1;background:currentColor;opacity:.55}

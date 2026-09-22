@@ -1,16 +1,12 @@
 # Changelog
 
-## 2.4.4 — 2026-09-20
+## 2.5.0 — Local preview — 2026-09-21
 
-- Fix Presentations slideshow fidelity and viewport behavior, aligning intrinsic slide scaling, transparency, image crop, shape/table rendering and text metrics with the editor path.
-- Unify suite theme, display density and interface language across Home and all six workspaces, with migration from prior workspace-local preferences and synchronized settings.
-
-
-## 2.4.3 — 2026-09-20
-
-- Complete the Documents interaction fixes, responsive Home density work, and cumulative Spreadsheets fill/clear improvements.
-- Harden spreadsheet semantic type preservation across XLS/XLSX/CSV/TSV, formula evaluation, cached formula results, Undo/Redo bounds, display statistics, and delimited-text mutation paths.
-- Harden release readiness with deterministic validation, artifact inventory/coherence checks, transactional publication, updater-manifest validation, and explicit release authorization state.
+- Reorganize the PDF toolbar into explicit editing, navigation, view and document-action groups without removing existing PDF capabilities.
+- Compact annotation commands to icon-first controls with tooltips and keep text/pen properties contextual to the active tool.
+- Stabilize dynamic PDF toolbar injection by giving Reader and Page tools explicit host groups instead of relying on generic neighboring controls.
+- Preserve the published 2.4.4 suite settings and presentation-rendering corrections in the local 2.5 development baseline.
+- Keep GitHub/release publication disabled for this local development snapshot.
 
 ## 2.4.2 — 2026-09-17
 

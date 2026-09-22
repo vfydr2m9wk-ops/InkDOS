@@ -16,8 +16,8 @@ def test_epub_note_draft_participates_in_dirty_exit_contract():
 
 
 def test_epub_save_discard_cancel_preserve_note_draft_semantics():
-    assert "annotationModes?.commitPendingNote()" in BINDINGS
-    assert "annotationModes?.discardPendingNote()" in BINDINGS
+    assert "annotationModes.commitPendingNote()" in BINDINGS
+    assert "annotationModes?.discardPendingNote()" in BINDINGS or "annotationModes.discardPendingNote()" in BINDINGS
     assert "decision==='discard'" in BINDINGS
     assert "decision==='cancel'" in BINDINGS
     assert "decision==='save'" in BINDINGS

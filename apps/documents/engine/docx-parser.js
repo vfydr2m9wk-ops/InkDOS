@@ -101,17 +101,18 @@ function renderRun(run,info,mediaUrls,state){
   }
   if(!parts.length)return'';const runProps=merge(info.baseRun,parseRunProps(first(run,'rPr')));return'<span style="'+cssRun(runProps)+'">'+parts.join('')+'</span>';
 }
-function renderInline(node,info,mediaUrls,state){let out='';for(const child of Array.from(node.children||[])){
+function safeHref(value){const s=String(value||'').trim();return /^(https?:|mailto:)/i.test(s)?s:''}
+function renderInline(node,info,mediaUrls,state,rels){let out='';for(const child of Array.from(node.children||[])){
   const name=child.localName;
   if(name==='r')out+=renderRun(child,info,mediaUrls,state);
-  else if(name==='hyperlink')out+='<span class="hyperlink">'+renderInline(child,info,mediaUrls,state)+'</span>';
-  else if(name==='ins')out+='<span class="tracked-insert" data-docx-tracked="insert">'+renderInline(child,info,mediaUrls,state)+'</span>';
-  else if(name==='del')out+='<span class="tracked-delete" data-docx-tracked="delete">'+renderInline(child,info,mediaUrls,state)+'</span>';
-  else if(name==='sdt'||name==='sdtContent')out+='<span class="content-control">'+renderInline(child,info,mediaUrls,state)+'</span>';
+  else if(name==='hyperlink'){const href=safeHref(rels&&rels[attr(child,'id')]);out+=(href?'<a class="hyperlink" href="'+esc(href)+'" data-docx-href="'+esc(href)+'" rel="noopener noreferrer">':'<span class="hyperlink">')+renderInline(child,info,mediaUrls,state,rels)+(href?'</a>':'</span>');}
+  else if(name==='ins')out+='<span class="tracked-insert" data-docx-tracked="insert">'+renderInline(child,info,mediaUrls,state,rels)+'</span>';
+  else if(name==='del')out+='<span class="tracked-delete" data-docx-tracked="delete">'+renderInline(child,info,mediaUrls,state,rels)+'</span>';
+  else if(name==='sdt'||name==='sdtContent')out+='<span class="content-control">'+renderInline(child,info,mediaUrls,state,rels)+'</span>';
   else if(name!=='pPr')out+=renderInline(child,info,mediaUrls,state);
  }return out}
-function paragraphBlock(p,numbering,styles,mediaUrls,listCounters,sourceIndex,sourceSubIndex){
-  const info=paragraphInfo(p,numbering,styles),state={visible:false,anchored:false,softPageBreakBefore:false,hardPageBreakBefore:info.pageBreakBefore},parts=renderInline(p,info,mediaUrls,state),html=parts||'&nbsp;';let final;
+function paragraphBlock(p,numbering,styles,mediaUrls,listCounters,sourceIndex,sourceSubIndex,rels){
+  const info=paragraphInfo(p,numbering,styles),state={visible:false,anchored:false,softPageBreakBefore:false,hardPageBreakBefore:info.pageBreakBefore},parts=renderInline(p,info,mediaUrls,state,rels),html=parts||'&nbsp;';let final;
   if(info.listInfo){const label=listLabel(info.listInfo,listCounters),hanging=Number.isFinite(info.listInfo.hanging)?info.listInfo.hanging:360;final='<p class="doc-list" data-list-num-id="'+esc(info.listInfo.numId)+'" data-list-level="'+info.listInfo.ilvl+'" data-list-format="'+esc(info.listInfo.fmt)+'" style="'+info.style+'"><span class="list-label" contenteditable="false" style="width:'+(hanging/20)+'pt">'+esc(label)+'</span>'+html+'</p>';}
   else final='<'+info.tag+(state.anchored?' class="has-docx-anchor"':'')+' style="'+info.style+'">'+html+'</'+info.tag+'>';
   return{type:info.tag,html:final,text:textOf(p),outlineLevel:info.level,softPageBreakBefore:state.softPageBreakBefore,hardPageBreakBefore:state.hardPageBreakBefore,keepNext:!!info.props.keepNext,styleId:info.styleId,sourceIndex,sourceSubIndex};
@@ -129,10 +130,10 @@ async function parse(buffer){
     function addBlock(block){blocks.push(block);if(block.outlineLevel&&block.text.trim())outline.push({level:block.outlineLevel,text:block.text.trim(),blockIndex:blocks.length-1});}
     for(let sourceIndex=0;sourceIndex<bodyChildren.length;sourceIndex++){
       const child=bodyChildren[sourceIndex];if(child.localName==='sectPr')continue;let made=0;
-      if(child.localName==='p'){addBlock(paragraphBlock(child,numbering,styles,mediaUrls,listCounters,sourceIndex,0));made=1;}
+      if(child.localName==='p'){addBlock(paragraphBlock(child,numbering,styles,mediaUrls,listCounters,sourceIndex,0,rels));made=1;}
       else if(child.localName==='tbl'){addBlock(tableBlock(child,sourceIndex,0));made=1;}
       else if(child.localName==='sdt'){
-        const content=first(child,'sdtContent')||child;for(const nested of Array.from(content.children)){let block=null;if(nested.localName==='p')block=paragraphBlock(nested,numbering,styles,mediaUrls,listCounters,sourceIndex,made);else if(nested.localName==='tbl')block=tableBlock(nested,sourceIndex,made);if(block){block.html='<div class="content-control content-control-block" data-docx-content-control="true">'+block.html+'</div>';addBlock(block);made++;}}
+        const content=first(child,'sdtContent')||child;for(const nested of Array.from(content.children)){let block=null;if(nested.localName==='p')block=paragraphBlock(nested,numbering,styles,mediaUrls,listCounters,sourceIndex,made,rels);else if(nested.localName==='tbl')block=tableBlock(nested,sourceIndex,made);if(block){block.html='<div class="content-control content-control-block" data-docx-content-control="true">'+block.html+'</div>';addBlock(block);made++;}}
       }
       if(made)renderedSourceIndexes.push(sourceIndex);
       const localSect=child.localName==='p'?first(first(child,'pPr'),'sectPr'):null;if(localSect){const spec=pageSpecFromSect(localSect,styles,files,root,rels,mediaUrls);for(let j=sectionStart;j<blocks.length;j++)blocks[j].pageSpec=spec;if(sectionStart<blocks.length)blocks[sectionStart].sectionStart=true;sectionStart=blocks.length;}

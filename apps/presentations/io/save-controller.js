@@ -29,7 +29,7 @@ function create({session,chrome,promoteLegacyPpt}={}){
           if(typeof promoteLegacyPpt!=='function'||await promoteLegacyPpt({bytes,fileName,receipt})===false)chrome.status('Editable PPTX copy saved · could not switch to editable copy');
         }else if(session.sourceKind==='pptx'){
           session.acceptConfirmedPptx(bytes,receipt);
-          for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false}
+          for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false;slide.backgroundEdited=false;slide.commentsEdited=false}session.themeEdited=false;session.themePatch=null
           chrome.status('PPTX copy saved');
         }else{session.dirty=false;chrome.status('PPTX copy saved')}
       }else chrome.status(legacyPpt?'Editable PPTX copy generated · delivery requested':'PPTX copy generated · delivery requested');
@@ -50,7 +50,7 @@ function create({session,chrome,promoteLegacyPpt}={}){
       if(session.revision!==revision){chrome.status('Presentation changed while saving — navigation cancelled');return false}
       if(kind==='pptx'){
         if(!session.acceptConfirmedPptx(bytes,receipt))return false;
-        for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false}
+        for(const slide of session.slides||[]){slide.transitionEdited=false;slide.notesEdited=false;slide.backgroundEdited=false;slide.commentsEdited=false}session.themeEdited=false;session.themePatch=null
       }else session.dirty=false;
       chrome.title();chrome.status('PPTX saved — continuing');
       return !session.dirty;

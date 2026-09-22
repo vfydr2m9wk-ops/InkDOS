@@ -28,7 +28,7 @@
   </header>
 
   <div id="editbar" class="editbar" tabindex="0" aria-label="Horizontally scrollable presentation editing toolbar">
-    <div class="tool-group" role="group" aria-label="History and navigation">
+    <div id="pptToolbarHistory" class="tool-group" role="group" aria-label="History and navigation">
       <button id="undoBtn" class="tool-btn icon-only" type="button" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg></button>
       <button id="redoBtn" class="tool-btn icon-only" type="button" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
       <button id="slidePanelBtn" class="tool-btn icon-only active" type="button" title="Show or hide slide thumbnails" aria-label="Show or hide slide thumbnails" aria-controls="slidePanel" aria-expanded="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16"/></svg></button>
@@ -47,15 +47,17 @@
     </div>
     <span class="tool-divider" aria-hidden="true"></span>
     <div id="pptToolbarText" class="tool-group" role="group" aria-label="Text formatting">
+      <select id="fontFamily" class="ppt-font-family-select" title="Font family" aria-label="Font family"><option value="Arial">Arial</option><option value="Aptos">Aptos</option><option value="Calibri">Calibri</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option></select>
       <select id="fontSize" class="font-size-select" title="Font size" aria-label="Font size"><option>12</option><option>16</option><option>20</option><option selected>24</option><option>28</option><option>32</option><option>36</option><option>44</option><option>54</option><option>72</option></select>
       <button id="boldBtn" class="tool-btn icon-only" type="button" title="Bold" aria-label="Bold"><b>B</b></button>
       <button id="italicBtn" class="tool-btn icon-only" type="button" title="Italic" aria-label="Italic"><i>I</i></button>
+      <button id="underlineBtn" class="tool-btn icon-only" type="button" title="Underline" aria-label="Underline"><u>U</u></button>
       <select id="alignSelect" class="align-select" title="Alignment" aria-label="Text alignment"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select>
     </div>
     <span class="tool-divider" aria-hidden="true"></span>
     <div id="pptToolbarObjectStyle" class="tool-group" role="group" aria-label="Object style"></div>
     <span class="tool-divider" aria-hidden="true"></span>
-    <div class="tool-group" role="group" aria-label="View and presentation">
+    <div id="pptToolbarView" class="tool-group" role="group" aria-label="View and presentation">
       <button id="zoomMenuBtn" class="tool-btn zoom-tool" type="button" title="Zoom" aria-label="Slide zoom" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><span id="zoomToolbarLabel">100%</span></button>
       <button id="presentBtn" class="tool-btn labeled-tool" type="button" title="Present from current slide" aria-label="Present from current slide"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="12" rx="1.5"/><path d="M9.5 7.5 15 10l-5.5 2.5z"/><path d="M12 16v4M8.5 20h7"/></svg><span class="tool-label">Present</span></button>
     </div>

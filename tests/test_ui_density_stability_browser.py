@@ -90,11 +90,7 @@ def main() -> None:
                 assert state['density'] == 'desktop', (path, state)
                 assert state['preference'] == 'auto', (path, state)
                 assert state['controlCount'] == 1, (path, state)
-                if '/apps/' in path:
-                    app = path.split('/apps/', 1)[1].split('/', 1)[0]
-                    assert state['storageKey'] == f'inkdos2:{app}:ui-density', (path, state)
-                else:
-                    assert state['storageKey'] == 'inkdos2:ui-density', (path, state)
+                assert state['storageKey'] == 'inkdos2:ui-density', (path, state)
 
             page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => document.querySelectorAll('[data-inkdos-density-control]').length === 1")
@@ -117,21 +113,21 @@ def main() -> None:
             assert switched['effective'] == 'mobile', switched
             assert switched['density'] == 'mobile', switched
             assert switched['preference'] == 'mobile', switched
-            assert switched['storageKey'] == 'inkdos2:documents:ui-density', switched
+            assert switched['storageKey'] == 'inkdos2:ui-density', switched
             assert switched['stored'] == 'mobile', switched
-            assert switched['legacy'] is None, switched
+            assert switched['legacy'] == 'mobile', switched
             assert switched['control'] == '42px', switched
 
-            # A choice in Documents must not alter Spreadsheets.
+            # A suite-level choice in Documents must carry into Spreadsheets.
             page.goto(BASE + '/apps/spreadsheets/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
             independent = root_state(page)
-            assert independent['density'] == 'desktop', independent
-            assert independent['preference'] == 'auto', independent
-            assert independent['stored'] is None, independent
-            assert independent['storageKey'] == 'inkdos2:spreadsheets:ui-density', independent
+            assert independent['density'] == 'mobile', independent
+            assert independent['preference'] == 'mobile', independent
+            assert independent['stored'] == 'mobile', independent
+            assert independent['storageKey'] == 'inkdos2:ui-density', independent
 
-            # Returning to Documents restores only its own persisted preference.
+            # Returning to Documents sees the same suite-level persisted preference.
             page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
             returned = root_state(page)

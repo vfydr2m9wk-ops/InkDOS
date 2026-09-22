@@ -36,7 +36,8 @@ def main():
     assert "$('undoBtn').onclick" not in commands and "$('redoBtn').onclick" not in commands and "$('deleteAnnotationBtn').onclick" not in commands
     assert "undoBtn:'history.undo'" in bindings and "deleteAnnotationBtn:'annotation.delete'" in bindings
     assert "querySelectorAll" not in mode and "data-pdf-mode" not in mode and "data-annotate-tool" not in mode and "subscribe" in mode
-    for command in ("pdf.mode.view","pdf.mode.annotate","pdf.tool.select","pdf.tool.text","pdf.tool.pen","pdf.tool.highlight","pdf.tool.underline","pdf.tool.comment"): assert command in mode_bindings
+    for command in ("pdf.tool.select","pdf.tool.text","pdf.tool.pen","pdf.tool.highlight","pdf.tool.underline","pdf.tool.comment"): assert command in mode_bindings
+    assert "pdf.mode.view" not in mode_bindings and "pdf.mode.annotate" not in mode_bindings
     assert "ModeBindings.create" in app
     for command in ("reader.search","reader.search.close","reader.search.query","reader.search.previous","reader.search.next","reader.search.reveal","reader.rotate-view","reader.print"): assert command in reader_ui
     for forbidden in ("searchBtn.onclick","rotateBtn.onclick","printBtn.onclick","prevBtn.onclick","nextBtn.onclick","b.onclick=()=>reveal"): assert forbidden not in reader_ui

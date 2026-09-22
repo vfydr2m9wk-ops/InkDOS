@@ -6,9 +6,10 @@ TAURI_DIR = ROOT / "desktop" / "src-tauri"
 CONFIG_PATH = TAURI_DIR / "tauri.conf.json"
 LAUNCHERS_PATH = ROOT / "desktop" / "launchers.json"
 NSIS_HOOK_PATH = TAURI_DIR / "windows" / "workspace-launchers.nsh"
+WIX_FRAGMENT_PATH = TAURI_DIR / "windows" / "workspace-launchers.wxs"
 WINDOWS_ICON_DIR = TAURI_DIR / "windows" / "workspace-icons"
 ICON_GENERATOR_PATH = ROOT / "desktop" / "scripts" / "generate_workspace_icons.py"
-RELEASE_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "release.yml"
+DESKTOP_BUILD_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "desktop-tauri.yml"
 LINUX_LAUNCHER_DIR = TAURI_DIR / "linux" / "workspace-launchers"
 
 
@@ -26,16 +27,40 @@ def main() -> None:
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     bundle = config["bundle"]
 
-    # Windows production distribution is NSIS-only. The installer hook must
-    # materialize the workspace launch entries without reintroducing MSI/WiX.
+    # Windows ships both NSIS and MSI, so both installers must materialize the
+    # same workspace launch entries instead of relying on launchers.json alone.
     assert NSIS_HOOK_PATH.exists(), "NSIS installer hook must create workspace launch shortcuts"
-    assert "wix" not in bundle["windows"], "MSI/WiX configuration must not be reintroduced"
+    assert WIX_FRAGMENT_PATH.exists(), "MSI WiX fragment must create workspace launch shortcuts"
 
     nsis = bundle["windows"]["nsis"]
     assert nsis["installerHooks"] == "./windows/workspace-launchers.nsh"
 
+    wix = bundle["windows"]["wix"]
+    assert "./windows/workspace-launchers.wxs" in wix["fragmentPaths"]
+    assert "InkDOSWorkspaceLaunchers" in wix["componentGroupRefs"]
+
     nsis_text = NSIS_HOOK_PATH.read_text(encoding="utf-8")
+    wix_text = WIX_FRAGMENT_PATH.read_text(encoding="utf-8")
     _assert_workspace_tokens(nsis_text, launchers)
+    _assert_workspace_tokens(wix_text, launchers)
+
+    # Tauri's generated WiX template exposes INSTALLDIR. Custom fragments must
+    # attach to that directory id; INSTALLFOLDER is not defined and fails at
+    # light.exe link time with LGHT0094.
+    assert 'DirectoryRef Id="INSTALLDIR"' in wix_text
+    assert 'DirectoryRef Id="INSTALLFOLDER"' not in wix_text
+    assert '[INSTALLFOLDER]' not in wix_text
+    assert 'WorkingDirectory="INSTALLFOLDER"' not in wix_text
+    for workspace in launchers:
+        assert 'Target="[INSTALLDIR]InkDOS.exe"' in wix_text
+        assert 'WorkingDirectory="INSTALLDIR"' in wix_text
+
+    # The custom Start Menu directory lives in the user profile. WiX ICE64
+    # requires it to be represented in the RemoveFile table so uninstall can
+    # remove the directory after the workspace shortcuts are removed.
+    assert '<RemoveFolder Id="RemoveInkDOSWorkspaceProgramsFolder" On="uninstall" />' in wix_text, (
+        "WiX workspace launcher fragment must remove its per-user Start Menu directory on uninstall"
+    )
 
     # Windows shortcuts must use workspace-specific native ICOs derived from
     # the exact canonical icon sources. Generated ICOs are build artifacts: they
@@ -60,6 +85,24 @@ def main() -> None:
             f"NSIS installer must embed the generated {workspace} ICO beside the shared host"
         )
 
+        icon_id = f"InkDOS{workspace.title().replace('-', '')}Icon"
+        file_id = f"InkDOS{workspace.title().replace('-', '')}IconFile"
+        assert f'Icon Id="{icon_id}"' in wix_text, (
+            f"WiX must declare a workspace-specific icon id for {workspace}"
+        )
+        assert f'File Id="{file_id}"' in wix_text, (
+            f"WiX must install the generated workspace icon for {workspace}"
+        )
+        wix_icon_source = f'$(sys.SOURCEFILEDIR)workspace-icons\\{workspace}\\icon.ico'
+        assert f'SourceFile="{wix_icon_source}"' in wix_text, (
+            f"WiX Icon source for {workspace} must be anchored to the fragment directory"
+        )
+        assert f'Source="{wix_icon_source}"' in wix_text, (
+            f"WiX File source for {workspace} must be anchored to the fragment directory"
+        )
+        assert f'Source="windows\\workspace-icons\\{workspace}\\icon.ico"' not in wix_text, (
+            f"WiX must not resolve {workspace} icon relative to light.exe working directory"
+        )
         assert launcher["icon"].startswith("assets/icons/"), (
             f"{workspace} native icon must remain derived from the canonical icon source"
         )
@@ -73,7 +116,7 @@ def main() -> None:
 
     # The production desktop build must materialize native icons before both
     # cargo check and native bundling.
-    workflow_text = RELEASE_WORKFLOW_PATH.read_text(encoding="utf-8")
+    workflow_text = DESKTOP_BUILD_WORKFLOW_PATH.read_text(encoding="utf-8")
     generation_token = "python desktop/scripts/generate_workspace_icons.py"
     cargo_check_token = "cargo check"
     build_token = "cargo tauri build --bundles"
@@ -81,21 +124,45 @@ def main() -> None:
     assert workflow_text.index(generation_token) < workflow_text.index(cargo_check_token)
     assert workflow_text.index(generation_token) < workflow_text.index(build_token)
 
-    # Linux production distribution is AppImage-only. Workspace .desktop files
-    # remain canonical launcher definitions, but must not be injected into the
-    # AppImage as competing application identities.
+    # Installed Linux package-manager formats need actual .desktop entries for
+    # every workspace. AppImage is a single portable application image: adding
+    # extra workspace desktop entries makes linuxdeploy choose one of them as
+    # the AppImage root identity instead of Tauri's canonical InkDOS entry.
     linux = bundle["linux"]
-    assert set(linux) == {"appimage"}
-    appimage_files = linux["appimage"].get("files", {})
     for workspace, launcher in launchers.items():
         desktop_file = LINUX_LAUNCHER_DIR / f"inkdos-{workspace}.desktop"
-        assert desktop_file.exists(), f"missing canonical Linux launcher definition for {workspace}"
+        assert desktop_file.exists(), f"missing installed Linux launcher for {workspace}"
         text = desktop_file.read_text(encoding="utf-8")
         assert f"Exec=InkDOS --workspace {workspace}" in text
         assert f"Icon=inkdos-{workspace}" in text
-        assert f"X-InkDOS-SourceIcon={launcher['icon']}" in text
+        assert "/usr/share/inkdos/workspace-icons/" not in text
+        assert f"X-InkDOS-SourceIcon={launcher['icon']}" in text, (
+            f"{workspace} Linux launcher must retain the canonical existing icon source"
+        )
         destination = f"/usr/share/applications/inkdos-{workspace}.desktop"
-        assert destination not in appimage_files
+        source = f"./linux/workspace-launchers/inkdos-{workspace}.desktop"
+        icon_suffix = Path(launcher["icon"]).suffix
+        icon_destination = (
+            f"/usr/share/icons/hicolor/scalable/apps/inkdos-{workspace}{icon_suffix}"
+            if icon_suffix == ".svg"
+            else f"/usr/share/icons/hicolor/256x256/apps/inkdos-{workspace}{icon_suffix}"
+        )
+        for target in ("deb", "rpm"):
+            files = linux[target]["files"]
+            assert files[destination] == source, (
+                f"{target} must install the {workspace} workspace launcher"
+            )
+            assert files[icon_destination] == f"../../{launcher['icon']}", (
+                f"{target} must install {workspace}'s canonical icon in the freedesktop hicolor tree"
+            )
+
+        appimage_files = linux["appimage"].get("files", {})
+        assert destination not in appimage_files, (
+            f"AppImage must not inject the {workspace} workspace desktop entry; linuxdeploy must use the canonical InkDOS entry"
+        )
+        assert icon_destination not in appimage_files, (
+            f"AppImage must not inject the {workspace} workspace icon as a second application identity"
+        )
 
     # No launcher may introduce a second InkDOS binary or application identity.
     serialized = json.dumps(bundle, sort_keys=True)

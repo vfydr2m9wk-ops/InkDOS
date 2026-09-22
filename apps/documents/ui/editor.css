@@ -6,3 +6,6 @@
 @media(pointer:fine){.formatbar select,.fmt-btn{padding:0 9px}}
 @media(max-width:720px){.formatbar{padding-right:calc(var(--safe-r) + 30px)}.ruler{justify-content:flex-start}}
 @media(max-width:470px){.formatbar{padding-left:var(--safe-l);padding-right:calc(var(--safe-r) + 34px)}.context-drawer{height:calc(100dvh - var(--safe-t) - var(--safe-b) - 72px)}}
+
+.checklist-marker{display:inline-block;min-width:1.35em;font-family:Arial,sans-serif;font-weight:400;user-select:none;-webkit-user-select:none}
+[data-checklist="1"]{list-style:none}

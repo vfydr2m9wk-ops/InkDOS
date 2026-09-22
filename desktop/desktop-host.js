@@ -139,9 +139,22 @@
     return new File([bytes], name, { type: mimeForName(name), lastModified: Date.now() });
   }
 
+  function compatibleFileInput(file) {
+    const extension = extensionForName(file && file.name);
+    const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
+    for (const input of inputs) {
+      const allowed = extensionsFromAccept(input.accept);
+      if (!allowed.length || (extension && allowed.includes(extension))) return input;
+    }
+    return null;
+  }
+
   async function injectNativeFile(file) {
-    const input = document.querySelector('input[type="file"]');
-    if (!input) return false;
+    const input = compatibleFileInput(file);
+    if (!input) {
+      const extension = extensionForName(file && file.name);
+      throw new Error(`Unsupported file format: .${extension || '(none)'}`);
+    }
     if (typeof g.DataTransfer !== 'function' || typeof g.File !== 'function') {
       throw new Error('InkDOS desktop cannot inject the associated file in this webview.');
     }

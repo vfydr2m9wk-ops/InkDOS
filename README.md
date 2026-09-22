@@ -1,4 +1,5 @@
-# InkDOS 2.4.4
+# InkDOS 2.5.0 — Local Preview
+> Development snapshot. This 2.5.0 package is a local preview and is not a published GitHub release. GitHub publication remains frozen until explicit authorization.
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
 

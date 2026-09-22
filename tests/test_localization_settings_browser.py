@@ -136,8 +136,8 @@ def main() -> None:
                   count:document.querySelectorAll('.inkdos-settings-strip').length
                 })""")
                 assert state["items"] == ["appearance", "interface", "language", "help"], (app, state)
-                assert state["languageKey"] == f"inkdos2:{app}:language", (app, state)
-                assert state["densityKey"] == f"inkdos2:{app}:ui-density", (app, state)
+                assert state["languageKey"] == "inkdos2:language", (app, state)
+                assert state["densityKey"] == "inkdos2:ui-density", (app, state)
                 assert state["count"] == 1, (app, state)
 
             # Translation is presentation-only: IDs/actions/commands and editable name remain unchanged.
@@ -166,8 +166,8 @@ def main() -> None:
             # Language and interface preferences are independent between workspaces.
             choose_language(page, "Português", "pt-BR")
             page.evaluate("() => globalThis.InkDOSUiDensity.set('mobile')")
-            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:language')") == "pt-BR"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") == "mobile"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:language')") == "pt-BR"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:ui-density')") == "mobile"
 
             page.goto(BASE + "/apps/spreadsheets/index.html?suite=1", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && !!globalThis.InkDOSLocalization")

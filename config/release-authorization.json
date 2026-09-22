@@ -1,9 +1,9 @@
 {
-  "version": "2.4.4",
+  "version": "2.5.0",
   "windowsDeviceUpgradeValidated": false,
   "windowsDeviceUpgradeWaived": true,
   "explicitUserAuthorization": true,
   "evidence": "",
   "evidenceSha256": "",
-  "waiverReason": "Pre-publication Windows/WebView2 updater validation explicitly waived for InkDOS 2.4.4; validate the updater in practice after launch."
+  "waiverReason": "Pre-publication Windows/WebView2 updater validation explicitly waived for InkDOS 2.5.0; post-launch Windows updater validation is required."
 }

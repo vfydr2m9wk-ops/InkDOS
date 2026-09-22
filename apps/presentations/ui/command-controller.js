@@ -50,9 +50,11 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   register('slide.delete',()=>{history.transact('Delete slide',()=>session.deleteCurrent());selection.clear();onStructureChange?.();refresh({thumbs:true,center:true});return true},()=>structureEditable()&&session.slides.length>1);
   register('slide.move',delta=>{delta=Number(delta)||0;if(!delta)return false;history.transact(delta<0?'Move slide earlier':'Move slide later',()=>session.moveCurrent(delta));selection.clear();onStructureChange?.();refresh({thumbs:true,center:false});return true},structureEditable);
   register('edit.insertText',()=>{let obj=null;history.transact('Insert text',()=>{obj=session.addText()});selection.select(obj?.id);refresh({thumbs:true,center:false});return obj?.id||true},()=>session.active&&session.sourceKind!=='ppt');
+  register('format.fontFamily',value=>format('Font family',o=>{const v=String(value||'Arial').trim()||'Arial';o.fontFamily=v;eachRun(o,r=>r.fontFamily=v)}),textEditable);
   register('format.fontSize',value=>format('Font size',o=>{const v=Math.max(8,Math.min(96,Number(value)||24));o.fontSizePt=v;eachRun(o,r=>r.fontSizePt=v)}),textEditable);
   register('format.bold',()=>format('Bold',o=>{o.bold=!o.bold;eachRun(o,r=>r.bold=o.bold)}),textEditable);
   register('format.italic',()=>format('Italic',o=>{o.italic=!o.italic;eachRun(o,r=>r.italic=o.italic)}),textEditable);
+  register('format.underline',()=>format('Underline',o=>{o.underline=!o.underline;eachRun(o,r=>r.underline=o.underline)}),textEditable);
   register('format.alignment',value=>format('Alignment',o=>{o.align=value;for(const p of o.paragraphs||[])p.align=o.align}),textEditable);
   register('navigation.to',navigateTo,()=>session.active);
   register('navigation.previous',()=>execute('navigation.to',session.currentIndex-1),()=>session.active&&session.currentIndex>0);
