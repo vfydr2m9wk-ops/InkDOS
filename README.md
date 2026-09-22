@@ -1,5 +1,7 @@
-# InkDOS 2.5.0 — Local Preview
-> Development snapshot. This 2.5.0 package is a local preview and is not a published GitHub release. GitHub publication remains frozen until explicit authorization.
+# InkDOS 2.5.0
+
+> Current stable release. InkDOS 2.5.0 is published on GitHub Releases with signed desktop packages for Windows, macOS and Linux, plus the signed updater manifest used by installed desktop editions.
+
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
 
@@ -18,16 +20,17 @@ The application runtime is intentionally small and explicit:
 
 `VERSION.json` is the authoritative product version for the web and desktop editions.
 
+## Current release
+
+InkDOS 2.5.0 is the current stable release. Windows users can install or update with the signed NSIS installer (`InkDOS_2.5.0_x64-setup.exe`). The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
+
 ## Desktop builds and updates
 
 Windows, macOS and Linux packages are built with Tauri v2. The supported installer set is NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. The signed desktop updater uses GitHub Releases and the generated `latest.json` manifest. Update checking is explicit in the installed desktop application; installation remains a separate user action.
 
-The GitHub Actions surface is intentionally limited to:
+The GitHub Actions release surface uses `.github/workflows/desktop-tauri.yml` for desktop metadata, staging and contract validation, and `.github/workflows/release.yml` for release validation, signed native builds, updater manifest generation and publication.
 
-- `.github/workflows/desktop-tauri.yml` — desktop metadata, staging and contract validation only.
-- `.github/workflows/release.yml` — the single tag-triggered path for release validation, signed native builds, updater manifest generation and release publication.
-
-A release build starts only when an immutable tag matching `vX.Y.Z` is pushed. There is no separate promotion workflow or manual artifact-reuse publication path.
+Normal releases are built from immutable `vX.Y.Z` tags so source, installers, signatures and updater metadata remain tied to one versioned commit.
 
 See `docs/UPDATE_MODEL.md` for the current updater path.
 
