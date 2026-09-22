@@ -1,0 +1,1 @@
+Trigger signed InkDOS 2.5.0 publication from validated tag v2.5.0.
