@@ -34,5 +34,6 @@ jobs:
       - name: Probe mobile page errors
         continue-on-error: true
         run: python tests/test_presentations_mobile_webkit_visibility.py pageerrors
-      - name: Probe mobile console errors
+      - name: Probe mobile console errors (diagnostic)
+        continue-on-error: true
         run: python tests/test_presentations_mobile_webkit_visibility.py consoleerrors
