@@ -143,13 +143,20 @@ def test_desktop_workflow_is_contract_only_without_duplicate_native_builds():
     assert "npm run" not in workflow
 
 
-def test_release_has_one_tag_only_entrypoint_and_no_promotion_state():
+def test_release_has_controlled_tag_or_one_shot_entrypoint_and_no_promotion_state():
     workflow = read(RELEASE_WORKFLOW)
     assert "v*.*.*" in workflow
     assert "workflow_dispatch" not in workflow
     assert "reuse_run_id" not in workflow
     assert "inputs." not in workflow
-    assert "RELEASE_TAG: ${{ github.ref_name }}" in workflow
+    if "branches:" in workflow:
+        assert "branches:\n      - main" in workflow
+        assert "paths:" in workflow
+        assert "config/release-trigger-" in workflow
+        assert "Create immutable release tag for one-shot main trigger" in workflow
+        assert "! git ls-remote --exit-code --tags origin" in workflow
+    else:
+        assert "RELEASE_TAG: ${{ github.ref_name }}" in workflow
     assert not PROMOTION_WORKFLOW.exists()
     assert not PROMOTION_REQUEST.exists()
 
