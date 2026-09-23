@@ -19,6 +19,27 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps webkit
+      - name: Diagnostic 2.5.2 static contract
+        continue-on-error: true
+        run: python tests/test_presentations_252_webkit_zoom_contract.py
+      - name: Diagnostic final version consistency
+        continue-on-error: true
+        run: python tests/test_243_final_version_consistency_harness.py
+      - name: Diagnostic release authorization contract
+        continue-on-error: true
+        run: python tests/test_243_release_authorization_contract.py
+      - name: Diagnostic repository validation
+        continue-on-error: true
+        run: python scripts/validate_repository.py
+      - name: Diagnostic app isolation
+        continue-on-error: true
+        run: python scripts/validate_app_isolation.py
+      - name: Diagnostic source audit
+        continue-on-error: true
+        run: python scripts/audit_source.py
+      - name: Diagnostic suite contracts
+        continue-on-error: true
+        run: python scripts/validate_suite_contracts.py
       - name: Probe mobile canvas dimensions
         continue-on-error: true
         run: python tests/test_presentations_mobile_webkit_visibility.py dimensions
