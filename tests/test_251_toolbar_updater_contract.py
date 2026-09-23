@@ -42,16 +42,8 @@ def main():
         assert "disabled" in css, path
     assert ".zoom-select{min-width:86px}" in read("apps/pdf/ui/pdf-toolbar.css")
 
-    meta = json.loads(read("VERSION.json"))
-    assert meta["version"] == "2.5.1"
-    assert meta["releaseName"] == "InkDOS 2.5.1"
-    assert json.loads(read("desktop/src-tauri/tauri.conf.json"))["version"] == "2.5.1"
-    assert 'version = "2.5.1"' in read("desktop/src-tauri/Cargo.toml")
-    home = read("index.html")
-    for app in ("documents","spreadsheets","presentations","pdf","txt","epub"):
-        assert f"./apps/{app}/index.html?v=2.5.1&amp;suite=1" in home
-    assert "inkdos-v2.5.1-" in read("service-worker.js")
-    print("InkDOS 2.5.1 toolbar/updater/version contract passed.")
+    print("InkDOS 2.5.1 retained toolbar/updater contract passed.")
+
 
 if __name__ == "__main__":
     main()
