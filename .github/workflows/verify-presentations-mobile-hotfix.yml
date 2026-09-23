@@ -28,5 +28,8 @@ jobs:
       - name: Probe mobile thumbnail visibility
         continue-on-error: true
         run: python tests/test_presentations_mobile_webkit_visibility.py thumbs
-      - name: Probe mobile runtime errors
-        run: python tests/test_presentations_mobile_webkit_visibility.py errors
+      - name: Probe mobile page errors
+        continue-on-error: true
+        run: python tests/test_presentations_mobile_webkit_visibility.py pageerrors
+      - name: Probe mobile console errors
+        run: python tests/test_presentations_mobile_webkit_visibility.py consoleerrors
