@@ -14,7 +14,7 @@ permissions:
 
 env:
   RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.5.2' }}
-  RELEASE_COMMIT: ${{ startsWith(github.ref, 'refs/tags/') && github.sha || '1c8a8e15a6964c81d11d061f18294cda88b0741f' }}
+  RELEASE_COMMIT: ${{ startsWith(github.ref, 'refs/tags/') && github.sha || 'eea3195abf811487e9601c3078fddcecc67abf43' }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
