@@ -16,3 +16,21 @@
 @media(max-width:720px){.document-title{max-width:56vw}.app-icon{width:27px;height:27px}.title-input,.file-pill{width:42vw;padding:0 8px}.drawer{top:calc(var(--safe-t) + 58px);border-radius:16px}}
 @media(max-width:470px){.document-title>.app-icon{display:none}.document-title{max-width:52vw}.title-input,.file-pill{width:48vw;min-width:86px}.statusbar .status-text{display:none}.drawer{width:calc(100vw - var(--safe-l) - var(--safe-r));padding:10px}}
 @media(prefers-reduced-motion:reduce){.frame-btn,.menu-btn,.tool-btn,.close-btn{transition:none}}
+
+/* InkDOS 2.5.1 toolbar visual normalization — EPUB reader semantics/order unchanged. */
+.toolstrip .tool-btn{
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--panel);
+}
+.toolstrip .tool-btn:hover,.toolstrip .tool-btn:focus-visible{
+  background:color-mix(in srgb,var(--text) 8%,var(--panel));border-color:var(--line-strong)
+}
+.toolstrip .tool-btn:disabled{opacity:.42;border-color:var(--line);background:var(--panel)}
+.toolstrip .tool-btn.active{
+  background:var(--frame-accent-soft);color:var(--frame-active-text);
+  border-color:color-mix(in srgb,var(--frame-accent) 38%,var(--line))
+}
+/* T8 density/responsive guard. */
+.toolstrip{overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.toolstrip .tool-btn,.toolstrip select{flex:0 0 auto;min-height:var(--compact-control,var(--control))}

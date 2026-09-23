@@ -145,6 +145,25 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
   .framebar{min-height:calc(46px + var(--frame-safe-t));padding-top:var(--frame-safe-t);padding-bottom:4px}.menu-btn{width:36px;height:36px;min-width:36px}.menu-btn svg{width:19px;height:19px}.file-pill-wrap{height:34px}.title-icon{width:27px;height:27px}.toolstrip{height:42px;padding-top:4px;padding-bottom:4px}.tool-btn{width:34px;height:34px;min-width:34px;flex-basis:34px}.drawer{top:calc(var(--frame-safe-t) + 52px)}
 }
 @media(max-width:470px){.title-icon{display:none}.file-pill-wrap{width:50vw;max-width:calc(100% - 126px);min-width:118px}}
+
+/* InkDOS 2.5.1 toolbar visual normalization — overrides D3 flattening only. */
+.toolstrip .tool-btn{
+  border:1px solid var(--frame-line);
+  background:var(--frame-surface);
+  box-shadow:var(--frame-control-inset);
+}
+.toolstrip .tool-btn:hover,.toolstrip .tool-btn:focus-visible{
+  background:var(--frame-surface-soft);border-color:var(--frame-line-strong)
+}
+.toolstrip .tool-btn.active{
+  background:var(--frame-accent-soft);border-color:var(--frame-accent-border);color:var(--frame-accent-text)
+}
+.toolstrip .tool-btn:disabled{
+  opacity:.46;border-color:var(--frame-line);background:var(--frame-surface)
+}
+/* T8 density/responsive guard. */
+.toolstrip{overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.toolstrip .tool-btn,.toolstrip select{flex:0 0 auto;min-height:var(--compact-control,var(--control))}
 </style>  <link rel="stylesheet" href="../../shared/ui-density.css">
   <script src="../../shared/ui-density.js"></script>
 </head>
@@ -159,8 +178,8 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 
   <div class="toolstrip-shell">
     <div id="toolbar" class="toolstrip" tabindex="0" aria-label="Horizontally scrollable editing toolbar">
-      <button id="undoBtn" class="tool-btn" type="button" disabled aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="m9 7-4 4 4 4"/><path d="M5 11h8a6 6 0 0 1 6 6"/></svg></button>
-      <button id="redoBtn" class="tool-btn" type="button" disabled aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 4 4-4 4"/><path d="M19 11h-8a6 6 0 0 0-6 6"/></svg></button>
+      <button id="undoBtn" class="tool-btn" type="button" disabled aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg></button>
+      <button id="redoBtn" class="tool-btn" type="button" disabled aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
       <span class="tool-sep" aria-hidden="true"></span>
       <button id="wrapBtn" class="tool-btn active" type="button" aria-pressed="true" aria-label="Wrap long lines" title="Wrap"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h13a3 3 0 0 1 0 6h-4"/><path d="m15 13-3 3 3 3M4 20h6"/></svg></button>
       <button id="fontDownBtn" class="tool-btn text-glyph" type="button" aria-label="Decrease editor view text size" title="Smaller editor text (view only)">A−</button>

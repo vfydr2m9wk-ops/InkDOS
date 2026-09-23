@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.1 — 2026-09-23
+
+- Unify toolbar control boundaries and compact geometry across Presentations, PDF, Plain Text and EPUB while preserving command order and behavior.
+- Normalize Plain Text Undo/Redo icons to the canonical Documents SVG geometry.
+- Fix desktop Check for updates placement so Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB use their menu list instead of the oversized fixed-position fallback.
+- Preserve the PDF unified-editor layout, mobile horizontal toolbar access, app isolation and local-first behavior.
+- Add permanent 2.5.1 regression coverage for toolbar styling, canonical Undo/Redo geometry and updater drawer placement.
+
 ## 2.5.0 — Local preview — 2026-09-21
 
 - Reorganize the PDF toolbar into explicit editing, navigation, view and document-action groups without removing existing PDF capabilities.

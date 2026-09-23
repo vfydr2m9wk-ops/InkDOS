@@ -277,15 +277,18 @@
     button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M20 11a8 8 0 1 0-2.35 5.65"/><path d="M20 4v7h-7"/></svg><span data-update-label>Check for updates</span>';
 
     const homeActions = document.querySelector('.home-appearance');
-    const drawer = document.getElementById('generalMenu');
+    const drawer = ['generalMenu', 'appDrawer', 'moreMenu', 'mainMenu']
+      .map(id => document.getElementById(id))
+      .find(Boolean);
+    const menuList = drawer && drawer.querySelector('.menu-list');
     if (homeActions) {
       button.className = 'theme-button';
       const label = button.querySelector('[data-update-label]');
       if (label) label.style.display = 'none';
       homeActions.insertBefore(button, homeActions.firstChild);
-    } else if (drawer) {
+    } else if (drawer && menuList) {
       button.className = 'menu-item';
-      drawer.append(button);
+      menuList.append(button);
     } else {
       button.style.cssText = 'position:fixed;right:12px;top:12px;z-index:2147483500;display:flex;align-items:center;gap:7px;min-height:34px;padding:6px 10px;border-radius:9px;border:1px solid rgba(127,127,127,.4);background:Canvas;color:CanvasText';
       document.body.append(button);
