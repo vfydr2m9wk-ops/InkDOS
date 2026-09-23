@@ -1,6 +1,6 @@
-# InkDOS 2.5.1
+# InkDOS 2.5.2
 
-> Current stable release. InkDOS 2.5.1 is published on GitHub Releases with signed desktop packages for Windows, macOS and Linux, plus the signed updater manifest used by installed desktop editions.
+> Current stable release. InkDOS 2.5.2 is published on GitHub Releases with signed desktop packages for Windows, macOS and Linux, plus the signed updater manifest used by installed desktop editions.
 
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
@@ -22,7 +22,7 @@ The application runtime is intentionally small and explicit:
 
 ## Current release
 
-InkDOS 2.5.1 is the current stable release. Windows users can install or update with the signed NSIS installer (`InkDOS_2.5.1_x64-setup.exe`). The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
+InkDOS 2.5.2 is the current stable release. Windows users can install or update with the signed NSIS installer (`InkDOS_2.5.2_x64-setup.exe`). The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
 
 ## Desktop builds and updates
 
