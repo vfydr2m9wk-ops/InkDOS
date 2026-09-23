@@ -1,0 +1,1 @@
+Trigger signed InkDOS 2.5.2 publication from validated hotfix commit 1c8a8e15a6964c81d11d061f18294cda88b0741f.
