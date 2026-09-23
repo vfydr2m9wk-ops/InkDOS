@@ -51,6 +51,7 @@ CMDS = [
     [sys.executable, "tests/test_desktop_ux_contract.py"],
     [sys.executable, "tests/test_app_isolation_shared_density_contract.py"],
     [sys.executable, "tests/test_251_toolbar_updater_contract.py"],
+    [sys.executable, "tests/test_252_presentations_hotfix_contract.py"],
     [sys.executable, "tests/test_release_pipeline_contract.py"],
     [sys.executable, "tests/test_243_release_version_agnostic_contract.py"],
     [sys.executable, "tests/test_243_updater_manifest_dry_run_contract.py"],
