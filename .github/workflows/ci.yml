@@ -1,0 +1,84 @@
+name: InkDOS CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contracts:
+    name: Contracts and boundaries
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Enforce product/release change boundary
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python scripts/check_change_boundaries.py --base "${{ github.event.pull_request.base.sha }}" --head HEAD
+      - name: Run clean-snapshot validation
+        run: python scripts/run_release_validation.py
+      - name: Validate staged desktop runtime
+        run: python desktop/scripts/stage_web.py --check
+
+  chromium:
+    name: Chromium rendered regression
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: Six-workspace rendered smoke
+        run: python tests/test_workspace_smoke_browser.py chromium
+      - name: Documents interaction browser regression
+        run: python tests/test_documents_243_interaction_browser.py
+      - name: Home density browser regression
+        run: python tests/test_home_density_layout_browser.py
+      - name: Spreadsheets fill/clear browser regression
+        run: python tests/test_spreadsheets_243_fill_clear_browser.py
+
+  webkit:
+    name: WebKit mobile rendered regression
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - run: python -m playwright install --with-deps webkit
+      - name: Six-workspace mobile WebKit smoke
+        run: python tests/test_workspace_smoke_browser.py webkit
