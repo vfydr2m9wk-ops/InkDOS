@@ -4,12 +4,17 @@ on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - main
+    paths:
+      - 'config/release-trigger-2.5.1.txt'
 
 permissions:
   contents: read
 
 env:
-  RELEASE_TAG: ${{ github.ref_name }}
+  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.5.1' }}
+  RELEASE_COMMIT: ${{ startsWith(github.ref, 'refs/tags/') && github.sha || '7eed3c9241e823ea6a3150204009928adae56ab4' }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
@@ -19,11 +24,13 @@ jobs:
   validate:
     name: Validate tagged release
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ env.RELEASE_COMMIT }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -38,7 +45,13 @@ jobs:
         run: |
           set -euo pipefail
           git fetch origin main --tags
-          git merge-base --is-ancestor "${RELEASE_TAG}^{commit}" origin/main
+          git merge-base --is-ancestor "${RELEASE_COMMIT}" origin/main
+          test "$(git rev-parse HEAD)" = "${RELEASE_COMMIT}"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            test "$(git rev-parse "${RELEASE_TAG}^{commit}")" = "${RELEASE_COMMIT}"
+          else
+            ! git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1
+          fi
 
       - name: Validate tag and desktop version
         run: |
@@ -127,6 +140,19 @@ jobs:
           path: release-provenance/provenance.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Create immutable release tag for one-shot main trigger
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${RELEASE_COMMIT}"
+          ! git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/git/refs" \
+            -f ref="refs/tags/${RELEASE_TAG}" \
+            -f sha="${RELEASE_COMMIT}"
 
   build:
     name: Build ${{ matrix.artifact }}
