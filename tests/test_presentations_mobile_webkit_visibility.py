@@ -26,14 +26,15 @@ def main():
         with sync_playwright() as pw:
             browser=pw.webkit.launch(headless=True)
             page=browser.new_page(viewport={"width":390,"height":844},device_scale_factor=3,is_mobile=True,has_touch=True)
+            page.set_default_timeout(10000)
             page.on("pageerror",lambda exc:errors.append(f"pageerror: {exc}"))
             page.on("console",lambda msg:errors.append(f"console.error: {msg.text}") if msg.type=="error" else None)
             page.goto(BASE+"/apps/presentations/",wait_until="load")
             page.wait_for_function("() => !!globalThis.__inkdosPresentations")
             page.click("#startNew")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.active")
-            page.click("#addSlideBtn")
-            page.click("#addSlideBtn")
+            page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('slide.add')")
+            page.evaluate("() => globalThis.__inkdosPresentations.executeCommand('slide.add')")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.slides.length===3")
             page.wait_for_timeout(250)
             probe=page.evaluate("""() => {
