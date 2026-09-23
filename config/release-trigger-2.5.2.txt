@@ -1,1 +1,2 @@
-Trigger signed InkDOS 2.5.2 publication from validated hotfix commit 1c8a8e15a6964c81d11d061f18294cda88b0741f.
+Trigger signed InkDOS 2.5.2 publication from validated hotfix commit eea3195abf811487e9601c3078fddcecc67abf43.
+Retry after aligning the desktop release-entrypoint contract with the repository's controlled one-shot publication path.
