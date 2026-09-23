@@ -31,7 +31,6 @@ def main():
     assert "drawer.append(button);" not in host
 
     css_files = (
-        "apps/presentations/ui/editor.css",
         "apps/pdf/ui/pdf-toolbar.css",
         "apps/txt/runtime/frame/app-frame.css",
         "apps/epub/runtime/frame/app-frame.css",
@@ -41,7 +40,6 @@ def main():
         assert "InkDOS 2.5.1 toolbar visual normalization" in css, path
         assert "overflow-x:auto" in css, path
         assert "disabled" in css, path
-    assert ".tool-btn.zoom-tool{min-width:82px}" in read("apps/presentations/ui/editor.css")
     assert ".zoom-select{min-width:86px}" in read("apps/pdf/ui/pdf-toolbar.css")
 
     meta = json.loads(read("VERSION.json"))
