@@ -37,6 +37,9 @@ jobs:
       - name: Diagnostic release chunk 6 (50-59)
         continue-on-error: true
         run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[50:60]]"
+      - name: Diagnostic release tail (60+)
+        continue-on-error: true
+        run: python -c "import subprocess; from scripts.run_release_validation import CMDS; print(len(CMDS)); [subprocess.run(c,check=True) for c in CMDS[60:]]"
       - name: Diagnostic 2.5.2 static contract
         continue-on-error: true
         run: python tests/test_presentations_252_webkit_zoom_contract.py
