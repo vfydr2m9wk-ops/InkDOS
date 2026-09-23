@@ -141,19 +141,6 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Create immutable release tag for one-shot main trigger
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${RELEASE_COMMIT}"
-          ! git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1
-          gh api --method POST "repos/${GITHUB_REPOSITORY}/git/refs" \
-            -f ref="refs/tags/${RELEASE_TAG}" \
-            -f sha="${RELEASE_COMMIT}"
-
   build:
     name: Build ${{ matrix.artifact }}
     needs: validate
@@ -185,7 +172,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ env.RELEASE_COMMIT }}
           persist-credentials: false
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
@@ -276,7 +263,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ env.RELEASE_COMMIT }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -439,8 +426,8 @@ jobs:
             fi
           else
             gh release create "$RELEASE_TAG" \
+              --target "$RELEASE_COMMIT" \
               --draft \
-              --verify-tag \
               --title "InkDOS ${VERSION}" \
               --notes-file release-notes.md
           fi
