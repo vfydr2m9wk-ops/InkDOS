@@ -19,6 +19,24 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps webkit
+      - name: Diagnostic release chunk 1 (0-9)
+        continue-on-error: true
+        run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[0:10]]"
+      - name: Diagnostic release chunk 2 (10-19)
+        continue-on-error: true
+        run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[10:20]]"
+      - name: Diagnostic release chunk 3 (20-29)
+        continue-on-error: true
+        run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[20:30]]"
+      - name: Diagnostic release chunk 4 (30-39)
+        continue-on-error: true
+        run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[30:40]]"
+      - name: Diagnostic release chunk 5 (40-49)
+        continue-on-error: true
+        run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[40:50]]"
+      - name: Diagnostic release chunk 6 (50-59)
+        continue-on-error: true
+        run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[50:60]]"
       - name: Diagnostic 2.5.2 static contract
         continue-on-error: true
         run: python tests/test_presentations_252_webkit_zoom_contract.py
