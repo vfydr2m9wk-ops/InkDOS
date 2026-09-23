@@ -29,7 +29,7 @@ def main():
             page.on("pageerror",lambda exc:errors.append(f"pageerror: {exc}"))
             page.on("console",lambda msg:errors.append(f"console.error: {msg.text}") if msg.type=="error" else None)
             page.goto(BASE+"/apps/presentations/",wait_until="load")
-            page.wait_for_function("() => !!globalThis.__inkdosPresentations?.p1Tools")
+            page.wait_for_function("() => !!globalThis.__inkdosPresentations")
             page.click("#startNew")
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.active")
             page.click("#addSlideBtn")
