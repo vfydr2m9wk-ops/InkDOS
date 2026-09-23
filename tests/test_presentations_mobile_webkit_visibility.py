@@ -45,14 +45,15 @@ def main():
             }""")
             assert probe["inspect"]["session"]["slideCount"]==3,probe
             c,v=probe["canvas"],probe["viewport"]
-            if check in ("all","canvas"):
+            if check in ("all","dimensions"):
                 assert c["width"]>100 and c["height"]>60,probe
+            if check in ("all","intersection"):
                 assert c["right"]>v["left"] and c["left"]<v["right"] and c["bottom"]>v["top"] and c["top"]<v["bottom"],probe
             if check in ("all","thumbs"):
                 assert len(probe["thumbs"])==3,probe
                 assert any(t["width"]>40 and t["height"]>30 for t in probe["thumbs"]),probe
             browser.close()
-        if errors: raise AssertionError(errors)
+        if check in ("all","errors") and errors: raise AssertionError(errors)
         print("Presentations iPhone/WebKit visibility regression passed (canvas + thumbnails).")
     finally:
         server.terminate()
