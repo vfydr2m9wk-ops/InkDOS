@@ -7,14 +7,14 @@ on:
     branches:
       - main
     paths:
-      - 'config/release-trigger-2.5.1.txt'
+      - 'config/release-trigger-2.5.2.txt'
 
 permissions:
   contents: read
 
 env:
-  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.5.1' }}
-  RELEASE_COMMIT: ${{ startsWith(github.ref, 'refs/tags/') && github.sha || '7eed3c9241e823ea6a3150204009928adae56ab4' }}
+  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.5.2' }}
+  RELEASE_COMMIT: ${{ startsWith(github.ref, 'refs/tags/') && github.sha || '1c8a8e15a6964c81d11d061f18294cda88b0741f' }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
