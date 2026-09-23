@@ -41,7 +41,9 @@ def main():
               const app=globalThis.__inkdosPresentations, q=id=>document.getElementById(id), rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};
               const canvas=rect(q('slideCanvas')), viewport=rect(q('viewport')), panel=rect(q('slidePanel'));
               const thumbs=[...q('slidePanelInner').querySelectorAll('.slide-thumb')].map(rect);
-              return {inspect:app.inspect(),canvas,viewport,panel,thumbs,html:{w:innerWidth,h:innerHeight}};
+              const cx=(canvas.left+canvas.right)/2, cy=(canvas.top+canvas.bottom)/2, hit=document.elementFromPoint(cx,cy);
+              const first=q('slidePanelInner').querySelector('.slide-thumb'), fr=first?first.getBoundingClientRect():null, thit=fr?document.elementFromPoint((fr.left+fr.right)/2,(fr.top+fr.bottom)/2):null;
+              return {inspect:app.inspect(),canvas,viewport,panel,thumbs,paint:{canvasHit:!!hit&&(hit===q('slideCanvas')||q('slideCanvas').contains(hit)),thumbHit:!!first&&!!thit&&(thit===first||first.contains(thit)),hitTag:hit?.tagName||null,hitClass:hit?.className||null},html:{w:innerWidth,h:innerHeight}};
             }""")
             assert probe["inspect"]["session"]["slideCount"]==3,probe
             c,v=probe["canvas"],probe["viewport"]
@@ -52,6 +54,9 @@ def main():
             if check in ("all","thumbs"):
                 assert len(probe["thumbs"])==3,probe
                 assert any(t["width"]>40 and t["height"]>30 for t in probe["thumbs"]),probe
+            if check in ("all","paint"):
+                assert probe["paint"]["canvasHit"] is True,probe
+                assert probe["paint"]["thumbHit"] is True,probe
             browser.close()
         if check in ("all","pageerrors") and pageerrors: raise AssertionError(pageerrors)
         if check in ("all","consoleerrors") and consoleerrors: raise AssertionError(consoleerrors)
