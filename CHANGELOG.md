@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.2 — 2026-09-23
+
+- Hotfix Presentations on mobile after the 2.5.1 toolbar styling regression could leave the slide canvas and thumbnail strip visually empty while the presentation session remained loaded.
+- Restore the known-stable 2.5.0 Presentations toolbar geometry while retaining the 2.5.1 fixes in the other workspaces.
+- Add a regression contract that keeps the 2.5.1 Presentations override out of the release source.
+
 ## 2.5.1 — 2026-09-23
 
 - Unify toolbar control boundaries and compact geometry across Presentations, PDF, Plain Text and EPUB while preserving command order and behavior.
