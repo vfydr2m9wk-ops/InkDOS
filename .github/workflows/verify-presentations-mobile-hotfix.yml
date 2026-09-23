@@ -19,4 +19,7 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps webkit
-      - run: python tests/test_presentations_mobile_webkit_visibility.py
+      - name: Probe mobile canvas visibility
+        run: python tests/test_presentations_mobile_webkit_visibility.py canvas
+      - name: Probe mobile thumbnail visibility
+        run: python tests/test_presentations_mobile_webkit_visibility.py thumbs
