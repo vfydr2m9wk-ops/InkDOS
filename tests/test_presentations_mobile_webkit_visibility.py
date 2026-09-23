@@ -20,15 +20,15 @@ def wait_port():
 def main():
     check=sys.argv[1] if len(sys.argv)>1 else "all"
     server=subprocess.Popen([sys.executable,"-m","http.server",str(PORT),"--bind","127.0.0.1"],cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    errors=[]
+    pageerrors=[]; consoleerrors=[]
     try:
         wait_port()
         with sync_playwright() as pw:
             browser=pw.webkit.launch(headless=True)
             page=browser.new_page(viewport={"width":390,"height":844},device_scale_factor=3,is_mobile=True,has_touch=True)
             page.set_default_timeout(10000)
-            page.on("pageerror",lambda exc:errors.append(f"pageerror: {exc}"))
-            page.on("console",lambda msg:errors.append(f"console.error: {msg.text}") if msg.type=="error" else None)
+            page.on("pageerror",lambda exc:pageerrors.append(str(exc)))
+            page.on("console",lambda msg:consoleerrors.append(msg.text) if msg.type=="error" else None)
             page.goto(BASE+"/apps/presentations/",wait_until="load")
             page.wait_for_function("() => !!globalThis.__inkdosPresentations")
             page.click("#startNew")
@@ -53,7 +53,8 @@ def main():
                 assert len(probe["thumbs"])==3,probe
                 assert any(t["width"]>40 and t["height"]>30 for t in probe["thumbs"]),probe
             browser.close()
-        if check in ("all","errors") and errors: raise AssertionError(errors)
+        if check in ("all","pageerrors") and pageerrors: raise AssertionError(pageerrors)
+        if check in ("all","consoleerrors") and consoleerrors: raise AssertionError(consoleerrors)
         print("Presentations iPhone/WebKit visibility regression passed (canvas + thumbnails).")
     finally:
         server.terminate()
