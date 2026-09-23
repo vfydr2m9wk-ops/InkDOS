@@ -10,3 +10,19 @@
 .pdf-navigation-group,.pdf-view-group,.pdf-utility-group{gap:4px}
 .pdf-utility-group{padding-right:1px}
 @media(max-width:900px){.pdf-context-properties .property-label{display:none}.pdf-annotation-tools{gap:2px}}
+
+/* InkDOS 2.5.1 toolbar visual normalization — PDF unified editor organization unchanged. */
+.tool-btn,.page-input,.zoom-select,.property-select,.property-color{
+  height:var(--compact-control,var(--control));
+  border:1px solid var(--line);border-radius:10px;background:var(--control-bg);
+}
+.tool-btn{min-width:var(--compact-control,var(--control))}
+.tool-btn.icon-only,.pdf-annotation-tools .tool-btn{
+  width:var(--compact-control,var(--control));min-width:var(--compact-control,var(--control))
+}
+.tool-btn:disabled{opacity:.48;border-color:var(--line);background:var(--control-bg)}
+.zoom-select{min-width:86px}
+/* T8 density/responsive guard. */
+.pdf-toolbar,.pdf-toolbar-row{overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.pdf-toolbar .tool-btn,.pdf-toolbar .page-input,.pdf-toolbar .zoom-select,.pdf-toolbar .property-select,.pdf-toolbar .property-color{flex:0 0 auto}
+.tool-btn:hover,.tool-btn:focus-visible,.page-input:focus-visible,.zoom-select:hover,.zoom-select:focus-visible,.property-select:hover,.property-select:focus-visible,.property-color:focus-visible{border-color:var(--line-strong,var(--line));outline-offset:2px}
