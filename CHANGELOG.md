@@ -2,8 +2,8 @@
 
 ## 2.5.2 — 2026-09-23
 
-- Fix the blank Presentations canvas observed on touch WebKit/iPhone by using a CSS-zoom rendering path instead of the transformed canvas path on affected WebKit devices.
-- Keep the existing transform renderer on other browsers and preserve slide geometry, toolbar order, thumbnails and editing behavior.
+- Fix the blank Presentations canvas observed on touch WebKit/iPhone by forcing a stable GPU-composited transform layer with explicit WebKit transform/backface hints.
+- Preserve slide geometry, toolbar order, thumbnails and editing behavior while hardening the transformed canvas renderer.
 - Add a dedicated mobile WebKit visibility regression harness for the slide canvas and thumbnail strip.
 
 ## 2.5.1 — 2026-09-23
