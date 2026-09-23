@@ -153,7 +153,9 @@ def test_release_has_controlled_tag_or_one_shot_entrypoint_and_no_promotion_stat
         assert "branches:\n      - main" in workflow
         assert "paths:" in workflow
         assert "config/release-trigger-" in workflow
-        assert "Create immutable release tag for one-shot main trigger" in workflow
+        creates_ref_during_validate = "Create immutable release tag for one-shot main trigger" in workflow
+        creates_tag_transactionally = 'gh release create "$RELEASE_TAG"' in workflow and '--target "$RELEASE_COMMIT"' in workflow
+        assert creates_ref_during_validate or creates_tag_transactionally
         assert "! git ls-remote --exit-code --tags origin" in workflow
     else:
         assert "RELEASE_TAG: ${{ github.ref_name }}" in workflow
