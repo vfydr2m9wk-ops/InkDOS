@@ -19,6 +19,9 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - run: python -m playwright install --with-deps webkit
+      - name: Diagnostic exact clean-snapshot release validation
+        continue-on-error: true
+        run: python scripts/run_release_validation.py
       - name: Diagnostic release chunk 1 (0-9)
         continue-on-error: true
         run: python -c "import subprocess,sys; from scripts.run_release_validation import CMDS; [subprocess.run(c,check=True) for c in CMDS[0:10]]"
