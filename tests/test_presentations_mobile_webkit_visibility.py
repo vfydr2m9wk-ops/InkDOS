@@ -49,7 +49,7 @@ def main():
             assert any(t["width"]>40 and t["height"]>30 for t in probe["thumbs"]),probe
             browser.close()
         if errors: raise AssertionError(errors)
-        print("Presentations iPhone/WebKit visibility regression passed.")
+        print("Presentations iPhone/WebKit visibility regression passed (canvas + thumbnails).")
     finally:
         server.terminate()
         try: server.wait(timeout=3)
