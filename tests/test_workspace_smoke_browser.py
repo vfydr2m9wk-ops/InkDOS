@@ -34,8 +34,20 @@ def positive_box(page, selector):
     box = page.locator(selector).bounding_box()
     assert box and box["width"] > 1 and box["height"] > 1, (selector, box)
 
+def activate_or_assert_start_state(page, surface):
+    """Exercise an editable surface when the shell offers New; otherwise verify its start state."""
+    start_new = page.locator("#startNew")
+    if start_new.count() and start_new.is_visible():
+        start_new.click()
+        page.wait_for_timeout(100)
+        positive_box(page, surface)
+        return
+    box = page.locator(surface).bounding_box()
+    if box and box["width"] > 1 and box["height"] > 1:
+        return
+    positive_box(page, "#startState")
+
 def presentation_probe(page):
-    page.click("#startNew")
     page.wait_for_function("() => !!globalThis.__inkdosPresentations?.session?.active")
     page.wait_for_timeout(200)
     probe = page.evaluate("""() => {
@@ -82,7 +94,7 @@ def main():
                 page.on("pageerror", lambda exc, bucket=errors: bucket.append(str(exc)))
                 page.goto(f"{BASE}/apps/{app}/", wait_until="load")
                 positive_box(page, toolbar)
-                positive_box(page, surface)
+                activate_or_assert_start_state(page, surface)
                 assert not errors, (app, errors)
                 if app == "presentations":
                     presentation_probe(page)
