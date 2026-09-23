@@ -18,6 +18,7 @@ def wait_port():
     raise RuntimeError("server did not start")
 
 def main():
+    check=sys.argv[1] if len(sys.argv)>1 else "all"
     server=subprocess.Popen([sys.executable,"-m","http.server",str(PORT),"--bind","127.0.0.1"],cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     errors=[]
     try:
@@ -43,10 +44,12 @@ def main():
             }""")
             assert probe["inspect"]["session"]["slideCount"]==3,probe
             c,v=probe["canvas"],probe["viewport"]
-            assert c["width"]>100 and c["height"]>60,probe
-            assert c["right"]>v["left"] and c["left"]<v["right"] and c["bottom"]>v["top"] and c["top"]<v["bottom"],probe
-            assert len(probe["thumbs"])==3,probe
-            assert any(t["width"]>40 and t["height"]>30 for t in probe["thumbs"]),probe
+            if check in ("all","canvas"):
+                assert c["width"]>100 and c["height"]>60,probe
+                assert c["right"]>v["left"] and c["left"]<v["right"] and c["bottom"]>v["top"] and c["top"]<v["bottom"],probe
+            if check in ("all","thumbs"):
+                assert len(probe["thumbs"])==3,probe
+                assert any(t["width"]>40 and t["height"]>30 for t in probe["thumbs"]),probe
             browser.close()
         if errors: raise AssertionError(errors)
         print("Presentations iPhone/WebKit visibility regression passed (canvas + thumbnails).")
