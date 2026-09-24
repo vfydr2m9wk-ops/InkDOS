@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import json
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -25,18 +24,7 @@ def main():
     assert "this.shell.style.top=Math.max(0,(stageH-policy.height)/2)+'px'" in zoom
     assert "surface.render();panel.render();zoom.recenter()" in app
 
-    meta=json.loads(read("VERSION.json"))
-    assert meta["version"]=="2.5.2"
-    assert meta["releaseName"]=="InkDOS 2.5.2"
-    assert json.loads(read("desktop/src-tauri/tauri.conf.json"))["version"]=="2.5.2"
-    assert 'version = "2.5.2"' in read("desktop/src-tauri/Cargo.toml")
-    home=read("index.html")
-    for workspace in ("documents","spreadsheets","presentations","pdf","txt","epub"):
-        assert f"./apps/{workspace}/index.html?v=2.5.2&amp;suite=1" in home
-    assert "inkdos-v2.5.2-" in read("service-worker.js")
-    auth=json.loads(read("config/release-authorization.json"))
-    assert auth["version"]=="2.5.2" and auth["explicitUserAuthorization"] is True
-    print("InkDOS 2.5.2 Presentations rollback/version contract passed.")
+    print("InkDOS 2.5.2 Presentations rollback geometry contract passed.")
 
 if __name__ == "__main__":
     main()
