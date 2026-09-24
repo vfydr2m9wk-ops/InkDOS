@@ -1,9 +1,9 @@
 {
-  "version": "2.5.2",
+  "version": "2.6.0",
   "windowsDeviceUpgradeValidated": false,
   "windowsDeviceUpgradeWaived": true,
   "explicitUserAuthorization": true,
   "evidence": "",
   "evidenceSha256": "",
-  "waiverReason": "User explicitly authorized direct InkDOS 2.5.2 publication without further confirmation to correct the Presentations regression observed in 2.5.1. Pre-publication Windows/WebView2 updater validation is waived for this hotfix; post-launch validation remains required."
+  "waiverReason": "User explicitly authorized publication of InkDOS 2.6.0 and waived pre-publication physical Windows upgrade testing in this conversation on 2026-09-24. Windows upgrade validation remains required after launch."
 }

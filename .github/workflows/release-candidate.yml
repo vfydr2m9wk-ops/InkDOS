@@ -1,0 +1,214 @@
+name: InkDOS release candidate validation
+
+on:
+  push:
+    branches:
+      - 'release/*-candidate'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-release-candidate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-candidate:
+    name: Release candidate metadata and contracts
+    runs-on: ubuntu-22.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Validate candidate version surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          python desktop/scripts/release_version.py --check-config
+          python desktop/scripts/check_release_candidate.py --version "$VERSION"
+      - name: Run clean-snapshot release validation
+        run: python scripts/run_release_validation.py
+      - name: Run desktop contract
+        run: python tests/test_tauri_desktop_contract.py
+      - name: Run updater and release helper contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/test_goal4_*contract.py; do
+            python "$test"
+          done
+      - name: Validate staged desktop runtime
+        run: python desktop/scripts/stage_web.py --check
+      - name: Run behavioral stability gate
+        env:
+          BROWSER: chromium
+          INKDOS_STATEFUL_CYCLES: "3"
+        run: python scripts/run_behavioral_stability_validation.py
+      - name: Run app Help button regression
+        env:
+          BROWSER: chromium
+        run: python tests/test_app_help_stability_browser.py
+      - name: Upload behavioral stability report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-behavioral-stability
+          path: artifacts/behavioral-stability/
+          if-no-files-found: warn
+          retention-days: 14
+
+  candidate-distribution:
+    name: Release candidate distribution (${{ matrix.browser }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install browser
+        run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Audit exact release candidate
+        env:
+          INKDOS_EXPECTED_SHA: ${{ github.sha }}
+          INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
+          INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
+        run: python scripts/run_candidate_audit.py
+      - name: Preserve candidate audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-${{ matrix.browser }}
+          path: artifacts/candidate-${{ matrix.browser }}/
+          if-no-files-found: warn
+          retention-days: 14
+
+  button-audit:
+    name: Exhaustive button audit (${{ matrix.app }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [home, documents, spreadsheets, presentations, pdf, txt, epub]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Audit every reachable button
+        env:
+          INKDOS_ONLINE_BASE: http://127.0.0.1:8766/
+          INKDOS_BUTTON_AUDIT_APP: ${{ matrix.app }}
+          INKDOS_BUTTON_AUDIT_OUT: artifacts/button-audit-${{ matrix.app }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8766 --bind 127.0.0.1 >/tmp/inkdos-button-audit-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import socket,time
+          deadline=time.time()+10
+          while time.time()<deadline:
+              with socket.socket() as s:
+                  s.settimeout(.2)
+                  if s.connect_ex(('127.0.0.1',8766))==0: break
+              time.sleep(.1)
+          else: raise SystemExit('button audit server did not start')
+          PY
+          python tests/test_exhaustive_button_audit_browser.py
+      - name: Upload button audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-button-audit-${{ matrix.app }}
+          path: artifacts/button-audit-${{ matrix.app }}/
+          if-no-files-found: warn
+          retention-days: 14
+
+  conditional-button-audit:
+    name: Conditional button audit (${{ matrix.app }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [documents, spreadsheets, presentations, pdf, txt, epub]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Audit conditional buttons
+        env:
+          INKDOS_ONLINE_BASE: http://127.0.0.1:8767/
+          INKDOS_BUTTON_TARGET_APP: ${{ matrix.app }}
+          INKDOS_BUTTON_TARGET_OUT: artifacts/button-target-${{ matrix.app }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8767 --bind 127.0.0.1 >/tmp/inkdos-button-target-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import socket,time
+          deadline=time.time()+10
+          while time.time()<deadline:
+              with socket.socket() as s:
+                  s.settimeout(.2)
+                  if s.connect_ex(('127.0.0.1',8767))==0: break
+              time.sleep(.1)
+          else: raise SystemExit('conditional button audit server did not start')
+          PY
+          python tests/test_conditional_button_audit_browser.py
+      - name: Upload conditional button audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-button-target-${{ matrix.app }}
+          path: artifacts/button-target-${{ matrix.app }}/
+          if-no-files-found: warn
+          retention-days: 14
