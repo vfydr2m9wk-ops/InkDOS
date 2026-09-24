@@ -67,7 +67,7 @@ def main() -> None:
             assert default_theme["theme"]["major"] == "Aptos Display", default_theme
 
             themed = page.evaluate(
-                """async () => {
+                r"""async () => {
                     const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
                     const base=await NS.PptxWriter.build(app.session);
                     const zip=await JSZip.loadAsync(base,{checkCRC32:true});
