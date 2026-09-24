@@ -142,9 +142,16 @@ class Audit:
             p.wait_for_function("()=>globalThis.__inkdosPresentations.session.slides.length===3")
             p.evaluate("()=>globalThis.__inkdosPresentations.executeCommand('navigation.to',1)")
             p.wait_for_function("()=>globalThis.__inkdosPresentations.session.currentIndex===1")
-            self.click(p,e,"#moveSlideUpBtn","moveSlideUpBtn")
+            up_ok=self.click(p,e,"#moveSlideUpBtn","moveSlideUpBtn")
+            up_index=p.evaluate("()=>globalThis.__inkdosPresentations.session.currentIndex")
+            self.checks[-1]["effect"]={"currentIndex":up_index}
+            if up_ok and up_index!=0:self.checks[-1]["status"]="clicked-no-effect"
+            p.evaluate("()=>globalThis.__inkdosPresentations.executeCommand('navigation.to',0)")
             p.wait_for_function("()=>globalThis.__inkdosPresentations.session.currentIndex===0")
-            self.click(p,e,"#moveSlideDownBtn","moveSlideDownBtn")
+            down_ok=self.click(p,e,"#moveSlideDownBtn","moveSlideDownBtn")
+            down_index=p.evaluate("()=>globalThis.__inkdosPresentations.session.currentIndex")
+            self.checks[-1]["effect"]={"currentIndex":down_index}
+            if down_ok and down_index!=1:self.checks[-1]["status"]="clicked-no-effect"
         finally:c.close()
 
         for sel in ("#pptP2ApplyBorder","#pptP2InsertRow","#pptP2DeleteRow","#pptP2InsertCol","#pptP2DeleteCol"):
@@ -370,15 +377,16 @@ class Audit:
                 if action=="open":self.click(p,e,".epub-nav-open","Open bookmark")
                 elif action=="remove":self.click(p,e,".epub-nav-delete","Remove bookmark")
                 else:
-                    note=p.locator('[aria-label="Add note to bookmark"]')
-                    note.scroll_into_view_if_needed()
-                    p.wait_for_timeout(120)
-                    note.click(timeout=5000)
-                    p.locator("#libraryCompose").wait_for(state="visible")
-                    if action=="add-note":self.record("Add note to bookmark","clicked",'[aria-label="Add note to bookmark"]')
-                    elif action=="library-cancel":self.click(p,e,"#libraryCancelNote","libraryCancelNote")
+                    opened=self.click(p,e,'[aria-label="Add note to bookmark"]',"Add note to bookmark",timeout=5000)
+                    if opened:p.locator("#libraryCompose").wait_for(state="visible",timeout=5000)
+                    if action=="add-note":
+                        pass
+                    elif action=="library-cancel":
+                        if opened:self.click(p,e,"#libraryCancelNote","libraryCancelNote")
                     else:
-                        p.locator("#libraryDraft").fill("button audit bookmark note");self.click(p,e,"#librarySaveNote","librarySaveNote")
+                        if opened:
+                            p.locator("#libraryDraft").fill("button audit bookmark note")
+                            self.click(p,e,"#librarySaveNote","librarySaveNote")
             finally:c.close()
 
         for action in ("cancel","save"):
@@ -413,7 +421,7 @@ class Audit:
 
     def run(self):
         getattr(self,self.app)()
-        failures=[x for x in self.checks if x["status"] in ("click-exception","clicked-with-error","disabled")]
+        failures=[x for x in self.checks if x["status"] in ("click-exception","clicked-with-error","clicked-no-effect","disabled")]
         report={"app":self.app,"checks":self.checks,"intentionallyHidden":self.hidden,"summary":{"checks":len(self.checks),"clicked":sum(1 for x in self.checks if x["status"] in ("clicked","dom-clicked-after-rerender")),"disabledNoOverflow":sum(1 for x in self.checks if x["status"]=="disabled-no-overflow"),"failures":len(failures),"hiddenByDesign":len(self.hidden)}}
         (OUT/"report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
         print(json.dumps(report["summary"],indent=2))
