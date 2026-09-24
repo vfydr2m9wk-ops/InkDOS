@@ -99,14 +99,17 @@ def main() -> None:
                       };
                       document.addEventListener('input', block, true);
                       document.addEventListener('change', block, true);
+                      const nativePicker = globalThis.showOpenFilePicker;
                       globalThis.showOpenFilePicker = () => Promise.resolve([{
                         kind: 'file',
                         async getFile() { return new File([new Uint8Array([5,6,7])], name, {type:mime}); }
                       }]);
                       const fsaStarted = launch.requestPicker(input);
                       await new Promise(resolve => setTimeout(resolve, 30));
-                      delete globalThis.showOpenFilePicker;
+                      globalThis.showOpenFilePicker = undefined;
                       const unsupportedFallback = launch.requestPicker(input);
+                      if (nativePicker) globalThis.showOpenFilePicker = nativePicker;
+                      else delete globalThis.showOpenFilePicker;
                       document.removeEventListener('input', block, true);
                       document.removeEventListener('change', block, true);
 
