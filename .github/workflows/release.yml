@@ -407,6 +407,12 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
+          case "$CHANNEL" in
+            stable) PRERELEASE=false; LATEST=true; TITLE="InkDOS ${VERSION}" ;;
+            beta) PRERELEASE=true; LATEST=false; TITLE="InkDOS ${VERSION} Beta" ;;
+            *) echo "Unsupported release channel: $CHANNEL" >&2; exit 1 ;;
+          esac
           test -s release-final/latest.json
           mapfile -d '' ASSETS < <(find release-final -maxdepth 1 -type f -print0)
           if [ "${#ASSETS[@]}" -lt 8 ]; then
@@ -424,7 +430,7 @@ jobs:
             gh release create "$RELEASE_TAG" \
               --target "$RELEASE_COMMIT" \
               --draft \
-              --title "InkDOS ${VERSION}" \
+              --title "$TITLE" \
               --notes-file release-notes.md
           fi
 
@@ -443,6 +449,7 @@ jobs:
 
           gh release edit "$RELEASE_TAG" \
             --draft=false \
-            --prerelease=false \
-            --title "InkDOS ${VERSION}" \
+            --prerelease="$PRERELEASE" \
+            --latest="$LATEST" \
+            --title "$TITLE" \
             --notes-file release-notes.md

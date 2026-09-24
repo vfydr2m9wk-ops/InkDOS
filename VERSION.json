@@ -2,12 +2,12 @@
   "name": "InkDOS",
   "displayName": "InkDOS",
   "version": "2.6.0",
-  "releaseChannel": "stable",
+  "releaseChannel": "beta",
   "releaseName": "InkDOS 2.6.0",
   "date": "2026-09-24",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDOS/",
-  "status": "release",
+  "status": "prerelease",
   "components": {
     "documents": {
       "path": "apps/documents/index.html",
