@@ -86,6 +86,8 @@ def main() -> None:
         for marker in ("launchQueue", "setConsumer", "handle.getFile", "DataTransfer", "compatibleInput", "input.dispatchEvent(new Event('change'", "showOpenFilePicker", "requestPicker", "setOpenHandler", "pendingLaunchFiles"):
             if marker not in launch_runtime:
                 raise AssertionError(f"{app}: file-handling bridge missing {marker!r}")
+        if "createWritable" in launch_runtime:
+            raise AssertionError(f"{app}: open-time file handles must not be retained for write-back")
         if runtime_reference is None:
             runtime_reference = launch_runtime
         elif launch_runtime != runtime_reference:
