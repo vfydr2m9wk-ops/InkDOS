@@ -1,0 +1,68 @@
+name: InkDOS CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-validation:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Enforce product/release change boundary
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python scripts/check_change_boundaries.py --base "${{ github.event.pull_request.base.sha }}" --head HEAD
+      - name: Run clean-snapshot release validation
+        run: python scripts/run_release_validation.py
+      - name: Run Documents interaction regression
+        run: python tests/test_documents_243_interaction_browser.py
+      - name: Run Home Windows-scale layout harness
+        run: python tests/test_home_density_layout_browser.py
+      - name: Run Spreadsheets fill/clear regression
+        run: python tests/test_spreadsheets_243_fill_clear_browser.py
+      - name: Run Plain Text multi-instance recovery isolation
+        run: python tests/test_txt_multi_instance_recovery_browser.py
+      - name: Run Presentations color-control hitbox regression
+        run: python tests/test_presentations_disabled_background_hitbox_browser.py
+      - name: Run PDF toolbar hitbox regression
+        run: python tests/test_pdf_toolbar_hitbox_browser.py
+      - name: Run behavioral stability gate
+        env:
+          BROWSER: chromium
+          INKDOS_STATEFUL_CYCLES: "3"
+        run: python scripts/run_behavioral_stability_validation.py
+      - name: Upload behavioral stability report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: behavioral-stability-report
+          path: artifacts/behavioral-stability/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Validate staged desktop runtime
+        run: python desktop/scripts/stage_web.py --check
