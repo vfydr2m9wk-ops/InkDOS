@@ -1,6 +1,6 @@
-# InkDOS 2.6.0
+# InkDOS 2.6.1
 
-> **Current source release identity:** InkDOS 2.6.0. The previous immutable fallback remains tag `v2.5.2`; signed desktop packages are published only from immutable release tags.
+> **Current source release identity:** InkDOS 2.6.1. The `v2.6.0` beta remains preserved as an immutable prerelease checkpoint; `v2.5.2` remains the previous stable fallback.
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
 **Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
@@ -25,9 +25,9 @@ Support is intentionally narrower than Microsoft Office, LibreOffice or Acrobat.
 
 ## Release baseline
 
-InkDOS 2.6.0 is the current source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage when a matching immutable release tag is published. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
+InkDOS 2.6.1 is the current stable source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage when a matching immutable release tag is published. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
 
-A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.5.2` tag remains the preserved previous fallback.
+A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.0` tag remains the preserved beta checkpoint and `v2.5.2` remains the previous stable fallback.
 
 See `docs/QA-BASELINE-2.5.2.md` for the final verification summary.
 
@@ -57,7 +57,7 @@ InkDOS is maintained with AI-assisted implementation and human audit. Repository
 - explicit protection for deliberately preserved frozen legacy;
 - independent workspace ownership so a repair to one app does not require rewriting its siblings.
 
-The 2.6.0 line formalizes conservative isolation: each workspace owns its state and preferences, while proven APIs, names and legacy structures remain unchanged unless a concrete compatibility requirement justifies a change.
+The 2.6 line formalizes conservative isolation: each workspace owns its state and preferences, while proven APIs, names and legacy structures remain unchanged unless a concrete compatibility requirement justifies a change.
 
 See `AGENTS.md` for the operational maintenance rules and `config/components.json` for machine-readable component ownership.
 

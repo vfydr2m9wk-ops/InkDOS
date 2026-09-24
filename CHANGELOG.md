@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.6.1 — 2026-09-24
+
+- Promote the 2.6 line to the stable release channel after final direct-app/PWA validation.
+- Give Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB stable workspace-specific manifest identities so separately installed workspaces cannot collapse into one PWA identity.
+- Preserve each workspace's existing app-local scope, start URL, file handlers, editors and file engines; no functional editor rewrite is part of this patch.
+- Refresh Home cache-busters, the verified offline snapshot, desktop package metadata and signed updater/release artifacts from one immutable 2.6.1 tag.
+- Preserve `v2.6.0` as the historical beta checkpoint rather than moving or rewriting that tag.
+
 ## 2.6.0 — 2026-09-24
 
 - Separate Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB into independently launchable app shells with app-local manifests, icons and direct URLs while keeping Home optional.
