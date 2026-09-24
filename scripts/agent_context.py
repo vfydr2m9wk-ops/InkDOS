@@ -14,7 +14,12 @@ def main():
     parser.add_argument(
         "--browser",
         action="store_true",
-        help="Include browser tests in the displayed focused test set.",
+        help="Include browser smoke tests in the displayed focused test set.",
+    )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Show the complete component test set instead of the default smoke set.",
     )
     args = parser.parse_args()
 
@@ -42,8 +47,13 @@ def main():
     for pattern in cfg.get("testGlobs", []):
         print(f"  - {pattern}")
     print()
-    print("Focused tests:")
-    tests = matching_tests(args.component, include_browser=args.browser)
+    tier = "full component" if args.full else "smoke"
+    print(f"Selected {tier} tests:")
+    tests = matching_tests(
+        args.component,
+        include_browser=args.browser,
+        full=args.full,
+    )
     if tests:
         for path in tests:
             print(f"  - {path}")
@@ -68,6 +78,9 @@ def main():
     print("Development gate:")
     print(f"  python scripts/agent_test.py {args.component}")
     print(f"  python scripts/agent_verify.py {args.component} --base main")
+    print("Escalate only when needed:")
+    print(f"  python scripts/agent_test.py {args.component} --full")
+    print(f"  python scripts/agent_test.py {args.component} --browser")
 
 
 if __name__ == "__main__":
