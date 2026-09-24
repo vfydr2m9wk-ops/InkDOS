@@ -83,13 +83,56 @@ def main() -> None:
             raise AssertionError(f"{app}: file launch runtime not wired")
 
         launch_runtime = (root / "runtime" / "platform" / "file-launch.js").read_text(encoding="utf-8")
-        for marker in ("launchQueue", "setConsumer", "handle.getFile", "DataTransfer", "compatibleInput", "input.dispatchEvent(new Event('change'"):
+        for marker in ("launchQueue", "setConsumer", "handle.getFile", "DataTransfer", "compatibleInput", "input.dispatchEvent(new Event('change'", "showOpenFilePicker", "requestPicker", "setOpenHandler", "pendingLaunchFiles"):
             if marker not in launch_runtime:
-                raise AssertionError(f"{app}: launched-file bridge missing {marker!r}")
+                raise AssertionError(f"{app}: file-handling bridge missing {marker!r}")
         if runtime_reference is None:
             runtime_reference = launch_runtime
         elif launch_runtime != runtime_reference:
             raise AssertionError(f"{app}: copied launched-file bridge drifted from the validated implementation")
+
+
+    # User-initiated Open prefers File System Access where available while retaining
+    # each workspace's existing input picker as the unsupported-host fallback.
+    fsa_open_paths = {
+        "documents": ROOT / "apps/documents/io/file-open-controller.js",
+        "spreadsheets": ROOT / "apps/spreadsheets/io/file-open-controller.js",
+        "presentations": ROOT / "apps/presentations/io/pptx-open-controller.js",
+        "pdf": ROOT / "apps/pdf/io/file-open-controller.js",
+        "epub": ROOT / "apps/epub/ui/reader-bindings.js",
+        "txt": ROOT / "apps/txt/app.js",
+    }
+    for app, path in fsa_open_paths.items():
+        source = path.read_text(encoding="utf-8")
+        if "requestPicker" not in source:
+            raise AssertionError(f"{app}: File System Access open path is not wired")
+        if ".click()" not in source:
+            raise AssertionError(f"{app}: HTML file-input fallback was removed")
+
+    # launchQueue must not bypass unsaved-work authorization.
+    guarded_launch = {
+        "presentations": ("apps/presentations/app.js", "commands.authorizeReplacement('open')"),
+        "pdf": ("apps/pdf/app.js", "commands.authorizeReplacement('open')"),
+        "epub": ("apps/epub/app.js", "bindings.authorizeReplacement('open')"),
+    }
+    for app, (rel, marker) in guarded_launch.items():
+        source = (ROOT / rel).read_text(encoding="utf-8")
+        if "setOpenHandler" not in source or marker not in source:
+            raise AssertionError(f"{app}: launched files can bypass the unsaved replacement guard")
+
+    documents_app = (ROOT / "apps/documents" / "app.js").read_text(encoding="utf-8")
+    spreadsheets_app = (ROOT / "apps/spreadsheets" / "app.js").read_text(encoding="utf-8")
+    txt_app = (ROOT / "apps/txt" / "app.js").read_text(encoding="utf-8")
+    if "setOpenHandler" not in documents_app or "fileOpen.openFile(file)" not in documents_app:
+        raise AssertionError("Documents launched-file handler missing")
+    if "setOpenHandler" not in spreadsheets_app or "openController.handle(file)" not in spreadsheets_app:
+        raise AssertionError("Spreadsheets launched-file handler missing")
+    if "setOpenHandler" not in txt_app or "files.openFile(file)" not in txt_app:
+        raise AssertionError("Plain Text launched-file handler missing")
+
+    pdf_open = (ROOT / "apps/pdf/io/file-open-controller.js").read_text(encoding="utf-8")
+    if "openFile(file,{authorized=false}" not in pdf_open or "pendingOpenAuthorization" not in pdf_open:
+        raise AssertionError("PDF picker authorization is not carried through file selection")
 
     # Converted legacy imports must keep their existing safe-copy semantics.
     documents = (ROOT / "apps" / "documents" / "io" / "file-open-controller.js").read_text(encoding="utf-8")
