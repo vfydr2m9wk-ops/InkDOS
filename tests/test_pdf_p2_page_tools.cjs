@@ -9,6 +9,8 @@ globalThis.PDFLib=PDFLib;
 vm.runInThisContext(fs.readFileSync(path.join(app,'engine/page-tools-engine.js'),'utf8'),{filename:'apps/pdf/engine/page-tools-engine.js'});
 const Engine=globalThis.InkDOS2PdfP4.PageToolsEngine;
 function assert(condition,message){if(!condition)throw new Error(message)}
+const pageToolsUi=fs.readFileSync(path.join(app,'ui/page-tools.js'),'utf8');
+assert(!pageToolsUi.includes('<span class="tool-label">Organize</span>'),'icon-only Organize button must not render an overflowing text label');
 async function load(bytes){return PDFLib.PDFDocument.load(bytes,{updateMetadata:false})}
 (async()=>{
  const sourceDoc=await PDFLib.PDFDocument.create();
