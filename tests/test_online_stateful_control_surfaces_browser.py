@@ -129,8 +129,11 @@ def prepare_active(app, page, fixtures):
         click_if(page, "#startNew")
         page.wait_for_function("() => document.getElementById('startState')?.hidden === true")
     elif app == "pdf":
-        page.locator("#fileInput").set_input_files(str(fixtures["pdf"]))
-        page.wait_for_function("() => document.getElementById('pageCount')?.textContent?.trim() !== '/ 0'", timeout=15000)
+        page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug?.fileOpen")
+        opened = page.evaluate("""async()=>{const d=globalThis.InkDOS2PdfP4.PdfStabilityDebug; const pdf=await PDFLib.PDFDocument.create(); const p=pdf.addPage([612,792]); p.drawText('InkDOS stateful audit',{x:48,y:730,size:20}); const bytes=new Uint8Array(await pdf.save()); return await d.fileOpen.openFile(new File([bytes],'audit.pdf',{type:'application/pdf'}));}""")
+        if opened is not True:
+            raise RuntimeError("PDF audit fixture did not open")
+        page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 1", timeout=15000)
     elif app == "epub":
         page.locator("#fileInput").set_input_files(str(fixtures["epub"]))
         page.wait_for_function("() => document.getElementById('emptyState')?.hidden === true", timeout=15000)
