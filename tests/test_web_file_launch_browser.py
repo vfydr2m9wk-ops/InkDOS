@@ -69,14 +69,28 @@ def main() -> None:
                 page.wait_for_function("() => !!globalThis.InkDOSFileLaunch && typeof globalThis.launchQueue?.consumer === 'function'")
                 result = page.evaluate(
                     """async ({name,mime}) => {
-                      globalThis.__inkdosLaunchCapture = null;
+                      const launch = globalThis.InkDOSFileLaunch;
+                      const input = document.querySelector('#fileInput');
+                      const routed = {name:'', type:''};
+                      launch.setOpenHandler(file => {
+                        routed.name = file?.name || '';
+                        routed.type = file?.type || '';
+                        return true;
+                      });
+
+                      const launchHandle = {
+                        kind: 'file',
+                        async getFile() { return new File([new Uint8Array([1,2,3,4])], name, {type:mime}); }
+                      };
+                      await globalThis.launchQueue.consumer({files:[launchHandle]});
+
+                      let fsaCapture = null;
                       const block = event => {
                         const target = event.target;
-                        if (!(target instanceof HTMLInputElement) || target.type !== 'file') return;
+                        if (!(target instanceof HTMLInputElement) || target !== input) return;
                         if (event.type === 'change') {
-                          globalThis.__inkdosLaunchCapture = {
+                          fsaCapture = {
                             id: target.id,
-                            accept: target.accept,
                             name: target.files?.[0]?.name || '',
                             count: target.files?.length || 0
                           };
@@ -85,33 +99,42 @@ def main() -> None:
                       };
                       document.addEventListener('input', block, true);
                       document.addEventListener('change', block, true);
-                      const handle = {
+                      globalThis.showOpenFilePicker = () => Promise.resolve([{
                         kind: 'file',
-                        async getFile() { return new File([new Uint8Array([1,2,3,4])], name, {type:mime}); }
-                      };
-                      await globalThis.launchQueue.consumer({files:[handle]});
-                      await new Promise(resolve => setTimeout(resolve, 20));
+                        async getFile() { return new File([new Uint8Array([5,6,7])], name, {type:mime}); }
+                      }]);
+                      const fsaStarted = launch.requestPicker(input);
+                      await new Promise(resolve => setTimeout(resolve, 30));
+                      delete globalThis.showOpenFilePicker;
+                      const unsupportedFallback = launch.requestPicker(input);
                       document.removeEventListener('input', block, true);
                       document.removeEventListener('change', block, true);
+
                       return {
-                        capture: globalThis.__inkdosLaunchCapture,
-                        direct: globalThis.InkDOSFileLaunch.compatibleInput({name})?.id || ''
+                        routed,
+                        direct: launch.compatibleInput({name,mime})?.id || '',
+                        fsaCapture,
+                        fsaStarted,
+                        unsupportedFallback
                       };
                     }""",
                     {"name": name, "mime": mime},
                 )
                 assert result["direct"] == "fileInput", (app, result)
-                assert result["capture"], (app, "launchQueue did not inject a file", result)
-                assert result["capture"]["id"] == "fileInput", (app, result)
-                assert result["capture"]["name"] == name, (app, result)
-                assert result["capture"]["count"] == 1, (app, result)
+                assert result["routed"]["name"] == name, (app, result)
+                assert result["fsaStarted"] is True, (app, result)
+                assert result["fsaCapture"], (app, "File System Access picker did not inject a file", result)
+                assert result["fsaCapture"]["id"] == "fileInput", (app, result)
+                assert result["fsaCapture"]["name"] == name, (app, result)
+                assert result["fsaCapture"]["count"] == 1, (app, result)
+                assert result["unsupportedFallback"] is False, (app, result)
                 if app == "documents":
-                    assert result["capture"]["id"] != "imageInput", result
+                    assert result["direct"] != "imageInput", result
 
             context.close()
             browser.close()
 
-        print(f"InkDOS 2.6 launchQueue file routing ({browser_name}): OK")
+        print(f"InkDOS 2.6 launchQueue and File System Access routing ({browser_name}): OK")
     finally:
         server.terminate()
         try:
