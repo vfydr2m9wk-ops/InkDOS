@@ -24,8 +24,10 @@ def build_epub(path:Path):
         z.writestr("META-INF/container.xml",'<?xml version="1.0"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>')
         z.writestr("OEBPS/content.opf",'<?xml version="1.0" encoding="UTF-8"?><package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="id"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="id">button-audit</dc:identifier><dc:title>Button Audit</dc:title><dc:language>en</dc:language></metadata><manifest><item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="c1" href="ch1.xhtml" media-type="application/xhtml+xml"/><item id="c2" href="ch2.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="c1"/><itemref idref="c2"/></spine></package>')
         z.writestr("OEBPS/nav.xhtml",'<!doctype html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"><body><nav epub:type="toc"><ol><li><a href="ch1.xhtml#one">Chapter One</a></li><li><a href="ch2.xhtml#two">Chapter Two</a></li></ol></nav></body></html>')
-        z.writestr("OEBPS/ch1.xhtml",'<!doctype html><html xmlns="http://www.w3.org/1999/xhtml"><body><h1 id="one">Chapter One</h1><p>Alpha beta gamma button audit text.</p></body></html>')
-        z.writestr("OEBPS/ch2.xhtml",'<!doctype html><html xmlns="http://www.w3.org/1999/xhtml"><body><h1 id="two">Chapter Two</h1><p>Delta epsilon zeta button audit text.</p></body></html>')
+        long1=''.join(f'<p>Alpha beta gamma button audit paragraph {i}. This synthetic paragraph exists only to force multiple reader pages for button-state validation.</p>' for i in range(1,81))
+        long2=''.join(f'<p>Delta epsilon zeta button audit paragraph {i}. This synthetic paragraph exists only to force multiple reader pages for button-state validation.</p>' for i in range(1,81))
+        z.writestr("OEBPS/ch1.xhtml",f'<!doctype html><html xmlns="http://www.w3.org/1999/xhtml"><body><h1 id="one">Chapter One</h1>{long1}</body></html>')
+        z.writestr("OEBPS/ch2.xhtml",f'<!doctype html><html xmlns="http://www.w3.org/1999/xhtml"><body><h1 id="two">Chapter Two</h1>{long2}</body></html>')
 
 class Audit:
     def __init__(self,browser,app,epub_path):
@@ -174,8 +176,13 @@ class Audit:
             if p.locator("#pptP2TableToolsPanel").is_hidden():
                 p.locator("#pptP2TableToolsBtn").click()
                 p.locator("#pptP2TableToolsPanel").wait_for(state="visible")
-            p.wait_for_function("()=>!document.getElementById('pptP2Split').disabled",timeout=5000)
-            self.click(p,e,"#pptP2Split","pptP2Split")
+            p.wait_for_timeout(300)
+            split_probe=p.evaluate("""()=>{const app=globalThis.__inkdosPresentations,t=app.session.currentSlide.objects.find(o=>o.type==='table'),a=globalThis.InkDOS2Presentations?.PptP2TableToolsUi?.activeCell||null,c=t?.rows?.[0]?.cells?.[0];return {disabled:document.getElementById('pptP2Split').disabled,activeCell:a,leader:c?{colSpan:c.colSpan,rowSpan:c.rowSpan,hMerge:c.hMerge,vMerge:c.vMerge,text:c.text}:null,selection:app.selection?.objectId||null,tableId:t?.id||null}}""")
+            if split_probe["disabled"]:
+                self.record("pptP2Split","disabled","#pptP2Split",effect=split_probe)
+            else:
+                self.click(p,e,"#pptP2Split","pptP2Split")
+                self.checks[-1]["effect"]=split_probe
         finally:c.close()
 
         c,p,e=self.page()
@@ -358,7 +365,18 @@ class Audit:
         c,p,e=self.page()
         try:
             self.epub_open(p)
-            self.click(p,e,"#nextBtn","nextBtn");self.click(p,e,"#prevBtn","prevBtn")
+            p.wait_for_function("()=>globalThis.__InkEpubR4.state().flow==='pages' && globalThis.__InkEpubR4.state().pageCount>1",timeout=10000)
+            before=p.evaluate("()=>globalThis.__InkEpubR4.state().pageIndex")
+            next_ok=self.click(p,e,"#nextBtn","nextBtn")
+            p.wait_for_timeout(300)
+            after_next=p.evaluate("()=>globalThis.__InkEpubR4.state().pageIndex")
+            self.checks[-1]["effect"]={"before":before,"after":after_next}
+            if next_ok and after_next<=before:self.checks[-1]["status"]="clicked-no-effect"
+            prev_ok=self.click(p,e,"#prevBtn","prevBtn")
+            p.wait_for_timeout(300)
+            after_prev=p.evaluate("()=>globalThis.__InkEpubR4.state().pageIndex")
+            self.checks[-1]["effect"]={"before":after_next,"after":after_prev}
+            if prev_ok and after_prev>=after_next:self.checks[-1]["status"]="clicked-no-effect"
         finally:c.close()
 
         c,p,e=self.page()
