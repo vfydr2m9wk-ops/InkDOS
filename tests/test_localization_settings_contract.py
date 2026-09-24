@@ -120,14 +120,16 @@ process.stdout.write(JSON.stringify(out));
     positions = [settings.find(marker) for marker in ordered]
     if any(pos < 0 for pos in positions) or positions != sorted(positions):
         raise AssertionError(f"Settings order mismatch: {positions}")
-    require(settings, "LANGUAGE_KEY='inkdos2:language'", "Suite-global language persistence")
-    require(settings, "legacyLanguageKey", "Per-workspace language migration support")
+    require(settings, "SUITE_LANGUAGE_KEY='inkdos2:language'", "Legacy suite language migration source")
+    require(settings, "return app?'inkdos2:'+app+':language':SUITE_LANGUAGE_KEY", "Workspace-local language persistence")
+    require(settings, "return appContext()?SUITE_LANGUAGE_KEY:null", "Suite-to-workspace language migration")
     for marker in ("Getting started", "Keyboard shortcuts", "File compatibility", "Check for updates", "About InkDOS"):
         require(settings, marker, "Compact Help menu")
 
-    # Density is now one suite-level preference, with migration from prior workspace-local keys.
-    require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Suite-global density persistence")
-    require(density, "LEGACY_WORKSPACE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':null", "Workspace density migration key")
+    # Density is workspace-local; the 2.5.2 suite key is migration-only inside apps.
+    require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Legacy suite density migration source")
+    require(density, "STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY", "Workspace-local density persistence")
+    require(density, "LEGACY_SUITE_KEY=WORKSPACE?SUITE_STORAGE_KEY:null", "Suite-to-workspace density migration")
     require(density, "localization/ui-localization.js", "Localization runtime bootstrap")
     require(density, "localization/settings-strip.js", "Settings strip bootstrap")
     require(density, "localization/localization.css", "Settings CSS bootstrap")
