@@ -6,7 +6,7 @@ InkDOS desktop updates use the signed Tauri updater for Windows, macOS and Linux
 
 `VERSION.json` is the product version authority. Desktop configuration is checked against it by `desktop/scripts/release_version.py`.
 
-A public desktop release uses a matching immutable tag such as `v2.4.0`.
+A public desktop release uses a matching immutable `vX.Y.Z` tag. The current stable example is `v2.5.2`.
 
 ## Build and publication path
 
