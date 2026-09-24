@@ -21,6 +21,7 @@ CMDS = [
     [sys.executable, "tests/test_presentations_slideshow_rendering_contract.py"],
     [sys.executable, "tests/test_epub_webkit_deflate_contract.py"],
     [sys.executable, "tests/test_txt_format_expansion_contract.py"],
+    [sys.executable, "tests/test_web_file_handling_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_text_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_encoding_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_save_contract.py"],
