@@ -194,6 +194,7 @@ def main() -> None:
             assert migrated.evaluate("() => globalThis.InkDOSUiDensity.preference") == "mobile"
             assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:language')") == "pt-BR"
             assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") == "mobile"
+            open_menu(migrated)
             choose_language(migrated, "English", "en")
             migrated.evaluate("() => globalThis.InkDOSUiDensity.set('desktop')")
             assert migrated.evaluate("() => localStorage.getItem('inkdos2:language')") == "pt-BR"
