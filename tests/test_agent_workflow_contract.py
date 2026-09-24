@@ -48,14 +48,17 @@ def main():
     for name, cfg in components.items():
         entry = ROOT / cfg["entry"]
         require(entry.is_file(), f"{name}: entry does not exist: {cfg['entry']}")
-        require(cfg.get("testGlobs"), f"{name}: focused test globs are missing")
+        require(cfg.get("testGlobs"), f"{name}: full test globs are missing")
+        require(cfg.get("smokeTests"), f"{name}: smoke tests are missing")
+        for path in cfg["smokeTests"] + cfg.get("browserSmokeTests", []):
+            require((ROOT / path).is_file(), f"{name}: configured smoke test is missing: {path}")
         matched = {
             path
             for pattern in cfg["testGlobs"]
             for path in ROOT.glob(pattern)
             if path.is_file()
         }
-        require(matched, f"{name}: focused test globs select no tests")
+        require(matched, f"{name}: full test globs select no tests")
 
     frozen = json.loads(FROZEN.read_text(encoding="utf-8"))
     require(frozen.get("schemaVersion") == 1, "frozen-legacy schema version changed")
@@ -67,8 +70,10 @@ def main():
         compile(source, script.as_posix(), "exec")
 
     support = SCRIPTS[0].read_text(encoding="utf-8")
+    test_runner = SCRIPTS[2].read_text(encoding="utf-8")
     verify = SCRIPTS[-1].read_text(encoding="utf-8")
     require("origin/main" in support, "agent scope comparison should prefer origin/main")
+    require("--full" in test_runner, "focused test runner must expose an explicit full tier")
     require("SCOPE VIOLATION" in verify, "agent verifier must reject scope expansion")
     require("FROZEN LEGACY VIOLATION" in verify, "agent verifier must protect frozen legacy")
 
