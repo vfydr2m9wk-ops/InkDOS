@@ -41,5 +41,18 @@ jobs:
         run: python tests/test_txt_multi_instance_recovery_browser.py
       - name: Run Presentations disabled background hitbox regression
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
+      - name: Run 2.5.2 behavioral stability gate
+        env:
+          BROWSER: chromium
+          INKDOS_STATEFUL_CYCLES: "3"
+        run: python scripts/run_behavioral_stability_validation.py
+      - name: Upload behavioral stability report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: behavioral-stability-report
+          path: artifacts/behavioral-stability/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
