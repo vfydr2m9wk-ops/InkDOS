@@ -1,0 +1,7 @@
+{
+  "purpose": "One-shot post-2.5.2 GitHub Actions and deployment cleanup",
+  "executeOnPushToMain": true,
+  "stableBaseline": "v2.5.2",
+  "stableBaselineSha": "3470607f440d34b361aff4a790acec442d84fb56",
+  "removeAfterSuccessfulRun": true
+}
