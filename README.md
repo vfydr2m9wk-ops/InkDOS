@@ -1,6 +1,6 @@
-# InkDOS 2.6.1
+# InkDOS 2.6.2 Beta
 
-> **Current source release identity:** InkDOS 2.6.1. The `v2.6.0` beta remains preserved as an immutable prerelease checkpoint; `v2.5.2` remains the previous stable fallback.
+> **Current source identity:** InkDOS 2.6.2 Beta. The latest stable release remains `v2.6.1`; beta tags are web/PWA validation checkpoints and intentionally do not carry native installers.
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
 **Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
@@ -25,9 +25,9 @@ Support is intentionally narrower than Microsoft Office, LibreOffice or Acrobat.
 
 ## Release baseline
 
-InkDOS 2.6.1 is the current stable source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage when a matching immutable release tag is published. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
+InkDOS 2.6.2 Beta is the current source identity; `v2.6.1` remains the current stable release. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage when a matching immutable release tag is published. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
 
-A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.0` tag remains the preserved beta checkpoint and `v2.5.2` remains the previous stable fallback.
+A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.1` tag remains the stable checkpoint; beta tags remain separate prerelease checkpoints.
 
 See `docs/QA-BASELINE-2.5.2.md` for the final verification summary.
 
