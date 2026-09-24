@@ -1,7 +1,7 @@
 {
   "name": "InkDOS EPUB Reader",
   "short_name": "EPUB",
-  "id": "./",
+  "id": "/inkdos/workspaces/epub",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

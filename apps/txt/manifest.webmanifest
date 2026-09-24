@@ -1,7 +1,7 @@
 {
   "name": "InkDOS Plain Text",
   "short_name": "Plain Text",
-  "id": "./",
+  "id": "/inkdos/workspaces/txt",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
