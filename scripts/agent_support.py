@@ -43,7 +43,8 @@ def frozen_registry():
 
 
 def normalize(path: Path | str):
-    return Path(path).as_posix().lstrip("./")
+    value = Path(path).as_posix()
+    return value[2:] if value.startswith("./") else value
 
 
 def matching_tests(name: str, include_browser: bool = False, full: bool = False):
