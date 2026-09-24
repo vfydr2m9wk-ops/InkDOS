@@ -80,7 +80,6 @@ class Audit:
         finally:c.close()
 
     def documents(self):
-        self.help_close()
         c,p,e=self.page()
         try:
             p.wait_for_function("()=>!!globalThis.InkDOS2Documents?.DocumentsApp")
@@ -102,7 +101,6 @@ class Audit:
         finally:c.close()
 
     def spreadsheets(self):
-        self.help_close()
         c,p,e=self.page()
         try:
             p.wait_for_function("()=>!!globalThis.__inkdosSpreadsheetsS1")
@@ -129,7 +127,6 @@ class Audit:
         p.locator("#pptP2TableToolsPanel").wait_for(state="visible")
 
     def presentations(self):
-        self.help_close()
         c,p,e=self.page()
         try:
             self.presentation_base(p)
@@ -190,7 +187,6 @@ class Audit:
         p.wait_for_function(f"()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount==={count}",timeout=20000)
 
     def pdf(self):
-        self.help_close()
 
         c,p,e=self.page()
         try:
@@ -287,7 +283,6 @@ class Audit:
         p.locator("#editor").fill(text); p.locator("#editor").dispatch_event("input"); p.wait_for_timeout(100)
 
     def txt(self):
-        self.help_close()
         c,p,e=self.page()
         try:
             self.txt_dirty(p)
@@ -340,7 +335,6 @@ class Audit:
         p.locator('[data-nav-panel="library"]').wait_for(state="visible")
 
     def epub(self):
-        self.help_close()
         c,p,e=self.page()
         try:
             self.epub_open(p)
