@@ -72,8 +72,9 @@ class Audit:
         try:
             self.hidden_redundant(p)
             p.locator("#menuBtn").click()
-            p.locator('[data-settings-item="help"]').click()
-            p.get_by_role("button",name="Getting started").click()
+            entry=p.locator('[data-inkdos-help-entry]')
+            entry.wait_for(state="visible")
+            entry.click()
             p.locator('[data-inkdos-help-dialog]').wait_for(state="visible")
             self.click(p,e,'[data-inkdos-help-close]',"Close Help")
         finally:c.close()
@@ -88,6 +89,7 @@ class Audit:
             pages=p.get_by_role("button",name="Pages",exact=True)
             if pages.count() and pages.first.is_visible(): pages.first.click()
             p.wait_for_selector(".page-thumb",state="visible")
+            p.wait_for_timeout(900)
             ok=False; last=None
             for _ in range(3):
                 try:
@@ -149,7 +151,15 @@ class Audit:
             self.presentation_table(p)
             p.locator("#pptP2MergeRow").fill("1");p.locator("#pptP2MergeCol").fill("2")
             self.click(p,e,"#pptP2Merge","pptP2Merge")
-            p.wait_for_timeout(200)
+            p.wait_for_timeout(300)
+            cell=p.locator('[data-table-row="0"][data-table-col="0"] .table-cell-content')
+            cell.wait_for(state="visible")
+            cell.dispatch_event("pointerdown")
+            p.wait_for_timeout(180)
+            if p.locator("#pptP2TableToolsPanel").is_hidden():
+                p.locator("#pptP2TableToolsBtn").click()
+                p.locator("#pptP2TableToolsPanel").wait_for(state="visible")
+            p.wait_for_function("()=>!document.getElementById('pptP2Split').disabled",timeout=5000)
             self.click(p,e,"#pptP2Split","pptP2Split")
         finally:c.close()
 
@@ -185,7 +195,10 @@ class Audit:
         c,p,e=self.page()
         try:
             self.open_pdf(p,5)
+            p.evaluate("()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.goToPage(3)")
+            p.wait_for_function("()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage===3")
             self.click(p,e,"#nextPageBtn","nextPageBtn")
+            p.wait_for_function("()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage===4")
             self.click(p,e,"#prevPageBtn","prevPageBtn")
         finally:c.close()
 
@@ -350,7 +363,11 @@ class Audit:
                 if action=="open":self.click(p,e,".epub-nav-open","Open bookmark")
                 elif action=="remove":self.click(p,e,".epub-nav-delete","Remove bookmark")
                 else:
-                    p.locator('[aria-label="Add note to bookmark"]').click();p.locator("#libraryCompose").wait_for(state="visible")
+                    note=p.locator('[aria-label="Add note to bookmark"]')
+                    note.scroll_into_view_if_needed()
+                    p.wait_for_timeout(120)
+                    note.click(timeout=5000)
+                    p.locator("#libraryCompose").wait_for(state="visible")
                     if action=="add-note":self.record("Add note to bookmark","clicked",'[aria-label="Add note to bookmark"]')
                     elif action=="library-cancel":self.click(p,e,"#libraryCancelNote","libraryCancelNote")
                     else:
