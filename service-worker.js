@@ -1,8 +1,8 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.0-186e3ec5e021fe07f7c6';
+const CACHE_NAME='inkdos-v2.6.0-41f4b42984ca5b0f1e83';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
-  "./VERSION.json": "296966f107b7751aaffb146f1d5444193e58c53b41e42e6d3798bc23698dfec3",
+  "./VERSION.json": "e430a336f17084343b60cd4d266f8100fbdf9ce03fe4b0bdc70d02b9f556b892",
   "./apps/documents/app.js": "9b15df6190c50844594d9946e38c846038e04d7ff31c386ae680dfb4778f4a19",
   "./apps/documents/assets/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./apps/documents/engine/d1-docx-extension.js": "9be5351134ed958dbd2e4276259c9f67b627fbcdaf518d76153637d554326c94",
