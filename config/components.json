@@ -7,14 +7,13 @@
       "root": ".",
       "entry": "index.html",
       "formats": [],
-      "ownedPaths": [
-        "index.html",
-        "manifest.webmanifest",
-        "service-worker.js"
+      "ownedPaths": ["index.html", "manifest.webmanifest", "service-worker.js"],
+      "ownedPrefixes": ["assets/"],
+      "smokeTests": [
+        "tests/test_home_density_layout_contract.py",
+        "tests/test_suite_settings_concordance_contract.py"
       ],
-      "ownedPrefixes": [
-        "assets/"
-      ],
+      "browserSmokeTests": ["tests/test_home_density_layout_browser.py"],
       "testGlobs": [
         "tests/test_home*.py",
         "tests/test_suite*.py",
@@ -27,10 +26,13 @@
       "entry": "apps/documents/index.html",
       "formats": ["DOC", "DOCX", "RTF"],
       "ownedPrefixes": ["apps/documents/"],
-      "testGlobs": [
-        "tests/test_doc*.py",
-        "tests/test_documents*.py"
-      ]
+      "smokeTests": [
+        "tests/test_documents_stability_contract.py",
+        "tests/test_doc_d1_contract.py",
+        "tests/test_documents_243_interaction_contract.py"
+      ],
+      "browserSmokeTests": ["tests/test_documents_stability_browser.py"],
+      "testGlobs": ["tests/test_doc*.py", "tests/test_documents*.py"]
     },
     "spreadsheets": {
       "displayName": "Spreadsheets",
@@ -38,6 +40,12 @@
       "entry": "apps/spreadsheets/index.html",
       "formats": ["XLS", "XLSX"],
       "ownedPrefixes": ["apps/spreadsheets/"],
+      "smokeTests": [
+        "tests/test_spreadsheets_stability_contract.py",
+        "tests/test_spreadsheets_delimited_text_contract.py",
+        "tests/test_spreadsheets_xlsx_numeric_text_preservation_contract.py"
+      ],
+      "browserSmokeTests": ["tests/test_spreadsheets_stability_browser.py"],
       "testGlobs": [
         "tests/test_spreadsheets*.py",
         "tests/test_xls*.py",
@@ -50,6 +58,16 @@
       "entry": "apps/presentations/index.html",
       "formats": ["PPT", "PPTX"],
       "ownedPrefixes": ["apps/presentations/"],
+      "smokeTests": [
+        "tests/test_presentations_stability_contract.py",
+        "tests/test_ppt_p1_structure_contract.py",
+        "tests/test_presentations_slideshow_rendering_contract.py",
+        "tests/test_252_presentations_hotfix_contract.py"
+      ],
+      "browserSmokeTests": [
+        "tests/test_presentations_stability_browser.py",
+        "tests/test_presentations_disabled_background_hitbox_browser.py"
+      ],
       "testGlobs": [
         "tests/test_presentations*.py",
         "tests/test_ppt*.py",
@@ -62,9 +80,13 @@
       "entry": "apps/txt/index.html",
       "formats": ["TXT"],
       "ownedPrefixes": ["apps/txt/"],
-      "testGlobs": [
-        "tests/test_txt*.py"
-      ]
+      "smokeTests": [
+        "tests/test_txt_stability_contract.py",
+        "tests/test_txt_unsaved_exit_contract.py",
+        "tests/test_txt_format_expansion_contract.py"
+      ],
+      "browserSmokeTests": ["tests/test_txt_stability_browser.py"],
+      "testGlobs": ["tests/test_txt*.py"]
     },
     "epub": {
       "displayName": "EPUB",
@@ -72,9 +94,13 @@
       "entry": "apps/epub/index.html",
       "formats": ["EPUB"],
       "ownedPrefixes": ["apps/epub/"],
-      "testGlobs": [
-        "tests/test_epub*.py"
-      ]
+      "smokeTests": [
+        "tests/test_epub_stability_contract.py",
+        "tests/test_epub_webkit_deflate_contract.py",
+        "tests/test_epub_xml_encoding_contract.py"
+      ],
+      "browserSmokeTests": ["tests/test_epub_stability_browser.py"],
+      "testGlobs": ["tests/test_epub*.py"]
     },
     "pdf": {
       "displayName": "PDF",
@@ -82,10 +108,13 @@
       "entry": "apps/pdf/index.html",
       "formats": ["PDF"],
       "ownedPrefixes": ["apps/pdf/"],
-      "testGlobs": [
-        "tests/test_pdf*.py",
-        "tests/test_pdf*.cjs"
-      ]
+      "smokeTests": [
+        "tests/test_pdf_stability_contract.py",
+        "tests/test_pdf_toolbar_25_contract.py",
+        "tests/test_pdf_stability_offline_contract.py"
+      ],
+      "browserSmokeTests": ["tests/test_pdf_stability_browser.py"],
+      "testGlobs": ["tests/test_pdf*.py", "tests/test_pdf*.cjs"]
     }
   }
 }
