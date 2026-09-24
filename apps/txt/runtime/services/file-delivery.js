@@ -10,7 +10,7 @@ function capabilities(file){return Object.freeze({fileSystem:typeof g.showSaveFi
 function stamp(base){return Object.assign({requestedAt:new Date().toISOString(),deliveryConfirmed:false},base)}
 async function finishReceipt(base,blob){const bytes=new Uint8Array(await blob.arrayBuffer());return Object.freeze(Object.assign(stamp(base),{bytes:bytes.byteLength,sha256:await sha256(bytes)}))}
 function chooseRoute(file){const c=capabilities(file);const local=(g.location&&g.location.protocol==='file:');if((local||c.preferShareSave)&&c.share)return 'web-share';if(c.fileSystem)return 'file-system-access';if(c.share)return 'web-share';return 'download'}
-async function viaPicker(blob,fileName){let handlePromise;try{handlePromise=g.showSaveFilePicker({suggestedName:safeName(fileName),types:[{description:'Plain text',accept:{'text/plain':['.txt']}}]})}catch(e){throw deliveryError('picker-blocked','Native save picker is unavailable in this host.',e)}
+async function viaPicker(blob,fileName){let handlePromise;try{handlePromise=g.showSaveFilePicker({suggestedName:safeName(fileName),types:[pickerType(blob,fileName)]})}catch(e){throw deliveryError('picker-blocked','Native save picker is unavailable in this host.',e)}
 let handle;try{handle=await handlePromise}catch(e){if(e&&e.name==='AbortError')throw deliveryError('cancelled','Save cancelled.',e);throw deliveryError('picker-blocked','Native save picker was blocked by this host.',e)}
 try{const writable=await handle.createWritable();await writable.write(blob);await writable.close()}catch(e){throw deliveryError('write-failed','The selected file could not be written.',e)}
 return finishReceipt({fileName:safeName(fileName),method:'file-system-access',deliveryConfirmed:true},blob)}
