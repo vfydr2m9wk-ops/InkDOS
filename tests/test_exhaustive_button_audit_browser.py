@@ -9,6 +9,7 @@ from collections import deque
 from pathlib import Path
 from urllib.parse import urljoin
 
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -258,7 +259,21 @@ def audit_app(browser, app, fixtures, active):
                 elif not loc.first.is_enabled():
                     click["status"] = "disabled-on-replay"
                 else:
-                    loc.first.click(timeout=3000, no_wait_after=True)
+                    last_detach = None
+                    for attempt in range(3):
+                        try:
+                            fresh = cpage.locator(path).first
+                            fresh.wait_for(state="visible", timeout=3000)
+                            fresh.click(timeout=3000, no_wait_after=True)
+                            last_detach = None
+                            break
+                        except PlaywrightTimeoutError as exc:
+                            if "detached from the DOM" not in str(exc) or attempt == 2:
+                                raise
+                            last_detach = exc
+                            cpage.wait_for_timeout(180)
+                    if last_detach is not None:
+                        raise last_detach
                     cpage.wait_for_timeout(180)
                     after = button_snapshot(cpage)
                     after_sig = visible_signature(after)
