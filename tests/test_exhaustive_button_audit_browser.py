@@ -268,9 +268,11 @@ def audit_app(browser, app, fixtures, active):
                             last_detach = None
                             break
                         except PlaywrightTimeoutError as exc:
-                            if "detached from the DOM" not in str(exc) or attempt == 2:
+                            if "detached from the DOM" not in str(exc):
                                 raise
                             last_detach = exc
+                            if attempt == 2:
+                                break
                             cpage.wait_for_timeout(180)
                     if last_detach is not None:
                         delivered = cpage.eval_on_selector(path, """el => {
