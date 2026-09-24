@@ -46,7 +46,12 @@ def main():
     parser.add_argument(
         "--browser",
         action="store_true",
-        help="Include component browser tests.",
+        help="Include browser smoke tests, or all browser tests with --full.",
+    )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Run the complete component test set instead of the smoke gate.",
     )
     parser.add_argument(
         "--scope-only",
@@ -107,6 +112,8 @@ def main():
         return
 
     test_cmd = [sys.executable, "scripts/agent_test.py", args.component]
+    if args.full:
+        test_cmd.append("--full")
     if args.browser:
         test_cmd.append("--browser")
     subprocess.run(test_cmd, cwd=ROOT, check=True)
