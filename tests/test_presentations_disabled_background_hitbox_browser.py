@@ -56,10 +56,30 @@ def main():
             assert zoom.is_visible() and zoom.is_enabled()
             zoom.click(timeout=2500)
             page.wait_for_selector("#zoomPopover:not([hidden])")
+            page.keyboard.press("Escape")
 
             right = page.get_by_role("button", name="Scroll toolbar right")
             assert right.is_visible() and right.is_enabled()
             right.click(timeout=2500)
+
+            # Once a presentation becomes active, the background picker is
+            # enabled. Its transparent input must remain contained by its
+            # visible wrapper and must not overlap unrelated controls.
+            page.locator("#startNew").click()
+            page.wait_for_function("() => document.getElementById('startState')?.hidden === true")
+            assert not bg.is_disabled()
+            assert bg.evaluate("el => !!el.closest('.ppt-p1-color-control')")
+            assert bg.evaluate("el => el.parentElement?.classList.contains('ppt-p1-color-control')")
+
+            zoom.click(timeout=2500)
+            page.wait_for_selector("#zoomPopover:not([hidden])")
+            page.keyboard.press("Escape")
+
+            present = page.locator("#presentBtn")
+            assert present.is_visible() and present.is_enabled()
+            present.click(timeout=2500)
+            page.wait_for_selector("#presentOverlay:not([hidden])")
+            page.locator("[data-present-exit]").click(timeout=2500)
 
             assert not errors, errors
             context.close()
