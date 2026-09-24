@@ -35,3 +35,17 @@
 .inkdos-density-icon{width:14px;height:14px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 #appearanceMenu .inkdos-density-label{padding:4px 10px 2px}
 @media(max-width:420px){.home-density-control{grid-template-columns:1fr;justify-content:stretch}.home-density-control button{justify-content:flex-start}}
+
+/* Keep native form controls aligned with the workspace-selected appearance.
+   WebKit/XeOS can otherwise retain the host system scheme for native selects. */
+:root[data-appearance-resolved="light"] button,
+:root[data-appearance-resolved="light"] input,
+:root[data-appearance-resolved="light"] select,
+:root[data-appearance-resolved="light"] textarea,
+:root[data-appearance-resolved="light"] option{color-scheme:light}
+:root[data-appearance-resolved="dark"] button,
+:root[data-appearance-resolved="dark"] input,
+:root[data-appearance-resolved="dark"] select,
+:root[data-appearance-resolved="dark"] textarea,
+:root[data-appearance-resolved="dark"] option{color-scheme:dark}
+
