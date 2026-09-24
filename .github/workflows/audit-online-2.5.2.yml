@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   online-render-audit:
-    name: Online audit (\${{ matrix.browser }})
+    name: Online audit (${{ matrix.browser }})
     runs-on: ubuntu-22.04
     timeout-minutes: 55
     strategy:
@@ -40,21 +40,21 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
 
       - name: Install Playwright browser
-        run: python -m playwright install --with-deps \${{ matrix.browser }}
+        run: python -m playwright install --with-deps ${{ matrix.browser }}
 
       - name: Audit published GitHub Pages
         env:
           INKDOS_ONLINE_BASE: https://vfydr2m9wk-ops.github.io/InkDOS/
-          INKDOS_AUDIT_BROWSER: \${{ matrix.browser }}
-          INKDOS_CLICK_SWEEP: \${{ matrix.click_sweep }}
-          INKDOS_AUDIT_OUT: audit-online-\${{ matrix.browser }}
+          INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
+          INKDOS_CLICK_SWEEP: ${{ matrix.click_sweep }}
+          INKDOS_AUDIT_OUT: audit-online-${{ matrix.browser }}
         run: python tests/test_online_pages_visual_matrix_browser.py
 
       - name: Upload audit evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: InkDOS-2.5.2-online-audit-\${{ matrix.browser }}
-          path: audit-online-\${{ matrix.browser }}/
+          name: InkDOS-2.5.2-online-audit-${{ matrix.browser }}
+          path: audit-online-${{ matrix.browser }}/
           if-no-files-found: warn
           retention-days: 14
