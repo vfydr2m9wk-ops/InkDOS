@@ -49,6 +49,8 @@ jobs:
         run: python tests/test_ui_density_stability_browser.py
       - name: Run workspace-local appearance regression
         run: python tests/test_workspace_appearance_isolation_browser.py
+      - name: Run launchQueue file routing regression
+        run: python tests/test_web_file_launch_browser.py
       - name: Run Spreadsheets fill/clear regression
         run: python tests/test_spreadsheets_243_fill_clear_browser.py
       - name: Run Plain Text multi-instance recovery isolation
