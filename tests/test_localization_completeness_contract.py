@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -229,6 +230,17 @@ def locale_keys(path: Path) -> set[str]:
     return {key.replace("\\'", "'") for key, _ in re.findall(r"'((?:\\'|[^'])*)':'((?:\\'|[^'])*)'", body)}
 
 
+def validate_locale_syntax(locale_files: list[Path]) -> None:
+    for path in locale_files:
+        syntax = subprocess.run(
+            ["node", "--check", str(path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        assert syntax.returncode == 0, f"invalid locale JavaScript: {path.name}\n{syntax.stderr}"
+
+
 def main() -> None:
     runtime = read("shared/localization/ui-localization.js")
     assert "[data-inkdos-i18n-root]" in runtime
@@ -266,6 +278,7 @@ def main() -> None:
 
     locale_files = sorted(LOCALE_DIR.glob("*.js"))
     assert locale_files
+    validate_locale_syntax(locale_files)
     keysets = {path.name: locale_keys(path) for path in locale_files}
     reference = next(iter(keysets.values()))
     for name, keys in keysets.items():
