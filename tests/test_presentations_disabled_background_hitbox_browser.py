@@ -56,6 +56,7 @@ def main():
             assert zoom.is_visible() and zoom.is_enabled()
             zoom.click(timeout=2500)
             page.wait_for_selector("#zoomPopover:not([hidden])")
+            page.keyboard.press("Escape")
 
             right = page.get_by_role("button", name="Scroll toolbar right")
             assert right.is_visible() and right.is_enabled()
