@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import re
 import shutil
+import sys
 import tempfile
 from pathlib import Path
 
@@ -77,6 +78,14 @@ def stage(destination: Path) -> int:
         shutil.rmtree(destination)
     _copy_runtime(destination)
     count = _inject_bridge(destination)
+    # HTML now includes the desktop bridge: bind offline bytes to this distribution.
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from build_offline_snapshot import build
+    worker = destination / "service-worker.js"
+    text = worker.read_text(encoding="utf-8")
+    if '"./desktop-host.js"' not in text:
+        worker.write_text(text.replace("const APP_SHELL=[", 'const APP_SHELL=[\n  "./desktop-host.js",', 1), encoding="utf-8")
+    build(destination)
     _validate(destination)
     return count
 

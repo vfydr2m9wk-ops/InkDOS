@@ -5,6 +5,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 CMDS = [
+    [sys.executable, "scripts/build_offline_snapshot.py", "--check"],
+    ["node", "tests/test_offline_snapshot.cjs"],
     [sys.executable, "scripts/check_no_legacy_runtime.py"],
     [sys.executable, "scripts/build_txt_bundle.py", "--check"],
     [sys.executable, "tests/test_csp_contract.py"],
