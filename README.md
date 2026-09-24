@@ -20,6 +20,8 @@ Each workspace can be opened directly. Home is a convenient suite entry point, n
 
 InkDOS 2.5.2 is the stable fallback point. Windows users can install or update with the signed NSIS installer (`InkDOS_2.5.2_x64-setup.exe`). macOS uses DMG and Linux uses AppImage. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
 
+Release page: https://github.com/vfydr2m9wk-ops/InkDOS/releases/tag/v2.5.2
+
 Stable releases are tied to immutable `vX.Y.Z` tags so source, installers, signatures and updater metadata remain attributable to one versioned commit. See `docs/QA-BASELINE-2.5.2.md` for the compact validation record retained for the current baseline.
 
 ## Workspaces
