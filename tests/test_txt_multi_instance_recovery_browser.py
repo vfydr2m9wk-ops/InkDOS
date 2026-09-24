@@ -39,7 +39,7 @@ def recovery_key(page, errors: list[str]) -> str:
           tabId: sessionStorage.getItem('inkdos2:txt:recovery-tab')
         })""")
         raise AssertionError({"runtime": state, "errors": errors})
-    key = page.evaluate("() => globalThis.InkDOS2.TxtAppDebug.recoveryKey")
+    key = page.evaluate("async () => { await globalThis.InkDOS2.TxtAppDebug.recoveryReady(); return globalThis.InkDOS2.TxtAppDebug.recoveryKey(); }")
     assert isinstance(key, str) and key, {"key": key, "errors": errors}
     return key
 
@@ -63,14 +63,26 @@ def main() -> None:
 
             errors: list[str] = []
             first = context.new_page()
-            second = context.new_page()
-            for label, page in (("first", first), ("second", second)):
-                page.on("pageerror", lambda exc, label=label: errors.append(f"{label} pageerror: {exc}"))
-                page.on("console", lambda msg, label=label: errors.append(f"{label} console.error: {msg.text}") if msg.type == "error" else None)
+            first.on("pageerror", lambda exc: errors.append(f"first pageerror: {exc}"))
+            first.on("console", lambda msg: errors.append(f"first console.error: {msg.text}") if msg.type == "error" else None)
             first.goto(BASE + "/apps/txt/", wait_until="load")
-            second.goto(BASE + "/apps/txt/", wait_until="load")
-
             first_key = recovery_key(first, errors)
+
+            # window.open inherits same-origin sessionStorage in the new browsing
+            # context. The recovery identity handshake must detect that clone
+            # and fork the second live instance before either writes a checkpoint.
+            with context.expect_page() as opened:
+                first.evaluate("() => window.open('/apps/txt/', '_blank')")
+            second = opened.value
+            second.on("pageerror", lambda exc: errors.append(f"second pageerror: {exc}"))
+            second.on("console", lambda msg: errors.append(f"second console.error: {msg.text}") if msg.type == "error" else None)
+            second.wait_for_load_state("load")
+            inherited = second.evaluate("() => sessionStorage.getItem('inkdos2:txt:recovery-tab')")
+            assert inherited == first_key.split('txt:tab:', 1)[1], {
+                "first": first_key,
+                "inherited": inherited,
+                "reason": "test precondition: opener tab must clone the original sessionStorage identity",
+            }
             second_key = recovery_key(second, errors)
             assert first_key.startswith("txt:tab:"), first_key
             assert second_key.startswith("txt:tab:"), second_key
