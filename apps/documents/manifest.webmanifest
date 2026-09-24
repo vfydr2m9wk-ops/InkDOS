@@ -1,7 +1,7 @@
 {
   "name": "InkDOS Documents",
   "short_name": "Documents",
-  "id": "./",
+  "id": "/inkdos/workspaces/documents",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

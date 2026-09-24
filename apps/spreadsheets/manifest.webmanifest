@@ -1,7 +1,7 @@
 {
   "name": "InkDOS Spreadsheets",
   "short_name": "Spreadsheets",
-  "id": "./",
+  "id": "/inkdos/workspaces/spreadsheets",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

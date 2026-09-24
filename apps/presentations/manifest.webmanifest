@@ -1,7 +1,7 @@
 {
   "name": "InkDOS Presentations",
   "short_name": "Presentations",
-  "id": "./",
+  "id": "/inkdos/workspaces/presentations",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -162,7 +162,7 @@ def validate_app_manifest(app, errors):
     expected = {
         "name": expected_name,
         "short_name": expected_short,
-        "id": "./",
+        "id": f"/inkdos/workspaces/{app}",
         "start_url": "./index.html",
         "scope": "./",
         "display": "standalone",

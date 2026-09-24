@@ -55,9 +55,21 @@ def main() -> None:
     }
 
     runtime_reference = None
+    manifest_ids: set[str] = set()
     for app, expected in EXPECTED.items():
         root = ROOT / "apps" / app
         manifest = json.loads((root / "manifest.webmanifest").read_text(encoding="utf-8"))
+
+        manifest_id = manifest.get("id")
+        expected_id = f"/inkdos/workspaces/{app}"
+        if manifest_id != expected_id:
+            raise AssertionError(f"{app}: PWA id must be stable and workspace-specific: {manifest_id!r} != {expected_id!r}")
+        if manifest_id in manifest_ids:
+            raise AssertionError(f"{app}: PWA id collides with another workspace: {manifest_id!r}")
+        manifest_ids.add(manifest_id)
+        if manifest.get("start_url") != "./index.html" or manifest.get("scope") != "./":
+            raise AssertionError(f"{app}: app-local PWA start_url/scope changed unexpectedly")
+
         handled = handler_extensions(manifest)
         if handled != expected:
             raise AssertionError(f"{app}: manifest formats mismatch: {sorted(handled)} != {sorted(expected)}")

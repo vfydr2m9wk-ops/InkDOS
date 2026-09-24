@@ -1,7 +1,7 @@
 {
   "name": "InkDOS PDF",
   "short_name": "PDF",
-  "id": "./",
+  "id": "/inkdos/workspaces/pdf",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
