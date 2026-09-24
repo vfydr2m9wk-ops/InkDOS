@@ -205,7 +205,13 @@ def main():
                     record(report["apps"], app, "active", page)
 
                 for stage, selector in SURFACES[app]:
-                    reset_transients(page)
+                    # Re-enter a clean page state for every transient surface so
+                    # one drawer/popover cannot intercept the next surface's click.
+                    page.goto(urljoin(BASE, rel), wait_until="load", timeout=30000)
+                    page.wait_for_timeout(180)
+                    if app != "home":
+                        prepare_active(app, page, fixtures)
+                        page.wait_for_timeout(180)
                     opened = click_if(page, selector)
                     if opened:
                         report["apps"][app]["surfaceOpen"].append(stage)
