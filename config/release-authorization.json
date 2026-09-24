@@ -1,9 +1,9 @@
 {
-  "version": "2.6.1",
+  "version": "2.6.2",
   "windowsDeviceUpgradeValidated": false,
   "windowsDeviceUpgradeWaived": true,
-  "explicitUserAuthorization": true,
+  "explicitUserAuthorization": false,
   "evidence": "",
   "evidenceSha256": "",
-  "waiverReason": "User explicitly authorized publication of InkDOS 2.6.1 in this conversation on 2026-09-24. The previously documented pre-publication physical Windows upgrade waiver for the 2.6 release line remains in force; post-launch Windows validation remains required."
+  "waiverReason": "InkDOS 2.6.2 is currently a web/PWA beta line with native installers disabled. Stable native publication requires separate explicit authorization and validation/waiver review."
 }
