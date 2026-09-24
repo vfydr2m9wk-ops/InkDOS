@@ -43,6 +43,12 @@ jobs:
         run: python tests/test_documents_243_interaction_browser.py
       - name: Run Home Windows-scale layout harness
         run: python tests/test_home_density_layout_browser.py
+      - name: Run workspace-local settings regression
+        run: python tests/test_localization_settings_browser.py
+      - name: Run workspace-local density regression
+        run: python tests/test_ui_density_stability_browser.py
+      - name: Run workspace-local appearance regression
+        run: python tests/test_workspace_appearance_isolation_browser.py
       - name: Run Spreadsheets fill/clear regression
         run: python tests/test_spreadsheets_243_fill_clear_browser.py
       - name: Run Plain Text multi-instance recovery isolation
