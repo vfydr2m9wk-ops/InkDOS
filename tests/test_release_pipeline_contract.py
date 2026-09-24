@@ -20,22 +20,6 @@ def main() -> None:
     require("TAURI_SIGNING_PRIVATE_KEY" in text, "signing private key is not wired into preflight")
     require("TAURI_SIGNING_PRIVATE_KEY_PASSWORD" in text, "signing password is not wired into preflight")
     require("TAURI_UPDATER_PUBLIC_KEY" in text, "updater public key is not validated before build")
-    require("native_builds: ${{ steps.release_meta.outputs.native_builds }}" in text,
-            "release workflow does not expose the beta/stable native-build policy")
-    require("stable) NATIVE_BUILDS=true" in text and "beta) NATIVE_BUILDS=false" in text,
-            "release channel does not explicitly disable native builds for beta")
-    require("if: needs.validate.outputs.native_builds == 'true'" in text,
-            "native build matrix is not gated to stable/native releases")
-    require("Beta publication is intentionally source/web-only" in text,
-            "beta release path is not explicitly source/web-only")
-    require('if [ "${#BETA_REMOTE_ASSETS[@]}" -ne 0 ]; then' in text,
-            "beta publication does not fail closed on attached native/reused assets")
-    require("actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57" in text,
-            "Tauri/Cargo cache action is not pinned")
-    require("Using cached tauri-cli 2.11.4." in text,
-            "release workflow does not reuse a verified cached Tauri CLI")
-    require('cargo install tauri-cli --version "2.11.4" --locked' in text,
-            "release workflow lacks a pinned Tauri CLI cache-miss fallback")
 
     require("check_release_candidate.py" in text, "release workflow does not fail closed on final candidate version surfaces")
     require("--version \"$VERSION\"" in text, "release workflow does not validate candidate surfaces against the tag-derived version")

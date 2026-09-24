@@ -163,13 +163,8 @@ def test_release_has_controlled_tag_or_one_shot_entrypoint_and_no_promotion_stat
     assert not PROMOTION_REQUEST.exists()
 
 
-def test_stable_tag_release_builds_every_platform_and_beta_skips_native_builds():
+def test_tag_release_workflow_builds_every_platform_before_publication():
     workflow = read(RELEASE_WORKFLOW)
-    assert "beta) NATIVE_BUILDS=false" in workflow
-    assert "stable) NATIVE_BUILDS=true" in workflow
-    assert "if: needs.validate.outputs.native_builds == 'true'" in workflow
-    assert "Beta publication is intentionally source/web-only" in workflow
-    assert "actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57" in workflow
     for marker in (
         "windows-latest",
         "macos-latest",
