@@ -29,7 +29,7 @@ WORKSPACES = (
 NEW_PROBES = {
     "documents": (
         "#startNew",
-        "() => document.getElementById('startState').hidden && document.querySelectorAll('#pagesHost .doc-page').length >= 1",
+        "() => document.getElementById('welcome')?.hidden === true && document.querySelectorAll('#pagesHost .doc-page').length >= 1",
     ),
     "spreadsheets": (
         "#startNew",
@@ -98,7 +98,7 @@ def semantic_probe(page, name: str):
         return page.evaluate(
             """() => ({
                 pages: document.querySelectorAll('#pagesHost .doc-page').length,
-                active: !document.getElementById('startState').hidden,
+                welcomeHidden: document.getElementById('welcome')?.hidden === true,
                 undoDisabled: document.getElementById('undoBtn')?.disabled ?? null,
                 redoDisabled: document.getElementById('redoBtn')?.disabled ?? null,
             })"""
