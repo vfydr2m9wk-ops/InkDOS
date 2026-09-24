@@ -184,10 +184,10 @@ def main() -> None:
 
             # A 2.5.2 suite-level preference is migrated once into a workspace key.
             migration = browser.new_context(viewport={"width": 1280, "height": 820})
-            migration.add_init_script("""() => {
+            migration.add_init_script("""(() => {
               localStorage.setItem('inkdos2:language','pt-BR');
               localStorage.setItem('inkdos2:ui-density','mobile');
-            }""")
+            })();""")
             migrated = migration.new_page()
             migrated.goto(BASE + "/apps/presentations/index.html?suite=1", wait_until="load")
             migrated.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
