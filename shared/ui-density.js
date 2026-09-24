@@ -2,11 +2,11 @@
 const SUITE_STORAGE_KEY='inkdos2:ui-density',VALID=new Set(['auto','desktop','mobile']),THRESHOLD=900,POINTER_QUERY='(hover: hover) and (pointer: fine)',ATTR='data-ui-density',PREF_ATTR='data-ui-density-preference',APPS=new Set(['documents','spreadsheets','presentations','pdf','epub','txt']);
 const doc=typeof document!=='undefined'?document:null;
 function workspaceContext(){let parts=[];try{parts=decodeURIComponent(root.location?.pathname||'').split('/').filter(Boolean)}catch(_){}return parts.find(part=>APPS.has(part))||null}
-const WORKSPACE=workspaceContext(),LEGACY_WORKSPACE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':null,STORAGE_KEY=SUITE_STORAGE_KEY;
+const WORKSPACE=workspaceContext(),STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY,LEGACY_SUITE_KEY=WORKSPACE?SUITE_STORAGE_KEY:null;
 function normalize(value){return VALID.has(value)?value:'auto'}
 function currentEnvironment(){const width=doc?.documentElement?.clientWidth||Number(root.innerWidth)||0;let finePointer=false;try{finePointer=typeof root.matchMedia==='function'&&root.matchMedia(POINTER_QUERY).matches}catch(_){}return{width,finePointer}}
 function resolve(value='auto',environment={}){const preference=normalize(value);if(preference==='desktop'||preference==='mobile')return preference;const fallback=currentEnvironment(),width=Number(environment.width??fallback.width)||0,finePointer=environment.finePointer==null?!!fallback.finePointer:!!environment.finePointer;return width>=THRESHOLD&&finePointer?'desktop':'mobile'}
-function read(){try{const saved=root.localStorage?.getItem(STORAGE_KEY);if(saved!=null)return normalize(saved);if(LEGACY_WORKSPACE_KEY){const legacy=root.localStorage?.getItem(LEGACY_WORKSPACE_KEY);if(legacy!=null){const migrated=normalize(legacy);root.localStorage?.setItem(STORAGE_KEY,migrated);return migrated}}}catch(_){}return'auto'}
+function read(){try{const saved=root.localStorage?.getItem(STORAGE_KEY);if(saved!=null)return normalize(saved);if(LEGACY_SUITE_KEY){const legacy=root.localStorage?.getItem(LEGACY_SUITE_KEY);if(legacy!=null){const migrated=normalize(legacy);root.localStorage?.setItem(STORAGE_KEY,migrated);return migrated}}}catch(_){}return'auto'}
 let preference=read(),effective=resolve(preference);
 function apply(value=preference,environment){preference=normalize(value);effective=resolve(preference,environment||currentEnvironment());const element=doc?.documentElement;if(element){element.setAttribute(ATTR,effective);element.setAttribute(PREF_ATTR,preference)}syncControls();return effective}
 function write(value){try{root.localStorage?.setItem(STORAGE_KEY,value)}catch(_){}}
@@ -30,5 +30,5 @@ if(typeof root.addEventListener==='function'){
   root.addEventListener('storage',event=>{if(event.key!==STORAGE_KEY)return;preference=normalize(event.newValue);apply(preference);announce()});
 }
 try{if(typeof root.matchMedia==='function'){const pointerQuery=root.matchMedia(POINTER_QUERY);const onPointerChange=()=>refreshAutoDensity();if(typeof pointerQuery.addEventListener==='function')pointerQuery.addEventListener('change',onPointerChange);else if(typeof pointerQuery.addListener==='function')pointerQuery.addListener(onPointerChange)}}catch(_){}
-root.InkDOSUiDensity=Object.freeze({STORAGE_KEY,SUITE_STORAGE_KEY,LEGACY_WORKSPACE_KEY,THRESHOLD,POINTER_QUERY,resolve,apply,set,installControl,get workspace(){return WORKSPACE},get preference(){return preference},get effective(){return effective}});
+root.InkDOSUiDensity=Object.freeze({STORAGE_KEY,SUITE_STORAGE_KEY,LEGACY_SUITE_KEY,THRESHOLD,POINTER_QUERY,resolve,apply,set,installControl,get workspace(){return WORKSPACE},get preference(){return preference},get effective(){return effective}});
 })(globalThis);
