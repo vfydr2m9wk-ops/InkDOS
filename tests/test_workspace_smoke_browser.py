@@ -93,8 +93,10 @@ def main():
                 errors = []
                 page.on("pageerror", lambda exc, bucket=errors: bucket.append(str(exc)))
                 page.goto(f"{BASE}/apps/{app}/", wait_until="load")
-                positive_box(page, toolbar)
+                # Validate the editing shell after entering a document/workspace. Some
+                # workspaces intentionally keep editing chrome inactive at start state.
                 activate_or_assert_start_state(page, surface)
+                positive_box(page, toolbar)
                 assert not errors, (app, errors)
                 if app == "presentations":
                     presentation_probe(page)
