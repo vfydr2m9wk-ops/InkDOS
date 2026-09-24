@@ -27,6 +27,13 @@ assert spec and spec.loader
 spec.loader.exec_module(stateful)
 
 PAGES = stateful.PAGES
+APP_FILTER = os.environ.get("INKDOS_BUTTON_AUDIT_APP", "").strip().lower()
+if APP_FILTER:
+    if APP_FILTER not in PAGES:
+        raise RuntimeError(f"Unknown INKDOS_BUTTON_AUDIT_APP={APP_FILTER}")
+    AUDIT_APPS = (APP_FILTER,)
+else:
+    AUDIT_APPS = tuple(PAGES)
 
 
 def make_fixtures(td: Path):
@@ -325,7 +332,7 @@ def main():
         report = {"base": BASE, "apps": {}, "summary": {}}
         with sync_playwright() as pw:
             browser = pw.chromium.launch(headless=True)
-            for app in PAGES:
+            for app in AUDIT_APPS:
                 runs = [audit_app(browser, app, fixtures, active=False)]
                 if app != "home":
                     runs.append(audit_app(browser, app, fixtures, active=True))
