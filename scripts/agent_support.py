@@ -46,17 +46,22 @@ def normalize(path: Path | str):
     return Path(path).as_posix().lstrip("./")
 
 
-def matching_tests(name: str, include_browser: bool = False):
+def matching_tests(name: str, include_browser: bool = False, full: bool = False):
     cfg = component(name)
+    if not full:
+        tests = list(cfg.get("smokeTests", []))
+        if include_browser:
+            tests.extend(cfg.get("browserSmokeTests", []))
+        return sorted(dict.fromkeys(normalize(path) for path in tests))
+
     matches = set()
     for pattern in cfg.get("testGlobs", []):
         for path in ROOT.glob(pattern):
             if not path.is_file():
                 continue
-            rel = normalize(path.relative_to(ROOT))
             if not include_browser and "_browser" in path.name:
                 continue
-            matches.add(rel)
+            matches.add(normalize(path.relative_to(ROOT)))
     return sorted(matches)
 
 
@@ -70,6 +75,9 @@ def is_owned_path(name: str, rel_path: str):
             return True
     for pattern in cfg.get("testGlobs", []):
         if fnmatch(rel_path, pattern):
+            return True
+    for path in cfg.get("smokeTests", []) + cfg.get("browserSmokeTests", []):
+        if rel_path == normalize(path):
             return True
     return False
 
