@@ -13,7 +13,7 @@ function create({session,history,selection,surface,panel,editor,chrome}={}){cons
  function organizeToolbar(){const bar=$('editbar'),slides=$('pptToolbarSlides'),history=$('pptToolbarHistory'),insert=$('pptToolbarInsert'),text=$('pptToolbarText'),style=$('pptToolbarObjectStyle'),view=$('pptToolbarView');if(!bar||!slides||!history||!insert||!text||!style||!view)return false;
   let base=$('pptToolbarBase');if(!base){base=document.createElement('div');base.id='pptToolbarBase';base.className='tool-group';base.setAttribute('role','group');base.setAttribute('aria-label','Presentation editing')}
   let secondary=$('pptToolbarSecondary');if(!secondary){secondary=document.createElement('div');secondary.id='pptToolbarSecondary';secondary.className='tool-group';secondary.setAttribute('role','group');secondary.setAttribute('aria-label','Slide navigation and presentation')}
-  const move=(id,target)=>{const n=$(id);if(n)target.appendChild(n)};
+  const move=(id,target)=>{const n=$(id);if(!n)return;const node=n.classList?.contains('ppt-p1-color-input')?(n.closest('.ppt-p1-color-control')||n):n;target.appendChild(node)};
   for(const id of ['addSlideBtn','undoBtn','redoBtn','pptP1PrintBtn','pptP1FormatPainter','zoomMenuBtn','pptP1SelectBtn','insertTextBtn','pptP1ImageBtn','pptP1Shape','pptP1LineBtn','pptP2CommentBtn','pptP1Background','pptP1Layout','pptP2ThemeBtn','pptP2Transition'])move(id,base);
   for(const id of ['fontFamily','fontSize','boldBtn','italicBtn','underlineBtn','pptP1TextColor','alignSelect','pptP1Bullets'])move(id,text);
   for(const id of ['pptP1Fill','pptP1Border','pptP1BorderWidth','pptP1BorderStyle','pptP1Arrange'])move(id,style);
