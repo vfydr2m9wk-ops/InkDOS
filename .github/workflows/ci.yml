@@ -66,3 +66,115 @@ jobs:
           retention-days: 14
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
+
+
+  cleanup-deployments:
+    name: One-shot legacy deployment cleanup
+    needs: integration-validation
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[deployments-cleanup]') }}
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Prune inactive legacy deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          CURRENT_SHA: ${{ github.sha }}
+          BASELINE_SHA: "3470607f440d34b361aff4a790acec442d84fb56"
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import time
+          import urllib.error
+          import urllib.request
+
+          token = os.environ["GH_TOKEN"]
+          repo = os.environ["REPOSITORY"]
+          current_sha = os.environ["CURRENT_SHA"]
+          baseline_sha = os.environ["BASELINE_SHA"]
+          api = f"https://api.github.com/repos/{repo}"
+
+          def request(url, method="GET", payload=None):
+              body = None if payload is None else json.dumps(payload).encode("utf-8")
+              headers = {
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+                  "User-Agent": "inkdos-deployment-cleanup",
+              }
+              if body is not None:
+                  headers["Content-Type"] = "application/json"
+              req = urllib.request.Request(url, data=body, method=method, headers=headers)
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  raw = response.read()
+                  return json.loads(raw) if raw else None
+
+          def deployments():
+              result = []
+              page = 1
+              while True:
+                  batch = request(f"{api}/deployments?per_page=100&page={page}") or []
+                  result.extend(batch)
+                  if len(batch) < 100:
+                      return result
+                  page += 1
+
+          # Give the concurrent Pages workflow a chance to register the
+          # deployment for this maintenance commit.
+          deadline = time.time() + 120
+          items = deployments()
+          while time.time() < deadline and not any(d.get("sha") == current_sha for d in items):
+              time.sleep(5)
+              items = deployments()
+
+          newest_by_environment = {}
+          for item in items:
+              env = item.get("environment") or "(default)"
+              previous = newest_by_environment.get(env)
+              if previous is None or int(item["id"]) > int(previous["id"]):
+                  newest_by_environment[env] = item
+
+          keep = {int(item["id"]) for item in newest_by_environment.values()}
+          for item in items:
+              if item.get("sha") in {current_sha, baseline_sha}:
+                  keep.add(int(item["id"]))
+
+          candidates = [item for item in items if int(item["id"]) not in keep]
+          print(f"Deployments discovered: {len(items)}")
+          print(f"Deployments retained: {len(keep)}")
+          print(f"Legacy deployments selected: {len(candidates)}")
+
+          deleted = []
+          failures = []
+          for item in candidates:
+              did = int(item["id"])
+              env = item.get("environment")
+              payload = {
+                  "state": "inactive",
+                  "description": "Pruned during InkDOS post-2.5.2 repository cleanup",
+              }
+              if env:
+                  payload["environment"] = env
+              try:
+                  request(f"{api}/deployments/{did}/statuses", method="POST", payload=payload)
+              except urllib.error.HTTPError as exc:
+                  # A deployment may already be inactive. Continue to the
+                  # deletion attempt and record only if deletion also fails.
+                  print(f"STATUS {did}: HTTP {exc.code}")
+
+              try:
+                  request(f"{api}/deployments/{did}", method="DELETE")
+                  deleted.append(did)
+                  print(f"DELETE deployment={did} environment={env} sha={item.get('sha')}")
+              except urllib.error.HTTPError as exc:
+                  failures.append((did, exc.code, exc.read().decode("utf-8", "replace")[:400]))
+                  print(f"FAILED deployment={did}: HTTP {exc.code}")
+
+          print(f"Deployments deleted: {len(deleted)}")
+          print(f"Deployment deletion failures: {len(failures)}")
+          if candidates and not deleted and failures:
+              raise SystemExit(f"No legacy deployments could be deleted: {failures[:5]}")
+          PY
