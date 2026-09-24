@@ -14,5 +14,35 @@
       "purpose": "any",
       "sizes": "any"
     }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "text/plain": [
+          ".txt",
+          ".md",
+          ".markdown",
+          ".log",
+          ".ini",
+          ".cfg",
+          ".conf",
+          ".toml",
+          ".properties"
+        ],
+        "application/xml": [
+          ".xml"
+        ],
+        "application/json": [
+          ".json",
+          ".jsonl",
+          ".ndjson"
+        ],
+        "application/yaml": [
+          ".yaml",
+          ".yml"
+        ]
+      }
+    }
   ]
 }
