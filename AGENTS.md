@@ -75,6 +75,8 @@ Use `--browser` when the change affects rendered/interactive behavior and the lo
 - Do not bump versions on ordinary repair branches.
 - Do not rewrite changelogs repeatedly during intermediate repair work.
 - Stable baselines belong in immutable tags/releases, not permanent release branches.
+- Product/runtime changes and release-control/version changes are separate transactions; do not mix them in one PR.
+- A published tag is immutable. Post-release process work proceeds from main and must not rewrite the tagged baseline.
 - Branches are temporary work surfaces and should be removed after their work is integrated.
 - A global version may contain a change to only one application; unchanged applications should remain byte-stable whenever practical.
 
