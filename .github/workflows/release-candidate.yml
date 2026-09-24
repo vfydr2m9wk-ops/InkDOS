@@ -57,6 +57,10 @@ jobs:
           BROWSER: chromium
           INKDOS_STATEFUL_CYCLES: "3"
         run: python scripts/run_behavioral_stability_validation.py
+      - name: Run app Help button regression
+        env:
+          BROWSER: chromium
+        run: python tests/test_app_help_stability_browser.py
       - name: Upload behavioral stability report
         if: always()
         uses: actions/upload-artifact@v4
