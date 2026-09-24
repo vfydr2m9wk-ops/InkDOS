@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: read
+  actions: write
+  deployments: write
 
 concurrency:
   group: inkdos-ci-${{ github.event.pull_request.number || github.ref }}
@@ -66,3 +68,8 @@ jobs:
           retention-days: 14
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
+      - name: One-shot post-2.5.2 Actions and deployment cleanup
+        if: ${{ github.event_name == 'push' && hashFiles('config/actions-cleanup-20260924.json') != '' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/one_shot_cleanup_actions.py
