@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.6.2 Beta — 2026-09-24
+
+- Harden XeOS/PWA file handoff across all six workspaces by registering the launchQueue bridge before deferred app boot and declaring focus-existing launch behavior in each app manifest.
+- Keep native form controls aligned with the workspace-selected light/dark appearance instead of leaking the host system color scheme into selects and buttons.
+- Render modern DrawingML images anchored in DOCX headers and footers, including centered artwork, without embedding private test documents in the repository.
+- Make beta releases web/PWA-only with no Windows, macOS or Linux installer builds; stable releases retain the full signed native build matrix.
+- Cache the pinned Tauri CLI, Cargo registry and Rust target state for stable release runs, with a pinned install fallback on cache miss.
+
 ## 2.6.1 — 2026-09-24
 
 - Promote the 2.6 line to the stable release channel after final direct-app/PWA validation.
