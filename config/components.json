@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "versionSource": "VERSION.json",
+  "components": {
+    "hub": {
+      "displayName": "InkDOS Home",
+      "root": ".",
+      "entry": "index.html",
+      "formats": [],
+      "ownedPaths": [
+        "index.html",
+        "manifest.webmanifest",
+        "service-worker.js"
+      ],
+      "ownedPrefixes": [
+        "assets/"
+      ],
+      "testGlobs": [
+        "tests/test_home*.py",
+        "tests/test_suite*.py",
+        "tests/test_ui_density*.py"
+      ]
+    },
+    "documents": {
+      "displayName": "Documents",
+      "root": "apps/documents",
+      "entry": "apps/documents/index.html",
+      "formats": ["DOC", "DOCX", "RTF"],
+      "ownedPrefixes": ["apps/documents/"],
+      "testGlobs": [
+        "tests/test_doc*.py",
+        "tests/test_documents*.py"
+      ]
+    },
+    "spreadsheets": {
+      "displayName": "Spreadsheets",
+      "root": "apps/spreadsheets",
+      "entry": "apps/spreadsheets/index.html",
+      "formats": ["XLS", "XLSX"],
+      "ownedPrefixes": ["apps/spreadsheets/"],
+      "testGlobs": [
+        "tests/test_spreadsheets*.py",
+        "tests/test_xls*.py",
+        "tests/test_xlsx*.py"
+      ]
+    },
+    "presentations": {
+      "displayName": "Presentations",
+      "root": "apps/presentations",
+      "entry": "apps/presentations/index.html",
+      "formats": ["PPT", "PPTX"],
+      "ownedPrefixes": ["apps/presentations/"],
+      "testGlobs": [
+        "tests/test_presentations*.py",
+        "tests/test_ppt*.py",
+        "tests/test_pptx*.py"
+      ]
+    },
+    "txt": {
+      "displayName": "Plain Text",
+      "root": "apps/txt",
+      "entry": "apps/txt/index.html",
+      "formats": ["TXT"],
+      "ownedPrefixes": ["apps/txt/"],
+      "testGlobs": [
+        "tests/test_txt*.py"
+      ]
+    },
+    "epub": {
+      "displayName": "EPUB",
+      "root": "apps/epub",
+      "entry": "apps/epub/index.html",
+      "formats": ["EPUB"],
+      "ownedPrefixes": ["apps/epub/"],
+      "testGlobs": [
+        "tests/test_epub*.py"
+      ]
+    },
+    "pdf": {
+      "displayName": "PDF",
+      "root": "apps/pdf",
+      "entry": "apps/pdf/index.html",
+      "formats": ["PDF"],
+      "ownedPrefixes": ["apps/pdf/"],
+      "testGlobs": [
+        "tests/test_pdf*.py",
+        "tests/test_pdf*.cjs"
+      ]
+    }
+  }
+}
