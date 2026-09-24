@@ -66,3 +66,127 @@ jobs:
           retention-days: 14
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
+
+
+  cleanup-deployments:
+    name: One-shot legacy deployments cleanup
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[deployments-cleanup]') }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Retire legacy deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          CURRENT_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import time
+          import urllib.error
+          import urllib.request
+
+          token = os.environ["GH_TOKEN"]
+          repo = os.environ["REPOSITORY"]
+          current_sha = os.environ["CURRENT_SHA"]
+          root = f"https://api.github.com/repos/{repo}"
+
+          def request(url, method="GET", payload=None, tolerated=()):
+              data = None if payload is None else json.dumps(payload).encode("utf-8")
+              req = urllib.request.Request(
+                  url,
+                  data=data,
+                  method=method,
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Accept": "application/vnd.github+json",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                      "User-Agent": "inkdos-deployment-cleanup",
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      body = response.read()
+                      return json.loads(body) if body else None
+              except urllib.error.HTTPError as exc:
+                  if exc.code in tolerated:
+                      return {"_status": exc.code}
+                  detail = exc.read().decode("utf-8", "replace")
+                  raise RuntimeError(f"{method} {url} -> {exc.code}: {detail}") from exc
+
+          def list_deployments():
+              items = []
+              page = 1
+              while True:
+                  batch = request(f"{root}/deployments?per_page=100&page={page}") or []
+                  items.extend(batch)
+                  if len(batch) < 100:
+                      return items
+                  page += 1
+
+          deployments = []
+          for _ in range(36):
+              deployments = list_deployments()
+              if any(dep.get("sha") == current_sha for dep in deployments):
+                  break
+              time.sleep(5)
+
+          newest_by_env = {}
+          ordered = sorted(
+              deployments,
+              key=lambda dep: (dep.get("created_at") or "", int(dep["id"])),
+              reverse=True,
+          )
+          for dep in ordered:
+              env = dep.get("environment") or "__default__"
+              newest_by_env.setdefault(env, int(dep["id"]))
+
+          keep = set()
+          for dep in deployments:
+              dep_id = int(dep["id"])
+              env = dep.get("environment") or "__default__"
+              if dep_id == newest_by_env.get(env) or dep.get("sha") == current_sha:
+                  keep.add(dep_id)
+
+          deleted = []
+          failures = []
+          for dep in deployments:
+              dep_id = int(dep["id"])
+              if dep_id in keep:
+                  continue
+              try:
+                  request(
+                      f"{root}/deployments/{dep_id}/statuses",
+                      method="POST",
+                      payload={
+                          "state": "inactive",
+                          "description": "Retired by InkDOS post-release maintenance",
+                      },
+                      tolerated=(409, 422),
+                  )
+                  outcome = request(
+                      f"{root}/deployments/{dep_id}",
+                      method="DELETE",
+                      tolerated=(404, 409, 422),
+                  )
+                  if isinstance(outcome, dict) and outcome.get("_status") not in (None, 404):
+                      failures.append({"id": dep_id, "status": outcome["_status"]})
+                  else:
+                      deleted.append(dep_id)
+              except Exception as exc:
+                  failures.append({"id": dep_id, "error": str(exc)})
+
+          print(json.dumps({
+              "deploymentsBefore": len(deployments),
+              "deploymentsRetained": sorted(keep),
+              "deploymentsDeleted": len(deleted),
+              "deploymentFailures": failures,
+          }, indent=2))
+
+          if failures:
+              raise SystemExit(f"Deployment cleanup had {len(failures)} failures")
+          PY
