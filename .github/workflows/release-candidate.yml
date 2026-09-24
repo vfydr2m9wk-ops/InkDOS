@@ -57,6 +57,35 @@ jobs:
           BROWSER: chromium
           INKDOS_STATEFUL_CYCLES: "3"
         run: python scripts/run_behavioral_stability_validation.py
+      - name: Run exhaustive reachable-button audit
+        env:
+          INKDOS_ONLINE_BASE: http://127.0.0.1:8766/
+          INKDOS_BUTTON_AUDIT_OUT: artifacts/button-audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8766 --bind 127.0.0.1 >/tmp/inkdos-button-audit-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import socket,time
+          deadline=time.time()+10
+          while time.time()<deadline:
+              with socket.socket() as s:
+                  s.settimeout(.2)
+                  if s.connect_ex(('127.0.0.1',8766))==0: break
+              time.sleep(.1)
+          else: raise SystemExit('button audit server did not start')
+          PY
+          python tests/test_exhaustive_button_audit_browser.py
+      - name: Upload button audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-button-audit
+          path: artifacts/button-audit/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload behavioral stability report
         if: always()
         uses: actions/upload-artifact@v4
