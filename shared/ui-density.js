@@ -24,6 +24,8 @@ function ensureScript(src,id){if(!doc||!src)return Promise.resolve(null);const e
 function bootstrapWorkspaceSettings(){if(!doc||!WORKSPACE||!SHARED_BASE)return;ensureStyle(SHARED_BASE+'localization/localization.css','inkdosLocalizationStyles');ensureScript(SHARED_BASE+'localization/ui-localization.js','inkdosLocalizationRuntime').then(()=>ensureScript(SHARED_BASE+'localization/settings-strip.js','inkdosSettingsStripRuntime')).catch(()=>{})}
 if(doc?.documentElement)apply(preference);
 if(doc){if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',autoInstall,{once:true});else autoInstall();bootstrapWorkspaceSettings()}
+function refreshAuto(){if(preference!=='auto')return;const previous=effective;apply(preference);if(effective!==previous)announce()}
+if(typeof root.addEventListener==='function')root.addEventListener('resize',refreshAuto,{passive:true});
 if(typeof root.addEventListener==='function')root.addEventListener('storage',event=>{if(event.key!==STORAGE_KEY)return;preference=normalize(event.newValue);apply(preference);announce()});
 root.InkDOSUiDensity=Object.freeze({STORAGE_KEY,SUITE_STORAGE_KEY,LEGACY_WORKSPACE_KEY,THRESHOLD,POINTER_QUERY,resolve,apply,set,installControl,get workspace(){return WORKSPACE},get preference(){return preference},get effective(){return effective}});
 })(globalThis);
