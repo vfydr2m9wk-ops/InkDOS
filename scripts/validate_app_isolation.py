@@ -15,6 +15,14 @@ if str(ROOT) not in sys.path:
 from scripts.shared_runtime_policy import is_allowed_shared_relpath
 
 ACTIVE = ("documents", "spreadsheets", "presentations", "txt", "epub", "pdf")
+APP_MANIFESTS = {
+    "documents": ("InkDOS Documents", "Documents", "assets/documents.svg"),
+    "spreadsheets": ("InkDOS Spreadsheets", "Spreadsheets", "assets/spreadsheets.svg"),
+    "presentations": ("InkDOS Presentations", "Presentations", "assets/presentations.png"),
+    "txt": ("InkDOS Plain Text", "Plain Text", "assets/txt.svg"),
+    "epub": ("InkDOS EPUB Reader", "EPUB", "assets/epub.svg"),
+    "pdf": ("InkDOS PDF", "PDF", "assets/pdf.svg"),
+}
 VERSION = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))["version"]
 TEXT_SUFFIXES = {".html", ".css", ".js", ".json", ".webmanifest"}
 HOME_FRAME = {
@@ -132,6 +140,50 @@ def validate_cross_app_references(app, errors):
                 errors.append(f"{app}: shared runtime reference in {rel}: {marker}")
 
 
+def validate_app_manifest(app, errors):
+    root = ROOT / "apps" / app
+    index = (root / "index.html").read_text(encoding="utf-8")
+    expected_name, expected_short, expected_icon = APP_MANIFESTS[app]
+    if 'rel="manifest" href="manifest.webmanifest"' not in index:
+        errors.append(f"{app}: app-local manifest link missing")
+    if f'href="{expected_icon}"' not in index:
+        errors.append(f"{app}: app-local icon link missing: {expected_icon}")
+
+    manifest_path = root / "manifest.webmanifest"
+    if not manifest_path.is_file():
+        errors.append(f"{app}: app-local manifest missing")
+        return
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        errors.append(f"{app}: invalid manifest JSON: {exc}")
+        return
+
+    expected = {
+        "name": expected_name,
+        "short_name": expected_short,
+        "id": "./",
+        "start_url": "./index.html",
+        "scope": "./",
+        "display": "standalone",
+    }
+    for key, value in expected.items():
+        if manifest.get(key) != value:
+            errors.append(f"{app}: manifest {key} expected {value!r}, got {manifest.get(key)!r}")
+
+    icons = manifest.get("icons")
+    if not isinstance(icons, list) or not icons:
+        errors.append(f"{app}: manifest icons missing")
+        return
+    icon = next((item for item in icons if item.get("src") == expected_icon), None)
+    if icon is None:
+        errors.append(f"{app}: manifest does not reference app-local icon {expected_icon}")
+        return
+    icon_path = (root / expected_icon).resolve()
+    if not ensure_within(root.resolve(), icon_path) or not icon_path.is_file():
+        errors.append(f"{app}: manifest icon missing or escapes app root: {expected_icon}")
+
+
 def validate_optional_home(app, errors):
     index = (ROOT / "apps" / app / "index.html").read_text(encoding="utf-8")
     if 'aria-label="Home"' not in index or 'href="../../index.html"' not in index:
@@ -190,6 +242,7 @@ def main():
     validate_service_worker_shell(errors)
     validate_epub_layout(errors)
     for app in ACTIVE:
+        validate_app_manifest(app, errors)
         validate_optional_home(app, errors)
         validate_isolated_copy(app, errors)
         validate_cross_app_references(app, errors)
