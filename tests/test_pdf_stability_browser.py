@@ -54,6 +54,14 @@ def main() -> None:
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 5")
             page.wait_for_function("() => document.querySelectorAll('.pdf-page-shell').length >= 1")
 
+            # Opening a multi-page PDF must immediately synchronize navigation state.
+            assert not page.locator("#nextPageBtn").is_disabled()
+            page.click("#nextPageBtn")
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 2")
+            assert not page.locator("#prevPageBtn").is_disabled()
+            page.click("#prevPageBtn")
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 1")
+
             # Appearance is a command surface, not a direct DOM handler.
             appearance_commands = page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
             for command in ("appearance.light", "appearance.dark", "appearance.system"):
