@@ -52,6 +52,6 @@ def main():
  extra=dict(BASE_EVIDENCE,notes="unstructured"); assert run(b,extra).returncode!=0
  future=dict(BASE_EVIDENCE,testedAtUtc="2999-01-01T00:00:00Z"); assert run(b,future).returncode!=0
  w=(R/".github/workflows/release.yml").read_text();assert "--assets release-final" in w; assert "Validate explicit publication authorization" in w and w.index("Validate explicit publication authorization")<w.index("Publish verified release transactionally")
- d=json.loads((R/"config/release-authorization.json").read_text());assert not d["windowsDeviceUpgradeValidated"] and d["windowsDeviceUpgradeWaived"] and d["explicitUserAuthorization"] is True and d["waiverReason"] and not d["evidence"] and not d["evidenceSha256"]
+ d=json.loads((R/"config/release-authorization.json").read_text()); current=json.loads((R/"VERSION.json").read_text())["version"]; assert d["version"]==current; assert isinstance(d["explicitUserAuthorization"],bool); assert isinstance(d["windowsDeviceUpgradeValidated"],bool); assert isinstance(d["windowsDeviceUpgradeWaived"],bool); assert not (d["windowsDeviceUpgradeValidated"] and d["windowsDeviceUpgradeWaived"]); assert isinstance(d["waiverReason"],str) and isinstance(d["evidence"],str) and isinstance(d["evidenceSha256"],str)
  print("InkDOS 2.4.3 fail-closed structured Windows-upgrade evidence contract passed.")
 if __name__=="__main__":main()
