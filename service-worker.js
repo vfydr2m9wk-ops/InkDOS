@@ -1,6 +1,18 @@
 'use strict';
 const CACHE_NAME='inkdos-v2.5.2-1';
 const APP_SHELL=[
+  "./apps/txt/runtime/platform/file-launch.js",
+  "./apps/txt/manifest.webmanifest",
+  "./apps/epub/runtime/platform/file-launch.js",
+  "./apps/epub/manifest.webmanifest",
+  "./apps/pdf/runtime/platform/file-launch.js",
+  "./apps/pdf/manifest.webmanifest",
+  "./apps/presentations/runtime/platform/file-launch.js",
+  "./apps/presentations/manifest.webmanifest",
+  "./apps/spreadsheets/runtime/platform/file-launch.js",
+  "./apps/spreadsheets/manifest.webmanifest",
+  "./apps/documents/runtime/platform/file-launch.js",
+  "./apps/documents/manifest.webmanifest",
   "./shared/ui-density.js",
   "./shared/ui-density.css",
   "./shared/localization/ui-localization.js",
