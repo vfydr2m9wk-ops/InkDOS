@@ -1,11 +1,11 @@
 (function(root){'use strict';
 const doc=typeof document!=='undefined'?document:null;
-const APPS=new Set(['documents','spreadsheets','presentations','pdf','epub','txt']),LANGUAGE_KEY='inkdos2:language';
+const APPS=new Set(['documents','spreadsheets','presentations','pdf','epub','txt']),SUITE_LANGUAGE_KEY='inkdos2:language';
 const TRANSIENT_EVENT='inkdos:transient-open',transientOwner={kind:'settings-strip'};
 let context=null,drawer=null,strip=null,popover=null,activeButton=null,mutationObserver=null;
 function appContext(){if(context)return context;let parts=[];try{parts=decodeURIComponent(root.location?.pathname||'').split('/').filter(Boolean)}catch(_){}context=parts.find(part=>APPS.has(part))||null;return context}
-function languageKey(){return LANGUAGE_KEY}
-function legacyLanguageKey(){const app=appContext();return app?'inkdos2:'+app+':language':null}
+function languageKey(){const app=appContext();return app?'inkdos2:'+app+':language':SUITE_LANGUAGE_KEY}
+function legacyLanguageKey(){return appContext()?SUITE_LANGUAGE_KEY:null}
 function button(kind,icon,label){const item=doc.createElement('button');item.type='button';item.className='inkdos-settings-button';item.dataset.settingsItem=kind;item.setAttribute('aria-haspopup','dialog');item.setAttribute('aria-expanded','false');item.title=label;item.setAttribute('aria-label',label);item.innerHTML='<span class="inkdos-settings-icon" aria-hidden="true">'+icon+'</span><span class="inkdos-settings-label">'+label+'</span>';item.addEventListener('click',()=>toggle(kind,item));return item}
 function option(label,value,onChoose){const item=doc.createElement('button');item.type='button';item.className='inkdos-settings-option';item.textContent=label;item.dataset.settingsValue=value;item.addEventListener('click',onChoose);return item}
 function closePopover(){if(!popover)return;popover.hidden=true;if(activeButton)activeButton.setAttribute('aria-expanded','false');activeButton=null}

@@ -89,8 +89,9 @@ class SuiteIntegration(unittest.TestCase):
         for app, local_key in local_keys.items():
             text = (ROOT / "apps" / app / "state" / "appearance.js").read_text(encoding="utf-8")
             self.assertIn(local_key, text, app)
-            self.assertIn("inkdos2:appearance", text, app)
+            self.assertIn("LEGACY_SUITE_KEY='inkdos2:appearance'", text, app)
             self.assertIn("'storage'", text, app)
+            self.assertNotIn("setItem(LEGACY_SUITE_KEY", text, app)
 
     def test_share_action_contract(self):
         direct = {"txt": ("index.html", "shareBtn"), "epub": ("index.html", "shareBtn")}

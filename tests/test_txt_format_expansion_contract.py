@@ -20,14 +20,17 @@ def main() -> None:
     policy = (APP / "txt-policy.js").read_text(encoding="utf-8")
     controller = (APP / "io" / "txt-file-controller.js").read_text(encoding="utf-8")
     editor = (APP / "editor" / "editor-controller.js").read_text(encoding="utf-8")
+    delivery = (APP / "runtime" / "services" / "file-delivery.js").read_text(encoding="utf-8")
 
     node_script = r'''
 const fs = require('fs');
 const vm = require('vm');
 globalThis.InkDOS2 = {};
 vm.runInThisContext(fs.readFileSync(process.argv[1], 'utf8'));
+vm.runInThisContext(fs.readFileSync(process.argv[2], 'utf8'));
 const P = globalThis.InkDOS2.TxtPolicy;
-const supported = JSON.parse(process.argv[2]);
+const D = globalThis.InkDOS2.FileDelivery;
+const supported = JSON.parse(process.argv[3]);
 for (const ext of supported) {
   if (!P.isSupportedName('sample' + ext)) {
     throw new Error('expected supported Plain Text extension: ' + ext);
@@ -38,10 +41,15 @@ for (const name of ['sample.docx', 'sample.xlsx', 'sample.pptx', 'sample.pdf', '
 }
 if (!P.isXmlName('sample.XML')) throw new Error('XML safeguard detection regressed');
 if (P.accept !== supported.join(',')) throw new Error('Plain Text picker accept list does not match supported extensions');
+for (const ext of supported) {
+  const name='sample'+ext;
+  if (D.safeName(name) !== name) throw new Error('save name did not preserve supported extension: '+ext);
+}
+if (D.safeName('sample.bin') !== 'sample.txt') throw new Error('unsupported save extension must normalize to .txt');
 '''
     import json
     subprocess.run(
-        ["node", "-e", node_script, str(APP / "txt-policy.js"), json.dumps(SUPPORTED)],
+        ["node", "-e", node_script, str(APP / "txt-policy.js"), str(APP / "runtime" / "services" / "file-delivery.js"), json.dumps(SUPPORTED)],
         cwd=ROOT,
         check=True,
     )
@@ -50,6 +58,8 @@ if (P.accept !== supported.join(',')) throw new Error('Plain Text picker accept 
     require(controller, "Unsupported file format", "Plain Text must reject unsupported files explicitly")
     require(controller, "E.fileInput.accept=P.accept", "Plain Text file picker must expose the shared approved extension allowlist")
     require(editor, "P.isSupportedName(n)?n:n+'.txt'", "Plain Text rename/save path must preserve approved original extensions")
+    require(delivery, "P&&typeof P.isSupportedName==='function'&&P.isSupportedName(n)?n", "Plain Text delivery must preserve approved original extensions")
+    require(delivery, "types:[pickerType(blob,fileName)]", "Plain Text File System Access picker must match the current supported extension")
 
     print("Plain Text 2.3 format expansion contract passed")
 

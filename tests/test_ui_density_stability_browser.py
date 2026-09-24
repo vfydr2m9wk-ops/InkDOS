@@ -103,7 +103,8 @@ def main() -> None:
                 assert state['density'] == 'desktop', (path, state)
                 assert state['preference'] == 'auto', (path, state)
                 assert state['controlCount'] == 1, (path, state)
-                assert state['storageKey'] == 'inkdos2:ui-density', (path, state)
+                expected_key = 'inkdos2:ui-density' if path == '/index.html' else 'inkdos2:' + path.split('/')[2].split('?')[0] + ':ui-density'
+                assert state['storageKey'] == expected_key, (path, state)
 
             page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => document.querySelectorAll('[data-inkdos-density-control]').length === 1")
@@ -126,27 +127,28 @@ def main() -> None:
             assert switched['effective'] == 'mobile', switched
             assert switched['density'] == 'mobile', switched
             assert switched['preference'] == 'mobile', switched
-            assert switched['storageKey'] == 'inkdos2:ui-density', switched
+            assert switched['storageKey'] == 'inkdos2:documents:ui-density', switched
             assert switched['stored'] == 'mobile', switched
-            assert switched['legacy'] == 'mobile', switched
+            assert switched['legacy'] is None, switched
             assert switched['control'] == '42px', switched
 
-            # A suite-level choice in Documents must carry into Spreadsheets.
+            # A workspace-local choice in Documents must not carry into Spreadsheets.
             page.goto(BASE + '/apps/spreadsheets/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
             independent = root_state(page)
-            assert independent['density'] == 'mobile', independent
-            assert independent['preference'] == 'mobile', independent
-            assert independent['stored'] == 'mobile', independent
-            assert independent['storageKey'] == 'inkdos2:ui-density', independent
+            assert independent['density'] == 'desktop', independent
+            assert independent['preference'] == 'auto', independent
+            assert independent['stored'] is None, independent
+            assert independent['storageKey'] == 'inkdos2:spreadsheets:ui-density', independent
 
-            # Returning to Documents sees the same suite-level persisted preference.
+            # Returning to Documents sees its own persisted preference.
             page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
             page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
             returned = root_state(page)
             assert returned['density'] == 'mobile', returned
             assert returned['preference'] == 'mobile', returned
             assert returned['stored'] == 'mobile', returned
+            assert returned['storageKey'] == 'inkdos2:documents:ui-density', returned
             page.evaluate("() => globalThis.InkDOSUiDensity.set('auto')")
             reset = root_state(page)
             assert reset['density'] == 'desktop', reset
@@ -190,7 +192,7 @@ def main() -> None:
 
             browser.close()
 
-        print(f'Adaptive interface density browser ({browser_name}): OK')
+        print(f'Workspace-local adaptive interface density browser ({browser_name}): OK')
     finally:
         server.terminate()
         try:

@@ -42,6 +42,7 @@ chrome.setChooseFile(fileOpen.requestOpen);
 NS.Appearance.install();
 zoom.install();
 fileOpen.install();
+global.InkDOSFileLaunch?.setOpenHandler?.(file=>fileOpen.openFile(file));
 commandRegistry.install();
 commandRegistry.register('insert.comment',()=>d2.openComments());
 commandRegistry.register('file.print',()=>d1.print());

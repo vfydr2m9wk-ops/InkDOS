@@ -1,0 +1,30 @@
+{
+  "name": "InkDOS Presentations",
+  "short_name": "Presentations",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#f7f8fa",
+  "icons": [
+    {
+      "src": "assets/presentations.png",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
+          ".pptx"
+        ],
+        "application/vnd.ms-powerpoint": [
+          ".ppt"
+        ]
+      }
+    }
+  ]
+}

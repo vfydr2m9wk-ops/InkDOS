@@ -1,0 +1,28 @@
+{
+  "name": "InkDOS EPUB Reader",
+  "short_name": "EPUB",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1f5",
+  "theme_color": "#eef1f5",
+  "icons": [
+    {
+      "src": "assets/epub.svg",
+      "type": "image/svg+xml",
+      "purpose": "any",
+      "sizes": "any"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "application/epub+zip": [
+          ".epub"
+        ]
+      }
+    }
+  ]
+}

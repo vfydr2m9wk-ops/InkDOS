@@ -2,7 +2,9 @@
 let deliveryInFlight=null;
 function singleFlight(run){if(deliveryInFlight)return deliveryInFlight;let p;try{p=Promise.resolve(run())}catch(e){return Promise.reject(e)}deliveryInFlight=p;p.finally(()=>{if(deliveryInFlight===p)deliveryInFlight=null}).catch(()=>{});return p}
 async function sha256(bytes){if(!(g.crypto&&g.crypto.subtle))return null;const buf=bytes instanceof ArrayBuffer?bytes:bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);const dig=await g.crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(dig),b=>b.toString(16).padStart(2,'0')).join('')}
-function safeName(name){let n=String(name||'Untitled.txt').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');return /\.txt$/i.test(n)?n:n+'.txt'}
+function extension(name){const m=String(name||'').toLowerCase().match(/(\.[^.\\/]+)$/);return m?m[1]:''}
+function safeName(name){let n=String(name||'Untitled.txt').trim()||'Untitled.txt';n=n.replace(/[\\/:*?"<>|]+/g,'-');const P=NS.TxtPolicy,ext=extension(n);return P&&typeof P.isSupportedName==='function'&&P.isSupportedName(n)?n:(ext?n.replace(/\.[^.]+$/,''):n)+'.txt'}
+function pickerType(blob,fileName){const ext=extension(safeName(fileName))||'.txt',mime=blob?.type||(/\.xml$/i.test(ext)?'application/xml':'text/plain');return{description:ext==='.xml'?'XML file':'Plain text file',accept:{[mime]:[ext]}}}
 function toFile(blob,fileName){const name=safeName(fileName);try{return new File([blob],name,{type:blob.type||'text/plain',lastModified:Date.now()})}catch(_){return null}}
 function canShareFile(file){if(!file||!g.navigator||typeof navigator.share!=='function'||typeof navigator.canShare!=='function')return false;try{return !!navigator.canShare({files:[file]})}catch(_){return false}}
 function isAppleTouchHost(){const nav=g.navigator||{};const ua=String(nav.userAgent||'');const platform=String(nav.platform||'');const touches=Number(nav.maxTouchPoints||0);return /iPad|iPhone|iPod/i.test(ua)||(platform==='MacIntel'&&touches>1)}
@@ -10,7 +12,7 @@ function capabilities(file){return Object.freeze({fileSystem:typeof g.showSaveFi
 function stamp(base){return Object.assign({requestedAt:new Date().toISOString(),deliveryConfirmed:false},base)}
 async function finishReceipt(base,blob){const bytes=new Uint8Array(await blob.arrayBuffer());return Object.freeze(Object.assign(stamp(base),{bytes:bytes.byteLength,sha256:await sha256(bytes)}))}
 function chooseRoute(file){const c=capabilities(file);const local=(g.location&&g.location.protocol==='file:');if((local||c.preferShareSave)&&c.share)return 'web-share';if(c.fileSystem)return 'file-system-access';if(c.share)return 'web-share';return 'download'}
-async function viaPicker(blob,fileName){let handlePromise;try{handlePromise=g.showSaveFilePicker({suggestedName:safeName(fileName),types:[{description:'Plain text',accept:{'text/plain':['.txt']}}]})}catch(e){throw deliveryError('picker-blocked','Native save picker is unavailable in this host.',e)}
+async function viaPicker(blob,fileName){let handlePromise;try{handlePromise=g.showSaveFilePicker({suggestedName:safeName(fileName),types:[pickerType(blob,fileName)]})}catch(e){throw deliveryError('picker-blocked','Native save picker is unavailable in this host.',e)}
 let handle;try{handle=await handlePromise}catch(e){if(e&&e.name==='AbortError')throw deliveryError('cancelled','Save cancelled.',e);throw deliveryError('picker-blocked','Native save picker was blocked by this host.',e)}
 try{const writable=await handle.createWritable();await writable.write(blob);await writable.close()}catch(e){throw deliveryError('write-failed','The selected file could not be written.',e)}
 return finishReceipt({fileName:safeName(fileName),method:'file-system-access',deliveryConfirmed:true},blob)}

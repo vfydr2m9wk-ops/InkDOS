@@ -5,6 +5,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 CMDS = [
+    [sys.executable, "scripts/build_offline_snapshot.py", "--check"],
+    ["node", "tests/test_offline_snapshot.cjs"],
     [sys.executable, "scripts/check_no_legacy_runtime.py"],
     [sys.executable, "scripts/build_txt_bundle.py", "--check"],
     [sys.executable, "tests/test_csp_contract.py"],
@@ -21,6 +23,12 @@ CMDS = [
     [sys.executable, "tests/test_presentations_slideshow_rendering_contract.py"],
     [sys.executable, "tests/test_epub_webkit_deflate_contract.py"],
     [sys.executable, "tests/test_txt_format_expansion_contract.py"],
+    [sys.executable, "tests/test_web_file_handling_contract.py"],
+    [sys.executable, "tests/test_confirmed_delivery_exit_parity.py"],
+    [sys.executable, "tests/test_file_delivery_exactly_once_contract.py"],
+    [sys.executable, "tests/test_presentations_unsaved_exit_contract.py"],
+    [sys.executable, "tests/test_epub_pdf_unsaved_exit_contract.py"],
+    [sys.executable, "tests/test_txt_unsaved_exit_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_text_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_encoding_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_save_contract.py"],

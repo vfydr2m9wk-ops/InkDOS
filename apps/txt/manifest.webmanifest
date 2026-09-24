@@ -1,0 +1,48 @@
+{
+  "name": "InkDOS Plain Text",
+  "short_name": "Plain Text",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1f5",
+  "theme_color": "#eef1f5",
+  "icons": [
+    {
+      "src": "assets/txt.svg",
+      "type": "image/svg+xml",
+      "purpose": "any",
+      "sizes": "any"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "text/plain": [
+          ".txt",
+          ".md",
+          ".markdown",
+          ".log",
+          ".ini",
+          ".cfg",
+          ".conf",
+          ".toml",
+          ".properties"
+        ],
+        "application/xml": [
+          ".xml"
+        ],
+        "application/json": [
+          ".json",
+          ".jsonl",
+          ".ndjson"
+        ],
+        "application/yaml": [
+          ".yaml",
+          ".yml"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "InkDOS Documents",
+  "short_name": "Documents",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#f7f8fa",
+  "icons": [
+    {
+      "src": "assets/documents.svg",
+      "type": "image/svg+xml",
+      "purpose": "any",
+      "sizes": "any"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+          ".docx"
+        ],
+        "application/rtf": [
+          ".rtf"
+        ],
+        "application/msword": [
+          ".doc"
+        ]
+      }
+    }
+  ]
+}

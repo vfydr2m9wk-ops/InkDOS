@@ -81,8 +81,10 @@ def main() -> None:
         appearance = (ROOT / "apps" / app / "state" / "appearance.js").read_text(encoding="utf-8")
         if local_key not in appearance:
             raise SystemExit(f"App-local appearance key missing: {app}")
-        if "inkdos2:appearance" not in appearance or "'storage'" not in appearance:
-            raise SystemExit(f"Horizontal appearance bridge missing: {app}")
+        if "LEGACY_SUITE_KEY='inkdos2:appearance'" not in appearance or "'storage'" not in appearance:
+            raise SystemExit(f"Workspace appearance migration/storage listener missing: {app}")
+        if "setItem(LEGACY_SUITE_KEY" in appearance:
+            raise SystemExit(f"Workspace appearance must not publish to legacy suite key: {app}")
 
     starts = {
         "documents": ("startNew", "startOpen"),

@@ -29,6 +29,8 @@ def main() -> None:
     require(ui, "app.executeCommand(command,...args)", "Table Tools command dispatch")
     require(ui, "app.p2Tools?.tableStructureEditable?.(table.id)", "Table Tools semantic capability query")
     require(ui, "app.session?.sourceKind==='pptx'&&table.pptP2Imported&&table.sourceRef", "Table Tools mapped-table gate")
+    require(ui, "mergeTargetKey", "Table Tools merge target persistence")
+    require(ui, "mergeKey!==mergeTargetKey", "Table Tools merge target cell change guard")
 
     for command in (
         "table.cell.fill.set",
