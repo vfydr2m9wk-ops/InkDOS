@@ -136,8 +136,8 @@ def main() -> None:
                   count:document.querySelectorAll('.inkdos-settings-strip').length
                 })""")
                 assert state["items"] == ["appearance", "interface", "language", "help"], (app, state)
-                assert state["languageKey"] == "inkdos2:language", (app, state)
-                assert state["densityKey"] == "inkdos2:ui-density", (app, state)
+                assert state["languageKey"] == f"inkdos2:{app}:language", (app, state)
+                assert state["densityKey"] == f"inkdos2:{app}:ui-density", (app, state)
                 assert state["count"] == 1, (app, state)
 
             # Translation is presentation-only: IDs/actions/commands and editable name remain unchanged.
@@ -166,21 +166,43 @@ def main() -> None:
             # Language and interface preferences are independent between workspaces.
             choose_language(page, "Português", "pt-BR")
             page.evaluate("() => globalThis.InkDOSUiDensity.set('mobile')")
-            assert page.evaluate("() => localStorage.getItem('inkdos2:language')") == "pt-BR"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:ui-density')") == "mobile"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:language')") == "pt-BR"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") == "mobile"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:language')") is None
+            assert page.evaluate("() => localStorage.getItem('inkdos2:ui-density')") is None
 
             page.goto(BASE + "/apps/spreadsheets/index.html?suite=1", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && !!globalThis.InkDOSLocalization")
             assert page.evaluate("() => globalThis.InkDOSLocalization.currentLanguage") == "en"
             assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "auto"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:language')") == "en"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:ui-density')") is None
 
             page.goto(BASE + "/apps/documents/index.html?suite=1", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
             assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "mobile"
 
+            # A 2.5.2 suite-level preference is migrated once into a workspace key.
+            migration = browser.new_context(viewport={"width": 1280, "height": 820})
+            migration.add_init_script("""() => {
+              localStorage.setItem('inkdos2:language','pt-BR');
+              localStorage.setItem('inkdos2:ui-density','mobile');
+            }""")
+            migrated = migration.new_page()
+            migrated.goto(BASE + "/apps/presentations/index.html?suite=1", wait_until="load")
+            migrated.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
+            assert migrated.evaluate("() => globalThis.InkDOSUiDensity.preference") == "mobile"
+            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:language')") == "pt-BR"
+            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") == "mobile"
+            choose_language(migrated, "English", "en")
+            migrated.evaluate("() => globalThis.InkDOSUiDensity.set('desktop')")
+            assert migrated.evaluate("() => localStorage.getItem('inkdos2:language')") == "pt-BR"
+            assert migrated.evaluate("() => localStorage.getItem('inkdos2:ui-density')") == "mobile"
+            migration.close()
+
             context.close()
             browser.close()
-        print(f"InkDOS 2.4 localization/settings browser ({browser_name}): OK")
+        print(f"InkDOS 2.6 workspace-local localization/settings browser ({browser_name}): OK")
     finally:
         server.terminate()
         try:
