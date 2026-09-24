@@ -1,2 +1,0 @@
-Trigger signed InkDOS 2.5.2 publication from final audited candidate 3470607f440d34b361aff4a790acec442d84fb56.
-Candidate validation: main integration PASS; Tauri PASS; GitHub Pages PASS; online render matrix PASS; stateful control audit PASS with 0 JS errors and 0 surface failures.
