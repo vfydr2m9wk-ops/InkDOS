@@ -1,0 +1,17 @@
+{
+  "name": "InkDOS Presentations",
+  "short_name": "Presentations",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#f7f8fa",
+  "icons": [
+    {
+      "src": "assets/presentations.png",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
