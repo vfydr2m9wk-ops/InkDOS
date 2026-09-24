@@ -39,5 +39,7 @@ jobs:
         run: python tests/test_spreadsheets_243_fill_clear_browser.py
       - name: Run Plain Text multi-instance recovery isolation
         run: python tests/test_txt_multi_instance_recovery_browser.py
+      - name: Run Presentations disabled background hitbox regression
+        run: python tests/test_presentations_disabled_background_hitbox_browser.py
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
