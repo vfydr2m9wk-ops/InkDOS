@@ -4,26 +4,16 @@ on:
   push:
     tags:
       - 'v*.*.*'
-  workflow_dispatch:
-    inputs:
-      release_tag:
-        description: Existing immutable release tag (for example v2.6.0)
-        required: true
-        type: string
-      release_commit:
-        description: Commit SHA that the release tag must resolve to
-        required: true
-        type: string
 
 permissions:
   contents: read
 
 env:
-  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
-  RELEASE_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.release_commit || github.sha }}
+  RELEASE_TAG: ${{ github.ref_name }}
+  RELEASE_COMMIT: ${{ github.sha }}
 
 concurrency:
-  group: inkdos-release-${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref }}
+  group: inkdos-release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -56,10 +46,7 @@ jobs:
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             test "$(git rev-parse "${RELEASE_TAG}^{commit}")" = "${RELEASE_COMMIT}"
           else
-            # workflow_dispatch recovery path: release only an already-existing,
-            # immutable tag that resolves to the explicitly supplied commit.
-            git show-ref --verify --quiet "refs/tags/${RELEASE_TAG}"
-            test "$(git rev-parse "${RELEASE_TAG}^{commit}")" = "${RELEASE_COMMIT}"
+            ! git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1
           fi
 
       - name: Validate tag and desktop version
