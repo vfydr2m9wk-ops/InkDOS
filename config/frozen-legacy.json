@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "marker": "INKDOS:FROZEN-LEGACY",
+  "policy": "Preserve registered legacy code unless a task explicitly authorizes its frozen-legacy ID.",
+  "entries": []
+}
