@@ -1,5 +1,7 @@
 (function(g){'use strict';
-const NS=g.InkDOS2=g.InkDOS2||{};const C=NS.TxtCodec,P=NS.TxtPolicy;const MAX_BYTES=64*1024*1024,LARGE_BYTES=4*1024*1024,TAB_RECOVERY_SLOT='inkdos2:txt:recovery-tab';\nfunction recoveryId(){try{if(g.crypto&&typeof g.crypto.randomUUID==='function')return g.crypto.randomUUID()}catch(_){}return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}\nfunction tabRecoveryKey(){try{let id=g.sessionStorage&&g.sessionStorage.getItem(TAB_RECOVERY_SLOT);if(!id){id=recoveryId();if(g.sessionStorage)g.sessionStorage.setItem(TAB_RECOVERY_SLOT,id)}return 'txt:tab:'+id}catch(_){return 'txt:volatile:'+recoveryId()}}
+const NS=g.InkDOS2=g.InkDOS2||{};const C=NS.TxtCodec,P=NS.TxtPolicy;const MAX_BYTES=64*1024*1024,LARGE_BYTES=4*1024*1024,TAB_RECOVERY_SLOT='inkdos2:txt:recovery-tab';
+function recoveryId(){try{if(g.crypto&&typeof g.crypto.randomUUID==='function')return g.crypto.randomUUID()}catch(_){}return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
+function tabRecoveryKey(){try{let id=g.sessionStorage&&g.sessionStorage.getItem(TAB_RECOVERY_SLOT);if(!id){id=recoveryId();if(g.sessionStorage)g.sessionStorage.setItem(TAB_RECOVERY_SLOT,id)}return 'txt:tab:'+id}catch(_){return 'txt:volatile:'+recoveryId()}}
 function create({elements:E,state,editor,recoveryKey=tabRecoveryKey()}={}){
   if(!E||!state||!editor)throw new Error('TxtFileController requires elements, state and editor');
   if(E.fileInput)E.fileInput.accept=P.accept;
