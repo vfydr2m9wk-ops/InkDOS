@@ -15,7 +15,12 @@ def main():
     parser.add_argument(
         "--browser",
         action="store_true",
-        help="Also run tests whose filenames contain _browser.",
+        help="Include browser smoke tests, or all browser tests when used with --full.",
+    )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Run the complete component test set instead of the default smoke gate.",
     )
     parser.add_argument(
         "--list",
@@ -24,12 +29,19 @@ def main():
     )
     args = parser.parse_args()
 
-    tests = matching_tests(args.component, include_browser=args.browser)
+    tests = matching_tests(
+        args.component,
+        include_browser=args.browser,
+        full=args.full,
+    )
     if not tests:
         raise SystemExit(f"No focused tests found for component {args.component!r}")
 
-    print(f"Focused tests for {args.component}: {len(tests)}")
+    tier = "full" if args.full else "smoke"
+    print(f"{tier.capitalize()} tests for {args.component}: {len(tests)}")
     for rel_path in tests:
+        if not (ROOT / rel_path).is_file():
+            raise SystemExit(f"Configured test is missing: {rel_path}")
         print(f"  {rel_path}")
 
     if args.list:
@@ -39,7 +51,7 @@ def main():
         print(f"\n==> {rel_path}", flush=True)
         subprocess.run(command_for_test(rel_path), cwd=ROOT, check=True)
 
-    print(f"\nInkDOS focused component tests passed: {args.component}")
+    print(f"\nInkDOS {tier} component tests passed: {args.component}")
 
 
 if __name__ == "__main__":
