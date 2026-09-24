@@ -10,3 +10,4 @@ def test_p1_uses_explicit_host_groups_and_conventional_group_order():
     assert "bar.insertBefore(group,spacer)" in js
     assert "textGroup.hidden=!(safe&&o.type==='text')" in js
     assert "styleGroup.hidden=!safe" in js
+    assert "'moveSlideUpBtn','moveSlideDownBtn'" in js
