@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.6.0 — 2026-09-24
+
+- Separate Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB into independently launchable app shells with app-local manifests, icons and direct URLs while keeping Home optional.
+- Isolate appearance, language and interface-density preferences per workspace with conservative migration from the 2.5.2 suite-level keys.
+- Add verified web file handling for supported formats through app-local file handlers, guarded launchQueue routing and File System Access opening with HTML-picker fallbacks; converted legacy imports remain copy-safe and opened source handles are never retained for write-back.
+- Preserve confirmed-delivery semantics for Save/replace flows so picker cancellation, write failures, Web Share handoff and unverified downloads cannot silently clear unsaved state.
+- Bind offline caches to a SHA-256 verified immutable source snapshot, reject incomplete candidate installs and retain the native service-worker waiting lifecycle so open editors are not switched across revisions.
+- Validate the exact release candidate across Chromium, Firefox and WebKit with the full Home + six-app visual matrix, while keeping physical-device acceptance distinct from browser automation.
+
 ## 2.5.2 — 2026-09-23
 
 - Hotfix Presentations on mobile after the 2.5.1 toolbar styling regression could leave the slide canvas and thumbnail strip visually empty while the presentation session remained loaded.
