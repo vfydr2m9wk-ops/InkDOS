@@ -195,7 +195,7 @@ def main():
                 page.on("console", lambda msg, bucket=errors: bucket.append("console-error: " + msg.text) if msg.type == "error" else None)
                 page.on("dialog", lambda dialog: dialog.dismiss())
                 page.on("download", lambda download: download.cancel())
-                report["apps"][app] = {"stages": [], "discovered": {}, "visibleUnion": {}, "surfaceOpen": [], "errors": errors}
+                report["apps"][app] = {"stages": [], "discovered": {}, "visibleUnion": {}, "surfaceOpen": [], "surfaceFailures": [], "errors": errors}
                 page.goto(urljoin(BASE, rel), wait_until="load", timeout=30000)
                 page.wait_for_timeout(250)
                 record(report["apps"], app, "initial", page)
@@ -212,12 +212,27 @@ def main():
                     if app != "home":
                         prepare_active(app, page, fixtures)
                         page.wait_for_timeout(180)
-                    opened = click_if(page, selector)
+                    try:
+                        opened = click_if(page, selector)
+                    except Exception as exc:
+                        opened = False
+                        report["apps"][app]["surfaceFailures"].append({
+                            "stage": stage,
+                            "selector": selector,
+                            "error": repr(exc),
+                        })
                     if opened:
                         report["apps"][app]["surfaceOpen"].append(stage)
                         record(report["apps"], app, stage, page)
                         if app == "presentations" and stage == "present":
-                            click_if(page, "[data-present-exit]")
+                            try:
+                                click_if(page, "[data-present-exit]")
+                            except Exception as exc:
+                                report["apps"][app]["surfaceFailures"].append({
+                                    "stage": "present-exit",
+                                    "selector": "[data-present-exit]",
+                                    "error": repr(exc),
+                                })
                     else:
                         report["apps"][app]["surfaceOpen"].append(stage + ":not-opened")
                 page.close()
@@ -241,6 +256,7 @@ def main():
             "visibleAtLeastOnce": total_visible,
             "coveragePercent": round(100 * total_visible / max(1, total_discovered), 1),
             "appsWithJsErrors": sum(1 for x in report["apps"].values() if x["errors"]),
+            "surfaceFailures": sum(len(x["surfaceFailures"]) for x in report["apps"].values()),
         }
         (OUT / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(json.dumps(report["summary"], indent=2))
