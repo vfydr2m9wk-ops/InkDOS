@@ -50,6 +50,11 @@ def main() -> None:
     t1 = (APP / 'editor' / 't1-essentials.js').read_text(encoding='utf-8')
     t2 = (APP / 'editor' / 't2-xml-tools.js').read_text(encoding='utf-8')
     files = (APP / 'io' / 'txt-file-controller.js').read_text(encoding='utf-8')
+    require(files, "TAB_RECOVERY_SLOT='inkdos2:txt:recovery-tab'", 'Plain Text recovery must keep a per-tab identity')
+    require(files, "sessionStorage.getItem(TAB_RECOVERY_SLOT)", 'Plain Text recovery identity must survive reload in the same tab')
+    require(files, "recoveryKey=tabRecoveryKey()", 'Plain Text recovery must not use a suite-global checkpoint key')
+    if "recoveryKey='txt:phase2-shell:last-session'" in files:
+        raise SystemExit('Plain Text recovery regressed to a shared cross-tab checkpoint key')
     policy = (APP / 'txt-policy.js').read_text(encoding='utf-8')
 
     for needle in [
