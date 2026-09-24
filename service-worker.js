@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.0-0b71bad9541799c229e7';
+const CACHE_NAME='inkdos-v2.6.0-b2121f1d1a2155594cdd';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "296966f107b7751aaffb146f1d5444193e58c53b41e42e6d3798bc23698dfec3",
@@ -166,8 +166,8 @@ const ASSET_HASHES={
   "./apps/presentations/ui/command-controller.js": "4afb5fa86a4abb2501473cbb1ce0637a66e6f597573daa7b7bc3910e562df6c0",
   "./apps/presentations/ui/editing-controller.js": "ebd91ae5ac3452d816d7d76e920d3b1633db972491a3d932c3ac086ee8b732ca",
   "./apps/presentations/ui/editor.css": "fce108e2642ba49dbd6624273cc2cc09e62d9102ee90410b7a6e3eca8da25dcb",
-  "./apps/presentations/ui/ppt-p1-tools.js": "60c5961c53516323b753e74df6bb11614399a38b1f4b6e23f3faa0c7f4d8859b",
-  "./apps/presentations/ui/ppt-p2-table-tools-ui.js": "0dd8bab2a203dfa739f877b1944a0dc86314cff2e1bd921263e76e81250359d6",
+  "./apps/presentations/ui/ppt-p1-tools.js": "53e4962e345d21be18ce46f71e008c1d4e0ee641bc4ab63ee2dfcdbe68c140e0",
+  "./apps/presentations/ui/ppt-p2-table-tools-ui.js": "6a046bcc3c826b1bd2be69d8a6ef48635272ccbe54210b8817634af53ec0077c",
   "./apps/presentations/ui/ppt-p2-tools.js": "b519a3f48c77ade3b11b12b866a84f6cbbd98b41abf80548e3a6b0796918f6d0",
   "./apps/presentations/ui/slide-panel-controller.js": "7fdcddeb0b12ddc0011f57edbb69db65de4ec81365e0d05e63fbdccd57fb97d1",
   "./apps/presentations/ui/zoom-controls.js": "f301c7620eff67d6b6fb0671c171f922854ff83bd28252e35d182ead03ffa510",
