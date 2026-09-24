@@ -4,17 +4,13 @@ on:
   push:
     tags:
       - 'v*.*.*'
-    branches:
-      - main
-    paths:
-      - 'config/release-trigger-2.5.2.txt'
 
 permissions:
   contents: read
 
 env:
-  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v2.5.2' }}
-  RELEASE_COMMIT: ${{ startsWith(github.ref, 'refs/tags/') && github.sha || '3470607f440d34b361aff4a790acec442d84fb56' }}
+  RELEASE_TAG: ${{ github.ref_name }}
+  RELEASE_COMMIT: ${{ github.sha }}
 
 concurrency:
   group: inkdos-release-${{ github.ref }}
