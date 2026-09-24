@@ -23,9 +23,6 @@ jobs:
     permissions:
       contents: write
     timeout-minutes: 40
-    outputs:
-      release_channel: ${{ steps.release_meta.outputs.channel }}
-      native_builds: ${{ steps.release_meta.outputs.native_builds }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -38,20 +35,6 @@ jobs:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: requirements-ci.txt
-
-      - name: Resolve release channel
-        id: release_meta
-        shell: bash
-        run: |
-          set -euo pipefail
-          CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
-          case "$CHANNEL" in
-            stable) NATIVE_BUILDS=true ;;
-            beta) NATIVE_BUILDS=false ;;
-            *) echo "Unsupported release channel: $CHANNEL" >&2; exit 1 ;;
-          esac
-          echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
-          echo "native_builds=$NATIVE_BUILDS" >> "$GITHUB_OUTPUT"
 
       - name: Require tag commit to belong to main
         shell: bash
@@ -99,38 +82,14 @@ jobs:
         run: python desktop/scripts/stage_web.py --check
 
       - name: Install verified Rust toolchain for signing preflight
-        if: steps.release_meta.outputs.native_builds == 'true'
         uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87
         with:
           toolchain: 1.98.1
 
-      - name: Restore Tauri and Cargo cache for signing preflight
-        if: steps.release_meta.outputs.native_builds == 'true'
-        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
-        with:
-          path: |
-            ~/.cargo/bin/cargo-tauri
-            ~/.cargo/registry/cache
-            ~/.cargo/registry/index
-            ~/.cargo/git/db
-            desktop/src-tauri/target
-          key: ${{ runner.os }}-inkdos-tauri-2.11.4-rust-1.98.1-${{ hashFiles('desktop/src-tauri/Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-inkdos-tauri-2.11.4-rust-1.98.1-
-
       - name: Install verified Tauri CLI for signing preflight
-        if: steps.release_meta.outputs.native_builds == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          if cargo tauri --version 2>/dev/null | grep -F "2.11.4" >/dev/null; then
-            echo "Using cached tauri-cli 2.11.4."
-          else
-            cargo install tauri-cli --version "2.11.4" --locked
-          fi
+        run: cargo install tauri-cli --version "2.11.4" --locked
 
       - name: Signing preflight
-        if: steps.release_meta.outputs.native_builds == 'true'
         shell: bash
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -152,7 +111,6 @@ jobs:
           cargo tauri signer sign /tmp/inkdos-signing-preflight.txt
 
       - name: Record immutable build provenance
-        if: steps.release_meta.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -172,7 +130,6 @@ jobs:
           PY
 
       - name: Upload immutable build provenance
-        if: steps.release_meta.outputs.native_builds == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: Release-Provenance
@@ -183,7 +140,6 @@ jobs:
   build:
     name: Build ${{ matrix.artifact }}
     needs: validate
-    if: needs.validate.outputs.native_builds == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -241,28 +197,8 @@ jobs:
         with:
           toolchain: 1.98.1
 
-      - name: Restore Tauri and Cargo cache
-        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
-        with:
-          path: |
-            ~/.cargo/bin/cargo-tauri
-            ~/.cargo/registry/cache
-            ~/.cargo/registry/index
-            ~/.cargo/git/db
-            desktop/src-tauri/target
-          key: ${{ runner.os }}-inkdos-tauri-2.11.4-rust-1.98.1-${{ hashFiles('desktop/src-tauri/Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-inkdos-tauri-2.11.4-rust-1.98.1-
-
       - name: Install verified Tauri CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          if cargo tauri --version 2>/dev/null | grep -F "2.11.4" >/dev/null; then
-            echo "Using cached tauri-cli 2.11.4."
-          else
-            cargo install tauri-cli --version "2.11.4" --locked
-          fi
+        run: cargo install tauri-cli --version "2.11.4" --locked
 
       - name: Revalidate release metadata
         run: |
@@ -315,7 +251,7 @@ jobs:
   publish:
     name: Publish GitHub Release
     needs: [validate, build]
-    if: ${{ always() && needs.validate.result == 'success' && (needs.validate.outputs.native_builds != 'true' || needs.build.result == 'success') }}
+    if: ${{ always() && needs.validate.result == 'success' && needs.build.result == 'success' }}
     runs-on: ubuntu-22.04
     permissions:
       actions: read
@@ -328,7 +264,6 @@ jobs:
           persist-credentials: false
 
       - name: Download current-run native artifacts
-        if: needs.validate.outputs.native_builds == 'true'
         uses: actions/download-artifact@v4
         with:
           pattern: InkDOS-*
@@ -336,14 +271,12 @@ jobs:
           merge-multiple: true
 
       - name: Download current-run provenance
-        if: needs.validate.outputs.native_builds == 'true'
         uses: actions/download-artifact@v4
         with:
           name: Release-Provenance
           path: release-provenance
 
       - name: Verify artifact provenance
-        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -367,7 +300,6 @@ jobs:
           PY
 
       - name: Select and validate release artifacts
-        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -419,7 +351,6 @@ jobs:
           PY
 
       - name: Validate release inventory and generate SHA-256 checksums
-        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -434,19 +365,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
-          CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
-          if [ "$CHANNEL" = "beta" ]; then
-            cat > release-notes.md <<EOF
-          # InkDOS ${VERSION} Beta
-
-          Web/PWA prerelease for validation before the next stable desktop build.
-
-          Web edition: https://vfydr2m9wk-ops.github.io/InkDOS/
-
-          Beta releases intentionally do not build or attach Windows, macOS or Linux installers.
-          EOF
-          else
-            cat > release-notes.md <<EOF
+          cat > release-notes.md <<EOF
           # InkDOS ${VERSION}
 
           One source version for the web/PWA and installable desktop editions.
@@ -455,10 +374,8 @@ jobs:
 
           Desktop installers attached to this release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.
           EOF
-          fi
 
       - name: Build signed updater manifest
-        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -471,7 +388,6 @@ jobs:
             --output release-final/latest.json
 
       - name: Validate final release bundle coherence
-        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -482,7 +398,6 @@ jobs:
             --assets release-final
 
       - name: Validate explicit publication authorization
-        if: needs.validate.outputs.native_builds == 'true'
         run: python desktop/scripts/validate_release_authorization.py --version "$(python -c 'import json; print(json.load(open("VERSION.json"))["version"])')" --assets release-final
 
       - name: Publish verified release transactionally
@@ -498,9 +413,8 @@ jobs:
             beta) PRERELEASE=true; LATEST=false; TITLE="InkDOS ${VERSION} Beta" ;;
             *) echo "Unsupported release channel: $CHANNEL" >&2; exit 1 ;;
           esac
-          if [ "$CHANNEL" = "stable" ]; then
-            test -s release-final/latest.json
-            mapfile -d '' ASSETS < <(find release-final -maxdepth 1 -type f -print0)
+          test -s release-final/latest.json
+          mapfile -d '' ASSETS < <(find release-final -maxdepth 1 -type f -print0)
           if [ "${#ASSETS[@]}" -lt 8 ]; then
             echo "Release is missing required installer/updater assets." >&2
             exit 1
@@ -537,34 +451,5 @@ jobs:
             --draft=false \
             --prerelease="$PRERELEASE" \
             --latest="$LATEST" \
-            --title "$TITLE" \
-            --notes-file release-notes.md
-            exit 0
-          fi
-
-          # Beta publication is intentionally source/web-only: no native artifacts.
-          if gh release view "$RELEASE_TAG" --json isDraft > /tmp/beta-release-state.json 2>/dev/null; then
-            IS_DRAFT="$(python -c 'import json; print(str(json.load(open("/tmp/beta-release-state.json"))["isDraft"]).lower())')"
-            if [ "$IS_DRAFT" != "true" ]; then
-              echo "Refusing to overwrite an already-public release: $RELEASE_TAG" >&2
-              exit 1
-            fi
-          else
-            gh release create "$RELEASE_TAG" \
-              --target "$RELEASE_COMMIT" \
-              --draft \
-              --title "$TITLE" \
-              --notes-file release-notes.md
-          fi
-          mapfile -t BETA_REMOTE_ASSETS < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name')
-          if [ "${#BETA_REMOTE_ASSETS[@]}" -ne 0 ]; then
-            echo "Refusing to publish beta with attached native/reused assets." >&2
-            printf '%s\n' "${BETA_REMOTE_ASSETS[@]}" >&2
-            exit 1
-          fi
-          gh release edit "$RELEASE_TAG" \
-            --draft=false \
-            --prerelease=true \
-            --latest=false \
             --title "$TITLE" \
             --notes-file release-notes.md
