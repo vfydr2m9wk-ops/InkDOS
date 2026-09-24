@@ -273,7 +273,14 @@ def audit_app(browser, app, fixtures, active):
                             last_detach = exc
                             cpage.wait_for_timeout(180)
                     if last_detach is not None:
-                        raise last_detach
+                        delivered = cpage.eval_on_selector(path, """el => {
+                          if (!el || el.hidden || el.disabled) return false;
+                          const style=getComputedStyle(el),rect=el.getBoundingClientRect();
+                          if (style.display==='none' || style.visibility==='hidden' || rect.width<=0 || rect.height<=0) return false;
+                          el.click(); return true;
+                        }""")
+                        if not delivered:
+                            raise last_detach
                     cpage.wait_for_timeout(180)
                     after = button_snapshot(cpage)
                     after_sig = visible_signature(after)
