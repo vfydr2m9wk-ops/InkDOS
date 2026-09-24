@@ -42,12 +42,25 @@ def fine_pointer_script(matches: bool) -> str:
     return f"""
 (() => {{
   const nativeMatchMedia = window.matchMedia.bind(window);
-  window.matchMedia = query => {{
-    if (query === {POINTER_QUERY!r}) {{
-      return {{matches:{value},media:query,onchange:null,addListener(){{}},removeListener(){{}},addEventListener(){{}},removeEventListener(){{}},dispatchEvent(){{return true}}}};
-    }}
-    return nativeMatchMedia(query);
+  let finePointer = {value};
+  const listeners = new Set();
+  const pointerMql = {{
+    media:{POINTER_QUERY!r},
+    onchange:null,
+    get matches(){{ return finePointer; }},
+    addListener(fn){{ listeners.add(fn); }},
+    removeListener(fn){{ listeners.delete(fn); }},
+    addEventListener(type,fn){{ if(type==='change') listeners.add(fn); }},
+    removeEventListener(type,fn){{ if(type==='change') listeners.delete(fn); }},
+    dispatchEvent(){{ return true; }}
   }};
+  window.__inkdosSetFinePointer = next => {{
+    finePointer = !!next;
+    const event = {{matches:finePointer,media:pointerMql.media}};
+    listeners.forEach(fn => fn.call(pointerMql,event));
+    if(typeof pointerMql.onchange === 'function') pointerMql.onchange.call(pointerMql,event);
+  }};
+  window.matchMedia = query => query === {POINTER_QUERY!r} ? pointerMql : nativeMatchMedia(query);
 }})();
 """
 
@@ -139,6 +152,28 @@ def main() -> None:
             assert reset['density'] == 'desktop', reset
             assert reset['preference'] == 'auto', reset
             assert reset['stored'] == 'auto', reset
+
+            # Automatic density must follow viewport changes without a reload.
+            page.set_viewport_size({'width': 720, 'height': 900})
+            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'mobile'")
+            resized_mobile = root_state(page)
+            assert resized_mobile['preference'] == 'auto', resized_mobile
+            assert resized_mobile['density'] == 'mobile', resized_mobile
+
+            page.set_viewport_size({'width': 1360, 'height': 900})
+            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'desktop'")
+            resized_desktop = root_state(page)
+            assert resized_desktop['density'] == 'desktop', resized_desktop
+
+            # Automatic density must also follow a pointer capability change.
+            page.evaluate("() => window.__inkdosSetFinePointer(false)")
+            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'mobile'")
+            pointer_mobile = root_state(page)
+            assert pointer_mobile['density'] == 'mobile', pointer_mobile
+            page.evaluate("() => window.__inkdosSetFinePointer(true)")
+            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'desktop'")
+            pointer_desktop = root_state(page)
+            assert pointer_desktop['density'] == 'desktop', pointer_desktop
             desktop_context.close()
 
             mobile_context = browser.new_context(viewport={'width': 720, 'height': 900})
