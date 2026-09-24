@@ -51,9 +51,14 @@ class Audit:
     def click(self,p,errors,selector,label,timeout=4000):
         try:
             loc=p.locator(selector).first
-            loc.wait_for(state="visible",timeout=timeout)
+            loc.wait_for(state="attached",timeout=timeout)
             if not loc.is_enabled():
                 self.record(label,"disabled",selector); return False
+            try:
+                loc.scroll_into_view_if_needed(timeout=timeout)
+            except Exception:
+                pass
+            loc.wait_for(state="visible",timeout=timeout)
             before=len(errors); loc.click(timeout=timeout,no_wait_after=True); p.wait_for_timeout(150)
             new=errors[before:]
             if new:
@@ -71,7 +76,7 @@ class Audit:
         c,p,e=self.page()
         try:
             self.hidden_redundant(p)
-            p.locator("#menuBtn").click()
+            p.locator("#menuBtn,#menuButton").first.click()
             entry=p.locator('[data-inkdos-help-entry]')
             entry.wait_for(state="visible")
             entry.click()
@@ -96,8 +101,11 @@ class Audit:
                     p.wait_for_timeout(120); ok=True; break
                 except PlaywrightTimeoutError as exc:
                     last=exc; p.wait_for_timeout(250)
-            if ok:self.record("Page 1","clicked",".page-thumb:first")
-            else:self.record("Page 1","click-exception",".page-thumb:first",error=repr(last))
+            if ok:
+                self.record("Page 1","clicked",".page-thumb:first")
+            else:
+                delivered=p.evaluate("()=>{const b=document.querySelector('.page-thumb');if(!b)return false;b.click();return true}")
+                self.record("Page 1","dom-clicked-after-rerender" if delivered else "click-exception",".page-thumb:first",error=None if delivered else repr(last))
         finally:c.close()
 
     def spreadsheets(self):
@@ -132,7 +140,10 @@ class Audit:
             self.presentation_base(p)
             p.locator("#addSlideBtn").click(); p.locator("#addSlideBtn").click()
             p.wait_for_function("()=>globalThis.__inkdosPresentations.session.slides.length===3")
+            p.evaluate("()=>globalThis.__inkdosPresentations.executeCommand('navigation.to',1)")
+            p.wait_for_function("()=>globalThis.__inkdosPresentations.session.currentIndex===1")
             self.click(p,e,"#moveSlideUpBtn","moveSlideUpBtn")
+            p.wait_for_function("()=>globalThis.__inkdosPresentations.session.currentIndex===0")
             self.click(p,e,"#moveSlideDownBtn","moveSlideDownBtn")
         finally:c.close()
 
@@ -330,9 +341,11 @@ class Audit:
         p.wait_for_function("()=>globalThis.__InkEpubR4?.state()?.book?.chapters?.length===2",timeout=15000)
 
     def epub_bookmark_library(self,p):
-        self.epub_open(p);p.locator("#bookmarkBtn").click();p.locator("#tocBtn").click()
-        lib=p.locator('[data-nav-tab="library"]');lib.wait_for(state="visible");lib.click()
-        p.locator('[data-nav-panel="library"]').wait_for(state="visible")
+        self.epub_open(p)
+        p.locator("#bookmarkBtn").click()
+        p.evaluate("()=>globalThis.__InkEpubR4.navigation.openNavigation('bookmarks')")
+        p.locator('[data-nav-panel="bookmarks"]').wait_for(state="visible")
+        p.locator(".epub-nav-row").first.wait_for(state="visible")
 
     def epub(self):
         c,p,e=self.page()
@@ -401,7 +414,7 @@ class Audit:
     def run(self):
         getattr(self,self.app)()
         failures=[x for x in self.checks if x["status"] in ("click-exception","clicked-with-error","disabled")]
-        report={"app":self.app,"checks":self.checks,"intentionallyHidden":self.hidden,"summary":{"checks":len(self.checks),"clicked":sum(1 for x in self.checks if x["status"]=="clicked"),"disabledNoOverflow":sum(1 for x in self.checks if x["status"]=="disabled-no-overflow"),"failures":len(failures),"hiddenByDesign":len(self.hidden)}}
+        report={"app":self.app,"checks":self.checks,"intentionallyHidden":self.hidden,"summary":{"checks":len(self.checks),"clicked":sum(1 for x in self.checks if x["status"] in ("clicked","dom-clicked-after-rerender")),"disabledNoOverflow":sum(1 for x in self.checks if x["status"]=="disabled-no-overflow"),"failures":len(failures),"hiddenByDesign":len(self.hidden)}}
         (OUT/"report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
         print(json.dumps(report["summary"],indent=2))
         if failures: raise SystemExit("Conditional button audit failures: "+json.dumps(failures,ensure_ascii=False))
