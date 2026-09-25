@@ -42,6 +42,7 @@ NS.PresentationPolicy=Object.freeze({
  * namespace setter here so the controller is wrapped at registration time,
  * without coupling the parser/renderer to the security policy.
  */
+const VERIFIED_PPTX_PACKAGES=new WeakMap();
 const PPTX_LIMITS=Object.freeze({
   maxInputBytes:64*1024*1024,
   maxEntries:4096,
@@ -207,13 +208,21 @@ async function validatePptx(input){
       pptxFail('PPTX_XML_DTD',`DTD/entity declarations are forbidden in PPTX XML: ${record.path}`);
     }
   }
+  VERIFIED_PPTX_PACKAGES.set(inspected,zip);
   return inspected;
+}
+
+function validatedZip(validated,input){
+  if(!validated)return null;
+  const bytes=asBytes(input);
+  if(validated.bytes!==bytes)return null;
+  return VERIFIED_PPTX_PACKAGES.get(validated)||null;
 }
 
 function secureController(original){
   async function decodePptx(bytes,fileName){
-    await validatePptx(bytes);
-    return original.decodePptx(bytes,fileName);
+    const validated=await validatePptx(bytes);
+    return original.decodePptx(bytes,fileName,validated);
   }
   async function decode(bytes,fileName){
     if(/\.ppt$/i.test(String(fileName||'')))return original.decode(bytes,fileName);
@@ -229,7 +238,8 @@ function secureController(original){
           pptxFail('PPTX_INPUT_BUDGET','PPTX exceeds the compressed input-byte budget.');
         }
         const bytes=new Uint8Array(await file.arrayBuffer());
-        await validatePptx(bytes);
+        const validated=await validatePptx(bytes);
+        return inner.openFile(file,{bytes,validated});
       }catch(error){
         options.chrome?.showError(error,file);
         if(options.fileInput)options.fileInput.value='';
@@ -270,7 +280,8 @@ Object.defineProperty(NS,'PptxOpenController',{
 NS.PptxSecurity=Object.freeze({
   LIMITS:PPTX_LIMITS,
   inspectPptxZip,
-  validatePptx
+  validatePptx,
+  validatedZip
 });
 
 })(globalThis);
