@@ -25,10 +25,12 @@ jobs:
         env:
           INKDOS_PREVIEW_OVERHEAD_OUT: artifacts/pptx-preview-overhead-diagnostic
         run: python scripts/diagnose_pptx_preview_overhead.py
+      - name: Prove preview paint across scheduling modes
+        run: python scripts/diagnose_pptx_preview_yield_visual.py
       - if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pptx-preview-overhead-diagnostic
-          path: artifacts/pptx-preview-overhead-diagnostic/
+          path: |\n            artifacts/pptx-preview-overhead-diagnostic/\n            artifacts/pptx-preview-yield-visual/
           if-no-files-found: warn
           retention-days: 14
