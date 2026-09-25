@@ -179,7 +179,7 @@ def main() -> None:
 
                   // Decoder failure after slide 1: preview is allowed (security already
                   // passed), but it must disappear and the committed document must survive.
-                  const errorBase=await makeDeck(3,'ERROR');
+                  const errorBase=await makeDeck(12,'ERROR');
                   const errorZip=await JSZip.loadAsync(errorBase);
                   errorZip.file('ppt/slides/slide2.xml','<p:sld><broken>');
                   const errorBytes=await errorZip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}});
