@@ -136,11 +136,16 @@ jobs:
           retention-days: 14
 
 
+
   performance-lab-quick:
-    name: Performance lab quick WebKit gate
+    name: Performance lab quick WebKit (${{ matrix.component }})
     if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'perf/xeros-exp-') || github.head_ref == 'perf/xeros-optimization-workbench')
     runs-on: ubuntu-22.04
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [presentations, pdf]
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -156,23 +161,28 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install WebKit
         run: python -m playwright install --with-deps webkit
-      - name: Run focused workbench smoke tests
+      - name: Run focused component smoke
+        shell: bash
         run: |
           set -euo pipefail
-          python scripts/agent_test.py presentations
-          python tests/test_pdf_stability_contract.py
-      - name: Benchmark quick WebKit numeric and visual evidence
+          if [ "${{ matrix.component }}" = "presentations" ]; then
+            python scripts/agent_test.py presentations
+          else
+            python tests/test_pdf_stability_contract.py
+          fi
+      - name: Benchmark isolated WebKit component
         env:
           BROWSER: webkit
+          INKDOS_PERF_COMPONENT: ${{ matrix.component }}
           INKDOS_PERF_ITERATIONS: "2"
           INKDOS_PERF_VISUAL: "1"
-          INKDOS_PERF_OUT: artifacts/performance-lab-quick/webkit
-        run: python scripts/benchmark_workspace_performance.py
-      - name: Preserve quick performance evidence
+          INKDOS_PERF_OUT: artifacts/performance-lab-quick/${{ matrix.component }}/webkit
+        run: python scripts/benchmark_component_performance.py
+      - name: Preserve component quick evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: performance-lab-quick-webkit
-          path: artifacts/performance-lab-quick/webkit/
+          name: performance-lab-quick-${{ matrix.component }}-webkit
+          path: artifacts/performance-lab-quick/${{ matrix.component }}/webkit/
           if-no-files-found: warn
           retention-days: 7
