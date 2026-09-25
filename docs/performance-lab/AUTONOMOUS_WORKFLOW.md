@@ -44,12 +44,13 @@ The hourly review is the sole decision authority. It:
 - inspects available focused evidence;
 - evaluates independence/interactions;
 - selects a coherent subset;
-- constructs/advances the lab candidate from the last accepted stable state;
-- lets draft PR #203 run the complete CI;
-- inspects numeric, visual, behavioral, security, offline and launchQueue evidence;
-- accepts or rejects the hourly lab candidate;
-- updates stable_sha, roadmap priorities and dead hypotheses;
-- resets/synchronizes workbench for the next hour as needed.
+- reviews the sequential workbench task commits from the hour and removes only rejected bounded changes;
+- writes the exact reviewed workbench SHA to state.reviewed_workbench_sha and state.stage_ready_sha;
+- leaves the lab branch untouched during review;
+- lets the :05 Stage worker move perf/xeros-optimization-lab to exactly stage_ready_sha;
+- uses draft PR #203 as the complete CI gate for that staged SHA;
+- on the next review, inspects numeric, visual, behavioral, security, offline and launchQueue evidence for the staged candidate;
+- updates stable_sha, roadmap priorities and dead hypotheses while keeping unrelated work moving.
 
 Do not merge PR #203 or main. Do not enable auto-merge. No releases/tags/version
 bumps/deployments.
@@ -72,4 +73,4 @@ Personal Library folder: `/InkDOS Performance Lab`
 - latest-hourly-review.txt
 - hourly-review-NN.txt
 
-Workers append experiments; hourly review owns roadmap/stable decisions.
+Workers append experiments; hourly review owns roadmap/stable decisions. Stage worker owns only mechanical staging of the review-approved SHA and has no KEEP/DROP authority.
