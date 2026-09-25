@@ -335,7 +335,6 @@ def main() -> None:
         assert cancel["newMid"]["sourceKind"] == "new", result
         assert cancel["newMid"]["slideCount"] == 1, result
         assert cancel["newMid"]["previewActive"] is False, result
-        assert cancel["newFinal"] == cancel["newMid"] | {"accepted": cancel["newMid"].get("accepted")} if False else cancel["newFinal"]
         assert cancel["newFinal"]["sourceKind"] == "new" and cancel["newFinal"]["slideCount"] == 1, result
         assert cancel["newFinal"]["previewActive"] is False, result
         assert cancel["reopenedSlides"] == 1, result
