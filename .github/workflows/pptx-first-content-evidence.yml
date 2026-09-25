@@ -4,6 +4,7 @@ on:
     branches:
       - perf/pptx-first-slide-visual-baseline
       - perf/pptx-first-slide-visual-candidate
+      - perf/pptx-first-slide-final-evidence
 permissions:
   contents: read
 jobs:
