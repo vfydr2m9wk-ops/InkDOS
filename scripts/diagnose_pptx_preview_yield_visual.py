@@ -39,8 +39,8 @@ def main():
           app_src=instrument_app(app_raw,mode);rows=[]
           for target in TARGETS:
             ctx=browser.new_context(viewport={"width":1280,"height":820},service_workers="block")
-            ctx.route("**/apps/presentations/io/pptx-open-controller.js",lambda r,src=open_src:r.fulfill(status=200,content_type="application/javascript",body=src))
-            ctx.route("**/apps/presentations/app.js",lambda r,src=app_src:r.fulfill(status=200,content_type="application/javascript",body=src))
+            ctx.route("**/apps/presentations/io/pptx-open-controller.js",lambda route:route.fulfill(status=200,content_type="application/javascript",body=open_src))
+            ctx.route("**/apps/presentations/app.js",lambda route:route.fulfill(status=200,content_type="application/javascript",body=app_src))
             page=ctx.new_page()
             page.goto(BASE+"/apps/presentations/index.html?suite=1",wait_until="load",timeout=30000)
             page.wait_for_function("() => !!globalThis.__inkdosPresentations?.session")
