@@ -105,11 +105,12 @@ jobs:
           INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
           INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
         run: python scripts/run_candidate_audit.py
-      - name: Benchmark workspace startup and file opening
+      - name: Benchmark numeric and visual workspace performance
         continue-on-error: true
         env:
           BROWSER: ${{ matrix.browser }}
           INKDOS_PERF_ITERATIONS: "3"
+          INKDOS_PERF_VISUAL: "1"
           INKDOS_PERF_OUT: artifacts/performance/${{ matrix.browser }}
         run: python scripts/benchmark_workspace_performance.py
       - name: Preserve performance benchmark evidence
