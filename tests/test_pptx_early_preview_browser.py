@@ -183,15 +183,31 @@ def main() -> None:
                   const errorZip=await JSZip.loadAsync(errorBase);
                   errorZip.file('ppt/slides/slide2.xml','<p:sld><broken>');
                   const errorBytes=await errorZip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}});
-                  const beforeError=JSON.stringify(app.session.snapshot());
+                  const beforeError={
+                    slides:app.session.slides,
+                    sourceBytes:app.session.sourceBytes,
+                    fileName:app.session.fileName,
+                    sourceKind:app.session.sourceKind,
+                    dirty:app.session.dirty,
+                    currentSlideId:app.session.currentSlideId,
+                    undo:app.history.undoStack.length,
+                    redo:app.history.redoStack.length
+                  };
                   const errorObserver=observePreview();
                   const errorOpened=await app.open(fileOf(errorBytes,'error-after-preview.pptx'));
                   errorObserver.stop();
                   const afterError={
                     previewSeen:errorObserver.seen(),
-                    snapshot:JSON.stringify(app.session.snapshot()),
                     previewActive:!!app.openingPreview,
-                    canvasPreview:canvas().dataset.transientPreview==='true'
+                    canvasPreview:canvas().dataset.transientPreview==='true',
+                    slidesSame:app.session.slides===beforeError.slides,
+                    sourceBytesSame:app.session.sourceBytes===beforeError.sourceBytes,
+                    fileNameSame:app.session.fileName===beforeError.fileName,
+                    sourceKindSame:app.session.sourceKind===beforeError.sourceKind,
+                    dirtySame:app.session.dirty===beforeError.dirty,
+                    currentSlideIdSame:app.session.currentSlideId===beforeError.currentSlideId,
+                    undoSame:app.history.undoStack.length===beforeError.undo,
+                    redoSame:app.history.redoStack.length===beforeError.redo
                   };
                   hideError();
 
@@ -204,14 +220,30 @@ def main() -> None:
                   hostileXml=hostileXml.replace(/^(<\?xml[^>]*\?>)?/,m=>m+'<!DOCTYPE p:sld [<!ENTITY x "boom">]>');
                   hostileZip.file(slide1Path,hostileXml);
                   const hostileBytes=await hostileZip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}});
-                  const beforeHostile=JSON.stringify(app.session.snapshot());
+                  const beforeHostile={
+                    slides:app.session.slides,
+                    sourceBytes:app.session.sourceBytes,
+                    fileName:app.session.fileName,
+                    sourceKind:app.session.sourceKind,
+                    dirty:app.session.dirty,
+                    currentSlideId:app.session.currentSlideId,
+                    undo:app.history.undoStack.length,
+                    redo:app.history.redoStack.length
+                  };
                   const hostileObserver=observePreview();
                   const hostileOpened=await app.open(fileOf(hostileBytes,'hostile-preview.pptx'));
                   hostileObserver.stop();
                   const afterHostile={
                     previewSeen:hostileObserver.seen(),
-                    snapshot:JSON.stringify(app.session.snapshot()),
-                    previewActive:!!app.openingPreview
+                    previewActive:!!app.openingPreview,
+                    slidesSame:app.session.slides===beforeHostile.slides,
+                    sourceBytesSame:app.session.sourceBytes===beforeHostile.sourceBytes,
+                    fileNameSame:app.session.fileName===beforeHostile.fileName,
+                    sourceKindSame:app.session.sourceKind===beforeHostile.sourceKind,
+                    dirtySame:app.session.dirty===beforeHostile.dirty,
+                    currentSlideIdSame:app.session.currentSlideId===beforeHostile.currentSlideId,
+                    undoSame:app.history.undoStack.length===beforeHostile.undo,
+                    redoSame:app.history.redoStack.length===beforeHostile.redo
                   };
                   hideError();
 
@@ -283,8 +315,8 @@ def main() -> None:
                   return {
                     old:{snapshot:oldSnapshot,undo:oldUndo,redo:oldRedo},
                     success:{mid,opened44,final44},
-                    error:{before:errorOpened?null:beforeError,opened:errorOpened,after:afterError},
-                    hostile:{before:beforeHostile,opened:hostileOpened,after:afterHostile},
+                    error:{opened:errorOpened,after:afterError},
+                    hostile:{opened:hostileOpened,after:afterHostile},
                     replacement:{openedA,openedB,afterBCommit,afterAStale},
                     cancelNew:{newAccepted,staleOpened,newMid,newFinal},small:smallResult,reopenedSlides:reopened.slides.length
                   };
@@ -324,15 +356,27 @@ def main() -> None:
         error = result["error"]
         assert error["opened"] is False, result
         assert error["after"]["previewSeen"] is True, result
-        assert error["after"]["snapshot"] == error["before"], result
         assert error["after"]["previewActive"] is False, result
         assert error["after"]["canvasPreview"] is False, result
+        assert error["after"]["slidesSame"] is True, result
+        assert error["after"]["sourceBytesSame"] is True, result
+        assert error["after"]["fileNameSame"] is True, result
+        assert error["after"]["sourceKindSame"] is True, result
+        assert error["after"]["dirtySame"] is True, result
+        assert error["after"]["currentSlideIdSame"] is True, result
+        assert error["after"]["undoSame"] is True and error["after"]["redoSame"] is True, result
 
         hostile = result["hostile"]
         assert hostile["opened"] is False, result
         assert hostile["after"]["previewSeen"] is False, result
-        assert hostile["after"]["snapshot"] == hostile["before"], result
         assert hostile["after"]["previewActive"] is False, result
+        assert hostile["after"]["slidesSame"] is True, result
+        assert hostile["after"]["sourceBytesSame"] is True, result
+        assert hostile["after"]["fileNameSame"] is True, result
+        assert hostile["after"]["sourceKindSame"] is True, result
+        assert hostile["after"]["dirtySame"] is True, result
+        assert hostile["after"]["currentSlideIdSame"] is True, result
+        assert hostile["after"]["undoSame"] is True and hostile["after"]["redoSame"] is True, result
 
         replacement = result["replacement"]
         assert replacement["openedB"] is True, result
