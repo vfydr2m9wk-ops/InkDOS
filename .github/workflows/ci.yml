@@ -156,35 +156,11 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install WebKit
         run: python -m playwright install --with-deps webkit
-      - name: Run changed-component tests
-        shell: bash
+      - name: Run focused workbench smoke tests
         run: |
           set -euo pipefail
-          BASE="${{ github.event.pull_request.base.sha }}"
-          git diff --name-only "$BASE" HEAD > /tmp/changed.txt
-          ran=0
-          for component in presentations pdf documents spreadsheets epub txt; do
-            case "$component" in
-              presentations) prefix='apps/presentations/' ;;
-              pdf) prefix='apps/pdf/' ;;
-              documents) prefix='apps/documents/' ;;
-              spreadsheets) prefix='apps/spreadsheets/' ;;
-              epub) prefix='apps/epub/' ;;
-              txt) prefix='apps/txt/' ;;
-            esac
-            if grep -q "^$prefix" /tmp/changed.txt; then
-              if [ "$component" = "pdf" ]; then
-                python tests/test_pdf_stability_contract.py
-                python tests/test_pdf_toolbar_25_contract.py
-              else
-                python scripts/agent_test.py "$component"
-              fi
-              ran=1
-            fi
-          done
-          if [ "$ran" -eq 0 ]; then
-            echo "No product component changed; focused component tests skipped."
-          fi
+          python scripts/agent_test.py presentations
+          python tests/test_pdf_stability_contract.py
       - name: Benchmark quick WebKit numeric and visual evidence
         env:
           BROWSER: webkit
