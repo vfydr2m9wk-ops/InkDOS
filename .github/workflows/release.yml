@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - main
+    paths:
+      - 'config/release-trigger-*.json'
 
 permissions:
   contents: read
@@ -25,6 +29,7 @@ jobs:
     timeout-minutes: 40
     outputs:
       channel: ${{ steps.release.outputs.channel }}
+      release_tag: ${{ steps.release.outputs.release_tag }}
       native_builds: ${{ steps.release.outputs.native_builds }}
       prerelease: ${{ steps.release.outputs.prerelease }}
       latest: ${{ steps.release.outputs.latest }}
@@ -42,19 +47,37 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-ci.txt
 
-      - name: Resolve release channel
+      - name: Resolve release channel and immutable tag
         id: release
         shell: bash
         run: |
           set -euo pipefail
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
           CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            RELEASE_TAG="$GITHUB_REF_NAME"
+          else
+            test "$GITHUB_REF" = "refs/heads/main"
+            RELEASE_TAG="v${VERSION}"
+            TRIGGER="config/release-trigger-${VERSION}.json"
+            test -f "$TRIGGER"
+            python - "$TRIGGER" "$VERSION" "$RELEASE_TAG" "$CHANNEL" <<'PY'
+          import json, sys
+          path, version, tag, channel = sys.argv[1:]
+          data = json.load(open(path, encoding='utf-8'))
+          expected = {'version': version, 'tag': tag, 'channel': channel}
+          if data != expected:
+              raise SystemExit(f'Release trigger mismatch: expected {expected!r}, received {data!r}')
+          PY
+          fi
           case "$CHANNEL" in
             stable) NATIVE_BUILDS=true; PRERELEASE=false; LATEST=true; TITLE="InkDOS ${VERSION}" ;;
             beta) NATIVE_BUILDS=false; PRERELEASE=true; LATEST=false; TITLE="InkDOS ${VERSION} Beta" ;;
             *) echo "Unsupported release channel: $CHANNEL" >&2; exit 1 ;;
           esac
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
           echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
+          echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "native_builds=$NATIVE_BUILDS" >> "$GITHUB_OUTPUT"
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
           echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
@@ -184,6 +207,8 @@ jobs:
   build:
     name: Build ${{ matrix.artifact }}
     needs: validate
+    env:
+      RELEASE_TAG: ${{ needs.validate.outputs.release_tag }}
     if: needs.validate.outputs.native_builds == 'true'
     strategy:
       fail-fast: false
@@ -313,6 +338,8 @@ jobs:
   publish:
     name: Publish GitHub Release
     needs: [validate, build]
+    env:
+      RELEASE_TAG: ${{ needs.validate.outputs.release_tag }}
     if: ${{ always() && needs.validate.result == 'success' && (needs.validate.outputs.native_builds == 'false' || needs.build.result == 'success') }}
     runs-on: ubuntu-22.04
     permissions:
