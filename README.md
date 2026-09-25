@@ -1,5 +1,7 @@
 # InkDOS 2.6.2 Beta
 
+**Official GitHub repository:** [InkDOS by vfydr2m9wk-ops](https://github.com/vfydr2m9wk-ops/InkDOS) — canonical source repository for InkDOS.
+
 > **Current source release identity:** InkDOS 2.6.2 Beta. `v2.6.1` remains the current stable release and must stay the GitHub `latest` release; `v2.6.0` remains preserved as the earlier beta checkpoint.
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
