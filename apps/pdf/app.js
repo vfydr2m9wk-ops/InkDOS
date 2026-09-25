@@ -34,10 +34,6 @@ async function boot(){
   firstContentRendered=await Promise.race([firstRender.then(()=>true),new Promise(resolve=>setTimeout(()=>resolve(false),2500))]);
   if(!firstContentRendered){await afterIdle(650);await ensureEditingTools()}
  }
- // Empty startup has no document that can resolve firstRender. Keep readiness independent
- // from that document-only signal; direct-launch still follows the content-first path above.
- global.__inkdosPdfEmptyStartupReady=!session.active;
- global.__inkdosPdfFirstRenderState=()=>Object.freeze({sessionActive:!!session.active,firstContentRendered,emptyStartupReady:!!global.__inkdosPdfEmptyStartupReady});
  await afterIdle(900);
  try{await loadReaderTools();readerTools=NS.ReaderTools.create({session,getDocument:()=>fileOpen.pdfDocument,layout,chrome,registry,canRotate:()=>true});readerTools.install();if(session.active){readerTools.resetDocument();readerTools.syncEnabled()}}catch(e){console.error('Deferred PDF reader tools failed to load',e)}
  NS.ReaderCompletionDebug=Object.freeze({get readerTools(){return readerTools},get pageTools(){return pageTools},layout});
