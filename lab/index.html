@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>InkDOS Lab</title>
+  <style>
+    :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light dark}
+    body{margin:0;min-height:100vh;background:Canvas;color:CanvasText}
+    main{max-width:760px;margin:0 auto;padding:32px 20px 48px}
+    h1{font-size:28px;margin:0 0 8px}
+    p{line-height:1.45;color:GrayText}
+    .badge{display:inline-block;padding:4px 8px;border:1px solid color-mix(in srgb,CanvasText 20%,transparent);border-radius:999px;font:600 12px/1.2 ui-monospace,monospace;margin-bottom:18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:24px}
+    a{display:block;padding:16px;border:1px solid color-mix(in srgb,CanvasText 18%,transparent);border-radius:14px;color:inherit;text-decoration:none;background:color-mix(in srgb,Canvas 92%,CanvasText 8%)}
+    a:hover{background:color-mix(in srgb,Canvas 86%,CanvasText 14%)}
+    strong{display:block;margin-bottom:4px}
+    small{color:GrayText}
+    footer{margin-top:28px;font-size:12px;color:GrayText}
+  </style>
+</head>
+<body>
+<main>
+  <div class="badge">LAB · perf/xeros-optimization-lab</div>
+  <h1>InkDOS Performance Lab</h1>
+  <p>Experimental live build for performance testing. These apps track the reviewed laboratory branch and are isolated from the normal InkDOS GitHub Pages origin.</p>
+  <div class="grid">
+    <a href="../apps/documents/"><strong>Documents</strong><small>DOC/DOCX/RTF</small></a>
+    <a href="../apps/spreadsheets/"><strong>Spreadsheets</strong><small>XLS/XLSX/CSV/TSV</small></a>
+    <a href="../apps/presentations/"><strong>Presentations</strong><small>PPT/PPTX</small></a>
+    <a href="../apps/pdf/"><strong>PDF</strong><small>PDF workspace</small></a>
+    <a href="../apps/epub/"><strong>EPUB</strong><small>EPUB reader</small></a>
+    <a href="../apps/txt/"><strong>Plain Text</strong><small>TXT and text formats</small></a>
+  </div>
+  <footer>Do not use this environment as the stable production copy. The laboratory branch may change every hour.</footer>
+</main>
+</body>
+</html>
