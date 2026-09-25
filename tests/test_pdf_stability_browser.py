@@ -39,6 +39,8 @@ def main() -> None:
             page.on("console", lambda msg: errors.append(f"console.error: {msg.text}") if msg.type == "error" else None)
             page.goto(BASE + "/apps/pdf/", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
+            page.add_script_tag(url=BASE + "/apps/pdf/vendor/pdf-lib/pdf-lib.min.js")
+            page.wait_for_function("() => !!globalThis.PDFLib?.PDFDocument", timeout=15000)
 
             opened = page.evaluate(r"""async () => {
               const d = globalThis.InkDOS2PdfP4.PdfStabilityDebug;
