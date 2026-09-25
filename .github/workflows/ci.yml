@@ -60,6 +60,8 @@ jobs:
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
       - name: Run Presentations validated-package reuse regression
         run: python tests/test_pptx_verified_package_reuse_browser.py
+      - name: Run hostile PPTX security regression
+        run: python tests/test_pptx_security_browser.py
       - name: Run PDF toolbar hitbox regression
         run: python tests/test_pdf_toolbar_hitbox_browser.py
       - name: Run behavioral stability gate
@@ -105,6 +107,10 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: python tests/test_pptx_verified_package_reuse_browser.py
+      - name: Verify hostile PPTX security gate
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/test_pptx_security_browser.py
       - name: Benchmark numeric and visual workspace performance
         continue-on-error: true
         env:
