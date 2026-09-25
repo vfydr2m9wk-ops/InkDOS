@@ -60,6 +60,8 @@ jobs:
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
       - name: Run Presentations shared-context cache regression
         run: python tests/test_pptx_shared_context_cache_browser.py
+      - name: Run Presentations early-preview safety regression
+        run: python tests/test_pptx_early_preview_browser.py
       - name: Run hostile PPTX security regression
         run: python tests/test_pptx_security_browser.py
       - name: Run PPT-P1 structure roundtrip regression
@@ -111,6 +113,10 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: python tests/test_pptx_shared_context_cache_browser.py
+      - name: Verify Presentations early-preview safety
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/test_pptx_early_preview_browser.py
       - name: Verify hostile PPTX security gate
         env:
           BROWSER: ${{ matrix.browser }}
