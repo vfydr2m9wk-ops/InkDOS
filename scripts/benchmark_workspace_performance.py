@@ -433,8 +433,35 @@ def cold_open_sample(browser: Browser, case: dict, data: bytes) -> dict:
     page.wait_for_function(case["ready"], timeout=TIMEOUT_MS)
     elapsed = (time.perf_counter() - start) * 1000
     snap = probe_snapshot(page)
+    post_ready = {}
+    if case["app"] == "pdf":
+        probe_reset(page)
+        page.wait_for_timeout(1200)
+        post_ready = page.evaluate(
+            """() => {
+              const probe = globalThis.__inkdosPerfProbe;
+              const lag = probe?.snapshot?.() || {lagCountOver50:0,maxLagMs:0,longTaskCount:0,maxLongTaskMs:0};
+              const resetAt = Number(probe?.resetAt || 0);
+              const resources = performance.getEntriesByType('resource')
+                .filter(e => e.startTime >= resetAt)
+                .map(e => ({
+                  name: new URL(e.name, location.href).pathname,
+                  initiatorType: e.initiatorType || '',
+                  transferSize: Number(e.transferSize || 0),
+                  decodedBodySize: Number(e.decodedBodySize || 0)
+                }));
+              return {
+                lagCountOver50: lag.lagCountOver50,
+                maxLagMs: lag.maxLagMs,
+                longTaskCount: lag.longTaskCount,
+                maxLongTaskMs: lag.maxLongTaskMs,
+                resourceBytes: resources.reduce((n,e)=>n+(e.decodedBodySize||e.transferSize||0),0),
+                resources
+              };
+            }"""
+        )
     context.close()
-    return {"elapsedMs": round(elapsed, 2), "errors": errors, **snap}
+    return {"elapsedMs": round(elapsed, 2), "errors": errors, **snap, "postReady": post_ready}
 
 
 def main() -> None:
