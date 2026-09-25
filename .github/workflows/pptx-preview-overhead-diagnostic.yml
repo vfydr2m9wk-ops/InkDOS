@@ -31,6 +31,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pptx-preview-overhead-diagnostic
-          path: |\n            artifacts/pptx-preview-overhead-diagnostic/\n            artifacts/pptx-preview-yield-visual/
+          path: |
+            artifacts/pptx-preview-overhead-diagnostic/
+            artifacts/pptx-preview-yield-visual/
           if-no-files-found: warn
           retention-days: 14
