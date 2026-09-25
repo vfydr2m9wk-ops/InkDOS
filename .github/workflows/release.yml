@@ -23,6 +23,12 @@ jobs:
     permissions:
       contents: write
     timeout-minutes: 40
+    outputs:
+      channel: ${{ steps.release.outputs.channel }}
+      native_builds: ${{ steps.release.outputs.native_builds }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
+      latest: ${{ steps.release.outputs.latest }}
+      title: ${{ steps.release.outputs.title }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -35,6 +41,24 @@ jobs:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: requirements-ci.txt
+
+      - name: Resolve release channel
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
+          case "$CHANNEL" in
+            stable) NATIVE_BUILDS=true; PRERELEASE=false; LATEST=true; TITLE="InkDOS ${VERSION}" ;;
+            beta) NATIVE_BUILDS=false; PRERELEASE=true; LATEST=false; TITLE="InkDOS ${VERSION} Beta" ;;
+            *) echo "Unsupported release channel: $CHANNEL" >&2; exit 1 ;;
+          esac
+          echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
+          echo "native_builds=$NATIVE_BUILDS" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
 
       - name: Require tag commit to belong to main
         shell: bash
@@ -82,14 +106,34 @@ jobs:
         run: python desktop/scripts/stage_web.py --check
 
       - name: Install verified Rust toolchain for signing preflight
+        if: steps.release.outputs.native_builds == 'true'
         uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87
         with:
           toolchain: 1.98.1
 
+      - name: Restore verified Tauri CLI cache for signing preflight
+        if: steps.release.outputs.native_builds == 'true'
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: |
+            ~/.cargo/bin/cargo-tauri
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: inkdos-tauri-cli-${{ runner.os }}-rust-1.98.1-tauri-2.11.4-${{ hashFiles('desktop/src-tauri/Cargo.lock') }}
+
       - name: Install verified Tauri CLI for signing preflight
-        run: cargo install tauri-cli --version "2.11.4" --locked
+        if: steps.release.outputs.native_builds == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! cargo tauri --version 2>/dev/null | grep -F "2.11.4" >/dev/null; then
+            cargo install tauri-cli --version "2.11.4" --locked --force
+          fi
+          cargo tauri --version | grep -F "2.11.4"
 
       - name: Signing preflight
+        if: steps.release.outputs.native_builds == 'true'
         shell: bash
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -140,6 +184,7 @@ jobs:
   build:
     name: Build ${{ matrix.artifact }}
     needs: validate
+    if: needs.validate.outputs.native_builds == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -197,8 +242,25 @@ jobs:
         with:
           toolchain: 1.98.1
 
+      - name: Restore stable native build cache
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: |
+            ~/.cargo/bin/cargo-tauri
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            desktop/src-tauri/target/
+          key: inkdos-native-${{ runner.os }}-rust-1.98.1-tauri-2.11.4-${{ hashFiles('desktop/src-tauri/Cargo.lock') }}
+
       - name: Install verified Tauri CLI
-        run: cargo install tauri-cli --version "2.11.4" --locked
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! cargo tauri --version 2>/dev/null | grep -F "2.11.4" >/dev/null; then
+            cargo install tauri-cli --version "2.11.4" --locked --force
+          fi
+          cargo tauri --version | grep -F "2.11.4"
 
       - name: Revalidate release metadata
         run: |
@@ -251,7 +313,7 @@ jobs:
   publish:
     name: Publish GitHub Release
     needs: [validate, build]
-    if: ${{ always() && needs.validate.result == 'success' && needs.build.result == 'success' }}
+    if: ${{ always() && needs.validate.result == 'success' && (needs.validate.outputs.native_builds == 'false' || needs.build.result == 'success') }}
     runs-on: ubuntu-22.04
     permissions:
       actions: read
@@ -264,6 +326,7 @@ jobs:
           persist-credentials: false
 
       - name: Download current-run native artifacts
+        if: needs.validate.outputs.native_builds == 'true'
         uses: actions/download-artifact@v4
         with:
           pattern: InkDOS-*
@@ -300,6 +363,7 @@ jobs:
           PY
 
       - name: Select and validate release artifacts
+        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -351,6 +415,7 @@ jobs:
           PY
 
       - name: Validate release inventory and generate SHA-256 checksums
+        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -360,7 +425,8 @@ jobs:
             --assets release-final \
             --output release-final/SHA256SUMS
 
-      - name: Prepare release notes
+      - name: Prepare stable release notes
+        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -372,10 +438,32 @@ jobs:
 
           Web edition: https://vfydr2m9wk-ops.github.io/InkDOS/
 
-          Desktop installers attached to this release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.
+          Desktop installers attached to this stable release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.
+          EOF
+
+      - name: Prepare beta web-only release
+        if: needs.validate.outputs.native_builds == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
+          mkdir -p release-final
+          if find release-final -mindepth 1 -maxdepth 1 -type f -print -quit | grep -q .; then
+            echo "Beta release-final must stay empty." >&2
+            exit 1
+          fi
+          cat > release-notes.md <<EOF
+          # InkDOS ${VERSION} Beta
+
+          Web/PWA/source-only prerelease for real-device validation.
+
+          Web edition: https://vfydr2m9wk-ops.github.io/InkDOS/
+
+          This beta intentionally publishes no EXE, DMG, AppImage or native updater artifacts. InkDOS 2.6.1 remains the stable/latest release.
           EOF
 
       - name: Build signed updater manifest
+        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -388,6 +476,7 @@ jobs:
             --output release-final/latest.json
 
       - name: Validate final release bundle coherence
+        if: needs.validate.outputs.native_builds == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -407,24 +496,45 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
-          CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
+          CHANNEL="${{ needs.validate.outputs.channel }}"
+          NATIVE_BUILDS="${{ needs.validate.outputs.native_builds }}"
+          PRERELEASE="${{ needs.validate.outputs.prerelease }}"
+          LATEST="${{ needs.validate.outputs.latest }}"
+          TITLE="${{ needs.validate.outputs.title }}"
+
           case "$CHANNEL" in
-            stable) PRERELEASE=false; LATEST=true; TITLE="InkDOS ${VERSION}" ;;
-            beta) PRERELEASE=true; LATEST=false; TITLE="InkDOS ${VERSION} Beta" ;;
+            stable) test "$NATIVE_BUILDS" = "true" ;;
+            beta) test "$NATIVE_BUILDS" = "false" ;;
             *) echo "Unsupported release channel: $CHANNEL" >&2; exit 1 ;;
           esac
-          test -s release-final/latest.json
-          mapfile -d '' ASSETS < <(find release-final -maxdepth 1 -type f -print0)
-          if [ "${#ASSETS[@]}" -lt 8 ]; then
-            echo "Release is missing required installer/updater assets." >&2
-            exit 1
+
+          ASSETS=()
+          if [ "$NATIVE_BUILDS" = "true" ]; then
+            test -s release-final/latest.json
+            mapfile -d '' ASSETS < <(find release-final -maxdepth 1 -type f -print0)
+            if [ "${#ASSETS[@]}" -lt 8 ]; then
+              echo "Release is missing required installer/updater assets." >&2
+              exit 1
+            fi
+          else
+            if find release-final -mindepth 1 -maxdepth 1 -type f -print -quit | grep -q .; then
+              echo "Beta release-final must stay empty." >&2
+              exit 1
+            fi
           fi
 
-          if gh release view "$RELEASE_TAG" --json isDraft > /tmp/release-state.json 2>/dev/null; then
+          if gh release view "$RELEASE_TAG" --json isDraft,assets > /tmp/release-state.json 2>/dev/null; then
             IS_DRAFT="$(python -c 'import json; print(str(json.load(open("/tmp/release-state.json"))["isDraft"]).lower())')"
             if [ "$IS_DRAFT" != "true" ]; then
               echo "Refusing to overwrite an already-public release: $RELEASE_TAG" >&2
               exit 1
+            fi
+            if [ "$NATIVE_BUILDS" = "false" ]; then
+              EXISTING_ASSETS="$(python -c 'import json; print(len(json.load(open("/tmp/release-state.json"))["assets"]))')"
+              if [ "$EXISTING_ASSETS" != "0" ]; then
+                echo "Beta releases must not contain uploaded assets." >&2
+                exit 1
+              fi
             fi
           else
             gh release create "$RELEASE_TAG" \
@@ -434,18 +544,29 @@ jobs:
               --notes-file release-notes.md
           fi
 
-          gh release upload "$RELEASE_TAG" "${ASSETS[@]}" --clobber
+          if [ "$NATIVE_BUILDS" = "true" ]; then
+            gh release upload "$RELEASE_TAG" "${ASSETS[@]}" --clobber
+          fi
 
           mapfile -t REMOTE_ASSETS < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name')
-          printf '%s\n' "${ASSETS[@]##*/}" | LC_ALL=C sort -u > /tmp/local-assets.txt
-          printf '%s\n' "${REMOTE_ASSETS[@]}" | LC_ALL=C sort -u > /tmp/remote-assets.txt
-          REMOTE_SORTED="$(cat /tmp/remote-assets.txt)"
-          if ! cmp -s /tmp/local-assets.txt /tmp/remote-assets.txt; then
-            echo "Refusing to promote draft with non-exact asset inventory." >&2
-            comm -3 /tmp/local-assets.txt /tmp/remote-assets.txt >&2 || true
-            exit 1
+          if [ "$NATIVE_BUILDS" = "true" ]; then
+            printf '%s\n' "${ASSETS[@]##*/}" | LC_ALL=C sort -u > /tmp/local-assets.txt
+            printf '%s\n' "${REMOTE_ASSETS[@]}" | LC_ALL=C sort -u > /tmp/remote-assets.txt
+            REMOTE_SORTED="$(cat /tmp/remote-assets.txt)"
+            if ! cmp -s /tmp/local-assets.txt /tmp/remote-assets.txt; then
+              echo "Refusing to promote draft with non-exact asset inventory." >&2
+              comm -3 /tmp/local-assets.txt /tmp/remote-assets.txt >&2 || true
+              exit 1
+            fi
+            printf '%s\n' "$REMOTE_SORTED" | grep -Fx 'latest.json' >/dev/null
+          else
+            REMOTE_SORTED="$(printf '%s\n' "${REMOTE_ASSETS[@]}")"
+            if [ "${#REMOTE_ASSETS[@]}" -ne 0 ]; then
+              echo "Beta releases must not contain uploaded assets." >&2
+              printf '%s\n' "$REMOTE_SORTED" >&2
+              exit 1
+            fi
           fi
-          printf '%s\n' "$REMOTE_SORTED" | grep -Fx 'latest.json' >/dev/null
 
           gh release edit "$RELEASE_TAG" \
             --draft=false \
