@@ -96,11 +96,11 @@ def numeric(browser,data,count,iterations):
             "previewSeenCount":sum(1 for x in rows if x["previewSeen"])}
 
 def visual(browser,data,count,theme,targets):
-    c=context(browser,data,f"evidence-{count}.pptx",theme);p=c.new_page()
-    start=time.perf_counter();p.goto(BASE+"/apps/presentations/index.html?suite=1",wait_until="commit",timeout=30000)
     out=[]
     d=OUT/"visual"/theme/f"presentations-pptx-{count}";d.mkdir(parents=True,exist_ok=True)
     for target in targets:
+        c=context(browser,data,f"evidence-{count}.pptx",theme);p=c.new_page()
+        start=time.perf_counter();p.goto(BASE+"/apps/presentations/index.html?suite=1",wait_until="commit",timeout=30000)
         rem=target-(time.perf_counter()-start)*1000
         if rem>0:p.wait_for_timeout(rem)
         actual=(time.perf_counter()-start)*1000
@@ -113,7 +113,8 @@ def visual(browser,data,count,theme,targets):
         })""")
         shot=d/f"t{target}.png";p.screenshot(path=str(shot),full_page=False)
         out.append({"requestedMs":target,"actualMs":round(actual,2),**state,"screenshot":str(shot.relative_to(OUT))})
-    c.close();return out
+        c.close()
+    return out
 
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
