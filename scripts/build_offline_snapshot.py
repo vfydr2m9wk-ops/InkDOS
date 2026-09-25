@@ -26,7 +26,12 @@ def render(root: Path, source: str) -> str:
 def build(root: Path=ROOT,check: bool=False) -> None:
     path=root/'service-worker.js';source=path.read_text();expected=render(root,source)
     if check:
-        if source!=expected:raise SystemExit('Offline snapshot is stale; run python scripts/build_offline_snapshot.py')
+        if source!=expected:
+            first=next((i for i,(a,b) in enumerate(zip(source,expected)) if a!=b),min(len(source),len(expected)))
+            print('OFFLINE_SNAPSHOT_FIRST_DIFF',first)
+            print('SOURCE_SLICE',repr(source[max(0,first-120):first+240]))
+            print('EXPECTED_SLICE',repr(expected[max(0,first-120):first+240]))
+            raise SystemExit('Offline snapshot is stale; run python scripts/build_offline_snapshot.py')
         print('Offline snapshot matches current source bytes.')
     else:path.write_text(expected)
 if __name__=='__main__':
