@@ -17,7 +17,7 @@ from playwright.sync_api import Browser, Page, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = int(os.environ.get("INKDOS_PERF_PORT", "8844"))
-BASE = `http://127.0.0.1:${PORT}`
+BASE = f"http://127.0.0.1:{PORT}"
 BROWSER_NAME = os.environ.get("BROWSER", "chromium").strip().lower()
 ITERATIONS = max(1, int(os.environ.get("INKDOS_PERF_ITERATIONS", "3")))
 OUT = Path(os.environ.get("INKDOS_PERF_OUT", f"artifacts/performance/{BROWSER_NAME}"))
