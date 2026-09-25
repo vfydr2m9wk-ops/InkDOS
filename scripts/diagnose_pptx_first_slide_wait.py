@@ -44,25 +44,37 @@ def stat(samples,key):
     return {"median":median(vals),"p95":p95(vals)}
 
 def instrument_controller(source:str)->str:
-    old="async function decodePptx(bytes,fileName){if(!global.JSZip)"
-    new="async function decodePptx(bytes,fileName){const __probe=(event,data={})=>{try{global.__inkdosPptxDecodeProbe?.(event,{...data,now:performance.now()})}catch(_){}};__probe('decode-start');if(!global.JSZip)"
-    if old not in source: raise RuntimeError("decodePptx entry pattern changed")
-    source=source.replace(old,new,1)
-
-    old="const slides=[],compat=[],sharedContext={layouts:new Map(),masters:new Map(),themes:new Map()};for(let i=0;i<ids.length;i++){const rel=prels.get(rid(ids[i])),part=rel?.target;"
-    new="const slides=[],compat=[],sharedContext={layouts:new Map(),masters:new Map(),themes:new Map()};__probe('package-ready',{slideCount:ids.length});for(let i=0;i<ids.length;i++){const rel=prels.get(rid(ids[i])),part=rel?.target;__probe('slide-start',{index:i+1,part});"
-    if old not in source: raise RuntimeError("slide loop entry pattern changed")
-    source=source.replace(old,new,1)
-
-    old="const sd=parseXml(await z.async('text'),`slide ${i+1}`),ctx=await contextForSlide(zip,part,w,h,sharedContext),tree=first(sd,'spTree');const objects=tree?await parseTree(zip,tree,ctx.srels,w,h,ctx.theme,ctx.map,ctx.layoutMap,ctx.masterMap,compat,part):[];const sb=await backgroundOf(sd,ctx.theme,ctx.map,ctx.srels,zip);const bg=sb?.color||'#ffffff';slides.push({id:`slide-${i+1}`,slideNumber:i+1,widthEmu:w,heightEmu:h,background:bg,backgroundImage:sb?.image||null,sourcePart:part,objects})}"
-    new="__probe('slide-xml-read-start',{index:i+1,part});const __slideXml=await z.async('text');__probe('slide-xml-read-end',{index:i+1,part});const sd=parseXml(__slideXml,`slide ${i+1}`);__probe('slide-xml-parse-end',{index:i+1,part});__probe('context-start',{index:i+1,part});const ctx=await contextForSlide(zip,part,w,h,sharedContext);__probe('context-end',{index:i+1,part});const tree=first(sd,'spTree');__probe('objects-start',{index:i+1,part});const objects=tree?await parseTree(zip,tree,ctx.srels,w,h,ctx.theme,ctx.map,ctx.layoutMap,ctx.masterMap,compat,part):[];__probe('objects-end',{index:i+1,part,objectCount:objects.length});__probe('background-start',{index:i+1,part});const sb=await backgroundOf(sd,ctx.theme,ctx.map,ctx.srels,zip);__probe('background-end',{index:i+1,part});const bg=sb?.color||'#ffffff';const __slide={id:`slide-${i+1}`,slideNumber:i+1,widthEmu:w,heightEmu:h,background:bg,backgroundImage:sb?.image||null,sourcePart:part,objects};slides.push(__slide);__probe('slide-complete',{index:i+1,part,objectCount:objects.length,slide:global.__inkdosPptxDecodeProbeIncludeSlide?__slide:null})}"
-    if old not in source: raise RuntimeError("slide body pattern changed")
-    source=source.replace(old,new,1)
-
-    old="return {fileName:/\\.pptx$/i.test(fileName)?fileName:fileName+'.pptx',sourceKind:'pptx',sourceBytes:new Uint8Array(bytes),sourceSlideParts:slides.map(s=>s.sourcePart),slides,compatibility:[...new Set(compat)].slice(0,30)}}"
-    new="__probe('last-slide-complete',{slideCount:slides.length});const __candidate={fileName:/\\.pptx$/i.test(fileName)?fileName:fileName+'.pptx',sourceKind:'pptx',sourceBytes:new Uint8Array(bytes),sourceSlideParts:slides.map(s=>s.sourcePart),slides,compatibility:[...new Set(compat)].slice(0,30)};__probe('candidate-ready',{slideCount:slides.length});return __candidate}"
-    if old not in source: raise RuntimeError("candidate return pattern changed")
-    return source.replace(old,new,1)
+    replacements=[
+      (
+        "async function decodePptx(bytes,fileName){if(!global.JSZip)",
+        "async function decodePptx(bytes,fileName){const __probe=(event,data={})=>{try{global.__inkdosPptxDecodeProbe?.(event,{...data,now:performance.now()})}catch(_){}};__probe('decode-start');if(!global.JSZip)"
+      ),
+      (
+        "const slides=[],compat=[],sharedContext={layouts:new Map(),masters:new Map(),themes:new Map()};for(let i=0;i<ids.length;i++){const rel=prels.get(rid(ids[i])),part=rel?.target;",
+        "const slides=[],compat=[],sharedContext={layouts:new Map(),masters:new Map(),themes:new Map()};__probe('package-ready',{slideCount:ids.length});for(let i=0;i<ids.length;i++){const rel=prels.get(rid(ids[i])),part=rel?.target;__probe('slide-start',{index:i+1,part});"
+      ),
+      (
+        "const sd=parseXml(await z.async('text'),",
+        "__probe('slide-xml-read-start',{index:i+1,part});const __slideXml=await z.async('text');__probe('slide-xml-read-end',{index:i+1,part});const sd=parseXml(__slideXml,"
+      ),
+      (
+        "),ctx=await contextForSlide(zip,part,w,h,sharedContext),tree=first(sd,'spTree');",
+        ");__probe('slide-xml-parse-end',{index:i+1,part});__probe('context-start',{index:i+1,part});const ctx=await contextForSlide(zip,part,w,h,sharedContext);__probe('context-end',{index:i+1,part});const tree=first(sd,'spTree');"
+      ),
+      (
+        "const objects=tree?await parseTree(zip,tree,ctx.srels,w,h,ctx.theme,ctx.map,ctx.layoutMap,ctx.masterMap,compat,part):[];const sb=await backgroundOf(sd,ctx.theme,ctx.map,ctx.srels,zip);const bg=sb?.color||'#ffffff';slides.push({id:`slide-${i+1}`,slideNumber:i+1,widthEmu:w,heightEmu:h,background:bg,backgroundImage:sb?.image||null,sourcePart:part,objects})}",
+        "__probe('objects-start',{index:i+1,part});const objects=tree?await parseTree(zip,tree,ctx.srels,w,h,ctx.theme,ctx.map,ctx.layoutMap,ctx.masterMap,compat,part):[];__probe('objects-end',{index:i+1,part,objectCount:objects.length});__probe('background-start',{index:i+1,part});const sb=await backgroundOf(sd,ctx.theme,ctx.map,ctx.srels,zip);__probe('background-end',{index:i+1,part});const bg=sb?.color||'#ffffff';const __slide={id:`slide-${i+1}`,slideNumber:i+1,widthEmu:w,heightEmu:h,background:bg,backgroundImage:sb?.image||null,sourcePart:part,objects};slides.push(__slide);__probe('slide-complete',{index:i+1,part,objectCount:objects.length,slide:global.__inkdosPptxDecodeProbeIncludeSlide?__slide:null})}"
+      ),
+      (
+        "return {fileName:/\\.pptx$/i.test(fileName)?fileName:fileName+'.pptx',sourceKind:'pptx',sourceBytes:new Uint8Array(bytes),sourceSlideParts:slides.map(s=>s.sourcePart),slides,compatibility:[...new Set(compat)].slice(0,30)}}",
+        "__probe('last-slide-complete',{slideCount:slides.length});const __candidate={fileName:/\\.pptx$/i.test(fileName)?fileName:fileName+'.pptx',sourceKind:'pptx',sourceBytes:new Uint8Array(bytes),sourceSlideParts:slides.map(s=>s.sourcePart),slides,compatibility:[...new Set(compat)].slice(0,30)};__probe('candidate-ready',{slideCount:slides.length});return __candidate}"
+      )
+    ]
+    for idx,(old,new) in enumerate(replacements,1):
+        if old not in source:
+            raise RuntimeError(f"instrumentation pattern {idx} changed")
+        source=source.replace(old,new,1)
+    return source
 
 def main()->None:
     if BROWSER_NAME not in {"chromium","firefox","webkit"}:
