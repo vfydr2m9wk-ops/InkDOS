@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Component-isolated WebKit performance benchmark for the autonomous lab.
+"""Component-isolated performance benchmark for the autonomous InkDOS lab.
 
-Unlike benchmark_workspace_performance.py, this runner creates fixtures and
-collects evidence for exactly one component so a broken fixture/startup in a
-sibling app cannot erase otherwise valid quick evidence.
+Runs exactly one workspace so a broken startup/fixture in a sibling app cannot
+erase otherwise valid quick evidence. Full cross-app/cross-browser validation
+remains the responsibility of PR #203.
 """
 from __future__ import annotations
 
@@ -12,15 +12,13 @@ import json
 import os
 import subprocess
 import sys
-import time
-from pathlib import Path
 
 from playwright.sync_api import Page, sync_playwright
 
 import benchmark_workspace_performance as perf
 
 COMPONENT = os.environ.get("INKDOS_PERF_COMPONENT", "").strip().lower()
-SUPPORTED = {"presentations", "pdf"}
+SUPPORTED = {"documents", "spreadsheets", "presentations", "pdf", "epub", "txt"}
 
 
 def _wait_startup(page: Page, component: str, phase: str) -> None:
@@ -35,15 +33,19 @@ def _wait_startup(page: Page, component: str, phase: str) -> None:
             page.screenshot(path=str(diag / f"{component}-{phase}-timeout.png"), full_page=False)
         except Exception:
             pass
-        payload = {
-            "component": component,
-            "phase": phase,
-            "error": str(exc),
-            "pageErrors": errors,
-            "url": page.url,
-        }
         (diag / f"{component}-{phase}-failure.json").write_text(
-            json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+            json.dumps(
+                {
+                    "component": component,
+                    "phase": phase,
+                    "error": str(exc),
+                    "pageErrors": errors,
+                    "url": page.url,
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+            + "\n",
             encoding="utf-8",
         )
         raise RuntimeError(
@@ -51,18 +53,58 @@ def _wait_startup(page: Page, component: str, phase: str) -> None:
         ) from exc
 
 
-def _build_presentations_fixtures(browser) -> dict[str, bytes]:
+def _documents_fixture(browser) -> dict[str, bytes]:
+    context = perf.new_context(browser)
+    page = context.new_page()
+    page.goto(perf.BASE + perf.APPS["documents"]["path"], wait_until="load", timeout=perf.TIMEOUT_MS)
+    _wait_startup(page, "documents", "fixture")
+    data = page.evaluate(
+        perf.to_b64_expr(
+            """
+            const NS = globalThis.InkDOS2Documents;
+            const app = NS.DocumentsApp;
+            await app.newDocument();
+            const host = document.getElementById('pagesHost');
+            const pc = host.querySelector('.page-content');
+            pc.innerHTML = '<p>InkDOS synthetic performance document.</p><p>Local-first benchmark fixture.</p>';
+            const saved = await NS.DocxWriter.save(host, 'perf.docx', null, null);
+            return new Uint8Array(await saved.blob.arrayBuffer());
+            """
+        )
+    )
+    context.close()
+    return {"documents-docx": base64.b64decode(data)}
+
+
+def _spreadsheets_fixture(browser) -> dict[str, bytes]:
+    context = perf.new_context(browser)
+    page = context.new_page()
+    page.goto(perf.BASE + perf.APPS["spreadsheets"]["path"], wait_until="load", timeout=perf.TIMEOUT_MS)
+    _wait_startup(page, "spreadsheets", "fixture")
+    data = page.evaluate(
+        perf.to_b64_expr(
+            """
+            const api = globalThis.__inkdosSpreadsheetsS1;
+            await api.openController.newWorkbook();
+            api.editor.editor.commitValue('InkDOS synthetic workbook', 0, 0);
+            api.editor.editor.commitValue('42', 1, 0);
+            const blob = await globalThis.LocalXLSX.saveCopy(api.session.book);
+            return new Uint8Array(await blob.arrayBuffer());
+            """
+        )
+    )
+    context.close()
+    return {"spreadsheets-xlsx": base64.b64decode(data)}
+
+
+def _presentations_fixture(browser) -> dict[str, bytes]:
     fixtures: dict[str, bytes] = {}
     context = perf.new_context(browser)
     page = context.new_page()
-    page.goto(
-        perf.BASE + perf.APPS["presentations"]["path"],
-        wait_until="load",
-        timeout=perf.TIMEOUT_MS,
-    )
+    page.goto(perf.BASE + perf.APPS["presentations"]["path"], wait_until="load", timeout=perf.TIMEOUT_MS)
     _wait_startup(page, "presentations", "fixture")
     for count in (1, 44):
-        pptx_b64 = page.evaluate(
+        data = page.evaluate(
             """async (count) => {
               const NS = globalThis.InkDOS2Presentations;
               const M = NS.PresentationModel;
@@ -89,28 +131,21 @@ def _build_presentations_fixtures(browser) -> dict[str, bytes]:
             }""",
             count,
         )
-        fixtures[f"presentations-pptx-{count}"] = base64.b64decode(pptx_b64)
+        fixtures[f"presentations-pptx-{count}"] = base64.b64decode(data)
     context.close()
     return fixtures
 
 
-def _build_pdf_fixtures(browser) -> dict[str, bytes]:
+def _pdf_fixture(browser) -> dict[str, bytes]:
     fixtures: dict[str, bytes] = {}
     context = perf.new_context(browser)
     page = context.new_page()
-    page.goto(
-        perf.BASE + perf.APPS["pdf"]["path"],
-        wait_until="load",
-        timeout=perf.TIMEOUT_MS,
-    )
+    page.goto(perf.BASE + perf.APPS["pdf"]["path"], wait_until="load", timeout=perf.TIMEOUT_MS)
     _wait_startup(page, "pdf", "fixture")
     page.add_script_tag(url=perf.BASE + "/apps/pdf/vendor/pdf-lib/pdf-lib.min.js")
-    page.wait_for_function(
-        "() => !!globalThis.PDFLib?.PDFDocument",
-        timeout=perf.TIMEOUT_MS,
-    )
+    page.wait_for_function("() => !!globalThis.PDFLib?.PDFDocument", timeout=perf.TIMEOUT_MS)
     for count in (1, 20):
-        pdf_b64 = page.evaluate(
+        data = page.evaluate(
             """async (count) => {
               const pdf = await PDFLib.PDFDocument.create();
               for (let i = 1; i <= count; i++) {
@@ -127,9 +162,25 @@ def _build_pdf_fixtures(browser) -> dict[str, bytes]:
             }""",
             count,
         )
-        fixtures[f"pdf-{count}"] = base64.b64decode(pdf_b64)
+        fixtures[f"pdf-{count}"] = base64.b64decode(data)
     context.close()
     return fixtures
+
+
+def _fixtures(browser) -> dict[str, bytes]:
+    if COMPONENT == "documents":
+        return _documents_fixture(browser)
+    if COMPONENT == "spreadsheets":
+        return _spreadsheets_fixture(browser)
+    if COMPONENT == "presentations":
+        return _presentations_fixture(browser)
+    if COMPONENT == "pdf":
+        return _pdf_fixture(browser)
+    if COMPONENT == "epub":
+        return {"epub": perf.minimal_epub_bytes()}
+    if COMPONENT == "txt":
+        return {"txt": b"InkDOS synthetic text performance fixture.\n" * 100}
+    raise AssertionError(COMPONENT)
 
 
 def _visual(browser, fixtures: dict[str, bytes], cases: list[dict]) -> dict:
@@ -147,19 +198,14 @@ def _visual(browser, fixtures: dict[str, bytes], cases: list[dict]) -> dict:
     }
     for appearance in perf.VISUAL_THEMES:
         result["startup"][appearance] = {
-            COMPONENT: perf.visual_startup_capture(
-                browser, COMPONENT, appearance, visual_dir
-            )
+            COMPONENT: perf.visual_startup_capture(browser, COMPONENT, appearance, visual_dir)
         }
         result["coldOpen"][appearance] = {}
         for case in cases:
             result["coldOpen"][appearance][case["name"]] = perf.visual_cold_open_capture(
-                browser,
-                case,
-                fixtures[case["name"]],
-                appearance,
-                visual_dir,
+                browser, case, fixtures[case["name"]], appearance, visual_dir
             )
+
     (perf.OUT / "visual-report.json").write_text(
         json.dumps(result, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
@@ -169,9 +215,7 @@ def _visual(browser, fixtures: dict[str, bytes], cases: list[dict]) -> dict:
 
 def main() -> None:
     if COMPONENT not in SUPPORTED:
-        raise SystemExit(
-            "INKDOS_PERF_COMPONENT must be one of: " + ", ".join(sorted(SUPPORTED))
-        )
+        raise SystemExit("INKDOS_PERF_COMPONENT must be one of: " + ", ".join(sorted(SUPPORTED)))
     if perf.BROWSER_NAME not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={perf.BROWSER_NAME}")
 
@@ -186,11 +230,7 @@ def main() -> None:
         perf.wait_port()
         with sync_playwright() as pw:
             browser = getattr(pw, perf.BROWSER_NAME).launch(headless=True)
-            fixtures = (
-                _build_presentations_fixtures(browser)
-                if COMPONENT == "presentations"
-                else _build_pdf_fixtures(browser)
-            )
+            fixtures = _fixtures(browser)
             cases = [case for case in perf.OPEN_CASES if case["app"] == COMPONENT]
 
             startup_samples = [
@@ -208,8 +248,7 @@ def main() -> None:
             for case in cases:
                 data = fixtures[case["name"]]
                 samples = [
-                    perf.open_sample(browser, case, data)
-                    for _ in range(perf.ITERATIONS)
+                    perf.open_sample(browser, case, data) for _ in range(perf.ITERATIONS)
                 ]
                 opens[case["name"]] = {
                     "app": COMPONENT,
@@ -236,7 +275,7 @@ def main() -> None:
             "component": COMPONENT,
             "iterations": perf.ITERATIONS,
             "serviceWorkers": "blocked to isolate workspace runtime; full snapshot audit remains PR #203",
-            "environment": "headless Playwright component-isolated quick benchmark; not a XeOS/iPad device timing claim",
+            "environment": "headless Playwright component-isolated quick benchmark; not a XeOS/iPad timing claim",
             "startup": startup,
             "open": opens,
             "coldOpen": cold_opens,
@@ -252,12 +291,8 @@ def main() -> None:
                     "browser": perf.BROWSER_NAME,
                     "component": COMPONENT,
                     "startupMedianMs": startup[COMPONENT]["summary"]["elapsedMs"]["median"],
-                    "openMedianMs": {
-                        k: v["summary"]["elapsedMs"]["median"] for k, v in opens.items()
-                    },
-                    "coldOpenMedianMs": {
-                        k: v["summary"]["elapsedMs"]["median"] for k, v in cold_opens.items()
-                    },
+                    "openMedianMs": {k: v["summary"]["elapsedMs"]["median"] for k, v in opens.items()},
+                    "coldOpenMedianMs": {k: v["summary"]["elapsedMs"]["median"] for k, v in cold_opens.items()},
                 },
                 indent=2,
             )
