@@ -9,7 +9,7 @@ Branches:
 
 ## Authority model
 
-Only the hourly review may decide KEEP, DROP, COMBINE, or RESET experiments.
+Only the hourly review may decide KEEP, DROP, COMBINE, HOLD, REQUEUE, or BLOCK experiments.
 Quarter-hour workers are producers, not judges. A worker must never stop later
 workers because a local test is incomplete, inconclusive, unavailable, or failed.
 
@@ -37,17 +37,39 @@ Do revert immediately only when the implementation itself cannot safely remain o
 the workbench (syntax corruption, unusable app, destructive data behavior, or clear
 security bypass). Record such a local emergency revert and continue other tasks.
 
+## Lane-isolated quick evidence
+
+PR #204 runs independent WebKit quick jobs for `presentations` and `pdf`.
+Each job builds only its own synthetic fixtures and writes its own artifact.
+A fixture/startup failure in one lane must never erase or invalidate evidence
+from the sibling lane.
+
+If a lane benchmark fails before collecting measurements because of test/harness
+infrastructure, the responsible worker should spend a bounded follow-up task
+repairing that lane's harness and rerun it. Do not change product behavior merely
+to satisfy a benchmark predicate unless the same defect is reproduced as a real
+product/runtime problem.
+
+`HOLD` is the correct hourly disposition when a bounded candidate has passed
+relevant smoke/invariant checks but numeric/visual evidence is unavailable solely
+because the measurement harness failed. HOLD candidates are not staged to the lab,
+but their implementation checkpoint must be preserved so the same code can be
+measured after the harness is repaired instead of being reimplemented.
+
 ## Hourly review
 
 The hourly review is the sole decision authority. It:
 - reads every experiment/checkpoint since hour_base_sha;
 - inspects available focused evidence;
 - evaluates independence/interactions;
+- evaluates quick evidence per lane rather than by aggregate workflow status;
 - selects a coherent subset;
 - reviews the sequential workbench task commits from the hour and removes only rejected bounded changes;
-- writes the exact reviewed workbench SHA to state.reviewed_workbench_sha and state.stage_ready_sha;
+- writes the exact reviewed workbench SHA to state.reviewed_workbench_sha;
+- writes an explicit filtered stage_manifest containing only accepted product/full-validation support files;
 - leaves the lab branch untouched during review;
-- lets the :05 Stage worker move perf/xeros-optimization-lab to exactly stage_ready_sha;
+- lets the :05 Stage worker copy that manifest onto perf/xeros-optimization-lab without copying workbench-only CI infrastructure;
+- regenerates the verified offline snapshot after staged product-byte changes before PR #203 validation;
 - uses draft PR #203 as the complete CI gate for that staged SHA;
 - on the next review, inspects numeric, visual, behavioral, security, offline and launchQueue evidence for the staged candidate;
 - updates stable_sha, roadmap priorities and dead hypotheses while keeping unrelated work moving.
@@ -74,3 +96,18 @@ Personal Library folder: `/InkDOS Performance Lab`
 - hourly-review-NN.txt
 
 Workers append experiments; hourly review owns roadmap/stable decisions. Stage worker owns only mechanical staging of the review-approved SHA and has no KEEP/DROP authority.
+
+
+## Validation-infrastructure self-healing
+
+Known measurement/test infrastructure is part of the laboratory control plane.
+A reproducible test-only defect may be repaired immediately on the workbench.
+Full-gate support fixes (for example deterministic synthetic fixture loading) may
+be included in the hourly stage manifest when they are required for PR #203 to
+measure the product candidate. Quick-gate-only files remain workbench-only.
+
+The Stage worker must regenerate the offline snapshot after any staged product or
+support byte change using the repository's deterministic
+`python scripts/build_offline_snapshot.py` semantics and ensure the resulting
+`service-worker.js` is part of the final lab head. This is snapshot integrity,
+not a version/release change.
