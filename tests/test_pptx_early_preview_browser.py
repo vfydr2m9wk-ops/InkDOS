@@ -150,7 +150,14 @@ def main() -> None:
                   const gate=gateSecondDecoderSlide();
                   const openPromise=app.open(fileOf(deck44,'preview-44.pptx'));
                   await waitFor(()=>document.body.dataset.presentationOpeningPreview==='true');
+                  const previewFrame=await new Promise(resolve=>requestAnimationFrame(()=>resolve({
+                    active:document.body.dataset.presentationOpeningPreview==='true',
+                    transient:canvas().dataset.transientPreview==='true',
+                    text:canvas().innerText,
+                    committed:app.session.sourceKind==='pptx'&&app.session.slides.length===44
+                  })));
                   const mid={
+                    previewFrame,
                     snapshot:JSON.stringify(app.session.snapshot()),
                     undo:app.history.undoStack.length,
                     redo:app.history.redoStack.length,
@@ -330,6 +337,10 @@ def main() -> None:
 
         success = result["success"]
         mid = success["mid"]
+        assert mid["previewFrame"]["active"] is True, result
+        assert mid["previewFrame"]["transient"] is True, result
+        assert "PREVIEW44 1" in mid["previewFrame"]["text"], result
+        assert mid["previewFrame"]["committed"] is False, result
         assert mid["snapshot"] == result["old"]["snapshot"], result
         assert mid["undo"] == result["old"]["undo"], result
         assert mid["redo"] == result["old"]["redo"], result
