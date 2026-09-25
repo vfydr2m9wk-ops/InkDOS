@@ -109,6 +109,41 @@ def new_context(browser: Browser):
     return context
 
 
+def new_launch_context(browser: Browser, case: dict, data: bytes):
+    context = browser.new_context(
+        viewport={"width": 1280, "height": 820},
+        service_workers="block",
+    )
+    context.add_init_script(MONITOR_SCRIPT)
+    encoded = base64.b64encode(data).decode("ascii")
+    name = json.dumps(case["file"])
+    mime = json.dumps(case["mime"])
+    context.add_init_script(
+        f"""(() => {{
+          const raw = atob({json.dumps(encoded)});
+          const bytes = new Uint8Array(raw.length);
+          for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+          const queue = {{
+            consumer: null,
+            setConsumer(fn) {{
+              this.consumer = fn;
+              Promise.resolve().then(() => fn({{
+                files: [{{
+                  kind: 'file',
+                  async getFile() {{ return new File([bytes], {name}, {{type: {mime}}}); }}
+                }}]
+              }}));
+            }}
+          }};
+          Object.defineProperty(globalThis, 'launchQueue', {{
+            value: queue,
+            configurable: true
+          }});
+        }})();"""
+    )
+    return context
+
+
 def probe_reset(page: Page) -> None:
     page.evaluate("() => globalThis.__inkdosPerfProbe?.reset()")
 
@@ -387,6 +422,21 @@ def open_sample(browser: Browser, case: dict, data: bytes) -> dict:
     return {"elapsedMs": round(elapsed, 2), "errors": errors, **snap}
 
 
+def cold_open_sample(browser: Browser, case: dict, data: bytes) -> dict:
+    context = new_launch_context(browser, case, data)
+    page = context.new_page()
+    errors: list[str] = []
+    page.on("pageerror", lambda exc: errors.append(str(exc)))
+    app = case["app"]
+    start = time.perf_counter()
+    page.goto(BASE + APPS[app]["path"], wait_until="domcontentloaded", timeout=TIMEOUT_MS)
+    page.wait_for_function(case["ready"], timeout=TIMEOUT_MS)
+    elapsed = (time.perf_counter() - start) * 1000
+    snap = probe_snapshot(page)
+    context.close()
+    return {"elapsedMs": round(elapsed, 2), "errors": errors, **snap}
+
+
 def main() -> None:
     if BROWSER_NAME not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={BROWSER_NAME}")
@@ -422,6 +472,16 @@ def main() -> None:
                     "summary": summarize(samples),
                 }
 
+            cold_opens = {}
+            for case in OPEN_CASES:
+                samples = [cold_open_sample(browser, case, fixtures[case["name"]]) for _ in range(ITERATIONS)]
+                cold_opens[case["name"]] = {
+                    "app": case["app"],
+                    "bytes": len(fixtures[case["name"]]),
+                    "samples": samples,
+                    "summary": summarize(samples),
+                }
+
             browser.close()
 
         report = {
@@ -431,6 +491,7 @@ def main() -> None:
             "environment": "headless Playwright synthetic benchmark; not a XeOS/iPad device timing claim",
             "startup": startup,
             "open": opens,
+            "coldOpen": cold_opens,
         }
         (OUT / "report.json").write_text(
             json.dumps(report, indent=2, ensure_ascii=False) + "\n",
@@ -441,6 +502,7 @@ def main() -> None:
                 "browser": BROWSER_NAME,
                 "startupMedianMs": {k: v["summary"]["elapsedMs"]["median"] for k, v in startup.items()},
                 "openMedianMs": {k: v["summary"]["elapsedMs"]["median"] for k, v in opens.items()},
+                "coldOpenMedianMs": {k: v["summary"]["elapsedMs"]["median"] for k, v in cold_opens.items()},
             },
             indent=2,
         ))
