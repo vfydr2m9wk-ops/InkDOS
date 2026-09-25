@@ -122,7 +122,7 @@ def main():
       wait_port()
       with sync_playwright() as pw:
         browser=pw.webkit.launch(headless=True)
-        b=browser.new_context(viewport={"width":1280,"height":820},"service_workers":"block");p=b.new_page()
+        b=browser.new_context(viewport={"width":1280,"height":820},service_workers="block");p=b.new_page()
         p.goto(BASE+"/apps/presentations/index.html?suite=1",wait_until="load");p.wait_for_function("() => !!globalThis.InkDOS2Presentations?.PptxWriter")
         f44=fixture(p,44);f100=fixture(p,100);b.close()
         report={"productHead":os.environ.get("INKDOS_PRODUCT_HEAD","unknown"),"browser":"webkit",
