@@ -1,6 +1,6 @@
-# InkDOS 2.6.1
+# InkDOS 2.6.2 Beta
 
-> **Current source release identity:** InkDOS 2.6.1. The `v2.6.0` beta remains preserved as an immutable prerelease checkpoint; `v2.5.2` remains the previous stable fallback.
+> **Current source release identity:** InkDOS 2.6.2 Beta. `v2.6.1` remains the current stable release and must stay the GitHub `latest` release; `v2.6.0` remains preserved as the earlier beta checkpoint.
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
 **Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
@@ -25,7 +25,7 @@ Support is intentionally narrower than Microsoft Office, LibreOffice or Acrobat.
 
 ## Release baseline
 
-InkDOS 2.6.1 is the current stable source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage when a matching immutable release tag is published. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases.
+InkDOS 2.6.1 remains the current stable release. InkDOS 2.6.2 is a beta/prerelease source identity for the web/PWA and intentionally publishes no EXE, DMG, AppImage or native updater artifacts. Stable tags continue to build the signed NSIS installer for Windows, DMG/application bundle for macOS and AppImage for Linux, with the desktop updater consuming the stable release `latest.json` manifest and matching signatures from GitHub Releases.
 
 A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.0` tag remains the preserved beta checkpoint and `v2.5.2` remains the previous stable fallback.
 
@@ -72,7 +72,7 @@ The permanent GitHub Actions surface is intentionally small:
 - `.github/workflows/desktop-tauri.yml` — desktop metadata and staging contracts;
 - `.github/workflows/release.yml` — immutable tag-driven signed release publication.
 
-Normal releases are built from immutable `vX.Y.Z` tags so source, installers, signatures and updater metadata remain tied to one versioned commit.
+Immutable `vX.Y.Z` tags drive publication. Stable tags build source plus native installers/signatures/updater metadata; beta tags publish a GitHub prerelease for the web/PWA source only and skip the native Rust/Tauri build matrix.
 
 See `docs/UPDATE_MODEL.md` for the updater path.
 
