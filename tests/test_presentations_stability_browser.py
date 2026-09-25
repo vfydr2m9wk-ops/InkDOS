@@ -41,6 +41,65 @@ def main() -> None:
         wait_port()
         with sync_playwright() as pw:
             browser = getattr(pw, browser_name).launch(headless=True)
+
+            # XeOS/default-app regression: launchQueue-style routing opens the PPTX
+            # without a file-input change event. A successful commit must dismiss
+            # the first-open gate and expose the rendered presentation.
+            launch_page = browser.new_page(viewport={"width": 1360, "height": 900})
+            launch_page.on("pageerror", lambda exc: errors.append(f"direct-launch pageerror: {exc}"))
+            launch_page.on("console", lambda msg: errors.append(f"direct-launch console.error: {msg.text}") if msg.type == "error" else None)
+            launch_page.goto(BASE + "/apps/presentations/", wait_until="load")
+            launch_page.wait_for_function("() => !!globalThis.__inkdosPresentations && !!globalThis.InkDOS2Presentations?.PptxWriter")
+            assert launch_page.locator("#startState").is_visible()
+            fixture = launch_page.evaluate(
+                """async () => {
+                    const NS=globalThis.InkDOS2Presentations;
+                    const src=new NS.PresentationSession();
+                    src.resetNew();
+                    const title=src.slides[0].objects.find(o=>o.type==='text');
+                    title.text='XeOS direct launch';
+                    title.paragraphs=NS.PresentationModel.normalizeParagraphs(null,title.text,title);
+                    return Array.from(await NS.PptxWriter.build(src));
+                }"""
+            )
+            launched = launch_page.evaluate(
+                """async bytes => {
+                    const file=new File(
+                      [new Uint8Array(bytes)],
+                      'XeOS-direct-launch.pptx',
+                      {type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}
+                    );
+                    return await globalThis.InkDOSFileLaunch.consume({
+                      files:[{kind:'file',async getFile(){return file}}]
+                    });
+                }""",
+                fixture,
+            )
+            assert launched is True
+            launch_page.wait_for_function(
+                """() => {
+                    const app=globalThis.__inkdosPresentations;
+                    const gate=document.getElementById('startState');
+                    return app.session.active &&
+                           app.session.sourceKind==='pptx' &&
+                           gate.hidden &&
+                           getComputedStyle(gate).display==='none' &&
+                           document.querySelectorAll('#slideCanvas [data-object-id]').length>0;
+                }""",
+                timeout=15000,
+            )
+            launch_probe = launch_page.evaluate(
+                """() => ({
+                    slideCount:globalThis.__inkdosPresentations.session.slides.length,
+                    status:document.getElementById('statusText').textContent,
+                    gateHidden:document.getElementById('startState').hidden
+                })"""
+            )
+            assert launch_probe["slideCount"] == 1, launch_probe
+            assert launch_probe["status"].startswith("Opened 1 slide · PPTX"), launch_probe
+            assert launch_probe["gateHidden"] is True, launch_probe
+            launch_page.close()
+
             page = browser.new_page(viewport={"width": 1360, "height": 900})
             page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
             page.on("console", lambda msg: errors.append(f"console.error: {msg.text}") if msg.type == "error" else None)
