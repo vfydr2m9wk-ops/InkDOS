@@ -293,6 +293,12 @@ def main() -> None:
         }
         (OUT / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
         print(json.dumps(summary, indent=2))
+    finally:
+        server.terminate()
+        try:
+            server.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            server.kill()
 
 
 if __name__ == "__main__":
