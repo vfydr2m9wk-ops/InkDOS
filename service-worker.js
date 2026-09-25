@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-a8c7718707994b8fd09a';
+const CACHE_NAME='inkdos-v2.6.2-f278077a4c43ac16c336';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -544,21 +544,34 @@ const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);
 const CACHE_KEY=CACHE_NAME+CACHE_SUFFIX;
 const HASH_BY_URL=new Map(Object.entries(ASSET_HASHES).map(([path,hash])=>[new URL(path,self.registration.scope).href,hash]));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';if(request.mode==='navigate'&&NAVIGATION_PATHS.has(u.pathname)&&u.pathname.endsWith('/'))u.pathname+='index.html';return new Request(u.href,{method:'GET'})}
-async function verifiedFetch(request){
+async function verifiedResponse(request,response){
   const expected=HASH_BY_URL.get(request.url);
-  const response=await fetch(new Request(request,{cache:'no-store'}));
   if(!expected||!response.ok||response.type==='opaque')throw new Error('Offline snapshot response unavailable');
   const bytes=await response.clone().arrayBuffer();
   const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
   if(digest!==expected)throw new Error('Offline snapshot integrity mismatch');
   return response;
 }
+async function verifiedFetch(request){return verifiedResponse(request,await fetch(new Request(request,{cache:'no-store'})))}
+async function snapshotResponse(request,previous){
+  for(const cache of previous){
+    try{
+      const response=await cache.match(request);
+      if(response)return await verifiedResponse(request,response);
+    }catch(_){/* Missing, evicted or altered local bytes require verified network repair. */}
+  }
+  return verifiedFetch(request);
+}
 self.addEventListener('install',event=>event.waitUntil((async()=>{
   const cache=await caches.open(CACHE_KEY);
   try{
+    const names=(await caches.keys()).filter(name=>name!==CACHE_KEY&&name.startsWith('inkdos-v')&&name.endsWith(CACHE_SUFFIX));
+    const previous=await Promise.all(names.reverse().map(name=>caches.open(name)));
     // Bounded requests keep installation usable on mobile and avoid partial activation.
     for(let i=0;i<APP_SHELL.length;i+=8){
-      await Promise.all(APP_SHELL.slice(i,i+8).map(async path=>{const request=new Request(new URL(path,self.registration.scope));const response=await verifiedFetch(request);await cache.put(request,response)}));
+      // Drain every in-flight write before rollback; Promise.all can reject while peers still write.
+      const results=await Promise.allSettled(APP_SHELL.slice(i,i+8).map(async path=>{const request=new Request(new URL(path,self.registration.scope));const response=await snapshotResponse(request,previous);await cache.put(request,response)}));
+      const failed=results.find(result=>result.status==='rejected');if(failed)throw failed.reason;
     }
   }catch(error){await caches.delete(CACHE_KEY);throw error}
   // Native waiting lifecycle: never replace the worker beneath open editors.
