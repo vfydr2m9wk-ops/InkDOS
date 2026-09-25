@@ -2,8 +2,8 @@
 function create({session,history,selection,chrome,fileOpen,save,editor,panel,slideshow,onStructureChange,isBusy=()=>false,onCancelBusy=()=>{}}={}){
  const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null,unsavedDialog=null,authorizedUnload=false;const registry=new Map();
  function register(id,handler,isEnabled=()=>true){if(!id||typeof handler!=='function')throw new TypeError('Invalid Presentations command');registry.set(id,Object.freeze({handler,isEnabled}));return id}
- function isEnabled(id){const command=registry.get(id);if(!command)return false;if(isBusy()&&id!=='file.new')return false;return command.isEnabled()!==false}
- function execute(id,...args){const command=registry.get(id);if(!command)throw new Error('PRESENTATIONS_COMMAND_NOT_REGISTERED: '+id);if(isBusy()&&id!=='file.new')return false;if(command.isEnabled()===false)return false;return command.handler(...args)}
+ function isEnabled(id){const command=registry.get(id);if(!command)return false;if(isBusy()&&id!=='file.new'&&id!=='file.open')return false;return command.isEnabled()!==false}
+ function execute(id,...args){const command=registry.get(id);if(!command)throw new Error('PRESENTATIONS_COMMAND_NOT_REGISTERED: '+id);if(isBusy()&&id!=='file.new'&&id!=='file.open')return false;if(command.isEnabled()===false)return false;return command.handler(...args)}
  function selected(){return selection.getObject(session)}
  function structureEditable(){return session.active&&session.sourceKind!=='ppt'}
  function textEditable(){const o=selected();return !!o&&o.type==='text'&&session.active&&session.sourceKind!=='ppt'}
@@ -24,7 +24,6 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   })
  }
  async function authorizeReplacement(kind){
-  if(isBusy()&&kind==='open')return false;
   if(!session.dirty)return true;
   const messages={new:'Save your current presentation before creating a new presentation?',open:'Save your current presentation before opening another presentation?',leave:'Save your current presentation before leaving Presentations?'};
   const decision=await decideUnsaved(messages[kind]||messages.leave);
