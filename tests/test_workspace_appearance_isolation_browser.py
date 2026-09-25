@@ -104,6 +104,21 @@ def main() -> None:
             priority_page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'light'")
             priority.close()
 
+            # Native WebKit/XeOS controls must follow the workspace-selected theme,
+            # not the host OS scheme. Reproduce dark host + explicitly light app.
+            native = browser.new_context(viewport={"width": 1280, "height": 820}, color_scheme="dark")
+            native_page = native.new_page()
+            native_page.goto(BASE + docs_path, wait_until="load")
+            set_mode(native_page, "documents", "light")
+            native_scheme = native_page.evaluate("""() => ({
+              root: getComputedStyle(document.documentElement).colorScheme,
+              controls: [...document.querySelectorAll('#styleSelect,#fontSelect,#sizeSelect,#alignmentSelect,#lineSpacing')]
+                .map(el => getComputedStyle(el).colorScheme)
+            })""")
+            assert native_scheme["root"] == "light", native_scheme
+            assert native_scheme["controls"] and all(x == "light" for x in native_scheme["controls"]), native_scheme
+            native.close()
+
             context.close()
             browser.close()
         print(f"InkDOS 2.6 workspace-local appearance browser ({browser_name}): OK")

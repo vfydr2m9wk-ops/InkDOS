@@ -69,6 +69,9 @@ def main() -> None:
         manifest_ids.add(manifest_id)
         if manifest.get("start_url") != "./index.html" or manifest.get("scope") != "./":
             raise AssertionError(f"{app}: app-local PWA start_url/scope changed unexpectedly")
+        launch_handler = manifest.get("launch_handler") or {}
+        if launch_handler.get("client_mode") != "focus-existing":
+            raise AssertionError(f"{app}: XeOS/PWA launch_handler must focus the existing app window")
 
         handled = handler_extensions(manifest)
         if handled != expected:
@@ -93,6 +96,8 @@ def main() -> None:
         index = (root / "index.html").read_text(encoding="utf-8")
         if 'src="runtime/platform/file-launch.js"' not in index:
             raise AssertionError(f"{app}: file launch runtime not wired")
+        if 'src="runtime/platform/file-launch.js" defer' in index:
+            raise AssertionError(f"{app}: launchQueue bridge must register synchronously before host file delivery")
 
         launch_runtime = (root / "runtime" / "platform" / "file-launch.js").read_text(encoding="utf-8")
         for marker in ("launchQueue", "setConsumer", "handle.getFile", "DataTransfer", "compatibleInput", "input.dispatchEvent(new Event('change'", "showOpenFilePicker", "requestPicker", "setOpenHandler", "pendingLaunchFiles"):

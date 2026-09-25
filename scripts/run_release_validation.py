@@ -13,6 +13,7 @@ CMDS = [
     [sys.executable, "tests/test_agent_workflow_contract.py"],
     ["node", "tests/test_pdf_p2_page_tools.cjs"],
     [sys.executable, "tests/test_doc_d1_contract.py"],
+    [sys.executable, "tests/test_documents_header_footer_drawingml_browser.py"],
     [sys.executable, "tests/test_doc_d2_p1_contract.py"],
     [sys.executable, "tests/test_documents_243_insert_table_cancel_contract.py"],
     [sys.executable, "tests/test_documents_243_interaction_contract.py"],

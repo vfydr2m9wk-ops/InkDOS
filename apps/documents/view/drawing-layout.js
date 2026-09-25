@@ -125,6 +125,36 @@ function vmlImageLayout(shape){
     verticalRelative:/mso-position-vertical-relative\s*:\s*page/i.test(style)?'page':'margin'
   };
 }
+function drawingImageLayout(drawing){
+  if(!drawing)return null;
+  const anchor=descendants(drawing,'anchor')[0]||null;
+  const inline=descendants(drawing,'inline')[0]||null;
+  const host=anchor||inline;
+  if(!host)return null;
+  const extent=first(host,'extent')||first(drawing,'ext');
+  const cx=positive(extent&&extent.getAttribute('cx'));
+  const cy=positive(extent&&extent.getAttribute('cy'));
+  if(!cx||!cy)return null;
+  const widthPx=emuToPx(cx),heightPx=emuToPx(cy);
+  if(!anchor)return{
+    leftPx:0,topPx:0,widthPx,heightPx,
+    horizontalRelative:'margin',verticalRelative:'paragraph',
+    horizontalAlign:'',verticalAlign:'',behindDoc:false
+  };
+  const horizontal=positionDescriptor(anchor,'x');
+  const vertical=positionDescriptor(anchor,'y');
+  return{
+    leftPx:horizontal.offsetPx,
+    topPx:vertical.offsetPx,
+    widthPx,
+    heightPx,
+    horizontalRelative:horizontal.relativeFrom,
+    verticalRelative:vertical.relativeFrom,
+    horizontalAlign:horizontal.align,
+    verticalAlign:vertical.align,
+    behindDoc:anchor.getAttribute('behindDoc')==='1'
+  };
+}
 function referenceNode(sect,kind){
   const nodes=descendants(sect,kind+'Reference');
   return nodes.find(node=>(node.getAttribute('w:type')||node.getAttribute('type')||'default')==='default')||nodes[0]||null;
@@ -153,7 +183,19 @@ function partSpec(sect,kind,rels,root,files,mediaUrls){
     const src=mediaUrl(files,mediaPath,mediaUrls,'part:'+path+':'+mediaRid);
     if(!src)continue;
     const watermark=/watermark/i.test(String(shape&&shape.getAttribute('id')||''));
-    artwork.push(Object.assign({src,opacity:watermark?.13:1},layout));
+    artwork.push(Object.assign({src,opacity:watermark?.13:1,partKind:kind},layout));
+  }
+  for(const drawing of descendants(doc,'drawing')){
+    const blip=first(drawing,'blip');
+    const mediaRid=attrR(blip,'embed');
+    const mediaTarget=mediaRid&&partRels[mediaRid];
+    const layout=drawingImageLayout(drawing);
+    if(!mediaTarget||!layout)continue;
+    const base=path.split('/').slice(0,-1).join('/');
+    const mediaPath=normalPath(base,mediaTarget);
+    const src=mediaUrl(files,mediaPath,mediaUrls,'part:'+path+':'+mediaRid);
+    if(!src)continue;
+    artwork.push(Object.assign({src,opacity:1,partKind:kind},layout));
   }
   const text=descendants(doc,'t').map(node=>node.textContent||'').join('').trim();
   return{text,artwork};
@@ -183,12 +225,24 @@ function appendPageArtwork(page,spec){
     img.contentEditable='false';
     img.alt='';
     img.src=item.src;
-    const leftBase=item.horizontalRelative==='page'?0:finite(spec.marginLeftPx);
-    const topBase=item.verticalRelative==='page'?0:finite(spec.marginTopPx);
-    img.style.left=round(leftBase+finite(item.leftPx))+'px';
-    img.style.top=round(topBase+finite(item.topPx))+'px';
-    img.style.width=finite(item.widthPx)+'px';
-    img.style.height=finite(item.heightPx)+'px';
+    const width=finite(item.widthPx),height=finite(item.heightPx);
+    const pageWidth=finite(spec.widthPx),pageHeight=finite(spec.heightPx);
+    const marginLeft=finite(spec.marginLeftPx),marginRight=finite(spec.marginRightPx);
+    const marginTop=finite(spec.marginTopPx),marginBottom=finite(spec.marginBottomPx);
+    const leftBase=item.horizontalRelative==='page'?0:marginLeft;
+    const areaWidth=item.horizontalRelative==='page'?pageWidth:Math.max(0,pageWidth-marginLeft-marginRight);
+    let left=leftBase+finite(item.leftPx);
+    if(item.horizontalAlign==='center')left=leftBase+Math.max(0,(areaWidth-width)/2);
+    else if(item.horizontalAlign==='right')left=leftBase+Math.max(0,areaWidth-width);
+    const footerRelative=item.partKind==='footer'&&item.verticalRelative!=='page';
+    const topBase=item.verticalRelative==='page'?0:(footerRelative?Math.max(0,pageHeight-marginBottom-height):marginTop);
+    let top=topBase+finite(item.topPx);
+    if(item.verticalAlign==='center'&&item.verticalRelative==='page')top=Math.max(0,(pageHeight-height)/2);
+    else if(item.verticalAlign==='bottom'&&item.verticalRelative==='page')top=Math.max(0,pageHeight-height);
+    img.style.left=round(left)+'px';
+    img.style.top=round(top)+'px';
+    img.style.width=width+'px';
+    img.style.height=height+'px';
     img.style.opacity=String(Number.isFinite(Number(item.opacity))?Number(item.opacity):1);
     page.appendChild(img);
   }
@@ -198,6 +252,7 @@ NS.DrawingLayout={
   appendPageArtwork,
   emuToPx,
   imageLayout,
+  drawingImageLayout,
   partSpec,
   pointToPx,
   vmlImageLayout
