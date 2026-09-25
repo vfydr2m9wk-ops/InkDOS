@@ -22,6 +22,10 @@ BROWSER_NAME = os.environ.get("BROWSER", "chromium").strip().lower()
 ITERATIONS = max(1, int(os.environ.get("INKDOS_PERF_ITERATIONS", "3")))
 OUT = Path(os.environ.get("INKDOS_PERF_OUT", f"artifacts/performance/{BROWSER_NAME}"))
 TIMEOUT_MS = int(os.environ.get("INKDOS_PERF_TIMEOUT_MS", "30000"))
+VISUAL_ENABLED = os.environ.get("INKDOS_PERF_VISUAL", "1").strip().lower() not in {"0", "false", "no"}
+VISUAL_THEMES = ("light", "dark")
+VISUAL_TIMELINE_CASES = {"presentations-pptx-44", "pdf-1"}
+VISUAL_TARGETS_MS = (150, 400, 800)
 
 APPS = {
     "documents": {
@@ -100,21 +104,43 @@ def wait_port() -> None:
     raise RuntimeError("Local performance server did not start")
 
 
-def new_context(browser: Browser):
-    context = browser.new_context(
-        viewport={"width": 1280, "height": 820},
-        service_workers="block",
-    )
+def new_context(browser: Browser, appearance: str | None = None):
+    kwargs = {
+        "viewport": {"width": 1280, "height": 820},
+        "service_workers": "block",
+    }
+    if appearance:
+        kwargs["color_scheme"] = appearance
+    context = browser.new_context(**kwargs)
     context.add_init_script(MONITOR_SCRIPT)
+    if appearance:
+        context.add_init_script(
+            f"""(() => {{
+              try {{
+                localStorage.setItem('inkdos2:appearance', {json.dumps(appearance)});
+              }} catch (_) {{}}
+            }})();"""
+        )
     return context
 
 
-def new_launch_context(browser: Browser, case: dict, data: bytes):
-    context = browser.new_context(
-        viewport={"width": 1280, "height": 820},
-        service_workers="block",
-    )
+def new_launch_context(browser: Browser, case: dict, data: bytes, appearance: str | None = None):
+    kwargs = {
+        "viewport": {"width": 1280, "height": 820},
+        "service_workers": "block",
+    }
+    if appearance:
+        kwargs["color_scheme"] = appearance
+    context = browser.new_context(**kwargs)
     context.add_init_script(MONITOR_SCRIPT)
+    if appearance:
+        context.add_init_script(
+            f"""(() => {{
+              try {{
+                localStorage.setItem('inkdos2:appearance', {json.dumps(appearance)});
+              }} catch (_) {{}}
+            }})();"""
+        )
     encoded = base64.b64encode(data).decode("ascii")
     name = json.dumps(case["file"])
     mime = json.dumps(case["mime"])
@@ -464,6 +490,129 @@ def cold_open_sample(browser: Browser, case: dict, data: bytes) -> dict:
     return {"elapsedMs": round(elapsed, 2), "errors": errors, **snap, "postReady": post_ready}
 
 
+
+def visual_startup_capture(browser: Browser, app: str, appearance: str, visual_dir: Path) -> dict:
+    context = new_context(browser, appearance)
+    page = context.new_page()
+    errors: list[str] = []
+    page.on("pageerror", lambda exc: errors.append(str(exc)))
+    started = time.perf_counter()
+    page.goto(BASE + APPS[app]["path"], wait_until="domcontentloaded", timeout=TIMEOUT_MS)
+    page.wait_for_function(APPS[app]["startup"], timeout=TIMEOUT_MS)
+    elapsed = (time.perf_counter() - started) * 1000
+    target = visual_dir / "startup" / appearance / f"{app}.png"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    page.screenshot(path=str(target), full_page=False)
+    resolved = page.evaluate(
+        "() => document.documentElement.dataset.appearanceResolved || "
+        "document.documentElement.dataset.appearance || null"
+    )
+    context.close()
+    return {
+        "elapsedToReadyMs": round(elapsed, 2),
+        "screenshot": str(target.relative_to(OUT)),
+        "resolvedAppearance": resolved,
+        "errors": errors,
+    }
+
+
+def visual_cold_open_capture(
+    browser: Browser,
+    case: dict,
+    data: bytes,
+    appearance: str,
+    visual_dir: Path,
+) -> dict:
+    context = new_launch_context(browser, case, data, appearance)
+    page = context.new_page()
+    errors: list[str] = []
+    page.on("pageerror", lambda exc: errors.append(str(exc)))
+    case_dir = visual_dir / "cold-open" / appearance / case["name"]
+    case_dir.mkdir(parents=True, exist_ok=True)
+
+    started = time.perf_counter()
+    page.goto(BASE + APPS[case["app"]]["path"], wait_until="commit", timeout=TIMEOUT_MS)
+    captures = []
+
+    if case["name"] in VISUAL_TIMELINE_CASES:
+        for target_ms in VISUAL_TARGETS_MS:
+            elapsed = (time.perf_counter() - started) * 1000
+            remaining = target_ms - elapsed
+            if remaining > 0:
+                page.wait_for_timeout(remaining)
+            actual = (time.perf_counter() - started) * 1000
+            ready = False
+            try:
+                ready = bool(page.evaluate(f"() => ({case['ready']})()"))
+            except Exception:
+                pass
+            shot = case_dir / f"t{target_ms}.png"
+            page.screenshot(path=str(shot), full_page=False)
+            captures.append(
+                {
+                    "requestedMs": target_ms,
+                    "actualCaptureMs": round(actual, 2),
+                    "ready": ready,
+                    "screenshot": str(shot.relative_to(OUT)),
+                }
+            )
+
+    page.wait_for_function(case["ready"], timeout=TIMEOUT_MS)
+    ready_ms = (time.perf_counter() - started) * 1000
+    ready_shot = case_dir / "ready.png"
+    page.screenshot(path=str(ready_shot), full_page=False)
+    resolved = page.evaluate(
+        "() => document.documentElement.dataset.appearanceResolved || "
+        "document.documentElement.dataset.appearance || null"
+    )
+    context.close()
+    return {
+        "elapsedToReadyMs": round(ready_ms, 2),
+        "screenshot": str(ready_shot.relative_to(OUT)),
+        "timeline": captures,
+        "resolvedAppearance": resolved,
+        "errors": errors,
+    }
+
+
+def run_visual_benchmark(browser: Browser, fixtures: dict[str, bytes]) -> dict:
+    visual_dir = OUT / "visual"
+    result = {
+        "note": (
+            "Separate evidence pass. Screenshot capture is excluded from numeric samples "
+            "so rendering/capture overhead cannot change timing medians."
+        ),
+        "themes": list(VISUAL_THEMES),
+        "timelineCases": sorted(VISUAL_TIMELINE_CASES),
+        "timelineTargetsMs": list(VISUAL_TARGETS_MS),
+        "startup": {},
+        "coldOpen": {},
+    }
+
+    for appearance in VISUAL_THEMES:
+        result["startup"][appearance] = {}
+        for app in APPS:
+            result["startup"][appearance][app] = visual_startup_capture(
+                browser, app, appearance, visual_dir
+            )
+
+        result["coldOpen"][appearance] = {}
+        for case in OPEN_CASES:
+            result["coldOpen"][appearance][case["name"]] = visual_cold_open_capture(
+                browser,
+                case,
+                fixtures[case["name"]],
+                appearance,
+                visual_dir,
+            )
+
+    (OUT / "visual-report.json").write_text(
+        json.dumps(result, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return result
+
+
 def main() -> None:
     if BROWSER_NAME not in {"chromium", "firefox", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={BROWSER_NAME}")
@@ -509,6 +658,11 @@ def main() -> None:
                     "summary": summarize(samples),
                 }
 
+            visual = run_visual_benchmark(browser, fixtures) if VISUAL_ENABLED else {
+                "enabled": False,
+                "reason": "INKDOS_PERF_VISUAL disabled",
+            }
+
             browser.close()
 
         report = {
@@ -519,6 +673,7 @@ def main() -> None:
             "startup": startup,
             "open": opens,
             "coldOpen": cold_opens,
+            "visual": visual,
         }
         (OUT / "report.json").write_text(
             json.dumps(report, indent=2, ensure_ascii=False) + "\n",
