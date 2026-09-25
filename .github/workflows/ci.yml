@@ -145,7 +145,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        component: [presentations, pdf]
+        component: [documents, spreadsheets, presentations, pdf, epub, txt]
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -165,10 +165,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ matrix.component }}" = "presentations" ]; then
-            python scripts/agent_test.py presentations
-          else
+          if [ "${{ matrix.component }}" = "pdf" ]; then
             python tests/test_pdf_stability_contract.py
+          else
+            python scripts/agent_test.py "${{ matrix.component }}"
           fi
       - name: Benchmark isolated WebKit component
         env:
