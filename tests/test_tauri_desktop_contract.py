@@ -247,6 +247,28 @@ def test_bundle_targets_cover_only_supported_installers():
     assert "rpm" not in linux
 
 
+def test_release_channel_gates_native_builds_and_pins_stable_cache():
+    workflow = read(RELEASE_WORKFLOW)
+    for marker in (
+        "NATIVE_BUILDS=true",
+        "NATIVE_BUILDS=false",
+        "if: needs.validate.outputs.native_builds == 'true'",
+        "if: steps.release.outputs.native_builds == 'true'",
+        "actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57",
+        "~/.cargo/bin/cargo-tauri",
+        "~/.cargo/registry/index/",
+        "~/.cargo/registry/cache/",
+        "~/.cargo/git/db/",
+        "desktop/src-tauri/target/",
+        'cargo install tauri-cli --version "2.11.4" --locked',
+        "Beta releases must not contain uploaded assets.",
+        "Beta release-final must stay empty.",
+    ):
+        assert marker in workflow
+    assert "needs.validate.outputs.native_builds == 'false' || needs.build.result == 'success'" in workflow
+    assert workflow.count("actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57") >= 2
+
+
 if __name__ == "__main__":
     tests = [value for name, value in sorted(globals().items()) if name.startswith("test_") and callable(value)]
     for test in tests:
