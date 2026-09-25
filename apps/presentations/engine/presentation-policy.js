@@ -211,19 +211,28 @@ async function validatePptx(input){
 }
 
 function secureController(original){
-  async function decodePptx(bytes,fileName){
+  async function decodePptx(bytes,fileName,options){
     await validatePptx(bytes);
-    return original.decodePptx(bytes,fileName);
+    return original.decodePptx(bytes,fileName,options);
   }
-  async function decode(bytes,fileName){
-    if(/\.ppt$/i.test(String(fileName||'')))return original.decode(bytes,fileName);
-    return decodePptx(bytes,fileName);
+  async function decode(bytes,fileName,options){
+    if(/\.ppt$/i.test(String(fileName||'')))return original.decode(bytes,fileName,options);
+    return decodePptx(bytes,fileName,options);
   }
   function create(options={}){
-    const inner=original.create(options);
+    const inner=original.create(options);let requestSeq=0;
     async function openFile(file){
       if(!file)return false;
-      if(/\.ppt$/i.test(String(file.name||'')))return inner.openFile(file);
+      const request=++requestSeq;
+      if(inner.opening){
+        const staleOp=options.session?.operationId;
+        options.session?.beginOperation?.();
+        options.onPreviewClear?.({op:staleOp,committed:false,stale:true});
+      }
+      if(/\.ppt$/i.test(String(file.name||''))){
+        if(request!==requestSeq)return false;
+        return inner.openFile(file);
+      }
       try{
         if(Number(file.size)>PPTX_LIMITS.maxInputBytes){
           pptxFail('PPTX_INPUT_BUDGET','PPTX exceeds the compressed input-byte budget.');
@@ -235,6 +244,7 @@ function secureController(original){
         if(options.fileInput)options.fileInput.value='';
         return false;
       }
+      if(request!==requestSeq)return false;
       return inner.openFile(file);
     }
     function install(){
@@ -243,7 +253,7 @@ function secureController(original){
         if(file)openFile(file);
       });
     }
-    return Object.freeze({...inner,install,openFile,decode,decodePptx});
+    return Object.freeze({...inner,install,openFile,decode,decodePptx,get opening(){return inner.opening}});
   }
   return Object.freeze({create,decode,decodePptx});
 }
