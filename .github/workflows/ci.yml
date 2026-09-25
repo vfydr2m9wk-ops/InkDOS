@@ -105,6 +105,21 @@ jobs:
           INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
           INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
         run: python scripts/run_candidate_audit.py
+      - name: Benchmark workspace startup and file opening
+        continue-on-error: true
+        env:
+          BROWSER: ${{ matrix.browser }}
+          INKDOS_PERF_ITERATIONS: "3"
+          INKDOS_PERF_OUT: artifacts/performance/${{ matrix.browser }}
+        run: python scripts/benchmark_workspace_performance.py
+      - name: Preserve performance benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-benchmark-${{ matrix.browser }}
+          path: artifacts/performance/${{ matrix.browser }}/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Preserve candidate audit evidence
         if: always()
         uses: actions/upload-artifact@v4
