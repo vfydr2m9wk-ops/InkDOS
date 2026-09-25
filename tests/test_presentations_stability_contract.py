@@ -107,4 +107,12 @@ assert 'ppt-p1-color-swatch' in P1_TOOLS, 'Presentations color controls lack cur
 assert '<svg' in P1_TOOLS, 'Presentations color controls do not use semantic SVG iconography'
 assert "'●'" not in P1_TOOLS and "'○'" not in P1_TOOLS, 'Presentations still exposes raw dot glyph color affordances'
 
+
+# Performance workbench: repeated PPTX media references should reuse the decoded
+# data-URL result within one package open, without changing package ownership.
+OPEN = (ROOT / 'apps/presentations/io/pptx-open-controller.js').read_text(encoding='utf-8')
+assert 'const MEDIA_CACHE=new WeakMap(),MEDIA_CACHE_STATS=new WeakMap()' in OPEN, 'Presentations per-package media cache is missing'
+assert 'if(cache.has(path)){if(stats)stats.hits++;return cache.get(path)}' in OPEN, 'Repeated media references do not reuse the cached decoded result'
+assert 'mediaCacheStats:zip=>MEDIA_CACHE_STATS.get(zip)||null' in OPEN, 'Media-cache diagnostic counters are not exposed read-only'
+
 print('Presentations command/control, thumbnail fidelity, and toolbar semantic contract passed.')
