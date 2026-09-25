@@ -245,7 +245,6 @@ function secureController(original){
         if(options.fileInput)options.fileInput.value='';
         return false;
       }
-      return inner.openFile(file);
     }
     function install(){
       options.fileInput?.addEventListener('change',()=>{
