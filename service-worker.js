@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-f278077a4c43ac16c336';
+const CACHE_NAME='inkdos-v2.6.2-66ca4d8550cd5ea20c9c';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -79,7 +79,7 @@ const ASSET_HASHES={
   "./apps/epub/view/reader-viewport.js": "8c6624743fe9cc001a15951250fe28027119ca489b0bd32aa71dec77279f63a6",
   "./apps/epub/view/reader.css": "b48402f64bb537827fa9319d82fbd9559b2c2e132e9fec0161549b5250d637bd",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
-  "./apps/pdf/app.js": "ef24b2625a271c588cb57ef919465a6a98c49597c2aa34e665ff59aa0be1444b",
+  "./apps/pdf/app.js": "c9a4b8127cdc68650f68ba056faf3a8b86fd4c8dd1bfa1c7fc4df911c99d1e5b",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
