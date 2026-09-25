@@ -253,7 +253,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "25a30d3ddcba5ee56c8b013ab47b4c665a20fff6eb468231483be445377f4b60",
+  "./index.html": "105d0e7e3f85c7941b36b5a41755b8aef4501517c189005131b7ad44ccba839b",
   "./manifest.webmanifest": "93bfa1f1979029c59851c18d5d241b658b816b940c684b38239f90eb1ad8eebe",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
   "./shared/localization/locales/de.js": "0a975e1e68f76243771277497eb1ee9f5dcbcc4151d66f96353b5ecd9bf4fd33",
