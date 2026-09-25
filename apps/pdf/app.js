@@ -36,7 +36,7 @@ async function boot(){
  }
  await afterIdle(900);
  try{await loadReaderTools();readerTools=NS.ReaderTools.create({session,getDocument:()=>fileOpen.pdfDocument,layout,chrome,registry,canRotate:()=>true});readerTools.install();if(session.active){readerTools.resetDocument();readerTools.syncEnabled()}}catch(e){console.error('Deferred PDF reader tools failed to load',e)}
- NS.ReaderCompletionDebug=Object.freeze({get readerTools(){return readerTools},get pageTools(){return pageTools},layout});NS.PdfPerformanceDebug=Object.freeze({get open(){return fileOpen.diagnostics},get worker(){return NS.PdfWorker.diagnostics()}});
+ NS.ReaderCompletionDebug=Object.freeze({get readerTools(){return readerTools},get pageTools(){return pageTools},layout});
  NS.PdfStabilityDebug=Object.freeze({session,editor,pageLayers,extensions,layout,navigation,modeController,modeBindings,annotationModes,fileOpen,save,get readerTools(){return readerTools},get pageTools(){return pageTools},commands,registry,get editingActive(){return editingActive},get editingReady(){return editingReady},get editingLoading(){return editingLoading}})
 }
 boot().catch(e=>{console.error(e);const status=$('statusText');if(status)status.textContent='PDF workspace failed to initialize'});
