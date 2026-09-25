@@ -94,3 +94,24 @@ a XeOS/iPad measurement. Compare medians/p95 and blocking counters before and af
 each narrowly scoped performance change; verify any apparent WebKit win on the real
 XeOS/iPad path before claiming a device improvement.
 
+### Numeric and visual evidence are separate
+
+The numeric pass never captures screenshots. This avoids screenshot/rendering overhead
+changing startup, open, cold-open or main-thread-blocking measurements.
+
+After numeric sampling, an independent visual evidence pass captures:
+
+- startup-ready screenshots for every workspace in explicit Light and Dark modes;
+- cold direct-launch ready screenshots for every synthetic file case in both modes;
+- timeline frames at 150, 400 and 800 ms for the current high-value cases:
+  1-page PDF and 44-slide PPTX;
+- the actual wall-clock capture time and whether the content-ready predicate was already
+  satisfied for each requested timeline frame.
+
+Visual evidence is stored under `artifacts/performance/<browser>/visual/` with a
+machine-readable `visual-report.json`. It is a human/perceptual benchmark, not a
+pixel-perfect release gate: font rasterization and headless browser rendering can vary.
+Its purpose is to show what the user could actually see while the numeric report explains
+how much time and main-thread blocking occurred. Existing visual/click/stateful audits
+remain unchanged and continue to cover broader UI correctness.
+
