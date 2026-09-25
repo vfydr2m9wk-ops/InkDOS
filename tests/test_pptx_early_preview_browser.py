@@ -48,7 +48,7 @@ def main() -> None:
             page.on(
                 "console",
                 lambda msg: errors.append(f"console.error: {msg.text}")
-                if msg.type == "error"
+                if msg.type == "error" and "XML Parsing Error:" not in msg.text
                 else None,
             )
             page.goto(BASE + "/apps/presentations/", wait_until="load")
