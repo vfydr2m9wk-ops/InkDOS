@@ -275,6 +275,11 @@ def build_browser_fixtures(browser: Browser) -> dict[str, bytes]:
     page = context.new_page()
     page.goto(BASE + APPS["pdf"]["path"], wait_until="load", timeout=TIMEOUT_MS)
     page.wait_for_function(APPS["pdf"]["startup"], timeout=TIMEOUT_MS)
+    # pdf-lib is intentionally lazy in the product runtime; load the vendored bundle
+    # explicitly for synthetic benchmark fixture generation instead of coupling the
+    # product startup path to a benchmark-only dependency.
+    page.add_script_tag(url=BASE + "/apps/pdf/vendor/pdf-lib/pdf-lib.min.js")
+    page.wait_for_function("() => !!globalThis.PDFLib?.PDFDocument", timeout=TIMEOUT_MS)
     for count in (1, 20):
         pdf_b64 = page.evaluate(
             """async (count) => {
