@@ -58,6 +58,10 @@ jobs:
         run: python tests/test_txt_multi_instance_recovery_browser.py
       - name: Run Presentations color-control hitbox regression
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
+      - name: Run PPTX security and single-read regression
+        env:
+          BROWSER: chromium
+        run: python tests/test_pptx_security_browser.py
       - name: Run PDF toolbar hitbox regression
         run: python tests/test_pdf_toolbar_hitbox_browser.py
       - name: Run behavioral stability gate
