@@ -58,6 +58,14 @@ jobs:
         run: python tests/test_txt_multi_instance_recovery_browser.py
       - name: Run Presentations color-control hitbox regression
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
+      - name: Run Presentations shared-context cache regression
+        run: python tests/test_pptx_shared_context_cache_browser.py
+      - name: Run hostile PPTX security regression
+        run: python tests/test_pptx_security_browser.py
+      - name: Run PPT-P1 structure roundtrip regression
+        run: python tests/test_ppt_p1_structure_roundtrip.py
+      - name: Run PPT-P1 objects roundtrip regression
+        run: python tests/test_ppt_p1_objects_roundtrip.py
       - name: Run PDF toolbar hitbox regression
         run: python tests/test_pdf_toolbar_hitbox_browser.py
       - name: Run behavioral stability gate
@@ -99,12 +107,36 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install browser
         run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify Presentations shared-context cache
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/test_pptx_shared_context_cache_browser.py
+      - name: Verify hostile PPTX security gate
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/test_pptx_security_browser.py
+      - name: Benchmark numeric and visual workspace performance
+        continue-on-error: true
+        env:
+          BROWSER: ${{ matrix.browser }}
+          INKDOS_PERF_ITERATIONS: "5"
+          INKDOS_PERF_VISUAL: "1"
+          INKDOS_PERF_OUT: artifacts/performance/${{ matrix.browser }}
+        run: python scripts/benchmark_workspace_performance.py
       - name: Audit exact candidate without deployment
         env:
           INKDOS_EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
           INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
           INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
         run: python scripts/run_candidate_audit.py
+      - name: Preserve performance benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-candidate-${{ matrix.browser }}
+          path: artifacts/performance/${{ matrix.browser }}/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Preserve candidate audit evidence
         if: always()
         uses: actions/upload-artifact@v4
