@@ -26,3 +26,6 @@
 .pdf-toolbar,.pdf-toolbar-row{overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .pdf-toolbar .tool-btn,.pdf-toolbar .page-input,.pdf-toolbar .zoom-select,.pdf-toolbar .property-select,.pdf-toolbar .property-color{flex:0 0 auto}
 .tool-btn:hover,.tool-btn:focus-visible,.page-input:focus-visible,.zoom-select:hover,.zoom-select:focus-visible,.property-select:hover,.property-select:focus-visible,.property-color:focus-visible{border-color:var(--line-strong,var(--line));outline-offset:2px}
+
+/* Fast-open edit gate: reading stays interactive while editing modules finish loading. */
+#editModeBtn[data-edit-state="loading"]{filter:grayscale(1)}#editModeBtn[aria-busy="true"]{opacity:.46}#editModeBtn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
