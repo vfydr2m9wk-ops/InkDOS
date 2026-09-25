@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://vfydr2m9wk-ops.github.io/InkDOS/sitemap.xml
+Sitemap: https://vfydr2m9wk-ops.github.io/InkDOS/sitemap.txt
