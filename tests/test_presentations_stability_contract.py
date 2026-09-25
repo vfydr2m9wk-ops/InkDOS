@@ -111,6 +111,7 @@ assert "'●'" not in P1_TOOLS and "'○'" not in P1_TOOLS, 'Presentations still
 # Performance workbench: repeated PPTX media references should reuse the decoded
 # data-URL result within one package open, without changing package ownership.
 OPEN = (ROOT / 'apps/presentations/io/pptx-open-controller.js').read_text(encoding='utf-8')
+assert '\\nconst MEDIA_CACHE' not in OPEN, 'Presentations media-cache declaration contains a literal escaped newline and is invalid JavaScript'
 assert 'const MEDIA_CACHE=new WeakMap(),MEDIA_CACHE_STATS=new WeakMap()' in OPEN, 'Presentations per-package media cache is missing'
 assert 'if(cache.has(path)){if(stats)stats.hits++;return cache.get(path)}' in OPEN, 'Repeated media references do not reuse the cached decoded result'
 assert 'mediaCacheStats:zip=>MEDIA_CACHE_STATS.get(zip)||null' in OPEN, 'Media-cache diagnostic counters are not exposed read-only'
