@@ -115,3 +115,81 @@ Its purpose is to show what the user could actually see while the numeric report
 how much time and main-thread blocking occurred. Existing visual/click/stateful audits
 remain unchanged and continue to cover broader UI correctness.
 
+
+
+## Real-device XeOS observations — 2026-09-25
+
+User-reported XeOS/WebKit measurements materially extend the synthetic CI baseline:
+
+- a PDF with approximately 16,000 pages took about 20 seconds to become visible;
+- presentations currently take about 5 seconds on average to open in XeOS.
+
+These figures are device observations, not CI timings, and should be treated as the
+primary perceptual target for the next diagnostic pass.
+
+### PDF large-document path
+
+The PDF viewport itself is already bounded: `PageLayout` renders the target page and
+a small neighborhood rather than constructing one DOM view per document page.
+Therefore a 16,000-page delay is not explained by 16,000 page canvases or thumbnails.
+
+The critical pre-render path currently performs:
+
+1. `file.arrayBuffer()`;
+2. a `Uint8Array` view for the source;
+3. a second full-byte `Uint8Array` copy in `parseBytes()` before
+   `pdfjsLib.getDocument(...).promise`;
+4. PDF.js document parsing/indexing in its worker;
+5. another full-byte copy in `PdfSession.replaceDocument()` to retain editable source
+   bytes;
+6. target-page fetch and first canvas render.
+
+For very large files, full-byte copies and PDF.js page-tree/xref parsing can dominate
+before page 1 exists. The next instrumentation must time these phases separately and
+confirm whether XeOS is using a real PDF.js worker rather than a fake-worker fallback.
+No optimization should remove source-byte safety without an equivalent preservation
+mechanism.
+
+### Presentations duplicate package work
+
+The secure PPTX path currently duplicates expensive work before first meaningful paint.
+
+`PresentationPolicy.secureController().create().openFile()`:
+
+- reads the entire `File` into an ArrayBuffer;
+- calls `validatePptx(bytes)`;
+- `validatePptx` runs `JSZip.loadAsync(..., {checkCRC32:true})`;
+- every XML/RELS part is inflated to text for DTD/entity screening;
+- then it delegates to the original controller.
+
+The original controller then:
+
+- calls `file.arrayBuffer()` again;
+- runs `decodePptx`;
+- runs a second `JSZip.loadAsync(..., {checkCRC32:true})`;
+- inflates/parses slide XML;
+- recomputes shared layout/master/theme context per slide;
+- can inflate the same image resource repeatedly;
+- after commit, renders the current slide and synchronously materializes every slide
+  thumbnail and up to 80 objects per thumbnail.
+
+This preserves strong validation, but the duplicated read/CRC/decompression work is a
+high-confidence performance target. The optimization must integrate validation and
+decode around one trusted byte buffer / verified package instance rather than weaken
+the security gate. Shared immutable layout/master/theme/media decode results should be
+measured for per-open caching, and thumbnail rendering should be measured separately
+from first-slide paint.
+
+### Required next phase metrics
+
+Before product changes, add phase timings for:
+
+- PDF: file read, byte-copy cost, `getDocument`, page 1 fetch, page 1 render, session
+  retention copy, worker mode;
+- PPTX: file read #1, security ZIP/CRC, XML security scan, file read #2, decode ZIP/CRC,
+  per-slide decode, first-slide surface render, thumbnail panel render, deferred P1/P2
+  tools.
+
+The UX target remains first meaningful content, not merely model commit. Any bottom
+progress indicator should be driven by these real phases or use an indeterminate state
+when a phase has no reliable fractional progress signal.
