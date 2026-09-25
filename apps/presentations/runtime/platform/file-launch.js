@@ -1,6 +1,6 @@
 (function(g){'use strict';
 const doc=typeof document!=='undefined'?document:null;
-let openHandler=null,pendingLaunchFiles=[];
+const perfBootAt=performance.now();\nlet openHandler=null,pendingLaunchFiles=[];
 function extension(name){const m=String(name||'').toLowerCase().match(/\.([^.\\/]+)$/);return m?m[1]:''}
 function acceptTokens(accept){return String(accept||'').split(',').map(value=>value.trim().toLowerCase()).filter(Boolean)}
 function extensionsFromAccept(accept){return new Set(acceptTokens(accept).filter(token=>token.startsWith('.')&&token.length>1).map(token=>token.slice(1)))}
