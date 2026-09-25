@@ -47,8 +47,13 @@ def main():
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 1")
 
             nav = page.locator("#navPanelBtn")
+            edit = page.locator("#editModeBtn")
             organize = page.locator("#pageToolsBtn")
             assert nav.is_visible() and nav.is_enabled()
+            assert edit.is_visible() and edit.is_enabled()
+            assert not organize.is_visible()
+            edit.click(timeout=2500)
+            page.wait_for_function("() => document.documentElement.dataset.pdfMode === 'annotate'")
             assert organize.is_visible() and organize.is_enabled()
             assert organize.locator(".tool-label").count() == 0
 
