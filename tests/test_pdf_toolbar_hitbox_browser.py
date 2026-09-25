@@ -41,6 +41,10 @@ def main():
             page.on("pageerror", lambda exc: errors.append(str(exc)))
             page.goto(BASE + "/apps/pdf/", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug?.fileOpen")
+            # pdf-lib is not a product startup dependency. Load the checked-in bundle
+            # explicitly for this synthetic regression fixture.
+            page.add_script_tag(url=BASE + "/apps/pdf/vendor/pdf-lib/pdf-lib.min.js")
+            page.wait_for_function("() => !!globalThis.PDFLib?.PDFDocument", timeout=15000)
 
             opened = page.evaluate("""async()=>{const d=globalThis.InkDOS2PdfP4.PdfStabilityDebug; const pdf=await PDFLib.PDFDocument.create(); const p=pdf.addPage([612,792]); p.drawText('InkDOS PDF hitbox audit',{x:48,y:730,size:20}); const bytes=new Uint8Array(await pdf.save()); return await d.fileOpen.openFile(new File([bytes],'hitbox.pdf',{type:'application/pdf'}));}""")
             assert opened is True
