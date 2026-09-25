@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.6.2 Beta — 2026-09-24
+
+- Harden XeOS 2.7.5 direct file launches by registering each workspace launchQueue bridge before deferred boot and declaring focus-existing launch handling while preserving each app's existing file handlers, PWA identity, scope and start URL.
+- Bind native form controls to the InkDOS-resolved appearance so a dark operating-system theme no longer leaks into controls when a workspace is explicitly set to Light.
+- Render modern DrawingML images anchored in DOCX headers and footers, including anchored/inline extents and positioning, while preserving existing VML handling.
+- Publish beta tags as web/PWA/source-only GitHub prereleases with no EXE, DMG or AppImage assets; retain full native Tauri builds for stable tags only.
+- Cache the pinned Tauri CLI, Cargo registry/index/git data and native target directory for stable builds, with a verified 2.11.4 installation fallback.
+
 ## 2.6.1 — 2026-09-24
 
 - Promote the 2.6 line to the stable release channel after final direct-app/PWA validation.
