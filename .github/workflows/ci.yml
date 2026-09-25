@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   integration-validation:
+    if: ${{ github.event_name != 'pull_request' || (!startsWith(github.head_ref, 'perf/xeros-exp-') && github.head_ref != 'perf/xeros-optimization-workbench') }}
     runs-on: ubuntu-22.04
     timeout-minutes: 50
     steps:
@@ -58,6 +59,10 @@ jobs:
         run: python tests/test_txt_multi_instance_recovery_browser.py
       - name: Run Presentations color-control hitbox regression
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
+      - name: Run PPTX security and single-read regression
+        env:
+          BROWSER: chromium
+        run: python tests/test_pptx_security_browser.py
       - name: Run PDF toolbar hitbox regression
         run: python tests/test_pdf_toolbar_hitbox_browser.py
       - name: Run behavioral stability gate
@@ -78,7 +83,7 @@ jobs:
 
   candidate-distribution:
     name: Candidate distribution (${{ matrix.browser }})
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'perf/xeros-exp-') && github.head_ref != 'perf/xeros-optimization-workbench'
     runs-on: ubuntu-22.04
     timeout-minutes: 55
     strategy:
@@ -105,6 +110,22 @@ jobs:
           INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
           INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
         run: python scripts/run_candidate_audit.py
+      - name: Benchmark numeric and visual workspace performance
+        continue-on-error: true
+        env:
+          BROWSER: ${{ matrix.browser }}
+          INKDOS_PERF_ITERATIONS: "3"
+          INKDOS_PERF_VISUAL: "1"
+          INKDOS_PERF_OUT: artifacts/performance/${{ matrix.browser }}
+        run: python scripts/benchmark_workspace_performance.py
+      - name: Preserve performance benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-benchmark-${{ matrix.browser }}
+          path: artifacts/performance/${{ matrix.browser }}/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Preserve candidate audit evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -113,3 +134,55 @@ jobs:
           path: artifacts/candidate-${{ matrix.browser }}/
           if-no-files-found: warn
           retention-days: 14
+
+
+
+  performance-lab-quick:
+    name: Performance lab quick WebKit (${{ matrix.component }})
+    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'perf/xeros-exp-') || github.head_ref == 'perf/xeros-optimization-workbench')
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [documents, spreadsheets, presentations, pdf, epub, txt]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install WebKit
+        run: python -m playwright install --with-deps webkit
+      - name: Run focused component smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.component }}" = "pdf" ]; then
+            python tests/test_pdf_stability_contract.py
+          else
+            python scripts/agent_test.py "${{ matrix.component }}"
+          fi
+      - name: Benchmark isolated WebKit component
+        env:
+          BROWSER: webkit
+          INKDOS_PERF_COMPONENT: ${{ matrix.component }}
+          INKDOS_PERF_ITERATIONS: "2"
+          INKDOS_PERF_VISUAL: "1"
+          INKDOS_PERF_OUT: artifacts/performance-lab-quick/${{ matrix.component }}/webkit
+        run: python scripts/benchmark_component_performance.py
+      - name: Preserve component quick evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-lab-quick-${{ matrix.component }}-webkit
+          path: artifacts/performance-lab-quick/${{ matrix.component }}/webkit/
+          if-no-files-found: warn
+          retention-days: 7

@@ -207,6 +207,8 @@ class Audit:
 
     def open_pdf(self,p,count=5):
         p.wait_for_function("()=>!!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
+        p.add_script_tag(url=urljoin(BASE,"apps/pdf/vendor/pdf-lib/pdf-lib.min.js"))
+        p.wait_for_function("()=>!!globalThis.PDFLib?.PDFDocument",timeout=15000)
         ok=p.evaluate("""async count=>{const d=globalThis.InkDOS2PdfP4.PdfStabilityDebug,pdf=await PDFLib.PDFDocument.create();for(let i=0;i<count;i++){const pg=pdf.addPage([612,792]);pg.drawText('Button audit page '+(i+1),{x:48,y:730,size:20})}const bytes=new Uint8Array(await pdf.save());return await d.fileOpen.openFile(new File([bytes],'button-audit.pdf',{type:'application/pdf'}))}""",count)
         if ok is not True: raise RuntimeError("PDF fixture failed")
         p.wait_for_function(f"()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount==={count}",timeout=20000)

@@ -1,0 +1,57 @@
+INKDOS PERFORMANCE LAB — CORRECTION CYCLE 01
+
+Repository: vfydr2m9wk-ops/InkDOS
+Working branch ONLY: perf/xeros-optimization-lab
+Experimental PR: #203 (DRAFT / DO NOT MERGE)
+Baseline audit PR: #202
+
+NON-NEGOTIABLE SAFETY RULES
+1. Never modify, merge into, rebase onto, or push directly to main.
+2. Never enable auto-merge. Never create a release, tag, deployment, or version bump.
+3. Read AGENTS.md and docs/PERFORMANCE_POLISH.md before changing product code.
+4. One narrowly scoped optimization only.
+5. Preserve all current validation, fidelity, local-first behavior, offline behavior, source safety, launchQueue behavior, and transactional commit semantics.
+6. If the optimization requires weakening validation or changes behavior not covered by focused tests, stop and record the risk instead.
+7. If tests regress or performance evidence is neutral/worse, revert the product change and keep only diagnostic evidence.
+
+CURRENT EVIDENCE
+- Real XeOS: presentations average about 5 seconds to open.
+- Secure PPTX open currently reads the File into bytes, validates the whole PPTX, then delegates to the original controller, which calls file.arrayBuffer() again.
+- Security validation must remain exactly as strict as before.
+- Do not change duplicate CRC/ZIP work in this cycle; isolate the effect of the duplicate File read first.
+
+CYCLE 01 GOAL
+Eliminate the second underlying File.arrayBuffer() read for a successfully validated PPTX while preserving the exact validation and decode sequence otherwise.
+
+PREFERRED MINIMAL DESIGN
+- In PresentationPolicy secureController().create().openFile(), after reading and validating bytes, delegate to the existing inner.openFile() through a minimal validated file-like object whose arrayBuffer() returns the already-read ArrayBuffer.
+- Preserve name/type/size/lastModified metadata needed by downstream code.
+- Do not expose a bypass that lets unvalidated bytes enter the decoder.
+- Do not alter the original decoder's CRC behavior in this cycle.
+
+REQUIRED TEST
+Add a focused browser/contract regression demonstrating:
+- a valid PPTX opened through the public secure path causes the source File's arrayBuffer() to be invoked exactly once;
+- the presentation still commits and renders;
+- an invalid/corrupt package remains rejected by the security gate;
+- no direct validation bypass is exposed.
+
+VALIDATION
+Run the narrow test first, then the relevant Presentations stability/security tests, then rely on PR #203 CI for the full numeric/visual/cross-browser audit.
+Compare:
+- Presentations 1-slide and 44-slide open/coldOpen medians;
+- WebKit main-thread lag;
+- visual 150/400/800 ms evidence for PPTX-44;
+- all behavioral/security gates.
+
+DECISION
+Promote this commit as the lab's stable head only if correctness is unchanged and there is no meaningful regression. Do not claim XeOS gain from CI alone.
+
+OUTPUT
+Record:
+- exact files changed;
+- before/after evidence available;
+- regressions;
+- risk assessment;
+- whether the change remains in the lab;
+- the next highest-evidence hypothesis, but do not implement it in this cycle.

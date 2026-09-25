@@ -130,6 +130,11 @@ def prepare_active(app, page, fixtures):
         page.wait_for_function("() => document.getElementById('startState')?.hidden === true")
     elif app == "pdf":
         page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug?.fileOpen")
+        # pdf-lib is lazy in the product runtime. The stateful-control audit needs it
+        # only to synthesize a deterministic PDF fixture, so load the vendored test
+        # dependency explicitly instead of coupling product startup to the audit.
+        page.add_script_tag(url=urljoin(BASE, "apps/pdf/vendor/pdf-lib/pdf-lib.min.js"))
+        page.wait_for_function("() => !!globalThis.PDFLib?.PDFDocument", timeout=15000)
         opened = page.evaluate("""async()=>{const d=globalThis.InkDOS2PdfP4.PdfStabilityDebug; const pdf=await PDFLib.PDFDocument.create(); const p=pdf.addPage([612,792]); p.drawText('InkDOS stateful audit',{x:48,y:730,size:20}); const bytes=new Uint8Array(await pdf.save()); return await d.fileOpen.openFile(new File([bytes],'audit.pdf',{type:'application/pdf'}));}""")
         if opened is not True:
             raise RuntimeError("PDF audit fixture did not open")
