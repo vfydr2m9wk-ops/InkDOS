@@ -29,8 +29,11 @@ async function boot(){
  global.InkDOSFileLaunch?.setOpenHandler?.(async file=>{if(!(await commands.authorizeReplacement('open')))return false;return !!(await fileOpen.openFile(file,{authorized:true}))});
  annotationModes.install();global.addEventListener('beforeunload',e=>{authorizedUnload=commands.consumeAuthorizedUnload();if(authorizedUnload){authorizedUnload=false;return}if(commands.hasUnsavedWork()){e.preventDefault();e.returnValue=''}});
  adapter.measure();chrome.title();chrome.dirty();chrome.page(1,0);syncEditButton();
- const firstContentRendered=await Promise.race([firstRender.then(()=>true),new Promise(resolve=>setTimeout(()=>resolve(false),2500))]);
- if(!firstContentRendered){await afterIdle(650);await ensureEditingTools()}
+ let firstContentRendered=false;
+ if(session.active){
+  firstContentRendered=await Promise.race([firstRender.then(()=>true),new Promise(resolve=>setTimeout(()=>resolve(false),2500))]);
+  if(!firstContentRendered){await afterIdle(650);await ensureEditingTools()}
+ }
  await afterIdle(900);
  try{await loadReaderTools();readerTools=NS.ReaderTools.create({session,getDocument:()=>fileOpen.pdfDocument,layout,chrome,registry,canRotate:()=>true});readerTools.install();if(session.active){readerTools.resetDocument();readerTools.syncEnabled()}}catch(e){console.error('Deferred PDF reader tools failed to load',e)}
  NS.ReaderCompletionDebug=Object.freeze({get readerTools(){return readerTools},get pageTools(){return pageTools},layout});
