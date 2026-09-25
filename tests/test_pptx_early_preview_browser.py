@@ -262,9 +262,23 @@ def main() -> None:
                     slideCount:app.session.slides.length
                   };
 
+                  // Small decks do not have enough remaining decode work to
+                  // justify an extra preview paint/yield. The 10-slide diagnostic left
+                  // only ~9 ms after slide 1, below this cycle's materiality gate.
+                  const smallDeck=await makeDeck(10,'SMALL');
+                  const smallObserver=observePreview();
+                  const smallOpened=await app.open(fileOf(smallDeck,'small-10.pptx'));
+                  smallObserver.stop();
+                  const smallResult={
+                    opened:smallOpened,
+                    previewSeen:smallObserver.seen(),
+                    slideCount:app.session.slides.length,
+                    firstText:app.session.slides[0].objects.filter(o=>o.type==='text').map(o=>o.text).join(' | ')
+                  };
+
                   // Normal committed result remains round-trippable.
                   const roundtrip=await NS.PptxWriter.build(app.session);
-                  const reopened=await NS.PptxOpenController.decodePptx(roundtrip,'new-roundtrip.pptx');
+                  const reopened=await NS.PptxOpenController.decodePptx(roundtrip,'small-roundtrip.pptx');
 
                   return {
                     old:{snapshot:oldSnapshot,undo:oldUndo,redo:oldRedo},
@@ -272,7 +286,7 @@ def main() -> None:
                     error:{before:errorOpened?null:beforeError,opened:errorOpened,after:afterError},
                     hostile:{before:beforeHostile,opened:hostileOpened,after:afterHostile},
                     replacement:{openedA,openedB,afterBCommit,afterAStale},
-                    cancelNew:{newAccepted,staleOpened,newMid,newFinal,reopenedSlides:reopened.slides.length}
+                    cancelNew:{newAccepted,staleOpened,newMid,newFinal},small:smallResult,reopenedSlides:reopened.slides.length
                   };
                 }""",
                 MIME,
@@ -337,7 +351,13 @@ def main() -> None:
         assert cancel["newMid"]["previewActive"] is False, result
         assert cancel["newFinal"]["sourceKind"] == "new" and cancel["newFinal"]["slideCount"] == 1, result
         assert cancel["newFinal"]["previewActive"] is False, result
-        assert cancel["reopenedSlides"] == 1, result
+
+        small = result["small"]
+        assert small["opened"] is True, result
+        assert small["previewSeen"] is False, result
+        assert small["slideCount"] == 10, result
+        assert "SMALL 1" in small["firstText"], result
+        assert result["reopenedSlides"] == 10, result
 
         print(
             f"PPTX early-preview regression passed on {browser_name}: "
