@@ -101,11 +101,12 @@ def main()->None:
             for count in COUNTS:
                 samples=[]
                 for iteration in range(ITERATIONS[count]):
+                    page.reload(wait_until="load")
+                    page.wait_for_function("() => !!globalThis.__inkdosPresentations?.session && !!globalThis.InkDOS2Presentations?.PptxWriter")
                     marker=f"AB-{count}-{iteration}-{BROWSER}"
                     fixture=page.evaluate(fixture_script(),{"count":count,"marker":marker})
                     sample=page.evaluate(r"""async ({fixture,marker,count})=>{
                       const app=globalThis.__inkdosPresentations;
-                      await app.newPresentation();
                       const raw=atob(fixture.b64),bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));
                       const file=new File([bytes],'ab-'+count+'.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
                       const canvas=document.getElementById('slideCanvas');
