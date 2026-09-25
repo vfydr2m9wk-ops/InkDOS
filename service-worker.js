@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-f77b489cd886ff2e42cf';
+const CACHE_NAME='inkdos-v2.6.2-759504e3b1ae63a54e0f';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -136,7 +136,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/page-scheduler.js": "f62dced89ba9cb077b66918d797528be1c48a5fd0a441ab3910d8d1ac3a712d0",
   "./apps/pdf/view/pdf-surface.css": "43c64405839bb1a362b2323c1f59623c2bc26791a097180b78b606632cf5ed70",
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
-  "./apps/presentations/app.js": "866bc5439bbc4e387b9523e25543c0b8f345cbbcdc389b7b68c44012925fff08",
+  "./apps/presentations/app.js": "dbd4a87d8ff2756b722e21970dea14cd998980fb4efbf094612fd511d2571713",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./apps/presentations/engine/presentation-policy.js": "657c5a7b2d9caf6155df2f942c12615a129b52800bb49c5eda6c0015d4690ded",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
