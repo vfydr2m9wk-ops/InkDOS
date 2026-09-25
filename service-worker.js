@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-d0e913596691a168818f';
+const CACHE_NAME='inkdos-v2.6.2-f77b489cd886ff2e42cf';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -79,7 +79,7 @@ const ASSET_HASHES={
   "./apps/epub/view/reader-viewport.js": "8c6624743fe9cc001a15951250fe28027119ca489b0bd32aa71dec77279f63a6",
   "./apps/epub/view/reader.css": "b48402f64bb537827fa9319d82fbd9559b2c2e132e9fec0161549b5250d637bd",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
-  "./apps/pdf/app.js": "088ef676797621f67e2d52ab3644e747331d2c3551cb27225971db752fd9cdf1",
+  "./apps/pdf/app.js": "3e3f3833f644da8f7c0da2d1b88f79a33693c2261e594b49d83a99d6e81c3899",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
@@ -97,7 +97,7 @@ const ASSET_HASHES={
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
   "./apps/pdf/index.html": "06fe885eeb343eca543bd3857655feadd511a5bdfa7183e6f39a58aa0fa14aab",
   "./apps/pdf/io/file-delivery.js": "544eb46be2c7577fc78a5ebe32ba305726e50281a9afb612f4aaf667f33b1229",
-  "./apps/pdf/io/file-open-controller.js": "f580e88007c0d649332f574fc3fd33cbafbdd632ed188ce6c8ce7c8201e96300",
+  "./apps/pdf/io/file-open-controller.js": "c1087a9d1e116b85058171baf574a5412884b50c198d87e7fcf2a43dd069cd61",
   "./apps/pdf/io/pdf-worker.js": "12f6b339e2926f940af1d9cf327ae7e0fb746a718b60b898f70f1d7eacc907a4",
   "./apps/pdf/io/save-adapter.js": "3d092d3e30a1fae8ff7f79b311e5fe370b39a80781da7f286eb1d13f9c4bb799",
   "./apps/pdf/io/save-controller.js": "e18ecfd87a8fd282a555222710fc651e093db12c34fe15559242b436966f365e",
@@ -119,7 +119,7 @@ const ASSET_HASHES={
   "./apps/pdf/ui/command-bindings.js": "31189aade6c8a797128e491b78e727939ee79e1789f17bd0b3401c0fda1d4c21",
   "./apps/pdf/ui/command-controller.js": "77843b73eb1af146d209bc4c715165a642eb4c463e1e02043594b8e768152d0f",
   "./apps/pdf/ui/mode-bindings.js": "ae5e35cc3c6d949d6ec112c90a913560ed7ba9ddc41be5722e40f70041619caf",
-  "./apps/pdf/ui/navigation-controller.js": "2f0b4e99089ee9d1a63f69d81135dd7ee886481b9d2afc01fdc9fc65c2c0bf8a",
+  "./apps/pdf/ui/navigation-controller.js": "c84cae8aa15f289db3620a788dede851cff0e8a1e56c7a77ef37b1f9004901dd",
   "./apps/pdf/ui/navigation.css": "845a2ee58082e3adefd23c96ed2fe74cdcc19b262b46b76b00877b8eb8030498",
   "./apps/pdf/ui/page-tools.css": "d0148228c07eddbb62a8e9956dc25bd85fb4aff69e3a89f0bb91f45d3c4ebf08",
   "./apps/pdf/ui/page-tools.js": "e3acb20ff90715027e54d1b1a3d7105f2abc8de3ce8b6906814ab6789f5c7cfe",
