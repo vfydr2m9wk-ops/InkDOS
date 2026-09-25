@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-61a7bd8ae57208aa7686';
+const CACHE_NAME='inkdos-v2.6.2-aee2961e6a8802b2865e';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -138,7 +138,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
   "./apps/presentations/app.js": "dbd4a87d8ff2756b722e21970dea14cd998980fb4efbf094612fd511d2571713",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
-  "./apps/presentations/engine/presentation-policy.js": "657c5a7b2d9caf6155df2f942c12615a129b52800bb49c5eda6c0015d4690ded",
+  "./apps/presentations/engine/presentation-policy.js": "fd517166b00892ade5fe238a5c468431e924920627aa16a61fa0876766f441eb",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
   "./apps/presentations/index.html": "a0505ea26a62c70ea0fa8b64cd1c936f9b2a146b5e1f2fa4f35e08660a95faf1",
@@ -147,7 +147,7 @@ const ASSET_HASHES={
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
   "./apps/presentations/io/ppt-p1-structure-writer.js": "911f2782745155b3e799bb0f536ae3148d130782157820c989623f2328aaf55e",
   "./apps/presentations/io/ppt-p2-package.js": "428f7df540e85293fdb7eeb14eab6d1a114f888f0ed73419887659840fa755aa",
-  "./apps/presentations/io/pptx-open-controller.js": "a1c06a63cc84ee5f2b0362f9b63c5cba7f85536a701491580de797cacd655604",
+  "./apps/presentations/io/pptx-open-controller.js": "30b73169d4a524e4f33bfdf297ae4f9451c1f11413faab03cc65e80574f1c6b4",
   "./apps/presentations/io/pptx-preservation-writer.js": "b6a7f9b7a90f693a1ec3de0b0893633b5fd090e43d5fa72122f1a47f46a56b90",
   "./apps/presentations/io/pptx-text-columns.js": "e034eccc7d269f900370aac3c36bf7ab560033a6954853a995b15f6e797d42a4",
   "./apps/presentations/io/pptx-writer.js": "1f34f988b490c02c24bb2d0c954606883c55abcaab84a2dff891b90e03222671",
