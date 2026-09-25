@@ -173,7 +173,12 @@ jobs:
               txt) prefix='apps/txt/' ;;
             esac
             if grep -q "^$prefix" /tmp/changed.txt; then
-              python scripts/agent_test.py "$component"
+              if [ "$component" = "pdf" ]; then
+                python tests/test_pdf_stability_contract.py
+                python tests/test_pdf_toolbar_25_contract.py
+              else
+                python scripts/agent_test.py "$component"
+              fi
               ran=1
             fi
           done
