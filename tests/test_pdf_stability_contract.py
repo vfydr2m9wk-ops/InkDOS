@@ -29,6 +29,8 @@ def main():
     assert "[data-appearance-choice]" in bindings and "NS.Appearance.set(choice)" in bindings
     assert "data-appearance-choice" not in commands and "NS.Appearance.set" not in commands
     assert "userScrollEpoch" in layout and "sameMetrics" in layout and "userEpoch===this.userScrollEpoch" in layout and "scrollIntoView" not in layout
+    assert "ensureTarget" in layout and "scheduleAround" in layout and "requestIdleCallback" in layout
+    assert 'id="editModeBtn"' in index and "editingReady" in app and "modeController.setMode('view')" in app
     for path in ("runtime/commands/command-registry.js","ui/command-bindings.js","ui/toolbar-rail.js","ui/mode-bindings.js","features/reader/reader-runtime.js","features/page-tools/page-tools-runtime.js"): assert path in app
     for name in ("move-page.js","rotate-page.js","delete-page.js","extract-page.js","split-pdf.js","merge-pdfs.js"): assert name in app
     assert "function installToolbarRail" not in app and "NS.ToolbarRail" in rail and "NS.CommandRegistry" in registry and "bindElement" in registry

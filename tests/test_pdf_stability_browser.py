@@ -53,6 +53,9 @@ def main() -> None:
             assert opened is True
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 5")
             page.wait_for_function("() => document.querySelectorAll('.pdf-page-shell').length >= 1")
+            assert page.evaluate("() => document.documentElement.dataset.pdfMode") == "view"
+            assert page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.pageLayers.inspect().pages.length") == 0
+            assert not page.locator("#editModeBtn").is_disabled()
 
             # Opening a multi-page PDF must immediately synchronize navigation state.
             assert not page.locator("#nextPageBtn").is_disabled()
@@ -122,7 +125,7 @@ def main() -> None:
             page.click("#navPanelBtn")
             assert "active" in (page.locator("#outlineTab").get_attribute("class") or "").split()
             page.click("#closeNavigation")
-            page.click('[data-pdf-mode="annotate"]')
+            page.click("#editModeBtn")
             page.wait_for_function("() => document.documentElement.dataset.pdfMode === 'annotate'")
 
             page.evaluate(r"""() => {

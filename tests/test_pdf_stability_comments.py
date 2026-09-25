@@ -42,7 +42,7 @@ def main() -> None:
             assert opened is True
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 1")
             page.wait_for_function("() => document.querySelector('.pdf-page-shell')")
-            page.click('[data-pdf-mode="annotate"]')
+            page.click("#editModeBtn")
             page.wait_for_function("() => document.documentElement.dataset.pdfMode === 'annotate'")
             commands=page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
             for command in ("pdf.comment.open","pdf.comment.cancel","pdf.comment.save"): assert command in commands

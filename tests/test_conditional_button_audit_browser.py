@@ -236,6 +236,7 @@ class Audit:
             c,p,e=self.page()
             try:
                 self.open_pdf(p,5)
+                p.locator("#editModeBtn").click(); p.wait_for_function("()=>document.documentElement.dataset.pdfMode==='annotate'")
                 p.evaluate("()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.goToPage(2)")
                 p.locator("#pageToolsBtn").click(); p.locator("#pageToolsPanel").wait_for(state="visible")
                 if sel=="#pageMoveBtn": p.locator("#pageMoveTarget").fill("1")
@@ -258,6 +259,7 @@ class Audit:
         c,p,e=self.page()
         try:
             self.open_pdf(p,1)
+            p.locator("#editModeBtn").click(); p.wait_for_function("()=>document.documentElement.dataset.pdfMode==='annotate'")
             p.evaluate("""()=>{const d=globalThis.InkDOS2PdfP4.PdfStabilityDebug;window.__buttonAuditFlag=0;d.editor.addCommand({cmd:()=>{window.__buttonAuditFlag=1},undo:()=>{window.__buttonAuditFlag=0},mustExec:true})}""")
             p.wait_for_function("()=>!document.getElementById('undoBtn').disabled")
             self.click(p,e,"#undoBtn","undoBtn"); p.wait_for_function("()=>!document.getElementById('redoBtn').disabled")
@@ -271,6 +273,7 @@ class Audit:
             c,p,e=self.page()
             try:
                 self.open_pdf(p,1)
+                p.locator("#editModeBtn").click(); p.wait_for_function("()=>document.documentElement.dataset.pdfMode==='annotate'")
                 p.wait_for_selector(".pdf-page-shell")
                 opened=p.evaluate("""()=>{const d=globalThis.InkDOS2PdfP4.PdfStabilityDebug,s=document.querySelector('.pdf-page-shell'),r=s.getBoundingClientRect();d.extensions.pointSelection({target:s,clientX:r.left+20,clientY:r.top+20});return d.annotationModes.openComment()}""")
                 if not opened: raise RuntimeError("comment dialog did not open")
