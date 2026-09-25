@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-a8c7718707994b8fd09a';
+const CACHE_NAME='inkdos-v2.6.2-0423ddf00947c33cc580';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -79,7 +79,7 @@ const ASSET_HASHES={
   "./apps/epub/view/reader-viewport.js": "8c6624743fe9cc001a15951250fe28027119ca489b0bd32aa71dec77279f63a6",
   "./apps/epub/view/reader.css": "b48402f64bb537827fa9319d82fbd9559b2c2e132e9fec0161549b5250d637bd",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
-  "./apps/pdf/app.js": "ef24b2625a271c588cb57ef919465a6a98c49597c2aa34e665ff59aa0be1444b",
+  "./apps/pdf/app.js": "52d668799ce67462d49d70558c35b1b7eff10f6ccd558df392424c3016c87e75",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
@@ -98,7 +98,7 @@ const ASSET_HASHES={
   "./apps/pdf/index.html": "d1e0fe8490d60c963f7303fce0f77af4dbf88ac4d83067493c9097d26041fdbf",
   "./apps/pdf/io/file-delivery.js": "544eb46be2c7577fc78a5ebe32ba305726e50281a9afb612f4aaf667f33b1229",
   "./apps/pdf/io/file-open-controller.js": "5e43d54215eaeebafff06a217e223787a10f9018f7a95fa2e94c2d6eae196253",
-  "./apps/pdf/io/pdf-worker.js": "12f6b339e2926f940af1d9cf327ae7e0fb746a718b60b898f70f1d7eacc907a4",
+  "./apps/pdf/io/pdf-worker.js": "646ddc2e230f454cc2b8d9afb02793c17dea4959e9f19f02f37f295554e04d10",
   "./apps/pdf/io/save-adapter.js": "3d092d3e30a1fae8ff7f79b311e5fe370b39a80781da7f286eb1d13f9c4bb799",
   "./apps/pdf/io/save-controller.js": "e18ecfd87a8fd282a555222710fc651e093db12c34fe15559242b436966f365e",
   "./apps/pdf/manifest.webmanifest": "358cfbacc08a83d4c52cd7086d15180fdbd7998edef925a36f171ffded432a7d",
@@ -138,7 +138,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
   "./apps/presentations/app.js": "dbd4a87d8ff2756b722e21970dea14cd998980fb4efbf094612fd511d2571713",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
-  "./apps/presentations/engine/presentation-policy.js": "657c5a7b2d9caf6155df2f942c12615a129b52800bb49c5eda6c0015d4690ded",
+  "./apps/presentations/engine/presentation-policy.js": "258bdfe2f49f75ae8c78767b57547f6c864efe44a5a9f1110ff3330effb49d28",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
   "./apps/presentations/index.html": "a0505ea26a62c70ea0fa8b64cd1c936f9b2a146b5e1f2fa4f35e08660a95faf1",
@@ -544,21 +544,34 @@ const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);
 const CACHE_KEY=CACHE_NAME+CACHE_SUFFIX;
 const HASH_BY_URL=new Map(Object.entries(ASSET_HASHES).map(([path,hash])=>[new URL(path,self.registration.scope).href,hash]));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';if(request.mode==='navigate'&&NAVIGATION_PATHS.has(u.pathname)&&u.pathname.endsWith('/'))u.pathname+='index.html';return new Request(u.href,{method:'GET'})}
-async function verifiedFetch(request){
+async function verifiedResponse(request,response){
   const expected=HASH_BY_URL.get(request.url);
-  const response=await fetch(new Request(request,{cache:'no-store'}));
   if(!expected||!response.ok||response.type==='opaque')throw new Error('Offline snapshot response unavailable');
   const bytes=await response.clone().arrayBuffer();
   const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
   if(digest!==expected)throw new Error('Offline snapshot integrity mismatch');
   return response;
 }
+async function verifiedFetch(request){return verifiedResponse(request,await fetch(new Request(request,{cache:'no-store'})))}
+async function snapshotResponse(request,previous){
+  for(const cache of previous){
+    try{
+      const response=await cache.match(request);
+      if(response)return await verifiedResponse(request,response);
+    }catch(_){/* Missing, evicted or altered local bytes require verified network repair. */}
+  }
+  return verifiedFetch(request);
+}
 self.addEventListener('install',event=>event.waitUntil((async()=>{
   const cache=await caches.open(CACHE_KEY);
   try{
+    const names=(await caches.keys()).filter(name=>name!==CACHE_KEY&&name.startsWith('inkdos-v')&&name.endsWith(CACHE_SUFFIX));
+    const previous=await Promise.all(names.reverse().map(name=>caches.open(name)));
     // Bounded requests keep installation usable on mobile and avoid partial activation.
     for(let i=0;i<APP_SHELL.length;i+=8){
-      await Promise.all(APP_SHELL.slice(i,i+8).map(async path=>{const request=new Request(new URL(path,self.registration.scope));const response=await verifiedFetch(request);await cache.put(request,response)}));
+      // Drain every in-flight write before rollback; Promise.all can reject while peers still write.
+      const results=await Promise.allSettled(APP_SHELL.slice(i,i+8).map(async path=>{const request=new Request(new URL(path,self.registration.scope));const response=await snapshotResponse(request,previous);await cache.put(request,response)}));
+      const failed=results.find(result=>result.status==='rejected');if(failed)throw failed.reason;
     }
   }catch(error){await caches.delete(CACHE_KEY);throw error}
   // Native waiting lifecycle: never replace the worker beneath open editors.

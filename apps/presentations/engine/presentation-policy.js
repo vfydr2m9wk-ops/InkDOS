@@ -230,12 +230,19 @@ function secureController(original){
         }
         const bytes=new Uint8Array(await file.arrayBuffer());
         await validatePptx(bytes);
+        const validatedFile=Object.freeze({
+          name:String(file.name||'presentation.pptx'),
+          type:String(file.type||''),
+          size:bytes.byteLength,
+          lastModified:Number(file.lastModified)||0,
+          arrayBuffer:async()=>bytes.buffer
+        });
+        return inner.openFile(validatedFile);
       }catch(error){
         options.chrome?.showError(error,file);
         if(options.fileInput)options.fileInput.value='';
         return false;
       }
-      return inner.openFile(file);
     }
     function install(){
       options.fileInput?.addEventListener('change',()=>{

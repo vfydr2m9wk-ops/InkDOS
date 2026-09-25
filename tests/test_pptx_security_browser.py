@@ -94,6 +94,72 @@ def main() -> None:
             assert valid["slides"] >= 1, valid
             assert valid["limits"]["maxEntries"] == 4096, valid
 
+            single_read = page.evaluate(
+                """async() => {
+                    const NS=globalThis.InkDOS2Presentations;
+                    const app=globalThis.__inkdosPresentations;
+                    const src=new NS.PresentationSession();
+                    src.resetNew();
+                    const title=src.slides[0].objects.find(o=>o.type==='text');
+                    title.text='Single validated read';
+                    title.paragraphs=NS.PresentationModel.normalizeParagraphs(null,title.text,title);
+                    const bytes=await NS.PptxWriter.build(src);
+                    const backing=new File(
+                      [bytes],
+                      'Single-read.pptx',
+                      {type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}
+                    );
+                    let calls=0;
+                    const source={
+                      name:backing.name,
+                      type:backing.type,
+                      size:backing.size,
+                      lastModified:backing.lastModified,
+                      async arrayBuffer(){ calls++; return backing.arrayBuffer(); }
+                    };
+                    const opened=await app.open(source);
+                    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+                    return {
+                      opened,
+                      calls,
+                      sourceKind:app.session.sourceKind,
+                      slides:app.session.slides.length,
+                      rendered:document.querySelectorAll('#slideCanvas [data-object-id]').length
+                    };
+                }"""
+            )
+            assert single_read["opened"] is True, single_read
+            assert single_read["calls"] == 1, single_read
+            assert single_read["sourceKind"] == "pptx", single_read
+            assert single_read["slides"] == 1, single_read
+            assert single_read["rendered"] > 0, single_read
+
+            rejected_open = page.evaluate(
+                """async() => {
+                    const app=globalThis.__inkdosPresentations;
+                    const raw=new Uint8Array([0x50,0x4b,0x03,0x04,1,2,3,4,5,6]);
+                    const backing=new File(
+                      [raw],
+                      'Corrupt.pptx',
+                      {type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}
+                    );
+                    let calls=0;
+                    const source={
+                      name:backing.name,
+                      type:backing.type,
+                      size:backing.size,
+                      lastModified:backing.lastModified,
+                      async arrayBuffer(){ calls++; return backing.arrayBuffer(); }
+                    };
+                    const before=app.session.fileName;
+                    const opened=await app.open(source);
+                    return {opened,calls,before,after:app.session.fileName};
+                }"""
+            )
+            assert rejected_open["opened"] is False, rejected_open
+            assert rejected_open["calls"] == 1, rejected_open
+            assert rejected_open["after"] == rejected_open["before"], rejected_open
+
             dtd = page.evaluate(
                 """async() => {
                     const NS=globalThis.InkDOS2Presentations;
