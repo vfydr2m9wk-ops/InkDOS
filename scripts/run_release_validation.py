@@ -27,6 +27,7 @@ CMDS = [
     [sys.executable, "tests/test_web_file_handling_contract.py"],
     [sys.executable, "tests/test_confirmed_delivery_exit_parity.py"],
     [sys.executable, "tests/test_file_delivery_exactly_once_contract.py"],
+    [sys.executable, "tests/test_real_device_documents_sheets_review.py"],
     [sys.executable, "tests/test_presentations_unsaved_exit_contract.py"],
     [sys.executable, "tests/test_epub_pdf_unsaved_exit_contract.py"],
     [sys.executable, "tests/test_txt_unsaved_exit_contract.py"],
