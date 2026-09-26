@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-d584de969d238edfe5c9';
+const CACHE_NAME='inkdos-v2.6.2-44e727d33da7fcdac3c6';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -20,7 +20,7 @@ const ASSET_HASHES={
   "./apps/documents/io/legacy-doc-reader.js": "338bb5d873e988562b6bd7d6f7c252e01da9732251eb9f90931efbc2a06bc514",
   "./apps/documents/io/package-reader.js": "ce28f6c593b89642eb034e4228362441e4394d4b0616f9efaaea57a100fee043",
   "./apps/documents/io/rtf-importer.js": "c68088a02a0b6bcaf31d62855c61238363fd4dbc9bba44c9ca9a1a787912583c",
-  "./apps/documents/io/save-controller.js": "a3b971faf04cf78029406b847a072a7befd54fbedafbb12f3a7b15149ee06b92",
+  "./apps/documents/io/save-controller.js": "4df7bea7f7703db0863426dd1e2feb7877735547f4e2d05cc067e331022fb109",
   "./apps/documents/manifest.webmanifest": "49f5a3b1df6df321693205ae3cd4b55a0c5bc713b7adfe29e0e68406438c504c",
   "./apps/documents/runtime/commands/document-commands.js": "8ad3598706e9ebf9f056997b026496be982a9f3945b56c42fae9ec877776d11f",
   "./apps/documents/runtime/frame/app-frame.css": "40ae5877868f7f18e0f0515bd44c1c0fa5403d3b51ac31d0ad2ba30f4d7a2371",
@@ -29,7 +29,7 @@ const ASSET_HASHES={
   "./apps/documents/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/documents/runtime/tokens/base.css": "b56b459804e0e712c9adb26bcbcb7d7649029f3114117e919d1607041192e1d7",
   "./apps/documents/state/appearance.js": "acd3aa9f135bfb09090fe2a00be7336d85eae37cb25843bc4d001a21fc1a9f4a",
-  "./apps/documents/ui/chrome-controller.js": "81bf1109393b92c7218cf76ddccd067ff2d3024f13a3c2480327a9ff22f3063a",
+  "./apps/documents/ui/chrome-controller.js": "862fe9e5070a7b443522ae4a14644f195e500045b02257fe709859bea4f24fcc",
   "./apps/documents/ui/command-controller.js": "16cdb52983fc8383818aafe215163cd05c8618b1b1052cdd2a6b6d84ceb612b5",
   "./apps/documents/ui/d1-tools.css": "7bab045f541ce543cc578a214dacbe9dd2dc4512d64ee86fc78f1266b4eb3238",
   "./apps/documents/ui/d1-tools.js": "c075daca86e32e2ba3b21dc7228ba5bf0f009935c4aea7606ce36ff36292b6ac",
