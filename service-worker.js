@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-d584de969d238edfe5c9';
+const CACHE_NAME='inkdos-v2.6.2-e05b4ff2d59a381b3fd7';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -175,7 +175,7 @@ const ASSET_HASHES={
   "./apps/presentations/view/presentation-surface.css": "1d31bfb7f7bc31c9cedcc8abeeeabeeab02749d3354f55abf7d17da025529e76",
   "./apps/presentations/view/slide-surface.js": "638fd057df887ad9e7e315b4e92303efe51a5035304168ac57c39b8f06f42619",
   "./apps/presentations/view/zoom-controller.js": "ce2fab2d21b4ab29496f68a72c9ef99a096bb45d232105ecfd5c3d4c253bee6c",
-  "./apps/spreadsheets/app.js": "93cc4a0449c1e4004e9b60157d46b3d151034d622a8b7e4ea3ac2d14e6d0bda7",
+  "./apps/spreadsheets/app.js": "8aeeacabd7c75beeceab2ed84496fc3300ee93741b5bc7a1169fba0f48756513",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./apps/spreadsheets/engine/formula/arithmetic.js": "90b3a0f135445fcacbfa64903125c4efbe94d28b382857e937bd1d45b71d757a",
   "./apps/spreadsheets/engine/formula/evaluator.js": "c1ca9eae9115038b0578ea0482e98f0411c3f752d2b9085d8f659e90e9d4f1b0",
@@ -203,7 +203,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
   "./apps/spreadsheets/state/appearance.js": "07ad1719ed49ac82ded6db1286bc8abd235ee583b1869371aa6e40f307d707ce",
-  "./apps/spreadsheets/ui/chrome-controller.js": "4045aba17a6d61bf092f5eb892f17971f336848d09c691cd19bcdbbd0b997cdb",
+  "./apps/spreadsheets/ui/chrome-controller.js": "9b025baede21a7372c2a22e1a2c49c750cb7910d24199ebce6a4860afc9b9903",
   "./apps/spreadsheets/ui/editor-controller.js": "eeead0be604056b258b53abcf72343f28a8603c260f0360170af2e57e355e210",
   "./apps/spreadsheets/ui/editor-toolbar.css": "863bf75dc43cc794b8f43d0d23d4eef497540a3a0eee8c381f501d82bc660c21",
   "./apps/spreadsheets/ui/file-menu-controller.js": "8a7258d8dadbfa57f43b2e80471bc95aa7428c22853313dbd96bd229c564024f",
