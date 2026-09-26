@@ -1,0 +1,111 @@
+{
+ "app": "epub",
+ "profile": "nofs",
+ "log": [
+  {
+   "step": "open EPUB via start Open + picker",
+   "status": "PASS",
+   "detail": "True status=1 / 9 Chapter 1 / 3 title=EPUB Reader \u2014 InkDOS 2.0"
+  },
+  {
+   "step": "Next page (paginated) changes visible content/position",
+   "status": "PASS",
+   "detail": "1 / 9 Chapter 1 / 3 -> 2 / 9 Chapter 1 / 3 | Alpha paragraph 0.|Chapter One\n\nAlpha paragraph 0|Alpha paragraph 7. -> Alpha paragraph 16.|Alpha paragraph 20.|Chapter One\n\nAlpha paragraph 0"
+  },
+  {
+   "step": "Previous page returns",
+   "status": "PASS",
+   "detail": "1 / 9 Chapter 1 / 3"
+  },
+  {
+   "step": "keyboard ArrowRight pages",
+   "status": "PASS",
+   "detail": "2 / 9 Chapter 1 / 3"
+  },
+  {
+   "step": "Table of contents lists chapters",
+   "status": "PASS",
+   "detail": "['Chapter One', 'Chapter Two', 'Chapter Three']"
+  },
+  {
+   "step": "TOC jump to chapter",
+   "status": "PASS",
+   "detail": "Gamma paragraph 0.|Chapter Three\n\nGamma paragraph|Gamma paragraph 7. 7 / 9 Opened Chapter Three"
+  },
+  {
+   "step": "Search in book",
+   "status": "PASS",
+   "detail": "Chapter Two\nBeta paragraph 3.\nChapter 2\nChapter Two\nBeta paragraph 30.\nChapter 2\nChapter Two\nBeta paragraph 31.\nChapter "
+  },
+  {
+   "step": "reader font size (zoom) +",
+   "status": "PASS",
+   "detail": "('18', '19')"
+  },
+  {
+   "step": "switch to Scroll mode",
+   "status": "PASS",
+   "detail": "reader-stage theme-paper mode-scroll pressed=true"
+  },
+  {
+   "step": "Add bookmark",
+   "status": "PASS",
+   "detail": "true 4 / 9 Bookmark added"
+  },
+  {
+   "step": "progress slider jumps to end",
+   "status": "PASS",
+   "detail": "max=9 9 / 9 Bookmark added"
+  },
+  {
+   "step": "Highlight mode: drag creates highlight",
+   "status": "PASS",
+   "detail": "marks=11 status=9 / 9 Chapter 3 / 3 \u00b7 1 bookmark"
+  },
+  {
+   "step": "Save copy/Share enabled with book open",
+   "status": "INFO",
+   "detail": "save disabled=False share disabled=False"
+  },
+  {
+   "step": "Save copy (no FS API) \u2192 download",
+   "status": "PASS",
+   "detail": "['audit.epub']"
+  },
+  {
+   "step": "Open a second EPUB replaces book",
+   "status": "PASS",
+   "detail": "EPUB Reader \u2014 InkDOS 2.0 1 / 6 Chapter 1 / 2"
+  },
+  {
+   "step": "TOC updated for second book",
+   "status": "PASS",
+   "detail": "['Other Start', 'Other End']"
+  },
+  {
+   "step": "reopen first EPUB restores reading position",
+   "status": "INFO",
+   "detail": "9 / 9 Chapter 3 / 3 \u00b7 1 bookmark visible=Gamma paragraph 32.|Gamma paragraph 36.|Chapter One\n\nAlpha p"
+  },
+  {
+   "step": "Open invalid.epub \u2192 error, current book kept",
+   "status": "PASS",
+   "detail": "modal=None status=9 / 9 invalid-zip: EPUB ZIP end-of-central-directory not found"
+  },
+  {
+   "step": "Open empty.epub \u2192 error",
+   "status": "FAIL",
+   "detail": "modal=None status=9 / 9 input-budget: EPUB input exceeds the provisional compressed-byte budget"
+  },
+  {
+   "step": "beforeunload guard (reader, no unsaved doc)",
+   "status": "INFO",
+   "detail": "no guard (expected for reader)"
+  }
+ ],
+ "errors": [],
+ "dialogs": [],
+ "downloads": [
+  "audit.epub"
+ ]
+}

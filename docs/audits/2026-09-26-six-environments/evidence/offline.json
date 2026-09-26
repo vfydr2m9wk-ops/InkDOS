@@ -1,0 +1,92 @@
+{
+ "home-first": {
+  "cachedEntries": 266,
+  "installSeconds": 62.4,
+  "controllerBeforeReload": false,
+  "documents": {
+   "loaded": true,
+   "errors": []
+  },
+  "spreadsheets": {
+   "loaded": true,
+   "errors": []
+  },
+  "presentations": {
+   "loaded": true,
+   "errors": []
+  },
+  "txt": {
+   "loaded": true,
+   "errors": [],
+   "extra": {
+    "languagePopover": [
+     "English",
+     "Portugu\u00eas",
+     "Espa\u00f1ol",
+     "Deutsch",
+     "Fran\u00e7ais",
+     "\u4e2d\u6587\uff08\u7b80\u4f53\uff09",
+     "\u65e5\u672c\u8a9e",
+     "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
+    ]
+   }
+  },
+  "epub": {
+   "loaded": true,
+   "errors": []
+  },
+  "pdf": {
+   "loaded": true,
+   "errors": [],
+   "extra": {
+    "pageToolsVisible": true
+   }
+  },
+  "home": 6
+ },
+ "pdf-direct-first": {
+  "cachedEntries": 266,
+  "installSeconds": 62.4,
+  "controllerBeforeReload": false,
+  "documents": {
+   "loaded": true,
+   "errors": []
+  },
+  "spreadsheets": {
+   "loaded": true,
+   "errors": []
+  },
+  "presentations": {
+   "loaded": true,
+   "errors": []
+  },
+  "txt": {
+   "loaded": true,
+   "errors": [],
+   "extra": {
+    "languagePopover": [
+     "English",
+     "Portugu\u00eas",
+     "Espa\u00f1ol",
+     "Deutsch",
+     "Fran\u00e7ais",
+     "\u4e2d\u6587\uff08\u7b80\u4f53\uff09",
+     "\u65e5\u672c\u8a9e",
+     "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
+    ]
+   }
+  },
+  "epub": {
+   "loaded": true,
+   "errors": []
+  },
+  "pdf": {
+   "loaded": true,
+   "errors": [],
+   "extra": {
+    "pageToolsVisible": true
+   }
+  },
+  "home": 6
+ }
+}
