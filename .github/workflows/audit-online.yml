@@ -2,6 +2,9 @@ name: InkDOS online audit
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'audit/visual-home-routes'
 
 permissions:
   contents: read
@@ -39,12 +42,20 @@ jobs:
           INKDOS_CLICK_SWEEP: ${{ matrix.click_sweep }}
           INKDOS_AUDIT_OUT: audit-online-${{ matrix.browser }}
         run: python tests/test_online_pages_visual_matrix_browser.py
+      - name: Audit light/dark context surfaces and Home routes
+        env:
+          INKDOS_ONLINE_BASE: https://vfydr2m9wk-ops.github.io/InkDOS/
+          INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
+          INKDOS_SURFACE_OUT: audit-online-surfaces-${{ matrix.browser }}
+        run: python tests/_audit_visual_surfaces_browser.py
       - name: Upload visual audit evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: inkdos-online-visual-${{ matrix.browser }}
-          path: audit-online-${{ matrix.browser }}/
+          path: |
+            audit-online-${{ matrix.browser }}/
+            audit-online-surfaces-${{ matrix.browser }}/
           if-no-files-found: warn
           retention-days: 14
 
