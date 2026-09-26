@@ -115,7 +115,10 @@ function hasZip64Extra(bytes,start,length){
 
 function inspectPptxZip(input){
   const bytes=asBytes(input);
-  if(bytes.byteLength<=0||bytes.byteLength>PPTX_LIMITS.maxInputBytes){
+  if(bytes.byteLength<=0){
+    pptxFail('PPTX_EMPTY','The selected file is empty.');
+  }
+  if(bytes.byteLength>PPTX_LIMITS.maxInputBytes){
     pptxFail('PPTX_INPUT_BUDGET','PPTX exceeds the compressed input-byte budget.');
   }
   const eocd=findEocd(bytes);
