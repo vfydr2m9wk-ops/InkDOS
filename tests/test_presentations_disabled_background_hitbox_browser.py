@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import os
 import socket
 import subprocess
 import sys
@@ -34,8 +35,11 @@ def main():
     )
     try:
         wait_port()
+        browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
+        if browser_name not in {"chromium", "firefox", "webkit"}:
+            raise RuntimeError(f"Unsupported BROWSER={browser_name}")
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=True)
+            browser = getattr(pw, browser_name).launch(headless=True)
             context = browser.new_context(viewport={"width": 1440, "height": 810})
             page = context.new_page()
             errors = []

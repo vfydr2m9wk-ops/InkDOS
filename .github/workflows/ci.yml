@@ -109,6 +109,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Install browser
         run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify Presentations color-control hitbox
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/test_presentations_disabled_background_hitbox_browser.py
       - name: Verify Presentations shared-context cache
         env:
           BROWSER: ${{ matrix.browser }}
