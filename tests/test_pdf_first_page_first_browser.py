@@ -110,7 +110,10 @@ def main() -> None:
               };
 
               const t0 = performance.now();
-              const opened = await d.fileOpen.openFile(file);
+              const opening = d.fileOpen.openFile(file);
+               await new Promise(resolve => requestAnimationFrame(resolve));
+               const loadingVisibleDuringOpen = !document.getElementById('pdfLoading').hidden;
+               const opened = await opening;
               const deadline = performance.now() + 15000;
               while (!document.querySelector('.pdf-page-canvas')) {
                 if (performance.now() > deadline) throw new Error('First page did not render');
@@ -139,6 +142,8 @@ def main() -> None:
                 sourceLength: d.session.sourceBytes.length,
                 events: events.map(e => e.name),
                 firstPaintMs: page1 ? page1.at - t0 : null,
+                 loadingVisibleDuringOpen,
+                 loadingHiddenAfterPaint: document.getElementById('pdfLoading').hidden,
               };
             }""")
 
@@ -149,6 +154,8 @@ def main() -> None:
             assert probe["sourceLength"] == 0, probe
             assert probe["rangedBytesAtFirstPaint"] < probe["size"], probe
             assert "page1" in probe["events"], probe
+            assert probe["loadingVisibleDuringOpen"] is True, probe
+            assert probe["loadingHiddenAfterPaint"] is True, probe
             if "background" in probe["events"]:
                 assert probe["events"].index("page1") < probe["events"].index("background"), probe
 
