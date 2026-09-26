@@ -66,6 +66,8 @@ def main():
             assert bg.get_attribute("aria-haspopup") == "dialog"
             assert bg.get_attribute("aria-expanded") == "false"
 
+            zoom = page.locator("#zoomMenuBtn")
+            assert zoom.is_visible() and zoom.is_enabled()
             zoom.click(timeout=2500)
             page.wait_for_selector("#zoomPopover:not([hidden])")
             page.keyboard.press("Escape")
