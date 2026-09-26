@@ -1,0 +1,153 @@
+{
+ "documents|picker-unsupported": {
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": [
+   "InkDOS File System Access open failed: Error: Unsupported file format for this InkDOS workspace.\n    at http://127.0.0.1:18431/InkDOS/apps/documents/runtime/pla"
+  ]
+ },
+ "documents|launchQueue-valid": {
+  "consume": true,
+  "title": "audit.docx \u2014 Documents",
+  "loaded": true
+ },
+ "documents|launchQueue-unsupported": {
+  "consume": "resolved",
+  "visibleError": true,
+  "ui": {
+   "overlays": [
+    "Document could not be opened\n\nDocuments currently accepts DOCX, RTF and legacy DOC files.\n\nFile\nbad.zip\nEngine\nDocuments"
+   ],
+   "unsupportedText": false
+  },
+  "console": []
+ },
+ "spreadsheets|picker-unsupported": {
+  "visibleError": true,
+  "ui": {
+   "overlays": [
+    ""
+   ],
+   "unsupportedText": false
+  },
+  "console": [
+   "InkDOS File System Access open failed: Error: Unsupported file format for this InkDOS workspace.\n    at http://127.0.0.1:18431/InkDOS/apps/spreadsheets/runtime/"
+  ]
+ },
+ "spreadsheets|launchQueue-valid": {
+  "consume": true,
+  "title": "audit.xlsx \u2014 Spreadsheets",
+  "loaded": true
+ },
+ "spreadsheets|launchQueue-unsupported": {
+  "consume": "resolved",
+  "visibleError": true,
+  "ui": {
+   "overlays": [
+    "Workbook could not be opened\n\nChoose an XLS, XLSX, CSV, or TSV workbook.\n\nClose",
+    "2 worksheets opened"
+   ],
+   "unsupportedText": false
+  },
+  "console": []
+ },
+ "presentations|picker-unsupported": {
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": []
+ },
+ "presentations|launchQueue-valid": {
+  "consume": true,
+  "title": "audit.pptx \u2014 Presentations",
+  "loaded": true
+ },
+ "presentations|launchQueue-unsupported": {
+  "consume": "resolved",
+  "visibleError": true,
+  "ui": {
+   "overlays": [
+    "Presentation could not be opened\n\nPPTX ZIP end-of-central-directory is missing.\n\nbad.zip\nClose\nChoose another file"
+   ],
+   "unsupportedText": false
+  },
+  "console": []
+ },
+ "txt|picker-unsupported": {
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": [
+   "InkDOS File System Access open failed: Error: Unsupported file format for this InkDOS workspace.\n    at http://127.0.0.1:18431/InkDOS/apps/txt/runtime/platform/"
+  ]
+ },
+ "txt|launchQueue-valid": {
+  "consume": true,
+  "title": "audit.txt \u2014 InkDOS Plain Text",
+  "loaded": true
+ },
+ "txt|launchQueue-unsupported": {
+  "consume": "threw:Unsupported file format. Plain Text supports .txt .xml .md .markdown .json .jsonl .ndjson .yaml .yml .log .ini .cfg .conf .toml .properties.",
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": []
+ },
+ "epub|picker-unsupported": {
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": [
+   "InkDOS File System Access open failed: Error: Unsupported file format for this InkDOS workspace.\n    at http://127.0.0.1:18431/InkDOS/apps/epub/runtime/platform"
+  ]
+ },
+ "epub|launchQueue-valid": {
+  "consume": true,
+  "title": "EPUB Reader \u2014 InkDOS 2.0",
+  "loaded": true
+ },
+ "epub|launchQueue-unsupported": {
+  "consume": "resolved",
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": []
+ },
+ "pdf|picker-unsupported": {
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": [
+   "InkDOS File System Access open failed: Error: Unsupported file format for this InkDOS workspace.\n    at http://127.0.0.1:18431/InkDOS/apps/pdf/runtime/platform/"
+  ]
+ },
+ "pdf|launchQueue-valid": {
+  "consume": true,
+  "title": "PDF Workspace \u2014 InkDOS 2.0",
+  "loaded": true
+ },
+ "pdf|launchQueue-unsupported": {
+  "consume": "threw:Not a PDF file.",
+  "visibleError": false,
+  "ui": {
+   "overlays": [],
+   "unsupportedText": false
+  },
+  "console": []
+ }
+}

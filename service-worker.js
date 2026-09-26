@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-58b6f860e1d3b158bdcb';
+const CACHE_NAME='inkdos-v2.6.2-d584de969d238edfe5c9';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -79,7 +79,7 @@ const ASSET_HASHES={
   "./apps/epub/view/reader-viewport.js": "8c6624743fe9cc001a15951250fe28027119ca489b0bd32aa71dec77279f63a6",
   "./apps/epub/view/reader.css": "b48402f64bb537827fa9319d82fbd9559b2c2e132e9fec0161549b5250d637bd",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
-  "./apps/pdf/app.js": "d6ebaa024fa8b10f3f5ded22f3e0bd37869c3e6aa02c92d5ff3a8360ac943695",
+  "./apps/pdf/app.js": "0ebe2d7ccf2fc7576bca3b7f99d6b77719abd76181e64b07064de70fc3a479a7",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
@@ -165,7 +165,7 @@ const ASSET_HASHES={
   "./apps/presentations/ui/chrome-controller.js": "e49d31726ba6f65e441080e3421bf0aacf6bf25a964d0fa73cb52a1e85e7abea",
   "./apps/presentations/ui/command-controller.js": "4bf99883f7044270b4463bde6e5ca9c0cca21233a858494f658f019895acc58d",
   "./apps/presentations/ui/editing-controller.js": "ebd91ae5ac3452d816d7d76e920d3b1633db972491a3d932c3ac086ee8b732ca",
-  "./apps/presentations/ui/editor.css": "7400371023d1e97d79d9d336e2fb4b406fa654e1ebc59cf454ad8a2c5325497e",
+  "./apps/presentations/ui/editor.css": "940a82d17f0b7729c5308c10ec9f595738489a2970aee3393dc8cac6028a87b3",
   "./apps/presentations/ui/ppt-p1-tools.js": "bdec4c792ba48624dfa9f57245ff2d03a6ee03f8c77879bd35c1f654276a8215",
   "./apps/presentations/ui/ppt-p2-table-tools-ui.js": "6a046bcc3c826b1bd2be69d8a6ef48635272ccbe54210b8817634af53ec0077c",
   "./apps/presentations/ui/ppt-p2-tools.js": "b519a3f48c77ade3b11b12b866a84f6cbbd98b41abf80548e3a6b0796918f6d0",
@@ -194,7 +194,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
   "./apps/spreadsheets/io/xls-biff8-engine.js": "dfbd5dd326719eb71e54beb36f1b5b97b59d074af9db94bf294f2f8e160f2a85",
   "./apps/spreadsheets/io/xlsx-color-fidelity.js": "de78403e800d166734068b32aaaed7a6284f4999c87971d4662273892ed8785c",
-  "./apps/spreadsheets/io/xlsx-engine.js": "45bb4e7255d240d54ae7901cc4afdcb61897fcf6d70a5c0fa3ab073a54cc0ffa",
+  "./apps/spreadsheets/io/xlsx-engine.js": "c87dc842bf44434edc581df550f01e4b4e08791b487d1253725105ac84dc4624",
   "./apps/spreadsheets/manifest.webmanifest": "61601f61808d409c3bed2d5d842525c20fc66edd257d23619ef6b0be7943d0bb",
   "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
   "./apps/spreadsheets/runtime/frame/app-frame.css": "475c7475bd8e577b427076774ee2edfa4e7548f247abaefe6f9f606467f17da9",
