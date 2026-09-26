@@ -307,10 +307,10 @@ Cancel nesse segundo diálogo não reverte nada. Script: `harness/repro_guard2.p
 | App | Seletor nativo (Chromium) com `.zip` | `launchQueue` com `.zip` |
 |---|---|---|
 | Documents | **silencioso** (só console) | erro visível ✔ |
-| Spreadsheets | inconclusivo (overlay vazio detectado) | erro visível ✔ |
-| Presentations | inconclusivo (sem efeito observável) | erro visível ✔ |
+| Spreadsheets | **silencioso** (reverificado) | erro visível ✔ |
+| Presentations | não se aplica: usa `<input type=file>`, não o seletor nativo (reverificado) | erro visível ✔ |
 | TXT | **silencioso** | **silencioso** |
-| EPUB | **silencioso** | **silencioso** |
+| EPUB | **silencioso** | erro visível ✔ (`invalid-zip: …` na status bar; *corrigido após reverificação: a auditoria original marcou como silencioso*) |
 | PDF | **silencioso** | **silencioso** |
 
 Causa: `inkdos:file-launch-error` não tem ouvintes (3.4). **FAIL** transversal: o usuário escolhe um arquivo e nada acontece. No Safari/iPad o seletor usa `<input accept>`, então o impacto maior é em Chromium/Edge desktop e em arquivos abertos pelo sistema (PWA/Tauri).
@@ -386,7 +386,7 @@ O trabalho secundário (outras páginas) só começa **depois** do render da pá
 ## 7. Achados críticos
 1. **Spreadsheets S1:** XLSX corrompido (estilo órfão) no segundo save após formatar. Perda silenciosa de formatação em outros aplicativos. Reprodução determinística.
 2. **Presentations P1/V1:** diálogo de alterações não salvas sem CSS, fora do overlay e bloqueado pelo backdrop do menu. Afeta New, Open e Home com alterações.
-3. **Transversal 5.7:** `inkdos:file-launch-error` sem ouvintes. Seletor nativo e `launchQueue` falham em silêncio em até 4 apps.
+3. **Transversal 5.7:** `inkdos:file-launch-error` sem ouvintes. O seletor nativo falha em silêncio em 5 apps (Documents, Spreadsheets, TXT, EPUB, PDF); o `launchQueue`, em 2 (TXT, PDF).
 
 ## 8. Inconsistências visuais
 V1–V15 (seção 4.3). As prioritárias:
