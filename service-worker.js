@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-d584de969d238edfe5c9';
+const CACHE_NAME='inkdos-v2.6.2-fcfefcb9b129d274ce6d';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -49,7 +49,7 @@ const ASSET_HASHES={
   "./apps/documents/view/page-surface.js": "d9b753cba64ad5fa48a74ac5ff4d9244479e2173c419d0eb01306bde310c7a6b",
   "./apps/documents/view/pagination-engine.js": "6738f6366743b26fdcda32fb6ed2711ec76fd2ee220482a0e413db84213a6e35",
   "./apps/documents/view/zoom-controller.js": "6aa8b3376a922f44efcbb4d7ef4e57833c76d8ea4727d40536b30d20d9230831",
-  "./apps/epub/app.js": "a650a39eced5316fcddffc32a8ba72031525a657b6eaa1f5661598413c1c483b",
+  "./apps/epub/app.js": "7e3e4e41b6397c38f75056d3612125f330872ccf789b65271470e90e43f2e32a",
   "./apps/epub/assets/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./apps/epub/engine/annotations.js": "a68292526c67595643e3ff0fbe76db5085bcea1eda6dbc22c927ffc6aec263fc",
   "./apps/epub/engine/book-model.js": "ed1a4967caa50623615e1f56685eaf008c118592ce662e14ca29ecc88d6d2cdf",
