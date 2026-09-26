@@ -1,0 +1,190 @@
+{
+ "app": "pdf",
+ "profile": "fs",
+ "log": [
+  {
+   "step": "open PDF via start Open + picker",
+   "status": "PASS",
+   "detail": "1// 3 PDF ready \u00b7 3 pages Page 1 of 3 P4.2 \u00b7 PDF.js View / Annotate title=PDF Workspace \u2014 InkDOS 2.0"
+  },
+  {
+   "step": "next/previous page",
+   "status": "PASS",
+   "detail": "('2// 3', '1// 3')"
+  },
+  {
+   "step": "go to page via page input",
+   "status": "PASS",
+   "detail": "3// 3"
+  },
+  {
+   "step": "out-of-range page input clamps/rejects",
+   "status": "PASS",
+   "detail": "3// 3"
+  },
+  {
+   "step": "zoom 200%",
+   "status": "PASS",
+   "detail": "(1308, 1190.546875)"
+  },
+  {
+   "step": "rotate view (landscape after 90\u00b0)",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "navigation panel default tab when PDF has no outline",
+   "status": "PASS",
+   "detail": "outline selected=None (shows \"No document outline\")"
+  },
+  {
+   "step": "thumbnails rendered",
+   "status": "PASS",
+   "detail": "3"
+  },
+  {
+   "step": "click thumbnail 2 navigates",
+   "status": "PASS",
+   "detail": "2// 3"
+  },
+  {
+   "step": "find text navigates to match",
+   "status": "PASS",
+   "detail": "3// 3 Match 1 of 1 \u00b7 page 3 Page 3 of 3 P4.2 \u00b7 PDF.js View / Annotate"
+  },
+  {
+   "step": "Print triggers print path",
+   "status": "WARNING",
+   "detail": "window.print calls=0 modal=None"
+  },
+  {
+   "step": "enter Edit mode",
+   "status": "PASS",
+   "detail": "0.09s"
+  },
+  {
+   "step": "Pen stroke \u2192 dirty + Undo enabled",
+   "status": "PASS",
+   "detail": "dirty=True undoDisabled=False"
+  },
+  {
+   "step": "annotation Undo/Redo",
+   "status": "PASS",
+   "detail": "redo enabled after undo=True"
+  },
+  {
+   "step": "Text annotation typed",
+   "status": "INFO",
+   "detail": "AUDIT NOTE|AUDIT NOTE|AUDIT NOTE||"
+  },
+  {
+   "step": "Page Tools: rotate page",
+   "status": "INFO",
+   "detail": "PDF page operation applied \u00b7 unsaved Page 1 of 3 P4.2 \u00b7 PDF.js View / Annotate dirty=True"
+  },
+  {
+   "step": "Page Tools panel stays open after an operation",
+   "status": "INFO",
+   "detail": "False"
+  },
+  {
+   "step": "Page Tools: Delete page \u2192 Cancel keeps page",
+   "status": "PASS",
+   "detail": "modal=None cancel=['confirm:Delete page 3? This change remains local until you'] 3// 3"
+  },
+  {
+   "step": "Page Tools: Delete page \u2192 confirm",
+   "status": "PASS",
+   "detail": "2// 2 PDF page operation applied \u00b7 unsaved Page 2 of 2 P4.2 \u00b7 PDF.js View / Annotate"
+  },
+  {
+   "step": "Save \u2192 picker cancelled keeps dirty",
+   "status": "PASS",
+   "detail": "dirty=True Save cancelled Page 2 of 2 P4.2 \u00b7 PDF.js View / Annotate"
+  },
+  {
+   "step": "Save \u2192 write error surfaced, stays dirty",
+   "status": "PASS",
+   "detail": "modal=PDF operation failed The selected PDF could not be written. Close status=Save failed Page 2 of 2 P4.2 \u00b7 PDF.js View / Annotate"
+  },
+  {
+   "step": "Save copy \u2192 valid PDF, pages/rotation/annotations kept",
+   "status": "PASS",
+   "detail": "pages=2 annots=2 rotate=[90, 0] name=small-edited.pdf 3710B"
+  },
+  {
+   "step": "dirty cleared after save",
+   "status": "PASS",
+   "detail": "False"
+  },
+  {
+   "step": "Share availability (desktop Chromium, no Web Share files)",
+   "status": "INFO",
+   "detail": "disabled=False"
+  },
+  {
+   "step": "Open while dirty \u2192 guard",
+   "status": "PASS",
+   "detail": "Unsaved changes Save your current PDF edits before opening another PDF? Cancel Discard Save"
+  },
+  {
+   "step": "Guard \u2192 Cancel keeps PDF",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "Guard \u2192 Discard \u2192 open another PDF",
+   "status": "PASS",
+   "detail": "1// 2 second.pdf"
+  },
+  {
+   "step": "PDF app is still in Edit mode after replacing document?",
+   "status": "INFO",
+   "detail": "false"
+  },
+  {
+   "step": "open large PDF (400 pages, 7.5 MB)",
+   "status": "PASS",
+   "detail": "0.28s to page count"
+  },
+  {
+   "step": "jump to page 350 of large PDF",
+   "status": "FAIL",
+   "detail": "1// 400"
+  },
+  {
+   "step": "Open invalid.pdf \u2192 error, previous PDF kept",
+   "status": "PASS",
+   "detail": "modal=PDF operation failed Invalid PDF structure. Close status=Open failed Page 1 of 400 P4.2 \u00b7 PDF.js View / Annotate 1// 400"
+  },
+  {
+   "step": "Open empty.pdf \u2192 error, previous PDF kept",
+   "status": "PASS",
+   "detail": "modal=PDF operation failed Not a PDF file. Close status=Open failed Page 1 of 400 P4.2 \u00b7 PDF.js View / Annotate 1// 400"
+  },
+  {
+   "step": "Open wrongext.pdf \u2192 error, previous PDF kept",
+   "status": "PASS",
+   "detail": "modal=PDF operation failed Not a PDF file. Close status=Open failed Page 1 of 400 P4.2 \u00b7 PDF.js View / Annotate 1// 400"
+  }
+ ],
+ "errors": [
+  "console:Refused to frame 'blob:http://127.0.0.1:18431/1837683b-e524-4bb8-8c52-7e590db3dc1a' because it violates the following Content Security Policy directive: \"frame-src 'none'\".\n",
+  "console:SecurityError: Failed to read a named property 'print' from 'Window': Blocked a frame with origin \"http://127.0.0.1:18431\" from accessing a cross-origin frame.",
+  "console:Error: The selected PDF could not be written.\n    at deliveryError (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-delivery.js:8:52)\n    at picker (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-delivery.js:11:391)\n    at async deliverOnce (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-delivery.js:",
+  "console:InvalidPDFException",
+  "console:Error: Not a PDF file.\n    at parseFile (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-open-controller.js:5:164)\n    at async openFile (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-open-controller.js:8:470)\n    at async HTMLInputElement.<anonymous> (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-",
+  "console:Error: Not a PDF file.\n    at parseFile (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-open-controller.js:5:164)\n    at async openFile (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-open-controller.js:8:470)\n    at async HTMLInputElement.<anonymous> (http://127.0.0.1:18431/InkDOS/apps/pdf/io/file-"
+ ],
+ "dialogs": [
+  {
+   "type": "confirm",
+   "msg": "Delete page 3? This change remains local until you save a copy."
+  },
+  {
+   "type": "confirm",
+   "msg": "Delete page 3? This change remains local until you save a copy."
+  }
+ ],
+ "downloads": []
+}

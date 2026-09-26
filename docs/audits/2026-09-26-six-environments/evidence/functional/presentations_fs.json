@@ -1,0 +1,149 @@
+{
+ "app": "presentations",
+ "profile": "fs",
+ "log": [
+  {
+   "step": "open PPTX via start Open + picker",
+   "status": "PASS",
+   "detail": "{'fileName': 'audit.pptx', 'sourceKind': 'pptx', 'dirty': False, 'slideCount': 3, 'currentIndex': 0, 'currentSlideId': 'slide-1', 'selectedObjectId': None}"
+  },
+  {
+   "step": "thumbnails rendered",
+   "status": "PASS",
+   "detail": "18"
+  },
+  {
+   "step": "next/previous slide",
+   "status": "PASS",
+   "detail": "1,0"
+  },
+  {
+   "step": "click selects object",
+   "status": "PASS",
+   "detail": "obj-muimb3bl-3"
+  },
+  {
+   "step": "edit text in placeholder",
+   "status": "PASS",
+   "detail": "Slide 1 Title | Body text for slide 1 EDITED | Box"
+  },
+  {
+   "step": "dirty after edit",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "contextual text toolbar appears on selection (Bold)",
+   "status": "PASS",
+   "detail": "['boldBtn']"
+  },
+  {
+   "step": "add / duplicate / delete slide / undo delete",
+   "status": "PASS",
+   "detail": "(3, 4, 5, 4, 5)"
+  },
+  {
+   "step": "redo",
+   "status": "PASS",
+   "detail": "4"
+  },
+  {
+   "step": "move slide earlier",
+   "status": "PASS",
+   "detail": "2->1"
+  },
+  {
+   "step": "insert text box",
+   "status": "PASS",
+   "detail": "obj-muimb8gg-h"
+  },
+  {
+   "step": "slide background control opens",
+   "status": "PASS",
+   "detail": "modal= pop=['pptBackgroundPopover']"
+  },
+  {
+   "step": "zoom menu",
+   "status": "PASS",
+   "detail": "['141%', 'Fit width', 'Fit page', '100%']"
+  },
+  {
+   "step": "Present mode opens and Escape exits",
+   "status": "PASS",
+   "detail": "opened=True exited=True"
+  },
+  {
+   "step": "Save \u2192 picker cancelled keeps dirty",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "Save \u2192 write error surfaced",
+   "status": "PASS",
+   "detail": "Presentation could not be opened The selected PPTX could not be written. audit.pptx Close Choose another file"
+  },
+  {
+   "step": "Save \u2192 PPTX valid, slide count & edit preserved",
+   "status": "PASS",
+   "detail": "slides=4 texts=['Slide 1 Title Body text for slide 1 EDIT', 'Slide 2 Title Body text for slide 2 Box ', 'Presentation title Tap a text box to edi', 'Slide 3 Title Body text for slide 3 Box']"
+  },
+  {
+   "step": "dirty cleared after save",
+   "status": "PASS",
+   "detail": "False"
+  },
+  {
+   "step": "reopen saved PPTX shows edit",
+   "status": "PASS",
+   "detail": "{'fileName': 'ppt_saved.pptx', 'sourceKind': 'pptx', 'dirty': False, 'slideCount': 4, 'currentIndex': 0, 'currentSlideId': 'slide-1', 'selectedObjectId': None} "
+  },
+  {
+   "step": "Open while dirty \u2192 guard",
+   "status": "PASS",
+   "detail": "Unsaved changes Save your current presentation before opening another presentation? CancelDiscardSave"
+  },
+  {
+   "step": "Presentations unsaved guard is styled/overlaid and reachable from menu",
+   "status": "FAIL",
+   "detail": "{'position': 'static', 'zIndex': 'auto', 'bg': 'rgba(0, 0, 0, 0)', 'discardHit': 'menuBackdrop', 'discardY': 876}"
+  },
+  {
+   "step": "Guard \u2192 Cancel keeps presentation",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "Guard \u2192 Discard \u2192 open legacy PPT",
+   "status": "PASS",
+   "detail": "{'fileName': 'audit.ppt', 'sourceKind': 'ppt', 'dirty': False, 'slideCount': 3, 'currentIndex': 0, 'currentSlideId': 'slide-1', 'selectedObjectId': None}"
+  },
+  {
+   "step": "Open invalid.pptx \u2192 error, previous kept",
+   "status": "PASS",
+   "detail": "modal=Presentation could not be opened PPTX ZIP end-of-central-directory is missing. invalid.pptx Close Choose another file s={'fileName': 'audit.ppt', 'sourceKind': 'ppt', 'dirty': False, 'slideCount': 3, 'currentIndex': 0, 'currentSlideId': 'slide-1', 'selectedObjectId': None}"
+  },
+  {
+   "step": "Open empty.pptx \u2192 error",
+   "status": "PASS",
+   "detail": "Presentation could not be opened PPTX exceeds the compressed input-byte budget. empty.pptx Close Choose another file"
+  },
+  {
+   "step": "legacy PPT opens read-only (toolbar disabled, \"Legacy PPT is read-only\")",
+   "status": "INFO",
+   "detail": "Legacy PPT is read-only"
+  },
+  {
+   "step": "beforeunload guard when dirty",
+   "status": "PASS",
+   "detail": ""
+  }
+ ],
+ "errors": [],
+ "dialogs": [
+  {
+   "type": "beforeunload",
+   "msg": ""
+  }
+ ],
+ "downloads": []
+}

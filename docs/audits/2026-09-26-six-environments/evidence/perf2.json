@@ -1,0 +1,105 @@
+{
+ "documents": {
+  "switchMs": 49,
+  "saveMs": 784,
+  "saveRuns": [
+   780,
+   857,
+   784
+  ]
+ },
+ "spreadsheets": {
+  "switchMs": 98,
+  "saveMs": 516,
+  "saveRuns": [
+   520,
+   516,
+   508
+  ]
+ },
+ "presentations": {
+  "switchMs": 90,
+  "saveMs": 566,
+  "saveRuns": [
+   566,
+   567,
+   553
+  ]
+ },
+ "txt": {
+  "switchMs": 37,
+  "saveMs": 460,
+  "saveRuns": [
+   444,
+   460,
+   460
+  ]
+ },
+ "epub": {
+  "switchMs": 44,
+  "saveMs": 454,
+  "saveRuns": [
+   459,
+   454,
+   450
+  ]
+ },
+ "pdf": {
+  "switchMs": 231,
+  "saveMs": 254,
+  "saveRuns": [
+   254,
+   256,
+   251
+  ]
+ },
+ "epub_pageTurnMs": [
+  111,
+  312,
+  735,
+  703,
+  704,
+  711
+ ],
+ "txt_large_keystrokeMs": [
+  1362,
+  1125,
+  1523,
+  1468,
+  1244,
+  1325
+ ],
+ "txt_large_longtasksAfterTyping": [
+  100,
+  101,
+  578,
+  377,
+  591,
+  454,
+  303,
+  318,
+  450,
+  321,
+  507,
+  648,
+  315,
+  491,
+  632,
+  293,
+  301,
+  529,
+  362,
+  356,
+  610,
+  307
+ ],
+ "sheet_large_scroll_longtasks": [
+  53,
+  61,
+  51,
+  76
+ ],
+ "sheet_large_nameBoxAfter": [
+  "A1"
+ ]
+}

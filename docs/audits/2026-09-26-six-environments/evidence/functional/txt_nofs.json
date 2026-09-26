@@ -1,0 +1,115 @@
+{
+ "app": "txt",
+ "profile": "nofs",
+ "log": [
+  {
+   "step": "open TXT via start Open + picker",
+   "status": "PASS",
+   "detail": "True 'Line one of plain text\\nLine two\\n\\nLast line with \u00fcmlaut and \u4e2d'"
+  },
+  {
+   "step": "dirty after open",
+   "status": "PASS",
+   "detail": "False"
+  },
+  {
+   "step": "type text",
+   "status": "PASS",
+   "detail": "' with \u00fcmlaut and \u4e2d\u6587\\nAdded line'"
+  },
+  {
+   "step": "dirty after edit",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "Undo / Redo",
+   "status": "PASS",
+   "detail": "undo='aut and \u4e2d\u6587\\nAdded lin' redo='ut and \u4e2d\u6587\\nAdded line'"
+  },
+  {
+   "step": "Select all",
+   "status": "PASS",
+   "detail": "72"
+  },
+  {
+   "step": "editor text size +/-",
+   "status": "PASS",
+   "detail": "('16', '17', '16')"
+  },
+  {
+   "step": "wrap toggle changes wrapping",
+   "status": "PASS",
+   "detail": "('pre-wrap', 'pre')"
+  },
+  {
+   "step": "Find locates text",
+   "status": "PASS",
+   "detail": "visible=True selected='two'"
+  },
+  {
+   "step": "Text tools menu opens",
+   "status": "PASS",
+   "detail": "['Go']"
+  },
+  {
+   "step": "Save (no FS API) \u2192 download/share fallback",
+   "status": "PASS",
+   "detail": "['audit.txt']"
+  },
+  {
+   "step": "post-save",
+   "status": "INFO",
+   "detail": "dirty=False modal=None"
+  },
+  {
+   "step": "Open while dirty \u2192 guard",
+   "status": "FAIL",
+   "detail": "None"
+  },
+  {
+   "step": "Open data.json",
+   "status": "PASS",
+   "detail": "title=data.json \u2014 InkDOS Plain Text modal=None"
+  },
+  {
+   "step": "Open empty.txt",
+   "status": "PASS",
+   "detail": "title=empty.txt \u2014 InkDOS Plain Text modal=None"
+  },
+  {
+   "step": "Open random binary as .txt \u2192 rejected or warned",
+   "status": "WARNING",
+   "detail": "modal=None title=empty.txt \u2014 InkDOS Plain Text status=Failed to execute 'decode' on 'TextDecoder': The encoded data was not valid.\nLn 1, Col 1\n1 line \u00b7 0 words \u00b7 0 chars\nUTF-8\nLF"
+  },
+  {
+   "step": "Crash/reload recovery of unsaved text",
+   "status": "FAIL",
+   "detail": "modal=None editor=''"
+  },
+  {
+   "step": "New text file",
+   "status": "PASS",
+   "detail": "Untitled.txt \u2014 InkDOS Plain Text"
+  },
+  {
+   "step": "beforeunload guard when dirty",
+   "status": "PASS",
+   "detail": ""
+  }
+ ],
+ "errors": [],
+ "dialogs": [
+  {
+   "type": "beforeunload",
+   "msg": ""
+  },
+  {
+   "type": "beforeunload",
+   "msg": ""
+  }
+ ],
+ "downloads": [
+  "audit.txt"
+ ]
+}

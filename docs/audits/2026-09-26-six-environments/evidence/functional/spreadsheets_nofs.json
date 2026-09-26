@@ -1,0 +1,151 @@
+{
+ "app": "spreadsheets",
+ "profile": "nofs",
+ "log": [
+  {
+   "step": "open XLSX via start Open + picker",
+   "status": "PASS",
+   "detail": "title=audit.xlsx \u2014 Spreadsheets"
+  },
+  {
+   "step": "formula cached values + numeric-text preserved",
+   "status": "PASS",
+   "detail": "{'A1': '1', 'B1': 'Item 1', 'C1': '2', 'C10': '20', 'E1': '55', 'E2': '00123'}"
+  },
+  {
+   "step": "dirty after open",
+   "status": "PASS",
+   "detail": "False"
+  },
+  {
+   "step": "type into cell",
+   "status": "PASS",
+   "detail": "hello"
+  },
+  {
+   "step": "Enter moves selection down",
+   "status": "PASS",
+   "detail": "D2"
+  },
+  {
+   "step": "enter formula in cell",
+   "status": "PASS",
+   "detail": "57"
+  },
+  {
+   "step": "dirty after edit",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "formula bar edit + dependent recalculation",
+   "status": "PASS",
+   "detail": "{'A1': '10', 'C1': '20', 'E1': '64', 'D2': '66'}"
+  },
+  {
+   "step": "arrow-key navigation",
+   "status": "PASS",
+   "detail": "B2"
+  },
+  {
+   "step": "Name box jump",
+   "status": "PASS",
+   "detail": "C5"
+  },
+  {
+   "step": "multi-cell range selection",
+   "status": "PASS",
+   "detail": "['A1', 'B1', 'A2', 'B2', 'A3', 'B3']"
+  },
+  {
+   "step": "Bold on range",
+   "status": "PASS",
+   "detail": "700"
+  },
+  {
+   "step": "Undo/Redo",
+   "status": "PASS",
+   "detail": "700->400->700"
+  },
+  {
+   "step": "Delete row (destructive) then Undo restores",
+   "status": "PASS",
+   "detail": "Item 5 -> Item 6 -> undo Item 5"
+  },
+  {
+   "step": "sheet tabs listed",
+   "status": "PASS",
+   "detail": "['Data', 'Second', '+', '\u2212']"
+  },
+  {
+   "step": "switch worksheet and back",
+   "status": "PASS",
+   "detail": "second A1=sheet2 back D1=hello"
+  },
+  {
+   "step": "zoom menu",
+   "status": "PASS",
+   "detail": "['100%', '100%']"
+  },
+  {
+   "step": "zoom applied",
+   "status": "PASS",
+   "detail": "100%"
+  },
+  {
+   "step": "Save (no FS API) \u2192 download fallback",
+   "status": "PASS",
+   "detail": "['audit.xlsx'] dialog=None"
+  },
+  {
+   "step": "Open while dirty \u2192 guard",
+   "status": "PASS",
+   "detail": "Unsaved changes Save your current workbook before opening another workbook? Cancel Discard Save"
+  },
+  {
+   "step": "Guard \u2192 Cancel",
+   "status": "PASS",
+   "detail": "Cancel"
+  },
+  {
+   "step": "XLS open notice",
+   "status": "INFO",
+   "detail": "Unsaved changes Save your current workbook before opening another workbook? Cancel Discard Save"
+  },
+  {
+   "step": "Guard \u2192 Discard \u2192 open legacy XLS",
+   "status": "PASS",
+   "detail": "{'A1': '1', 'B1': 'Item 1', 'C1': '2', 'E1': '55', 'E2': '00123'}"
+  },
+  {
+   "step": "Open invalid.xlsx \u2192 error, previous workbook kept",
+   "status": "PASS",
+   "detail": "modal=Workbook could not be opened This is not a valid XLSX ZIP package. Close B1=Item 1"
+  },
+  {
+   "step": "Open empty.xlsx \u2192 error, previous workbook kept",
+   "status": "PASS",
+   "detail": "modal=Workbook could not be opened empty.xlsx is empty. Close B1=Item 1"
+  },
+  {
+   "step": "New workbook",
+   "status": "PASS",
+   "detail": "Untitled.xlsx \u2014 Spreadsheets"
+  },
+  {
+   "step": "beforeunload guard when dirty",
+   "status": "PASS",
+   "detail": ""
+  }
+ ],
+ "errors": [],
+ "dialogs": [
+  {
+   "type": "beforeunload",
+   "msg": ""
+  }
+ ],
+ "downloads": [
+  "audit.xlsx"
+ ]
+}
