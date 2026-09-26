@@ -22,10 +22,11 @@
   <script src="runtime/platform/file-launch.js"></script>
 </head>
 <body>
+<svg class="presentations-icon-defs" aria-hidden="true" width="0" height="0" focusable="false"><defs><linearGradient id="inkdosPresentationsGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ee7247"/><stop offset="1" stop-color="#d55229"/></linearGradient><symbol id="inkdosPresentationsIcon" viewBox="0 0 512 512"><rect x="24" y="24" width="464" height="464" rx="112" fill="url(#inkdosPresentationsGradient)"/><rect x="102" y="109" width="308" height="235" rx="34" fill="#fff"/><path d="M154 284h62a14 14 0 0 0 14-14v-52a14 14 0 0 1 14-14h42v-50a14 14 0 0 1 14-14h58" fill="none" stroke="#dd4b26" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><circle cx="358" cy="160" r="18" fill="#f19a7e"/><path d="M256 344v62M198 406h116" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round"/></symbol></defs></svg>
 <div class="app-shell" id="appShell">
   <header class="topbar" id="topbar">
     <div class="frame-side frame-left"><button id="menuBtn" class="frame-btn" type="button" title="Menu" aria-label="Open Presentations menu" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="frame-btn" href="../../index.html" aria-label="Home" title="Home" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></a></div>
-    <div class="presentation-title"><img src="assets/presentations.png" class="presentations-icon" alt=""><input id="titleText" class="title-input" value="Untitled.pptx" aria-label="Presentation name" spellcheck="false" autocomplete="off"><span id="dirtyDot" class="dirty-dot" aria-hidden="true"></span></div>
+    <div class="presentation-title"><svg class="presentations-icon" aria-hidden="true" focusable="false"><use href="#inkdosPresentationsIcon"></use></svg><input id="titleText" class="title-input" value="Untitled.pptx" aria-label="Presentation name" spellcheck="false" autocomplete="off"><span id="dirtyDot" class="dirty-dot" aria-hidden="true"></span></div>
     <div class="frame-side frame-right" aria-hidden="true"></div>
   </header>
 
@@ -67,7 +68,7 @@
   </div>
 
   <main id="workspace" class="presentation-workspace" data-panel-open="true">
-    <div id="startState" class="start-state"><div class="start-card"><img src="assets/presentations.png" class="start-icon" alt=""><h1>Presentations</h1><p>Create a presentation or open a PPT/PPTX file locally.</p><div class="start-actions"><button id="startNew" type="button">New presentation</button><button id="startOpen" class="primary" type="button">Open presentation</button></div></div></div>
+    <div id="startState" class="start-state"><div class="start-card"><svg class="start-icon" aria-hidden="true" focusable="false"><use href="#inkdosPresentationsIcon"></use></svg><h1>Presentations</h1><p>Create a presentation or open a PPT/PPTX file locally.</p><div class="start-actions"><button id="startNew" type="button">New presentation</button><button id="startOpen" class="primary" type="button">Open presentation</button></div></div></div>
     <aside id="slidePanel" class="slide-panel" aria-label="Slide thumbnails"><div id="slidePanelInner" class="slide-panel-inner"></div></aside>
     <section id="viewport" class="content-viewport" tabindex="0" aria-label="Presentation content viewport"><div id="stage" class="slide-stage"><div id="slideShell" class="slide-shell"><div id="slideCanvas" class="slide-canvas"></div></div></div></section>
   </main>
@@ -77,7 +78,7 @@
 
   <div id="menuBackdrop" class="backdrop" hidden></div>
   <aside id="generalMenu" class="drawer" role="dialog" aria-modal="true" aria-label="Presentations menu" hidden>
-    <div class="drawer-head"><div class="drawer-title"><img src="assets/presentations.png" class="drawer-icon" alt=""><span>Presentations</span></div><button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="drawer-head"><div class="drawer-title"><svg class="drawer-icon" aria-hidden="true" focusable="false"><use href="#inkdosPresentationsIcon"></use></svg><span>Presentations</span></div><button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="drawer-section-label">File</div><div class="menu-list">
       <button id="newMenuBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>New presentation</span><span class="hint">⌘N</span></button>
       <button id="openMenuBtn" class="menu-item" type="button"><svg viewBox="0 0 24 24"><path d="M3.5 7h6l2 2h9v9.5A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M3.5 10h17"/></svg><span>Open PPT / PPTX</span><span class="hint">⌘O</span></button>
