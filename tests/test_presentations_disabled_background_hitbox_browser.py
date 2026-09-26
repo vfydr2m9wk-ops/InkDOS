@@ -55,11 +55,16 @@ def main():
             bg = page.locator("#pptP1Background")
             assert bg.count() == 1
             assert bg.is_disabled()
+            assert bg.get_attribute("type") == "button"
+            assert "Background" in bg.inner_text()
+            assert page.locator("#pptBackgroundPopover").count() == 1
+            assert page.locator("#pptBackgroundPopover [data-background-color]").count() == 12
+            assert page.locator("#pptP1Background[type='color']").count() == 0
 
-            # A disabled full-size transparent color input must never become
-            # the hit target above unrelated toolbar controls.
-            pointer_events = bg.evaluate("el => getComputedStyle(el).pointerEvents")
-            assert pointer_events == "none", pointer_events
+            # The background control is a normal toolbar button, not a hidden
+            # native color input that can fail to open or create a bad hitbox.
+            assert bg.get_attribute("aria-haspopup") == "dialog"
+            assert bg.get_attribute("aria-expanded") == "false"
 
             zoom = page.locator("#zoomMenuBtn")
             assert zoom.is_visible() and zoom.is_enabled()
@@ -71,32 +76,26 @@ def main():
             assert right.is_visible() and right.is_enabled()
             right.click(timeout=2500)
 
-            # Once a presentation becomes active, the background picker is
-            # enabled. Its transparent input must remain contained by its
-            # visible wrapper and must not overlap unrelated controls.
+            # Once a presentation becomes active, Background opens an
+            # InkDOS-owned compact palette instead of the platform color picker.
             page.locator("#startNew").click()
             page.wait_for_function("() => document.getElementById('startState')?.hidden === true")
             assert not bg.is_disabled()
-            assert bg.evaluate("el => !!el.closest('.ppt-p1-color-control')")
-            assert bg.evaluate("el => el.parentElement?.classList.contains('ppt-p1-color-control')")
-            # WebKit must not paint native color-input chrome over the bucket icon.
-            metrics = bg.evaluate("""el => {
-                const s=getComputedStyle(el), r=el.getBoundingClientRect();
-                return {width:r.width,height:r.height,opacity:s.opacity,pointerEvents:s.pointerEvents,appearance:s.appearance,webkitAppearance:s.webkitAppearance};
-            }""")
-            assert metrics["width"] <= 1.1 and metrics["height"] <= 1.1, metrics
-            assert float(metrics["opacity"]) == 0, metrics
-            assert metrics["pointerEvents"] == "none", metrics
-            # The visible label remains the hit target and still activates the
-            # visually-hidden color input through native label semantics.
-            forwarded = bg.evaluate("""el => {
-                let clicks=0;
-                const handler=()=>{clicks+=1};
-                el.addEventListener('click',handler,{once:true});
-                el.parentElement.click();
-                return clicks;
-            }""")
-            assert forwarded == 1, forwarded
+            bg.click(timeout=2500)
+            palette = page.locator("#pptBackgroundPopover")
+            assert palette.is_visible()
+            assert bg.get_attribute("aria-expanded") == "true"
+
+            blue = palette.locator('[data-background-color="#DBEAFE"]')
+            blue.click(timeout=2500)
+            assert palette.is_hidden()
+            assert bg.get_attribute("aria-expanded") == "false"
+            assert page.evaluate("() => globalThis.__inkdosPresentations.session.currentSlide.background.toUpperCase()") == "#DBEAFE"
+
+            bg.click(timeout=2500)
+            assert palette.is_visible()
+            page.keyboard.press("Escape")
+            assert palette.is_hidden()
 
             zoom.click(timeout=2500)
             page.wait_for_selector("#zoomPopover:not([hidden])")
