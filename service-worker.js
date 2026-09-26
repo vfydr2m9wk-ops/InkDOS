@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-e2a95e1559b4b8850373';
+const CACHE_NAME='inkdos-v2.6.2-556357f49d7fa60cff98';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -175,7 +175,7 @@ const ASSET_HASHES={
   "./apps/presentations/view/presentation-surface.css": "1d31bfb7f7bc31c9cedcc8abeeeabeeab02749d3354f55abf7d17da025529e76",
   "./apps/presentations/view/slide-surface.js": "638fd057df887ad9e7e315b4e92303efe51a5035304168ac57c39b8f06f42619",
   "./apps/presentations/view/zoom-controller.js": "ce2fab2d21b4ab29496f68a72c9ef99a096bb45d232105ecfd5c3d4c253bee6c",
-  "./apps/spreadsheets/app.js": "93cc4a0449c1e4004e9b60157d46b3d151034d622a8b7e4ea3ac2d14e6d0bda7",
+  "./apps/spreadsheets/app.js": "db86aacc00e98266c72da6e0fe6b93a9bdb58c8e7588683ebec6ee2fcd431ee6",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./apps/spreadsheets/engine/formula/arithmetic.js": "90b3a0f135445fcacbfa64903125c4efbe94d28b382857e937bd1d45b71d757a",
   "./apps/spreadsheets/engine/formula/evaluator.js": "c1ca9eae9115038b0578ea0482e98f0411c3f752d2b9085d8f659e90e9d4f1b0",
