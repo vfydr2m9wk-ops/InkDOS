@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-f6a0cf0d2130865111c5';
+const CACHE_NAME='inkdos-v2.6.2-dda0a0f1af0c9b4b2ab4';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -138,7 +138,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
   "./apps/presentations/app.js": "e057d41d323080717dcfccf2ebe64c7ac9c169aae1d44c52653c03cddda5cfeb",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
-  "./apps/presentations/engine/presentation-policy.js": "5dd58184b6b4265eb0b1b500f00167859c83c67880f56b483d4bb53a72225405",
+  "./apps/presentations/engine/presentation-policy.js": "54417c97053fc54313024ced2ad458e7c706015cdf88b26df27a310a83e11ffd",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
   "./apps/presentations/index.html": "861c1143df1fa6910874b975ee4d00061b07c960f1a78ddb3372afcc2f44b8e2",
