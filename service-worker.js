@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-d584de969d238edfe5c9';
+const CACHE_NAME='inkdos-v2.6.2-626216f15d3b314e711b';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -151,7 +151,7 @@ const ASSET_HASHES={
   "./apps/presentations/io/pptx-preservation-writer.js": "b6a7f9b7a90f693a1ec3de0b0893633b5fd090e43d5fa72122f1a47f46a56b90",
   "./apps/presentations/io/pptx-text-columns.js": "e034eccc7d269f900370aac3c36bf7ab560033a6954853a995b15f6e797d42a4",
   "./apps/presentations/io/pptx-writer.js": "1f34f988b490c02c24bb2d0c954606883c55abcaab84a2dff891b90e03222671",
-  "./apps/presentations/io/save-controller.js": "2ac47358462ada4c82a070a09a7dce76880d8328c728e4ad76df49c882623e63",
+  "./apps/presentations/io/save-controller.js": "5571ec51fd0bd5251bbb049a49314d65156525edfbe3fa7f5f8870cd6a6efe01",
   "./apps/presentations/manifest.webmanifest": "436f820bd1a8a7ccecc79dc197e6f1f38e8fa14463d945add1cf544406a5af55",
   "./apps/presentations/presentation/slideshow-controller.js": "f6aefa1e019cc7d3b8ae9939f7a16fdcf91a2979f82a8a673413cc3d17f63406",
   "./apps/presentations/runtime/frame/app-frame.css": "ecad7719a86c8ff824c5ec2676f455fae387d1a4029f841082761793310befae",
@@ -162,7 +162,7 @@ const ASSET_HASHES={
   "./apps/presentations/state/appearance.js": "b06315f74033126101eae34a399001070b50ced9df8466e8c9db66f32e3f65a4",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
-  "./apps/presentations/ui/chrome-controller.js": "e49d31726ba6f65e441080e3421bf0aacf6bf25a964d0fa73cb52a1e85e7abea",
+  "./apps/presentations/ui/chrome-controller.js": "1d25be7fd41a1b2e65853334afb2cbb8eb4dafab5708ef1bd96c0d499ab4dfb2",
   "./apps/presentations/ui/command-controller.js": "4bf99883f7044270b4463bde6e5ca9c0cca21233a858494f658f019895acc58d",
   "./apps/presentations/ui/editing-controller.js": "ebd91ae5ac3452d816d7d76e920d3b1633db972491a3d932c3ac086ee8b732ca",
   "./apps/presentations/ui/editor.css": "940a82d17f0b7729c5308c10ec9f595738489a2970aee3393dc8cac6028a87b3",
