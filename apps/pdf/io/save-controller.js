@@ -1,7 +1,7 @@
 (function(global){'use strict';
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{};
 function create({session,getDocument,editor,chrome}={}){
- let saving=false;
+ let saving=false;const originalBytes=()=>typeof session.ensureSourceBytes==='function'?session.ensureSourceBytes():Promise.resolve(session.sourceBytes);
  async function save(){
   if(!session.active||saving)return null;
   const doc=getDocument?.();if(!doc)return null;
@@ -10,8 +10,8 @@ function create({session,getDocument,editor,chrome}={}){
   // PDF.js resets its modified flag while serializing, before delivery succeeds.
   // Only an acknowledged filesystem write may clear the app's unsaved state.
   try{
-   const snapshotHash=doc.annotationStorage.serializable.hash;
-   const result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes:session.sourceBytes,fileName:session.fileName,onProgress:phase=>{document.documentElement.dataset.saveState=phase;chrome.status(phase==='writing'?'Writing PDF…':phase==='validating'?'Validating PDF…':'Preparing PDF…')}});
+   const snapshotHash=doc.annotationStorage.serializable.hash,sourceBytes=await originalBytes();
+   const result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes,fileName:session.fileName,onProgress:phase=>{document.documentElement.dataset.saveState=phase;chrome.status(phase==='writing'?'Writing PDF…':phase==='validating'?'Validating PDF…':'Preparing PDF…')}});
    document.documentElement.dataset.saveState='delivering';chrome.status('PDF ready · choose where to save');
    const receipt=await NS.FileDelivery.deliver(result.blob,result.fileName);
    if(getDocument()===doc){
@@ -37,7 +37,8 @@ function create({session,getDocument,editor,chrome}={}){
   editor.commit();const snapshotHash=doc.annotationStorage.serializable.hash;
   saving=true;document.documentElement.dataset.saveState='saving';
   try{
-   const result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes:session.sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Writing PDF before navigation…':phase==='validating'?'Validating PDF before navigation…':'Preparing PDF before navigation…')});
+   const sourceBytes=await originalBytes();
+   const result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Writing PDF before navigation…':phase==='validating'?'Validating PDF before navigation…':'Preparing PDF before navigation…')});
    document.documentElement.dataset.saveState='delivering';chrome.status('Save PDF before continuing…');
    const receipt=await NS.FileDelivery.deliver(result.blob,result.fileName);
    if(!receipt?.deliveryConfirmed){session.markDirty();chrome.dirty();chrome.status('Save delivery was not confirmed — navigation cancelled');return false}
@@ -56,11 +57,11 @@ function create({session,getDocument,editor,chrome}={}){
   const doc=getDocument?.();if(!doc)return null;
   editor.commit();const wasDirty=session.dirty;saving=true;document.documentElement.dataset.saveState='sharing';
   try{
-   let result;
+   const sourceBytes=await originalBytes();let result;
    if(wasDirty){
-    result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes:session.sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Preparing PDF to share…':phase==='validating'?'Validating PDF…':'Preparing PDF to share…')});
+    result=await NS.PdfjsSaveAdapter.createCopy({pdfDocument:doc,sourceBytes,fileName:session.fileName,onProgress:phase=>chrome.status(phase==='writing'?'Preparing PDF to share…':phase==='validating'?'Validating PDF…':'Preparing PDF to share…')});
    }else{
-    result={blob:new Blob([session.sourceBytes],{type:'application/pdf'}),fileName:NS.FileDelivery.safeName(session.fileName)};
+    result={blob:new Blob([sourceBytes],{type:'application/pdf'}),fileName:NS.FileDelivery.safeName(session.fileName)};
    }
    const receipt=await NS.FileDelivery.share(result.blob,result.fileName);
    if(getDocument()===doc){editor.commit();if(wasDirty)session.markDirty();chrome.dirty();chrome.status(wasDirty?'PDF sent to Share Sheet · edits remain unsaved':'PDF sent to Share Sheet')}
