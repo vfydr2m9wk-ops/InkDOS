@@ -1,9 +1,9 @@
 (function(global){'use strict';const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
-function create({session,history,selection,chrome,fileOpen,save,editor,panel,slideshow,onStructureChange}={}){
+function create({session,history,selection,chrome,fileOpen,save,editor,panel,slideshow,onStructureChange,isBusy=()=>false,onCancelBusy=()=>{}}={}){
  const $=id=>document.getElementById(id);let drawer=null,zoomPopover=null,unsavedDialog=null,authorizedUnload=false;const registry=new Map();
  function register(id,handler,isEnabled=()=>true){if(!id||typeof handler!=='function')throw new TypeError('Invalid Presentations command');registry.set(id,Object.freeze({handler,isEnabled}));return id}
- function isEnabled(id){const command=registry.get(id);return !!command&&command.isEnabled()!==false}
- function execute(id,...args){const command=registry.get(id);if(!command)throw new Error('PRESENTATIONS_COMMAND_NOT_REGISTERED: '+id);if(command.isEnabled()===false)return false;return command.handler(...args)}
+ function isEnabled(id){const command=registry.get(id);if(!command)return false;if(isBusy()&&id!=='file.new'&&id!=='file.open')return false;return command.isEnabled()!==false}
+ function execute(id,...args){const command=registry.get(id);if(!command)throw new Error('PRESENTATIONS_COMMAND_NOT_REGISTERED: '+id);if(isBusy()&&id!=='file.new'&&id!=='file.open')return false;if(command.isEnabled()===false)return false;return command.handler(...args)}
  function selected(){return selection.getObject(session)}
  function structureEditable(){return session.active&&session.sourceKind!=='ppt'}
  function textEditable(){const o=selected();return !!o&&o.type==='text'&&session.active&&session.sourceKind!=='ppt'}
@@ -31,7 +31,7 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   if(decision!=='save')return false;
   return !!(await save.saveForReplacement());
  }
- async function newPresentation(){if(!(await authorizeReplacement('new')))return false;session.resetNew();history.reset();onStructureChange?.();refresh();chrome.status('New presentation');return true}
+ async function newPresentation(){if(!(await authorizeReplacement('new')))return false;if(isBusy())onCancelBusy();session.resetNew();history.reset();onStructureChange?.();refresh();chrome.status('New presentation');return true}
  async function openPresentation(){if(!(await authorizeReplacement('open')))return false;fileOpen.requestOpen();return true}
  function installCommands(){
   register('file.new',newPresentation);
