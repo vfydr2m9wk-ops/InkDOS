@@ -5,6 +5,15 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 ACTIVE = ("documents", "spreadsheets", "presentations", "txt", "epub", "pdf")
+DIRECT_WEB_APPS = (
+    ("Documents", "documents", "DOC / DOCX / RTF"),
+    ("Spreadsheets", "spreadsheets", "XLS / XLSX"),
+    ("Presentations", "presentations", "PPT / PPTX"),
+    ("Plain Text", "txt", "TXT"),
+    ("EPUB", "epub", "EPUB"),
+    ("PDF", "pdf", "PDF"),
+)
+DIRECT_WEB_BASE = "https://vfydr2m9wk-ops.github.io/InkDOS/apps"
 
 
 def main() -> None:
@@ -18,6 +27,21 @@ def main() -> None:
     for rel in required:
         if not (ROOT / rel).is_file():
             raise SystemExit(f"Required file missing: {rel}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    if "## Direct web apps" not in readme:
+        raise SystemExit("README Direct web apps section missing")
+    for label, slug, formats in DIRECT_WEB_APPS:
+        url = f"{DIRECT_WEB_BASE}/{slug}/"
+        row = f"| {label} | {url} | {formats} |"
+        if row not in readme:
+            raise SystemExit(f"README direct web app link/format drift: {label}")
+    documented_direct_links = re.findall(
+        r"https://vfydr2m9wk-ops\.github\.io/InkDOS/apps/([a-z-]+)/",
+        readme.split("## Direct web apps", 1)[1].split("## ", 1)[0],
+    )
+    if documented_direct_links != [slug for _, slug, _ in DIRECT_WEB_APPS]:
+        raise SystemExit(f"README direct web app order/set drift: {documented_direct_links}")
 
     version_data = json.loads((ROOT / "VERSION.json").read_text(encoding="utf-8"))
     version = version_data.get("version")
