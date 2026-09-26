@@ -5,7 +5,7 @@ function onCommitted(info){if(!editorController){editorController=NS.EditorContr
 const saveController=NS.SaveController.create({session,dialog,setLoading:chrome.setLoading,onStatus:chrome.toast,onError:chrome.showError,onSessionChanged:chrome.sync});
 const openController=NS.FileOpenController.create({session,fileInput:document.getElementById('fileInput'),dialog,saveController,setLoading:chrome.setLoading,onCommitted,onError:chrome.showError});
 actions.open=openController.requestOpen;actions.save=saveController.save;actions.new=openController.newWorkbook;
-root.InkDOSFileLaunch?.setOpenHandler?.(file=>openController.handle(file));
+document.addEventListener('inkdos:file-launch-error',e=>chrome.showError(new Error(e.detail?.message||'The selected file could not be opened.')));root.InkDOSFileLaunch?.setOpenHandler?.(file=>openController.handle(file));
 NS.FileMenuController.create({chrome,openController,saveController});
 NS.FrameUI.installToolbarRail(document.getElementById('formatbar'));
 const home=document.querySelector('a[aria-label="Home"]');home?.addEventListener('click',async e=>{if(leaving||!session.dirty)return;e.preventDefault();leaving=true;try{if(await openController.requestLeave()){authorizedUnload=true;root.location.href=home.href}}finally{leaving=false}});
