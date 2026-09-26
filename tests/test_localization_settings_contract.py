@@ -75,6 +75,7 @@ def main() -> None:
         package = (LOCALE_DIR / f"{code}.js").read_text(encoding="utf-8")
         require(package, code, f"Locale identity {code}")
         require(package, display, f"Locale display name {code}")
+        require(package, "Loading…", f"Loading state translation {code}")
         for forbidden in ("querySelector", "setAttribute", "textContent", "innerHTML", "localStorage", "fetch("):
             forbid(package, forbidden, f"Locale package {code} must contain data only")
 
