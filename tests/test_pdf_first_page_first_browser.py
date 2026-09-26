@@ -62,7 +62,13 @@ def main() -> None:
               const p2 = pdf.addPage([612, 792]);
               p2.drawText('Second page background work', {x:48, y:730, size:20});
               const attachment = new Uint8Array(512 * 1024);
-              for (let i = 0; i < attachment.length; i++) attachment[i] = (i * 31 + 17) % 251;
+              let entropy = 0x9e3779b9;
+              for (let i = 0; i < attachment.length; i++) {
+                entropy ^= entropy << 13;
+                entropy ^= entropy >>> 17;
+                entropy ^= entropy << 5;
+                attachment[i] = entropy & 0xff;
+              }
               await pdf.attach(attachment, 'deferred-payload.bin', {mimeType:'application/octet-stream'});
               const bytes = new Uint8Array(await pdf.save({useObjectStreams:false}));
               if (bytes.length <= 65536) throw new Error('Fixture is too small for range-read validation');
