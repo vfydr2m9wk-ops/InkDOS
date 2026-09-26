@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-0c8debd4844094472318';
+const CACHE_NAME='inkdos-v2.6.2-2d97d021b691817fbf98';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -141,7 +141,7 @@ const ASSET_HASHES={
   "./apps/presentations/engine/presentation-policy.js": "5dd58184b6b4265eb0b1b500f00167859c83c67880f56b483d4bb53a72225405",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
-  "./apps/presentations/index.html": "a0505ea26a62c70ea0fa8b64cd1c936f9b2a146b5e1f2fa4f35e08660a95faf1",
+  "./apps/presentations/index.html": "861c1143df1fa6910874b975ee4d00061b07c960f1a78ddb3372afcc2f44b8e2",
   "./apps/presentations/io/file-delivery.js": "3af202d0229e7beeae76b7d1a49e201bc8db97f9543beb01793b453795c2d31c",
   "./apps/presentations/io/ppt-legacy-reader.js": "71ed1b95ac152a4e911baeb1e23d1c27f6d9e57efc873d2e56946ff5773664a0",
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
@@ -165,7 +165,7 @@ const ASSET_HASHES={
   "./apps/presentations/ui/chrome-controller.js": "e49d31726ba6f65e441080e3421bf0aacf6bf25a964d0fa73cb52a1e85e7abea",
   "./apps/presentations/ui/command-controller.js": "4bf99883f7044270b4463bde6e5ca9c0cca21233a858494f658f019895acc58d",
   "./apps/presentations/ui/editing-controller.js": "ebd91ae5ac3452d816d7d76e920d3b1633db972491a3d932c3ac086ee8b732ca",
-  "./apps/presentations/ui/editor.css": "fce108e2642ba49dbd6624273cc2cc09e62d9102ee90410b7a6e3eca8da25dcb",
+  "./apps/presentations/ui/editor.css": "25dab34654a35c136ca6d79df458568133eeeddbb0306c1cbb0a85d29d8cf33c",
   "./apps/presentations/ui/ppt-p1-tools.js": "53e4962e345d21be18ce46f71e008c1d4e0ee641bc4ab63ee2dfcdbe68c140e0",
   "./apps/presentations/ui/ppt-p2-table-tools-ui.js": "6a046bcc3c826b1bd2be69d8a6ef48635272ccbe54210b8817634af53ec0077c",
   "./apps/presentations/ui/ppt-p2-tools.js": "b519a3f48c77ade3b11b12b866a84f6cbbd98b41abf80548e3a6b0796918f6d0",
