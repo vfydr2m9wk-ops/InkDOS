@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-c5ffb6289807f6b8de0d';
+const CACHE_NAME='inkdos-v2.6.2-41fc03a9fd8ef53daad7';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -92,7 +92,7 @@ const ASSET_HASHES={
   "./apps/pdf/features/page-tools/actions/move-page.js": "d405a0d288d910aa68429e47a4cc2e77eef75c58f3bb7b387c2aacc65676ff9b",
   "./apps/pdf/features/page-tools/actions/rotate-page.js": "c4f2c8f43eef7eb790c1bbb6dbe68cf5030276e2b90b795dfc9ee35e3d21eea1",
   "./apps/pdf/features/page-tools/actions/split-pdf.js": "1aba0877b819779d08af408da7a6977f43070f06828970a3748b147178d869da",
-  "./apps/pdf/features/page-tools/page-tools-runtime.js": "8c4c46d7cfbdb0e73831d83d1da19bdf0afeb963590ad30bae524cf32d1c4d42",
+  "./apps/pdf/features/page-tools/page-tools-runtime.js": "5bc57c4fec9e0d27ec06cd7292496c48731b8849fa4a485071f7c3fa0151eed1",
   "./apps/pdf/features/reader/reader-runtime.js": "76479a6b99fa39eeb2e2d2f7af1ab60dcff80dfa9c234f9c44622d39f3642b2d",
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
   "./apps/pdf/index.html": "d1e0fe8490d60c963f7303fce0f77af4dbf88ac4d83067493c9097d26041fdbf",
