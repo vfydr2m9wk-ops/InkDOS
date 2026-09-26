@@ -1,0 +1,166 @@
+{
+ "app": "documents",
+ "profile": "fs",
+ "log": [
+  {
+   "step": "open DOCX via start Open + picker",
+   "status": "PASS",
+   "detail": "chooser=True 0.44s title=audit.docx \u2014 Documents"
+  },
+  {
+   "step": "dirty after open",
+   "status": "PASS",
+   "detail": "False"
+  },
+  {
+   "step": "document panel (outline/navigation) opens",
+   "status": "PASS",
+   "detail": "Document Pages Outline Search Audit Heading One Plain paragraph with bold and italic text. Second Section \u2022Bullet A \u2022Bullet B A1 B2 Page 1"
+  },
+  {
+   "step": "type text into document",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "dirty indicator after edit",
+   "status": "PASS",
+   "detail": "True"
+  },
+  {
+   "step": "Bold toolbar on selection",
+   "status": "PASS",
+   "detail": "fontWeight=700"
+  },
+  {
+   "step": "Undo then Redo of bold",
+   "status": "PASS",
+   "detail": "afterUndo(sel)=400 afterRedo(sel)=400 EDITED-weight-after-redo=700"
+  },
+  {
+   "step": "zoom menu opens with options",
+   "status": "PASS",
+   "detail": "['125%', 'Page', 'Fit width', 'Fit page', '100%']"
+  },
+  {
+   "step": "zoom change applied",
+   "status": "PASS",
+   "detail": "chose 125% label=125%"
+  },
+  {
+   "step": "Insert table \u2192 Cancel leaves document unchanged",
+   "status": "PASS",
+   "detail": "native dialogs=[{'type': 'prompt', 'msg': 'Rows'}] tables 1->1"
+  },
+  {
+   "step": "Insert table \u2192 OK inserts table (uses native window.prompt)",
+   "status": "PASS",
+   "detail": "tables 1->2; dialogs=['prompt', 'prompt', 'prompt']"
+  },
+  {
+   "step": "Save copy panel \u2192 Cancel",
+   "status": "PASS",
+   "detail": "panel=Save a copy The original file is never overwritten. The next action uses the best file-delivery method available in this saved=0 dirty=True"
+  },
+  {
+   "step": "Save \u2192 system picker cancelled (AbortError)",
+   "status": "PASS",
+   "detail": "dirty=True modal=Save a copy The original file is never overwritten. The next action uses the best file-delivery method available in this host. Cancel Save copy"
+  },
+  {
+   "step": "Save \u2192 write error surfaced and doc stays dirty",
+   "status": "PASS",
+   "detail": "dirty=True modal=Document could not be opened The selected DOCX could not be written. File Copy of audit 2026-09-26T16-08-10.docx Engine Documents 2.0 private reader Close Choos status=Save copy could not be delivered\nPage 1 of 1 \u00b7 19 words \u00b7 137 characters"
+  },
+  {
+   "step": "Save copy \u2192 DOCX written, valid, contains edits",
+   "status": "PASS",
+   "detail": "{'name': 'Copy of audit 2026-09-26T16-08-14.docx', 'size': 37049} tables=1 bold_runs=['bold'] 3.04s"
+  },
+  {
+   "step": "dirty cleared after confirmed save",
+   "status": "PASS",
+   "detail": "False"
+  },
+  {
+   "step": "Reopen saved DOCX shows edits",
+   "status": "PASS",
+   "detail": "chooser=True title=doc_saved.docx \u2014 Documents"
+  },
+  {
+   "step": "Open while dirty \u2192 unsaved-changes guard shown",
+   "status": "PASS",
+   "detail": "Unsaved changes Save your current document before opening another document? Cancel Discard Save"
+  },
+  {
+   "step": "Guard \u2192 Cancel keeps document",
+   "status": "PASS",
+   "detail": "clicked=Cancel dirty=True"
+  },
+  {
+   "step": "Guard \u2192 Discard then open RTF",
+   "status": "PASS",
+   "detail": "title=audit.docx \u2014 Documents"
+  },
+  {
+   "step": "Open legacy DOC \u2192 content visible",
+   "status": "PASS",
+   "detail": "title=audit.doc \u2014 Documents"
+  },
+  {
+   "step": "Open invalid.docx \u2192 clear error, previous doc preserved",
+   "status": "PASS",
+   "detail": "modal=Document could not be opened DOCX ZIP end-of-central-directory not found File invalid.docx Engine Documents 2.0 private reader Close Choose another file status=Open failed \u2014 previous document preserved\nPage 1 of 1 \u00b7 18 words \u00b7 104 characters title=audit.doc \u2014 Documents"
+  },
+  {
+   "step": "Open empty.docx \u2192 clear error, previous doc preserved",
+   "status": "PASS",
+   "detail": "modal=Document could not be opened The selected document returned no readable bytes. File empty.docx Engine Documents 2.0 private reader Close Choose another file status=Open failed \u2014 previous document preserved\nPage 1 of 1 \u00b7 18 words \u00b7 104 characters title=audit.doc \u2014 Documents"
+  },
+  {
+   "step": "Open invalid.doc \u2192 clear error, previous doc preserved",
+   "status": "PASS",
+   "detail": "modal=Document could not be opened Invalid OLE compound file signature. File invalid.doc Engine Documents 2.0 private reader Close Choose another file status=Open failed \u2014 previous document preserved\nPage 1 of 1 \u00b7 18 words \u00b7 104 characters title=audit.doc \u2014 Documents"
+  },
+  {
+   "step": "App still usable after invalid files",
+   "status": "PASS",
+   "detail": "audit.doc \u2014 Documents"
+  },
+  {
+   "step": "New document",
+   "status": "PASS",
+   "detail": "Untitled.docx \u2014 Documents"
+  },
+  {
+   "step": "beforeunload guard when dirty",
+   "status": "PASS",
+   "detail": ""
+  }
+ ],
+ "errors": [
+  "console:InkDOSDocumentsDeliveryError: The selected DOCX could not be written.\n    at fail (http://127.0.0.1:18431/InkDOS/apps/documents/io/file-delivery.js:5:43)\n    at viaPicker (http://127.0.0.1:18431/InkDOS/apps/documents/io/file-delivery.js:11:515)\n    at async deliverOnce (http://127.0.0.1:18431/InkDOS",
+  "console:Error: DOCX ZIP end-of-central-directory not found\n    at fail (http://127.0.0.1:18431/InkDOS/apps/documents/io/package-reader.js:10:37)\n    at locateEocd (http://127.0.0.1:18431/InkDOS/apps/documents/io/package-reader.js:34:211)\n    at Object.open (http://127.0.0.1:18431/InkDOS/apps/documents/io/pa",
+  "console:Error: The selected document returned no readable bytes.\n    at r.onload (http://127.0.0.1:18431/InkDOS/apps/documents/io/file-open-controller.js:10:494)",
+  "console:Error: Invalid OLE compound file signature.\n    at new CompoundReader (http://127.0.0.1:18431/InkDOS/apps/documents/io/legacy-doc-reader.js:17:333)\n    at parseCompound (http://127.0.0.1:18431/InkDOS/apps/documents/io/legacy-doc-reader.js:27:38)\n    at Object.parse (http://127.0.0.1:18431/InkDOS/app"
+ ],
+ "dialogs": [
+  {
+   "type": "prompt",
+   "msg": "Rows"
+  },
+  {
+   "type": "prompt",
+   "msg": "Rows"
+  },
+  {
+   "type": "prompt",
+   "msg": "Columns"
+  },
+  {
+   "type": "beforeunload",
+   "msg": ""
+  }
+ ],
+ "downloads": []
+}

@@ -1,0 +1,81 @@
+{
+ "documents": {
+  "afterHomeClickUrl": "apps/documents/index.html?v=2.6.2&suite=1",
+  "stayed": true,
+  "nativeDialogs": [],
+  "leaveGuard": "Unsaved changes Save your current document before leaving Documents? Cancel Discard Save",
+  "afterDiscardUrl": "index.html",
+  "reentry": {
+   "title": "Untitled.docx \u2014 Documents",
+   "startVisible": true
+  }
+ },
+ "spreadsheets": {
+  "afterHomeClickUrl": "apps/spreadsheets/index.html?v=2.6.2&suite=1",
+  "stayed": true,
+  "nativeDialogs": [],
+  "leaveGuard": "Unsaved changes Save your current workbook before leaving Spreadsheets? Cancel Discard Save",
+  "afterDiscardUrl": "index.html",
+  "reentry": {
+   "title": "Untitled.xlsx \u2014 Spreadsheets",
+   "startVisible": true
+  }
+ },
+ "presentations": {
+  "afterHomeClickUrl": "apps/presentations/index.html?v=2.6.2&suite=1",
+  "stayed": true,
+  "nativeDialogs": [],
+  "leaveGuard": "Unsaved changes Save your current presentation before leaving Presentations? CancelDiscardSave",
+  "afterDiscardUrl": "index.html",
+  "reentry": {
+   "title": "Presentations \u2014 InkDOS 2.0",
+   "startVisible": true
+  }
+ },
+ "txt": {
+  "afterHomeClickUrl": "apps/txt/index.html?v=2.6.2&suite=1",
+  "stayed": true,
+  "nativeDialogs": [],
+  "leaveGuard": "Unsaved text Save your current text before leaving Plain Text? Cancel Save Discard changes",
+  "afterDiscardUrl": "index.html",
+  "reentry": {
+   "title": "Untitled.txt \u2014 InkDOS Plain Text",
+   "startVisible": true
+  }
+ },
+ "epub": {
+  "afterHomeClickUrl": "index.html",
+  "stayed": false,
+  "nativeDialogs": [],
+  "leaveGuard": null,
+  "reentry": {
+   "title": "EPUB Reader \u2014 InkDOS 2.0",
+   "startVisible": true
+  }
+ },
+ "pdf": {
+  "afterHomeClickUrl": "apps/pdf/index.html?v=2.6.2&suite=1",
+  "stayed": true,
+  "nativeDialogs": [],
+  "leaveGuard": "Unsaved changes Save your current PDF edits before leaving PDF? Cancel Discard Save",
+  "afterDiscardUrl": "index.html",
+  "reentry": {
+   "title": "PDF Workspace \u2014 InkDOS 2.0",
+   "startVisible": true
+  }
+ },
+ "theme": {
+  "documents-first": "dark",
+  "spreadsheets-first": "dark",
+  "presentations-first": "dark",
+  "txt-first": "dark",
+  "epub-first": "dark",
+  "pdf-first": "dark",
+  "documents-afterHomeLight": "dark",
+  "spreadsheets-afterHomeLight": "dark",
+  "presentations-afterHomeLight": "dark",
+  "txt-afterHomeLight": "dark",
+  "epub-afterHomeLight": "dark",
+  "pdf-afterHomeLight": "dark"
+ }
+}
