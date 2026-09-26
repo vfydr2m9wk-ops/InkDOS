@@ -43,6 +43,11 @@ def main():
             page.goto(BASE + "/apps/presentations/index.html", wait_until="load")
             page.wait_for_timeout(200)
 
+            icon = page.locator(".presentation-title .presentations-icon")
+            assert icon.count() == 1 and icon.is_visible()
+            assert icon.locator("use").get_attribute("href") == "#inkdosPresentationsIcon"
+            assert page.locator(".presentation-title img.presentations-icon").count() == 0
+
             bg = page.locator("#pptP1Background")
             assert bg.count() == 1
             assert bg.is_disabled()
@@ -70,6 +75,24 @@ def main():
             assert not bg.is_disabled()
             assert bg.evaluate("el => !!el.closest('.ppt-p1-color-control')")
             assert bg.evaluate("el => el.parentElement?.classList.contains('ppt-p1-color-control')")
+            # WebKit must not paint native color-input chrome over the bucket icon.
+            metrics = bg.evaluate("""el => {
+                const s=getComputedStyle(el), r=el.getBoundingClientRect();
+                return {width:r.width,height:r.height,opacity:s.opacity,pointerEvents:s.pointerEvents,appearance:s.appearance,webkitAppearance:s.webkitAppearance};
+            }""")
+            assert metrics["width"] <= 1.1 and metrics["height"] <= 1.1, metrics
+            assert float(metrics["opacity"]) == 0, metrics
+            assert metrics["pointerEvents"] == "none", metrics
+            # The visible label remains the hit target and still activates the
+            # visually-hidden color input through native label semantics.
+            forwarded = bg.evaluate("""el => {
+                let clicks=0;
+                const handler=()=>{clicks+=1};
+                el.addEventListener('click',handler,{once:true});
+                el.parentElement.click();
+                return clicks;
+            }""")
+            assert forwarded == 1, forwarded
 
             zoom.click(timeout=2500)
             page.wait_for_selector("#zoomPopover:not([hidden])")
