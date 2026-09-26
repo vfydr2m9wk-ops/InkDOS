@@ -70,6 +70,8 @@ jobs:
         run: python tests/test_ppt_p1_objects_roundtrip.py
       - name: Run PDF toolbar hitbox regression
         run: python tests/test_pdf_toolbar_hitbox_browser.py
+      - name: Run PDF first-page-first regression
+        run: python tests/test_pdf_first_page_first_browser.py
       - name: Run behavioral stability gate
         env:
           BROWSER: chromium
@@ -125,6 +127,10 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: python tests/test_pptx_security_browser.py
+      - name: Verify PDF first-page-first ordering
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/test_pdf_first_page_first_browser.py
       - name: Benchmark numeric and visual workspace performance
         continue-on-error: true
         env:

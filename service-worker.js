@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-9ff7d205fcb2794522a4';
+const CACHE_NAME='inkdos-v2.6.2-41fc03a9fd8ef53daad7';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -83,7 +83,7 @@ const ASSET_HASHES={
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
-  "./apps/pdf/engine/pdf-session.js": "4dc752fc757d0f3ae43eae604ba7d4e1123468f688acc657b2f36879be33abf0",
+  "./apps/pdf/engine/pdf-session.js": "89395397bed46650417033b2eb02abacc37161e020e2c8a6fb544fd58e9f05f8",
   "./apps/pdf/extensions/review-annotations.css": "30440a1a6990354847b937ebe65dfa5eb34763bf19b9678dc497a3d2dc0f45ce",
   "./apps/pdf/extensions/review-annotations.js": "c9fb3b3ea50637563b2297170deea53c534d332162061e6712b936cb4f28d031",
   "./apps/pdf/features/page-tools/actions/delete-page.js": "65a39c83d7c3905fd2009f7c5641a8b02c92597c4f085ea9a5db9dc197f0e299",
@@ -92,15 +92,15 @@ const ASSET_HASHES={
   "./apps/pdf/features/page-tools/actions/move-page.js": "d405a0d288d910aa68429e47a4cc2e77eef75c58f3bb7b387c2aacc65676ff9b",
   "./apps/pdf/features/page-tools/actions/rotate-page.js": "c4f2c8f43eef7eb790c1bbb6dbe68cf5030276e2b90b795dfc9ee35e3d21eea1",
   "./apps/pdf/features/page-tools/actions/split-pdf.js": "1aba0877b819779d08af408da7a6977f43070f06828970a3748b147178d869da",
-  "./apps/pdf/features/page-tools/page-tools-runtime.js": "8c4c46d7cfbdb0e73831d83d1da19bdf0afeb963590ad30bae524cf32d1c4d42",
-  "./apps/pdf/features/reader/reader-runtime.js": "389e94a271bd5a1b7620641ad605bcb6ab0bae0ea87d680917b0970b16ab76f3",
+  "./apps/pdf/features/page-tools/page-tools-runtime.js": "5bc57c4fec9e0d27ec06cd7292496c48731b8849fa4a485071f7c3fa0151eed1",
+  "./apps/pdf/features/reader/reader-runtime.js": "76479a6b99fa39eeb2e2d2f7af1ab60dcff80dfa9c234f9c44622d39f3642b2d",
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
   "./apps/pdf/index.html": "d1e0fe8490d60c963f7303fce0f77af4dbf88ac4d83067493c9097d26041fdbf",
   "./apps/pdf/io/file-delivery.js": "544eb46be2c7577fc78a5ebe32ba305726e50281a9afb612f4aaf667f33b1229",
-  "./apps/pdf/io/file-open-controller.js": "5e43d54215eaeebafff06a217e223787a10f9018f7a95fa2e94c2d6eae196253",
+  "./apps/pdf/io/file-open-controller.js": "99beeba8199ec70d92b80d83936da012c6cc811eb6501b19daa9e566b010de57",
   "./apps/pdf/io/pdf-worker.js": "12f6b339e2926f940af1d9cf327ae7e0fb746a718b60b898f70f1d7eacc907a4",
   "./apps/pdf/io/save-adapter.js": "3d092d3e30a1fae8ff7f79b311e5fe370b39a80781da7f286eb1d13f9c4bb799",
-  "./apps/pdf/io/save-controller.js": "e18ecfd87a8fd282a555222710fc651e093db12c34fe15559242b436966f365e",
+  "./apps/pdf/io/save-controller.js": "d5234ceeff6a9d0ae7aa497a68cbecf9f3f83e0500efcc94113f164edbb3d9dd",
   "./apps/pdf/manifest.webmanifest": "358cfbacc08a83d4c52cd7086d15180fdbd7998edef925a36f171ffded432a7d",
   "./apps/pdf/modes/mode-controller.js": "5696b07a8ece0a04b56e62d765ebff7a8ba4436f2ff56a056abdc8c63f648a9d",
   "./apps/pdf/pdfjs/editor-adapter.js": "f22f90db98c3b656b07ccb6cd81ddc2f9a51a3084aebd616e0abaa26e27e54d2",
