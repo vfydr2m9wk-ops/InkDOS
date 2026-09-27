@@ -1,9 +1,7 @@
 name: InkDOS exhaustive button audit
 
 on:
-  push:
-    branches:
-      - 'release/*-candidate'
+  workflow_dispatch:
 
 permissions:
   contents: read
