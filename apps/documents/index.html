@@ -52,25 +52,25 @@
     <button class="fmt-btn" data-cmd="bold" aria-pressed="false" title="Bold" aria-label="Bold"><b>B</b></button>
     <button class="fmt-btn" data-cmd="italic" aria-pressed="false" title="Italic" aria-label="Italic"><i>I</i></button>
     <button class="fmt-btn" data-cmd="underline" aria-pressed="false" title="Underline" aria-label="Underline"><u>U</u></button>
-    <button id="d1FormatBtn" class="fmt-btn" type="button" title="Text color and highlight" aria-label="Text color and highlight">Aa</button>
+    <button id="d1FormatBtn" class="fmt-btn icon-only" type="button" title="Text color and highlight" aria-label="Text color and highlight"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 16 6-12 6 12"/><path d="M8.5 11h7"/><path d="M4 20h16"/></svg></button>
     <button id="hyperlinkBtn" class="fmt-btn icon-only" type="button" title="Insert or edit hyperlink" aria-label="Insert or edit hyperlink"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/></svg></button>
     <button id="commentBtn" class="fmt-btn icon-only" type="button" title="Comment on selected text" aria-label="Comment"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v11H9l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></button>
-    <label class="fmt-btn file-label icon-only" for="imageInput" title="Insert image" aria-label="Insert image">▧</label>
+    <label class="fmt-btn file-label icon-only" for="imageInput" title="Insert image" aria-label="Insert image"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="9.5" r="1.5"/><path d="m20.5 16-5-5-8.5 8.5"/></svg></label>
     <input id="imageInput" type="file" accept="image/png,image/jpeg,image/gif" hidden>
     <span class="separator"></span>
     <select id="alignmentSelect" title="Alignment"><option value="" selected>Align</option><option value="justifyLeft">Left</option><option value="justifyCenter">Center</option><option value="justifyRight">Right</option><option value="justifyFull">Justify</option></select>
     <select id="lineSpacing" title="Line spacing"><option value="1">1.0</option><option value="1.15" selected>1.15</option><option value="1.5">1.5</option><option value="2">2.0</option></select>
-    <button id="checklistBtn" class="fmt-btn" type="button" title="Checklist" aria-label="Checklist">☐≡</button>
-    <button class="fmt-btn" data-cmd="insertUnorderedList" title="Bulleted list">•≡</button>
-    <button class="fmt-btn" data-cmd="insertOrderedList" title="Numbered list">1≡</button>
-    <button class="fmt-btn" data-cmd="outdent" title="Decrease indent">⇤</button>
-    <button class="fmt-btn" data-cmd="indent" title="Increase indent">⇥</button>
-    <button id="alphaList" class="fmt-btn" title="Alphabetic list">A≡</button>
+    <button id="checklistBtn" class="fmt-btn icon-only" type="button" title="Checklist" aria-label="Checklist"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="5.5" height="5.5" rx="1"/><rect x="3.5" y="14.5" width="5.5" height="5.5" rx="1"/><path d="m4.8 17.3 1.3 1.3 2-2.6"/><path d="M12 6.8h8.5M12 17.2h8.5"/></svg></button>
+    <button class="fmt-btn icon-only" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></button>
+    <button class="fmt-btn icon-only" data-cmd="insertOrderedList" title="Numbered list" aria-label="Numbered list"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 4.5h1.5V9"/><path d="M4 9h3"/><path d="M4 14.5a1.5 1.5 0 0 1 3 0c0 1.3-3 2-3 4h3"/></svg></button>
+    <button class="fmt-btn icon-only" data-cmd="outdent" title="Decrease indent" aria-label="Decrease indent"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M11 10h9M11 14h9M4 19h16"/><path d="M8 9.5 5.5 12 8 14.5"/></svg></button>
+    <button class="fmt-btn icon-only" data-cmd="indent" title="Increase indent" aria-label="Increase indent"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M11 10h9M11 14h9M4 19h16"/><path d="m5 9.5 2.5 2.5L5 14.5"/></svg></button>
+    <button id="alphaList" class="fmt-btn icon-only" title="Alphabetic list" aria-label="Alphabetic list"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6h9M11 12h9M11 18h9"/><path d="m3.5 9.5 2-6 2 6"/><path d="M4.2 7.7h2.6"/><path d="M4 13.5h2a1.3 1.3 0 0 1 0 2.6H4zm0 2.6h2.4a1.45 1.45 0 0 1 0 2.9H4z"/></svg></button>
     <button id="clearFormattingBtn" class="fmt-btn icon-only" type="button" title="Clear formatting" aria-label="Clear formatting"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 7-7"/><path d="m14 4 6 6-8 8H6l-2-2 10-12Z"/><path d="M13 20h7"/></svg></button>
     <span class="separator"></span>
-    <button id="tableBtn" class="fmt-btn" title="Insert table">▦</button>
-    <button id="rowBtn" class="fmt-btn" title="Add row">▦↧</button>
-    <button id="colBtn" class="fmt-btn" title="Add column">▦↦</button>
+    <button id="tableBtn" class="fmt-btn icon-only" title="Insert table" aria-label="Insert table"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 4.5v15M14.5 4.5v15"/></svg></button>
+    <button id="rowBtn" class="fmt-btn icon-only" title="Add row" aria-label="Add row"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="11" rx="2"/><path d="M3.5 9h17M9 3.5v11M15 3.5v11"/><path d="M12 17v5M9.5 19.5h5"/></svg></button>
+    <button id="colBtn" class="fmt-btn icon-only" title="Add column" aria-label="Add column"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="11" height="17" rx="2"/><path d="M3.5 9h11M3.5 15h11M9 3.5v17"/><path d="M19.5 9.5v5M17 12h5"/></svg></button>
     <span class="toolbar-end-spacer" aria-hidden="true"></span>
   </div>
 
