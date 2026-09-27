@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-ca9dd03a447e42e36f2b';
+const CACHE_NAME='inkdos-v2.6.2-3f59115b8e9ccd686b5c';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -159,7 +159,7 @@ const ASSET_HASHES={
   "./apps/presentations/runtime/platform/content-viewport-adapter.js": "210541319a346f9ffb854f876e70ba2768f9540aa999aee52b82a4162240ff4c",
   "./apps/presentations/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/presentations/runtime/tokens/base.css": "93712121af73f0be2c9f2a357723f8c967826984463bbcb93f322ff330d241a6",
-  "./apps/presentations/state/appearance.js": "b06315f74033126101eae34a399001070b50ced9df8466e8c9db66f32e3f65a4",
+  "./apps/presentations/state/appearance.js": "1b6f81ee203b92b0ec7658de201685e733bcbf7a108b13a58034994f3c8a0e97",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
   "./apps/presentations/ui/chrome-controller.js": "1d25be7fd41a1b2e65853334afb2cbb8eb4dafab5708ef1bd96c0d499ab4dfb2",
