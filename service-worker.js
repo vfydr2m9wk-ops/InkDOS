@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-7c02b3459b0de58a494c';
+const CACHE_NAME='inkdos-v2.6.2-1d421ecb1d52df166415';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -226,10 +226,10 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "eedd540e9e7adf24284be7d1aafe75977bc4c239801e237d9157946791bfe25a",
+  "./apps/txt/index.html": "649795d3419799341c401cdfcd3f20b926613249e124da484da5f35827977019",
   "./apps/txt/io/txt-file-controller.js": "a743bc1c5adca8818438285934bb2939868730efb8210c830205d15a8f65d3e6",
   "./apps/txt/manifest.webmanifest": "7c4a9ad09b7ce251c5820ee1fe314a9498648c009d4030823a4dd0497eff0a86",
-  "./apps/txt/page.template.html": "48b53d973350b074341a17ae9287b3aa942ab3b241eaa5c751227f2d8604053e",
+  "./apps/txt/page.template.html": "5a84a66e1a9dfec5732c5fccd34e1d7257dcd14fae6410c74e80215dc610ad1c",
   "./apps/txt/runtime/contracts/document-session.js": "09b4b7d83d82262e1044830afb62a43480b44d7de53e6d9e26f73a4107b4e049",
   "./apps/txt/runtime/frame/app-frame.css": "2af5ae449e9c3109e1c171383b57de1cdc063b55922c5b9396e69375f9579717",
   "./apps/txt/runtime/frame/app-frame.js": "a9f1f64ef5f2aac0da5760fdebb11f89e4b4fb172a0994e92e63a22af7dae606",
@@ -240,10 +240,10 @@ const ASSET_HASHES={
   "./apps/txt/runtime/tokens/base.css": "3ca9310a61d220437a5748fb44f93476397c44a34b067506e8df0cf76b7f7fd7",
   "./apps/txt/state/appearance.js": "d368ebe8c02b0832c17e919e6e6e800963a4138b169d220a6193ad85080f203c",
   "./apps/txt/state/txt-state.js": "dad48ffca1278c19465c4a2d3a4b561e2efce5cb01257c3fe5270b2bd4ad23de",
-  "./apps/txt/styles.css": "dd3417a2f8b2e84b4d044b5aeac4f0215a737de1e5c1d241f11d7f72c578f330",
+  "./apps/txt/styles.css": "57e5d42639b58bc30fa1a532991cd107ae54c1afdb89770458b05413b4af0fd7",
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
-  "./apps/txt/ui/txt-controls.js": "5b2ba4e4c3d35c2773bc8829cbb9db98f90d20a040c8aaceda6b1374a6214ce9",
+  "./apps/txt/ui/txt-controls.js": "3a024e4aa49e0038004f4fa1277991c729927e9c595f7f4b7b2ed8286ad65a8f",
   "./assets/home.css": "7fa7dce81b14f316a528f578c2b5708704b9b0fcfca45d23f231abfd470a60ce",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./assets/icons/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
