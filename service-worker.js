@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-bad360dc545c59f5e265';
+const CACHE_NAME='inkdos-v2.6.2-c268b4cb8182737c8cd4';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -226,8 +226,8 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "0255a0cbf12b34172c9f6b088be72fa6784b57b3499b7cbdc65057418c99d56a",
-  "./apps/txt/io/txt-file-controller.js": "0858729e00a851672a4d84ad1bd872c67a1586941b9ce44dfc1dd5d54314963c",
+  "./apps/txt/index.html": "33608a6e635f7247af090af5d82ee967951993db698f4cf1319be5d99117af9c",
+  "./apps/txt/io/txt-file-controller.js": "2703a4a355591de4fb7f941cf21800450aa56505ca11fd7c02059837d3344f41",
   "./apps/txt/manifest.webmanifest": "7c4a9ad09b7ce251c5820ee1fe314a9498648c009d4030823a4dd0497eff0a86",
   "./apps/txt/page.template.html": "48b53d973350b074341a17ae9287b3aa942ab3b241eaa5c751227f2d8604053e",
   "./apps/txt/runtime/contracts/document-session.js": "09b4b7d83d82262e1044830afb62a43480b44d7de53e6d9e26f73a4107b4e049",
@@ -240,7 +240,7 @@ const ASSET_HASHES={
   "./apps/txt/runtime/tokens/base.css": "3ca9310a61d220437a5748fb44f93476397c44a34b067506e8df0cf76b7f7fd7",
   "./apps/txt/state/appearance.js": "d368ebe8c02b0832c17e919e6e6e800963a4138b169d220a6193ad85080f203c",
   "./apps/txt/state/txt-state.js": "dad48ffca1278c19465c4a2d3a4b561e2efce5cb01257c3fe5270b2bd4ad23de",
-  "./apps/txt/styles.css": "6b97e6de3157d29ea970e5b2082de347bfeba4691b9ecbcb9120820664a954df",
+  "./apps/txt/styles.css": "879fa09fc672f0705d0476b673cfe074ea1534bcd1fd05ca8b2205dc6d097dea",
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "5b2ba4e4c3d35c2773bc8829cbb9db98f90d20a040c8aaceda6b1374a6214ce9",
@@ -256,13 +256,13 @@ const ASSET_HASHES={
   "./index.html": "105d0e7e3f85c7941b36b5a41755b8aef4501517c189005131b7ad44ccba839b",
   "./manifest.webmanifest": "93bfa1f1979029c59851c18d5d241b658b816b940c684b38239f90eb1ad8eebe",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "80537c2d6d214b0b97d3e8b5ae9cf6696fcee6273f407d9f9228016bcf992fcd",
-  "./shared/localization/locales/es.js": "ea764a578ef3bd9f8a38e129f9fa76173e2357324219b84dad3c464b093ccc4b",
-  "./shared/localization/locales/fr.js": "99c095d5d1cb7d1b332798686cafeddf19508cb37495afe49ab7164b08726ee7",
-  "./shared/localization/locales/ja.js": "89cc5ca6058321ff25a4647c69350b5ce0d371dbc4fcab39f72a0543b17ef598",
-  "./shared/localization/locales/pt-BR.js": "4c45aea0ee91e5bf496e6685b41b362310bf53160154c08f29f46c17e7156bbf",
-  "./shared/localization/locales/ru.js": "9c9130eb6c073e21319c2effde79a050725cce5cd92618d0c77739f5991f4f85",
-  "./shared/localization/locales/zh-CN.js": "82f1b1a58fa5930e72d362f5b0431fc5a0e75fa6e7b882c906112d4ceec34f3a",
+  "./shared/localization/locales/de.js": "dd7122d4042b927aafe665513d89008d668650636da7836aecfeb4282ad5e159",
+  "./shared/localization/locales/es.js": "54fd5a391549147edf137f9607ceeea092ee39d83e1095700a186f8075307e59",
+  "./shared/localization/locales/fr.js": "8b073c1d14b2c3ff38c6f6d3901c1780404c6947ba86e0ffb7c9c553533a7c24",
+  "./shared/localization/locales/ja.js": "cbf6a499392e133bb31789420a1315bb007192bd0eb0d1ca4dbedf7c31db0835",
+  "./shared/localization/locales/pt-BR.js": "b80574724f3f2ccb96d3f0f6099b295d6b522144705e759d8a4f6152d6cb3c4d",
+  "./shared/localization/locales/ru.js": "55ca7316d845a146bb1dc3e5d0563cd3922036d536f859fc5a53fe8c7417df2c",
+  "./shared/localization/locales/zh-CN.js": "27c1dcece50793b39cf8eb9de10eefa97ef6a8c04d57b96dac9561d6b38842d6",
   "./shared/localization/localization.css": "d756c86f694f6a98e444844a63cb85f5694e4363f426fb530c8669687d2dc17c",
   "./shared/localization/settings-strip.js": "8a5d615490b5dbd872b86899b58210c5f14c200b1d13d8ca44516471b601f24e",
   "./shared/localization/ui-localization.js": "e89c2531c9f0a9bc7831c6ca96322ec26a5df2763ec6a5905f4ba557a26b0172",

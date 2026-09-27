@@ -66,7 +66,7 @@ html[data-theme="dark"]{
 
 html[data-theme="dark"] #editor::selection{background:#36577f}
 .txt-recovery-offer{margin-top:18px;padding-top:16px;border-top:1px solid var(--txt-line)}
-.txt-recovery-offer p{margin:0 0 12px;color:var(--txt-text,inherit)}
+.txt-recovery-offer p{margin:0 0 12px;color:var(--txt-text,inherit)}.txt-recovery-offer strong{display:block;margin-bottom:4px}.txt-recovery-detail{display:block;color:var(--txt-muted);font-size:.92em;overflow-wrap:anywhere}
 .txt-recovery-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
 .txt-recovery-actions button{min-height:44px;border:1px solid var(--txt-line);border-radius:11px;background:var(--txt-surface-soft);padding:0 16px}
 .txt-recovery-actions .primary{background:var(--txt-accent-strong);color:#fff;border-color:var(--txt-accent-strong)}
