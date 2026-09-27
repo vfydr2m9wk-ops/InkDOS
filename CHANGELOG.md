@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.1 — 2026-09-27
+
+- Toolbar order aligned with Google Docs/Sheets/Slides, Word and LibreOffice conventions:
+  - Documents: Alphabetic list sits with the other list types; the Document panel toggle moves to the view group at the end.
+  - Spreadsheets: Sort ascending/descending precede Filter.
+  - Presentations: Table joins the insert group (text box, image, shape, line); the slide-thumbnails toggle sits beside Notes.
+- Maintenance: legacy release-candidate workflow retired, button audit and workflow-run pruning available on demand.
+- No editor, file engine, storage or command behaviour changes are part of this release.
+
 ## 2.7.0 — 2026-09-27
 
 - Unify the visual language of all six workspaces around one documented system (`docs/visual-system.md`): 44px frame and toolbar rows, 28px controls, 3px spacing, 10px radius, 18px stroke icons and a shared canonical icon set, each app keeping its own copy and accent colour.

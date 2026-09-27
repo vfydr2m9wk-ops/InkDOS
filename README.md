@@ -1,8 +1,8 @@
-# InkDOS 2.7.0
+# InkDOS 2.7.1
 
 **Official GitHub repository:** [InkDOS by vfydr2m9wk-ops](https://github.com/vfydr2m9wk-ops/InkDOS) — canonical source repository for InkDOS.
 
-> **Current source release identity:** InkDOS 2.7.0 (stable). `v2.6.2` remains preserved as the last 2.6 beta checkpoint and `v2.6.1` as the previous stable fallback.
+> **Current source release identity:** InkDOS 2.7.1 (stable). `v2.7.0` remains the first 2.7 stable release, `v2.6.2` remains preserved as the last 2.6 beta checkpoint and `v2.6.1` as the previous stable fallback.
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
 **Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
@@ -27,7 +27,7 @@ Support is intentionally narrower than Microsoft Office, LibreOffice or Acrobat.
 
 ## Release baseline
 
-InkDOS 2.7.0 is the current stable source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage, all built from the matching immutable `v2.7.0` tag. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases. Pre-publication physical Windows upgrade validation is no longer a release gate; the evidence collector remains available as an optional manual tool.
+InkDOS 2.7.1 is the current stable source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage, all built from the matching immutable `v2.7.1` tag. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases. Pre-publication physical Windows upgrade validation is no longer a release gate; the evidence collector remains available as an optional manual tool.
 
 A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.2` tag remains the preserved beta checkpoint and `v2.6.1` remains the previous stable fallback.
 
