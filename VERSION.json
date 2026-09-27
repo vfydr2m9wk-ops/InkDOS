@@ -1,9 +1,9 @@
 {
   "name": "InkDOS",
   "displayName": "InkDOS",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "releaseChannel": "stable",
-  "releaseName": "InkDOS 2.7.0",
+  "releaseName": "InkDOS 2.7.1",
   "date": "2026-09-27",
   "repository": "https://github.com/vfydr2m9wk-ops/InkDOS",
   "demo": "https://vfydr2m9wk-ops.github.io/InkDOS/",
