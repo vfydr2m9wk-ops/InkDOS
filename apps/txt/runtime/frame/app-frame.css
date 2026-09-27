@@ -84,3 +84,9 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 /* T8 density/responsive guard. */
 .toolstrip{overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .toolstrip .tool-btn,.toolstrip select{flex:0 0 auto;min-height:var(--compact-control,var(--control))}
+
+/* InkDOS visual system (docs/visual-system.md): desktop frame and toolbar metrics match Documents. */
+:root[data-ui-density="desktop"] .framebar{min-height:44px;height:44px;padding-top:2px;padding-bottom:2px}
+:root[data-ui-density="desktop"] .tool-btn{width:28px;height:28px;min-width:28px;flex-basis:28px;padding:0;border-radius:10px}
+.tool-btn svg{width:18px;height:18px;stroke-width:1.75}
+.start-card .start-icon{margin-left:auto;margin-right:auto}
