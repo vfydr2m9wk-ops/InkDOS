@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-fe5f970cad9f0c8db084';
+const CACHE_NAME='inkdos-v2.6.2-c18b51808720935af6ee';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -97,7 +97,7 @@ const ASSET_HASHES={
   "./apps/pdf/features/page-tools/page-tools-runtime.js": "a0ef1b6d6e1fe88f00083828ee5416a7d8dbbb7c7cdd366056825ebc983653b6",
   "./apps/pdf/features/reader/reader-runtime.js": "671d08a3dd10d253083234a6ad8ab9b5e576a45e802baacbd8bd9789efecaf0f",
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
-  "./apps/pdf/index.html": "8573f8d0d71b7ede36a4d1178413d0c6eb493e4ad0d2851ce6b3f48040703fff",
+  "./apps/pdf/index.html": "65dff9419a190f31872f7443970a2c60480593a2a2c641213afb37e1dce65ef3",
   "./apps/pdf/io/file-delivery.js": "544eb46be2c7577fc78a5ebe32ba305726e50281a9afb612f4aaf667f33b1229",
   "./apps/pdf/io/file-open-controller.js": "db2db38a1995ef4a212264d495240eb98f5358d8bf59bf289411f104c530c10f",
   "./apps/pdf/io/pdf-worker.js": "12f6b339e2926f940af1d9cf327ae7e0fb746a718b60b898f70f1d7eacc907a4",
@@ -128,7 +128,7 @@ const ASSET_HASHES={
   "./apps/pdf/ui/pdf-toolbar.css": "c4c83ef8f7e1ee6120485995ffe3f487eb0c00fcd75d574186bfc19492ed871d",
   "./apps/pdf/ui/reader-tools.js": "d4615477fad92be910bfc2aefc783376b90a47e633691707768215ae6c6d4600",
   "./apps/pdf/ui/toolbar-rail.js": "48d99ec35f449e68099bdef83ec149e3e039a4b4ede7b068bec3204228e86374",
-  "./apps/pdf/ui/visual-system.css": "ff1702441d314b2fd4cabe7b52f19081eaf2de46746f085ccf4f2e42461b7fcf",
+  "./apps/pdf/ui/visual-system.css": "f63a9958973b84a0b31b8c3262cc508fabe21014738e1f7326929f3c5e29990b",
   "./apps/pdf/ui/zoom-controls.js": "60d9774fcb96279b4f41aa5dc6db98054f510796e5a2f2f040c7c753b5a3df0b",
   "./apps/pdf/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/pdf/vendor/pdf-lib/pdf-lib.min.js": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f",

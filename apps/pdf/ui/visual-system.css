@@ -9,3 +9,16 @@
 #editbar .tool-divider{height:24px}
 #editbar .edit-mode-btn{width:var(--control);min-width:var(--control);padding:0;gap:0}
 #editbar .edit-mode-btn #editModeLabel{display:inline!important;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Round 2 (generated): id-level toolbar metrics, compact zoom/page/property pickers. */
+#editbar,#editbar .tool-group{gap:3px!important}
+#editbar .tool-btn{height:28px!important;min-height:28px!important;border-radius:10px}
+#editbar .tool-btn.icon-only,#editbar .tool-btn.edit-mode-btn{width:28px!important;min-width:28px!important;padding:0!important}
+#editbar .tool-btn svg{width:18px!important;height:18px!important;stroke-width:1.75}
+#editbar #zoomSelect{-webkit-appearance:none;appearance:none;width:60px!important;min-width:60px!important;max-width:60px!important;height:28px!important;padding:0 4px!important;text-align:center;text-align-last:center;background-image:none;border-radius:10px;font-size:14px;cursor:pointer}
+#editbar #textSize,#editbar #penThickness,#editbar #penOpacity{-webkit-appearance:none;appearance:none;width:52px!important;min-width:52px!important;max-width:52px!important;height:28px!important;padding:0 4px!important;text-align:center;text-align-last:center;background-image:none;border-radius:10px;font-size:14px;cursor:pointer}
+#editbar #pageInput{width:32px!important;min-width:32px!important;height:28px!important;padding:0 2px!important;text-align:center;border-radius:10px;font-size:14px}
+#editbar #pageCount{font-size:12px;padding:0 2px}
+#editbar .property-color{width:28px!important;min-width:28px!important;height:28px!important;border-radius:10px;padding:3px!important}
+#editbar .property-label{font-size:11px}
+#editbar .tool-btn{width:28px!important;min-width:28px!important;padding:0!important;gap:0!important}
