@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-2466e547c3ba289bb6c2';
+const CACHE_NAME='inkdos-v2.6.2-6516a8f722099241759c';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -202,7 +202,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
   "./apps/spreadsheets/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
-  "./apps/spreadsheets/state/appearance.js": "07ad1719ed49ac82ded6db1286bc8abd235ee583b1869371aa6e40f307d707ce",
+  "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "4045aba17a6d61bf092f5eb892f17971f336848d09c691cd19bcdbbd0b997cdb",
   "./apps/spreadsheets/ui/editor-controller.js": "eeead0be604056b258b53abcf72343f28a8603c260f0360170af2e57e355e210",
   "./apps/spreadsheets/ui/editor-toolbar.css": "863bf75dc43cc794b8f43d0d23d4eef497540a3a0eee8c381f501d82bc660c21",
