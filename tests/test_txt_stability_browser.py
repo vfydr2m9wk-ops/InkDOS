@@ -57,6 +57,8 @@ def main() -> None:
                     const input=document.getElementById('fileInput');
                     globalThis.__txtStartOpenRequested=false;
                     input.click=()=>{globalThis.__txtStartOpenRequested=true};
+                    // Chromium opens through showOpenFilePicker (file-launch.js requestPicker) instead of the input.
+                    if(typeof window.showOpenFilePicker==='function')window.showOpenFilePicker=async()=>{globalThis.__txtStartOpenRequested=true;throw new DOMException('cancelled','AbortError')};
                     document.getElementById('openBtn').remove();
                     return {open:d.commands.has('file.open.request'),newDoc:d.commands.has('file.new')};
                 }"""
