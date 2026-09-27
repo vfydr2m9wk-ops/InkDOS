@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-395dd837538d463a3875';
+const CACHE_NAME='inkdos-v2.6.2-72734ed727d85e0d5502';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -13,7 +13,7 @@ const ASSET_HASHES={
   "./apps/documents/engine/docx-parser.js": "af1f4146cca20fedc032af83de74468fe6bf34a1176cf167942d45131c64e796",
   "./apps/documents/engine/page-spec.js": "34689c76aa527609df067cea8aec34cdea35c1dfffb1e140d19442766456ff44",
   "./apps/documents/help/help.js": "7b9bb5236b5def839b186ec42fb1df0b9c46d89ac0c6f41abf936def16ea4b42",
-  "./apps/documents/index.html": "26bb70c1fa51853bc2e21662b743e37547d9100be4f214cb842b19a3ffd12280",
+  "./apps/documents/index.html": "0b95b87303304bedf8b85c0f18e8c8649ffbb898e306e47ec0dba868aa708ae7",
   "./apps/documents/io/docx-writer.js": "f622417fce057593681d3ebfeafc619039c5c514308c75a76ef3f07a75990b56",
   "./apps/documents/io/file-delivery.js": "e857b2b7628acf1ca67de392d0b102c6074f42e68764da236ada957ef0c6adde",
   "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
@@ -41,6 +41,7 @@ const ASSET_HASHES={
   "./apps/documents/ui/navigation-panel.js": "024f03d5a2d0600c389b15a6c81aa0c0e2852e1a44cbdbf811b4a8fc5ba9988f",
   "./apps/documents/ui/ruler-controller.js": "7ced9c6e4d808038a5a4b2874df7c24cd585f9f3ab50bb6e82d4f48702a21b80",
   "./apps/documents/ui/session-dialog.js": "4f1b50ff60660652eb89589630254862893e66dc2e29d40581dc8f7fd82986cd",
+  "./apps/documents/ui/visual-system.css": "3034b8df682b6e84c5773affaeb9faee94f83a534eda44a9df2fe45c9030c790",
   "./apps/documents/ui/zoom-controls.js": "c3ccbc02817a882372e5385a43c9ee005f34a8dbaa9dcfdfdc3702af00c00f75",
   "./apps/documents/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/documents/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
@@ -404,6 +405,7 @@ const APP_SHELL=[
   "./apps/documents/ui/ruler-controller.js",
   "./apps/documents/ui/session-dialog.js",
   "./apps/documents/ui/zoom-controls.js",
+  "./apps/documents/ui/visual-system.css",
   "./apps/documents/vendor/jszip.min.js",
   "./apps/documents/vendor/pako_inflate.min.js",
   "./apps/documents/view/document-surface.css",
