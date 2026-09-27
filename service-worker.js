@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-5f767ccfd8c7c742255f';
+const CACHE_NAME='inkdos-v2.6.2-9e4925f6bdfe7670fb99';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -56,11 +56,11 @@ const ASSET_HASHES={
   "./apps/epub/engine/content-projector.js": "4701aa8b4d75d14bafff212c60e56ad1f38ddc6b7e7e8c4588695c1c04752e9b",
   "./apps/epub/engine/navigation-index.js": "c349754e6e2994914449df235cc821d7274a937a8a026af72eb43a318bf196ba",
   "./apps/epub/help/help.js": "2640a7fdb41d2d194dd6f349669cc37c7dfa909229eb17c4843b3a9514c213fe",
-  "./apps/epub/index.html": "c5b61ae3c2a2844d1b352bca5d1b02acc454c6097d62cdee3196045100440672",
+  "./apps/epub/index.html": "dff8d47d797b7d81621c475220ce7c0ae2f0b60d8a65fbbfee2deda71650e877",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "637e9fd4a98b16ae39f892d5a0b5a5f4bdeff503b6b0817f957b119abbe5c51b",
   "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
-  "./apps/epub/manifest.webmanifest": "4d5ddf2ef54edb69ac47b2daba3d614b53e008301cf098b22c1bb29319d30f51",
+  "./apps/epub/manifest.webmanifest": "78753ecd82fa671ac8b24fa59a90ea9c9f1bbe54bb793b6aa2fcfe1ac358cd63",
   "./apps/epub/runtime/frame/app-frame.css": "d55d2a35302f191c81a420cb68d73c09d97fa77abe281b11ea817bd95fd74dbb",
   "./apps/epub/runtime/frame/frame-menu.js": "eef7c83b5ef561904a9ac507c86d3cddda4c58a54e6a4346c39fb76ee8054d56",
   "./apps/epub/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
@@ -226,10 +226,10 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "40cdc83142c6bde6b696a3db35cb52eda8db9753ce0f9c392c73aa1f16f152c5",
+  "./apps/txt/index.html": "eedd540e9e7adf24284be7d1aafe75977bc4c239801e237d9157946791bfe25a",
   "./apps/txt/io/txt-file-controller.js": "a743bc1c5adca8818438285934bb2939868730efb8210c830205d15a8f65d3e6",
-  "./apps/txt/manifest.webmanifest": "2e76930ecae66955d945a737918878ef9e1bcfb837ca30129bf739b4aa447aff",
-  "./apps/txt/page.template.html": "767b7b66f1fdbba7501b3f466f99d1da2177a311b0f88b8289992a7faadfd99f",
+  "./apps/txt/manifest.webmanifest": "7c4a9ad09b7ce251c5820ee1fe314a9498648c009d4030823a4dd0497eff0a86",
+  "./apps/txt/page.template.html": "48b53d973350b074341a17ae9287b3aa942ab3b241eaa5c751227f2d8604053e",
   "./apps/txt/runtime/contracts/document-session.js": "09b4b7d83d82262e1044830afb62a43480b44d7de53e6d9e26f73a4107b4e049",
   "./apps/txt/runtime/frame/app-frame.css": "2af5ae449e9c3109e1c171383b57de1cdc063b55922c5b9396e69375f9579717",
   "./apps/txt/runtime/frame/app-frame.js": "a9f1f64ef5f2aac0da5760fdebb11f89e4b4fb172a0994e92e63a22af7dae606",
