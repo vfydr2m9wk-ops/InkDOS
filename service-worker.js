@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-504e9da504a623166064';
+const CACHE_NAME='inkdos-v2.6.2-0f12686cd917cb3b3d13';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -13,7 +13,7 @@ const ASSET_HASHES={
   "./apps/documents/engine/docx-parser.js": "af1f4146cca20fedc032af83de74468fe6bf34a1176cf167942d45131c64e796",
   "./apps/documents/engine/page-spec.js": "34689c76aa527609df067cea8aec34cdea35c1dfffb1e140d19442766456ff44",
   "./apps/documents/help/help.js": "7b9bb5236b5def839b186ec42fb1df0b9c46d89ac0c6f41abf936def16ea4b42",
-  "./apps/documents/index.html": "c7efbab0b45e0d12b7a8cc19b584cbb8066cd06378f2871fedecfa940aff86b2",
+  "./apps/documents/index.html": "26bb70c1fa51853bc2e21662b743e37547d9100be4f214cb842b19a3ffd12280",
   "./apps/documents/io/docx-writer.js": "f622417fce057593681d3ebfeafc619039c5c514308c75a76ef3f07a75990b56",
   "./apps/documents/io/file-delivery.js": "e857b2b7628acf1ca67de392d0b102c6074f42e68764da236ada957ef0c6adde",
   "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
@@ -32,7 +32,7 @@ const ASSET_HASHES={
   "./apps/documents/ui/chrome-controller.js": "862fe9e5070a7b443522ae4a14644f195e500045b02257fe709859bea4f24fcc",
   "./apps/documents/ui/command-controller.js": "16cdb52983fc8383818aafe215163cd05c8618b1b1052cdd2a6b6d84ceb612b5",
   "./apps/documents/ui/d1-tools.css": "7bab045f541ce543cc578a214dacbe9dd2dc4512d64ee86fc78f1266b4eb3238",
-  "./apps/documents/ui/d1-tools.js": "c075daca86e32e2ba3b21dc7228ba5bf0f009935c4aea7606ce36ff36292b6ac",
+  "./apps/documents/ui/d1-tools.js": "73806de0c2784b25bb242202672d12b5ef27ec1dc51c76f65ccc06c05f15cf24",
   "./apps/documents/ui/d2-sections.js": "05562885e373982d41c3ddc5a08c402079595cb83a9e0d682572742ce379a78e",
   "./apps/documents/ui/d2-tools.css": "b92b86aabddd9426051f40413a440924356eb8a37866ace0510e88c173ea1c34",
   "./apps/documents/ui/d2-tools.js": "c779a3e4a1435c4a5f2d88c8499dd5cce42ca9e3617f0990b9a03c17078660cc",
