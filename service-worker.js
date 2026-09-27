@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-16c09a7f452b291a4a25';
+const CACHE_NAME='inkdos-v2.6.2-395dd837538d463a3875';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -56,7 +56,7 @@ const ASSET_HASHES={
   "./apps/epub/engine/content-projector.js": "4701aa8b4d75d14bafff212c60e56ad1f38ddc6b7e7e8c4588695c1c04752e9b",
   "./apps/epub/engine/navigation-index.js": "c349754e6e2994914449df235cc821d7274a937a8a026af72eb43a318bf196ba",
   "./apps/epub/help/help.js": "2640a7fdb41d2d194dd6f349669cc37c7dfa909229eb17c4843b3a9514c213fe",
-  "./apps/epub/index.html": "dff8d47d797b7d81621c475220ce7c0ae2f0b60d8a65fbbfee2deda71650e877",
+  "./apps/epub/index.html": "3ee9e4bcf50f2c4029651568a7eaac7f1c1b9f573aab6167cbf50086310746e0",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "637e9fd4a98b16ae39f892d5a0b5a5f4bdeff503b6b0817f957b119abbe5c51b",
   "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
@@ -75,6 +75,7 @@ const ASSET_HASHES={
   "./apps/epub/ui/reader-controls.css": "88f9d7c320e3755ab18caa6f7c617a085b29f9f7d11c75a518391ea38888603d",
   "./apps/epub/ui/reader-controls.js": "2ae7157742fbbdc15b434639542ea5172a402f1bde9160904274306ff0731532",
   "./apps/epub/ui/start-state.css": "10f32cc3b67dd36b5934d1967ede39fb08c7d031798794323050a99de2ae59e4",
+  "./apps/epub/ui/visual-system.css": "47359256760352f4c0238c515149f15f1d495b7f724ca810b2567e2546ac8dc5",
   "./apps/epub/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/epub/view/reader-viewport.js": "8c6624743fe9cc001a15951250fe28027119ca489b0bd32aa71dec77279f63a6",
   "./apps/epub/view/reader.css": "b48402f64bb537827fa9319d82fbd9559b2c2e132e9fec0161549b5250d637bd",
@@ -537,6 +538,7 @@ const APP_SHELL=[
   "./apps/epub/ui/reader-bindings.js",
   "./apps/epub/ui/navigation-tools.js",
   "./apps/epub/ui/start-state.css",
+  "./apps/epub/ui/visual-system.css",
   "./apps/epub/vendor/pako_inflate.min.js",
   "./apps/epub/view/reader-viewport.js",
   "./apps/epub/view/reader.css",

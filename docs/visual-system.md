@@ -59,17 +59,21 @@ Colour tokens stay per app. Only the accent differs:
 
 Light and dark themes: use only the existing `--bg`, `--chrome`, `--panel`, `--text`, `--muted`, `--line`, `--accent`, `--accent-soft` variables. Icons use `currentColor`, so they follow the theme automatically.
 
-## 3. Current deviations (baseline at 2.6.2)
+## 3. Alignment status
 
-| Workspace | Deviation to fix in its own change |
-|---|---|
-| Documents | Glyph buttons (`▧`, `Aa`, `☐≡`, `•≡`, `1≡`, `⇤`, `⇥`, `A≡`, `▦`, `▦↧`, `▦↦`, `Page`) — fixed by the reference change. |
-| Spreadsheets | Text buttons `Print`, `Paint`, `$`, `%`, `.0←`, `→.00`, `A■`, `Fill■`; bottom shell 44px instead of a 26px status bar (sheet tabs live there — keep the tabs, align only styling). |
-| Presentations | Borderless text buttons (`Slide`, `Format painter`, `Text`, `Image`, `Shape`, `Line`, `Comment`, `Background`, `Layout`, `Theme`, transition select, `Table`, `Duplicate`); top bar starts at 18px instead of 0; status bar shows no text. |
-| PDF | Toolbar row 56px instead of 44px; `Edit` text button; lighter/smaller controls. |
-| Plain Text | Top bar 54px (`framebar`, 8px top padding) instead of 44px; `TXT` text button; start-card icon left-aligned instead of centred. |
-| EPUB | Close to reference; check `Aa` (→ `reader-settings`) and the empty-looking TOC button width. `Pages`/`Scroll` segmented control stays. |
-| Hub | No toolbar. Keep; only align card radius/shadow if a later change asks for it. |
+All workspaces were aligned in separate component changes after 2.6.2. Remaining notes are deliberate or pre-existing.
+
+| Workspace | Aligned | Notes |
+|---|---|---|
+| Documents | Glyph/text toolbar buttons → icons (reference change). | Selects render 30px vs 28px buttons (pre-existing). |
+| Spreadsheets | Text buttons → icons; colour tools use icon + swatch. | Decimal-place buttons stay as text; sheet-tab bottom shell stays 44px (tabs live there). |
+| Presentations | Labeled tools icon-only (labels visually hidden); JS-created tools get icons; 18px top-bar offset removed. | Narrow-screen media rules untouched. |
+| PDF | Desktop toolbar 56px → 44px; 28px controls; Edit/Done icon-only (label visually hidden). | Touch layout keeps its larger row. |
+| Plain Text | Desktop frame bar 54px → 44px; A−/A+/TXT → icons; start icon centred. | Edited in sources; `index.html` rebuilt by `build_txt_bundle.py`. |
+| EPUB | 28px buttons; Contents width fixed; `Aa` → `reader-settings`. | `Pages`/`Scroll` segmented control stays. |
+| Hub | No toolbar; unchanged. | |
+
+New app-local stylesheets (`ui/visual-system.css`) must be listed in `APP_SHELL` in `service-worker.js`, then `python scripts/build_offline_snapshot.py` regenerates the hashes.
 
 ## 4. Canonical icon set
 
