@@ -44,6 +44,9 @@ class Audit:
         p.on("pageerror",lambda exc: errors.append("pageerror: "+str(exc)))
         p.on("console",lambda msg: errors.append("console-error: "+msg.text) if msg.type=="error" else None)
         p.goto(urljoin(BASE,f"apps/{self.app}/index.html"),wait_until="load",timeout=30000)
+        # A fresh context installs the offline service worker, which may reload the page once; settle first.
+        try:p.wait_for_load_state("networkidle",timeout=10000)
+        except Exception:pass
         p.wait_for_timeout(180)
         return c,p,errors
 
@@ -373,12 +376,15 @@ class Audit:
             p.wait_for_function("()=>globalThis.__InkEpubR4.state().flow==='pages' && globalThis.__InkEpubR4.state().pageCount>1",timeout=10000)
             before=p.evaluate("()=>globalThis.__InkEpubR4.state().pageIndex")
             next_ok=self.click(p,e,"#nextBtn","nextBtn")
-            p.wait_for_timeout(300)
+            # Page turns are animated; wait for the index to settle instead of a fixed 300 ms.
+            try:p.wait_for_function("b=>globalThis.__InkEpubR4.state().pageIndex>b",arg=before,timeout=4000)
+            except Exception:pass
             after_next=p.evaluate("()=>globalThis.__InkEpubR4.state().pageIndex")
             self.checks[-1]["effect"]={"before":before,"after":after_next}
             if next_ok and after_next<=before:self.checks[-1]["status"]="clicked-no-effect"
             prev_ok=self.click(p,e,"#prevBtn","prevBtn")
-            p.wait_for_timeout(300)
+            try:p.wait_for_function("b=>globalThis.__InkEpubR4.state().pageIndex<b",arg=after_next,timeout=4000)
+            except Exception:pass
             after_prev=p.evaluate("()=>globalThis.__InkEpubR4.state().pageIndex")
             self.checks[-1]["effect"]={"before":after_next,"after":after_prev}
             if prev_ok and after_prev>=after_next:self.checks[-1]["status"]="clicked-no-effect"
@@ -455,7 +461,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         ep=Path(td)/"button-audit.epub";build_epub(ep)
         with sync_playwright() as pw:
-            browser=pw.chromium.launch(headless=True)
+            # Full Chromium in headless mode: the default headless shell intermittently drops the
+            # Presentations execution context while opening the table fixture (not reproducible in Chromium).
+            browser=pw.chromium.launch(headless=True,channel="chromium")
             all_reports=[]
             for app in apps:
                 a=Audit(browser,app,ep);a.run();all_reports.append(app)
