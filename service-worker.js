@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-4aa08c5334980eea1eb0';
+const CACHE_NAME='inkdos-v2.6.2-c594ae1c317668868291';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -28,7 +28,7 @@ const ASSET_HASHES={
   "./apps/documents/runtime/platform/content-viewport-adapter.js": "aa348b1bb217a1d02b31638970a6941dcc742509d537c72fd2de40606531cdf3",
   "./apps/documents/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/documents/runtime/tokens/base.css": "b56b459804e0e712c9adb26bcbcb7d7649029f3114117e919d1607041192e1d7",
-  "./apps/documents/state/appearance.js": "acd3aa9f135bfb09090fe2a00be7336d85eae37cb25843bc4d001a21fc1a9f4a",
+  "./apps/documents/state/appearance.js": "4fe0c8f13e6c1933723003896741bd0aa9a555d9995a8828587b934345e12ab8",
   "./apps/documents/ui/chrome-controller.js": "862fe9e5070a7b443522ae4a14644f195e500045b02257fe709859bea4f24fcc",
   "./apps/documents/ui/command-controller.js": "16cdb52983fc8383818aafe215163cd05c8618b1b1052cdd2a6b6d84ceb612b5",
   "./apps/documents/ui/d1-tools.css": "7bab045f541ce543cc578a214dacbe9dd2dc4512d64ee86fc78f1266b4eb3238",
@@ -67,7 +67,7 @@ const ASSET_HASHES={
   "./apps/epub/runtime/tokens/base.css": "3a9afb52b36ed58080688bff0f627a5adf7b205095ceeddb43e94d90bd37572d",
   "./apps/epub/session/book-session.js": "9b890f2c45e8dc803ce2d67d7b8287470f7e87079ff3824d6712c6755db9c3d1",
   "./apps/epub/state/annotation-store.js": "8a5b8a38ac29db007a08e18ccac738da141d846ea560314d6ab413c5f73b7828",
-  "./apps/epub/state/appearance.js": "0dfa59ab35e70b0a5f33dd63a4b47c87fbb705079e075e7d95daeb3feff0b65d",
+  "./apps/epub/state/appearance.js": "7324ba77007ee34cf6635342ee06ef875166c62c8f764399d971592b6b48e287",
   "./apps/epub/state/reading-state.js": "b9d3328bcfdf0e1d74537f37edaf5aedf0a86fa93fddfca081ea0fd806eceb18",
   "./apps/epub/ui/annotation-modes.js": "a42fd9761ef73ba2127a3da145cb7d82ed6b6ffa0c0ef374f177b9a873715c89",
   "./apps/epub/ui/navigation-tools.js": "5a972dc968951d3641e7a36fc9d5a3109462b2e7aafa0369112ca80b6c3e8a6b",
@@ -159,7 +159,7 @@ const ASSET_HASHES={
   "./apps/presentations/runtime/platform/content-viewport-adapter.js": "210541319a346f9ffb854f876e70ba2768f9540aa999aee52b82a4162240ff4c",
   "./apps/presentations/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/presentations/runtime/tokens/base.css": "93712121af73f0be2c9f2a357723f8c967826984463bbcb93f322ff330d241a6",
-  "./apps/presentations/state/appearance.js": "b06315f74033126101eae34a399001070b50ced9df8466e8c9db66f32e3f65a4",
+  "./apps/presentations/state/appearance.js": "1b6f81ee203b92b0ec7658de201685e733bcbf7a108b13a58034994f3c8a0e97",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
   "./apps/presentations/ui/chrome-controller.js": "1d25be7fd41a1b2e65853334afb2cbb8eb4dafab5708ef1bd96c0d499ab4dfb2",
@@ -202,7 +202,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
   "./apps/spreadsheets/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
-  "./apps/spreadsheets/state/appearance.js": "07ad1719ed49ac82ded6db1286bc8abd235ee583b1869371aa6e40f307d707ce",
+  "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "9b025baede21a7372c2a22e1a2c49c750cb7910d24199ebce6a4860afc9b9903",
   "./apps/spreadsheets/ui/editor-controller.js": "eeead0be604056b258b53abcf72343f28a8603c260f0360170af2e57e355e210",
   "./apps/spreadsheets/ui/editor-toolbar.css": "863bf75dc43cc794b8f43d0d23d4eef497540a3a0eee8c381f501d82bc660c21",
@@ -226,7 +226,7 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "0255a0cbf12b34172c9f6b088be72fa6784b57b3499b7cbdc65057418c99d56a",
+  "./apps/txt/index.html": "c286c1245a8c7568c76f307eebc6ab5a640e1dd053808ae0bfec33cb14e7d71c",
   "./apps/txt/io/txt-file-controller.js": "0858729e00a851672a4d84ad1bd872c67a1586941b9ce44dfc1dd5d54314963c",
   "./apps/txt/manifest.webmanifest": "7c4a9ad09b7ce251c5820ee1fe314a9498648c009d4030823a4dd0497eff0a86",
   "./apps/txt/page.template.html": "48b53d973350b074341a17ae9287b3aa942ab3b241eaa5c751227f2d8604053e",
@@ -238,7 +238,7 @@ const ASSET_HASHES={
   "./apps/txt/runtime/services/file-delivery.js": "9fdb3aad64ca84d029d71fc446849ee9c73d3fca2fcc63afec94998bde457e04",
   "./apps/txt/runtime/services/recovery-store.js": "1928d3db8bada6d60e918ff0d29c8640058c9d7324331f1b07defd69cb15bff0",
   "./apps/txt/runtime/tokens/base.css": "3ca9310a61d220437a5748fb44f93476397c44a34b067506e8df0cf76b7f7fd7",
-  "./apps/txt/state/appearance.js": "d368ebe8c02b0832c17e919e6e6e800963a4138b169d220a6193ad85080f203c",
+  "./apps/txt/state/appearance.js": "7e971c54e279dfe11b68198838bb4d6fdb1bd4c0e571d8c337998df399104247",
   "./apps/txt/state/txt-state.js": "dad48ffca1278c19465c4a2d3a4b561e2efce5cb01257c3fe5270b2bd4ad23de",
   "./apps/txt/styles.css": "6b97e6de3157d29ea970e5b2082de347bfeba4691b9ecbcb9120820664a954df",
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
