@@ -34,7 +34,12 @@ def main():
             page.click("#menuBtn");page.locator("#menuBackdrop").click(position={"x":2,"y":2});assert page.locator("#generalMenu").is_hidden()
             page.evaluate("() => document.getElementById('editbar').append(document.getElementById('menuBtn'))")
             page.locator("#menuBtn").scroll_into_view_if_needed();page.click("#menuBtn");assert page.locator("#generalMenu").is_visible();page.keyboard.press("Escape");assert page.locator("#generalMenu").is_hidden()
-            with page.expect_file_chooser(timeout=5000):page.click("#openStartBtn")
+            # Chromium opens through showOpenFilePicker (file-launch.js requestPicker); other engines fall back to the input.
+            if page.evaluate("() => typeof window.showOpenFilePicker === 'function'"):
+                page.evaluate("() => { window.__pickerCalls = 0; window.showOpenFilePicker = async () => { window.__pickerCalls++; throw new DOMException('cancelled', 'AbortError') } }")
+                page.click("#openStartBtn");page.wait_for_function("() => window.__pickerCalls === 1", timeout=5000)
+            else:
+                with page.expect_file_chooser(timeout=5000):page.click("#openStartBtn")
             if errors:raise AssertionError({"browser":browser_name,"errors":errors})
             browser.close()
         print(f"PDF frame command regression passed on {browser_name}.")
