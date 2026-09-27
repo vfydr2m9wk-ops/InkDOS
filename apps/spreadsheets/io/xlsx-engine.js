@@ -13,10 +13,10 @@ function xml(text,context='XLSX package part'){
   return d;
 }
 function serializeXml(doc){return new XMLSerializer().serializeToString(doc)}
-function childText(node,name){if(!node)return'';const n=[...node.children].find(x=>x.localName===name);return n?n.textContent:''}
+function childText(node,name){if(!node)return'';for(let n=node.firstElementChild;n;n=n.nextElementSibling)if(n.localName===name)return n.textContent;return''}
 function children(node,name){return node?[...node.children].filter(x=>x.localName===name):[]}
-function localOne(node,name){return node?[...node.querySelectorAll('*')].find(n=>n.localName===name):null}
-function localAll(node,name){return node?[...node.querySelectorAll('*')].filter(n=>n.localName===name):[]}
+function localOne(node,name){return node?node.getElementsByTagNameNS('*',name)[0]:null}
+function localAll(node,name){return node?[...node.getElementsByTagNameNS('*',name)]:[]}
 function create(doc,name,ns=NS){return doc.createElementNS(ns,name)}
 function colName(n){let s='';while(n>=0){s=String.fromCharCode(n%26+65)+s;n=Math.floor(n/26)-1}return s}
 function decodeRef(ref){const m=/^([A-Z]+)(\d+)$/i.exec(ref||'A1');if(!m)return{r:0,c:0};let c=0;for(const ch of m[1].toUpperCase())c=c*26+ch.charCodeAt(0)-64;return{r:+m[2]-1,c:c-1}}
