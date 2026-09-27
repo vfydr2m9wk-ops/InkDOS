@@ -1,9 +1,9 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-2466e547c3ba289bb6c2';
+const CACHE_NAME='inkdos-v2.6.2-81139eca395877a3c37b';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
-  "./apps/documents/app.js": "652987e27a756c2895f33f785ed9e87f2d92489a198265c9a32e61c95ac3666b",
+  "./apps/documents/app.js": "a742de41c7af11e5105ff979d098f7dd8ce486f26472a268721d2cc553d073ad",
   "./apps/documents/assets/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./apps/documents/engine/d1-docx-extension.js": "9be5351134ed958dbd2e4276259c9f67b627fbcdaf518d76153637d554326c94",
   "./apps/documents/engine/d2-docx-extension.js": "3a55610c65ab5de0d43f3999ac75f8d81ea78d64909989597d2e781935551ee6",
@@ -36,11 +36,11 @@ const ASSET_HASHES={
   "./apps/documents/ui/d2-sections.js": "05562885e373982d41c3ddc5a08c402079595cb83a9e0d682572742ce379a78e",
   "./apps/documents/ui/d2-tools.css": "b92b86aabddd9426051f40413a440924356eb8a37866ace0510e88c173ea1c34",
   "./apps/documents/ui/d2-tools.js": "c779a3e4a1435c4a5f2d88c8499dd5cce42ca9e3617f0990b9a03c17078660cc",
-  "./apps/documents/ui/editor-controller.js": "4ef6eb2487a7fe5d50e19cbf61e11b84deaf78ebdecca888f9a26241a4c672fb",
-  "./apps/documents/ui/editor.css": "19fa53e5c3faed32bf2c8472c994a6e24c03426990132abf33645e7436b36bd8",
+  "./apps/documents/ui/editor-controller.js": "8b29f00fa0d0f10b6ca7914b5a19cd8a63ad069c22fa765d7227d799ca58ea31",
+  "./apps/documents/ui/editor.css": "aa35143470c1ee059aa3ba7656773b20c5b395bf8214712b3705a4f8a44b76f0",
   "./apps/documents/ui/navigation-panel.js": "024f03d5a2d0600c389b15a6c81aa0c0e2852e1a44cbdbf811b4a8fc5ba9988f",
   "./apps/documents/ui/ruler-controller.js": "7ced9c6e4d808038a5a4b2874df7c24cd585f9f3ab50bb6e82d4f48702a21b80",
-  "./apps/documents/ui/session-dialog.js": "e368bab895680b394a7373a7a7b25a6575b1b67991b6e3ba3830924c5968c1dc",
+  "./apps/documents/ui/session-dialog.js": "4f1b50ff60660652eb89589630254862893e66dc2e29d40581dc8f7fd82986cd",
   "./apps/documents/ui/zoom-controls.js": "c3ccbc02817a882372e5385a43c9ee005f34a8dbaa9dcfdfdc3702af00c00f75",
   "./apps/documents/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/documents/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
