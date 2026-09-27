@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-c59b17567d6fb382b98a';
+const CACHE_NAME='inkdos-v2.6.2-3f59115b8e9ccd686b5c';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -28,7 +28,7 @@ const ASSET_HASHES={
   "./apps/documents/runtime/platform/content-viewport-adapter.js": "aa348b1bb217a1d02b31638970a6941dcc742509d537c72fd2de40606531cdf3",
   "./apps/documents/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/documents/runtime/tokens/base.css": "b56b459804e0e712c9adb26bcbcb7d7649029f3114117e919d1607041192e1d7",
-  "./apps/documents/state/appearance.js": "acd3aa9f135bfb09090fe2a00be7336d85eae37cb25843bc4d001a21fc1a9f4a",
+  "./apps/documents/state/appearance.js": "4fe0c8f13e6c1933723003896741bd0aa9a555d9995a8828587b934345e12ab8",
   "./apps/documents/ui/chrome-controller.js": "862fe9e5070a7b443522ae4a14644f195e500045b02257fe709859bea4f24fcc",
   "./apps/documents/ui/command-controller.js": "16cdb52983fc8383818aafe215163cd05c8618b1b1052cdd2a6b6d84ceb612b5",
   "./apps/documents/ui/d1-tools.css": "7bab045f541ce543cc578a214dacbe9dd2dc4512d64ee86fc78f1266b4eb3238",
@@ -202,7 +202,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
   "./apps/spreadsheets/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
-  "./apps/spreadsheets/state/appearance.js": "07ad1719ed49ac82ded6db1286bc8abd235ee583b1869371aa6e40f307d707ce",
+  "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "9b025baede21a7372c2a22e1a2c49c750cb7910d24199ebce6a4860afc9b9903",
   "./apps/spreadsheets/ui/editor-controller.js": "eeead0be604056b258b53abcf72343f28a8603c260f0360170af2e57e355e210",
   "./apps/spreadsheets/ui/editor-toolbar.css": "863bf75dc43cc794b8f43d0d23d4eef497540a3a0eee8c381f501d82bc660c21",
