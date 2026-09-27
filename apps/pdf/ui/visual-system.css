@@ -1,0 +1,11 @@
+/* InkDOS visual system (docs/visual-system.md): presentation-only toolbar alignment with Documents. */
+@media (pointer:fine){
+#editbar.editbar{height:44px;padding-top:2px;padding-bottom:2px;gap:3px}
+#editbar .tool-btn,#editbar .zoom-select,#editbar .page-input,#editbar .property-select,#editbar .property-color{height:var(--compact-control,28px)}
+#editbar .tool-btn{min-width:var(--compact-control,28px)}
+#editbar .tool-btn.icon-only,#editbar .tool-btn.edit-mode-btn{width:var(--compact-control,28px);padding:0;gap:0}
+}
+#editbar .tool-btn svg{width:18px;height:18px;stroke-width:1.75}
+#editbar .tool-divider{height:24px}
+#editbar .edit-mode-btn{width:var(--control);min-width:var(--control);padding:0;gap:0}
+#editbar .edit-mode-btn #editModeLabel{display:inline!important;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
