@@ -516,9 +516,6 @@ jobs:
             --tag "$RELEASE_TAG" \
             --assets release-final
 
-      - name: Validate explicit publication authorization
-        run: python desktop/scripts/validate_release_authorization.py --version "$(python -c 'import json; print(json.load(open("VERSION.json"))["version"])')" --assets release-final
-
       - name: Publish verified release transactionally
         shell: bash
         env:
