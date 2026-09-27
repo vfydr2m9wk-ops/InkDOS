@@ -1,0 +1,11 @@
+/* InkDOS visual system (docs/visual-system.md): presentation-only toolbar alignment with Documents. */
+.presentations-icon-defs{position:absolute;width:0;height:0;overflow:hidden}
+.editbar .tool-btn,.editbar select{height:28px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.editbar .tool-btn.icon-only,.editbar .tool-btn.labeled-tool{width:28px;min-width:28px;padding:0;gap:0;display:inline-grid;place-items:center}
+.editbar .tool-btn.labeled-tool .tool-label{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.editbar .tool-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.editbar .tool-btn:hover,.editbar .tool-btn:focus-visible,.editbar select:hover,.editbar select:focus-visible{background:var(--accent-soft);border-color:var(--line);outline:none}
+.editbar .tool-btn.active,.editbar .tool-btn.is-active,.editbar .tool-btn[aria-pressed="true"]{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 70%,var(--line));color:var(--accent)}
+.editbar .tool-btn:disabled,.editbar select:disabled{opacity:.35;background:var(--panel)}
+.editbar .tool-btn.ppt-background-btn{width:28px!important;min-width:28px!important;padding:0!important}
+.editbar .tool-btn.ppt-background-btn::after{left:6px;right:6px;bottom:2px;height:2px}

@@ -97,6 +97,8 @@ Typographic buttons stay as letters on purpose: **B**, *I*, <u>U</u>, S (striket
 | `delete` | edit | Delete | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4.5h6V7"/><path d="M6.5 7l1 13h9l1-13"/><path d="M10 11v5M14 11v5"/></svg>` |
 | `edit` | edit | Edit / annotate | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>` |
 | `tools` | edit | More tools | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h7M15 18h5"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="13" cy="18" r="2"/></svg>` |
+| `select` | edit | Select objects | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3.5 18 10l-5.5 1.5L10 17z"/><path d="m12.5 11.5 5 5"/></svg>` |
+| `notes` | slides | Speaker notes | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="11" rx="2"/><path d="M7 18h10M7 21h6"/></svg>` |
 | `fullscreen` | edit | Fullscreen / focus | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>` |
 | `text-color` | text | Text color and highlight | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 16 6-12 6 12"/><path d="M8.5 11h7"/><path d="M4 20h16"/></svg>` |
 | `highlight` | text | Highlight | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 15 7.5-7.5-3-3L6 12l-1 4z"/><path d="M4 20h16"/></svg>` |
