@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-40432e46fb477d396fa9';
+const CACHE_NAME='inkdos-v2.6.2-4d3c85e24ac32a433c46';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -265,7 +265,7 @@ const ASSET_HASHES={
   "./shared/localization/locales/zh-CN.js": "82f1b1a58fa5930e72d362f5b0431fc5a0e75fa6e7b882c906112d4ceec34f3a",
   "./shared/localization/localization.css": "d756c86f694f6a98e444844a63cb85f5694e4363f426fb530c8669687d2dc17c",
   "./shared/localization/settings-strip.js": "8a5d615490b5dbd872b86899b58210c5f14c200b1d13d8ca44516471b601f24e",
-  "./shared/localization/ui-localization.js": "b6b0785ea33bcc2a736c0ef6883498f7aa458a972e0884a521a90d2065bb6321",
+  "./shared/localization/ui-localization.js": "e89c2531c9f0a9bc7831c6ca96322ec26a5df2763ec6a5905f4ba557a26b0172",
   "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
   "./shared/ui-density.js": "2700f8594221037108c5b440eeee6dc3ab88c0d26a2f36ca6a39936474f9b630"
 };
