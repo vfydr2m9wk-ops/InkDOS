@@ -3,9 +3,10 @@
 @media(max-width:520px){.ppt-background-popover{grid-template-columns:repeat(4,36px)}}
 
 /* Unsaved-changes guard (command-controller.js). Local styles: the dialog must overlay the menu drawer/backdrop (z-index 100/110). */
-#presentationsUnsavedDialog.error-overlay{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);background:var(--overlay);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-#presentationsUnsavedDialog .error-card{width:min(460px,calc(100vw - var(--safe-l) - var(--safe-r)));padding:22px;background:var(--chrome);color:var(--text);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-#presentationsUnsavedDialog .error-card h2{margin-top:0}
-#presentationsUnsavedDialog .error-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
-#presentationsUnsavedDialog .error-actions button{min-height:var(--control);padding:0 13px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
-#presentationsUnsavedDialog .error-actions .retry-open{background:var(--accent);border-color:var(--accent);color:#fff}
+#presentationsUnsavedDialog.error-overlay,#inkdosAskPanel.error-overlay{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);background:var(--overlay);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#presentationsUnsavedDialog .error-card,#inkdosAskPanel .error-card{width:min(460px,calc(100vw - var(--safe-l) - var(--safe-r)));padding:22px;background:var(--chrome);color:var(--text);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+#presentationsUnsavedDialog .error-card h2,#inkdosAskPanel .error-card h2{margin-top:0}
+#presentationsUnsavedDialog .error-actions,#inkdosAskPanel .error-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+#presentationsUnsavedDialog .error-actions button,#inkdosAskPanel .error-actions button{min-height:var(--control);padding:0 13px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
+#presentationsUnsavedDialog .error-actions .retry-open,#inkdosAskPanel .error-actions .retry-open{background:var(--accent);border-color:var(--accent);color:#fff}
+#inkdosAskPanel.error-overlay[hidden]{display:none}#inkdosAskPanel .ask-fields{display:grid;gap:10px;margin:12px 0 4px}#inkdosAskPanel .ask-field{display:grid;gap:4px}#inkdosAskPanel .ask-field input{min-height:var(--control);padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
