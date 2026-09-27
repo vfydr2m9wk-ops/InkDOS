@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-0f12686cd917cb3b3d13';
+const CACHE_NAME='inkdos-v2.6.2-e697ceb3a57562f5f214';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -141,7 +141,7 @@ const ASSET_HASHES={
   "./apps/presentations/engine/presentation-policy.js": "54417c97053fc54313024ced2ad458e7c706015cdf88b26df27a310a83e11ffd",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
-  "./apps/presentations/index.html": "861c1143df1fa6910874b975ee4d00061b07c960f1a78ddb3372afcc2f44b8e2",
+  "./apps/presentations/index.html": "943a4d75ddf763a3596865cbfbd95662a745c25ee9a08d42e24111ffd99ffe20",
   "./apps/presentations/io/file-delivery.js": "3af202d0229e7beeae76b7d1a49e201bc8db97f9543beb01793b453795c2d31c",
   "./apps/presentations/io/ppt-legacy-reader.js": "71ed1b95ac152a4e911baeb1e23d1c27f6d9e57efc873d2e56946ff5773664a0",
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
@@ -166,9 +166,9 @@ const ASSET_HASHES={
   "./apps/presentations/ui/command-controller.js": "4bf99883f7044270b4463bde6e5ca9c0cca21233a858494f658f019895acc58d",
   "./apps/presentations/ui/editing-controller.js": "ebd91ae5ac3452d816d7d76e920d3b1633db972491a3d932c3ac086ee8b732ca",
   "./apps/presentations/ui/editor.css": "74b92b9343852886a4969f28bdd397ee51148a91a793bcdc591f70ff72dc1232",
-  "./apps/presentations/ui/ppt-p1-tools.js": "bdec4c792ba48624dfa9f57245ff2d03a6ee03f8c77879bd35c1f654276a8215",
+  "./apps/presentations/ui/ppt-p1-tools.js": "7f3c7d0207649bc0fde956b9f032322f4a87d56c788d04d6175e4440538028b0",
   "./apps/presentations/ui/ppt-p2-table-tools-ui.js": "6a046bcc3c826b1bd2be69d8a6ef48635272ccbe54210b8817634af53ec0077c",
-  "./apps/presentations/ui/ppt-p2-tools.js": "e04ac2c86989095daec9d026fd0ca07b35575a14f0e6b3184ee39bf0e9308d34",
+  "./apps/presentations/ui/ppt-p2-tools.js": "7555e6db9e9d6ebb7235aa10fb7acca0e2ea18fd01ca7d1132ece386e8e621e7",
   "./apps/presentations/ui/slide-panel-controller.js": "7fdcddeb0b12ddc0011f57edbb69db65de4ec81365e0d05e63fbdccd57fb97d1",
   "./apps/presentations/ui/zoom-controls.js": "f301c7620eff67d6b6fb0671c171f922854ff83bd28252e35d182ead03ffa510",
   "./apps/presentations/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
