@@ -128,6 +128,14 @@ Typographic buttons stay as letters on purpose: **B**, *I*, <u>U</u>, S (striket
 | `fill` | sheet | Fill color | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 7-7 7 7-7 7z"/><path d="M5 12h14"/><path d="M20 16.5s1.5 1.8 1.5 2.8a1.5 1.5 0 0 1-3 0c0-1 1.5-2.8 1.5-2.8z"/></svg>` |
 | `borders` | sheet | Borders | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16" stroke-dasharray="2 2"/></svg>` |
 | `function` | sheet | Functions | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5c-2 0-3 1-3.4 3L9.5 17c-.4 2-1.4 3-3.5 3"/><path d="M8 10h7"/><path d="m15 13 5 6M20 13l-5 6"/></svg>` |
+| `merge` | sheet | Merge cells | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M7 12h3M17 12h-3M8.5 10l1.5 2-1.5 2M15.5 10 14 12l1.5 2"/></svg>` |
+| `chart` | sheet | Insert chart | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16"/><path d="M8.5 16v-4M12.5 16V8M16.5 16v-6"/></svg>` |
+| `filter` | sheet | Filter | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z"/></svg>` |
+| `sort-asc` | sheet | Sort ascending | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 20V4M4 7l3-3 3 3"/><path d="M13 7h3M13 12h5M13 17h7"/></svg>` |
+| `sort-desc` | sheet | Sort descending | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M4 17l3 3 3-3"/><path d="M13 7h7M13 12h5M13 17h3"/></svg>` |
+| `delete-row` | sheet | Delete rows | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="11" rx="2"/><path d="M3.5 9h17M9 3.5v11M15 3.5v11"/><path d="M9.5 19.5h5"/></svg>` |
+| `delete-column` | sheet | Delete columns | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="11" height="17" rx="2"/><path d="M3.5 9h11M3.5 15h11M9 3.5v17"/><path d="M17 12h5"/></svg>` |
+| `eraser` | sheet | Clear cells | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 20-3.5-3.5a1.5 1.5 0 0 1 0-2.1l9.9-9.9a1.5 1.5 0 0 1 2.1 0l4 4a1.5 1.5 0 0 1 0 2.1L11 20z"/><path d="M7 20h13"/><path d="m9 11 5 5"/></svg>` |
 | `add-sheet` | sheet | Add sheet | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>` |
 | `new-slide` | slides | New slide | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M12 8.5v6M9 11.5h6"/></svg>` |
 | `background` | slides | Background | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 12 11 4.5M6 19.5 20.5 5M13.5 19.5l7-7"/></svg>` |

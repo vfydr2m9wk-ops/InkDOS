@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-367bb3fcac40820bc053';
+const CACHE_NAME='inkdos-v2.6.2-592c7d6744cb8cbb381a';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -186,7 +186,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/engine/workbook-editor.js": "8225830f51adc7fe78625a7b1ce297ccbfb92f348b6bf8b21a2490fdd41a1a75",
   "./apps/spreadsheets/engine/workbook-session.js": "b6ecf5d9ad30f532eead73bee01ea3827d74c6a468be911a9fc0680f54442625",
   "./apps/spreadsheets/help/help.js": "33f00c3f3427562b81d9a6a2e20dbfc8196808d778b9f7119c0f4f77e8cd4925",
-  "./apps/spreadsheets/index.html": "b6986ddeae35f7079d6dca433a6ad49c469999632fc24a6ed5f13dca96ed7ca2",
+  "./apps/spreadsheets/index.html": "51ee637d4bdd30bbc74155de9b35f029c3391fa281810d2b2e412b1b1d46b6d2",
   "./apps/spreadsheets/io/delimited-text.js": "5c1c4b49c7521901cac93623164733506c4cb263097b42e8e48870527f8a4329",
   "./apps/spreadsheets/io/file-delivery.js": "66f3afbf5954d9f5e500b464c77bfcb7597e819255943d07367362e26232dc23",
   "./apps/spreadsheets/io/file-open-controller.js": "2103389ba98629d3a2dd63c6abc7e077e60e32d1b0234281d4d0a0c40d45383e",
@@ -206,7 +206,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "a43981ce74d7e136f8be3a9b2e6c439eef13eb07a3799cf8a1394607572a9f0d",
   "./apps/spreadsheets/ui/editor-controller.js": "eeead0be604056b258b53abcf72343f28a8603c260f0360170af2e57e355e210",
-  "./apps/spreadsheets/ui/editor-toolbar.css": "863bf75dc43cc794b8f43d0d23d4eef497540a3a0eee8c381f501d82bc660c21",
+  "./apps/spreadsheets/ui/editor-toolbar.css": "ab7b68a20bb0950c51fd1a020fe5bc08349ea8d0ce8576fb587f6a8a7b3ced4e",
   "./apps/spreadsheets/ui/file-menu-controller.js": "8a7258d8dadbfa57f43b2e80471bc95aa7428c22853313dbd96bd229c564024f",
   "./apps/spreadsheets/ui/formula-bar.js": "29587039c397b64fc22dbb305357f8d86276e04fba3e27583198bc4c20137ea6",
   "./apps/spreadsheets/ui/session-dialog.js": "4bb2c52e1d03338829f5cea276beab567a5eafefb6926629d681689db57f8220",
