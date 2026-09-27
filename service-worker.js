@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-2190ff45b7415d86ae96';
+const CACHE_NAME='inkdos-v2.6.2-76cc2a19abf2318457d7';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -109,11 +109,11 @@ const ASSET_HASHES={
   "./apps/pdf/pdfjs/page-layers.js": "cd3d46501f11763111fad7fedaaa58cec2ebdc971ef9354032b7e8a8c4afc78a",
   "./apps/pdf/pdfjs/pdfjs-layers.css": "fc9d6df85b3e2f955ca09cc31c40041cc78c738320db82201ac9801507d86d04",
   "./apps/pdf/runtime/commands/command-registry.js": "9b0df8350532fa75ef443b029b128cbcb11f37ae5224b787d5ea6d48d7761191",
-  "./apps/pdf/runtime/frame/app-frame.css": "4915a42d1d2ad62a636e74fada88be528ac4a9e497818e04ce505ba44fe82aab",
+  "./apps/pdf/runtime/frame/app-frame.css": "8ebef62e5c21114419b9710a53b0e11c199acbfd45bd48cb3f55440b13bdb2c8",
   "./apps/pdf/runtime/frame/frame-menu.js": "bf821b2ab69da010743dac587d233634154e6b3f189bb594c22566743a0d0506",
   "./apps/pdf/runtime/platform/content-viewport-adapter.js": "72fab1e7698b716855385537bba73673771ac564d4ed1ce50595bcca14eb35b0",
   "./apps/pdf/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
-  "./apps/pdf/runtime/tokens/base.css": "4daedaadbcab4cf41a32a3b16f9dfca86f5a38206e83726879ca596c32f2f16b",
+  "./apps/pdf/runtime/tokens/base.css": "349ba732eba74dfa79413baf44a8e1326bea0a19c7ce7708c25335d12ab8f717",
   "./apps/pdf/state/appearance.js": "ffa446303c46e8f0c0897c4b9e671a8653a259ab508208d8e49a98adf7ff3426",
   "./apps/pdf/ui/chrome-controller.js": "cf349951498134c7e79ea0ad35d16180491fa689813c5af218f209c75c36da74",
   "./apps/pdf/ui/command-bindings.js": "31189aade6c8a797128e491b78e727939ee79e1789f17bd0b3401c0fda1d4c21",
@@ -154,11 +154,11 @@ const ASSET_HASHES={
   "./apps/presentations/io/save-controller.js": "5571ec51fd0bd5251bbb049a49314d65156525edfbe3fa7f5f8870cd6a6efe01",
   "./apps/presentations/manifest.webmanifest": "436f820bd1a8a7ccecc79dc197e6f1f38e8fa14463d945add1cf544406a5af55",
   "./apps/presentations/presentation/slideshow-controller.js": "f6aefa1e019cc7d3b8ae9939f7a16fdcf91a2979f82a8a673413cc3d17f63406",
-  "./apps/presentations/runtime/frame/app-frame.css": "f48f85ce2943a08d29ad96f6fe285f54ea0b47abda33887815ac4005bf8fe6ff",
+  "./apps/presentations/runtime/frame/app-frame.css": "ecad7719a86c8ff824c5ec2676f455fae387d1a4029f841082761793310befae",
   "./apps/presentations/runtime/frame/frame-menu.js": "bb7f126b58cae5b58bfcd68067ba648d193f7ebea6e5495d08853ce4ed13208e",
   "./apps/presentations/runtime/platform/content-viewport-adapter.js": "210541319a346f9ffb854f876e70ba2768f9540aa999aee52b82a4162240ff4c",
   "./apps/presentations/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
-  "./apps/presentations/runtime/tokens/base.css": "c5225baf077b9d9c9b871b9276b890689e8c9bc4bf98719e546a1c943e8d2539",
+  "./apps/presentations/runtime/tokens/base.css": "93712121af73f0be2c9f2a357723f8c967826984463bbcb93f322ff330d241a6",
   "./apps/presentations/state/appearance.js": "b06315f74033126101eae34a399001070b50ced9df8466e8c9db66f32e3f65a4",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
