@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-7c02b3459b0de58a494c';
+const CACHE_NAME='inkdos-v2.6.2-802ffc40fe7f9fd83807';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -62,7 +62,7 @@ const ASSET_HASHES={
   "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
   "./apps/epub/manifest.webmanifest": "4d5ddf2ef54edb69ac47b2daba3d614b53e008301cf098b22c1bb29319d30f51",
   "./apps/epub/runtime/frame/app-frame.css": "d55d2a35302f191c81a420cb68d73c09d97fa77abe281b11ea817bd95fd74dbb",
-  "./apps/epub/runtime/frame/frame-menu.js": "eef7c83b5ef561904a9ac507c86d3cddda4c58a54e6a4346c39fb76ee8054d56",
+  "./apps/epub/runtime/frame/frame-menu.js": "c7c67c0f267ca5b2ad6b5a1382a9aee43328be4d1f6753b4ffdb71011e20c7ff",
   "./apps/epub/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/epub/runtime/tokens/base.css": "3a9afb52b36ed58080688bff0f627a5adf7b205095ceeddb43e94d90bd37572d",
   "./apps/epub/session/book-session.js": "9b890f2c45e8dc803ce2d67d7b8287470f7e87079ff3824d6712c6755db9c3d1",
