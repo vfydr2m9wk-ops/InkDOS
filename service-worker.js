@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.0-c1e1a30cdb4e1d1ce964';
+const CACHE_NAME='inkdos-v2.7.0-0142d26ad0da5b6f0845';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "37ff3ee55a994727272cdd00a9c95876b2a7add08123f030088a84fd21b0e738",
@@ -13,7 +13,7 @@ const ASSET_HASHES={
   "./apps/documents/engine/docx-parser.js": "af1f4146cca20fedc032af83de74468fe6bf34a1176cf167942d45131c64e796",
   "./apps/documents/engine/page-spec.js": "34689c76aa527609df067cea8aec34cdea35c1dfffb1e140d19442766456ff44",
   "./apps/documents/help/help.js": "7b9bb5236b5def839b186ec42fb1df0b9c46d89ac0c6f41abf936def16ea4b42",
-  "./apps/documents/index.html": "0b95b87303304bedf8b85c0f18e8c8649ffbb898e306e47ec0dba868aa708ae7",
+  "./apps/documents/index.html": "8af68778b9f5169c7b129aa463bfd68de21670f62809deb77e2762a28db4d03b",
   "./apps/documents/io/docx-writer.js": "f622417fce057593681d3ebfeafc619039c5c514308c75a76ef3f07a75990b56",
   "./apps/documents/io/file-delivery.js": "e857b2b7628acf1ca67de392d0b102c6074f42e68764da236ada957ef0c6adde",
   "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
