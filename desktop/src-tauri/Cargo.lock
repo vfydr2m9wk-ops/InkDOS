@@ -1793,7 +1793,7 @@ dependencies = [
 
 [[package]]
 name = "inkdos-desktop"
-version = "2.7.1"
+version = "2.7.2"
 dependencies = [
  "serde",
  "serde_json",

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.7.2 — 2026-09-27
+
+- Spreadsheets: saving an opened XLSX is now linear in size and no longer rewrites untouched cells. Opening had resolved theme colours only on the working copy, so every cell compared as changed, and each patch looked its row up with a full scan. Measured (synthetic, Chromium): 2,000 rows 8.7 s → 0.12 s; 10,000 rows from minutes (tab frozen) → 0.7 s.
+- No other application changes are part of this release.
+
 ## 2.7.1 — 2026-09-27
 
 - Toolbar order aligned with Google Docs/Sheets/Slides, Word and LibreOffice conventions:
