@@ -57,7 +57,8 @@ async function open(buffer,options={}){
   const signal=options.signal||null,b={...DEFAULT_BUDGETS,...(options.budgets||{})};abort(signal);
   const ab=buffer instanceof ArrayBuffer?buffer:buffer&&buffer.buffer instanceof ArrayBuffer?buffer.buffer.slice(buffer.byteOffset||0,(buffer.byteOffset||0)+(buffer.byteLength||buffer.length||0)):null;
   if(!ab)fail('invalid-input','EPUB input must be an ArrayBuffer or typed array');
-  if(ab.byteLength<=0||ab.byteLength>b.maxInputBytes)fail('input-budget','EPUB input exceeds the provisional compressed-byte budget');
+  if(ab.byteLength<=0)fail('empty-file','The selected file is empty');
+  if(ab.byteLength>b.maxInputBytes)fail('input-budget','EPUB input exceeds the provisional compressed-byte budget');
   const bytes=new Uint8Array(ab),view=new DataView(ab),eocd=locateEocd(bytes,view),dir=directoryInfo(bytes,view,eocd);
   const {disk,centralDisk,diskCount,count,centralSize,centralOffset}=dir;
   if(disk||centralDisk||diskCount!==count)fail('multidisk','Multi-disk ZIP/EPUB is not supported');
