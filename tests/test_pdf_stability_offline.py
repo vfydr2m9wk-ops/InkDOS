@@ -29,6 +29,20 @@ PDF_DYNAMIC_URLS = (
     "/apps/pdf/features/page-tools/actions/merge-pdfs.js",
 )
 
+def tiny_pdf() -> list[int]:
+    objs = [b"<< /Type /Catalog /Pages 2 0 R >>", b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+            b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] >>"]
+    out = bytearray(b"%PDF-1.4\n")
+    offsets = []
+    for i, body in enumerate(objs, 1):
+        offsets.append(len(out))
+        out += f"{i} 0 obj\n".encode() + body + b"\nendobj\n"
+    xref = len(out)
+    out += f"xref\n0 {len(objs) + 1}\n0000000000 65535 f \n".encode()
+    out += b"".join(f"{o:010d} 00000 n \n".encode() for o in offsets)
+    out += f"trailer\n<< /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode()
+    return list(out)
+
 def wait_port(port: int, timeout: float = 10.0) -> None:
     deadline = time.time() + timeout
     while time.time() < deadline:
@@ -103,6 +117,11 @@ def main() -> None:
             server = None
             page.reload(wait_until="load", timeout=20_000)
             page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug", timeout=15_000)
+            # Page Tools load lazily on the first Edit; exercise that path while offline.
+            opened = page.evaluate("async (bytes) => await globalThis.InkDOS2PdfP4.PdfStabilityDebug.fileOpen.openFile(new File([new Uint8Array(bytes)], 'offline.pdf', {type: 'application/pdf'}))", tiny_pdf())
+            assert opened is True, (browser_name, opened)
+            page.click("#editModeBtn")
+            page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.editingReady", timeout=15_000)
             offline = page.evaluate(
                 r"""() => {
                     const ns = globalThis.InkDOS2PdfP4;
