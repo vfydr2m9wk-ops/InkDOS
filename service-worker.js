@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-7c02b3459b0de58a494c';
+const CACHE_NAME='inkdos-v2.6.2-5f767ccfd8c7c742255f';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -226,10 +226,10 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "eedd540e9e7adf24284be7d1aafe75977bc4c239801e237d9157946791bfe25a",
+  "./apps/txt/index.html": "40cdc83142c6bde6b696a3db35cb52eda8db9753ce0f9c392c73aa1f16f152c5",
   "./apps/txt/io/txt-file-controller.js": "a743bc1c5adca8818438285934bb2939868730efb8210c830205d15a8f65d3e6",
-  "./apps/txt/manifest.webmanifest": "7c4a9ad09b7ce251c5820ee1fe314a9498648c009d4030823a4dd0497eff0a86",
-  "./apps/txt/page.template.html": "48b53d973350b074341a17ae9287b3aa942ab3b241eaa5c751227f2d8604053e",
+  "./apps/txt/manifest.webmanifest": "2e76930ecae66955d945a737918878ef9e1bcfb837ca30129bf739b4aa447aff",
+  "./apps/txt/page.template.html": "767b7b66f1fdbba7501b3f466f99d1da2177a311b0f88b8289992a7faadfd99f",
   "./apps/txt/runtime/contracts/document-session.js": "09b4b7d83d82262e1044830afb62a43480b44d7de53e6d9e26f73a4107b4e049",
   "./apps/txt/runtime/frame/app-frame.css": "2af5ae449e9c3109e1c171383b57de1cdc063b55922c5b9396e69375f9579717",
   "./apps/txt/runtime/frame/app-frame.js": "a9f1f64ef5f2aac0da5760fdebb11f89e4b4fb172a0994e92e63a22af7dae606",
