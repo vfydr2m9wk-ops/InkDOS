@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-9e4925f6bdfe7670fb99';
+const CACHE_NAME='inkdos-v2.6.2-2190ff45b7415d86ae96';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -56,11 +56,11 @@ const ASSET_HASHES={
   "./apps/epub/engine/content-projector.js": "4701aa8b4d75d14bafff212c60e56ad1f38ddc6b7e7e8c4588695c1c04752e9b",
   "./apps/epub/engine/navigation-index.js": "c349754e6e2994914449df235cc821d7274a937a8a026af72eb43a318bf196ba",
   "./apps/epub/help/help.js": "2640a7fdb41d2d194dd6f349669cc37c7dfa909229eb17c4843b3a9514c213fe",
-  "./apps/epub/index.html": "dff8d47d797b7d81621c475220ce7c0ae2f0b60d8a65fbbfee2deda71650e877",
+  "./apps/epub/index.html": "c5b61ae3c2a2844d1b352bca5d1b02acc454c6097d62cdee3196045100440672",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "637e9fd4a98b16ae39f892d5a0b5a5f4bdeff503b6b0817f957b119abbe5c51b",
   "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
-  "./apps/epub/manifest.webmanifest": "78753ecd82fa671ac8b24fa59a90ea9c9f1bbe54bb793b6aa2fcfe1ac358cd63",
+  "./apps/epub/manifest.webmanifest": "4d5ddf2ef54edb69ac47b2daba3d614b53e008301cf098b22c1bb29319d30f51",
   "./apps/epub/runtime/frame/app-frame.css": "d55d2a35302f191c81a420cb68d73c09d97fa77abe281b11ea817bd95fd74dbb",
   "./apps/epub/runtime/frame/frame-menu.js": "eef7c83b5ef561904a9ac507c86d3cddda4c58a54e6a4346c39fb76ee8054d56",
   "./apps/epub/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
@@ -151,18 +151,18 @@ const ASSET_HASHES={
   "./apps/presentations/io/pptx-preservation-writer.js": "b6a7f9b7a90f693a1ec3de0b0893633b5fd090e43d5fa72122f1a47f46a56b90",
   "./apps/presentations/io/pptx-text-columns.js": "e034eccc7d269f900370aac3c36bf7ab560033a6954853a995b15f6e797d42a4",
   "./apps/presentations/io/pptx-writer.js": "1f34f988b490c02c24bb2d0c954606883c55abcaab84a2dff891b90e03222671",
-  "./apps/presentations/io/save-controller.js": "2ac47358462ada4c82a070a09a7dce76880d8328c728e4ad76df49c882623e63",
+  "./apps/presentations/io/save-controller.js": "5571ec51fd0bd5251bbb049a49314d65156525edfbe3fa7f5f8870cd6a6efe01",
   "./apps/presentations/manifest.webmanifest": "436f820bd1a8a7ccecc79dc197e6f1f38e8fa14463d945add1cf544406a5af55",
   "./apps/presentations/presentation/slideshow-controller.js": "f6aefa1e019cc7d3b8ae9939f7a16fdcf91a2979f82a8a673413cc3d17f63406",
-  "./apps/presentations/runtime/frame/app-frame.css": "ecad7719a86c8ff824c5ec2676f455fae387d1a4029f841082761793310befae",
+  "./apps/presentations/runtime/frame/app-frame.css": "f48f85ce2943a08d29ad96f6fe285f54ea0b47abda33887815ac4005bf8fe6ff",
   "./apps/presentations/runtime/frame/frame-menu.js": "bb7f126b58cae5b58bfcd68067ba648d193f7ebea6e5495d08853ce4ed13208e",
   "./apps/presentations/runtime/platform/content-viewport-adapter.js": "210541319a346f9ffb854f876e70ba2768f9540aa999aee52b82a4162240ff4c",
   "./apps/presentations/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
-  "./apps/presentations/runtime/tokens/base.css": "93712121af73f0be2c9f2a357723f8c967826984463bbcb93f322ff330d241a6",
+  "./apps/presentations/runtime/tokens/base.css": "c5225baf077b9d9c9b871b9276b890689e8c9bc4bf98719e546a1c943e8d2539",
   "./apps/presentations/state/appearance.js": "b06315f74033126101eae34a399001070b50ced9df8466e8c9db66f32e3f65a4",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
-  "./apps/presentations/ui/chrome-controller.js": "e49d31726ba6f65e441080e3421bf0aacf6bf25a964d0fa73cb52a1e85e7abea",
+  "./apps/presentations/ui/chrome-controller.js": "1d25be7fd41a1b2e65853334afb2cbb8eb4dafab5708ef1bd96c0d499ab4dfb2",
   "./apps/presentations/ui/command-controller.js": "4bf99883f7044270b4463bde6e5ca9c0cca21233a858494f658f019895acc58d",
   "./apps/presentations/ui/editing-controller.js": "ebd91ae5ac3452d816d7d76e920d3b1633db972491a3d932c3ac086ee8b732ca",
   "./apps/presentations/ui/editor.css": "940a82d17f0b7729c5308c10ec9f595738489a2970aee3393dc8cac6028a87b3",
