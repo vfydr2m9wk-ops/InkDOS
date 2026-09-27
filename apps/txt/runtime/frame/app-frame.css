@@ -90,3 +90,10 @@ svg{display:block}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}
 :root[data-ui-density="desktop"] .tool-btn{width:28px;height:28px;min-width:28px;flex-basis:28px;padding:0;border-radius:10px}
 .tool-btn svg{width:18px;height:18px;stroke-width:1.75}
 .start-card .start-icon{margin-left:auto;margin-right:auto}
+
+/* Round 2 (generated): id-level toolbar metrics; compact size chip. */
+#toolbar,#toolbar .tool-group{gap:3px!important}
+#toolbar .tool-btn{width:28px!important;min-width:28px!important;flex-basis:28px!important;padding:0!important;height:28px!important;min-height:28px!important;border-radius:10px}
+#toolbar .tool-btn{width:28px!important;min-width:28px!important;flex-basis:28px!important;padding:0!important;width:28px!important;min-width:28px!important;padding:0!important}
+#toolbar .tool-btn svg{width:18px!important;height:18px!important;stroke-width:1.75}
+#toolbar .size-chip{height:28px!important;min-width:0!important;padding:0 6px!important;border-radius:10px!important;gap:1px}#toolbar .size-chip input{width:22px!important;min-width:22px!important;font-size:14px}#toolbar .size-chip span{font-size:11px}
