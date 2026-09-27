@@ -34,7 +34,7 @@ function create({session,chrome,promoteLegacyPpt}={}){
         }else{session.dirty=false;chrome.status('PPTX copy saved')}
       }else chrome.status(legacyPpt?'Editable PPTX copy generated · delivery requested':'PPTX copy generated · delivery requested');
       chrome.title();return {...delivery,bytes,receipt,fileName};
-    }catch(e){if(e?.code!=='cancelled')chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
+    }catch(e){if(e?.code!=='cancelled')chrome.showError(e,{name:session.fileName},{title:'Presentation could not be saved',retry:false});return null}finally{busy=false}
   }
   async function saveForReplacement(){
     if(!session.active||!session.dirty)return true;
@@ -56,13 +56,13 @@ function create({session,chrome,promoteLegacyPpt}={}){
       return !session.dirty;
     }catch(e){
       if(e?.code==='cancelled'){chrome.status('Save cancelled — navigation cancelled');return false}
-      chrome.showError(e,{name:session.fileName});chrome.status('Save failed — navigation cancelled');return false
+      chrome.showError(e,{name:session.fileName},{title:'Presentation could not be saved',retry:false});chrome.status('Save failed — navigation cancelled');return false
     }finally{busy=false}
   }
   async function share(){
     if(!session.active||busy)return null;busy=true;
     try{const {bytes,receipt,blob,fileName}=await buildCopy(true);const delivery=await NS.FileDelivery.share(blob,fileName);chrome.status(session.sourceKind==='ppt'?'Editable PPTX copy sent to Share Sheet':'PPTX sent to Share Sheet');chrome.title();return {...delivery,bytes,receipt,fileName}}
-    catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName});return null}finally{busy=false}
+    catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName},{title:'Presentation could not be saved',retry:false});return null}finally{busy=false}
   }
   return Object.freeze({save,saveForReplacement,share,buildCopy,ensureP1Writer,ensureP2Package,outputName})
 }
