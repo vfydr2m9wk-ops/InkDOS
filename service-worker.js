@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.1-964c3460d379692055cc';
+const CACHE_NAME='inkdos-v2.7.1-802d4bb099e145b9a6a4';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "30f0d4a9e32fea745c61d442925ea432c15474861c7b403f3e2f392f9cdccf90",
@@ -197,8 +197,8 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/save-controller.js": "12748c6ca03df4284a522f7304efdbdeea4096b9fdfb9106d1a1e72626839b49",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
   "./apps/spreadsheets/io/xls-biff8-engine.js": "dfbd5dd326719eb71e54beb36f1b5b97b59d074af9db94bf294f2f8e160f2a85",
-  "./apps/spreadsheets/io/xlsx-color-fidelity.js": "de78403e800d166734068b32aaaed7a6284f4999c87971d4662273892ed8785c",
-  "./apps/spreadsheets/io/xlsx-engine.js": "27c6a5b7fd23b3d7d49659a6e95a0c0dbf15de911300ea86fdd2ef91578bf6d8",
+  "./apps/spreadsheets/io/xlsx-color-fidelity.js": "5d57ee26a39d159f8c777fe2ad2725fb4fa2de6f844af22425618854862a68bd",
+  "./apps/spreadsheets/io/xlsx-engine.js": "3f2bf618a064bef3f09b46d9bb7d17df57ba273bac94e7a39f77f9da1ebf98d9",
   "./apps/spreadsheets/manifest.webmanifest": "61601f61808d409c3bed2d5d842525c20fc66edd257d23619ef6b0be7943d0bb",
   "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
   "./apps/spreadsheets/runtime/frame/app-frame.css": "e84a9fdd55ba8c4a2b3219fd36068c20cc679c9381723ba9359154c7628e3d73",

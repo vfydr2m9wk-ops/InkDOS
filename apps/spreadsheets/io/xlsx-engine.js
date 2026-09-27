@@ -196,6 +196,7 @@ function writeCell(doc,node,cell){
     node.setAttribute('t','b');const v=create(doc,'v');v.textContent=cell.v?'1':'0';node.appendChild(v);
   }else if(cell.v!==''&&cell.v!=null){const v=create(doc,'v');v.textContent=String(cell.v);node.appendChild(v)}
 }
+function rowIndex(sheetData){const m=new Map();for(const r of sheetData.children)if(r.localName==='row'){const n=+(r.getAttribute('r')||0);if(!m.has(n))m.set(n,r)}return m}
 function findRow(sheetData,rowNumber){return[...sheetData.children].find(r=>r.localName==='row'&&+(r.getAttribute('r')||0)===rowNumber)}
 function insertRowSorted(sheetData,row){const n=+(row.getAttribute('r')||0),before=[...sheetData.children].find(r=>+(r.getAttribute('r')||0)>n);sheetData.insertBefore(row,before||null)}
 function findCell(row,cellRef){return[...row.children].find(c=>c.localName==='c'&&c.getAttribute('r')===cellRef)}
@@ -203,13 +204,13 @@ function insertCellSorted(row,cell){const p=decodeRef(cell.getAttribute('r')),be
 function usedRange(sheet){let r1=Infinity,c1=Infinity,r2=0,c2=0;for(const [ref,cell] of sheet.cells){if((cell.v===''||cell.v==null)&&!cell.f&&!cell.styleId)continue;const p=decodeRef(ref);r1=Math.min(r1,p.r);c1=Math.min(c1,p.c);r2=Math.max(r2,p.r);c2=Math.max(c2,p.c)}if(!Number.isFinite(r1))return'A1';return r1===r2&&c1===c2?encodeRef(r1,c1):`${encodeRef(r1,c1)}:${encodeRef(r2,c2)}`}
 function patchRowsAndCells(doc,sheet){
   const root=doc.documentElement,sheetData=localOne(root,'sheetData');if(!sheetData)throw new Error('Worksheet sheetData is missing');
-  const refs=new Set([...sheet.originalCells.keys(),...sheet.cells.keys()]);
+  const refs=new Set([...sheet.originalCells.keys(),...sheet.cells.keys()]),rowsByNumber=rowIndex(sheetData);
   for(const cellRef of refs){
     const original=sheet.originalCells.get(cellRef)||null,current=sheet.cells.get(cellRef)||null;if(sameCell(original,current))continue;
-    const p=decodeRef(cellRef),rowNumber=p.r+1;let row=findRow(sheetData,rowNumber),node=row?findCell(row,cellRef):null;
+    const p=decodeRef(cellRef),rowNumber=p.r+1;let row=rowsByNumber.get(rowNumber),node=row?findCell(row,cellRef):null;
     const empty=!current||((current.v===''||current.v==null)&&!current.f&&!current.styleId);
     if(empty){if(node)row.removeChild(node);continue}
-    if(!row){row=create(doc,'row');row.setAttribute('r',String(rowNumber));insertRowSorted(sheetData,row)}
+    if(!row){row=create(doc,'row');row.setAttribute('r',String(rowNumber));insertRowSorted(sheetData,row);rowsByNumber.set(rowNumber,row)}
     if(!node){node=create(doc,'c');node.setAttribute('r',cellRef);insertCellSorted(row,node)}
     writeCell(doc,node,current);
   }
