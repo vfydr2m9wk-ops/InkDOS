@@ -1,9 +1,9 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-44e727d33da7fcdac3c6';
+const CACHE_NAME='inkdos-v2.6.2-18f58174841457d7e507';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
-  "./apps/documents/app.js": "9b15df6190c50844594d9946e38c846038e04d7ff31c386ae680dfb4778f4a19",
+  "./apps/documents/app.js": "652987e27a756c2895f33f785ed9e87f2d92489a198265c9a32e61c95ac3666b",
   "./apps/documents/assets/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./apps/documents/engine/d1-docx-extension.js": "9be5351134ed958dbd2e4276259c9f67b627fbcdaf518d76153637d554326c94",
   "./apps/documents/engine/d2-docx-extension.js": "3a55610c65ab5de0d43f3999ac75f8d81ea78d64909989597d2e781935551ee6",
@@ -49,7 +49,7 @@ const ASSET_HASHES={
   "./apps/documents/view/page-surface.js": "d9b753cba64ad5fa48a74ac5ff4d9244479e2173c419d0eb01306bde310c7a6b",
   "./apps/documents/view/pagination-engine.js": "6738f6366743b26fdcda32fb6ed2711ec76fd2ee220482a0e413db84213a6e35",
   "./apps/documents/view/zoom-controller.js": "6aa8b3376a922f44efcbb4d7ef4e57833c76d8ea4727d40536b30d20d9230831",
-  "./apps/epub/app.js": "a650a39eced5316fcddffc32a8ba72031525a657b6eaa1f5661598413c1c483b",
+  "./apps/epub/app.js": "7e3e4e41b6397c38f75056d3612125f330872ccf789b65271470e90e43f2e32a",
   "./apps/epub/assets/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./apps/epub/engine/annotations.js": "a68292526c67595643e3ff0fbe76db5085bcea1eda6dbc22c927ffc6aec263fc",
   "./apps/epub/engine/book-model.js": "ed1a4967caa50623615e1f56685eaf008c118592ce662e14ca29ecc88d6d2cdf",
@@ -59,7 +59,7 @@ const ASSET_HASHES={
   "./apps/epub/index.html": "c5b61ae3c2a2844d1b352bca5d1b02acc454c6097d62cdee3196045100440672",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "637e9fd4a98b16ae39f892d5a0b5a5f4bdeff503b6b0817f957b119abbe5c51b",
-  "./apps/epub/io/package-reader.js": "6ed8a5ad50bbf0575bb59fb8e6acae1c45678d8ee64c00d728baeb70dbc506a8",
+  "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
   "./apps/epub/manifest.webmanifest": "4d5ddf2ef54edb69ac47b2daba3d614b53e008301cf098b22c1bb29319d30f51",
   "./apps/epub/runtime/frame/app-frame.css": "d55d2a35302f191c81a420cb68d73c09d97fa77abe281b11ea817bd95fd74dbb",
   "./apps/epub/runtime/frame/frame-menu.js": "eef7c83b5ef561904a9ac507c86d3cddda4c58a54e6a4346c39fb76ee8054d56",
@@ -138,7 +138,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
   "./apps/presentations/app.js": "e057d41d323080717dcfccf2ebe64c7ac9c169aae1d44c52653c03cddda5cfeb",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
-  "./apps/presentations/engine/presentation-policy.js": "5dd58184b6b4265eb0b1b500f00167859c83c67880f56b483d4bb53a72225405",
+  "./apps/presentations/engine/presentation-policy.js": "54417c97053fc54313024ced2ad458e7c706015cdf88b26df27a310a83e11ffd",
   "./apps/presentations/engine/presentation-session.js": "ed6a3bb7565560e4bd08e61a151c954ca5a94b1153a837453711913b59ac130f",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
   "./apps/presentations/index.html": "861c1143df1fa6910874b975ee4d00061b07c960f1a78ddb3372afcc2f44b8e2",
@@ -175,7 +175,7 @@ const ASSET_HASHES={
   "./apps/presentations/view/presentation-surface.css": "1d31bfb7f7bc31c9cedcc8abeeeabeeab02749d3354f55abf7d17da025529e76",
   "./apps/presentations/view/slide-surface.js": "638fd057df887ad9e7e315b4e92303efe51a5035304168ac57c39b8f06f42619",
   "./apps/presentations/view/zoom-controller.js": "ce2fab2d21b4ab29496f68a72c9ef99a096bb45d232105ecfd5c3d4c253bee6c",
-  "./apps/spreadsheets/app.js": "93cc4a0449c1e4004e9b60157d46b3d151034d622a8b7e4ea3ac2d14e6d0bda7",
+  "./apps/spreadsheets/app.js": "db86aacc00e98266c72da6e0fe6b93a9bdb58c8e7588683ebec6ee2fcd431ee6",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./apps/spreadsheets/engine/formula/arithmetic.js": "90b3a0f135445fcacbfa64903125c4efbe94d28b382857e937bd1d45b71d757a",
   "./apps/spreadsheets/engine/formula/evaluator.js": "c1ca9eae9115038b0578ea0482e98f0411c3f752d2b9085d8f659e90e9d4f1b0",
@@ -188,7 +188,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/index.html": "b6986ddeae35f7079d6dca433a6ad49c469999632fc24a6ed5f13dca96ed7ca2",
   "./apps/spreadsheets/io/delimited-text.js": "5c1c4b49c7521901cac93623164733506c4cb263097b42e8e48870527f8a4329",
   "./apps/spreadsheets/io/file-delivery.js": "66f3afbf5954d9f5e500b464c77bfcb7597e819255943d07367362e26232dc23",
-  "./apps/spreadsheets/io/file-open-controller.js": "4bb4221bb5a1da26c60f8f2a8c14bc622d025a5984d605f265f4b59b68c76e55",
+  "./apps/spreadsheets/io/file-open-controller.js": "2103389ba98629d3a2dd63c6abc7e077e60e32d1b0234281d4d0a0c40d45383e",
   "./apps/spreadsheets/io/package-validator.js": "f8a95123b353e2fc64083d0da399b76e50ac695c8f6eb74fd245981d6dd3dc61",
   "./apps/spreadsheets/io/save-controller.js": "12748c6ca03df4284a522f7304efdbdeea4096b9fdfb9106d1a1e72626839b49",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
