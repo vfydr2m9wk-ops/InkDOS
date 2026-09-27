@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-9776edf21a3fd1282252';
+const CACHE_NAME='inkdos-v2.6.2-c594ae1c317668868291';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
@@ -114,7 +114,7 @@ const ASSET_HASHES={
   "./apps/pdf/runtime/platform/content-viewport-adapter.js": "72fab1e7698b716855385537bba73673771ac564d4ed1ce50595bcca14eb35b0",
   "./apps/pdf/runtime/platform/file-launch.js": "eba2d8bfb052839763af56880df463b1e3a3ba44302cad6abd227d2b138b2527",
   "./apps/pdf/runtime/tokens/base.css": "4daedaadbcab4cf41a32a3b16f9dfca86f5a38206e83726879ca596c32f2f16b",
-  "./apps/pdf/state/appearance.js": "ffa446303c46e8f0c0897c4b9e671a8653a259ab508208d8e49a98adf7ff3426",
+  "./apps/pdf/state/appearance.js": "994c78c3390a74470784185e43f4ee9a96813421671679fa1f050aa9675f511c",
   "./apps/pdf/ui/chrome-controller.js": "cf349951498134c7e79ea0ad35d16180491fa689813c5af218f209c75c36da74",
   "./apps/pdf/ui/command-bindings.js": "31189aade6c8a797128e491b78e727939ee79e1789f17bd0b3401c0fda1d4c21",
   "./apps/pdf/ui/command-controller.js": "77843b73eb1af146d209bc4c715165a642eb4c463e1e02043594b8e768152d0f",
