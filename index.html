@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fqvsUHTwqTos1UGKFAQ0WiJqHz6X/fd7NHpppe0z/7E=' 'sha256-uLvKmroq6K91wXOZZfwAdlnY34GtTfkn4YHC2/UtKJY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fqvsUHTwqTos1UGKFAQ0WiJqHz6X/fd7NHpppe0z/7E=' 'sha256-rY35EoOYQrHxZiu0mHsF4OReQbn+gf5zZjSOsLx3+Jo='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; manifest-src 'self'">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f8fa">
@@ -64,7 +64,7 @@
   function resolved(){return mode==='system'?(media&&media.matches?'dark':'light'):mode}
   function apply(){const value=resolved();root.dataset.appearance=value;root.dataset.appearanceResolved=value;root.dataset.appearanceMode=mode;root.dataset.theme=value;root.style.colorScheme=value;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=value==='dark'?'#16191f':'#f7f8fa';for(const choice of choices)choice.setAttribute('aria-checked',String(choice.dataset.homeAppearanceMode===mode))}
   function closeMenu(){menu.hidden=true;button.setAttribute('aria-expanded','false')}
-  function setMode(next){if(!VALID.has(next))return;mode=next;try{localStorage.setItem(KEY,mode)}catch(_){}apply();closeMenu()}
+  function setMode(next){if(!VALID.has(next))return;mode=next;try{localStorage.setItem(KEY,mode);localStorage.setItem(KEY+':changedAt',String(Date.now()))}catch(_){}apply();closeMenu()}
   button.addEventListener('click',()=>{const opening=menu.hidden;menu.hidden=!opening;button.setAttribute('aria-expanded',String(opening))});
   for(const choice of choices)choice.addEventListener('click',()=>setMode(choice.dataset.homeAppearanceMode));
   document.addEventListener('click',event=>{if(!event.target.closest('.home-appearance'))closeMenu()});
