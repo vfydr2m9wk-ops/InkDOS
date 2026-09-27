@@ -1,0 +1,4 @@
+/* InkDOS visual system (docs/visual-system.md): presentation-only toolbar alignment with Documents. */
+:root[data-ui-density="desktop"] .toolstrip-shell .tool-btn{width:28px;height:28px;min-width:28px;padding:0}
+.toolstrip-shell #tocBtn.tool-btn.text,.toolstrip-shell #appearanceBtn.tool-btn.text{width:var(--control);min-width:var(--control);padding:0;gap:0;justify-content:center}
+.toolstrip-shell .tool-btn svg{width:18px;height:18px;stroke-width:1.75}
