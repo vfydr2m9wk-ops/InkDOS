@@ -18,7 +18,7 @@ Not allowed:
 - changing element IDs, `data-*` command attributes, classes read by JavaScript, or button order;
 - changing menus, drawers, context panels, dialogs, frames or window structure;
 - editing `vendor/`, `engine/`, `io/`, `state/` or minified files;
-- converting `<select>` value pickers (style, font, size, number format, spacing, zoom presets) into icons.
+- replacing `<select>` elements with other controls (they may be *styled* as icon controls, see section 8).
 
 Isolation (AGENTS.md): each workspace carries its **own copy** of the icons and token values it needs. Do not import files from another workspace and do not add a new shared file for this work. Deliberate local duplication is intended here.
 
@@ -147,6 +147,21 @@ Typographic buttons stay as letters on purpose: **B**, *I*, <u>U</u>, S (striket
 | `theme` | slides | Theme | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.4-1.1-1.6-1.1-2.8 0-1 .8-1.7 1.8-1.7H17a3.5 3.5 0 0 0 3.5-3.5c0-4.1-3.8-7.3-8.5-7.3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></svg>` |
 | `transition` | slides | Transition | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="10" height="12" rx="1.5"/><path d="M16 8h2.5a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H16"/><path d="m8 10 2 2-2 2"/></svg>` |
 | `slideshow` | slides | Play slideshow | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="m10.5 8 4 2.5-4 2.5z"/><path d="M12 17v3M8.5 20h7"/></svg>` |
+| `paragraph-style` | text | Paragraph style | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4v16M17 4v16"/><path d="M20 4H9.5a4 4 0 0 0 0 8H13"/></svg>` |
+| `font` | text | Font | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 19 5-14 5 14"/><path d="M4.8 14h6.4"/><circle cx="17.5" cy="15.5" r="3"/><path d="M20.5 12v7"/></svg>` |
+| `line-spacing` | paragraph | Line spacing | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6h9M11 12h9M11 18h9"/><path d="M5 4v16M3 6.5 5 4l2 2.5M3 17.5 5 20l2-2.5"/></svg>` |
+| `valign` | sheet | Vertical alignment | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M4 4h16"/><path d="M12 7v10M9 14l3 3 3-3"/></svg>` |
+| `text-rotation` | sheet | Text rotation | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 17 10-10"/><path d="M11 7h6v6"/><path d="M4 20h8"/></svg>` |
+| `number-format` | sheet | Number format | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 4 7.5 20M16.5 4l-2 16M4.5 9h15M3.5 15h15"/></svg>` |
+| `border-style` | sheet | Border style | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h3.5M10.25 12h3.5M16.5 12H20"/><path d="M4 18h1M9.5 18h1M15 18h1M19.5 18h.5"/></svg>` |
+| `border-width` | sheet | Border width | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16" stroke-width="1"/><path d="M4 12h16" stroke-width="2.25"/><path d="M4 18h16" stroke-width="3.5"/></svg>` |
+| `decimal-decrease` | sheet | Decrease decimal places | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5h.01"/><rect x="7" y="7.5" width="5" height="9" rx="2.5"/><path d="M21 19.5h-6.5M16.5 17.5l-2 2 2 2"/></svg>` |
+| `decimal-increase` | sheet | Increase decimal places | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16.5h.01"/><rect x="5.5" y="7.5" width="5" height="9" rx="2.5"/><rect x="12.5" y="7.5" width="5" height="9" rx="2.5"/><path d="M14 20h6.5M18.5 18l2 2-2 2"/></svg>` |
+| `arrange` | slides | Arrange | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 8 4-8 4-8-4z"/><path d="m4 12 8 4 8-4"/><path d="m4 16 8 4 8-4"/></svg>` |
+| `slide-earlier` | slides | Move slide earlier | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM12 7.5V2.5M9.5 5 12 2.5 14.5 5"/></svg>` |
+| `slide-later` | slides | Move slide later | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM12 16.5v5M9.5 19l2.5 2.5 2.5-2.5"/></svg>` |
+| `page-view` | navigation | Paged view | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="14" rx="1.5"/><rect x="13" y="5" width="8" height="14" rx="1.5"/></svg>` |
+| `scroll-view` | navigation | Scrolling view | `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M12 7.5v9M9.5 10 12 7.5l2.5 2.5M9.5 14 12 16.5l2.5-2.5"/></svg>` |
 | `prev` | navigation | Previous | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>` |
 | `next` | navigation | Next | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>` |
 | `rotate` | navigation | Rotate | `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg>` |
@@ -205,3 +220,17 @@ Report the AGENTS.md audit record and list every converted button as `id: old la
 | EPUB | Aa | `reader-settings` |
 
 `.0←` / `→.00` (decimal places) and numeric labels such as zoom `100%` stay as text: they are values, not actions with a clear pictogram.
+
+## 8. Value pickers and zoom (round 2)
+
+Native `<select>` elements stay in place (same ID, options, values and handlers); only their appearance changes.
+
+| Pattern | Rule | Used for |
+|---|---|---|
+| Icon select | `appearance:none`, 28×28, radius 10, text transparent, section-4 icon as a background `data:` SVG (one light, one dark variant); options keep normal text colour | paragraph style, font family, alignment, line spacing, number format, borders, border style/width, vertical alignment, wrap, rotation, functions, shape, layout, transition, arrange |
+| Compact value select | `appearance:none`, 28px high, 44–60px wide, centred 14px text, no arrow | font size, PDF zoom preset, PDF text size / pen thickness / opacity |
+| Zoom button | magnifier icon hidden; shows only the percentage | Documents, Spreadsheets, Presentations |
+
+Toolbar metrics are applied with id-level selectors (`#formatbar`, `#editbar`, `#toolbar`) and `!important` where `shared/ui-density.css` would otherwise win: gap 3px, controls 28px, icons 18px/1.75, dividers 24px. A divider directly before a hidden tool group is hidden (`.tool-divider:has(+ .tool-group[hidden])`).
+
+The icon-select and metric CSS in each app is generated from the section-4 icon table; each app keeps its own copy.
