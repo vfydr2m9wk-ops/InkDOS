@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.0 — 2026-09-27
+
+- Unify the visual language of all six workspaces around one documented system (`docs/visual-system.md`): 44px frame and toolbar rows, 28px controls, 3px spacing, 10px radius, 18px stroke icons and a shared canonical icon set, each app keeping its own copy and accent colour.
+- Replace text and glyph toolbar buttons with icons in Documents, Spreadsheets, Presentations, PDF, Plain Text and EPUB, keeping every former label as tooltip and accessible name; value pickers (style, font, alignment, spacing, number format, borders, shape, layout, transition…) render as compact icon controls, font size as a compact number and zoom as a plain percentage.
+- Presentations: remove the 18px top-bar offset, stacked toolbar dividers and the ambiguous slide-move glyphs; PDF: 44px toolbar with compact zoom, page and property pickers; EPUB: icon flow switch; Plain Text: 44px frame and uniform spacing.
+- Home: add a "Desktop release" link to the latest GitHub release next to the source and limitations links.
+- Release process: disconnect the pre-publication physical Windows device-upgrade gate (maintainer decision); stabilise the conditional button audit for EPUB page turns and the Presentations table fixture.
+- No editor, file engine, storage or command behaviour changes are part of this release.
+
 ## 2.6.2 Beta — 2026-09-24
 
 - Harden XeOS 2.7.5 direct file launches by registering each workspace launchQueue bridge before deferred boot and declaring focus-existing launch handling while preserving each app's existing file handlers, PWA identity, scope and start URL.
