@@ -29,7 +29,7 @@ def main() -> None:
     app = (PDF / "app.js").read_text(encoding="utf-8")
     service_worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
     root_index = (ROOT / "index.html").read_text(encoding="utf-8")
-    workflow = (ROOT / ".github" / "workflows" / "stability-freeze-regression.yml").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     release_validation = (ROOT / "scripts" / "run_release_validation.py").read_text(encoding="utf-8")
 
     for relative in DYNAMIC_PDF_ASSETS:
@@ -42,9 +42,8 @@ def main() -> None:
     assert "navigator.serviceWorker.register('./service-worker.js'" in root_index
 
     # The permanent aggregate validator owns PDF regression coverage after
-    # legacy per-workspace workflow consolidation.
-    assert "service-worker.js" in workflow
-    assert "test_pdf_stability_offline.py" in workflow
+    # legacy per-workspace workflow consolidation (the per-workspace
+    # stability-freeze workflow no longer exists; CI runs the aggregate).
     assert "scripts/run_release_validation.py" in workflow
     assert "test_pdf_p2_page_tools.cjs" in release_validation
 
