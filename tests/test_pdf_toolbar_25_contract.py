@@ -36,7 +36,7 @@ def main():
     assert "utility.insertBefore(printBtn" in reader
 
     # Page structure remains adjacent to navigation and compact in the rail.
-    assert "button.className='tool-btn icon-only'" in pages
+    assert "button.className='tool-btn icon-only annotate-only'" in pages
     assert "button.title='Organize pages'" in pages
     assert "nav.insertAdjacentElement('afterend',button)" in pages
 
