@@ -51,9 +51,10 @@ def main():
               };
               const editor=globalThis.InkDOS2Documents.DocumentsApp;
               const historyBefore=document.getElementById('undoBtn')?.disabled;
-              const oldPrompt=globalThis.prompt;
-              globalThis.prompt=()=>null;
-              try{await dbg.executeCommand('insert.table')}finally{globalThis.prompt=oldPrompt}
+              const pending=dbg.executeCommand('insert.table');
+              for(let i=0;i<50&&document.getElementById('inkdosAskPanel')?.hidden!==false;i++)await new Promise(r=>setTimeout(r,20));
+              document.getElementById('inkdosAskCancel').click();
+              await pending;
               await new Promise(r=>setTimeout(r,350));
               return {
                 before,

@@ -40,10 +40,10 @@ def test_saved_selection_preserves_reverse_direction():
 
 def test_insert_table_cancel_guards_precede_mutation():
     function = EDITOR.split("function insertTable(){", 1)[1].split("}\n function selectedCell", 1)[0]
-    rows_cancel = function.index("if(rowsInput===null)return")
-    cols_cancel = function.index("if(colsInput===null)return")
+    ask = function.index("dialog.ask(")
+    cancel = function.index("if(input===null)return")
     mutation = function.index("cmd('insertHTML'")
-    assert rows_cancel < cols_cancel < mutation
+    assert ask < cancel < mutation
 
 
 if __name__ == "__main__":
