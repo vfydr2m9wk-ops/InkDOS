@@ -7,7 +7,7 @@ def test_checklist_toolbar_and_command_wiring():
     html=read("apps/documents/index.html")
     commands=read("apps/documents/runtime/commands/document-commands.js")
     controller=read("apps/documents/ui/command-controller.js")
-    assert 'id="checklistBtn"' in html and '☐≡' in html
+    assert 'id="checklistBtn"' in html and 'title="Checklist" aria-label="Checklist"' in html
     assert "register('format.checklist',()=>editor.toggleChecklist())" in commands
     assert "bindClick('checklistBtn','format.checklist')" in controller
 
