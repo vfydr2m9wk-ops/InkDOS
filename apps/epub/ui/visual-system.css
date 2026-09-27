@@ -2,3 +2,10 @@
 :root[data-ui-density="desktop"] .toolstrip-shell .tool-btn{width:28px;height:28px;min-width:28px;padding:0}
 .toolstrip-shell #tocBtn.tool-btn.text,.toolstrip-shell #appearanceBtn.tool-btn.text{width:var(--control);min-width:var(--control);padding:0;gap:0;justify-content:center}
 .toolstrip-shell .tool-btn svg{width:18px;height:18px;stroke-width:1.75}
+
+/* Round 2 (generated): id-level toolbar metrics; flow switch as icons. */
+#toolbar,#toolbar .tool-group{gap:3px!important}
+#toolbar .tool-btn{width:28px!important;min-width:28px!important;padding:0!important;gap:0!important;height:28px!important;min-height:28px!important;border-radius:10px}
+#toolbar .tool-btn{width:28px!important;min-width:28px!important;padding:0!important;gap:0!important;width:28px!important;min-width:28px!important;padding:0!important}
+#toolbar .tool-btn svg{width:18px!important;height:18px!important;stroke-width:1.75}
+#toolbar .flow-switch{padding:2px;gap:2px}#toolbar .flow-switch button{width:26px!important;min-width:26px!important;height:24px!important;padding:0!important;display:grid;place-items:center;border-radius:8px}#toolbar .flow-switch svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
