@@ -118,7 +118,7 @@ def main() -> None:
             assert page.evaluate("() => globalThis.__inkdosPresentations.present(false)") is True
             page.wait_for_function("() => !!document.getElementById('presentHost').firstElementChild")
             animations = page.evaluate(
-                "() => document.getElementById('presentHost').firstElementChild.getAnimations?.().length || 0"
+                "() => document.getElementById('presentHost').firstElementChild.getAnimations?.({subtree:true}).length || 0"
             )
             assert animations >= 1, {"browser": browser_name, "animations": animations}
             page.click("[data-present-exit]")
