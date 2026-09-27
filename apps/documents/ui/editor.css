@@ -9,3 +9,4 @@
 
 .checklist-marker{display:inline-block;min-width:1.35em;font-family:Arial,sans-serif;font-weight:400;user-select:none;-webkit-user-select:none}
 [data-checklist="1"]{list-style:none}
+.ask-card{text-align:left}.ask-card h2{margin:0 0 6px}.ask-card p{margin:0 0 8px;color:var(--muted,inherit)}.ask-fields{display:grid;gap:10px;margin:12px 0 4px}.ask-field{display:grid;gap:4px}.ask-field input{min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}

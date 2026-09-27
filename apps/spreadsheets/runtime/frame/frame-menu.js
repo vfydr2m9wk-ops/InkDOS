@@ -13,6 +13,7 @@ function bindDrawer({trigger,drawer,backdrop,closeButton,onOpen,onClose}={}){
  function close({restoreFocus=true}={}){drawer.hidden=true;backdrop.hidden=true;trigger.setAttribute('aria-expanded','false');if(typeof onClose==='function')onClose();if(restoreFocus)trigger.focus?.({preventScroll:true})}
  function toggle(){drawer.hidden?open():close()}
  trigger.addEventListener('click',toggle);closeButton?.addEventListener('click',()=>close());backdrop.addEventListener('click',()=>close());
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.hidden)close()});
  return Object.freeze({open,close,toggle,get isOpen(){return !drawer.hidden}})
 }
 function bindPopover({trigger,popover,onOpen,onClose}={}){
