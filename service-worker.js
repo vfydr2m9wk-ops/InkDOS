@@ -1,9 +1,9 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.6.2-dda0a0f1af0c9b4b2ab4';
+const CACHE_NAME='inkdos-v2.6.2-2466e547c3ba289bb6c2';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "20a9f44ddb8e6d15a31ef149363b5ab04ef5a8a83ec6b262d60b92d23af748a2",
-  "./apps/documents/app.js": "9b15df6190c50844594d9946e38c846038e04d7ff31c386ae680dfb4778f4a19",
+  "./apps/documents/app.js": "652987e27a756c2895f33f785ed9e87f2d92489a198265c9a32e61c95ac3666b",
   "./apps/documents/assets/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./apps/documents/engine/d1-docx-extension.js": "9be5351134ed958dbd2e4276259c9f67b627fbcdaf518d76153637d554326c94",
   "./apps/documents/engine/d2-docx-extension.js": "3a55610c65ab5de0d43f3999ac75f8d81ea78d64909989597d2e781935551ee6",
@@ -49,7 +49,7 @@ const ASSET_HASHES={
   "./apps/documents/view/page-surface.js": "d9b753cba64ad5fa48a74ac5ff4d9244479e2173c419d0eb01306bde310c7a6b",
   "./apps/documents/view/pagination-engine.js": "6738f6366743b26fdcda32fb6ed2711ec76fd2ee220482a0e413db84213a6e35",
   "./apps/documents/view/zoom-controller.js": "6aa8b3376a922f44efcbb4d7ef4e57833c76d8ea4727d40536b30d20d9230831",
-  "./apps/epub/app.js": "a650a39eced5316fcddffc32a8ba72031525a657b6eaa1f5661598413c1c483b",
+  "./apps/epub/app.js": "7e3e4e41b6397c38f75056d3612125f330872ccf789b65271470e90e43f2e32a",
   "./apps/epub/assets/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./apps/epub/engine/annotations.js": "a68292526c67595643e3ff0fbe76db5085bcea1eda6dbc22c927ffc6aec263fc",
   "./apps/epub/engine/book-model.js": "ed1a4967caa50623615e1f56685eaf008c118592ce662e14ca29ecc88d6d2cdf",
@@ -175,7 +175,7 @@ const ASSET_HASHES={
   "./apps/presentations/view/presentation-surface.css": "1d31bfb7f7bc31c9cedcc8abeeeabeeab02749d3354f55abf7d17da025529e76",
   "./apps/presentations/view/slide-surface.js": "638fd057df887ad9e7e315b4e92303efe51a5035304168ac57c39b8f06f42619",
   "./apps/presentations/view/zoom-controller.js": "ce2fab2d21b4ab29496f68a72c9ef99a096bb45d232105ecfd5c3d4c253bee6c",
-  "./apps/spreadsheets/app.js": "93cc4a0449c1e4004e9b60157d46b3d151034d622a8b7e4ea3ac2d14e6d0bda7",
+  "./apps/spreadsheets/app.js": "db86aacc00e98266c72da6e0fe6b93a9bdb58c8e7588683ebec6ee2fcd431ee6",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./apps/spreadsheets/engine/formula/arithmetic.js": "90b3a0f135445fcacbfa64903125c4efbe94d28b382857e937bd1d45b71d757a",
   "./apps/spreadsheets/engine/formula/evaluator.js": "c1ca9eae9115038b0578ea0482e98f0411c3f752d2b9085d8f659e90e9d4f1b0",
@@ -188,7 +188,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/index.html": "b6986ddeae35f7079d6dca433a6ad49c469999632fc24a6ed5f13dca96ed7ca2",
   "./apps/spreadsheets/io/delimited-text.js": "5c1c4b49c7521901cac93623164733506c4cb263097b42e8e48870527f8a4329",
   "./apps/spreadsheets/io/file-delivery.js": "66f3afbf5954d9f5e500b464c77bfcb7597e819255943d07367362e26232dc23",
-  "./apps/spreadsheets/io/file-open-controller.js": "4bb4221bb5a1da26c60f8f2a8c14bc622d025a5984d605f265f4b59b68c76e55",
+  "./apps/spreadsheets/io/file-open-controller.js": "2103389ba98629d3a2dd63c6abc7e077e60e32d1b0234281d4d0a0c40d45383e",
   "./apps/spreadsheets/io/package-validator.js": "f8a95123b353e2fc64083d0da399b76e50ac695c8f6eb74fd245981d6dd3dc61",
   "./apps/spreadsheets/io/save-controller.js": "12748c6ca03df4284a522f7304efdbdeea4096b9fdfb9106d1a1e72626839b49",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
@@ -218,7 +218,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/view/grid-surface.css": "743d6e2d97fbd2a8b8e55a6f31486e626690dceaa13cd23505ebd0b3d0b1c482",
   "./apps/spreadsheets/view/grid-surface.js": "da3d114f8c26e84f08c22b26810eadcd72302829eaf21204146d00c2d2ff30f7",
   "./apps/spreadsheets/view/zoom-controller.js": "074b6b5ad70c1a8c3c6029bb850cb1e910f09138c589d48ee5f8b35f94871c0e",
-  "./apps/txt/app.js": "feda15d14ca20cecc387d707b2cbb6fc5f874a44e1f1191906cee4be6c8002d0",
+  "./apps/txt/app.js": "f6768437a4df78fa6a2faf1985287c1415f0662950cdec15ec98a7eb3a636f38",
   "./apps/txt/assets/ASSET-PROVENANCE.txt": "a3f0415081d9e5e1842fbb12202ca29a299a91024d136d30ed92c5e168a1250c",
   "./apps/txt/assets/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
   "./apps/txt/editor/editor-controller.js": "6042ca074e7ba26c1bcb6fef2b5a806e692a90ddac16e99a33a41034c9ee8a91",
@@ -226,7 +226,7 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "570b9c11ca03220c8bdd57fb7a750f270b3a343991cf9a62c15f066360f8848e",
+  "./apps/txt/index.html": "eedd540e9e7adf24284be7d1aafe75977bc4c239801e237d9157946791bfe25a",
   "./apps/txt/io/txt-file-controller.js": "a743bc1c5adca8818438285934bb2939868730efb8210c830205d15a8f65d3e6",
   "./apps/txt/manifest.webmanifest": "7c4a9ad09b7ce251c5820ee1fe314a9498648c009d4030823a4dd0497eff0a86",
   "./apps/txt/page.template.html": "48b53d973350b074341a17ae9287b3aa942ab3b241eaa5c751227f2d8604053e",
