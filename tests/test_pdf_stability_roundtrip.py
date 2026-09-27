@@ -13,7 +13,7 @@ def wait_port(port,timeout=10.0):
         time.sleep(.1)
     raise RuntimeError("Local test server did not start")
 def force_download_delivery(page):
-    page.evaluate(r"""() => {for(const[target,key]of[[window,'showSaveFilePicker'],[navigator,'share'],[navigator,'canShare']]){try{Object.defineProperty(target,key,{value:undefined,configurable:true})}catch(_){}}window.confirm=()=>true;}""")
+    page.evaluate(r"""() => {for(const[target,key]of[[window,'showSaveFilePicker'],[navigator,'share'],[navigator,'canShare']]){try{Object.defineProperty(target,key,{value:undefined,configurable:true})}catch(_){}}window.confirm=()=>true;new MutationObserver(()=>document.querySelector('#pdfConfirmDialog [data-choice="confirm"]')?.click()).observe(document.body,{childList:true});}""")
 def save_download(page,target):
     with page.expect_download(timeout=30000) as info:page.click("#saveToolbarBtn")
     download=info.value;download.save_as(str(target));return download.suggested_filename

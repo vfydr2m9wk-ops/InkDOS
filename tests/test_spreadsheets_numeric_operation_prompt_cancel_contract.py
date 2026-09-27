@@ -4,7 +4,9 @@ ROOT=Path(__file__).resolve().parents[1]
 SRC=(ROOT/'apps/spreadsheets/ui/chrome-controller.js').read_text(encoding='utf-8')
 
 def main():
-    guard="const input=root.prompt(kind==='multiply'?'Multiply selected cells by:':'Divide selected cells by:','2');if(input===null||String(input).trim()==='')return;const f=Number(input);if(Number.isFinite(f))commands.execute('operation.apply',kind,f)"
+    guard="const input=answer===null?null:answer.value;if(input===null||String(input).trim()==='')return;const f=Number(input);if(Number.isFinite(f))commands.execute('operation.apply',kind,f)"
+    if "label:kind==='multiply'?'Multiply selected cells by:':'Divide selected cells by:',value:'2'" not in SRC:
+        raise AssertionError('multiply/divide must ask for the factor in the app dialog with the same default')
     if guard not in SRC:
         raise AssertionError('cancelled or blank multiply/divide prompt must not coerce null/empty text to zero and mutate the selection')
     legacy="Number(root.prompt(kind==='multiply'?'Multiply selected cells by:':'Divide selected cells by:','2'))"

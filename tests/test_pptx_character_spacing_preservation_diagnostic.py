@@ -86,7 +86,7 @@ def main() -> None:
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.sourceKind === 'pptx'")
 
             state = page.evaluate(
-                """marker => {
+                r"""marker => {
                     const NS=globalThis.InkDOS2Presentations,app=globalThis.__inkdosPresentations;
                     const object=app.session.currentSlide.objects.find(o=>o.type==='text' && String(o.text||'').includes(marker));
                     const run=object?.paragraphs?.flatMap(p=>p.runs||[]).find(r=>r.text===marker)||null;
