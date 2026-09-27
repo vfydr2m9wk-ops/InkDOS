@@ -183,7 +183,7 @@ def main() -> None:
 
             page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.goToPage(2)")
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.currentPage === 2")
-            page.click("#pageToolsBtn"); page.once("dialog", lambda dialog: dialog.accept()); page.click("#pageDeleteBtn")
+            page.click("#pageToolsBtn"); page.click("#pageDeleteBtn"); page.click("#pdfConfirmDialog [data-choice=\"confirm\"]")
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 4", timeout=15000)
             assert page.locator("#pageToolsPanel").is_hidden()
 
