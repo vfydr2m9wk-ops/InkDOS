@@ -1,5 +1,5 @@
 (function(root){'use strict';
-const NS=root.InkDOS2Spreadsheets=root.InkDOS2Spreadsheets||{},session=new NS.WorkbookSession(),dialog=NS.SessionDialog.create(),chrome=NS.ChromeController.create({session}),actions={};let editorController=null,leaving=false,authorizedUnload=false;
+const NS=root.InkDOS2Spreadsheets=root.InkDOS2Spreadsheets||{},session=new NS.WorkbookSession(),dialog=NS.SessionDialog.create(),chrome=NS.ChromeController.create({session,dialog}),actions={};let editorController=null,leaving=false,authorizedUnload=false;
 NS.Appearance.install();chrome.sync();
 function onCommitted(info){if(!editorController){editorController=NS.EditorController.create({session,chrome,dialog,actions});chrome.bindEditorControls(editorController.commands)}editorController.activate();chrome.sync();chrome.toast(info.newBook?'New workbook created':`${session.book.sheets.length} worksheet${session.book.sheets.length===1?'':'s'} opened${info.legacy?' · XLS imported as editable XLSX model':''}`)}
 const saveController=NS.SaveController.create({session,dialog,setLoading:chrome.setLoading,onStatus:chrome.toast,onError:chrome.showError,onSessionChanged:chrome.sync});

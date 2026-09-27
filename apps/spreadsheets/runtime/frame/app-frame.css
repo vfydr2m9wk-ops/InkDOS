@@ -7,3 +7,4 @@
 @media(max-width:720px){.document-title{max-width:56vw}.spreadsheets-icon{width:27px;height:27px}.title-input{width:42vw;padding:0 8px}.status-area #selectionStats{display:none}}
 @media(max-width:470px){.spreadsheets-icon{display:none}.document-title{max-width:52vw}.title-input{width:48vw;min-width:86px}.bottom-shell{grid-template-columns:minmax(0,1fr)}.status-area{display:none}.drawer{width:calc(100vw - var(--safe-l) - var(--safe-r));padding:10px}}
 .close-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ask-card h2{margin:0 0 6px}.ask-card p{margin:0 0 8px;color:var(--muted)}.ask-fields{display:grid;gap:10px;margin:12px 0 4px}.ask-field{display:grid;gap:4px}.ask-field input,.ask-field select{min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
