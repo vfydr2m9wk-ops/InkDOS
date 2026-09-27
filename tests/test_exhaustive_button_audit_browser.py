@@ -423,6 +423,11 @@ def main():
             json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
         print(json.dumps(report["summary"], indent=2, ensure_ascii=False))
+        # An unreachable base yields empty inventories; that must not read as a clean audit.
+        empty = [app for app, data in report["apps"].items() if not data["controls"]]
+        if not report["apps"] or empty:
+            print("Button audit discovered no controls for:", ", ".join(empty) or "all apps", "- is INKDOS_ONLINE_BASE serving InkDOS?", BASE)
+            raise SystemExit(1)
         if failures:
             print("Button audit found click failures; see", OUT / "report.json")
             raise SystemExit(1)
