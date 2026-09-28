@@ -51,5 +51,71 @@
       "name": "PDF Workspace",
       "url": "./apps/pdf/index.html"
     }
-  ]
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+          ".docx"
+        ],
+        "application/rtf": [
+          ".rtf"
+        ],
+        "application/msword": [
+          ".doc"
+        ],
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+          ".xlsx"
+        ],
+        "application/vnd.ms-excel": [
+          ".xls"
+        ],
+        "text/csv": [
+          ".csv"
+        ],
+        "text/tab-separated-values": [
+          ".tsv"
+        ],
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
+          ".pptx"
+        ],
+        "application/vnd.ms-powerpoint": [
+          ".ppt"
+        ],
+        "application/pdf": [
+          ".pdf"
+        ],
+        "text/plain": [
+          ".txt",
+          ".md",
+          ".markdown",
+          ".log",
+          ".ini",
+          ".cfg",
+          ".conf",
+          ".toml",
+          ".properties"
+        ],
+        "application/xml": [
+          ".xml"
+        ],
+        "application/json": [
+          ".json",
+          ".jsonl",
+          ".ndjson"
+        ],
+        "application/yaml": [
+          ".yaml",
+          ".yml"
+        ],
+        "application/epub+zip": [
+          ".epub"
+        ]
+      }
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-new"
+  }
 }

@@ -8,3 +8,14 @@ html[data-theme="dark"]{--bg:#11161c;--card:#1c222a;--text:#edf2f7;--muted:#aab5
 .home-footer{margin-top:auto;padding-top:42px;display:flex;align-items:center;gap:24px;color:var(--footer);font-size:12px}.home-footer nav{margin-left:auto;display:flex;align-items:center;gap:22px}.home-footer a:hover{text-decoration:underline}
 @media(max-width:720px){.home-shell{width:min(100% - 28px,560px);padding:22px 0 20px}.brand-row{min-height:48px}.brand-mark{width:42px;height:42px;border-radius:11px}.brand-mark img{width:28px;height:28px}.brand-copy strong{font-size:19px}.theme-button{width:36px;height:36px;border-radius:10px}.intro{padding:36px 2px 22px}.intro h1{font-size:36px}.workspace-grid{grid-template-columns:1fr;gap:14px}.workspace-card{min-height:112px;padding:20px 46px 20px 24px;border-radius:17px;grid-template-columns:50px minmax(0,1fr);column-gap:16px}.workspace-card .accent{top:16px;bottom:16px;width:4px}.app-icon{width:50px;height:50px;border-radius:13px}.app-icon img{width:34px;height:34px}.workspace-copy strong{font-size:17px}.workspace-copy small{font-size:12px;margin-top:5px}.chevron{right:20px;font-size:29px}.home-footer{padding-top:28px;align-items:flex-start;flex-direction:column;gap:14px}.home-footer nav{margin-left:0;gap:16px;flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){.workspace-card[href]{transition:none}}
+
+/* File launch hosting: Home routes a launched file into its workspace, shown full window. */
+body.home-launching{overflow:hidden}
+body.home-launching .home-shell{display:none}
+.home-launch-host{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg,#f2f5f8);z-index:10}
+.home-launch-tabs{display:flex;gap:4px;padding:4px 8px;border-bottom:1px solid var(--line,#dce1e9);overflow-x:auto;flex:0 0 auto}
+.home-launch-tab{border:1px solid var(--line,#dce1e9);border-radius:8px;background:var(--panel,#fff);color:inherit;font:inherit;font-size:13px;padding:4px 10px;white-space:nowrap;cursor:pointer}
+.home-launch-tab[aria-selected="true"]{border-color:currentColor;font-weight:600}
+.home-launch-frame{flex:1 1 auto;width:100%;border:0;display:block}
+.home-launch-frame[hidden]{display:none}
+.home-launch-note{margin:24px;font-size:15px}

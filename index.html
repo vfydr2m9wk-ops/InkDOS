@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fqvsUHTwqTos1UGKFAQ0WiJqHz6X/fd7NHpppe0z/7E=' 'sha256-rY35EoOYQrHxZiu0mHsF4OReQbn+gf5zZjSOsLx3+Jo='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fqvsUHTwqTos1UGKFAQ0WiJqHz6X/fd7NHpppe0z/7E=' 'sha256-rY35EoOYQrHxZiu0mHsF4OReQbn+gf5zZjSOsLx3+Jo='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'self'; manifest-src 'self'">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f8fa">
@@ -16,6 +16,7 @@
   <link rel="icon" href="./assets/icons/office.svg">
   <link rel="apple-touch-icon" href="./assets/icons/office.png">
   <link rel="manifest" href="./manifest.webmanifest">
+  <script src="./assets/home-launch.js"></script>
   <script>(function(){var m='system';try{m=localStorage.getItem('inkdos2:appearance')||'system'}catch(_){}if(!/^(light|dark|system)$/.test(m))m='system';var d=m==='dark'||(m==='system'&&typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches);var r=d?'dark':'light';document.documentElement.dataset.appearance=r;document.documentElement.dataset.appearanceResolved=r;document.documentElement.dataset.appearanceMode=m;document.documentElement.dataset.theme=r;document.documentElement.style.colorScheme=r})();</script>
   <link rel="stylesheet" href="./assets/home.css?v=2.7.2">
   <link rel="stylesheet" href="./shared/ui-density.css">

@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-0d7a7b86400ea1fcf63e';
+const CACHE_NAME='inkdos-v2.7.2-fd164b9a910083e34252';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -248,7 +248,8 @@ const ASSET_HASHES={
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "3a024e4aa49e0038004f4fa1277991c729927e9c595f7f4b7b2ed8286ad65a8f",
-  "./assets/home.css": "7fa7dce81b14f316a528f578c2b5708704b9b0fcfca45d23f231abfd470a60ce",
+  "./assets/home-launch.js": "27338235ed6dec95b34005a3e13ee5df9d49b138fa975ec28780accd9d92055f",
+  "./assets/home.css": "10096939bda42904166b39d92e52198e40eb2a62faf63c9f92577d78d1283a43",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./assets/icons/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./assets/icons/office.png": "3419ee565a70ba6caf26dcc1d86b1e4a493afb21e072941ebf9c4d21b62ffba5",
@@ -257,8 +258,8 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "14541368a4d37956022fa02fbd09afed3412749c01850858871ad346f582fd5b",
-  "./manifest.webmanifest": "93bfa1f1979029c59851c18d5d241b658b816b940c684b38239f90eb1ad8eebe",
+  "./index.html": "68202cfc488a4e7dc35f2cf35563fe8f6f10d8869bfceae7b00fc4a30071dfde",
+  "./manifest.webmanifest": "dce6a9c3fc97e7c0599065bf518748c98cdb5bcdea509ff56936bd02ecbaac46",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
   "./shared/localization/locales/de.js": "dd7122d4042b927aafe665513d89008d668650636da7836aecfeb4282ad5e159",
   "./shared/localization/locales/es.js": "54fd5a391549147edf137f9607ceeea092ee39d83e1095700a186f8075307e59",
@@ -368,6 +369,7 @@ const APP_SHELL=[
   "./assets/icons/presentations.png",
   "./assets/icons/txt.svg",
   "./assets/icons/epub.svg",
+  "./assets/home-launch.js",
   "./apps/documents/app.js",
   "./apps/documents/assets/documents.svg",
   "./apps/documents/engine/d1-docx-extension.js",
