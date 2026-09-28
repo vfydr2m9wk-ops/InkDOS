@@ -69,9 +69,12 @@ def main() -> None:
         manifest_ids.add(manifest_id)
         if manifest.get("start_url") != "./index.html" or manifest.get("scope") != "./":
             raise AssertionError(f"{app}: app-local PWA start_url/scope changed unexpectedly")
+        # XeOS groups every InkDOS window under one host, so "focus-existing" made each workspace
+        # launch (Dock or file) refocus whichever InkDOS window was already open. Leave launch
+        # handling to the host default so each workspace keeps its own window.
         launch_handler = manifest.get("launch_handler") or {}
-        if launch_handler.get("client_mode") != "focus-existing":
-            raise AssertionError(f"{app}: XeOS/PWA launch_handler must focus the existing app window")
+        if launch_handler.get("client_mode") == "focus-existing":
+            raise AssertionError(f"{app}: focus-existing makes XeOS reuse another workspace's window")
 
         handled = handler_extensions(manifest)
         if handled != expected:
