@@ -1,0 +1,59 @@
+name: Cloudflare Pages per-workspace hosts
+
+# Publishes the web runtime to one Cloudflare Pages project per workspace, so each
+# workspace has its own hostname (<project>.pages.dev). Hosts such as XeOS group web
+# apps by hostname; separate hosts let each workspace keep its own window.
+# Needs repository secrets CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit)
+# and CLOUDFLARE_ACCOUNT_ID. Without them the job is skipped.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-cloudflare-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Skip when Cloudflare is not configured
+        id: gate
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not set; skipping Cloudflare Pages deploy."
+          fi
+
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: steps.gate.outputs.enabled == 'true'
+        with:
+          persist-credentials: false
+
+      - name: Stage web runtime
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          mkdir -p site
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'tests' --exclude 'scripts' \
+            --exclude 'desktop' --exclude 'docs/audits' --exclude 'artifacts' --exclude 'audit-stateful-controls' \
+            ./ site/
+
+      - name: Deploy one project per workspace
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          for project in inkdos-documents inkdos-sheets inkdos-slides inkdos-pdf inkdos-text inkdos-epub; do
+            npx --yes wrangler@4 pages project create "$project" --production-branch main >/dev/null 2>&1 || true
+            npx --yes wrangler@4 pages deploy site --project-name "$project" --branch main --commit-dirty=true
+            echo "::notice::Deployed https://$project.pages.dev/"
+          done
