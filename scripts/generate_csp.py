@@ -70,12 +70,17 @@ def inline_script_hashes(text: str) -> list[str]:
     return sorted(hashes)
 
 
-def policy_for(text_without_csp: str) -> str:
+# Home hosts a launched file's workspace in a same-origin frame; workspaces frame nothing.
+FRAME_SELF_ENTRY_POINTS = frozenset({Path("index.html")})
+
+
+def policy_for(text_without_csp: str, frame_self: bool = False) -> str:
     hashes = inline_script_hashes(text_without_csp)
     script = "script-src 'self'"
     if hashes:
         script += " " + " ".join(hashes)
-    return "; ".join((BASE_DIRECTIVES[0], script, *BASE_DIRECTIVES[1:]))
+    rest = [("frame-src 'self'" if frame_self and d == "frame-src 'none'" else d) for d in BASE_DIRECTIVES[1:]]
+    return "; ".join((BASE_DIRECTIVES[0], script, *rest))
 
 
 def insertion_for(text: str, charset: re.Match[str], meta: str) -> str:
@@ -95,7 +100,7 @@ def insertion_for(text: str, charset: re.Match[str], meta: str) -> str:
     return "\n" + prefix + meta
 
 
-def render(text: str) -> str:
+def render(text: str, frame_self: bool = False) -> str:
     """Render exactly one deterministic CSP meta tag into an entry point.
 
     Idempotence is intentionally enforced at the artifact boundary by
@@ -104,7 +109,7 @@ def render(text: str) -> str:
     bundle construction (notably the compact Plain Text entry point).
     """
     clean = strip_existing_csp(text)
-    policy = policy_for(clean)
+    policy = policy_for(clean, frame_self)
     meta = f'<meta http-equiv="Content-Security-Policy" content="{policy}">'
     charset = CHARSET_RE.search(clean)
     if not charset:
@@ -115,7 +120,7 @@ def render(text: str) -> str:
 
 def process(path: Path, check: bool) -> bool:
     source = path.read_text(encoding="utf-8")
-    expected = render(source)
+    expected = render(source, path.relative_to(ROOT) in FRAME_SELF_ENTRY_POINTS)
     if source == expected:
         return False
     if check:
