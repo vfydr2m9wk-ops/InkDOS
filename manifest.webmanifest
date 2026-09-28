@@ -54,7 +54,7 @@
   ],
   "file_handlers": [
     {
-      "action": "./index.html",
+      "action": "./apps/documents/index.html",
       "accept": {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
           ".docx"
@@ -64,7 +64,12 @@
         ],
         "application/msword": [
           ".doc"
-        ],
+        ]
+      }
+    },
+    {
+      "action": "./apps/spreadsheets/index.html",
+      "accept": {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
           ".xlsx"
         ],
@@ -76,16 +81,31 @@
         ],
         "text/tab-separated-values": [
           ".tsv"
-        ],
+        ]
+      }
+    },
+    {
+      "action": "./apps/presentations/index.html",
+      "accept": {
         "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
           ".pptx"
         ],
         "application/vnd.ms-powerpoint": [
           ".ppt"
-        ],
+        ]
+      }
+    },
+    {
+      "action": "./apps/pdf/index.html",
+      "accept": {
         "application/pdf": [
           ".pdf"
-        ],
+        ]
+      }
+    },
+    {
+      "action": "./apps/txt/index.html",
+      "accept": {
         "text/plain": [
           ".txt",
           ".md",
@@ -108,7 +128,12 @@
         "application/yaml": [
           ".yaml",
           ".yml"
-        ],
+        ]
+      }
+    },
+    {
+      "action": "./apps/epub/index.html",
+      "accept": {
         "application/epub+zip": [
           ".epub"
         ]

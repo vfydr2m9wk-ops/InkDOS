@@ -33,7 +33,7 @@ function domReady(){return document.body?Promise.resolve():new Promise(r=>docume
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 async function waitFor(check,timeout){
  const end=Date.now()+timeout;
- while(Date.now()<end){try{const v=check();if(v)return v}catch(_){}await wait(50)}
+ while(Date.now()<end){try{const v=check();if(v)return v}catch(_){}await wait(25)}
  return null;
 }
 function status(text){
@@ -59,7 +59,7 @@ async function openInWorkspace(file){
  await new Promise(r=>frame.addEventListener('load',r,{once:true}));
  const input=await waitFor(()=>frame.contentDocument&&frame.contentDocument.getElementById('fileInput'),20000);
  if(!input){status('The '+route.label+' workspace did not start.');return false}
- await wait(250);
+ await wait(60);
  // Rebuild the file in the workspace's own realm so its readers see native ArrayBuffers.
  const win=frame.contentWindow,local=new win.File([await file.arrayBuffer()],file.name,{type:file.type,lastModified:file.lastModified}),dt=new win.DataTransfer();
  dt.items.add(local);input.files=dt.files;
@@ -67,8 +67,31 @@ async function openInWorkspace(file){
  if(!titleTimer)titleTimer=setInterval(syncTitle,1000);
  return true;
 }
+// Fast path: store the file, then replace Home with the workspace page itself (no Home UI, no frame).
+function handoff(file,route){
+ return new Promise((resolve,reject)=>{
+  if(!global.indexedDB)return reject(new Error('IndexedDB unavailable'));
+  file.arrayBuffer().then(data=>{
+   const req=global.indexedDB.open('inkdos-launch-handoff',1);
+   req.onupgradeneeded=()=>req.result.createObjectStore('files');
+   req.onerror=()=>reject(req.error);
+   req.onsuccess=()=>{
+    const db=req.result,id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),tx=db.transaction('files','readwrite'),store=tx.objectStore('files');
+    store.clear();store.put({name:file.name,type:file.type,lastModified:file.lastModified,data},id);
+    tx.oncomplete=()=>{db.close();resolve(id)};tx.onabort=tx.onerror=()=>{db.close();reject(tx.error)};
+   };
+  },reject);
+ }).then(id=>{global.location.replace('./apps/'+route.app+'/index.html#inkdos-launch='+id);return true});
+}
 async function consume(params){
  const handles=params&&params.files?Array.from(params.files):[];
+ if(handles.length===1&&!sessions.length){
+  document.documentElement.classList.add('home-launch-pending');
+  try{
+   const handle=handles[0],file=handle&&typeof handle.getFile==='function'?await handle.getFile():handle,route=file&&routeFor(file);
+   if(route){await handoff(file,route);return}
+  }catch(_){}
+ }
  for(const handle of handles){
   try{const file=handle&&typeof handle.getFile==='function'?await handle.getFile():handle;if(file)await openInWorkspace(file)}
   catch(e){status('InkDOS could not read the selected file.')}
