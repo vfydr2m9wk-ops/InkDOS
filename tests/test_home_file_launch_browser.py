@@ -3,7 +3,8 @@
 
 Each Home file handler targets the workspace page itself, so a host that honours handler actions
 opens the workspace directly (its own launchQueue bridge loads the file). Hosts that deliver the
-launch to Home instead are covered by Home's fallback router, tested below.
+launch to Home instead get a handoff: Home stores the file in IndexedDB and replaces itself with
+the workspace page, which picks the file up. Without IndexedDB, Home frames the workspace.
 
 Hosts such as XeOS group every InkDOS page under one app, so Home is the file entry point:
 it must declare all workspace formats, route each launched file to the right workspace
@@ -24,6 +25,9 @@ LAUNCH_STUB = r"""(() => {
   window.__inkdosLaunch = (files) => { const p = { files: files.map(f => ({ kind: 'file', getFile: async () => f })) }; if (consumer) consumer(p); else pending.push(p); };
   Object.defineProperty(window, 'launchQueue', { configurable: true, value: { setConsumer(fn) { consumer = fn; while (pending.length) fn(pending.shift()); } } });
 })();"""
+
+
+NO_IDB_ON_HOME = "if (location.pathname === '/index.html') Object.defineProperty(window, 'indexedDB', { configurable: true, value: undefined });"
 
 
 def docx_bytes() -> bytes:
@@ -138,15 +142,17 @@ def main():
                 page.goto(BASE + "/index.html", wait_until="load")
                 data = base64.b64encode(make()).decode()
                 page.evaluate("([n, t, b]) => { const raw = atob(b), u = new Uint8Array(raw.length); for (let i = 0; i < raw.length; i++) u[i] = raw.charCodeAt(i); window.__inkdosLaunch([new File([u], n, {type: t})]); }", [name, mime, data])
-                page.wait_for_function(f"() => {{ const f = document.querySelector('.home-launch-frame:not([hidden])'); return !!f && f.getAttribute('src') === './apps/{app}/index.html'; }}", timeout=15000)
-                page.wait_for_function(f"() => {{ const d = document.querySelector('.home-launch-frame:not([hidden])')?.contentDocument; try {{ return !!d && ({ready})(d); }} catch (_) {{ return false; }} }}", timeout=30000)
-                assert page.evaluate("() => document.body.classList.contains('home-launching')")
+                # Home hands the file over and is replaced by the workspace page itself.
+                page.wait_for_url(f"**/apps/{app}/index.html", timeout=15000)
+                page.wait_for_function(f"() => {{ try {{ return ({ready})(document); }} catch (_) {{ return false; }} }}", timeout=30000)
+                assert page.evaluate("() => !location.hash && !document.querySelector('.home-launch-frame')")
                 ctx.close()
                 print(f"  {name} -> {app}: OK")
 
-            # A second file arriving in the same window keeps the first one open (tabs).
+            # Fallback without IndexedDB: Home frames the workspace, and a second file keeps the first open (tabs).
             ctx = browser.new_context(viewport={"width": 1280, "height": 860}, service_workers="block")
             ctx.add_init_script(LAUNCH_STUB)
+            ctx.add_init_script(NO_IDB_ON_HOME)
             page = ctx.new_page()
             page.goto(BASE + "/index.html", wait_until="load")
             for name, mime, make, app, ready in (CASES[2], CASES[0]):

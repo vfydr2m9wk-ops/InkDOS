@@ -67,8 +67,31 @@ async function openInWorkspace(file){
  if(!titleTimer)titleTimer=setInterval(syncTitle,1000);
  return true;
 }
+// Fast path: store the file, then replace Home with the workspace page itself (no Home UI, no frame).
+function handoff(file,route){
+ return new Promise((resolve,reject)=>{
+  if(!global.indexedDB)return reject(new Error('IndexedDB unavailable'));
+  file.arrayBuffer().then(data=>{
+   const req=global.indexedDB.open('inkdos-launch-handoff',1);
+   req.onupgradeneeded=()=>req.result.createObjectStore('files');
+   req.onerror=()=>reject(req.error);
+   req.onsuccess=()=>{
+    const db=req.result,id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),tx=db.transaction('files','readwrite'),store=tx.objectStore('files');
+    store.clear();store.put({name:file.name,type:file.type,lastModified:file.lastModified,data},id);
+    tx.oncomplete=()=>{db.close();resolve(id)};tx.onabort=tx.onerror=()=>{db.close();reject(tx.error)};
+   };
+  },reject);
+ }).then(id=>{global.location.replace('./apps/'+route.app+'/index.html#inkdos-launch='+id);return true});
+}
 async function consume(params){
  const handles=params&&params.files?Array.from(params.files):[];
+ if(handles.length===1&&!sessions.length){
+  document.documentElement.classList.add('home-launch-pending');
+  try{
+   const handle=handles[0],file=handle&&typeof handle.getFile==='function'?await handle.getFile():handle,route=file&&routeFor(file);
+   if(route){await handoff(file,route);return}
+  }catch(_){}
+ }
  for(const handle of handles){
   try{const file=handle&&typeof handle.getFile==='function'?await handle.getFile():handle;if(file)await openInWorkspace(file)}
   catch(e){status('InkDOS could not read the selected file.')}
