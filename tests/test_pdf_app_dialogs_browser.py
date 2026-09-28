@@ -73,6 +73,7 @@ def main():
             page.evaluate("() => window.__printPending")
             page.wait_for_timeout(300)
             assert page.evaluate("() => document.querySelectorAll('iframe').length") == frames_before
+            assert page.evaluate("() => !document.getElementById('pdfPrintSheet')")
 
             # An unauthorized replace of a dirty PDF asks in-app; cancel keeps the current PDF.
             page.evaluate(f"() => {{ window.__openPending = {DBG}.fileOpen.openFile(new File([window.__fixture],'other.pdf',{{type:'application/pdf'}})) }}")

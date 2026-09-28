@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-5f28b4fbb78c5bab453d';
+const CACHE_NAME='inkdos-v2.7.2-71bafb002eaba860a8db';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -95,7 +95,7 @@ const ASSET_HASHES={
   "./apps/pdf/features/page-tools/actions/rotate-page.js": "c4f2c8f43eef7eb790c1bbb6dbe68cf5030276e2b90b795dfc9ee35e3d21eea1",
   "./apps/pdf/features/page-tools/actions/split-pdf.js": "1aba0877b819779d08af408da7a6977f43070f06828970a3748b147178d869da",
   "./apps/pdf/features/page-tools/page-tools-runtime.js": "a0ef1b6d6e1fe88f00083828ee5416a7d8dbbb7c7cdd366056825ebc983653b6",
-  "./apps/pdf/features/reader/reader-runtime.js": "671d08a3dd10d253083234a6ad8ab9b5e576a45e802baacbd8bd9789efecaf0f",
+  "./apps/pdf/features/reader/reader-runtime.js": "2e9cb550a3c0c29bfb96012c43be821ddf7579feb4982849d79ab5615b51953d",
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
   "./apps/pdf/index.html": "65dff9419a190f31872f7443970a2c60480593a2a2c641213afb37e1dce65ef3",
   "./apps/pdf/io/file-delivery.js": "544eb46be2c7577fc78a5ebe32ba305726e50281a9afb612f4aaf667f33b1229",
@@ -137,7 +137,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/page-layout.js": "d41b4a3aa3cd388c8e57d06619c0025c5d2d9e6817e1c98ff09b43f621e49a15",
   "./apps/pdf/view/page-renderer.js": "aad4e354377196f5de36d35808e5c69366b413d5bb2d034bc8038b3a57872706",
   "./apps/pdf/view/page-scheduler.js": "f62dced89ba9cb077b66918d797528be1c48a5fd0a441ab3910d8d1ac3a712d0",
-  "./apps/pdf/view/pdf-surface.css": "75acdfca5ef9e4539b615eff39a957f61d4254270bcaa5d0fe8d1ca5ae9560c8",
+  "./apps/pdf/view/pdf-surface.css": "288b31b86bfcbaf6b28c8d96d09a7564b1b8c3bae4d3f7d604cff2426dfe83ed",
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
   "./apps/presentations/app.js": "e057d41d323080717dcfccf2ebe64c7ac9c169aae1d44c52653c03cddda5cfeb",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
