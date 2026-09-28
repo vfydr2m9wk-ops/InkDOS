@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Home receives launched files for every supported format and hands each one to its workspace.
+"""Home declares every supported format and sends each launched file straight to its workspace.
+
+Each Home file handler targets the workspace page itself, so a host that honours handler actions
+opens the workspace directly (its own launchQueue bridge loads the file). Hosts that deliver the
+launch to Home instead are covered by Home's fallback router, tested below.
 
 Hosts such as XeOS group every InkDOS page under one app, so Home is the file entry point:
 it must declare all workspace formats, route each launched file to the right workspace
@@ -89,18 +93,16 @@ def wait_port():
 
 def check_manifest():
     home = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
-    declared = {}
-    for h in home.get("file_handlers", []):
-        assert h.get("action") == "./index.html", h
-        for mime, exts in h["accept"].items():
-            declared.setdefault(mime, set()).update(exts)
+    handlers = {h.get("action"): h["accept"] for h in home.get("file_handlers", [])}
     for app in APPS:
+        action = f"./apps/{app}/index.html"
+        assert action in handlers, f"Home must launch {app} files straight into the {app} workspace ({action})"
         m = json.loads((ROOT / "apps" / app / "manifest.webmanifest").read_text(encoding="utf-8"))
         for h in m.get("file_handlers", []):
             for mime, exts in h["accept"].items():
-                missing = set(exts) - declared.get(mime, set())
+                missing = set(exts) - set(handlers[action].get(mime, []))
                 assert not missing, f"Home must accept every {app} format: {mime} {sorted(missing)}"
-    assert (home.get("launch_handler") or {}).get("client_mode") == "navigate-new", "each launched file should get its own Home window"
+    assert (home.get("launch_handler") or {}).get("client_mode") == "navigate-new", "each launched file should get its own window"
 
 
 def main():

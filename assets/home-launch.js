@@ -33,7 +33,7 @@ function domReady(){return document.body?Promise.resolve():new Promise(r=>docume
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 async function waitFor(check,timeout){
  const end=Date.now()+timeout;
- while(Date.now()<end){try{const v=check();if(v)return v}catch(_){}await wait(50)}
+ while(Date.now()<end){try{const v=check();if(v)return v}catch(_){}await wait(25)}
  return null;
 }
 function status(text){
@@ -59,7 +59,7 @@ async function openInWorkspace(file){
  await new Promise(r=>frame.addEventListener('load',r,{once:true}));
  const input=await waitFor(()=>frame.contentDocument&&frame.contentDocument.getElementById('fileInput'),20000);
  if(!input){status('The '+route.label+' workspace did not start.');return false}
- await wait(250);
+ await wait(60);
  // Rebuild the file in the workspace's own realm so its readers see native ArrayBuffers.
  const win=frame.contentWindow,local=new win.File([await file.arrayBuffer()],file.name,{type:file.type,lastModified:file.lastModified}),dt=new win.DataTransfer();
  dt.items.add(local);input.files=dt.files;
