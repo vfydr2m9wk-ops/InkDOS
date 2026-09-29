@@ -10,7 +10,7 @@ function create({pagesHost}={}){const $=id=>document.getElementById(id),t=(key,p
  function openPanel(panelId){const tabs=Array.from(document.querySelectorAll('.tab')),panels=Array.from(document.querySelectorAll('.side-panel')),tab=tabs.find(x=>x.dataset.panel===panelId),panel=panels.find(x=>x.id===panelId);if(!tab||!panel)return false;tabs.forEach(x=>x.classList.toggle('active',x===tab));panels.forEach(x=>x.classList.toggle('active',x===panel));if(panelId==='searchPanel')setTimeout(()=>$('searchInput')?.focus(),30);return true}
  function installTabs(){document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>openPanel(t.dataset.panel));let st=0;$('searchInput').oninput=()=>{clearTimeout(st);st=setTimeout(()=>search($('searchInput').value),160)};$('nextHit').onclick=()=>focusHit(activeHit+1);$('prevHit').onclick=()=>focusHit(activeHit-1)}
  function refreshLocalizedNavigation(){buildPageList();buildOutline(lastOutline);const q=String($('searchInput')?.value||'').trim();if(q)search(q);else if($('searchCount'))$('searchCount').textContent=t('0 results')}
- document.addEventListener('inkdos:language',refreshLocalizedNavigation);
+ {let shownLanguage=null;document.addEventListener('inkdos:language',e=>{const language=e?.detail?.language;if(language&&language===shownLanguage)return;shownLanguage=language;refreshLocalizedNavigation()})}
  return Object.freeze({buildPageList,buildOutline,clearSearch,search,focusHit,openPanel,installTabs});
 }
 NS.NavigationPanel=Object.freeze({create});
