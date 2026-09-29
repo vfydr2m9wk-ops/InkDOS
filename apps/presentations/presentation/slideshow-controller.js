@@ -75,14 +75,32 @@ function create({session,overlay,host,counter}={}){
   frame.style.width=intrinsicW+'px';frame.style.height=intrinsicH+'px';frame.style.transform=`scale(${scale})`;frame.style.transformOrigin='top left';
  }
  function fitCurrent(){if(!active)return;const slide=session.slides[index],frame=host.firstElementChild;if(slide&&frame)fit(slide,frame)}
- function render(){
-  const slide=session.slides[index];if(!slide)return;
+ function buildFrame(slide){
   const frame=document.createElement('div');frame.dataset.slideshowFrame='true';frame.style.position='absolute';frame.style.left='0';frame.style.top='0';
   const layer=document.createElement('div');layer.dataset.slideshowLayer='true';layer.style.cssText=`position:absolute;inset:0;background:${slide.background||'#fff'};color:#161616;overflow:hidden;font-family:Arial,Helvetica,sans-serif`;
   if(slide.backgroundImage){layer.style.backgroundImage=`url(${JSON.stringify(slide.backgroundImage)})`;layer.style.backgroundSize='cover';layer.style.backgroundPosition='center'}
   for(const o of slide.objects||[]){let node=null;if(o.type==='text')node=textNode(o);else if(o.type==='image')node=imageNode(o);else if(o.type==='shape')node=shapeNode(o);else if(o.type==='table')node=tableNode(o);if(node)layer.appendChild(node)}
-  frame.appendChild(layer);host.replaceChildren(frame);fit(slide,frame);animateTransition(layer,slide);counter.textContent=`${index+1} / ${session.slides.length}`;
+  frame.appendChild(layer);return {frame,layer};
  }
+ function render(){
+  const slide=session.slides[index];if(!slide)return;
+  const {frame,layer}=buildFrame(slide);host.replaceChildren(frame);fit(slide,frame);animateTransition(layer,slide);counter.textContent=`${index+1} / ${session.slides.length}`;
+ }
+ // Printing (button or browser shortcut): every slide, one per landscape page, without the editor UI.
+ const PRINT_W=1000,PRINT_H=720;let printSheet=null;
+ function preparePrint(){
+  clearPrint();if(!session.active||!session.slides.length)return false;
+  const sheet=document.createElement('div');sheet.id='pptPrintSheet';sheet.setAttribute('aria-hidden','true');
+  for(const slide of session.slides){
+   const w=Math.max(1,px(slide.widthEmu)),h=Math.max(1,px(slide.heightEmu)),scale=Math.min(PRINT_W/w,PRINT_H/h),page=document.createElement('div'),box=document.createElement('div'),{frame}=buildFrame(slide);
+   page.className='ppt-print-page';box.className='ppt-print-slide';box.style.width=w*scale+'px';box.style.height=h*scale+'px';
+   frame.style.width=w+'px';frame.style.height=h+'px';frame.style.transform=`scale(${scale})`;frame.style.transformOrigin='top left';
+   box.appendChild(frame);page.appendChild(box);sheet.appendChild(page);
+  }
+  document.body.appendChild(sheet);document.documentElement.classList.add('ppt-printing');printSheet=sheet;return true;
+ }
+ function clearPrint(){if(!printSheet)return;printSheet.remove();printSheet=null;document.documentElement.classList.remove('ppt-printing')}
+ global.addEventListener?.('beforeprint',preparePrint);global.addEventListener?.('afterprint',clearPrint);
  function open(fromStart=false){if(!session.active)return false;index=fromStart?0:session.currentIndex;active=true;overlay.hidden=false;document.body.dataset.presenting='true';render();overlay.focus();try{overlay.requestFullscreen?.()}catch(_){}return true}
  function close(){active=false;overlay.hidden=true;delete document.body.dataset.presenting;if(document.fullscreenElement)document.exitFullscreen?.().catch?.(()=>{})}
  function next(){if(index<session.slides.length-1){index++;render()}else close()}
@@ -91,7 +109,7 @@ function create({session,overlay,host,counter}={}){
  overlay.addEventListener('click',e=>{if(e.target.closest('[data-present-exit]'))return;next()});overlay.querySelector('[data-present-exit]')?.addEventListener('click',e=>{e.stopPropagation();close()});document.addEventListener('keydown',key);
  global.addEventListener?.('resize',fitCurrent);global.visualViewport?.addEventListener?.('resize',fitCurrent);document.addEventListener('fullscreenchange',fitCurrent);
  if(typeof global.ResizeObserver==='function'){const ro=new global.ResizeObserver(fitCurrent);ro.observe(overlay)}
- return Object.freeze({open,close,render,get active(){return active}})
+ return Object.freeze({open,close,render,preparePrint,clearPrint,get active(){return active}})
 }
 NS.SlideshowController=Object.freeze({create});
 })(globalThis);
