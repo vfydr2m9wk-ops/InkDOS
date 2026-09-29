@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-8d7f3874b736ac4ed57e';
+const CACHE_NAME='inkdos-v2.7.2-75399c09567d683baada';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -182,7 +182,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/app.js": "2d5c50ccc4d20e5736b76e83f54453d8b2ab4e4edc1c2f28bdab610e5d1905d0",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./apps/spreadsheets/engine/formula/arithmetic.js": "90b3a0f135445fcacbfa64903125c4efbe94d28b382857e937bd1d45b71d757a",
-  "./apps/spreadsheets/engine/formula/evaluator.js": "c1ca9eae9115038b0578ea0482e98f0411c3f752d2b9085d8f659e90e9d4f1b0",
+  "./apps/spreadsheets/engine/formula/evaluator.js": "072a2715d7bcd3d69b09078461babc892ad340c0a474eaf2756c16c4953e8574",
   "./apps/spreadsheets/engine/geometry/grid-geometry.js": "19a4841c51ce7c2940b0ad6a92652eac362c29475836596fb9af5073cb86f84b",
   "./apps/spreadsheets/engine/history.js": "7067b58880d87285435275e08440745a865e9456ec654fe8d81fb1785e16c4e9",
   "./apps/spreadsheets/engine/selection-model.js": "3814cb53c400d31bc9575b81912d426017d9349bcfc371e0d7d76dd76aef1479",
