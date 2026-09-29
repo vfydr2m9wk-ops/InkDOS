@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-2d23070073f76b28fe65';
+const CACHE_NAME='inkdos-v2.7.2-7a594103e93394a7cb6d';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -186,19 +186,19 @@ const ASSET_HASHES={
   "./apps/spreadsheets/engine/geometry/grid-geometry.js": "19a4841c51ce7c2940b0ad6a92652eac362c29475836596fb9af5073cb86f84b",
   "./apps/spreadsheets/engine/history.js": "7067b58880d87285435275e08440745a865e9456ec654fe8d81fb1785e16c4e9",
   "./apps/spreadsheets/engine/selection-model.js": "3814cb53c400d31bc9575b81912d426017d9349bcfc371e0d7d76dd76aef1479",
-  "./apps/spreadsheets/engine/workbook-editor.js": "8225830f51adc7fe78625a7b1ce297ccbfb92f348b6bf8b21a2490fdd41a1a75",
+  "./apps/spreadsheets/engine/workbook-editor.js": "f80e595ebe062d87c12599315824639e1ed664c2641e72dae24b913f50eb21ec",
   "./apps/spreadsheets/engine/workbook-session.js": "b6ecf5d9ad30f532eead73bee01ea3827d74c6a468be911a9fc0680f54442625",
   "./apps/spreadsheets/help/help.js": "33f00c3f3427562b81d9a6a2e20dbfc8196808d778b9f7119c0f4f77e8cd4925",
   "./apps/spreadsheets/index.html": "ef35cb5893d97711767cd26ce0731e494cfa9dcc85cc5f2f0c472782471f509e",
-  "./apps/spreadsheets/io/delimited-text.js": "5c1c4b49c7521901cac93623164733506c4cb263097b42e8e48870527f8a4329",
+  "./apps/spreadsheets/io/delimited-text.js": "31d5ab740c1dc7d690a5a6190d3d942d9c9318e2b0a216f2af0c25d56e22c5ba",
   "./apps/spreadsheets/io/file-delivery.js": "66f3afbf5954d9f5e500b464c77bfcb7597e819255943d07367362e26232dc23",
   "./apps/spreadsheets/io/file-open-controller.js": "2103389ba98629d3a2dd63c6abc7e077e60e32d1b0234281d4d0a0c40d45383e",
   "./apps/spreadsheets/io/package-validator.js": "f8a95123b353e2fc64083d0da399b76e50ac695c8f6eb74fd245981d6dd3dc61",
   "./apps/spreadsheets/io/save-controller.js": "12748c6ca03df4284a522f7304efdbdeea4096b9fdfb9106d1a1e72626839b49",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
-  "./apps/spreadsheets/io/xls-biff8-engine.js": "dfbd5dd326719eb71e54beb36f1b5b97b59d074af9db94bf294f2f8e160f2a85",
+  "./apps/spreadsheets/io/xls-biff8-engine.js": "a8791c2a28198fa7f28d6dd48d1a2fa61509597a84c7d69a170946515ea2f660",
   "./apps/spreadsheets/io/xlsx-color-fidelity.js": "5d57ee26a39d159f8c777fe2ad2725fb4fa2de6f844af22425618854862a68bd",
-  "./apps/spreadsheets/io/xlsx-engine.js": "3f2bf618a064bef3f09b46d9bb7d17df57ba273bac94e7a39f77f9da1ebf98d9",
+  "./apps/spreadsheets/io/xlsx-engine.js": "d6de1b1ad46f56709ad64863e88f3ce68a40adc0ccf41a8b99000182af6f56d4",
   "./apps/spreadsheets/manifest.webmanifest": "9ba21ae88697f9fdaf243c7ad6b1921be9675f96b707eb13ed9b6016fda24c3c",
   "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
   "./apps/spreadsheets/runtime/frame/app-frame.css": "e84a9fdd55ba8c4a2b3219fd36068c20cc679c9381723ba9359154c7628e3d73",
@@ -220,7 +220,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/spreadsheets/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/spreadsheets/view/grid-surface.css": "5a877cb839a2ba5c4138b0911274fe5a5ccb74ca56a5715ed4de976e40f97015",
-  "./apps/spreadsheets/view/grid-surface.js": "946cf502119e4525fc1c4773e70b7e5827ca55fe5f36bc5e494752579c5580e6",
+  "./apps/spreadsheets/view/grid-surface.js": "e06453f5ec80016c166c81d8f712de3bc50362a245cc1b435e077f4f75e2b04a",
   "./apps/spreadsheets/view/zoom-controller.js": "074b6b5ad70c1a8c3c6029bb850cb1e910f09138c589d48ee5f8b35f94871c0e",
   "./apps/txt/app.js": "f694456f0d6c7f5f4cde22103a72d90b04d7d41ae1a066905d54abafcf24dec9",
   "./apps/txt/assets/ASSET-PROVENANCE.txt": "a3f0415081d9e5e1842fbb12202ca29a299a91024d136d30ed92c5e168a1250c",

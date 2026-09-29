@@ -1,6 +1,9 @@
 (function(root){'use strict';
 const NS=root.InkDOS2Spreadsheets=root.InkDOS2Spreadsheets||{};
-function clone(v){return v==null?v:JSON.parse(JSON.stringify(v))}
+// Same result as a JSON round trip for plain cell/sheet data, without serializing to text: undo snapshots
+// clone every cell of the sheet twice per edit, which dominated edit time on large sheets.
+function jsonCopy(v,inArray){if(v===null)return null;const t=typeof v;if(t==='number')return Number.isFinite(v)?v:null;if(t==='string'||t==='boolean')return v;if(t!=='object')return inArray?null:undefined;if(typeof v.toJSON==='function')return jsonCopy(v.toJSON(),inArray);if(Array.isArray(v)){const a=new Array(v.length);for(let i=0;i<v.length;i++)a[i]=jsonCopy(v[i],true);return a}const o={};for(const k in v){if(!Object.prototype.hasOwnProperty.call(v,k))continue;const x=jsonCopy(v[k],false);if(x!==undefined)o[k]=x}return o}
+function clone(v){return v==null?v:jsonCopy(v,false)}
 function cloneCell(cell){return cell?clone(cell):null}
 function snapshotSheet(sheet){return{cells:[...sheet.cells].map(([k,v])=>[k,cloneCell(v)]),merges:[...(sheet.merges||[])],widths:{...(sheet.widths||{})},heights:{...(sheet.heights||{})},maxR:sheet.maxR,maxC:sheet.maxC,autoFilter:sheet.autoFilter||'',drawings:clone(sheet.drawings||[])}}
 function restoreSheet(sheet,s){sheet.cells=new Map(s.cells.map(([k,v])=>[k,cloneCell(v)]));sheet.merges=[...s.merges];sheet.widths={...s.widths};sheet.heights={...s.heights};sheet.maxR=s.maxR;sheet.maxC=s.maxC;sheet.autoFilter=s.autoFilter||'';sheet.drawings=clone(s.drawings||[])}
