@@ -53,6 +53,19 @@ def main():
                 prints = page.evaluate("() => window.__prints")
                 assert prints == [{"rows": ROWS, "cols": 3, "last": str((ROWS - 1) * 3)}], prints
                 assert page.evaluate("() => !document.getElementById('ssPrintSheet') && !document.documentElement.classList.contains('ss-printing')")
+                # Charts, images and shapes print at their anchored position over the cells.
+                drawn = page.evaluate("""() => {
+                  const sheet = globalThis.__inkdosSpreadsheetsS1.session.activeSheet();
+                  sheet.drawings = [{kind: 'chart', title: 'Print chart', from: {r: 2, c: 1}, to: {r: 12, c: 4}, series: [{values: [1, 3, 2]}]},
+                                    {kind: 'shape', text: 'Print note', from: {r: 1, c: 5}, to: {r: 3, c: 7}}];
+                  window.dispatchEvent(new Event('beforeprint'));
+                  const items = [...document.querySelectorAll('#ssPrintSheet .ss-print-wrap .sheet-drawing')].map(d => ({kind: d.className.replace('sheet-drawing ', ''), text: d.textContent, top: parseFloat(d.style.top), left: parseFloat(d.style.left)}));
+                  window.dispatchEvent(new Event('afterprint'));
+                  return {items, cleared: !document.getElementById('ssPrintSheet')};
+                }""")
+                kinds = sorted((i["kind"], i["text"]) for i in drawn["items"])
+                assert kinds == [("chart", "Print chart"), ("shape", "Print note")], drawn
+                assert drawn["cleared"] and all(i["top"] > 0 and i["left"] > 0 for i in drawn["items"]), drawn
                 if browser_name == "chromium":
                     page.evaluate("() => window.dispatchEvent(new Event('beforeprint'))")
                     page.emulate_media(media="print")
