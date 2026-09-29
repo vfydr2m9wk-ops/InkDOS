@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-d62b116dbc5f35f4a0be';
+const CACHE_NAME='inkdos-v2.7.2-214a780dec0015f5d19d';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -208,7 +208,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
   "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "a43981ce74d7e136f8be3a9b2e6c439eef13eb07a3799cf8a1394607572a9f0d",
-  "./apps/spreadsheets/ui/editor-controller.js": "eeead0be604056b258b53abcf72343f28a8603c260f0360170af2e57e355e210",
+  "./apps/spreadsheets/ui/editor-controller.js": "332554de5a479f9f07d7a6fbb63595553e3453e5910c1df233067896d0caa26a",
   "./apps/spreadsheets/ui/editor-toolbar.css": "07400f79f4351695ae5ab1232695cdcededff9f42a67a32ee198e3c8535262c8",
   "./apps/spreadsheets/ui/file-menu-controller.js": "8a7258d8dadbfa57f43b2e80471bc95aa7428c22853313dbd96bd229c564024f",
   "./apps/spreadsheets/ui/formula-bar.js": "29587039c397b64fc22dbb305357f8d86276e04fba3e27583198bc4c20137ea6",
@@ -219,8 +219,8 @@ const ASSET_HASHES={
   "./apps/spreadsheets/vendor/LICENSE-PAKO.txt": "a04665b3b2de56c66730c1f720f528175739e4104f79073614aa611da1e85539",
   "./apps/spreadsheets/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/spreadsheets/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
-  "./apps/spreadsheets/view/grid-surface.css": "743d6e2d97fbd2a8b8e55a6f31486e626690dceaa13cd23505ebd0b3d0b1c482",
-  "./apps/spreadsheets/view/grid-surface.js": "da3d114f8c26e84f08c22b26810eadcd72302829eaf21204146d00c2d2ff30f7",
+  "./apps/spreadsheets/view/grid-surface.css": "5a877cb839a2ba5c4138b0911274fe5a5ccb74ca56a5715ed4de976e40f97015",
+  "./apps/spreadsheets/view/grid-surface.js": "73ad3c30ebd79a554b8cec929be9d93cd0d70c62c75e2d5d92055cd71c122a91",
   "./apps/spreadsheets/view/zoom-controller.js": "074b6b5ad70c1a8c3c6029bb850cb1e910f09138c589d48ee5f8b35f94871c0e",
   "./apps/txt/app.js": "f694456f0d6c7f5f4cde22103a72d90b04d7d41ae1a066905d54abafcf24dec9",
   "./apps/txt/assets/ASSET-PROVENANCE.txt": "a3f0415081d9e5e1842fbb12202ca29a299a91024d136d30ed92c5e168a1250c",
