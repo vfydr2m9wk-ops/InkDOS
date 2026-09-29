@@ -163,7 +163,7 @@ function parseSheet(records,meta,globalInfo){
     if(cell&&row!=null&&col!=null){const k=encodeRef(row,col);cells.set(k,cell);originalCells.set(k,{v:cell.v,f:cell.f||'',styleId:xf,t:cell.t,display:cell.display});maxR=Math.max(maxR,row);maxC=Math.max(maxC,col)}
   }
   const drawings=parseSheetDrawings(records,globalInfo.images,widths,heights,defaultColWidth,defaultRowHeight);for(const d of drawings){maxR=Math.max(maxR,Number(d.to?.r||0));maxC=Math.max(maxC,Number(d.to?.c||0))}const legacyFormulaCount=[...cells.values()].filter(c=>c.legacyFormula).length;
-  return{name:meta.name,state:meta.state,path:'',xml:'',cells,originalCells,merges,originalMerges:[...merges],widths,originalWidths:{...widths},heights,originalHeights:{...heights},defaultColWidth,defaultRowHeight,drawings,tables:[],maxR:Math.min(maxR+8,600),maxC:Math.min(maxC+4,100),printArea:'',margins,pageSetup,freezePane,autoFilter,hasConditionalFormatting:false,hasDataValidation:false,header,footer,legacyFormulaCount,decodedFormulaCount};
+  return{name:meta.name,state:meta.state,path:'',xml:'',cells,originalCells,merges,originalMerges:[...merges],widths,originalWidths:{...widths},heights,originalHeights:{...heights},defaultColWidth,defaultRowHeight,drawings,tables:[],maxR:Math.min(maxR+8,65535),maxC:Math.min(maxC+4,255),printArea:'',margins,pageSetup,freezePane,autoFilter,hasConditionalFormatting:false,hasDataValidation:false,header,footer,legacyFormulaCount,decodedFormulaCount};
 }
 async function parseWorkbook(buffer,fileName='Workbook.xls'){
   if(global.InkDOS2SpreadsheetPackageValidator)global.InkDOS2SpreadsheetPackageValidator.validateInputSize(buffer.byteLength,fileName);
