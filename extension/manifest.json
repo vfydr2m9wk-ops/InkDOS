@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "InkDOS",
+  "short_name": "InkDOS",
+  "version": "2.7.3",
+  "description": "Open documents, spreadsheets, presentations, PDF, EPUB and text files from links (including Google Drive) in InkDOS.",
+  "homepage_url": "https://vfydr2m9wk-ops.github.io/InkDOS/",
+  "icons": {"16": "icons/inkdos.png", "32": "icons/inkdos.png", "48": "icons/inkdos.png", "128": "icons/inkdos.png"},
+  "action": {"default_title": "Open InkDOS", "default_icon": {"16": "icons/inkdos.png", "32": "icons/inkdos.png"}},
+  "background": {"service_worker": "background.js"},
+  "permissions": ["contextMenus"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["https://vfydr2m9wk-ops.github.io/InkDOS/apps/*"],
+      "js": ["bridge-isolated.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://vfydr2m9wk-ops.github.io/InkDOS/apps/*"],
+      "js": ["bridge-main.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ]
+}

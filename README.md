@@ -6,6 +6,7 @@
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
 **Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
+**Browser extension (Chrome/Edge/Brave, open links and Google Drive files in InkDOS):** [`extension/`](extension/README.md)  
 **Source:** https://github.com/vfydr2m9wk-ops/InkDOS
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
