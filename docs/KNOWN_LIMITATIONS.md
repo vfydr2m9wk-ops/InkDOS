@@ -1,4 +1,4 @@
-# Known limitations — InkDOS 2.7.2
+# Known limitations — InkDOS 2.7.3
 
 InkDOS is intentionally narrower than Microsoft Office, LibreOffice or Acrobat. Accepting a file extension does not imply exhaustive support for every construct permitted by that format.
 
