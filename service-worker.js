@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-9410476b8cc63716444e';
+const CACHE_NAME='inkdos-v2.7.2-8408cd1853d697bca8a1';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -38,7 +38,7 @@ const ASSET_HASHES={
   "./apps/documents/ui/d2-tools.js": "c779a3e4a1435c4a5f2d88c8499dd5cce42ca9e3617f0990b9a03c17078660cc",
   "./apps/documents/ui/editor-controller.js": "8b29f00fa0d0f10b6ca7914b5a19cd8a63ad069c22fa765d7227d799ca58ea31",
   "./apps/documents/ui/editor.css": "aa35143470c1ee059aa3ba7656773b20c5b395bf8214712b3705a4f8a44b76f0",
-  "./apps/documents/ui/navigation-panel.js": "024f03d5a2d0600c389b15a6c81aa0c0e2852e1a44cbdbf811b4a8fc5ba9988f",
+  "./apps/documents/ui/navigation-panel.js": "87be9a118d7b3175e98fd60bb62e49ecb517dc4b2dd1a87970ab214e50410ba7",
   "./apps/documents/ui/ruler-controller.js": "7ced9c6e4d808038a5a4b2874df7c24cd585f9f3ab50bb6e82d4f48702a21b80",
   "./apps/documents/ui/session-dialog.js": "4f1b50ff60660652eb89589630254862893e66dc2e29d40581dc8f7fd82986cd",
   "./apps/documents/ui/visual-system.css": "3034b8df682b6e84c5773affaeb9faee94f83a534eda44a9df2fe45c9030c790",
@@ -47,7 +47,7 @@ const ASSET_HASHES={
   "./apps/documents/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/documents/view/document-surface.css": "471db233fcd560e8d11e6fff9eb16c200a700ff334d21734035399410e5d8de1",
   "./apps/documents/view/drawing-layout.js": "f382b48648489387d5303d3ccf745e9aa7e317c71254df040edac858e2fbb1f4",
-  "./apps/documents/view/page-surface.js": "d9b753cba64ad5fa48a74ac5ff4d9244479e2173c419d0eb01306bde310c7a6b",
+  "./apps/documents/view/page-surface.js": "bd2416a24214e795b6e42f3d23f4f71a09ea8723e6f02e912b34e54ffc81d150",
   "./apps/documents/view/pagination-engine.js": "6738f6366743b26fdcda32fb6ed2711ec76fd2ee220482a0e413db84213a6e35",
   "./apps/documents/view/zoom-controller.js": "6aa8b3376a922f44efcbb4d7ef4e57833c76d8ea4727d40536b30d20d9230831",
   "./apps/epub/app.js": "7e3e4e41b6397c38f75056d3612125f330872ccf789b65271470e90e43f2e32a",
