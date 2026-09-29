@@ -1,4 +1,4 @@
-# InkDOS browser extension
+# InkDOS browser extension (beta)
 
 A thin compatibility layer for Chrome, Edge, Brave and other Chromium browsers. It adds no copy of the apps and needs no build step: it opens the hosted InkDOS web apps (https://vfydr2m9wk-ops.github.io/InkDOS/) and hands them files from links, so it follows every InkDOS web update automatically.
 

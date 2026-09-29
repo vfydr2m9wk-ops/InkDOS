@@ -20,3 +20,4 @@ body.home-launching .home-shell{display:none}
 .home-launch-frame[hidden]{display:none}
 .home-launch-note{margin:24px;font-size:15px}
 html.home-launch-pending .home-shell{display:none}
+.home-beta{margin-top:30px}.home-beta h2{margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.home-beta .workspace-card{max-width:560px;min-height:0}.beta-extension{--accent:#0f766e}.beta-badge{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.03em;vertical-align:2px}

@@ -1,0 +1,49 @@
+name: Feature request
+description: Suggest an improvement or a new capability for InkDOS.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the suggestion. Please check existing issues first.
+        **Privacy:** Do not attach real user files, screenshots or private filenames; describe the need with synthetic examples.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Home / file opening
+        - Documents
+        - Spreadsheets
+        - Presentations
+        - PDF
+        - EPUB
+        - Plain Text
+        - Browser extension (beta)
+        - Desktop app
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe what you are trying to do and what gets in the way today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: How should it work? Mention comparable behavior in other editors if helpful.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or workarounds
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, operating system and InkDOS version (if relevant)
