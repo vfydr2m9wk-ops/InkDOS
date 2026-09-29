@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.7.3 — 2026-09-29
+
+Opening files (web / installed app hosts such as XeOS):
+- Home declares every format of the suite and sends each launched file straight to its workspace page; when a host delivers the file to Home, Home shows nothing and hands the file over immediately. Opening Home without a file is unchanged (#292, #293).
+- Each launched file opens in its own window; workspaces no longer ask hosts to focus an existing window (#290).
+
+Printing:
+- PDF: Print was blocked by the page security policy and printed nothing; it now prints every page of the document, without the app UI (#294).
+- Presentations: the Print button is now in the toolbar and prints every slide, one per landscape page (#295).
+- Spreadsheets: prints the whole active sheet (values, colours, borders, merged cells, charts, images) instead of the app UI and visible cells, in landscape and scaled to width when wide (#296).
+- Plain Text: new Print button; the whole text is split into A4 pages with margins (#297).
+- In these workspaces, printing from the browser menu uses the same path as the button.
+
+Performance and fixes:
+- Documents: an open document no longer redraws 60 times per second while idle (~35% of a CPU core → ~0%) (#298).
+- Spreadsheets: the grid renders only the visible cells (click/arrow ~100 → ~12 ms, edit ~680 → ~85 ms on a 1,000-row file); every row of the file is shown (XLSX previously stopped at row ~600, CSV at row 100); cheaper undo snapshots (#299).
+- Spreadsheets: formulas recalculate like Excel — only the formulas affected by an edit, each once (20,000-formula sheet: ~650 → ~55 ms per edit); results identical to the previous evaluator (#303).
+- Plain Text: typing in large files no longer recounts the whole text on every key (~120 → ~38 ms per key on 1.7 MB) (#300).
+- PDF: only the pages near the viewport are drawn at full resolution; on 2× screens the target page appears in ~0.2 s instead of 1–1.7 s and page jumps use ~60% less CPU (#301).
+- Presentations: the unused Select button was removed (#302).
+
+Timings are synthetic Chromium measurements; iPad behaviour has not yet been measured on device.
+
 ## 2.7.2 — 2026-09-27
 
 - Spreadsheets: saving an opened XLSX is now linear in size and no longer rewrites untouched cells. Opening had resolved theme colours only on the working copy, so every cell compared as changed, and each patch looked its row up with a full scan. Measured (synthetic, Chromium): 2,000 rows 8.7 s → 0.12 s; 10,000 rows from minutes (tab frozen) → 0.7 s.
