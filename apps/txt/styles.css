@@ -70,3 +70,5 @@ html[data-theme="dark"] #editor::selection{background:#36577f}
 .txt-recovery-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
 .txt-recovery-actions button{min-height:44px;border:1px solid var(--txt-line);border-radius:11px;background:var(--txt-surface-soft);padding:0 16px}
 .txt-recovery-actions .primary{background:var(--txt-accent-strong);color:#fff;border-color:var(--txt-accent-strong)}
+#txtPrintSheet{display:none}
+@media print{@page{size:A4;margin:20mm 18mm}html.txt-printing,html.txt-printing body{background:#fff!important;height:auto!important;min-height:0!important;overflow:visible!important;position:static!important}html.txt-printing body>*:not(#txtPrintSheet){display:none!important}html.txt-printing #txtPrintSheet{display:block;margin:0;padding:0;color:#000;background:#fff;font:10.5pt/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4;orphans:3;widows:3}}
