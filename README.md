@@ -6,7 +6,7 @@
 
 **Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
 **Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
-**Browser extension (Chrome/Edge/Brave, open links and Google Drive files in InkDOS):** [`extension/`](extension/README.md)  
+**Browser extension (beta; Chrome/Edge/Brave, open links and Google Drive files in InkDOS):** [`extension/`](extension/README.md)  
 **Source:** https://github.com/vfydr2m9wk-ops/InkDOS
 
 InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
@@ -111,3 +111,7 @@ VERSION.json
 ```
 
 See `docs/ARCHITECTURE.md`, `docs/KNOWN_LIMITATIONS.md`, `docs/QA-BASELINE-2.5.2.md` and `docs/UPDATE_MODEL.md`.
+
+## Community
+
+Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Report security issues privately as described in [SECURITY.md](SECURITY.md).
