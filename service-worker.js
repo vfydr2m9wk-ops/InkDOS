@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.2-6f6218114dddfeacf2c4';
+const CACHE_NAME='inkdos-v2.7.2-7df33ffeaf1712535176';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "9f8bc0eaf9d637a0af9b1190d5b9a5e6fb9b2496dbe155515c77e0d5f4085962",
@@ -134,8 +134,8 @@ const ASSET_HASHES={
   "./apps/pdf/vendor/pdf-lib/pdf-lib.min.js": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f",
   "./apps/pdf/vendor/pdfjs/pdf.min.js": "5b5799e6f8c680663207ac5b42ee14eed2a406fa7af48f50c154f0c0b1566946",
   "./apps/pdf/vendor/pdfjs/pdf.worker.min.js": "7a623a54c2ad7b7be0ce90fed307f5aa41d09c15a6ab529d408f6ae53cf10d5c",
-  "./apps/pdf/view/page-layout.js": "d41b4a3aa3cd388c8e57d06619c0025c5d2d9e6817e1c98ff09b43f621e49a15",
-  "./apps/pdf/view/page-renderer.js": "aad4e354377196f5de36d35808e5c69366b413d5bb2d034bc8038b3a57872706",
+  "./apps/pdf/view/page-layout.js": "4333072e059e9a036eb90baafc4bd32141879d0a769fea14274599444e9cf1a0",
+  "./apps/pdf/view/page-renderer.js": "1d00915461fed24f103b4c538633d03051023ab377d9223bb672ada3e7f6099b",
   "./apps/pdf/view/page-scheduler.js": "f62dced89ba9cb077b66918d797528be1c48a5fd0a441ab3910d8d1ac3a712d0",
   "./apps/pdf/view/pdf-surface.css": "288b31b86bfcbaf6b28c8d96d09a7564b1b8c3bae4d3f7d604cff2426dfe83ed",
   "./apps/pdf/view/zoom-controller.js": "a86441a8573633af08ec5c8db858ba4da27cafdc7b9693599b277a17dbf68678",
