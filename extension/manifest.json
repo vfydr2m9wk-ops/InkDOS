@@ -3,12 +3,13 @@
   "name": "InkDOS",
   "short_name": "InkDOS",
   "version": "2.7.3",
-  "description": "Open documents, spreadsheets, presentations, PDF, EPUB and text files from links (including Google Drive) in InkDOS.",
+  "description": "Open documents, spreadsheets, presentations, PDF, EPUB and text files from links, downloads and Google Drive in InkDOS.",
   "homepage_url": "https://vfydr2m9wk-ops.github.io/InkDOS/",
   "icons": {"16": "icons/inkdos.png", "32": "icons/inkdos.png", "48": "icons/inkdos.png", "128": "icons/inkdos.png"},
   "action": {"default_title": "Open InkDOS", "default_icon": {"16": "icons/inkdos.png", "32": "icons/inkdos.png"}},
   "background": {"service_worker": "background.js"},
-  "permissions": ["contextMenus"],
+  "options_ui": {"page": "options.html", "open_in_tab": false},
+  "permissions": ["contextMenus", "downloads", "declarativeNetRequestWithHostAccess", "storage"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
@@ -22,5 +23,6 @@
       "run_at": "document_start",
       "world": "MAIN"
     }
-  ]
+  ],
+  "web_accessible_resources": [{"resources": ["open.html"], "matches": ["<all_urls>"]}]
 }

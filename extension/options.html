@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>InkDOS extension options</title>
+<style>
+  :root{color-scheme:light dark}
+  body{margin:0;padding:16px 20px;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;min-width:340px}
+  label{display:flex;gap:10px;align-items:flex-start;margin:0 0 14px}
+  input{margin-top:3px}
+  small{display:block;opacity:.75}
+</style>
+</head>
+<body>
+<label><input type="checkbox" id="pdfViewer"><span>Open PDFs in InkDOS instead of the browser's PDF viewer<small>PDF links and PDFs opened in a tab go to the InkDOS PDF workspace.</small></span></label>
+<label><input type="checkbox" id="downloads"><span>Open downloaded documents in InkDOS<small>Downloads of DOCX, DOC, RTF, XLSX, XLS, CSV, TSV, PPTX, PPT, PDF and EPUB open in InkDOS instead of being saved. Text and data files download as usual.</small></span></label>
+<script src="options.js"></script>
+</body>
+</html>
