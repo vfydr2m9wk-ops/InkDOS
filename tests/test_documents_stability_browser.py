@@ -108,7 +108,7 @@ def main():
               globalThis.__inkdosPendingReplacement=app.newDocument();
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
-            page.get_by_role('button',name='Save').click()
+            page.get_by_role('button',name='Save',exact=True).click()
             saved=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
             assert saved is True,saved
             assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is False
@@ -123,7 +123,7 @@ def main():
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
             with page.expect_download() as download_info:
-                page.get_by_role('button',name='Save').click()
+                page.get_by_role('button',name='Save',exact=True).click()
             download=download_info.value
             unconfirmed=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
             assert unconfirmed is False,unconfirmed
@@ -140,7 +140,7 @@ def main():
               globalThis.__inkdosPendingReplacement=app.newDocument();
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
-            page.get_by_role('button',name='Save').click()
+            page.get_by_role('button',name='Save',exact=True).click()
             save_cancelled=page.evaluate('async()=>await globalThis.__inkdosPendingReplacement')
             assert save_cancelled is False,save_cancelled
             assert page.evaluate('()=>globalThis.InkDOS2Documents.DocumentsApp.session.dirty') is True

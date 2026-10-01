@@ -45,57 +45,39 @@ def snapshot_functional_attributes(page):
 
 
 def first_open_click_diagnostic(page, app: str) -> None:
-    menu = page.locator("#menuBtn,#menuButton")
-    if menu.count() != 1:
-        raise AssertionError((app, "menu button missing", menu.count()))
-    box = menu.bounding_box()
-    if not box:
-        raise AssertionError((app, "menu button has no hit box"))
-    x = box["x"] + box["width"] / 2
-    y = box["y"] + box["height"] / 2
-    layers = page.evaluate(
-        """([x,y])=>document.elementsFromPoint(x,y).slice(0,8).map(el=>({
-          tag:el.tagName,
-          id:el.id||'',
-          cls:typeof el.className==='string'?el.className:'',
-          hidden:!!el.hidden,
-          pointerEvents:getComputedStyle(el).pointerEvents,
-          position:getComputedStyle(el).position,
-          zIndex:getComputedStyle(el).zIndex
-        }))""",
-        [x, y],
-    )
-    page.touchscreen.tap(x, y)
+    # The legacy menu button stays in the DOM but hidden; the header Settings (sun) button replaces it.
+    legacy = page.locator("#menuBtn,#menuButton")
+    if legacy.count() != 1:
+        raise AssertionError((app, "legacy menu button missing", legacy.count()))
+    sun = page.locator("[data-frame-action='sun']")
     try:
-        page.wait_for_function(
-            "() => Array.from(document.querySelectorAll('#generalMenu,#appDrawer,aside.drawer')).some(d => !d.hidden)",
-            timeout=1200,
-        )
+        sun.wait_for(state="visible", timeout=3000)
     except PlaywrightTimeoutError as exc:
-        state = page.evaluate(
-            """()=>({
-              readyState:document.readyState,
-              settingsReady:!!globalThis.InkDOSSettingsStrip,
-              localizationReady:!!globalThis.InkDOSLocalization,
-              openDrawers:Array.from(document.querySelectorAll('#generalMenu,#appDrawer,aside.drawer')).map(el=>({id:el.id,hidden:el.hidden,display:getComputedStyle(el).display,pointerEvents:getComputedStyle(el).pointerEvents,zIndex:getComputedStyle(el).zIndex})),
-              backdrops:Array.from(document.querySelectorAll('.backdrop')).map(el=>({id:el.id,hidden:el.hidden,display:getComputedStyle(el).display,pointerEvents:getComputedStyle(el).pointerEvents,zIndex:getComputedStyle(el).zIndex}))
-            })"""
-        )
-        raise AssertionError((app, "first-open touch click did not open menu", layers, state)) from exc
-    page.locator("#generalMenu:not([hidden]) .close-btn,#appDrawer:not([hidden]) .close-btn,aside.drawer:not([hidden]) .close-btn").first.click()
+        raise AssertionError((app, "settings button missing")) from exc
+    box = sun.bounding_box()
+    if not box:
+        raise AssertionError((app, "settings button has no hit box"))
+    page.touchscreen.tap(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    try:
+        page.wait_for_selector(".inkdos-settings-popover:not([hidden])", timeout=1200)
+    except PlaywrightTimeoutError as exc:
+        raise AssertionError((app, "first-open touch did not open settings")) from exc
+    page.touchscreen.tap(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_selector(".inkdos-settings-popover", state="hidden", timeout=1200)
 
 
 def open_menu(page) -> None:
-    page.locator("#menuBtn").click()
-    page.wait_for_function("() => { const d=document.querySelector('#generalMenu,aside.drawer'); return !!d && !d.hidden; }")
+    # Settings now live behind the header sun button; nothing to open up front.
+    page.locator("[data-frame-action='sun']").wait_for(state="visible")
 
 
 def choose_language(page, label: str, code: str) -> None:
-    if page.locator("[data-settings-item='language']").count() == 0:
-        raise AssertionError("Language settings button missing")
-    page.locator("[data-settings-item='language']").click()
+    sun = page.locator("[data-frame-action='sun']")
+    if sun.count() == 0:
+        raise AssertionError("Settings button missing")
+    sun.click()
     popover = page.locator(".inkdos-settings-popover")
-    popover.locator("button", has_text=label).click()
+    popover.locator("button.inkdos-settings-option", has_text=label).first.click()
     page.wait_for_function(f"() => globalThis.InkDOSLocalization?.currentLanguage === {code!r}")
 
 

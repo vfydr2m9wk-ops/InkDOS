@@ -71,7 +71,7 @@ def main():
               globalThis.__inkdosPending=api.openController.newWorkbook();
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
-            page.get_by_role('button',name='Save').click()
+            page.get_by_role('button',name='Save',exact=True).click()
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is False
 
@@ -85,7 +85,7 @@ def main():
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
             with page.expect_download() as info:
-                page.get_by_role('button',name='Save').click()
+                page.get_by_role('button',name='Save',exact=True).click()
             assert info.value.suggested_filename.lower().endswith('.xlsx')
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
@@ -94,7 +94,7 @@ def main():
             # Cancelled save must not replace the workbook.
             page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;api.editor.editor.commitValue('stay',0,0);globalThis.__inkdosBookId=api.session.documentId;globalThis.showSaveFilePicker=async()=>{throw new DOMException('cancelled','AbortError')};globalThis.__inkdosPending=api.openController.newWorkbook()}""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
-            page.get_by_role('button',name='Save').click()
+            page.get_by_role('button',name='Save',exact=True).click()
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
@@ -102,7 +102,7 @@ def main():
             # Failed save must also block replacement and preserve dirty state.
             page.evaluate("""()=>{const api=globalThis.__inkdosSpreadsheetsS1;globalThis.__inkdosBookId=api.session.documentId;globalThis.showSaveFilePicker=async()=>({createWritable:async()=>{throw new Error('synthetic write failure')}});globalThis.__inkdosPending=api.openController.newWorkbook()}""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
-            page.get_by_role('button',name='Save').click()
+            page.get_by_role('button',name='Save',exact=True).click()
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
@@ -124,7 +124,7 @@ def main():
               globalThis.__inkdosPending=api.openController.newWorkbook();
             }""")
             page.wait_for_selector('#sessionReplacePanel:not([hidden])')
-            page.get_by_role('button',name='Save').click()
+            page.get_by_role('button',name='Save',exact=True).click()
             assert page.evaluate('async()=>await globalThis.__inkdosPending') is False
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.dirty') is True
             assert page.evaluate('()=>globalThis.__inkdosSpreadsheetsS1.session.documentId===globalThis.__inkdosBookId') is True
