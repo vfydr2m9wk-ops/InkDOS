@@ -13,7 +13,7 @@ function intrinsic(slide){
 function compute(metrics,slide,view){
   const s=intrinsic(slide),mode=view?.mode||'fit-page';
   let scale;
-  if(mode==='manual')scale=clamp(Number(view.manual)||1,.5,2);
+  if(mode==='manual')scale=clamp(Number(view.manual)||1,.01,8);
   else if(mode==='fit-width')scale=metrics.width/s.width;
   else scale=Math.min(metrics.width/s.width,metrics.height/s.height);
   return Object.freeze({

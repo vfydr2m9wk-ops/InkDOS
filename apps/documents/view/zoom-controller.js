@@ -1,6 +1,6 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Documents=global.InkDOS2Documents||{};
-const MIN=.25,MAX=4,FIT_MAX=1.25,FIT_PAGE_MAX=1.1;
+const MIN=.01,MAX=8,FIT_MAX=1.25,FIT_PAGE_MAX=1.1;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const number=(n,f)=>{n=Number(n);return Number.isFinite(n)&&n>0?n:f};
 class ZoomController{

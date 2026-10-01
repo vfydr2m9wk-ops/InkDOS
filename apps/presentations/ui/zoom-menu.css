@@ -16,3 +16,9 @@
 .zoom-menu .zoom-sep{height:1px;margin:5px 4px;background:var(--line);border:0}
 .zoom-popover.zoom-menu{position:fixed;z-index:90;background:var(--chrome,var(--toolbar-bg,#fff));color:var(--fg,inherit);border:1px solid var(--line);box-shadow:0 18px 48px rgba(10,18,30,.22)}
 #editbar .zoom-group .zoom-tool,.zoom-group .zoom-tool{width:auto!important;min-width:64px!important;max-width:none!important;font-size:13px;font-weight:500}
+.zoom-group .zoom-field{display:inline-flex;align-items:center;height:28px;border:1px solid var(--line);border-radius:9px;background:var(--control-bg,var(--chrome,transparent));overflow:hidden}
+.zoom-group .zoom-field:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.zoom-group .zoom-input{width:50px;height:100%;border:0;padding:0 2px 0 8px;background:transparent;color:inherit;font:inherit;font-size:13px;font-weight:500;text-align:center;font-variant-numeric:tabular-nums;outline:none;box-shadow:none;min-width:0}
+#editbar .zoom-group .zoom-tool,.zoom-group .zoom-tool{width:22px!important;min-width:22px!important;max-width:22px!important;height:100%!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent;box-shadow:none!important;justify-content:center}
+.zoom-group .zoom-tool:hover{background:var(--toolbar-hover,var(--accent-soft))}
+#editbar #zoomGroup #zoomMenuBtn svg,#formatbar #zoomGroup #zoomMenuBtn svg,body #zoomGroup #zoomMenuBtn svg{display:block!important;width:12px;height:12px}

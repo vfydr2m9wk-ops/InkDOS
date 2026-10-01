@@ -1,6 +1,6 @@
 (function(root){'use strict';
 const NS=root.InkDOS2Spreadsheets=root.InkDOS2Spreadsheets||{};
-const MIN_SCALE=.25,MAX_SCALE=4,SLIDER_STEP=.05,BUTTON_STEP=.1;
+const MIN_SCALE=.01,MAX_SCALE=8,SLIDER_STEP=.05,BUTTON_STEP=.1;
 function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 function normalizeScale(value){const n=Number(value);if(!Number.isFinite(n))return 1;return Math.round(clamp(n,MIN_SCALE,MAX_SCALE)*100)/100}
 function colWidth(sheet,c){return Math.max(28,Number(sheet?.widths?.[c])||Number(sheet?.defaultColWidth)||68)}
