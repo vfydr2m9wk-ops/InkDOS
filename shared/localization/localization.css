@@ -14,3 +14,19 @@
 [data-inkdos-settings-redundant]{display:none!important}
 [data-settings-item]{min-inline-size:0}
 @media(max-width:420px){.inkdos-settings-strip{gap:3px}.inkdos-settings-button{padding-inline:2px}.inkdos-settings-label{font-size:10px}.inkdos-settings-popover{width:min(270px,calc(100vw - 16px));max-inline-size:calc(100vw - 16px)}}
+/* Frame actions (header Open/Save, Settings, Share; Help in status bar) */
+.inkdos-frame-actions .frame-left,.inkdos-frame-actions .inkdos-frame-right{display:flex;align-items:center;gap:4px}
+.inkdos-frame-actions .inkdos-frame-right{justify-content:flex-end}
+.inkdos-frame-action{display:inline-grid;place-items:center}
+.inkdos-frame-action svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.inkdos-frame-action:disabled{opacity:.4;cursor:default}
+.inkdos-status-help{margin-left:auto;width:26px;height:26px;min-width:26px;min-height:26px;padding:0;border:0;border-radius:8px;background:transparent;color:inherit;flex:0 0 auto}
+.inkdos-status-help svg{width:16px;height:16px}
+.inkdos-status-help:hover,.inkdos-frame-action:hover:not(:disabled){background:var(--toolbar-hover,rgba(0,0,0,.06))}
+.inkdos-settings-section{margin-top:8px;padding-top:8px;border-top:1px solid var(--line,var(--frame-line,#d7dce2))}
+.inkdos-settings-segment{display:flex;gap:4px;padding:3px;border:1px solid var(--line,var(--frame-line,#d7dce2));border-radius:10px}
+.inkdos-settings-segment .inkdos-settings-option{flex:1;text-align:center;margin:0}
+.inkdos-frame-actions .frame-left{max-width:none}
+.inkdos-frame-actions .framebar>.inkdos-frame-right{margin-left:auto;position:relative;z-index:2;gap:6px}
+.framebar .inkdos-frame-action{width:40px;height:40px;min-width:40px;border:1px solid transparent;border-radius:12px;background:transparent;color:inherit;cursor:pointer;padding:0}
+.inkdos-settings-segment .inkdos-settings-option{white-space:nowrap;padding-inline:6px;font-size:12px}

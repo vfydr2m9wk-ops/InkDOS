@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.3-e376b031aec4173f8510';
+const CACHE_NAME='inkdos-v2.7.3-fbaedbe5991c92f7a425';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "254a50527e19459922bbfe176d9ff77843cd80c08cca7bd8fabc72f3f1fb44e2",
@@ -204,7 +204,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/xlsx-engine.js": "734cbf1ff7b66f543ac8773e6bee60116c0b42115790fcb3de3c429e6771cb2b",
   "./apps/spreadsheets/manifest.webmanifest": "9ba21ae88697f9fdaf243c7ad6b1921be9675f96b707eb13ed9b6016fda24c3c",
   "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
-  "./apps/spreadsheets/runtime/frame/app-frame.css": "e84a9fdd55ba8c4a2b3219fd36068c20cc679c9381723ba9359154c7628e3d73",
+  "./apps/spreadsheets/runtime/frame/app-frame.css": "2d68b10ed181fb670b2020acb6757bc47bc7b6150f816f4ba9f2a059e4f6e25a",
   "./apps/spreadsheets/runtime/frame/frame-menu.js": "4755b28d6affb0c8633671f23ab3fd6fc5a0e3c8319438c4c7134ad7ffe70670",
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
   "./apps/spreadsheets/runtime/platform/file-launch.js": "8267e2e795f3633ec7df9d02e4bad1bd7d41a0428feb7840ab51d10411f9443e",
@@ -272,8 +272,8 @@ const ASSET_HASHES={
   "./shared/localization/locales/pt-BR.js": "558f9c1a800e06160eff724dd0dd9a3ec91a3505a8c022902497a2ce62fb4f0a",
   "./shared/localization/locales/ru.js": "da07633157e744631b789508fb429bee0bc9a8b90e66c60a4b8b2c16363115b1",
   "./shared/localization/locales/zh-CN.js": "bcbe593b7e3c16b1e8e81bfdf8f617047bc61d84d80df5fb00ccb6b2081f7fad",
-  "./shared/localization/localization.css": "d756c86f694f6a98e444844a63cb85f5694e4363f426fb530c8669687d2dc17c",
-  "./shared/localization/settings-strip.js": "8a5d615490b5dbd872b86899b58210c5f14c200b1d13d8ca44516471b601f24e",
+  "./shared/localization/localization.css": "3e907f2432ab5c5a67bbefddd6ffc51ea3870c6b0f61853028ede51a13de4004",
+  "./shared/localization/settings-strip.js": "21e572e24ddd878069da480ae7ae011ead194c5f7e2dd7921d6e4d2ee6ab057d",
   "./shared/localization/ui-localization.js": "e89c2531c9f0a9bc7831c6ca96322ec26a5df2763ec6a5905f4ba557a26b0172",
   "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
   "./shared/ui-density.js": "2700f8594221037108c5b440eeee6dc3ab88c0d26a2f36ca6a39936474f9b630"

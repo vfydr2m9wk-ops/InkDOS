@@ -8,3 +8,11 @@
 @media(max-width:470px){.spreadsheets-icon{display:none}.document-title{max-width:52vw}.title-input{width:48vw;min-width:86px}.bottom-shell{grid-template-columns:minmax(0,1fr)}.status-area{display:none}.drawer{width:calc(100vw - var(--safe-l) - var(--safe-r));padding:10px}}
 .close-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ask-card h2{margin:0 0 6px}.ask-card p{margin:0 0 8px;color:var(--muted)}.ask-fields{display:grid;gap:10px;margin:12px 0 4px}.ask-field{display:grid;gap:4px}.ask-field input,.ask-field select{min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
+/* Bottom bar matches the other workspaces' status bar; sheet tabs hang from the grid edge like folder tabs. */
+.bottom-shell{min-height:calc(36px + var(--safe-b));grid-template-columns:minmax(0,1fr) auto auto;align-items:stretch;gap:12px;padding:0 var(--safe-r) var(--safe-b) var(--safe-l);font-size:11px}
+.bottom-shell .status-area{align-self:center}.bottom-shell .inkdos-status-help{align-self:center}
+.sheet-tabs{align-items:stretch;gap:2px;padding:0}
+.sheet-tab{height:auto;min-height:0;margin-top:-1px;padding:0 14px;border:1px solid transparent;border-top:0;border-radius:0 0 10px 10px;background:transparent;color:var(--muted);font-size:12px}
+.sheet-tab:hover:not(:disabled){background:color-mix(in srgb,var(--panel) 70%,transparent)}
+.sheet-tab.active{background:var(--panel);border-color:var(--line);border-top:0;color:var(--accent);font-weight:700;box-shadow:0 2px 4px rgba(15,23,42,.06)}
+.sheet-tab.sheet-add,.sheet-tab.sheet-delete{min-width:0;width:32px;padding:0;margin-top:0;border-radius:8px;align-self:center;height:26px;font-size:15px;color:inherit}
