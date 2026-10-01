@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.3-ec5e4ebcccb916c65662';
+const CACHE_NAME='inkdos-v2.7.3-7b21685cc744ab49dfb5';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "254a50527e19459922bbfe176d9ff77843cd80c08cca7bd8fabc72f3f1fb44e2",
@@ -192,7 +192,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/engine/workbook-editor.js": "f80e595ebe062d87c12599315824639e1ed664c2641e72dae24b913f50eb21ec",
   "./apps/spreadsheets/engine/workbook-session.js": "b6ecf5d9ad30f532eead73bee01ea3827d74c6a468be911a9fc0680f54442625",
   "./apps/spreadsheets/help/help.js": "33f00c3f3427562b81d9a6a2e20dbfc8196808d778b9f7119c0f4f77e8cd4925",
-  "./apps/spreadsheets/index.html": "442cfe9fc00a218c8623db64ff18086c2462c8ad9d61d44c0b5296e53e151bfe",
+  "./apps/spreadsheets/index.html": "435267b018104aeacf6cca0238ed98f6e851a9a0630b65f21b096561edf83bc1",
   "./apps/spreadsheets/io/delimited-text.js": "31d5ab740c1dc7d690a5a6190d3d942d9c9318e2b0a216f2af0c25d56e22c5ba",
   "./apps/spreadsheets/io/file-delivery.js": "66f3afbf5954d9f5e500b464c77bfcb7597e819255943d07367362e26232dc23",
   "./apps/spreadsheets/io/file-open-controller.js": "2103389ba98629d3a2dd63c6abc7e077e60e32d1b0234281d4d0a0c40d45383e",
