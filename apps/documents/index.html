@@ -17,7 +17,7 @@
 /* InkDOS 2.0.1 — app-local first-open card; metrics mirror Spreadsheets. */
 .viewport{position:relative}.start-state{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:18px;background:var(--app-bg,#eef1f5);pointer-events:none}.start-card{width:min(430px,100%);padding:28px;border:1px solid var(--line,#d9dee7);border-radius:22px;background:var(--chrome,#fff);box-shadow:var(--shadow,0 12px 32px rgba(15,23,42,.10));text-align:center;pointer-events:auto}.start-icon{width:68px;height:68px}.start-card h1{margin:14px 0 6px}.start-card p{margin:0 0 18px;color:var(--muted,#697386)}.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.start-actions button{min-height:44px;border:1px solid var(--line,#d9dee7);border-radius:11px;background:var(--chrome,#fff);padding:0 16px;color:inherit}.start-actions .primary{background:var(--accent,#4673e8);color:#fff;border-color:var(--accent,#4673e8)}
 </style>
-  <link rel="stylesheet" href="../../shared/ui-density.css">
+  <link rel="stylesheet" href="../../shared/ui-density.css"><link rel="stylesheet" href="ui/zoom-menu.css">
   <link rel="stylesheet" href="ui/visual-system.css">
   <script src="../../shared/ui-density.js"></script>
   <script src="runtime/platform/file-launch.js"></script>
@@ -43,7 +43,7 @@
     <button id="redoBtn" class="fmt-btn icon-only" type="button" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
     <button id="printBtn" class="fmt-btn icon-only" type="button" title="Print" aria-label="Print"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4h10v5"/><path d="M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7z"/></svg></button>
     <button id="formatPainterBtn" class="fmt-btn icon-only" type="button" title="Format painter: copy formatting, then select target and press again" aria-label="Format painter" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h12v6H4z"/><path d="M16 7h3v5h-7v8"/><path d="M10 20h4"/></svg></button>
-    <button id="zoomMenuBtn" class="fmt-btn zoom-tool" type="button" title="Zoom" aria-label="Document zoom" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><span id="zoomToolbarLabel">100%</span></button>
+    <span id="zoomGroup" class="zoom-group" role="group" aria-label="Zoom"><button id="zoomOut" class="fmt-btn zoom-step" type="button" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 12h8"/></svg></button><button id="zoomMenuBtn" class="fmt-btn zoom-tool" type="button" title="Zoom" aria-label="Document zoom" aria-haspopup="menu" aria-expanded="false"><span id="zoomToolbarLabel">100%</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button><button id="zoomIn" class="fmt-btn zoom-step" type="button" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 12h8M12 8v8"/></svg></button></span>
     <span class="separator"></span>
     <select id="styleSelect" title="Paragraph style"><option value="p">Normal</option><option value="h1">Title</option><option value="h2">Heading 1</option><option value="h3">Heading 2</option></select>
     <select id="fontSelect" title="Font"><option>Calibri</option><option>Arial</option><option>Times New Roman</option><option>Georgia</option><option>Verdana</option><option>Courier New</option></select>
@@ -139,13 +139,7 @@
     <div id="searchPanel" class="side-panel"><div class="search-box"><input id="searchInput" type="search" placeholder="Search document"></div><div class="search-meta"><span id="searchCount">0 results</span><span><button id="prevHit" class="mini-btn">↑</button><button id="nextHit" class="mini-btn">↓</button></span></div><div id="searchResults"><p class="muted">Type a word or phrase.</p></div></div>
   </aside>
 
-  <div id="zoomPopover" class="zoom-popover" role="dialog" aria-label="Document zoom" hidden>
-    <div class="zoom-head"><strong>Zoom</strong><output id="zoomOutput" for="zoomSlider">100%</output></div>
-    <div class="zoom-row"><button id="zoomOut" class="zoom-round" type="button" aria-label="Zoom out">−</button><input id="zoomSlider" type="range" min="25" max="400" step="5" value="100" aria-label="Zoom percentage"><button id="zoomIn" class="zoom-round" type="button" aria-label="Zoom in">+</button></div>
-    <div class="zoom-presets"><button id="fitWidth" type="button">Fit width</button><button id="fitPage" type="button">Fit page</button><button id="zoom100" type="button">100%</button></div>
-    <small>25–400% · 5% steps</small>
-  </div>
-</div>
+  <div id="zoomPopover" class="zoom-popover zoom-menu" role="menu" aria-label="Document zoom" hidden><button class="zoom-item" type="button" role="menuitemradio" data-zoom="25">25%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="50">50%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="75">75%</button><button id="zoom100" class="zoom-item" type="button" role="menuitemradio" data-zoom="100">100%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="125">125%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="150">150%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="200">200%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="300">300%</button><button class="zoom-item" type="button" role="menuitemradio" data-zoom="400">400%</button><hr class="zoom-sep"><button id="fitPage" class="zoom-item with-icon" type="button" role="menuitemradio"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M12 8v8M9.5 10.5 12 8l2.5 2.5M9.5 13.5 12 16l2.5-2.5"/></svg><span>Fit page</span></button><button id="fitWidth" class="zoom-item with-icon" type="button" role="menuitemradio"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 12h8M10.5 9.5 8 12l2.5 2.5M13.5 9.5 16 12l-2.5 2.5"/></svg><span>Fit width</span></button></div>
 <script src="state/appearance.js"></script>
 <script src="engine/document-session.js"></script>
 <script src="engine/document-state.js"></script>

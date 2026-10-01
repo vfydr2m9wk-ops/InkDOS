@@ -4,3 +4,6 @@
 
 @media(max-width:640px){.content-viewport{padding:10px max(10px,var(--safe-r)) 10px max(10px,var(--safe-l))}.reader-stage{border-radius:13px;box-shadow:0 7px 20px rgba(15,23,42,.08)}}
 @media(min-width:900px) and (pointer:fine){.content-viewport{padding-top:14px;padding-bottom:14px}}
+/* Full-window reading area: the stage uses the whole usable viewport; book-like margins live inside the text column. */
+.content-viewport{padding:0}.reader-stage{width:100%;border:0;border-radius:0;box-shadow:none}
+@media(max-width:640px){.content-viewport{padding:0}.reader-stage{border-radius:0;box-shadow:none}}

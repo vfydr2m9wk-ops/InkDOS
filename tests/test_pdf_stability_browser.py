@@ -167,7 +167,7 @@ def main() -> None:
             page.mouse.wheel(0, 650); page.wait_for_timeout(250)
             after = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
             assert after > before, (browser_name, before, after)
-            page.select_option("#zoomSelect", "125"); page.wait_for_timeout(40)
+            page.click("#zoomMenuBtn"); page.click("#zoomPopover [data-zoom=\"125\"]"); page.wait_for_timeout(40)
             zoom_before = page.evaluate("() => document.getElementById('contentViewport').scrollTop")
             page.mouse.wheel(0, 550); page.wait_for_timeout(600)
             zoom_after = page.evaluate("() => document.getElementById('contentViewport').scrollTop")

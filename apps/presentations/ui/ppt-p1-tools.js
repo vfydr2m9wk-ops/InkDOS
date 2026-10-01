@@ -21,7 +21,7 @@ function create({session,history,selection,surface,panel,editor,chrome}={}){cons
   let base=$('pptToolbarBase');if(!base){base=document.createElement('div');base.id='pptToolbarBase';base.className='tool-group';base.setAttribute('role','group');base.setAttribute('aria-label','Presentation editing')}
   let secondary=$('pptToolbarSecondary');if(!secondary){secondary=document.createElement('div');secondary.id='pptToolbarSecondary';secondary.className='tool-group';secondary.setAttribute('role','group');secondary.setAttribute('aria-label','Slide navigation and presentation')}
   const move=(id,target)=>{const n=$(id);if(!n)return;const node=n.classList?.contains('ppt-p1-color-input')?(n.closest('.ppt-p1-color-control')||n):n;target.appendChild(node)};
-  for(const id of ['addSlideBtn','undoBtn','redoBtn','pptP1PrintBtn','pptP1FormatPainter','zoomMenuBtn','insertTextBtn','pptP1ImageBtn','pptP1Shape','pptP1LineBtn','pptP2TableToolsBtn','pptP2CommentBtn','pptP1Background','pptP1Layout','pptP2ThemeBtn','pptP2Transition'])move(id,base);
+  for(const id of ['addSlideBtn','undoBtn','redoBtn','pptP1PrintBtn','pptP1FormatPainter','zoomGroup','insertTextBtn','pptP1ImageBtn','pptP1Shape','pptP1LineBtn','pptP2TableToolsBtn','pptP2CommentBtn','pptP1Background','pptP1Layout','pptP2ThemeBtn','pptP2Transition'])move(id,base);
   for(const id of ['fontFamily','fontSize','boldBtn','italicBtn','underlineBtn','pptP1TextColor','alignSelect','pptP1Bullets'])move(id,text);
   for(const id of ['pptP1Fill','pptP1Border','pptP1BorderWidth','pptP1BorderStyle','pptP1Arrange'])move(id,style);
   for(const id of ['prevSlideBtn','nextSlideBtn','duplicateSlideBtn','deleteSlideBtn','moveSlideUpBtn','moveSlideDownBtn','slidePanelBtn','pptP2NotesBtn','presentBtn'])move(id,secondary);
