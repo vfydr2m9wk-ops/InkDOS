@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.3-b715597b1facacab3829';
+const CACHE_NAME='inkdos-v2.7.3-9d77af65ad0d35862eb9';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "254a50527e19459922bbfe176d9ff77843cd80c08cca7bd8fabc72f3f1fb44e2",
@@ -197,14 +197,14 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/file-delivery.js": "5be42522857cc684f0d34e6b1913daf0680156e871f665ffd258e80c6e225571",
   "./apps/spreadsheets/io/file-open-controller.js": "7be31a054e047523c46431108e90a4b2e568cfb44dee49e05bcebc842d1e4645",
   "./apps/spreadsheets/io/package-validator.js": "f8a95123b353e2fc64083d0da399b76e50ac695c8f6eb74fd245981d6dd3dc61",
-  "./apps/spreadsheets/io/save-controller.js": "f3c6ee5c89fb72ac0c8d30ac6e9858e8efa8ecb6c0017509877ef5890ea6ada3",
+  "./apps/spreadsheets/io/save-controller.js": "c38cd1037325c30cb7b4b5d2e5a76bc6677021603f398b43cdde9ca545d3fe24",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
   "./apps/spreadsheets/io/xls-biff8-engine.js": "ff05eacfaf68836395515e767e8e599b4dfb393e95c7442e3813530c554ef274",
   "./apps/spreadsheets/io/xlsx-color-fidelity.js": "5d57ee26a39d159f8c777fe2ad2725fb4fa2de6f844af22425618854862a68bd",
   "./apps/spreadsheets/io/xlsx-engine.js": "734cbf1ff7b66f543ac8773e6bee60116c0b42115790fcb3de3c429e6771cb2b",
   "./apps/spreadsheets/manifest.webmanifest": "9ba21ae88697f9fdaf243c7ad6b1921be9675f96b707eb13ed9b6016fda24c3c",
   "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
-  "./apps/spreadsheets/runtime/frame/app-frame.css": "2e16d487682af39b631822701bcf23b3ef43830e2c1405c69dd69b7ecec159d3",
+  "./apps/spreadsheets/runtime/frame/app-frame.css": "94ff314355920bb3ad0b0eaa74d5d993bfbd323fe4b11fb568ab000cc25d085a",
   "./apps/spreadsheets/runtime/frame/frame-menu.js": "4755b28d6affb0c8633671f23ab3fd6fc5a0e3c8319438c4c7134ad7ffe70670",
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
   "./apps/spreadsheets/runtime/platform/file-launch.js": "d8735956e9e8e6161b92546257d99166edefc342da204d569c0ecb9f2989f05d",
