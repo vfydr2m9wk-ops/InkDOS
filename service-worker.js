@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.3-7b21685cc744ab49dfb5';
+const CACHE_NAME='inkdos-v2.7.3-fbc82693beea58916139';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "254a50527e19459922bbfe176d9ff77843cd80c08cca7bd8fabc72f3f1fb44e2",
@@ -199,9 +199,9 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/package-validator.js": "f8a95123b353e2fc64083d0da399b76e50ac695c8f6eb74fd245981d6dd3dc61",
   "./apps/spreadsheets/io/save-controller.js": "12748c6ca03df4284a522f7304efdbdeea4096b9fdfb9106d1a1e72626839b49",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
-  "./apps/spreadsheets/io/xls-biff8-engine.js": "a8791c2a28198fa7f28d6dd48d1a2fa61509597a84c7d69a170946515ea2f660",
+  "./apps/spreadsheets/io/xls-biff8-engine.js": "ff05eacfaf68836395515e767e8e599b4dfb393e95c7442e3813530c554ef274",
   "./apps/spreadsheets/io/xlsx-color-fidelity.js": "5d57ee26a39d159f8c777fe2ad2725fb4fa2de6f844af22425618854862a68bd",
-  "./apps/spreadsheets/io/xlsx-engine.js": "d6de1b1ad46f56709ad64863e88f3ce68a40adc0ccf41a8b99000182af6f56d4",
+  "./apps/spreadsheets/io/xlsx-engine.js": "734cbf1ff7b66f543ac8773e6bee60116c0b42115790fcb3de3c429e6771cb2b",
   "./apps/spreadsheets/manifest.webmanifest": "9ba21ae88697f9fdaf243c7ad6b1921be9675f96b707eb13ed9b6016fda24c3c",
   "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
   "./apps/spreadsheets/runtime/frame/app-frame.css": "e84a9fdd55ba8c4a2b3219fd36068c20cc679c9381723ba9359154c7628e3d73",
@@ -223,8 +223,8 @@ const ASSET_HASHES={
   "./apps/spreadsheets/vendor/LICENSE-PAKO.txt": "a04665b3b2de56c66730c1f720f528175739e4104f79073614aa611da1e85539",
   "./apps/spreadsheets/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/spreadsheets/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
-  "./apps/spreadsheets/view/grid-surface.css": "5a877cb839a2ba5c4138b0911274fe5a5ccb74ca56a5715ed4de976e40f97015",
-  "./apps/spreadsheets/view/grid-surface.js": "e06453f5ec80016c166c81d8f712de3bc50362a245cc1b435e077f4f75e2b04a",
+  "./apps/spreadsheets/view/grid-surface.css": "51c7ec73bb8c4d7b1ad2f9c59378d482e84a33dfd289223c65b28d02a851af17",
+  "./apps/spreadsheets/view/grid-surface.js": "0e8744b80aa63e2bf39a9e5e7709204159f2f48b6bf447a6788c7b6c3c1fcf80",
   "./apps/spreadsheets/view/zoom-controller.js": "074b6b5ad70c1a8c3c6029bb850cb1e910f09138c589d48ee5f8b35f94871c0e",
   "./apps/txt/app.js": "f694456f0d6c7f5f4cde22103a72d90b04d7d41ae1a066905d54abafcf24dec9",
   "./apps/txt/assets/ASSET-PROVENANCE.txt": "a3f0415081d9e5e1842fbb12202ca29a299a91024d136d30ed92c5e168a1250c",
