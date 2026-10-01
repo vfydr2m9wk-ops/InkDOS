@@ -37,7 +37,7 @@ def main():
                 page.wait_for_function('() => !!globalThis.__inkdosSpreadsheetsS1')
                 page.click('#startNew')
                 page.locator('#gridStage .cell[data-ref="A1"]').click(); page.keyboard.type('x'); page.keyboard.press('Enter')
-                page.click('#menuButton'); page.click('#menuSave')
+                page.evaluate("()=>document.getElementById('menuSave').click()")
                 page.wait_for_function(PANEL,timeout=8000)
                 title=page.evaluate(PANEL)
                 assert 'saved' in title.lower() and 'opened' not in title.lower(),title

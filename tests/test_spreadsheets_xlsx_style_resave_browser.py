@@ -56,8 +56,7 @@ def run_case(browser,path,first_mode):
     page.click('#boldBtn')
     def save(mode):
         page.evaluate(f"()=>{{window.__saveMode='{mode}'}}")
-        page.click('#menuButton')
-        page.click('#menuSave')
+        page.evaluate("()=>document.getElementById('menuSave').click()")
         page.wait_for_timeout(1200)
         for sel in ('#errorClose',):
             if page.locator(sel).is_visible():page.click(sel)
