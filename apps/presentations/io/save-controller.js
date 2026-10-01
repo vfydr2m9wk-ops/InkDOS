@@ -61,7 +61,7 @@ function create({session,chrome,promoteLegacyPpt}={}){
   }
   async function share(){
     if(!session.active||busy)return null;busy=true;
-    try{const {bytes,receipt,blob,fileName}=await buildCopy(true);const delivery=await NS.FileDelivery.share(blob,fileName);chrome.status(session.sourceKind==='ppt'?'Editable PPTX copy sent to Share Sheet':'PPTX sent to Share Sheet');chrome.title();return {...delivery,bytes,receipt,fileName}}
+    try{const {bytes,receipt,blob,fileName}=await buildCopy(true);const delivery=await NS.FileDelivery.share(blob,fileName);chrome.status(delivery?.method==='download'?'PPTX downloaded · this host blocks system sharing':session.sourceKind==='ppt'?'Editable PPTX copy sent to Share Sheet':'PPTX sent to Share Sheet');chrome.title();return {...delivery,bytes,receipt,fileName}}
     catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName},{title:'Presentation could not be saved',retry:false});return null}finally{busy=false}
   }
   return Object.freeze({save,saveForReplacement,share,buildCopy,ensureP1Writer,ensureP2Package,outputName})

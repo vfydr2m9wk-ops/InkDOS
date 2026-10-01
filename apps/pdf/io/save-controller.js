@@ -64,7 +64,7 @@ function create({session,getDocument,editor,chrome}={}){
     result={blob:new Blob([sourceBytes],{type:'application/pdf'}),fileName:NS.FileDelivery.safeName(session.fileName)};
    }
    const receipt=await NS.FileDelivery.share(result.blob,result.fileName);
-   if(getDocument()===doc){editor.commit();if(wasDirty)session.markDirty();chrome.dirty();chrome.status(wasDirty?'PDF sent to Share Sheet · edits remain unsaved':'PDF sent to Share Sheet')}
+   if(getDocument()===doc){editor.commit();if(wasDirty)session.markDirty();chrome.dirty();chrome.status(receipt?.method==='download'?'PDF downloaded · this host blocks system sharing':wasDirty?'PDF sent to Share Sheet · edits remain unsaved':'PDF sent to Share Sheet')}
    document.documentElement.dataset.saveState='completed';return {...result,receipt};
   }catch(e){
    if(getDocument()===doc&&wasDirty){session.markDirty();chrome.dirty()}
