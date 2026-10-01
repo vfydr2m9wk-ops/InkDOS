@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.3-eda5351a595cc9b1ff01';
+const CACHE_NAME='inkdos-v2.7.3-a1a012ce89c9498c4dd1';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "254a50527e19459922bbfe176d9ff77843cd80c08cca7bd8fabc72f3f1fb44e2",
@@ -58,7 +58,7 @@ const ASSET_HASHES={
   "./apps/epub/engine/content-projector.js": "4701aa8b4d75d14bafff212c60e56ad1f38ddc6b7e7e8c4588695c1c04752e9b",
   "./apps/epub/engine/navigation-index.js": "c349754e6e2994914449df235cc821d7274a937a8a026af72eb43a318bf196ba",
   "./apps/epub/help/help.js": "2640a7fdb41d2d194dd6f349669cc37c7dfa909229eb17c4843b3a9514c213fe",
-  "./apps/epub/index.html": "674165177a668f7e51e3d52527f474783b62fba2ba3ce9b161f60f9efe59ee42",
+  "./apps/epub/index.html": "468e79ce6c499cad5908504ca5560511bd7129e31bd7762836d51ea9ef024893",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "637e9fd4a98b16ae39f892d5a0b5a5f4bdeff503b6b0817f957b119abbe5c51b",
   "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
@@ -67,19 +67,19 @@ const ASSET_HASHES={
   "./apps/epub/runtime/frame/frame-menu.js": "c7c67c0f267ca5b2ad6b5a1382a9aee43328be4d1f6753b4ffdb71011e20c7ff",
   "./apps/epub/runtime/platform/file-launch.js": "8267e2e795f3633ec7df9d02e4bad1bd7d41a0428feb7840ab51d10411f9443e",
   "./apps/epub/runtime/tokens/base.css": "3a9afb52b36ed58080688bff0f627a5adf7b205095ceeddb43e94d90bd37572d",
-  "./apps/epub/session/book-session.js": "9b890f2c45e8dc803ce2d67d7b8287470f7e87079ff3824d6712c6755db9c3d1",
+  "./apps/epub/session/book-session.js": "d6a40ede14fd62c25243bd46c7beeb6d8a1fafd5001d22473a49b5475b4454b0",
   "./apps/epub/state/annotation-store.js": "8a5b8a38ac29db007a08e18ccac738da141d846ea560314d6ab413c5f73b7828",
   "./apps/epub/state/appearance.js": "7324ba77007ee34cf6635342ee06ef875166c62c8f764399d971592b6b48e287",
-  "./apps/epub/state/reading-state.js": "b9d3328bcfdf0e1d74537f37edaf5aedf0a86fa93fddfca081ea0fd806eceb18",
+  "./apps/epub/state/reading-state.js": "f457a072792517703c659ef47e411dfcf99dcda62842a5cde4126274b425f5c5",
   "./apps/epub/ui/annotation-modes.js": "a42fd9761ef73ba2127a3da145cb7d82ed6b6ffa0c0ef374f177b9a873715c89",
   "./apps/epub/ui/navigation-tools.js": "5a972dc968951d3641e7a36fc9d5a3109462b2e7aafa0369112ca80b6c3e8a6b",
-  "./apps/epub/ui/reader-bindings.js": "85b0f6dee4c4e603b8010be94c0f2dbc642fe5ed6c3a808fa5e8779623c7a52e",
-  "./apps/epub/ui/reader-controls.css": "88f9d7c320e3755ab18caa6f7c617a085b29f9f7d11c75a518391ea38888603d",
-  "./apps/epub/ui/reader-controls.js": "2ae7157742fbbdc15b434639542ea5172a402f1bde9160904274306ff0731532",
+  "./apps/epub/ui/reader-bindings.js": "405bf1dac11270280340818cf1a67d75e8d972a9cab4b3a7a89425abc9b52b04",
+  "./apps/epub/ui/reader-controls.css": "b2530ddf8481ab2b5a9ea04073103741dcfbcdcc09630b88881cb58a54253b71",
+  "./apps/epub/ui/reader-controls.js": "15b1c56efa8edc591e0b311e2c1ceea02c0d8eaab089d6b65027fe56a9f8fb4c",
   "./apps/epub/ui/start-state.css": "10f32cc3b67dd36b5934d1967ede39fb08c7d031798794323050a99de2ae59e4",
   "./apps/epub/ui/visual-system.css": "87cf1938d68812cc65a590060d03796fe7dd7fe71e3747f6590098cd71b95ab0",
   "./apps/epub/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
-  "./apps/epub/view/reader-viewport.js": "ea94766452111c6ff92e5050c31dfef500352e1c6843745aeffcf90e42bb5c2c",
+  "./apps/epub/view/reader-viewport.js": "85b6a908764936174acea53d63d65bfe5dfb091b75aa1f494fd0d03536648a9c",
   "./apps/epub/view/reader.css": "38f938bcf126ecf6f99f1d04c5db991c5d1f187765b68fd449b6cda9359852c9",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
   "./apps/pdf/app.js": "23a2b84770c21cad8b708a864b684e445802597e8a6d80a4cb7df85a593eeeaa",

@@ -75,6 +75,7 @@ function create({elements:E,reader,navigation,annotationModes}={}){
   E.fontDown.addEventListener('click',()=>reader.setFont(state().fontPx-1));
   E.fontUp.addEventListener('click',()=>reader.setFont(state().fontPx+1));
   E.fontFamily.addEventListener('change',()=>reader.setFontStyle(E.fontFamily.value));
+  document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-margin-choice]');if(b)reader.setMargin(b.dataset.marginChoice)});
   for(const button of document.querySelectorAll('[data-theme-choice]'))button.addEventListener('click',()=>reader.setTheme(button.dataset.themeChoice));
   document.addEventListener('selectionchange',()=>syncSelectionTools(reader.captureSelection()));
   E.surface.addEventListener('click',event=>{const link=event.target.closest&&event.target.closest('.reader-link');if(link){event.preventDefault();reader.handleReaderLink(link)}});
