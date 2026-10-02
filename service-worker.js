@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-8efe2096154a45921e53';
+const CACHE_NAME='inkdos-v2.7.4-891721355f91ecbef3e7';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -75,12 +75,12 @@ const ASSET_HASHES={
   "./apps/epub/ui/navigation-tools.js": "5a972dc968951d3641e7a36fc9d5a3109462b2e7aafa0369112ca80b6c3e8a6b",
   "./apps/epub/ui/reader-bindings.js": "306cf76b5cacb5c89a430e9fec5ffd16a76f472b5ae14a4695ced9921606ad0d",
   "./apps/epub/ui/reader-controls.css": "b2530ddf8481ab2b5a9ea04073103741dcfbcdcc09630b88881cb58a54253b71",
-  "./apps/epub/ui/reader-controls.js": "f2b4b15410337281307e5014371578a983f47f98e0422c7b62bbc974d73ece33",
+  "./apps/epub/ui/reader-controls.js": "736c21c6e4f11bf2fe3aa931c4ad6c6317a1c84b2cc52013a4896b260f0a5c80",
   "./apps/epub/ui/start-state.css": "10f32cc3b67dd36b5934d1967ede39fb08c7d031798794323050a99de2ae59e4",
   "./apps/epub/ui/visual-system.css": "87cf1938d68812cc65a590060d03796fe7dd7fe71e3747f6590098cd71b95ab0",
   "./apps/epub/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/epub/view/reader-viewport.js": "85b6a908764936174acea53d63d65bfe5dfb091b75aa1f494fd0d03536648a9c",
-  "./apps/epub/view/reader.css": "ea2da7dd204cc8f95da61785a346e786e8de20eeee2b3ee082348641f543b672",
+  "./apps/epub/view/reader.css": "aad23aff993d9115901f7f903d79e61f07a8a0aa31b68f107ea6f48a955647e6",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
   "./apps/pdf/app.js": "23a2b84770c21cad8b708a864b684e445802597e8a6d80a4cb7df85a593eeeaa",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
@@ -241,7 +241,7 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "53f78ae59af25d39c282de68f605bae456d63097117f7e18214b90e50c44341f",
+  "./apps/txt/index.html": "8fa464a937f50b4a4035db2992bbcda67b2533d22a5e0f7e881611f5126d40f3",
   "./apps/txt/io/txt-file-controller.js": "223e84ab05a47d92d2dd1db00666fa43f18e557eda17e061f865c43b0bc3b1bc",
   "./apps/txt/manifest.webmanifest": "a335693895daf02d482e2d7a9275cf3e9a9abe4fcdc737b82d29cd4463a6537c",
   "./apps/txt/page.template.html": "a6773866d990006dddf20fdb38fab34fbd8ba6defd50b938500086eccca4d393",
@@ -255,7 +255,7 @@ const ASSET_HASHES={
   "./apps/txt/runtime/tokens/base.css": "3ca9310a61d220437a5748fb44f93476397c44a34b067506e8df0cf76b7f7fd7",
   "./apps/txt/state/appearance.js": "7e971c54e279dfe11b68198838bb4d6fdb1bd4c0e571d8c337998df399104247",
   "./apps/txt/state/txt-state.js": "dad48ffca1278c19465c4a2d3a4b561e2efce5cb01257c3fe5270b2bd4ad23de",
-  "./apps/txt/styles.css": "8665b54c37f05e2c33be2e97993a92cb2f2853054b806e326a58a6c3d084df56",
+  "./apps/txt/styles.css": "af109f3b9021e3f7b3a2027574e0fe04c808ae6ee95643f0d18b264c22a61ee5",
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
@@ -280,7 +280,7 @@ const ASSET_HASHES={
   "./shared/localization/locales/ru.js": "82e9300682c2979027ae257ebaa76920c1fbe9408d5047ec6f5b79419e164f95",
   "./shared/localization/locales/zh-CN.js": "21683c06a21ec9688ff6aaa74d88cdea63291c4e45106ef25d8cca41fe1fd637",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
-  "./shared/localization/settings-strip.js": "ba18aabf4cc717b183b248a628b8347a57299f596f331f2e0aa8ddb5d61abe8a",
+  "./shared/localization/settings-strip.js": "94bffe64fe8fabcbe4d5ce47c9adc7ddd63079baba656e33aa275adae6a15d60",
   "./shared/localization/ui-localization.js": "e89c2531c9f0a9bc7831c6ca96322ec26a5df2763ec6a5905f4ba557a26b0172",
   "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
   "./shared/ui-density.js": "2700f8594221037108c5b440eeee6dc3ab88c0d26a2f36ca6a39936474f9b630"

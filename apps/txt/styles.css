@@ -76,3 +76,6 @@ html[data-theme="dark"] #editor::selection{background:#36577f}
 /* Full-width text area: the window is the page; only a minimal margin. Long lines stay on one line unless Wrap is on. */
 .content-viewport{padding:0}.stage{width:100%}.editor-surface{border:0;border-radius:0;box-shadow:none}
 #editor,.editor-surface .t2-view{padding:12px max(14px,var(--safe-r)) 24px max(14px,var(--safe-l))}
+/* Start page: two actions side by side in desktop mode, stacked in smartphone mode (like the other workspaces). */
+html[data-ui-density="desktop"] .start-actions{flex-flow:row nowrap}
+html[data-ui-density="mobile"] .start-actions{flex-direction:column;align-items:center}
