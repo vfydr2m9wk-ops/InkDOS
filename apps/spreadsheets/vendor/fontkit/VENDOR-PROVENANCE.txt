@@ -1,0 +1,6 @@
+@pdf-lib/fontkit 1.1.1
+Upstream: https://github.com/Hopding/fontkit (npm @pdf-lib/fontkit)
+Runtime file: dist/fontkit.umd.min.js
+License: MIT
+SHA-256: d8df561b9fba98e24f2e5130e40948809281bbbc55a20c412359f1a0a5eb35a6
+Loaded on demand by io/pdf-export.js only.

@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-541278a4cb900fa9f77c';
+const CACHE_NAME='inkdos-v2.7.4-0a3563910160648eaa7c';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -197,7 +197,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/file-delivery.js": "9923708343a77c480b2e6846c0ee1fe8a260de607a66ca6311fe0ce6c06106b7",
   "./apps/spreadsheets/io/file-open-controller.js": "7be31a054e047523c46431108e90a4b2e568cfb44dee49e05bcebc842d1e4645",
   "./apps/spreadsheets/io/package-validator.js": "f8a95123b353e2fc64083d0da399b76e50ac695c8f6eb74fd245981d6dd3dc61",
-  "./apps/spreadsheets/io/pdf-export.js": "64ecbd45387c8aa169b748a82c819b2b3d7808f7f88f79405730d7b1dcf5b837",
+  "./apps/spreadsheets/io/pdf-export.js": "6418912eb2c725f31e2ed2d0a0d4a632263d7b18c22d2f538ee748eac736c555",
   "./apps/spreadsheets/io/save-controller.js": "a8518ca4f4a9e694dd041bc3d2a507f1f1f1c7a8c1d43f9646fc7a745f514351",
   "./apps/spreadsheets/io/worksheet-package.js": "2f12027c7fe0c61306ac2494a7a3568bce8d734dc3f49f3886f789b133307053",
   "./apps/spreadsheets/io/xls-biff8-engine.js": "ff05eacfaf68836395515e767e8e599b4dfb393e95c7442e3813530c554ef274",
@@ -222,11 +222,16 @@ const ASSET_HASHES={
   "./apps/spreadsheets/ui/zoom-menu.css": "f3c24225eff4bd90b5f9236d2639f50902ae6bfafed09370c26f7af6b4598f25",
   "./apps/spreadsheets/vendor/LICENSE-JSZIP.txt": "566c953c6090b1218ca6217dd7359d45dde46581968586dc607d59a78af6a9c4",
   "./apps/spreadsheets/vendor/LICENSE-PAKO.txt": "a04665b3b2de56c66730c1f720f528175739e4104f79073614aa611da1e85539",
+  "./apps/spreadsheets/vendor/fontkit/fontkit.umd.min.js": "d8df561b9fba98e24f2e5130e40948809281bbbc55a20c412359f1a0a5eb35a6",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-Bold.ttf": "7697382a540d9a1a91b492312df06565849858c072b4296e6139a27d6f26775e",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-BoldItalic.ttf": "94497d34f0a0f4d4cbc2c4f060305d5d1af42dfabf236cdb10773aeef89dd305",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-Italic.ttf": "403384337845306025cedfe9cb3b01376c8d58d062bb8e7022338a414b8a4faa",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-Regular.ttf": "109913f254f84308f0ff346582cec8da045ec94965950ceb9ab22f4d4b824e5d",
   "./apps/spreadsheets/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/spreadsheets/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/spreadsheets/vendor/pdf-lib/pdf-lib.min.js": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f",
-  "./apps/spreadsheets/view/grid-surface.css": "51c7ec73bb8c4d7b1ad2f9c59378d482e84a33dfd289223c65b28d02a851af17",
-  "./apps/spreadsheets/view/grid-surface.js": "02bd3bce3a9bc9a9c32a3d245caa41fedf688cc9a2ec4e6f5ff78fbbc85dfc83",
+  "./apps/spreadsheets/view/grid-surface.css": "05a7fed0e6a42dd9fdfcd316e50425ead0dc4c45fe908465966d30f1b54b614e",
+  "./apps/spreadsheets/view/grid-surface.js": "9eb423587a9a1d7ecee4633dce562280ae473f524a21c6c334a921e50d67d9d7",
   "./apps/spreadsheets/view/zoom-controller.js": "074b6b5ad70c1a8c3c6029bb850cb1e910f09138c589d48ee5f8b35f94871c0e",
   "./apps/txt/app.js": "a9cbbf0ca935b716ad3ddc2d9805df8a513e4e612c6ce5a8c0ffd9cce7b6b362",
   "./apps/txt/assets/ASSET-PROVENANCE.txt": "a3f0415081d9e5e1842fbb12202ca29a299a91024d136d30ed92c5e168a1250c",
@@ -441,6 +446,11 @@ const APP_SHELL=[
   "./apps/spreadsheets/io/save-controller.js",
   "./apps/spreadsheets/io/pdf-export.js",
   "./apps/spreadsheets/vendor/pdf-lib/pdf-lib.min.js",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-Regular.ttf",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-Bold.ttf",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-Italic.ttf",
+  "./apps/spreadsheets/vendor/fonts/InkDOSSans-BoldItalic.ttf",
+  "./apps/spreadsheets/vendor/fontkit/fontkit.umd.min.js",
   "./apps/spreadsheets/io/worksheet-package.js",
   "./apps/spreadsheets/io/xls-biff8-engine.js",
   "./apps/spreadsheets/io/xlsx-engine.js",

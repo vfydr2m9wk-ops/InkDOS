@@ -1,0 +1,5 @@
+InkDOS Sans (Regular, Bold, Italic, Bold Italic)
+Derived from Carlito 1.103 (metric-compatible with Calibri), npm @expo-google-fonts/carlito 0.4.1 (Google Fonts build).
+Modified with fontTools pyftsubset: Latin, Latin-1, Latin Extended-A, general punctuation, euro/trademark and geometric bullets only; hinting removed; layout tables dropped for pdf-lib fontkit compatibility. Renamed to "InkDOS Sans" because "Carlito" is a Reserved Font Name for modified versions.
+License: SIL Open Font License 1.1 (OFL-Carlito.txt), copyright The Carlito Project Authors.
+Embedded into exported PDFs by io/pdf-export.js.
