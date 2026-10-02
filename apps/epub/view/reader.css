@@ -9,5 +9,5 @@
 @media(max-width:640px){.content-viewport{padding:0}.reader-stage{border-radius:0;box-shadow:none}}
 /* Page turn */
 .reader-stage.mode-pages.turning{scroll-snap-type:none}
-.reader-stage.mode-pages.turn-book{touch-action:pan-y}
+.reader-stage.mode-pages{overflow-x:hidden;touch-action:pan-y}.reader-stage.mode-scroll.scroll-smooth{scroll-behavior:smooth}.anim-select{height:32px;border:1px solid var(--line,#d9dee7);border-radius:9px;background:var(--chrome,#fff);color:inherit;padding:0 6px;font:inherit;font-size:13px;flex:0 0 auto}
 .epub-turn-sheet{position:absolute;z-index:4;overflow:hidden;pointer-events:none}.epub-turn-sheet .reader-stage{overflow:hidden!important;border:0;border-radius:0;box-shadow:none}.epub-turn-base{z-index:3;box-shadow:none}.epub-turn-flap{position:absolute;z-index:6;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--reader-bg,#fbfaf6) 88%,#000) 0%,var(--reader-bg,#fbfaf6) 70%,color-mix(in srgb,var(--reader-bg,#fbfaf6) 82%,#000) 100%);box-shadow:-6px 0 18px rgba(0,0,0,.22);border-radius:0 2px 2px 0}.epub-turn-fold{position:absolute;z-index:5;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0))}
