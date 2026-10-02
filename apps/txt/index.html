@@ -85,6 +85,10 @@ html[data-theme="dark"] #editor::selection{background:#36577f}
 #txtPrintSheet{display:none}
 @media print{@page{size:A4;margin:20mm 18mm}html.txt-printing,html.txt-printing body{background:#fff!important;height:auto!important;min-height:0!important;overflow:visible!important;position:static!important}html.txt-printing body>*:not(#txtPrintSheet){display:none!important}html.txt-printing #txtPrintSheet{display:block;margin:0;padding:0;color:#000;background:#fff;font:10.5pt/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4;orphans:3;widows:3}}
 
+/* Full-width text area: the window is the page; only a minimal margin. Long lines stay on one line unless Wrap is on. */
+.content-viewport{padding:0}.stage{width:100%}.editor-surface{border:0;border-radius:0;box-shadow:none}
+#editor,.editor-surface .t2-view{padding:12px max(14px,var(--safe-r)) 24px max(14px,var(--safe-l))}
+
 /* InkDOS 2.0 App Frame — shell geometry and generic frame controls only.
    Ownership rule: this file may style the frame/chrome, never an app's content surface. */
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--frame-bg);font-family:var(--frame-ui);color:var(--frame-text);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
