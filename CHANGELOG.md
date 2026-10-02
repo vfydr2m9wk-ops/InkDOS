@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.7.4 — 2026-10-02
+
+Interface (all workspaces):
+- The hamburger menu is replaced by direct header actions: Home, Open and Save on the left; Settings (same options as Home: appearance, interface, language) and Share on the right; Help at the right end of the status bar. On narrow screens the file title fits between them.
+- One zoom control everywhere: −/+ in 25% steps, an editable value (1–800%) and a preset menu with Fit page / Fit width.
+
+Saving and export:
+- Spreadsheets: Save opens options: overwrite the original (when the host provides a writable file, with a risk warning that recommends a copy), save an edited copy, or export XLSX, CSV or PDF.
+- Spreadsheets: new in-app PDF export (orientation, margins, scale, pages per sheet, page range), built inside InkDOS without the print dialog.
+- When a host blocks system sharing (NotAllowedError), Save/Share download the file instead and the status says so.
+
+Fidelity:
+- Spreadsheets: legacy XLS text boxes keep their borders; unwrapped text overflows into empty neighbours like Excel, stopping at cell borders; print gridlines follow the workbook setting.
+- Presentations (PPTX): placeholder text inherits alignment, bullets, spacing, size, bold, font, colour and all-caps from layout and master; backgrounds fall back to layout/master, including theme picture backgrounds.
+- Presentations (PPT): paragraph alignment is read from the file.
+
+Fixes:
+- Desktop (Windows): a DOCX opened by file association no longer stays on the Documents start screen.
+- Spreadsheets: workbooks open again (the loading overlay was missing after the zoom change).
+- PDF: text and pen properties appear only for their tool, with icon labels; pen and the review highlighter are no longer active at the same time.
+- EPUB: the reading area fills the window, text margins are selectable (minimum, standard A4, large) and pages turn with an animation.
+
 ## 2.7.3 — 2026-09-29
 
 Opening files (web / installed app hosts such as XeOS):
