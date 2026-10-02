@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-3e5ea77ee8557585db05';
+const CACHE_NAME='inkdos-v2.7.4-5fbc440cd936d71727ac';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -80,7 +80,7 @@ const ASSET_HASHES={
   "./apps/epub/ui/visual-system.css": "87cf1938d68812cc65a590060d03796fe7dd7fe71e3747f6590098cd71b95ab0",
   "./apps/epub/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/epub/view/reader-viewport.js": "85b6a908764936174acea53d63d65bfe5dfb091b75aa1f494fd0d03536648a9c",
-  "./apps/epub/view/reader.css": "0976c6501032de0d5b5796563c5068e087a133e3769cf28fa2e332c29b299d14",
+  "./apps/epub/view/reader.css": "8398aa4e111df61ffcb5669bec4f2a69a1b16e73e1b0f10f606b9da1b655cc1e",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
   "./apps/pdf/app.js": "23a2b84770c21cad8b708a864b684e445802597e8a6d80a4cb7df85a593eeeaa",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
