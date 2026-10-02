@@ -142,11 +142,11 @@
   function compatibleFileInput(file) {
     const extension = extensionForName(file && file.name);
     const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
-    for (const input of inputs) {
-      const allowed = extensionsFromAccept(input.accept);
-      if (!allowed.length || (extension && allowed.includes(extension))) return input;
-    }
-    return null;
+    // Prefer the input that names this extension: an image picker that only lists MIME types
+    // (Documents' insert-image input comes first in the DOM) must not receive a launched DOCX.
+    const named = inputs.find(input => extension && extensionsFromAccept(input.accept).includes(extension));
+    if (named) return named;
+    return inputs.find(input => !String(input.accept || '').trim()) || null;
   }
 
   async function injectNativeFile(file) {
