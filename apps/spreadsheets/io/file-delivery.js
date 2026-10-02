@@ -3,9 +3,9 @@ const NS=global.InkDOS2Spreadsheets=global.InkDOS2Spreadsheets||{};
 let deliveryInFlight=null;
 function singleFlight(run){if(deliveryInFlight)return deliveryInFlight;let p;try{p=Promise.resolve(run())}catch(e){return Promise.reject(e)}deliveryInFlight=p;p.finally(()=>{if(deliveryInFlight===p)deliveryInFlight=null}).catch(()=>{});return p}
 function fail(code,message,cause){const e=new Error(message);e.name='InkDOSSpreadsheetsDeliveryError';e.code=code;if(cause)e.cause=cause;throw e}
-function safeName(name,sourceKind='xlsx'){let n=String(name||'Untitled.xlsx').trim()||'Untitled.xlsx';n=n.replace(/[\\/:*?"<>|]+/g,'-').replace(/\.(xls|xlsx|csv|tsv)$/i,'');const ext=sourceKind==='csv'?'.csv':sourceKind==='tsv'?'.tsv':'.xlsx';return(n||'Untitled')+ext}
-function mimeFor(sourceKind){return sourceKind==='csv'?'text/csv;charset=utf-8':sourceKind==='tsv'?'text/tab-separated-values;charset=utf-8':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}
-function extensionFor(sourceKind){return sourceKind==='csv'?'.csv':sourceKind==='tsv'?'.tsv':'.xlsx'}
+function safeName(name,sourceKind='xlsx'){let n=String(name||'Untitled.xlsx').trim()||'Untitled.xlsx';n=n.replace(/[\\/:*?"<>|]+/g,'-').replace(/\.(xls|xlsx|csv|tsv|pdf)$/i,'');const ext=sourceKind==='pdf'?'.pdf':sourceKind==='csv'?'.csv':sourceKind==='tsv'?'.tsv':'.xlsx';return(n||'Untitled')+ext}
+function mimeFor(sourceKind){return sourceKind==='pdf'?'application/pdf':sourceKind==='csv'?'text/csv;charset=utf-8':sourceKind==='tsv'?'text/tab-separated-values;charset=utf-8':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}
+function extensionFor(sourceKind){return sourceKind==='pdf'?'.pdf':sourceKind==='csv'?'.csv':sourceKind==='tsv'?'.tsv':'.xlsx'}
 function toFile(blob,fileName,sourceKind='xlsx'){try{return new File([blob],safeName(fileName,sourceKind),{type:mimeFor(sourceKind),lastModified:Date.now()})}catch(_){return null}}
 function canShare(file){if(!file||typeof navigator==='undefined'||typeof navigator.share!=='function'||typeof navigator.canShare!=='function')return false;try{return !!navigator.canShare({files:[file]})}catch(_){return false}}
 function isAppleTouchHost(){const nav=global.navigator||{};const ua=String(nav.userAgent||'');const platform=String(nav.platform||'');const touches=Number(nav.maxTouchPoints||0);return /iPad|iPhone|iPod/i.test(ua)||(platform==='MacIntel'&&touches>1)}
