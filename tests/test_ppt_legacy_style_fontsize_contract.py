@@ -29,7 +29,9 @@ class LegacyPptStyleFontSizeContractTests(unittest.TestCase):
         source = READER.read_text(encoding="utf-8")
         parse = source[source.index("function parseArtObjects") : source.index("function backgroundColorFromContainer")]
         self.assertIn("legacyCharacterFontSize(textbox", parse)
-        self.assertIn("fontSizePt:explicitFontSize||d.fontSizePt", parse)
+        # Explicit run size wins, then the master text style, then the fitted estimate.
+        self.assertIn("size=explicitFontSize||ms.fontSizePt||d.fontSizePt", parse)
+        self.assertIn("fontSizePt:size", parse)
 
     def test_malformed_or_mixed_style_runs_keep_existing_fallback(self):
         source = READER.read_text(encoding="utf-8")
