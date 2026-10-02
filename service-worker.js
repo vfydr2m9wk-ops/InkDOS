@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-2d92b6d152d7c6a608a5';
+const CACHE_NAME='inkdos-v2.7.4-03dbb6f034d2cdd89523';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -73,14 +73,14 @@ const ASSET_HASHES={
   "./apps/epub/state/reading-state.js": "f457a072792517703c659ef47e411dfcf99dcda62842a5cde4126274b425f5c5",
   "./apps/epub/ui/annotation-modes.js": "a42fd9761ef73ba2127a3da145cb7d82ed6b6ffa0c0ef374f177b9a873715c89",
   "./apps/epub/ui/navigation-tools.js": "5a972dc968951d3641e7a36fc9d5a3109462b2e7aafa0369112ca80b6c3e8a6b",
-  "./apps/epub/ui/reader-bindings.js": "b3556dcf293e259bb9f7db6efedb0a4c0743f0bd90098ec80d51edb8172d9d6d",
+  "./apps/epub/ui/reader-bindings.js": "8ee37598fe00d42fd4f9a619cd7b52d46180ea817cad6c1bf55e213dbc89f688",
   "./apps/epub/ui/reader-controls.css": "b2530ddf8481ab2b5a9ea04073103741dcfbcdcc09630b88881cb58a54253b71",
   "./apps/epub/ui/reader-controls.js": "bdbb389669e5ea7e211d4fd6cbd0e0b07fc81c882679baa6dac7f6fe996792c4",
   "./apps/epub/ui/start-state.css": "d97e4ef1907b3065f708b118a4eb760b83d8763f5367a1a15b508395c88d78fd",
   "./apps/epub/ui/visual-system.css": "87cf1938d68812cc65a590060d03796fe7dd7fe71e3747f6590098cd71b95ab0",
   "./apps/epub/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/epub/view/reader-viewport.js": "85b6a908764936174acea53d63d65bfe5dfb091b75aa1f494fd0d03536648a9c",
-  "./apps/epub/view/reader.css": "f6e58bc5a1f8cae85ad2bb789f95284f5ecae988d31a908ff4eb3cf4bdb9e3a2",
+  "./apps/epub/view/reader.css": "0976c6501032de0d5b5796563c5068e087a133e3769cf28fa2e332c29b299d14",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
   "./apps/pdf/app.js": "23a2b84770c21cad8b708a864b684e445802597e8a6d80a4cb7df85a593eeeaa",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
