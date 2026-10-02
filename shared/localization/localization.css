@@ -30,3 +30,11 @@
 .inkdos-frame-actions .framebar>.inkdos-frame-right{margin-left:auto;position:relative;z-index:2;gap:6px}
 .framebar .inkdos-frame-action{width:40px;height:40px;min-width:40px;border:1px solid transparent;border-radius:12px;background:transparent;color:inherit;cursor:pointer;padding:0}
 .inkdos-settings-segment .inkdos-settings-option{white-space:nowrap;padding-inline:6px;font-size:12px}
+/* Narrow screens: the file title takes the space left between the header action groups. */
+@media (max-width:640px){
+.inkdos-frame-actions header{display:flex!important;align-items:center;gap:6px}
+.inkdos-frame-actions header>.frame-left,.inkdos-frame-actions header>.frame-right{flex:0 0 auto;width:auto!important;min-width:0;max-width:none!important;gap:2px}
+.inkdos-frame-actions header>.document-title,.inkdos-frame-actions header>.presentation-title,.inkdos-frame-actions header>.file-pill-wrap{position:static!important;transform:none!important;left:auto!important;flex:1 1 auto;min-width:0;width:auto!important;max-width:none!important;margin:0}
+.inkdos-frame-actions header>.document-title img,.inkdos-frame-actions header>.presentation-title img,.inkdos-frame-actions header>.document-title .documents-icon{display:none}
+.inkdos-frame-actions header .inkdos-frame-action,.inkdos-frame-actions header .frame-left>a{width:34px;min-width:34px;height:34px}
+}
