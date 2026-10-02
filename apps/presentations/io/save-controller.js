@@ -64,6 +64,11 @@ function create({session,chrome,promoteLegacyPpt}={}){
     try{const {bytes,receipt,blob,fileName}=await buildCopy(true);const delivery=await NS.FileDelivery.share(blob,fileName);chrome.status(delivery?.method==='download'?'PPTX downloaded · this host blocks system sharing':session.sourceKind==='ppt'?'Editable PPTX copy sent to Share Sheet':'PPTX sent to Share Sheet');chrome.title();return {...delivery,bytes,receipt,fileName}}
     catch(e){if(e?.code==='cancelled')chrome.status('Share cancelled');else chrome.showError(e,{name:session.fileName},{title:'Presentation could not be saved',retry:false});return null}finally{busy=false}
   }
+  // Header Save menu (shared frame): overwrite the original PPTX or save a copy.
+  global.InkDOSSaveProvider=Object.freeze({fileName:()=>outputName(),canOverwrite:()=>!!session.active&&session.sourceKind==='pptx',
+   buildOverwrite:async()=>{chrome.status('Saving over the original PPTX…');return (await buildCopy(false)).blob},
+   afterOverwrite:()=>{session.dirty=false;chrome.status('Original PPTX overwritten')},
+   saveCopy:()=>save(),onError:e=>{console.error(e);chrome.status('Overwrite failed: '+(e?.message||e))},exports:[]});
   return Object.freeze({save,saveForReplacement,share,buildCopy,ensureP1Writer,ensureP2Package,outputName})
 }
 NS.SaveController=Object.freeze({create});

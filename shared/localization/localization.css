@@ -38,3 +38,17 @@
 .inkdos-frame-actions header>.document-title img,.inkdos-frame-actions header>.presentation-title img,.inkdos-frame-actions header>.document-title .documents-icon{display:none}
 .inkdos-frame-actions header .inkdos-frame-action,.inkdos-frame-actions header .frame-left>a{width:34px;min-width:34px;height:34px}
 }
+/* Shared Save menu */
+.inkdos-save-overlay{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:16px;background:rgba(15,23,42,.28);backdrop-filter:blur(3px)}
+.inkdos-save-overlay[hidden]{display:none}
+.inkdos-save-card{width:min(380px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:18px;border:1px solid var(--line,var(--frame-line,#d7dce2));border-radius:16px;background:var(--chrome,var(--frame-chrome,#fff));color:var(--text,var(--frame-text,#202124));box-shadow:0 24px 60px rgba(10,18,30,.28);display:flex;flex-direction:column;gap:8px}
+.inkdos-save-card h2{margin:0 0 4px;font-size:17px}.inkdos-save-card p{margin:0 0 6px;font-size:13px;color:var(--muted,#667085);line-height:1.4}
+.inkdos-save-option{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:10px 12px;border:1px solid var(--line-strong,var(--line,#cfd5dd));border-radius:11px;background:var(--chrome,#fff);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.inkdos-save-option strong{font-size:14px;font-weight:600}.inkdos-save-option small{font-size:11.5px;color:var(--muted,#667085)}
+.inkdos-save-option:hover:not(:disabled){border-color:var(--accent,#2f6fed)}
+.inkdos-save-option:disabled{opacity:.45;cursor:default}
+.inkdos-save-option.primary{background:var(--accent,#2f6fed);border-color:var(--accent,#2f6fed);color:#fff}.inkdos-save-option.primary small{color:rgba(255,255,255,.85)}
+.inkdos-save-option.danger{color:#b42318;border-color:color-mix(in srgb,#b42318 40%,var(--line,#ddd))}
+.inkdos-save-option.plain{align-items:center;border-color:transparent;background:transparent}
+.inkdos-save-label{margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#667085)}
+.inkdos-save-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
