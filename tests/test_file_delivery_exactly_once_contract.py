@@ -8,23 +8,18 @@ class FileDeliveryExactlyOnceContractTests(unittest.TestCase):
     def _read(self, path):
         return (ROOT / path).read_text(encoding="utf-8")
 
-    def test_apple_touch_share_route_is_terminal_for_documents_and_spreadsheets(self):
+    # 2.7.5: on iPhone/iPad Save and Export download (Files/Downloads); only the Share action opens the Apple share sheet.
+    def test_apple_touch_save_route_downloads_in_every_app(self):
         cases = (
-            ("documents", "if(c.preferShareSave&&c.share)return viaShare(blob,fileName,file)"),
-            ("spreadsheets", "if(c.preferShareSave&&c.share)return viaShare(blob,fileName,file,sourceKind)"),
-        )
-        for app, terminal in cases:
-            source = self._read(f"apps/{app}/io/file-delivery.js")
-            self.assertIn(terminal, source, f"{app}: Apple-touch Web Share must be a terminal return")
-
-    def test_apple_touch_share_route_is_terminal_for_presentations_and_pdf(self):
-        cases = (
-            ("apps/presentations/io/file-delivery.js", "if(isAppleTouchHost()&&canShare(file))return viaShare(blob,name,file)"),
-            ("apps/pdf/io/file-delivery.js", "if(isAppleTouchHost()&&canShare(file))return share(blob,name)"),
+            ("apps/documents/io/file-delivery.js", "if(c.preferShareSave&&c.download)return viaDownload(blob,fileName)"),
+            ("apps/spreadsheets/io/file-delivery.js", "if(c.preferShareSave&&c.download)return viaDownload(blob,fileName,sourceKind)"),
+            ("apps/presentations/io/file-delivery.js", "if(isAppleTouchHost())return download(blob,name)"),
+            ("apps/pdf/io/file-delivery.js", "if(isAppleTouchHost())return download(blob,name)"),
+            ("apps/epub/io/file-delivery.js", "if(isAppleTouchHost())return download(blob,name);"),
+            ("apps/txt/runtime/services/file-delivery.js", "if(c.preferShareSave&&c.download)return 'download';"),
         )
         for path, terminal in cases:
-            source = self._read(path)
-            self.assertIn(terminal, source, f"{path}: Apple-touch Web Share must be a terminal return")
+            self.assertIn(terminal, self._read(path), f"{path}: Apple-touch Save must download, not open the share sheet")
 
     def test_plain_text_selected_share_route_is_terminal(self):
         source = self._read("apps/txt/index.html")

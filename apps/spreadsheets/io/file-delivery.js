@@ -17,7 +17,7 @@ async function viaDownload(blob,fileName,sourceKind='xlsx'){if(!(global.document
 async function deliverOnce(blob,fileName,{sourceKind='xlsx'}={}){const file=toFile(blob,fileName,sourceKind),c=capabilities(blob,fileName,{sourceKind});
  // Any invoked delivery route is terminal for this Save action. A rejected Web Share promise does not prove that the host produced no file.
  if(c.local){if(c.share)return viaShare(blob,fileName,file,sourceKind);fail('local-delivery-unavailable',`This HTML viewer blocks direct ${sourceKind==='csv'?'CSV':sourceKind==='tsv'?'TSV':'XLSX'} downloads. Use a browser/host with system file sharing enabled, or open the InkDOS app from its normal host.`);}
- if(c.preferShareSave&&c.share)return viaShare(blob,fileName,file,sourceKind)
+ if(c.preferShareSave&&c.download)return viaDownload(blob,fileName,sourceKind)
  if(c.fileSystem){try{return await viaPicker(blob,fileName,sourceKind)}catch(e){if(e.code==='cancelled'||e.code==='write-failed')throw e;if(c.share)return viaShare(blob,fileName,file,sourceKind);return viaDownload(blob,fileName,sourceKind)}}
  if(c.share)return viaShare(blob,fileName,file,sourceKind)
  return viaDownload(blob,fileName,sourceKind)

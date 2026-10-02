@@ -130,11 +130,12 @@ class SuiteIntegration(unittest.TestCase):
         for app in ("documents", "spreadsheets", "presentations", "txt"):
             self.assertIn("e.code==='cancelled'||e.code==='write-failed'", texts[app], app)
         self.assertIn("e?.name==='AbortError'||e.code==='write-failed'", texts["pdf"])
-        self.assertIn("if(c.preferShareSave&&c.share)", texts["documents"])
-        self.assertIn("if(c.preferShareSave&&c.share)", texts["spreadsheets"])
-        self.assertIn("if(isAppleTouchHost()&&canShare(file))", texts["presentations"])
-        self.assertIn("if((local||c.preferShareSave)&&c.share)", texts["txt"])
-        self.assertIn("if(isAppleTouchHost()&&canShare(file))", texts["pdf"])
+        # 2.7.5: Apple touch hosts download on Save/Export; only the Share action opens the share sheet.
+        self.assertIn("if(c.preferShareSave&&c.download)return viaDownload(", texts["documents"])
+        self.assertIn("if(c.preferShareSave&&c.download)return viaDownload(", texts["spreadsheets"])
+        self.assertIn("if(isAppleTouchHost())return download(blob,name)", texts["presentations"])
+        self.assertIn("if(c.preferShareSave&&c.download)return 'download';", texts["txt"])
+        self.assertIn("if(isAppleTouchHost())return download(blob,name)", texts["pdf"])
         shared = ROOT / "shared"
         self.assertTrue(shared.is_dir())
         self.assertEqual(disallowed_shared_runtime(), [])

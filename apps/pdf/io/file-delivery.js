@@ -13,7 +13,7 @@ async function download(blob,name){const u=URL.createObjectURL(blob),a=document.
 async function deliverOnce(blob,name){name=safeName(name);const file=toFile(blob,name),local=!!(global.location&&global.location.protocol==='file:');
  if(local&&canShare(file))return share(blob,name)
  // Any invoked delivery route is terminal for this Save action. A rejected Web Share promise does not prove that the host produced no file.
- if(isAppleTouchHost()&&canShare(file))return share(blob,name)
+ if(isAppleTouchHost())return download(blob,name)
  if(typeof global.showSaveFilePicker==='function'){try{return await picker(blob,name)}catch(e){if(e?.name==='AbortError'||e.code==='write-failed')throw e}}
  if(canShare(file))return share(blob,name)
  return download(blob,name)
