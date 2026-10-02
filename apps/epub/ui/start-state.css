@@ -4,7 +4,7 @@
 .start-icon{width:68px;height:68px}
 .start-card h1{margin:14px 0 6px}
 .start-card p{margin:0 0 18px;color:var(--frame-muted,#697386)}
-.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.start-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}html[data-ui-density="desktop"] .start-actions{flex-flow:row nowrap}html[data-ui-density="mobile"] .start-actions{flex-direction:column;align-items:center}
 .start-actions.single{justify-content:center}
 .start-actions button{min-height:44px;border:1px solid var(--frame-line,#d9dee7);border-radius:11px;background:var(--frame-surface,#fff);padding:0 16px;color:inherit}
 .start-actions .primary{background:var(--epub-accent,#7655c7);color:#fff;border-color:var(--epub-accent,#7655c7)}
