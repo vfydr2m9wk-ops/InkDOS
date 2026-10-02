@@ -9,3 +9,5 @@
 @media(max-width:640px){.content-viewport{padding:0}.reader-stage{border-radius:0;box-shadow:none}}
 /* Page turn */
 .reader-stage.mode-pages.turning{scroll-snap-type:none}
+.reader-stage.mode-pages.turn-book{touch-action:pan-y}
+.epub-turn-sheet{position:absolute;z-index:4;overflow:hidden;pointer-events:none;transform-origin:left center;backface-visibility:hidden;box-shadow:0 0 28px rgba(0,0,0,.18)}.epub-turn-sheet .reader-stage{overflow:hidden!important;border:0;border-radius:0;box-shadow:none}.epub-turn-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.05),rgba(0,0,0,.35));opacity:0}
