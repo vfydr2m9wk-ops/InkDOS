@@ -31,10 +31,10 @@ function create({elements:E,frame,renderer,session}){
  function setTurnStyle(next){if(!TURNS.includes(next))return;try{localStorage.setItem(TURN_KEY,next)}catch(_){}updateUi()}
  // Scroll mode animation: 'smooth' (continuous) or 'none'.
  const SCROLL_ANIM_KEY='inkdos2:epub:scrollAnim';
- function scrollAnim(){try{return localStorage.getItem(SCROLL_ANIM_KEY)==='none'?'none':'smooth'}catch(_){return 'smooth'}}
+ function scrollAnim(){return 'smooth'} // Scroll mode is always continuous.
  function setAnimation(value){if(state.flow==='scroll'){try{localStorage.setItem(SCROLL_ANIM_KEY,value==='none'?'none':'smooth')}catch(_){}updateUi()}else setTurnStyle(value)}
  // Toolbar animation control: Pages → Turn / Slide / Off; Scroll → Continuous / Off.
- function syncAnimSelect(){const sel=document.getElementById('animSelect');if(!sel)return;const pages=state.flow!=='scroll',opts=pages?[['book','Turn'],['slide','Slide'],['none','Off']]:[['smooth','Continuous'],['none','Off']],sig=opts.map(o=>o[0]).join();if(sel.dataset.sig!==sig){sel.replaceChildren(...opts.map(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;return o}));sel.dataset.sig=sig}sel.value=pages?turnStyle():scrollAnim();E.viewport.classList.toggle('scroll-smooth',!pages&&scrollAnim()==='smooth')}
+ function syncAnimSelect(){const sel=document.getElementById('animSelect');if(!sel)return;const pages=state.flow!=='scroll',opts=pages?[['book','Turn'],['slide','Slide'],['none','Off']]:[['smooth','Continuous'],['none','Off']],sig=opts.map(o=>o[0]).join();if(sel.dataset.sig!==sig){sel.replaceChildren(...opts.map(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;return o}));sel.dataset.sig=sig}sel.value=pages?turnStyle():scrollAnim();sel.hidden=!pages;E.viewport.classList.toggle('scroll-smooth',!pages&&scrollAnim()==='smooth')}
  // Book turn: a copy of the turning page is laid over the reader and rotated around the spine.
  let turnBusyUntil=0,sheetCopy=null,sheetWatch=null,activeSheet=null;
  function pageCopy(){if(!sheetWatch&&typeof MutationObserver==='function'){sheetWatch=new MutationObserver(()=>{sheetCopy=null});sheetWatch.observe(E.surface,{subtree:true,childList:true,attributes:true,characterData:true})}if(!sheetCopy){sheetCopy=E.surface.cloneNode(true);sheetCopy.removeAttribute('id');for(const n of sheetCopy.querySelectorAll('[id]'))n.removeAttribute('id')}return sheetCopy}
