@@ -7,3 +7,9 @@
 /* Full-window reading area: the stage uses the whole usable viewport; book-like margins live inside the text column. */
 .content-viewport{padding:0}.reader-stage{width:100%;border:0;border-radius:0;box-shadow:none}
 @media(max-width:640px){.content-viewport{padding:0}.reader-stage{border-radius:0;box-shadow:none}}
+/* Page turn */
+@keyframes epub-turn-next{0%{opacity:.15;transform:translateX(42px) scale(.985);filter:brightness(.92)}100%{opacity:1;transform:none;filter:none}}
+@keyframes epub-turn-prev{0%{opacity:.15;transform:translateX(-42px) scale(.985);filter:brightness(.92)}100%{opacity:1;transform:none;filter:none}}
+.reader-stage.mode-pages.turn-next .reader-surface{animation:epub-turn-next .42s cubic-bezier(.2,.7,.2,1)}
+.reader-stage.mode-pages.turn-prev .reader-surface{animation:epub-turn-prev .42s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion:reduce){.reader-stage.turn-next .reader-surface,.reader-stage.turn-prev .reader-surface{animation:none}}
