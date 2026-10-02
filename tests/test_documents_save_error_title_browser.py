@@ -37,7 +37,7 @@ def main():
                 page.wait_for_function('() => !!globalThis.InkDOS2Documents?.DocumentsApp')
                 page.click('#startNew')
                 page.locator('.page-content').click(); page.keyboard.type('hello')
-                page.click('#menuBtn'); page.click('#saveMenuBtn')
+                page.evaluate("()=>document.querySelector('#saveMenuBtn').click()")
                 page.wait_for_selector('#deliverCopy'); page.click('#deliverCopy')
                 page.wait_for_function(PANEL,timeout=8000)
                 save=page.evaluate(PANEL)

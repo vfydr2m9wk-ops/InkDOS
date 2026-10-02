@@ -15,7 +15,7 @@ def test_all_documents_transients_share_one_exclusivity_protocol():
     assert TRANSIENT_EVENT in COMMANDS
     assert TRANSIENT_EVENT in D1
     assert TRANSIENT_EVENT in D2
-    assert "announceOpen('general')" in COMMANDS
+    # The general (hamburger) drawer was removed in 2.7.5; the remaining transients keep the protocol.
     assert "announceOpen('context')" in COMMANDS
     assert "announceOpen('zoom')" in COMMANDS
     assert "owner:'d1'" in D1

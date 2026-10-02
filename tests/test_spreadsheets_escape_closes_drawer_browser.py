@@ -32,12 +32,11 @@ def main():
             for loaded in (False, True):
                 if loaded:
                     page.evaluate("async()=>{await globalThis.__inkdosSpreadsheetsS1.openController.newWorkbook()}")
-                page.click("#menuButton")
-                page.wait_for_selector("#appDrawer:not([hidden])")
+                page.click('[data-frame-action="sun"]')
+                page.wait_for_selector(".inkdos-settings-popover:not([hidden])")
                 page.keyboard.press("Escape")
-                page.wait_for_selector("#appDrawer", state="hidden", timeout=3000)
-                assert page.locator("#drawerBackdrop").is_hidden()
-                assert page.locator("#menuButton").get_attribute("aria-expanded") == "false"
+                page.wait_for_selector(".inkdos-settings-popover", state="hidden", timeout=3000)
+                assert page.locator('[data-frame-action="sun"]').get_attribute("aria-expanded") != "true"
             browser.close()
         print(f"Spreadsheets Escape closes drawer ({browser_name}): OK")
     finally:

@@ -1,6 +1,6 @@
 (function(global){'use strict';
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{},$=id=>document.getElementById(id);
-function create({session,chrome,fileOpen,save,layout,editor,navigation,modeController,readerTools,pageTools,registry,extensions}={}){const drawer=NS.FrameUI.createDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});const bindings=NS.CommandBindings.create({registry,navigation,session,drawer});let unsavedDialog=null,authorizedUnload=false;
+function create({session,chrome,fileOpen,save,layout,editor,navigation,modeController,readerTools,pageTools,registry,extensions}={}){const drawer=Object.freeze({open(){return false},close(){return false},toggle(){return false},get isOpen(){return false}});const bindings=NS.CommandBindings.create({registry,navigation,session,drawer});let unsavedDialog=null,authorizedUnload=false;
  function closeDrawer(){if(drawer.isOpen)drawer.close();registry.sync('frame.menu.close')}
  function syncPage(){const n=layout.currentPage||1;$('pageInput').value=String(n);$('pageCount').textContent='/ '+(layout.pageCount||0);chrome.page(n,layout.pageCount);navigation?.syncCurrent(n);editor.setCurrentPage(n);readerTools?.syncEnabled();pageTools?.syncEnabled();registry.sync()}
  function syncEditor(){registry.sync('history.undo');registry.sync('history.redo');registry.sync('annotation.delete')}

@@ -149,7 +149,7 @@ SURFACES = {
         ("settings", "#appearanceButton"),
     ],
     "documents": [
-        ("menu", "#menuBtn"),
+        ("settings", '[data-frame-action="sun"]'),
         ("context", "#contextBtn"),
         ("zoom", "#zoomMenuBtn"),
         ("format", "#d1FormatBtn"),
@@ -157,25 +157,25 @@ SURFACES = {
         ("document-tools", "#d2P1Btn"),
     ],
     "spreadsheets": [
-        ("menu", "#menuButton"),
+        ("settings", '[data-frame-action="sun"]'),
         ("zoom", "#zoomMenuBtn"),
     ],
     "presentations": [
-        ("menu", "#menuBtn"),
+        ("settings", '[data-frame-action="sun"]'),
         ("zoom", "#zoomMenuBtn"),
         ("present", "#presentBtn"),
     ],
     "pdf": [
-        ("menu", "#menuBtn"),
+        ("settings", '[data-frame-action="sun"]'),
         ("navigation", "#navPanelBtn"),
     ],
     "txt": [
-        ("menu", "#menuBtn"),
+        ("settings", '[data-frame-action="sun"]'),
         ("find", "#findBtn"),
         ("list", "#listBtn"),
     ],
     "epub": [
-        ("menu", "#menuBtn"),
+        ("settings", '[data-frame-action="sun"]'),
         ("toc", "#tocBtn"),
         ("search", "#searchBtn"),
         ("appearance", "#appearanceBtn"),

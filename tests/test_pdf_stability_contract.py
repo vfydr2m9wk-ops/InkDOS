@@ -12,7 +12,8 @@ def main():
     assert "createDrawer" in frame and "addEventListener('click'" not in frame and "addEventListener('keydown'" not in frame
     for command in ("frame.menu.toggle","frame.menu.close"): assert command in bindings
     assert "menuBtn:'frame.menu.toggle'" in bindings and "closeMenuBtn:'frame.menu.close'" in bindings and "menuBackdrop:'frame.menu.close'" in bindings and "openStartBtn:'file.open'" in bindings
-    assert "NS.FrameUI.createDrawer" in commands and "registry.execute('frame.menu.close')" in commands
+    # 2.7.5: the hamburger drawer was removed; the command controller keeps an inert drawer host.
+    assert "NS.FrameUI.createDrawer" not in commands and "registry.execute('frame.menu.close')" in commands
     assert "openStartBtn').addEventListener" not in index
     for command in ("pdf.comment.open","pdf.comment.cancel","pdf.comment.save"): assert command in review
     assert "registry?.bindElement(pin,COMMENT_COMMANDS.open)" in review and "m.layer.append(pin);this.registry?.bindElement" in review

@@ -24,16 +24,13 @@ def main():
             page.on("pageerror",lambda exc:errors.append(f"pageerror: {exc}"));page.on("console",lambda msg:errors.append(f"console.error: {msg.text}") if msg.type=="error" else None)
             page.goto(BASE+"/apps/pdf/",wait_until="load");page.wait_for_function("() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug")
             commands=page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")
-            for command in ("frame.menu.toggle","frame.menu.close","file.open"):assert command in commands
-            assert page.locator("#menuBtn").get_attribute("data-command")=="frame.menu.toggle"
-            assert page.locator("#closeMenuBtn").get_attribute("data-command")=="frame.menu.close"
-            assert page.locator("#menuBackdrop").get_attribute("data-command")=="frame.menu.close"
+            for command in ("file.open",):assert command in commands
+            # The hamburger menu was removed (2.7.5): the header carries the actions directly.
+            assert page.locator("#menuBtn").count()==0 and page.locator("#closeMenuBtn").count()==0
             assert page.locator("#openStartBtn").get_attribute("data-command")=="file.open"
-            page.click("#menuBtn");assert page.locator("#generalMenu").is_visible();assert page.locator("#menuBtn").get_attribute("aria-expanded")=="true"
-            page.click("#closeMenuBtn");assert page.locator("#generalMenu").is_hidden();assert page.locator("#menuBtn").get_attribute("aria-expanded")=="false"
-            page.click("#menuBtn");page.locator("#menuBackdrop").click(position={"x":2,"y":2});assert page.locator("#generalMenu").is_hidden()
-            page.evaluate("() => document.getElementById('editbar').append(document.getElementById('menuBtn'))")
-            page.locator("#menuBtn").scroll_into_view_if_needed();page.click("#menuBtn");assert page.locator("#generalMenu").is_visible();page.keyboard.press("Escape");assert page.locator("#generalMenu").is_hidden()
+            page.wait_for_selector('[data-frame-action="sun"]')
+            page.click('[data-frame-action="sun"]');assert page.locator(".inkdos-settings-popover").is_visible()
+            page.keyboard.press("Escape");assert page.locator(".inkdos-settings-popover").is_hidden()
             # Chromium opens through showOpenFilePicker (file-launch.js requestPicker); other engines fall back to the input.
             if page.evaluate("() => typeof window.showOpenFilePicker === 'function'"):
                 page.evaluate("() => { window.__pickerCalls = 0; window.showOpenFilePicker = async () => { window.__pickerCalls++; throw new DOMException('cancelled', 'AbortError') } }")

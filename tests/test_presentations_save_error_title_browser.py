@@ -38,7 +38,7 @@ def main():
                 page.click('#startNew')
                 page.wait_for_function('() => globalThis.__inkdosPresentations.session.active')
                 page.click('#addSlideBtn')
-                page.click('#menuBtn'); page.click('#saveMenuBtn')
+                page.evaluate("()=>document.querySelector('#saveMenuBtn').click()")
                 page.wait_for_function(PANEL,timeout=8000)
                 save=page.evaluate(PANEL)
                 assert 'saved' in save['title'].lower() and 'opened' not in save['title'].lower(),save

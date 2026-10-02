@@ -72,7 +72,7 @@ def main():
             # 3. Saved text is not offered.
             ctx=browser.new_context(); ctx.add_init_script(STUB); page=open_app(ctx)
             type_unsaved(page,'SAVED-TEXT')
-            page.click('#menuBtn'); page.click('#saveBtn')
+            page.evaluate("()=>document.querySelector('#saveBtn').click()")
             page.wait_for_function('() => !InkDOS2.TxtAppDebug.state.session.dirty',timeout=5000)
             page.wait_for_timeout(400); page.close()
             page=open_app(ctx)

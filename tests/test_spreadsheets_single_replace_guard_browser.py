@@ -55,7 +55,7 @@ def main():
                 page.locator('#gridStage .cell[data-ref="B1"]').click()
                 page.keyboard.type('dirty'); page.keyboard.press('Enter')
                 page.wait_for_function('() => globalThis.__inkdosSpreadsheetsS1.session.dirty')
-                page.click('#menuButton'); page.click('#menuOpen')
+                page.click('[data-frame-action="open"]')
                 page.wait_for_function(DIALOG)
                 with page.expect_file_chooser(timeout=5000) as fc:
                     page.locator('#sessionReplacePanel').get_by_role('button',name='Discard').click()

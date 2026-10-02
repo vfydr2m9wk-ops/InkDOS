@@ -8,7 +8,7 @@ function create({session,pagesHost,chrome,fileOpen,editor,ruler,navigation,zoom,
  function announceOpen(owner){document.dispatchEvent(new CustomEvent(TRANSIENT_EVENT,{detail:{owner}}))}
  function closeFrameTransientsExcept(owner){if(owner!=='general'&&generalMenu?.isOpen)generalMenu.close({restoreFocus:false});if(owner!=='context'&&contextMenu?.isOpen)contextMenu.close({restoreFocus:false});if(owner!=='zoom'&&zoomMenu?.isOpen)zoomMenu.close({restoreFocus:false})}
  function installFrame(){
-  generalMenu=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn'),exclusive:false,onOpen:()=>announceOpen('general')});
+  generalMenu=Object.freeze({open(){return false},close(){return false},toggle(){return false},get isOpen(){return false}});
   contextMenu=NS.FrameUI.bindDrawer({trigger:$('contextBtn'),drawer:$('contextDrawer'),backdrop:$('contextBackdrop'),closeButton:$('closeContextBtn'),onOpen:()=>announceOpen('context')});
   zoomMenu=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover'),onOpen:()=>announceOpen('zoom')});
   document.addEventListener(TRANSIENT_EVENT,e=>closeFrameTransientsExcept(e.detail?.owner));

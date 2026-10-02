@@ -76,7 +76,7 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
  function installHomeGuard(){const homeLink=document.querySelector('a[aria-label="Home"]');if(!homeLink)return;homeLink.addEventListener('click',async e=>{if(!session.dirty)return;e.preventDefault();e.stopPropagation();const href=homeLink.href;if(await authorizeReplacement('leave')){authorizedUnload=true;global.location.assign(href)}})}
  function installUnloadGuard(){global.addEventListener('beforeunload',e=>{if(authorizedUnload){authorizedUnload=false;return}if(!session.dirty)return;e.preventDefault();e.returnValue=''})}
  function install(){
-  drawer=NS.FrameUI.bindDrawer({trigger:$('menuBtn'),drawer:$('generalMenu'),backdrop:$('menuBackdrop'),closeButton:$('closeMenuBtn')});zoomPopover=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover')});
+  drawer=Object.freeze({open(){return false},close(){return false},toggle(){return false},get isOpen(){return false}});zoomPopover=NS.FrameUI.bindPopover({trigger:$('zoomMenuBtn'),popover:$('zoomPopover')});
   installShareAction();installHomeGuard();installUnloadGuard();
   const newBtn=bindClick('newMenuBtn','file.new');if(newBtn)newBtn.onclick=async()=>{const accepted=await execute('file.new');if(accepted!==false)drawer.close()};
   const openBtn=bindClick('openMenuBtn','file.open');if(openBtn)openBtn.onclick=async()=>{const accepted=await execute('file.open');if(accepted!==false)drawer.close({restoreFocus:false})};

@@ -43,7 +43,7 @@ def main():
             page.click('#addSlideBtn')
             page.wait_for_function('() => globalThis.__inkdosPresentations.session.dirty')
             for trigger in ('#openMenuBtn','#newMenuBtn'):
-                page.click('#menuBtn'); page.click(trigger)
+                page.evaluate(f"()=>document.querySelector('{trigger}').click()")
                 page.wait_for_selector('#presentationsUnsavedDialog')
                 probe=page.evaluate(PROBE)
                 assert probe['position']=='fixed' and probe['z']>probe['drawerZ'],probe
@@ -52,8 +52,7 @@ def main():
                 page.locator('#presentationsUnsavedDialog [data-choice="cancel"]').click()
                 page.wait_for_selector('#presentationsUnsavedDialog',state='detached')
                 assert page.evaluate('() => globalThis.__inkdosPresentations.session.dirty') is True
-                if page.locator('#menuBackdrop').is_visible():page.click('#closeMenuBtn')
-            page.click('#menuBtn'); page.click('#openMenuBtn')
+            page.click('[data-frame-action="open"]')
             page.wait_for_selector('#presentationsUnsavedDialog')
             with page.expect_file_chooser(timeout=5000):
                 page.locator('#presentationsUnsavedDialog [data-choice="discard"]').click()

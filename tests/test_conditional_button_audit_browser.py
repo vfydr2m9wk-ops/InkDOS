@@ -81,10 +81,8 @@ class Audit:
         c,p,e=self.page()
         try:
             self.hidden_redundant(p)
-            p.locator("#menuBtn,#menuButton").first.click()
-            entry=p.locator('[data-inkdos-help-entry]')
-            entry.wait_for(state="visible")
-            entry.click()
+            p.locator('[data-frame-action="help"]').first.click()
+            p.locator('.inkdos-settings-popover .inkdos-settings-option[data-settings-value="getting-started"]').click()
             p.locator('[data-inkdos-help-dialog]').wait_for(state="visible")
             self.click(p,e,'[data-inkdos-help-close]',"Close Help")
         finally:c.close()

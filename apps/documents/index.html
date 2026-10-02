@@ -25,10 +25,7 @@
 <body>
 <div class="app-shell" id="appShell">
   <header class="topbar" id="topbar">
-    <div class="frame-side frame-left">
-      <button id="menuBtn" class="frame-btn" type="button" title="Menu" aria-label="Open Documents menu" aria-haspopup="dialog" aria-expanded="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button><a class="frame-btn" href="../../index.html" aria-label="Home" title="Home" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></a>
+    <div class="frame-side frame-left"><a class="frame-btn" href="../../index.html" aria-label="Home" title="Home" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></a>
     </div>
     <div class="document-title" id="documentTitle">
       <img src="assets/documents.svg" class="documents-icon" alt="">
@@ -103,10 +100,10 @@
   <input id="fileInput" type="file" accept=".docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword" hidden>
 
   <div id="menuBackdrop" class="backdrop" hidden></div>
-  <aside id="generalMenu" class="drawer general-drawer" role="dialog" aria-modal="true" aria-label="Documents menu" hidden>
+  <aside data-inkdos-commands id="generalMenu" class="drawer general-drawer" aria-label="Documents menu" hidden>
     <div class="drawer-head">
       <div class="drawer-title"><img src="assets/documents.svg" class="drawer-icon" alt=""><span>Documents</span></div>
-      <button id="closeMenuBtn" class="close-btn" type="button" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      
     </div>
     <div class="drawer-section-label">File</div>
     <div class="menu-list">

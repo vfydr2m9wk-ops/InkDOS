@@ -31,9 +31,8 @@ def open_app(page):
     page.wait_for_function("() => !!document.querySelector('[data-settings-item=\"appearance\"]')",timeout=10000)
 
 def app_choose(page,mode):
-    page.locator('#menuBtn:visible,#menuButton:visible').first.click()
-    page.locator('[data-settings-item="appearance"]').first.click()
-    page.locator(f'.inkdos-settings-option[data-settings-value="{mode}"]').first.click()
+    page.locator('[data-frame-action="sun"]').first.click()
+    page.locator(f'.inkdos-settings-popover .inkdos-settings-option[data-settings-value="{mode}"]').first.click()
     page.wait_for_function(f"()=>document.documentElement.dataset.appearanceResolved==='{mode}'")
 
 def main():

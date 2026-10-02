@@ -28,14 +28,13 @@ def main():
             browser = getattr(pw, browser_name).launch(headless=True)
             page = browser.new_page(viewport={"width": 1280, "height": 900})
             page.goto(BASE + "/apps/epub/", wait_until="load")
-            page.wait_for_function("() => !!document.getElementById('menuBtn')")
+            page.wait_for_selector('[data-frame-action="sun"]')
             for _ in range(2):
-                page.click("#menuBtn")
-                page.wait_for_selector("#mainMenu:not([hidden])")
+                page.click('[data-frame-action="sun"]')
+                page.wait_for_selector(".inkdos-settings-popover:not([hidden])")
                 page.keyboard.press("Escape")
-                page.wait_for_selector("#mainMenu", state="hidden", timeout=3000)
-                assert page.locator("#backdrop").is_hidden()
-                assert page.locator("#menuBtn").get_attribute("aria-expanded") == "false"
+                page.wait_for_selector(".inkdos-settings-popover", state="hidden", timeout=3000)
+                assert page.locator('[data-frame-action="sun"]').get_attribute("aria-expanded") != "true"
             browser.close()
         print(f"EPUB Escape closes drawer ({browser_name}): OK")
     finally:

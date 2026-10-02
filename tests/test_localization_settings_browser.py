@@ -45,10 +45,9 @@ def snapshot_functional_attributes(page):
 
 
 def first_open_click_diagnostic(page, app: str) -> None:
-    # The legacy menu button stays in the DOM but hidden; the header Settings (sun) button replaces it.
-    legacy = page.locator("#menuBtn,#menuButton")
-    if legacy.count() != 1:
-        raise AssertionError((app, "legacy menu button missing", legacy.count()))
+    # The hamburger menu was removed; the header Settings (sun) button replaces it.
+    if page.locator("#menuBtn,#menuButton").count():
+        raise AssertionError((app, "legacy menu button still present"))
     sun = page.locator("[data-frame-action='sun']")
     try:
         sun.wait_for(state="visible", timeout=3000)
