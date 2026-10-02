@@ -29,3 +29,10 @@
 
 /* Fast-open edit gate: reading stays interactive while editing modules finish loading. */
 #editModeBtn[data-edit-state="loading"]{filter:grayscale(1)}#editModeBtn[aria-busy="true"]{opacity:.46}#editModeBtn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+/* Context property groups follow the active annotate tool (the annotate-only rule above is more specific). */
+:root[data-pdf-mode="annotate"]:not([data-annotate-tool="text"]) .text-only,:root[data-pdf-mode="annotate"]:not([data-annotate-tool="pen"]) .pen-only{display:none!important}
+/* Property labels as icons, matching the icon toolbar. */
+.pdf-context-properties .property-label{display:inline-block;width:18px;height:18px;flex:0 0 18px;font-size:0;color:var(--muted,currentColor);background:currentColor;-webkit-mask:var(--pdf-prop-icon) center/18px 18px no-repeat;mask:var(--pdf-prop-icon) center/18px 18px no-repeat}
+#pdfTextProperties .property-label{--pdf-prop-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M4 7V5h10v2M9 5v14M7 19h4M15 13v-1.5h6V13M18 11.5V19M16.8 19h2.4'/%3E%3C/svg%3E")}
+#pdfPenProperties .property-label{--pdf-prop-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-linecap='round'%3E%3Cpath stroke-width='1' d='M4 6h16'/%3E%3Cpath stroke-width='2' d='M4 11h16'/%3E%3Cpath stroke-width='3.5' d='M4 17.5h16'/%3E%3C/svg%3E")}
+@media(max-width:900px){.pdf-context-properties .property-label{display:inline-block}}
