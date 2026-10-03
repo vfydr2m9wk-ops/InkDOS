@@ -32,7 +32,7 @@ function load(evaluatorSource){
 const current = load(read('apps/spreadsheets/engine/formula/evaluator.js'));
 // Reference: the same parser/evaluate with the previous whole-workbook recalculation.
 let refSource = read('apps/spreadsheets/engine/formula/evaluator.js');
-refSource = refSource.replace(/\/\/ Recalculation follows[\s\S]*?function recalculate\(book\)\{[\s\S]*?\}finally\{ctx=null\}\}/, REFERENCE_RECALC);
+refSource = refSource.replace(/\/\/ Recalculation follows[\s\S]*?function recalculate\(book[^)]*\)\{[\s\S]*?\}finally\{ctx=null\}\}/, REFERENCE_RECALC);
 if (!refSource.includes(REFERENCE_RECALC)) throw new Error('could not build the reference evaluator');
 const reference = load(refSource);
 

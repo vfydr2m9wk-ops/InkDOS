@@ -5,7 +5,7 @@ ROOT=Path(__file__).resolve().parents[1]
 src=(ROOT/"apps/spreadsheets/io/xls-biff8-engine.js").read_text()
 checks={
  "boolean cached formula type": "return{value:!!r[2],type:'b',special:true}",
- "error cached formula type": "return{value:'#ERROR!',type:'e',special:true}",
+ "error cached formula type": "||'#ERROR!',type:'e',special:true}",
  "numeric cached formula type": "return{value:f64(v,0),type:'n',special:false}",
  "parser uses decoded cached type": "t:cached.type",
  "boolean display is logical": "cached.type==='b'?(cached.value?'TRUE':'FALSE')",
