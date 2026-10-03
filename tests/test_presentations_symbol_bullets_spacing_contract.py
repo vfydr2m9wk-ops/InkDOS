@@ -115,6 +115,11 @@ class StaticContracts(unittest.TestCase):
         self.assertIn("SERIF_FACES=/^(constantia|georgia|times", SURFACE)
         self.assertIn("MONO_FACES.test(n)?'\"Courier New\", monospace':SERIF_FACES.test(n)?", SURFACE)
 
+    def test_pptx_percentage_paragraph_spacing_becomes_points(self):
+        self.assertIn("spaceBeforePt:paraSpacePt(before,runs),spaceAfterPt:paraSpacePt(after,runs)", PPTX)
+        helper = block(PPTX, "function paraSpacePt(", "\n")
+        self.assertIn("(sp.rawRatio??sp.ratio??0)*size*1.2", helper)
+
     def test_reduced_line_spacing_is_not_clamped_by_paragraph_min_height(self):
         self.assertIn("if(parseFloat(line.style.lineHeight)<lineFont)line.style.minHeight=line.style.lineHeight;", SURFACE)
 
