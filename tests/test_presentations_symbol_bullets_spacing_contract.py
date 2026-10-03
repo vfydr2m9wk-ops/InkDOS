@@ -113,7 +113,8 @@ class StaticContracts(unittest.TestCase):
 
     def test_missing_fonts_fall_back_by_design_class(self):
         self.assertIn("SERIF_FACES=/^(constantia|georgia|times", SURFACE)
-        self.assertIn("MONO_FACES.test(n)?'\"Courier New\", monospace':SERIF_FACES.test(n)?", SURFACE)
+        self.assertIn("MONO_FACES.test(n)?'\"Courier New\", monospace':WIDE_SERIF_FACES.test(n)?'Georgia,", SURFACE)
+        self.assertIn("SERIF_FACES.test(n)?'\"Times New Roman\"", SURFACE)
 
     def test_pptx_percentage_paragraph_spacing_becomes_points(self):
         self.assertIn("spaceBeforePt:paraSpacePt(before,runs),spaceAfterPt:paraSpacePt(after,runs)", PPTX)

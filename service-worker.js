@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-164bab5691ccf0f08777';
+const CACHE_NAME='inkdos-v2.7.4-e5716d7cc708e99661ea';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -189,7 +189,7 @@ const ASSET_HASHES={
   "./apps/presentations/vendor/fonts/InkDOSSerif-Regular.ttf": "7f7f7c13269dca9e54b6db16bd12d158e73dc00110865bef1944b1b5ae213422",
   "./apps/presentations/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/presentations/view/presentation-surface.css": "7d212c360fabfea5a7b5584e4277651ea17d85e3d15593729531747248b770e9",
-  "./apps/presentations/view/slide-surface.js": "32b6d7d1a9f2acd48984d3c3841064b3bda6adda0e83108329cb6109937c8c4a",
+  "./apps/presentations/view/slide-surface.js": "dae119b9f956bb036724ae4bd1d9510ee7ff7bb040afb961876991b2eb822ae4",
   "./apps/presentations/view/zoom-controller.js": "cc6b8fe19d95882b7da0d77ea456179b6eb5b3b60b72ecef57f314d6a8d21066",
   "./apps/spreadsheets/app.js": "728421ed05ee9953abcea099992023fe5046c54a42739fd9920e0159ccb208fa",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
