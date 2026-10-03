@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-2a01b14fe53770c9e8db';
+const CACHE_NAME='inkdos-v2.7.4-99b0ee89c5aa10464eda';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -148,7 +148,7 @@ const ASSET_HASHES={
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
   "./apps/presentations/index.html": "86fe2e2249877728f44c0ccc9048fc587ca359dba3fa6a4a23cc2251896a129a",
   "./apps/presentations/io/file-delivery.js": "ec01fc4533f885f291b92845b79a1f46b4eaebdf3ce99509b497dd5ff191bf3e",
-  "./apps/presentations/io/ppt-legacy-reader.js": "efb58c720981cc9bcf730e89a1f568552e306bb53317cfa02e23df07d9ddade2",
+  "./apps/presentations/io/ppt-legacy-reader.js": "c7cec7fb0dbe3e753bf5fb880f7aab6113d5a4f620f36d1f42b8893adb5dbfab",
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
   "./apps/presentations/io/ppt-p1-structure-writer.js": "911f2782745155b3e799bb0f536ae3148d130782157820c989623f2328aaf55e",
   "./apps/presentations/io/ppt-p2-package.js": "428f7df540e85293fdb7eeb14eab6d1a114f888f0ed73419887659840fa755aa",
