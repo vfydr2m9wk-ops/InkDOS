@@ -1,0 +1,242 @@
+[
+ {
+  "file": "presentations/7864cc32f23f.pptx",
+  "reference": "presentations/7864cc32f23f.pdf",
+  "source": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/04/FCMM_Cittadinanza_U10.pptx",
+  "referenceSource": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/04/FCMM_Cittadinanza_U10.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / GPL Ghostscript 9.52",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00369.warc.gz",
+   207737461,
+   158369
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00917.warc.gz",
+   223926559,
+   353113
+  ],
+  "sha256": "b6ad6fc86b8680d9d450b2e239cb9c3dfb8cc77253ebeda87a6f42503b112456",
+  "referenceSha256": "a021d3707410273ae696830f65a43da232c9a427fdc51741bf4342bcd3624348"
+ },
+ {
+  "file": "presentations/4658c2bb431c.pptx",
+  "reference": "presentations/4658c2bb431c.pdf",
+  "source": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/03/FCMM_Cittadinanza_U4.pptx",
+  "referenceSource": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/03/FCMM_Cittadinanza_U4.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / GPL Ghostscript 9.52",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00031.warc.gz",
+   230658828,
+   163419
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00335.warc.gz",
+   235646067,
+   374375
+  ],
+  "sha256": "9e9f1a0f2b00cdcebe22ce2cdac192e6349b17bf861c27027025b910026251a7",
+  "referenceSha256": "1890fa791441e4c3263940a943f51908e8eded9d11aaee119066d6600809d0de"
+ },
+ {
+  "file": "presentations/ad4886585a82.pptx",
+  "reference": "presentations/ad4886585a82.pdf",
+  "source": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/03/FCMM_Cittadinanza_U5.pptx",
+  "referenceSource": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/03/FCMM_Cittadinanza_U5.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / GPL Ghostscript 9.52",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00182.warc.gz",
+   220773645,
+   164272
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00856.warc.gz",
+   201844048,
+   383011
+  ],
+  "sha256": "9dafa12c1e85d2a0be9f453b873a76afc691381b593d365b62aa84fa389964ae",
+  "referenceSha256": "163349b29a51d2e5b58643cc44df1e342238aee00e1a7e610fdfa381af32076f"
+ },
+ {
+  "file": "presentations/c243d5bf5480.pptx",
+  "reference": "presentations/c243d5bf5480.pdf",
+  "source": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/03/FCMM_Cittadinanza_U6.pptx",
+  "referenceSource": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/03/FCMM_Cittadinanza_U6.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / GPL Ghostscript 9.52",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00333.warc.gz",
+   222194243,
+   170844
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00377.warc.gz",
+   206367203,
+   390391
+  ],
+  "sha256": "91f0737576fb3fd49027e002acc4b5d62614c75eba6f9cf80e4dbfdf2ea3d953",
+  "referenceSha256": "6c15a8d20ab64b1b05e57fe7debfdedda5cf0ce035afe1296df70cd13448f19b"
+ },
+ {
+  "file": "presentations/54521a2087e9.pptx",
+  "reference": "presentations/54521a2087e9.pdf",
+  "source": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/04/FCMM_Cittadinanza_U8.pptx",
+  "referenceSource": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/04/FCMM_Cittadinanza_U8.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / GPL Ghostscript 9.52",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00652.warc.gz",
+   210601962,
+   176005
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00226.warc.gz",
+   205303462,
+   407281
+  ],
+  "sha256": "82160b55954a50d229aed669aa3c8f5adf292221ca07f5dc7020fe22859e02c7",
+  "referenceSha256": "f8de905bcfd03b3c2c470ae02792816a05a8df975fdc6c93018d65bb584ebb37"
+ },
+ {
+  "file": "presentations/c5275024ac4d.pptx",
+  "reference": "presentations/c5275024ac4d.pdf",
+  "source": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/04/FCMM_Cittadinanza_U9.pptx",
+  "referenceSource": "https://fondazionecarlomariamartini.it/wp-content/uploads/2021/04/FCMM_Cittadinanza_U9.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / GPL Ghostscript 9.52",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00155.warc.gz",
+   209284610,
+   190597
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699475.64/warc/CC-MAIN-20260904131603-20260904161603-00099.warc.gz",
+   200791762,
+   427039
+  ],
+  "sha256": "15b0ace92bdca39b7f834144669993b4933d35027f983ee55375580c32290d48",
+  "referenceSha256": "6cbbf03e7cb8bcd09d237b3b19c657b9d1b66dfdb9a47639c1c9073c8bd729dd"
+ },
+ {
+  "file": "presentations/b3336726f424.pptx",
+  "reference": "presentations/b3336726f424.pdf",
+  "source": "https://funz.matemat.it/resources/Stat/StatA7/StatA7Pres.pptx",
+  "referenceSource": "https://funz.matemat.it/resources/Stat/StatA7/StatA7Pres.pdf",
+  "producer": "PowerPoint / macOS Versione 12.5 (Build 21G72) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700606.74/warc/CC-MAIN-20260914014632-20260914044632-00814.warc.gz",
+   219864625,
+   2596090
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700606.74/warc/CC-MAIN-20260914014632-20260914044632-00616.warc.gz",
+   215599392,
+   705834
+  ],
+  "sha256": "90fb54dccee5ecd54d65df02d3c6b582125728e6a6eda6f60624a15536333922",
+  "referenceSha256": "6bfc85d14cccec005d520a40a7a5c9e9e4fbd0ec2c686ada392b46a607260aef"
+ },
+ {
+  "file": "presentations/4bd36bbcf866.pptx",
+  "reference": "presentations/4bd36bbcf866.pdf",
+  "source": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-moeder-12-13-marts-stat.pptx",
+  "referenceSource": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-moeder-12-13-marts-stat.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00267.warc.gz",
+   415873321,
+   3319886
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999573.96/warc/CC-MAIN-20260916175233-20260916205233-00363.warc.gz",
+   440832713,
+   1146475
+  ],
+  "sha256": "ee0210cae59e34c111e5c968cd57e7e2395f1618765d2ce7484bdd4a4af6c3cb",
+  "referenceSha256": "2b44187a166384963c05a0016a4026b792ab2c4bb095843acf9b8d24e0870a3c"
+ },
+ {
+  "file": "presentations/7b221a1abd30.pptx",
+  "reference": "presentations/7b221a1abd30.pdf",
+  "source": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-moeder-7-marts.pptx",
+  "referenceSource": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-moeder-7-marts.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00047.warc.gz",
+   438942589,
+   3320799
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00703.warc.gz",
+   442019665,
+   1145742
+  ],
+  "sha256": "d49f1ee1b8ecc9c025771ac6b812a8931e1cdb28932824d29f12f84d7633795d",
+  "referenceSha256": "d523bfbbaeb86523ad765c046dbc088db9ec9932c0f9d5064591861f43556577"
+ },
+ {
+  "file": "presentations/17bb2a4812a9.pptx",
+  "reference": "presentations/17bb2a4812a9.pdf",
+  "source": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-og-Klubmoeder-12-13-marts-stat.pptx",
+  "referenceSource": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-og-Klubmoeder-12-13-marts-stat.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00704.warc.gz",
+   435148514,
+   2665084
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999573.96/warc/CC-MAIN-20260916175233-20260916205233-00518.warc.gz",
+   431139400,
+   772031
+  ],
+  "sha256": "5b3dfcc7af171b7da943d2aa03ed0473262c190445e566269610aed27b4beb63",
+  "referenceSha256": "a90b1883d468b2143bc77ddacfc006657e41f914d5e2283663ea4bc72dd6932b"
+ },
+ {
+  "file": "presentations/b1524f847d29.pptx",
+  "reference": "presentations/b1524f847d29.pdf",
+  "source": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-og-Klubmoeder-8-marts.pptx",
+  "referenceSource": "https://socialraadgiverne.dk/wp-content/uploads/2018/03/OK18-TR-og-Klubmoeder-8-marts.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00065.warc.gz",
+   426334019,
+   2661161
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00013.warc.gz",
+   458011852,
+   769197
+  ],
+  "sha256": "6d777c603c5203f323e9dad903906819268f27a03cb80e1246466e82f93a3587",
+  "referenceSha256": "7fc538b23a32ace357d9ea782f933ad695d012107ee2b7acaebf3e78219f2781"
+ },
+ {
+  "file": "presentations/12e0205c0b12.pptx",
+  "reference": "presentations/12e0205c0b12.pdf",
+  "source": "https://www.immaculee-conception-paris.org/presentation/organigramme-2021-2022-vf.pptx",
+  "referenceSource": "https://www.immaculee-conception-paris.org/presentation/organigramme-2021-2022-vf.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / Microsoft\u00ae PowerPoint\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699608.27/warc/CC-MAIN-20260905164208-20260905194208-00585.warc.gz",
+   709126730,
+   37972
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699608.27/warc/CC-MAIN-20260905164208-20260905194208-00421.warc.gz",
+   706596058,
+   393493
+  ],
+  "sha256": "45a03e09d96b9eac1bff5bf5d9546dc63f6c78888dc5cca08725bf60b615138b",
+  "referenceSha256": "5b4b91e0185fc3773654c04460c4bd076918cca7b6d1229e1169cc2313fc48e9"
+ }
+]

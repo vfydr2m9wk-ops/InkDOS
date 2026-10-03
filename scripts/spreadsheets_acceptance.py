@@ -78,7 +78,8 @@ def reference(src: Path, work: Path) -> dict | None:
     sheets = []
     for ws in wb.worksheets:
         formulas = sorted(f'{c.column_letter}{c.row}' for row in ws.iter_rows() for c in row
-                          if isinstance(c.value, str) and c.value.startswith('=') or getattr(c, 'data_type', '') == 'f')
+                          if (isinstance(c.value, str) and c.value.startswith('=') or getattr(c, 'data_type', '') == 'f')
+                          and str(c.value).upper() not in ('=TRUE()', '=FALSE()'))  # LibreOffice writes boolean constants as formulas
         sheets.append({'name': ws.title, 'formulas': formulas, 'merges': sorted(str(r) for r in ws.merged_cells.ranges)})
     for shown, key in (('false', 'raw'), ('true', 'shown')):
         out = work / key
@@ -101,7 +102,7 @@ def reference(src: Path, work: Path) -> dict | None:
 # Workbook as the app holds it: sheet names, and per cell its value, formula flag and displayed text.
 PROBE = r"""() => { const b=globalThis.__inkdosSpreadsheetsS1.session.book;
   return b.sheets.map(s=>({name:s.name, merges:(s.merges||[]).map(m=>typeof m==='string'?m:(m.ref||m.range||JSON.stringify(m))),
-    cells:Object.fromEntries([...(s.cells instanceof Map?s.cells.entries():Object.entries(s.cells||{}))].slice(0,200000)
+    cells:Object.fromEntries([...(s.cells instanceof Map?s.cells.entries():Object.entries(s.cells||{}))].filter(([k,c])=>c&&((c.v!==''&&c.v!=null)||c.f)).slice(0,200000)
       .map(([k,c])=>[k,{v:c?.v??null,f:!!(c&&c.f),d:c?.display??(c?.v==null?'':String(c.v))}]))})) }"""
 
 
@@ -169,7 +170,8 @@ def same_value(ref: str, cell: dict) -> bool:
     if ds and isinstance(v, (int, float)) and not isinstance(v, bool):
         return any(abs(d - v) < 1 / 86400 + 1e-9 or int(d) == int(v) for d in ds)
     try:
-        a, b = float(ref.replace(',', '')), float(v)
+        r = ref.strip().replace(',', '')
+        a, b = (float(r[:-1]) / 100 if r.endswith('%') else float(r)), float(v)
         return abs(a - b) <= 1e-6 * max(1.0, abs(a), abs(b))
     except (TypeError, ValueError):
         pass

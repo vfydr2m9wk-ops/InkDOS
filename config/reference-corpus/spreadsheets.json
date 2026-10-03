@@ -1,0 +1,1602 @@
+[
+ {
+  "file": "spreadsheets/41bfe10ee928.xlsx",
+  "reference": "spreadsheets/41bfe10ee928.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2023-04/2022_DLgs_33-13_trasparenza.xlsx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2023-04/2022_DLgs_33-13_trasparenza.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2013 / Microsoft\u00ae Excel\u00ae 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00648.warc.gz",
+   516501055,
+   14999
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00547.warc.gz",
+   488437156,
+   264992
+  ],
+  "sha256": "97a3bf60bc3ec9dbcdfdac7ba91dd8b8ad035475447800cf3cbd63a961e1422a",
+  "referenceSha256": "efc53e957ae7cae0612afa864d781ca3d7c210f439cd91170e1655bbe7eb6051"
+ },
+ {
+  "file": "spreadsheets/34d1a87e93d9.xlsx",
+  "reference": "spreadsheets/34d1a87e93d9.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2025-05/2024_DLgs_33-13_trasparenza.xlsx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2025-05/2024_DLgs_33-13_trasparenza.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00915.warc.gz",
+   525081475,
+   15883
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00392.warc.gz",
+   515752279,
+   265642
+  ],
+  "sha256": "5df90270532bf127ad9369e732cf221b150fc0a49f2bf0d737b53987c02ba2a7",
+  "referenceSha256": "b2e7844d1bebac1074a6f8bbd72a96e3b600759a1f59648bef9d7612f805525b"
+ },
+ {
+  "file": "spreadsheets/750607f0fab0.xlsx",
+  "reference": "spreadsheets/750607f0fab0.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2026-05/2025_DLgs_33-13_trasparenza.xlsx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2026-05/2025_DLgs_33-13_trasparenza.pdf",
+  "producer": "Acrobat PDFMaker 11 per Excel / Adobe PDF Library 11.0",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00373.warc.gz",
+   473860270,
+   16406
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00454.warc.gz",
+   510513346,
+   15052
+  ],
+  "sha256": "9e37ef5e077dc19f78354217cddfc163e7bfc0848059edafe0598577dffafa9f",
+  "referenceSha256": "b1bf5c05677bb01655229e041f3a1bd2486e4baf20f99d76e587a0a08600f383"
+ },
+ {
+  "file": "spreadsheets/e658f08f693f.xlsx",
+  "reference": "spreadsheets/e658f08f693f.pdf",
+  "source": "https://www.ge.camcom.gov.it/it/amministrazione-trasparente/pagamenti-dellamministrazione/file-pagamenti-dellamministrazione/indicatore_trimestr_2021.xlsx",
+  "referenceSource": "https://www.ge.camcom.gov.it/it/amministrazione-trasparente/pagamenti-dellamministrazione/file-pagamenti-dellamministrazione/indicatore_trimestr_2021.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699968.77/warc/CC-MAIN-20260911034125-20260911064125-00321.warc.gz",
+   644495775,
+   8634
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699731.35/warc/CC-MAIN-20260907112254-20260907142254-00018.warc.gz",
+   656509467,
+   28420
+  ],
+  "sha256": "918ec8075fe0bb8a45a612fa00a378adc4490432e1a40fd06647130b7a45a7f5",
+  "referenceSha256": "92c8d6533f35bd16bc7fd6dba1863f0b26d64f58d04aa0be95f07ed816b0b65a"
+ },
+ {
+  "file": "spreadsheets/df35bc00660b.xlsx",
+  "reference": "spreadsheets/df35bc00660b.pdf",
+  "source": "https://datosabiertos.castillalamancha.es/sites/datosabiertos.castillalamancha.es/files/Horarios%20Zonal%20GU.xlsx",
+  "referenceSource": "https://datosabiertos.castillalamancha.es/sites/datosabiertos.castillalamancha.es/files/Horarios%20Zonal%20GU.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699835.34/warc/CC-MAIN-20260909055742-20260909085742-00013.warc.gz",
+   157390788,
+   65528
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699835.34/warc/CC-MAIN-20260909055742-20260909085742-00710.warc.gz",
+   181842200,
+   130366
+  ],
+  "sha256": "5859eb42f02f721abd524ed32aa51b5c13690d32b4dcc7e70a3f4845dc336795",
+  "referenceSha256": "ec427342eb4c91ac1a27b2eb21bef3d00efc745efd9f0c65a70c0ea4eea3b9b6"
+ },
+ {
+  "file": "spreadsheets/adb9667a9daa.xls",
+  "reference": "spreadsheets/adb9667a9daa.pdf",
+  "source": "https://observatorioconurbano.ungs.edu.ar/wp-content/uploads/274-NNyA-en-situacion-de-pobreza-multidimensional.-2011-2012.xls",
+  "referenceSource": "https://observatorioconurbano.ungs.edu.ar/wp-content/uploads/274-NNyA-en-situacion-de-pobreza-multidimensional.-2011-2012.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2010 / Microsoft\u00ae Excel\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699608.27/warc/CC-MAIN-20260905164208-20260905194208-00101.warc.gz",
+   361288744,
+   10523
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699608.27/warc/CC-MAIN-20260905164208-20260905194208-00152.warc.gz",
+   334333657,
+   188524
+  ],
+  "sha256": "b8832f978324577ce15c2804075dacb1c1c3f57ee61a6b5d29b5005e19e411c1",
+  "referenceSha256": "79776168628f41f8856633426fb177837134ba019adb5985cec3b8f782dcda41"
+ },
+ {
+  "file": "spreadsheets/a8948a253088.xls",
+  "reference": "spreadsheets/a8948a253088.pdf",
+  "source": "https://observatorioconurbano.ungs.edu.ar/wp-content/uploads/542-Programa-Envion.-Sedes-y-destinatarios-2021.xls",
+  "referenceSource": "https://observatorioconurbano.ungs.edu.ar/wp-content/uploads/542-Programa-Envion.-Sedes-y-destinatarios-2021.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2010 / Microsoft\u00ae Excel\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699608.27/warc/CC-MAIN-20260905164208-20260905194208-00508.warc.gz",
+   356177869,
+   14704
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699608.27/warc/CC-MAIN-20260905164208-20260905194208-00559.warc.gz",
+   380084046,
+   415592
+  ],
+  "sha256": "5ed271fa023e240f8771ef8d7e4714bc11f2cf7f4f7c92804fcc14360b747942",
+  "referenceSha256": "b524ecb9bf7cdcadbd5053698ac0900526686345dba2ad0d6238bbac88a749d6"
+ },
+ {
+  "file": "spreadsheets/647b28195ca7.xls",
+  "reference": "spreadsheets/647b28195ca7.pdf",
+  "source": "https://www.cntsa2.org.uk/wp-content/uploads/2019/09/00-Winter-2019-20.xls",
+  "referenceSource": "https://www.cntsa2.org.uk/wp-content/uploads/2019/09/00-Winter-2019-20.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00666.warc.gz",
+   639740257,
+   148806
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00717.warc.gz",
+   598077293,
+   752396
+  ],
+  "sha256": "eaa8f0f83caf00520da72cab7c2ceb9d98b3bcb00a9bc7991c1485668d5ab9ef",
+  "referenceSha256": "767f5df3209bd3f3475ca7e0056f21cc0449fdb332ca019c71a6ed88bc800145"
+ },
+ {
+  "file": "spreadsheets/2e4fb81c103a.xlsx",
+  "reference": "spreadsheets/2e4fb81c103a.pdf",
+  "source": "https://www.cntsa2.org.uk/wp-content/uploads/2022/10/Awards-Summer-2022.xlsx",
+  "referenceSource": "https://www.cntsa2.org.uk/wp-content/uploads/2022/10/Awards-Summer-2022.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00015.warc.gz",
+   573099554,
+   32212
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00084.warc.gz",
+   582694957,
+   121172
+  ],
+  "sha256": "b18d9d3f85d86068676d343e64a36447fc1b007902679f8876d74cf37fbcd485",
+  "referenceSha256": "93d0928433037d41fcdbff3db9295bae36424bf7eab0de79cdc30bf921b90d58"
+ },
+ {
+  "file": "spreadsheets/8280aa6fa0b5.xls",
+  "reference": "spreadsheets/8280aa6fa0b5.pdf",
+  "source": "https://www.cntsa2.org.uk/wp-content/uploads/2020/04/Awards-Winter-2019-20.xls",
+  "referenceSource": "https://www.cntsa2.org.uk/wp-content/uploads/2020/04/Awards-Winter-2019-20.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00993.warc.gz",
+   596733837,
+   24658
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00044.warc.gz",
+   605314823,
+   128003
+  ],
+  "sha256": "cac625c0479a48e36d4ca879c5584a0ffed57e654d44d426c9085f47f7cf63bf",
+  "referenceSha256": "8eaef10a37b6669f08e16af4f6a06d5e304f92255c178fa2c595b9dffd17b26c"
+ },
+ {
+  "file": "spreadsheets/7c6a58fb5ff3.xlsx",
+  "reference": "spreadsheets/7c6a58fb5ff3.pdf",
+  "source": "https://www.cntsa2.org.uk/wp-content/uploads/2021/08/Awards-Winter-2020-21.xlsx",
+  "referenceSource": "https://www.cntsa2.org.uk/wp-content/uploads/2021/08/Awards-Winter-2020-21.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00793.warc.gz",
+   582813710,
+   26721
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00170.warc.gz",
+   589944938,
+   80416
+  ],
+  "sha256": "39f7330de30166f04da453932ba6c599494b524410522da3d56f02aeb4613fe2",
+  "referenceSha256": "1b0e05c6a84a3ec4af240280a2ec67708a8ee72a560bc4c2a2b73206b53fcb03"
+ },
+ {
+  "file": "spreadsheets/3d017bcebeb9.xlsx",
+  "reference": "spreadsheets/3d017bcebeb9.pdf",
+  "source": "https://www.cntsa2.org.uk/wp-content/uploads/2023/04/Awards-Winter-2022-23.xlsx",
+  "referenceSource": "https://www.cntsa2.org.uk/wp-content/uploads/2023/04/Awards-Winter-2022-23.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00871.warc.gz",
+   585642905,
+   31653
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00068.warc.gz",
+   615895016,
+   119797
+  ],
+  "sha256": "aa2e2c0e9f3d04171a8d8733af0a99d05484a26f4402f551aae613fcbed064c5",
+  "referenceSha256": "8579c05bf3cf97f4a5c33812a806f8abb196aabee2bf3066c5bf38dc5d5816d5"
+ },
+ {
+  "file": "spreadsheets/e97bcb1ca560.xlsx",
+  "reference": "spreadsheets/e97bcb1ca560.pdf",
+  "source": "https://lra.gov.mv/wp-content/uploads/2026/07/A2-Sheet-ICT-Officer-PSR5-Website.xlsx",
+  "referenceSource": "https://lra.gov.mv/wp-content/uploads/2026/07/A2-Sheet-ICT-Officer-PSR5-Website.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699690.4/warc/CC-MAIN-20260906200739-20260906230739-00014.warc.gz",
+   318908302,
+   11589
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699690.4/warc/CC-MAIN-20260906200739-20260906230739-00293.warc.gz",
+   305702253,
+   69010
+  ],
+  "sha256": "1131022bafb8aea3d1db6629e47686a7dde1e92491284b151e57bf73f0bfe641",
+  "referenceSha256": "ca965ba0bfdc9b5dffc0175c53122fd0ccf3dce64c534978f66210e88a542cdd"
+ },
+ {
+  "file": "spreadsheets/22728d3e5419.xlsx",
+  "reference": "spreadsheets/22728d3e5419.pdf",
+  "source": "https://marinette.extension.wisc.edu/files/2021/09/Copy-of-HMC-pricing-2021.xlsx",
+  "referenceSource": "https://marinette.extension.wisc.edu/files/2021/09/Copy-of-HMC-pricing-2021.pdf",
+  "producer": "Acrobat PDFMaker 11 for Excel / Adobe PDF Library 11.0",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699789.28/warc/CC-MAIN-20260908053654-20260908083654-00519.warc.gz",
+   306947351,
+   15248
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699789.28/warc/CC-MAIN-20260908053654-20260908083654-00740.warc.gz",
+   298864534,
+   82539
+  ],
+  "sha256": "f89b442eae74be274549998816e740ab71f701f3e4f6b8f372b97f7cd9b8103d",
+  "referenceSha256": "c3e9e06efc5f109773548367030a3fae8f7f9cdf55a890de7de70e4bc8d0160f"
+ },
+ {
+  "file": "spreadsheets/a96aaa0837b1.xls",
+  "reference": "spreadsheets/a96aaa0837b1.pdf",
+  "source": "https://www.walkingfootballitalia.com/wp-content/uploads/2026/07/ISCRIZIONE-SOCIETA-E-SQUADRE.xls",
+  "referenceSource": "https://www.walkingfootballitalia.com/wp-content/uploads/2026/07/ISCRIZIONE-SOCIETA-E-SQUADRE.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae per Microsoft 365 / Microsoft\u00ae Excel\u00ae per Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00494.warc.gz",
+   909308056,
+   7561
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00545.warc.gz",
+   906210574,
+   98505
+  ],
+  "sha256": "c1e1a65334737edcea531f1173aeec1726e17a350b47bf551260f1288a51ce10",
+  "referenceSha256": "d12d7a59087dfe590f403e5e39502f306b79f0b5df0e3e7e645b2456a7cf5778"
+ },
+ {
+  "file": "spreadsheets/52c91e4b24d5.xlsx",
+  "reference": "spreadsheets/52c91e4b24d5.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/monthly-mobile-sports-wagering-report-betmgm.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/08/monthly-mobile-sports-wagering-report-betmgm.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00218.warc.gz",
+   221320158,
+   88518
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00385.warc.gz",
+   231110462,
+   269896
+  ],
+  "sha256": "93d2b22df28715779a7edd97700fc205de61b3393da8a9f80a52802e045d4f9b",
+  "referenceSha256": "1c4fbd0f6cee5e1b5ec61d4e47ddb247ded723e589b379b56164d38cbba60065"
+ },
+ {
+  "file": "spreadsheets/e2c3ba07bd68.xlsx",
+  "reference": "spreadsheets/e2c3ba07bd68.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-caesars.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/08/monthly-mobile-sports-wagering-report-caesars.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00475.warc.gz",
+   207852741,
+   93559
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00207.warc.gz",
+   233857185,
+   274737
+  ],
+  "sha256": "577f21279cacdc060aac824e9c67c1434c74a90d529a933a426c0d3f1c0f8799",
+  "referenceSha256": "370fad07aa48c3d009bc85038a41a6b5f09d9962e4fd56e18112776fcb52b7a1"
+ },
+ {
+  "file": "spreadsheets/c828cfec32b5.xlsx",
+  "reference": "spreadsheets/c828cfec32b5.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-draftkings.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-draftkings.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00962.warc.gz",
+   228211160,
+   96542
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00449.warc.gz",
+   188772126,
+   282886
+  ],
+  "sha256": "5f74b00f5b7c89735aaaced899321a4994bc4b86e780988b0ac60d0564701ab7",
+  "referenceSha256": "acaf18126ee52d705945b7b72c4a469952b133297f86ee986a603e61cf6fe6ec"
+ },
+ {
+  "file": "spreadsheets/ff7d64688c17.xlsx",
+  "reference": "spreadsheets/ff7d64688c17.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-fanatics.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-fanatics.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00522.warc.gz",
+   200881842,
+   111682
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00169.warc.gz",
+   217044459,
+   293345
+  ],
+  "sha256": "258a0f481ae0bf3ee1d6bbb12943674b9c75fccb8a7d1bdfdbbdabff11ccd2ac",
+  "referenceSha256": "b124efbf6a45cc80a4abb112eff750ab57cc22cc71ebc8d4c94e9a2d6ed7a62f"
+ },
+ {
+  "file": "spreadsheets/7e7f36b9cb40.xlsx",
+  "reference": "spreadsheets/7e7f36b9cb40.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-fanduel.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-fanduel.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00918.warc.gz",
+   227251148,
+   93103
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00965.warc.gz",
+   225475881,
+   270690
+  ],
+  "sha256": "7fdaab7461237b7c5127dcbc411a1bed5174e03d24e0ab2e2c63c910d730bd80",
+  "referenceSha256": "9f2369eccb8aed14469e2b98572262bd69fe1a4cd53a035af83de898426f3f40"
+ },
+ {
+  "file": "spreadsheets/713c3282918b.xlsx",
+  "reference": "spreadsheets/713c3282918b.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-kambi-rsi.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-kambi-rsi.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00400.warc.gz",
+   213612326,
+   89053
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00499.warc.gz",
+   218543976,
+   270426
+  ],
+  "sha256": "17f2f051f376b5ed3bcd716dc0d2d7d569876a2072f7ad8f01a58cd35e59e229",
+  "referenceSha256": "f1c5fbd85d7031e00dd98558cbfd0915e51c79ae7a89a1cc1acc081b695cef56"
+ },
+ {
+  "file": "spreadsheets/a3f96b8f3357.xlsx",
+  "reference": "spreadsheets/a3f96b8f3357.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/03/monthly-mobile-sports-wagering-report-resortsworld-bet_0.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/03/monthly-mobile-sports-wagering-report-resortsworld-bet_0.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00402.warc.gz",
+   227670757,
+   74511
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00465.warc.gz",
+   214243773,
+   129853
+  ],
+  "sha256": "eac642938925fb15d5f61d8bab2453f700203d78e1d912433fbd0c3e22e56fe1",
+  "referenceSha256": "61986b58138f6109ed58cae0439721406c2653b7fba53bcb45853515fdf03a6c"
+ },
+ {
+  "file": "spreadsheets/b44c88b5201f.xlsx",
+  "reference": "spreadsheets/b44c88b5201f.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/monthly-mobile-sports-wagering-report-statewide.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/monthly-mobile-sports-wagering-report-statewide.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00806.warc.gz",
+   222734212,
+   613349
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00422.warc.gz",
+   239098856,
+   284559
+  ],
+  "sha256": "6282a22ab683646c1fbce2fdf089113a8266ff944b285bb423fb76c54f2b88dd",
+  "referenceSha256": "fa523eecd94830f07b2dd6148813b73b6032f746a773138141c69037e4ee57ac"
+ },
+ {
+  "file": "spreadsheets/ce01aa902632.xlsx",
+  "reference": "spreadsheets/ce01aa902632.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/resorts-world-catskills-casino-monthly-commercial-gaming-report.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/08/resorts-world-catskills-casino-monthly-commercial-gaming-report.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00343.warc.gz",
+   216204034,
+   203750
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00220.warc.gz",
+   227795095,
+   562872
+  ],
+  "sha256": "1b9f3f0a0e3c7dd95c6b3cd66a43509b00deec4170e787b6ae0a2de88ad15a3f",
+  "referenceSha256": "4c8e7f4ef36f5d1332f76de6ebc65b5318baf7a44724ebd25d377d028971076a"
+ },
+ {
+  "file": "spreadsheets/401844b525e8.xlsx",
+  "reference": "spreadsheets/401844b525e8.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/resorts-world-catskills-casino-weekly-website-report_0.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/resorts-world-catskills-casino-weekly-website-report_0.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00462.warc.gz",
+   250935383,
+   194322
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00749.warc.gz",
+   219767373,
+   615187
+  ],
+  "sha256": "5469414daf5d06d682c2aad97b5b086352cae86eee7f451f2d8f0262ef27c30c",
+  "referenceSha256": "82cb1891491234d7bf86eb465b6f9f0369a9fa7d0fd2a32830d891a785697caf"
+ },
+ {
+  "file": "spreadsheets/ec25e1b9560a.xlsx",
+  "reference": "spreadsheets/ec25e1b9560a.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/resorts-world-new-york-city-casino-weekly-website-report_0.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/resorts-world-new-york-city-casino-weekly-website-report_0.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00258.warc.gz",
+   209387547,
+   34114
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00921.warc.gz",
+   199771016,
+   221580
+  ],
+  "sha256": "9bdc6f9478ed5c1e3a329a98e723dbf8d39bc1f5037d8043f94ae59ccecb423f",
+  "referenceSha256": "3f3375083101eeceee304a82b44c6b6e2ece9d8f8cd90a06f2ea1a7f9f544855"
+ },
+ {
+  "file": "spreadsheets/2857aae49a2a.xlsx",
+  "reference": "spreadsheets/2857aae49a2a.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/rivers-monthly-commercial-gaming-report.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/rivers-monthly-commercial-gaming-report.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00118.warc.gz",
+   223281823,
+   239404
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00294.warc.gz",
+   200132851,
+   649023
+  ],
+  "sha256": "efb684f10c8924baf75a1e5322835fff409e69e804e6586d478a52e95dcb667f",
+  "referenceSha256": "8403abae488d257eeb5cc86306dfb3bf252129c5187c850e5a9313241227c390"
+ },
+ {
+  "file": "spreadsheets/c8327f6a2bd2.xlsx",
+  "reference": "spreadsheets/c8327f6a2bd2.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/tioga-monthly-commercial-gaming-report.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/08/tioga-monthly-commercial-gaming-report.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00187.warc.gz",
+   232823446,
+   227933
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00792.warc.gz",
+   245939472,
+   587690
+  ],
+  "sha256": "3fd18b928826423318a6f6735ac11f7bb597ffdd8270cce3f3de3d9b4a471314",
+  "referenceSha256": "2ea6f9172937084c2a1c34a2fe15512e05008003f0e20b4b5946322aa5437541"
+ },
+ {
+  "file": "spreadsheets/1835f649043e.xls",
+  "reference": "spreadsheets/1835f649043e.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/web-site-report-batavia-downs-casino.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/08/web-site-report-batavia-downs-casino.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.187",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00309.warc.gz",
+   219794824,
+   74830
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00360.warc.gz",
+   224581017,
+   477496
+  ],
+  "sha256": "bb5592f8cbc52536619b3cb48e8be668432be2f211f79733645cef21e6682108",
+  "referenceSha256": "1982d9ba59c4480295bce337272cb0cb9df0988478752d35e4c970ea3b5f9f51"
+ },
+ {
+  "file": "spreadsheets/684ab17b273c.xls",
+  "reference": "spreadsheets/684ab17b273c.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-report-finger-lakes-casino-racetrack.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-report-finger-lakes-casino-racetrack.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.29",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00905.warc.gz",
+   207481300,
+   681690
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00956.warc.gz",
+   223260396,
+   948171
+  ],
+  "sha256": "22f335ce8ca9adc0b0f80806cd1aa6ed640b40467a4d607e85bef2d2cbbadeb8",
+  "referenceSha256": "737a56381ec4d232abb843118e2483cf2f23a457c63706e75751ceb03e6cecf7"
+ },
+ {
+  "file": "spreadsheets/1b7d0e93d3bd.xls",
+  "reference": "spreadsheets/1b7d0e93d3bd.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/08/web-site-report-hamburg-casino-at-the-fairgrounds.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-report-hamburg-casino-at-the-fairgrounds.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.29",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00426.warc.gz",
+   235039437,
+   144792
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00182.warc.gz",
+   225611404,
+   521504
+  ],
+  "sha256": "94f695fda67b419a3aadf6e721997983063d457003bbd2ecd21f0b9b095bd629",
+  "referenceSha256": "0bba8c3af6797067bfe58c8f288c94ad6deb11960c5bdbdaae2526997c216598"
+ },
+ {
+  "file": "spreadsheets/34d13685aa7c.xls",
+  "reference": "spreadsheets/34d13685aa7c.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-report-jakes-58-suffolk-otb.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/08/web-site-report-jakes-58-suffolk-otb.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.187",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00965.warc.gz",
+   225747419,
+   35657
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00769.warc.gz",
+   240837717,
+   242331
+  ],
+  "sha256": "5632fdb1528a84ebb4c9d0808fcded0db468118c64b3c22a852d2ccd919d10eb",
+  "referenceSha256": "fad3116db600bbe2bf2e059d6439a9e224b7e8c1a114f734687e252b85e53745"
+ },
+ {
+  "file": "spreadsheets/ddeb744251dd.xls",
+  "reference": "spreadsheets/ddeb744251dd.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2024/09/web-site-report-monticello-casino-raceway.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2024/09/web-site-report-monticello-casino-raceway.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00659.warc.gz",
+   212579424,
+   189050
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00710.warc.gz",
+   199453163,
+   327243
+  ],
+  "sha256": "98b6f43105bec7214bee13bea13da2066452d90b3faab0ef14fe85f681228220",
+  "referenceSha256": "d0d66701695cf27971ab092029359449eca2bd6a6712966e8fb9dbc050b70496"
+ },
+ {
+  "file": "spreadsheets/aefe70e00d1d.xls",
+  "reference": "spreadsheets/aefe70e00d1d.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-weekly-report-batavia-downs-gaming_0.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-weekly-report-batavia-downs-gaming_0.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.29",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00495.warc.gz",
+   220720153,
+   96203
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00546.warc.gz",
+   208549447,
+   396237
+  ],
+  "sha256": "7bcc2d1ef1d63b7d0e32e58e3f28036ff21a5dcc3a9f1d6cd84a5e98b97a9299",
+  "referenceSha256": "da600f60a07b60590a3227f89d05378ef5dc7c84484e0cd483b53d1f89ce2bd8"
+ },
+ {
+  "file": "spreadsheets/170b78e1f0c3.xls",
+  "reference": "spreadsheets/170b78e1f0c3.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-weekly-report-jakes-58-suffolk-otb_0.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-weekly-report-jakes-58-suffolk-otb_0.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.29",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00590.warc.gz",
+   216393034,
+   52382
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00641.warc.gz",
+   215127556,
+   215099
+  ],
+  "sha256": "076cb4a53532178659dddc817c3a8ed694771b3d46c5acd641d77d87f0d4e0ed",
+  "referenceSha256": "c3480ef24b6dbb78fd2d052e07a8046472dfed65ee9e4da5923cd74e19e976c5"
+ },
+ {
+  "file": "spreadsheets/8e1ac8005dff.xls",
+  "reference": "spreadsheets/8e1ac8005dff.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/05/web-site-weekly-report-nassau-otb-at-resorts-world_0.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/05/web-site-weekly-report-nassau-otb-at-resorts-world_0.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.183",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00602.warc.gz",
+   209670805,
+   99870
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00653.warc.gz",
+   221255700,
+   259865
+  ],
+  "sha256": "691c32c2b8fcd423aa5a99cc439dc7cf18abd34a37ca1d24b8311f66ef4b5568",
+  "referenceSha256": "a98f360f4f731a56ef01934143edf3a1ec9359bb359c992757cb4d793263f8b2"
+ },
+ {
+  "file": "spreadsheets/da9b9ec1e757.xls",
+  "reference": "spreadsheets/da9b9ec1e757.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-weekly-report-vernon-downs_0.xls",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/web-site-weekly-report-vernon-downs_0.pdf",
+  "producer": "Acrobat PDFMaker 26 for Excel / Adobe PDF Library 26.1.29",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00831.warc.gz",
+   227750031,
+   98118
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00882.warc.gz",
+   216806546,
+   380775
+  ],
+  "sha256": "ac937162e488f8ea8ef9e8c9c221c254739453583c8540431ea1c74f37469068",
+  "referenceSha256": "a5420c410dccfe87f28c45d98301c8bb708efa596a91e2d8af60993a69da6013"
+ },
+ {
+  "file": "spreadsheets/d323af15bfe4.xlsx",
+  "reference": "spreadsheets/d323af15bfe4.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/weekly-mobile-sports-wagering-report-fanatics_0.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/weekly-mobile-sports-wagering-report-fanatics_0.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00227.warc.gz",
+   215726880,
+   120136
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700040.10/warc/CC-MAIN-20260911220105-20260912010105-00040.warc.gz",
+   210738411,
+   253544
+  ],
+  "sha256": "77928d60a7fdb89af6e556ed15c3d35e0413943413ea8aaca400f069674cecac",
+  "referenceSha256": "4ed05ddd096e6c4f8d92c1ef91f232e3c28390818ab45c8752e62ae242e3a1da"
+ },
+ {
+  "file": "spreadsheets/e3754a8072cf.xlsx",
+  "reference": "spreadsheets/e3754a8072cf.pdf",
+  "source": "https://gaming.ny.gov/system/files/documents/2026/09/weekly-mobile-sports-wagering-report-thescore-bet.xlsx",
+  "referenceSource": "https://gaming.ny.gov/system/files/documents/2026/09/weekly-mobile-sports-wagering-report-thescore-bet.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00602.warc.gz",
+   219196173,
+   138130
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699598.6/warc/CC-MAIN-20260905133841-20260905163841-00401.warc.gz",
+   194540708,
+   287851
+  ],
+  "sha256": "541fedd57260546c7e081030c32ebc556aec9101ca9744624bbdf2ad3014a23d",
+  "referenceSha256": "95378ada6ed23241c79ad33e40124e0e7b8c4d42ea1d3a699e96a2c1aaf84b10"
+ },
+ {
+  "file": "spreadsheets/7bd8ffb9ae79.xlsx",
+  "reference": "spreadsheets/7bd8ffb9ae79.pdf",
+  "source": "https://masjid.ca/application/files/5217/5699/7329/Funeral_Intake_Form_v3.xlsx",
+  "referenceSource": "https://masjid.ca/application/files/3017/5699/7317/Funeral_Intake_Form_v3.pdf",
+  "producer": "Acrobat PDFMaker 20 for Excel / Adobe PDF Library 20.6.74",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00760.warc.gz",
+   320880985,
+   27467
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492991845.66/warc/CC-MAIN-20260914200638-20260914230638-00644.warc.gz",
+   313837591,
+   113737
+  ],
+  "sha256": "6c41a86506087520685b7771951c299a9a7ab12d5e2800ca0f61b38f69439482",
+  "referenceSha256": "c42266c2fcedaa006dac383b02bb9ea8fbbb63d8d818ca033bc7516d927e5b6e"
+ },
+ {
+  "file": "spreadsheets/7adf299039cc.xlsx",
+  "reference": "spreadsheets/7adf299039cc.pdf",
+  "source": "https://www.lwl-bbw-soest.de/media/filer_public/8c/34/8c341852-eb58-4b61-95bb-9817e46c5c04/24-27826.xlsx",
+  "referenceSource": "https://www.lwl-bbw-soest.de/media/filer_public/e5/34/e5344faa-a3a5-443d-93cf-80c2d312991b/24-27826.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365 / Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997931.94/warc/CC-MAIN-20260915233002-20260916023002-00583.warc.gz",
+   711625544,
+   18653
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997931.94/warc/CC-MAIN-20260915233002-20260916023002-00454.warc.gz",
+   704157946,
+   91666
+  ],
+  "sha256": "24d29f5b23d9b22acc1d3b33a0cc3b9df8051a2ef06e301fa77ede682bfde4c6",
+  "referenceSha256": "4f9c3e4f4e3527a17fcad134b9f3ce5bf6e11c69964cfb789f8835fff291d844"
+ },
+ {
+  "file": "spreadsheets/12f6e30f49a5.xlsx",
+  "reference": "spreadsheets/12f6e30f49a5.pdf",
+  "source": "https://www.lwl-bbw-soest.de/media/filer_public/21/bd/21bda5b2-70be-433d-beed-2f8de7d03ecd/28-30826.xlsx",
+  "referenceSource": "https://www.lwl-bbw-soest.de/media/filer_public/04/82/0482f4c7-ac5d-4d51-83f3-34de4da50a6c/28-30826.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365 / Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997931.94/warc/CC-MAIN-20260915233002-20260916023002-00222.warc.gz",
+   746122567,
+   16362
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997931.94/warc/CC-MAIN-20260915233002-20260916023002-00785.warc.gz",
+   751188223,
+   81881
+  ],
+  "sha256": "7af66c18f7e555613d0802994c3c24ce8b28c04821ef4959a71ed3ac9e231eb2",
+  "referenceSha256": "fbce39ca60dd6646a03499aaf52831ca1370a0b36eefa4b1a59fcb6c139ba869"
+ },
+ {
+  "file": "spreadsheets/d6d1a0c9956f.xlsx",
+  "reference": "spreadsheets/d6d1a0c9956f.pdf",
+  "source": "https://www.lwl-bbw-soest.de/media/filer_public/0c/fa/0cfa2d2a-68d2-4537-907e-3dc958491fb2/318-3926.xlsx",
+  "referenceSource": "https://www.lwl-bbw-soest.de/media/filer_public/11/62/1162ffaa-7d11-4b97-9e20-0aeba4f506d9/318-3926.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365 / Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997931.94/warc/CC-MAIN-20260915233002-20260916023002-00719.warc.gz",
+   756924714,
+   16626
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997931.94/warc/CC-MAIN-20260915233002-20260916023002-00119.warc.gz",
+   693107378,
+   92865
+  ],
+  "sha256": "e55677202366870d5239f655a366ad6bc54bbc282b9bbf49cc00b8ef1aad642d",
+  "referenceSha256": "e5a94252b8cdc2ed0e95660e09ecef726848cf6b3d3b701eab2830cb954df740"
+ },
+ {
+  "file": "spreadsheets/15fa99db3e49.xlsx",
+  "reference": "spreadsheets/15fa99db3e49.pdf",
+  "source": "https://download.data.public.lu/resources/suivi-des-recommandations-du-klima-biergerrot-et-de-lobservatoire-de-la-politique-climatique/20230511-111843/tableau-pnec-kbr-opc.xlsx",
+  "referenceSource": "https://download.data.public.lu/resources/suivi-des-recommandations-du-klima-biergerrot-et-de-lobservatoire-de-la-politique-climatique/20230511-111725/tableau-pnec-kbr-opc.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699760.13/warc/CC-MAIN-20260907233153-20260908023153-00060.warc.gz",
+   185920965,
+   187286
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00380.warc.gz",
+   159068101,
+   449947
+  ],
+  "sha256": "10d8c050bffb9f9a195122b98652e236ac97977972b20c86c2f11afe50887be6",
+  "referenceSha256": "803de7a61fe5dbb9438561a33a5e8430b689c78c794ea6b4cfec16d6a91cea96"
+ },
+ {
+  "file": "spreadsheets/c50440fea0fe.xlsx",
+  "reference": "spreadsheets/c50440fea0fe.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1137/08.01.01.02%20B.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1154/08%2001%2001%2002%20B.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00277.warc.gz",
+   275647594,
+   44415
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00566.warc.gz",
+   280210039,
+   136389
+  ],
+  "sha256": "28d0d0e850400dbc2a78f622962ba77a2d109913d2798cc23147ef8c34ac57dd",
+  "referenceSha256": "99863ef609d0572cbf4119c628154272a37b1e8e1eaf101b4b7c351383c1a1db"
+ },
+ {
+  "file": "spreadsheets/40c0b55c727d.xlsx",
+  "reference": "spreadsheets/40c0b55c727d.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1138/08.01.01.02%20S.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1155/08%2001%2001%2002%20S.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00555.warc.gz",
+   287170757,
+   44142
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00440.warc.gz",
+   290115193,
+   125836
+  ],
+  "sha256": "255329d2aceaa4187486aca9b0ed33eb74a49eeadfb0a02077eda0496416db90",
+  "referenceSha256": "2a2675a3b9438fcbd35d91e42671f02fb3a70373f278d5fb70085aa0b93573d8"
+ },
+ {
+  "file": "spreadsheets/070865535e0f.xlsx",
+  "reference": "spreadsheets/070865535e0f.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1139/09.05.01.01%20B.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1156/09%2005%2001%2001%20B.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00569.warc.gz",
+   280459984,
+   44446
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00826.warc.gz",
+   297273604,
+   137040
+  ],
+  "sha256": "f519424d3d8f45a470af4bdb672caae8f57563450c40fef561eaa37fc5c9c126",
+  "referenceSha256": "26a3044cf84dbcc03eb41e549ac1bba890ac2a5c2ba0fcb1e548df3c2e1e74ae"
+ },
+ {
+  "file": "spreadsheets/5ad26d6e3722.xlsx",
+  "reference": "spreadsheets/5ad26d6e3722.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1140/09.05.01.01%20K.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1157/09%2005%2001%2001%20K.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00530.warc.gz",
+   283513862,
+   44089
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00532.warc.gz",
+   317721495,
+   121698
+  ],
+  "sha256": "fedf0c33f987724ebc3200a2865950647d71b644ea4d1cb68fcc0e4e1cbcc9e4",
+  "referenceSha256": "0d50a7a8354a6ff85586be4e79b521dec9f28592753d9b0c8d0ba6f4e7c49e43"
+ },
+ {
+  "file": "spreadsheets/8a3fdcf3f127.xlsx",
+  "reference": "spreadsheets/8a3fdcf3f127.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1141/09.05.01.01%20S.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1158/09%2005%2001%2001%20S.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00097.warc.gz",
+   296874327,
+   44071
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00069.warc.gz",
+   315648187,
+   122426
+  ],
+  "sha256": "9cc737b05d6a4f80b1cbe07f959cb0cbfefa0c248bb9c26b4674555a5e153e56",
+  "referenceSha256": "5b4c091df38353ccf4e850dd1a249238c32ce00f62b17aa506da7844e82aeda0"
+ },
+ {
+  "file": "spreadsheets/65559cd04124.xlsx",
+  "reference": "spreadsheets/65559cd04124.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/965/09.06.01.01%20B.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1159/09%2006%2001%2001%20B.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00250.warc.gz",
+   314109914,
+   43936
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00358.warc.gz",
+   313438307,
+   119169
+  ],
+  "sha256": "59bfdc192f01616c2e59719643f38df488628faf469bf39594dbd46adb8789c8",
+  "referenceSha256": "5a880bda663b404f2e7e74fc7201c5b5f7b40d30b427431438e280994559082b"
+ },
+ {
+  "file": "spreadsheets/002754246166.xlsx",
+  "reference": "spreadsheets/002754246166.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1131/Forma%20Nr.%201.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1161/Forma%20Nr.%201.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00848.warc.gz",
+   296875802,
+   18144
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00072.warc.gz",
+   315646932,
+   170476
+  ],
+  "sha256": "ed881fb79d83adb63edfd9cc30c4e314d19cc9f9702b6fc37c696eae55b3d56a",
+  "referenceSha256": "bb97543ccc6d28ed599fd8924434cd27c04e4b76ffd0294732315a5986618e3d"
+ },
+ {
+  "file": "spreadsheets/29e2f26e2999.xlsx",
+  "reference": "spreadsheets/29e2f26e2999.pdf",
+  "source": "https://kupiskiokksc.lt/dokumentubankas/download/1145/Forma%20Nr.%203.xlsx",
+  "referenceSource": "https://kupiskiokksc.lt/dokumentubankas/download/1162/Forma%20Nr.%203.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00419.warc.gz",
+   303542816,
+   16678
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700348.60/warc/CC-MAIN-20260913133434-20260913163434-00027.warc.gz",
+   295049903,
+   185509
+  ],
+  "sha256": "9f46d6677988ae69716cc3961304b34876d346217394f5297f77c0a91993a3f9",
+  "referenceSha256": "a994325c0c0e0fc76783a65f1c45a0fc4f832e7306198201ad1e7c9177c0e8f4"
+ },
+ {
+  "file": "spreadsheets/10b30fbfaff7.xlsx",
+  "reference": "spreadsheets/10b30fbfaff7.pdf",
+  "source": "https://rs-hindelbank.ch/media/pages/schloss-schiessen/anmeldetalon/ae1fe32fea-1769715091/anmeldeformular_2026.xlsx",
+  "referenceSource": "https://rs-hindelbank.ch/media/pages/schloss-schiessen/anmeldetalon/b08203c696-1768215341/anmeldeformular_2026.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365 / Microsoft\u00ae Excel\u00ae f\u00fcr Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699911.48/warc/CC-MAIN-20260910032001-20260910062001-00338.warc.gz",
+   422150179,
+   20236
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699911.48/warc/CC-MAIN-20260910032001-20260910062001-00809.warc.gz",
+   414941671,
+   228693
+  ],
+  "sha256": "30404fc38939ce5f06eb566b0620f96a300547adb9602f9e811ccc2a2a4d2a63",
+  "referenceSha256": "aa93beb7d16119cbddd35f4cda5717d4ae7a80fcb3134b0ee237fac21be8ff4d"
+ },
+ {
+  "file": "spreadsheets/38669bbcc104.xlsx",
+  "reference": "spreadsheets/38669bbcc104.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1750791951/tulsaschoolsorg/qahoggfxtgghcwu93qnv/26_Financial_Reconciliation.xlsx",
+  "referenceSource": "https://resources.finalsite.net/images/v1750791969/tulsaschoolsorg/lahyt0iukvbuwth3hgjy/26_Financial_Reconciliation.pdf",
+  "producer": "Acrobat PDFMaker 25 for Excel / Adobe PDF Library 25.1.51",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492997838.83/warc/CC-MAIN-20260915202726-20260915232726-00169.warc.gz",
+   394100110,
+   12951
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699854.41/warc/CC-MAIN-20260909090113-20260909120113-00458.warc.gz",
+   389494477,
+   54160
+  ],
+  "sha256": "7d14bf7bf1a93cc8f42a51647a9be596bdb51727e2fa57f68cc17e1de8d4baf7",
+  "referenceSha256": "5ed426a25089a22d47418fa147cf0bbabda56d037b5e3dfda2ef5ab37df3843e"
+ },
+ {
+  "file": "spreadsheets/b6291ce57756.xls",
+  "reference": "spreadsheets/b6291ce57756.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1734628171/tcssnet/gxzxukpwkecxyctw8dmb/A-III-VI.xls",
+  "referenceSource": "https://resources.finalsite.net/images/v1702401770/acsk12org/byf40ka9hcu9car3clnn/a-iii-vi.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699577.65/warc/CC-MAIN-20260905073245-20260905103245-00963.warc.gz",
+   379539123,
+   10198
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700126.36/warc/CC-MAIN-20260912131140-20260912161140-00880.warc.gz",
+   410731489,
+   59811
+  ],
+  "sha256": "7957c03a7aab20486193df25df03ef9ca0a7fa4f79790c90e6fb32a397fe4610",
+  "referenceSha256": "c60d6ec29fa0154a4f50720c0a0134d5f1e014cc5764cc13e9c4188b79f0306d"
+ },
+ {
+  "file": "spreadsheets/f16c4fbffa68.xls",
+  "reference": "spreadsheets/f16c4fbffa68.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1734625941/tcssnet/p7jkvv6sqws2nthep07l/A-III-VII.xls",
+  "referenceSource": "https://resources.finalsite.net/images/v1702401771/acsk12org/xb0ssbifb6kez1rofc3k/a-iii-vii.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699577.65/warc/CC-MAIN-20260905073245-20260905103245-00603.warc.gz",
+   393728364,
+   10200
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700126.36/warc/CC-MAIN-20260912131140-20260912161140-00921.warc.gz",
+   411423332,
+   59802
+  ],
+  "sha256": "dc5ba24dbe20ad88356baf99eb4436ab3830d46b7cac84ef34ff9fed92ffa951",
+  "referenceSha256": "a9df6fb96054a7af1895e07d8f21ffeccb2b8f49341deed54fb3cdd82cf77399"
+ },
+ {
+  "file": "spreadsheets/6a29fa5ccdc7.xls",
+  "reference": "spreadsheets/6a29fa5ccdc7.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1734625531/tcssnet/wwnjjilvxxtmtvafkx89/A-I-VII.xls",
+  "referenceSource": "https://resources.finalsite.net/images/v1702401751/acsk12org/zldrto7n4tglt5mfo9kk/a-i-vii.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699577.65/warc/CC-MAIN-20260905073245-20260905103245-00087.warc.gz",
+   398236821,
+   10692
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700126.36/warc/CC-MAIN-20260912131140-20260912161140-00594.warc.gz",
+   403827882,
+   63549
+  ],
+  "sha256": "e8e0e29867d0a27c1ee35180896fbd3944ec116f1cca93eb79d0e795e5d05915",
+  "referenceSha256": "a39dc93e00fff8e1f048d0729846224ed1a627b2601fc55c4c5cd516030a7be2"
+ },
+ {
+  "file": "spreadsheets/9e55cfaa0398.xlsx",
+  "reference": "spreadsheets/9e55cfaa0398.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1777034161/oldhamkyschoolsus/nybyohculq4dpybydxzp/BidSheetDiesel2026.xlsx",
+  "referenceSource": "https://resources.finalsite.net/images/v1777034202/oldhamkyschoolsus/mk4vswvdlmilvzwbyuor/BidSheetDiesel2026.pdf",
+  "producer": "Acrobat PDFMaker 25 for Excel / Adobe PDF Library 25.1.97",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699690.4/warc/CC-MAIN-20260906200739-20260906230739-00286.warc.gz",
+   371150703,
+   10288
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699690.4/warc/CC-MAIN-20260906200739-20260906230739-00725.warc.gz",
+   406544940,
+   150947
+  ],
+  "sha256": "2c63050a2b397705802b74588e1de46b6f47ce46c4d48eb294b71b7d9e854559",
+  "referenceSha256": "dad4b0a9022bf886e07057d16ae63920758459ca2087356b4469e1fc940ffe48"
+ },
+ {
+  "file": "spreadsheets/45444ed65e65.xlsx",
+  "reference": "spreadsheets/45444ed65e65.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1777034243/oldhamkyschoolsus/sikmzxmvvrrhhmnbsz5b/BidSheetGas2026.xlsx",
+  "referenceSource": "https://resources.finalsite.net/images/v1777034292/oldhamkyschoolsus/qinb8b4t7twfr13vsufm/BidSheetGas2026.pdf",
+  "producer": "Acrobat PDFMaker 25 for Excel / Adobe PDF Library 25.1.97",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699690.4/warc/CC-MAIN-20260906200739-20260906230739-00628.warc.gz",
+   410280869,
+   9739
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699690.4/warc/CC-MAIN-20260906200739-20260906230739-00876.warc.gz",
+   396852200,
+   107592
+  ],
+  "sha256": "68dbf34586ea3c356bfff2a261fc3bd6bb6ad4992d11255effa54c0f75e078e4",
+  "referenceSha256": "af6853465c380521b2dc74cc639cf89c6667415cc5d5e91b5bbfc582499413e0"
+ },
+ {
+  "file": "spreadsheets/d9dcf57566b2.xlsx",
+  "reference": "spreadsheets/d9dcf57566b2.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1785874653/cdsdk12paus/cdsdk12paus/cdsdk12paus/cdsdk12paus/ceqyty8a4wyvolduh70g/CDSDEnrollment_8-3-26.xlsx",
+  "referenceSource": "https://resources.finalsite.net/images/v1785874566/cdsdk12paus/cdsdk12paus/cdsdk12paus/cdsdk12paus/h6l4cy8onwjffjyuqbbz/CDSDEnrollment_8-3-26.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700221.90/warc/CC-MAIN-20260913012233-20260913042233-00916.warc.gz",
+   413689925,
+   15668
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700221.90/warc/CC-MAIN-20260913012233-20260913042233-00275.warc.gz",
+   420442853,
+   132402
+  ],
+  "sha256": "670b0443d66ba26f78a92eb86977f75a41cba78029cebf6ea56c616068a80690",
+  "referenceSha256": "28a95d88e6f6907bf12967b373a72e49be7c7b57297dee8d3930620c4436ea1a"
+ },
+ {
+  "file": "spreadsheets/5dfca5db4e95.xlsx",
+  "reference": "spreadsheets/5dfca5db4e95.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1774874985/cdsdk12paus/cdsdk12paus/cdsdk12paus/nnbwmxe9ua7sc2p1we7v/CDSDOfficialEnrollmentTotal_25-26SchoolYear_10-1-25.xlsx",
+  "referenceSource": "https://resources.finalsite.net/images/v1774874950/cdsdk12paus/cdsdk12paus/dfnmb2iivtatmwhmbkaq/CDSDOfficialEnrollmentTotal_25-26SchoolYear_10-1-25.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700221.90/warc/CC-MAIN-20260913012233-20260913042233-00850.warc.gz",
+   403253683,
+   13772
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700221.90/warc/CC-MAIN-20260913012233-20260913042233-00318.warc.gz",
+   428270585,
+   183150
+  ],
+  "sha256": "55a76f29b3340d82896abc3bbe149e78e9f6ad8da1f3ea867fe08b5627b9105d",
+  "referenceSha256": "55ce6493ea47d019012f50417dd69f9e58ad9b4bde0dbae4a4163086080edda8"
+ },
+ {
+  "file": "spreadsheets/756334a5df39.xls",
+  "reference": "spreadsheets/756334a5df39.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1763474320/link75org/link75org/link75org/o8dxot4f5jnyjyrae31g/MileageReimbursementRequestForm11032025.xls",
+  "referenceSource": "https://resources.finalsite.net/images/v1763473785/link75org/link75org/hwkdptaytjno8oybxgt4/MileageReimbursementRequestForm11032025.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae for Microsoft 365 / Microsoft\u00ae Excel\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700871.75/warc/CC-MAIN-20260914105557-20260914135557-00795.warc.gz",
+   371834218,
+   45954
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700871.75/warc/CC-MAIN-20260914105557-20260914135557-00435.warc.gz",
+   420469347,
+   117922
+  ],
+  "sha256": "48e29e076d23a073a4faaa74cf96e0e7bfdc7a31d7fdf2ad07f7f21842a5ebef",
+  "referenceSha256": "fdf02c9d28091b2af138db57505a131dc9f40ec42858ac3f402b2b339f66e237"
+ },
+ {
+  "file": "spreadsheets/9f1133d6b369.xlsx",
+  "reference": "spreadsheets/9f1133d6b369.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1787587742/pickenscountyschoolsnet/ttyo8vmwth3jbukj7ivx/PickensCountySchools-TravelReimbursementForm.xlsx",
+  "referenceSource": "https://resources.finalsite.net/images/v1787588201/pickenscountyschoolsnet/f9uz8wcynw5pgcvpndy1/PickensCountySchools-TravelReimbursementForm.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2019 / Microsoft\u00ae Excel\u00ae 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699802.46/warc/CC-MAIN-20260908114048-20260908144048-00266.warc.gz",
+   380062630,
+   14494
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699802.46/warc/CC-MAIN-20260908114048-20260908144048-00320.warc.gz",
+   429651251,
+   8506
+  ],
+  "sha256": "7c627c742d8bf0949ff480acc6b679f296f0c223ad9c95e83ddbeab3f9a34c55",
+  "referenceSha256": "9afb94248261aeeeca7f86213c02bf6832ac96f23006b4ae7ce9da68dc45e3f6"
+ },
+ {
+  "file": "spreadsheets/7c3fe7c49eac.xls",
+  "reference": "spreadsheets/7c3fe7c49eac.pdf",
+  "source": "https://www.amsa.nl/files/2013/4252/6912/Salarisschalen_per_1_januari_2012_en_1_april_2012_netto.xls",
+  "referenceSource": "https://www.amsa.nl/files/4913/4252/6715/Salarisschalen_per_1_januari_2012_en_1_april_2012_netto.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2010 / Microsoft\u00ae Excel\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00533.warc.gz",
+   528592435,
+   10425
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00808.warc.gz",
+   509922566,
+   54061
+  ],
+  "sha256": "7137a176b605e8c510be4ff26c062d2e15afb1565a9f04097f42f1725f407a93",
+  "referenceSha256": "f415e01f1dfd676441c2e5a0b212ea5a5c3d513bf9470a7cf76310a8b537863f"
+ },
+ {
+  "file": "spreadsheets/5e993762a702.xls",
+  "reference": "spreadsheets/5e993762a702.pdf",
+  "source": "https://www.amsa.nl/files/2513/4252/6913/Salarisschalen_per_1_januari_2012_netto.xls",
+  "referenceSource": "https://www.amsa.nl/files/5213/4252/6913/Salarisschalen_per_1_januari_2012_netto.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2010 / Microsoft\u00ae Excel\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00870.warc.gz",
+   574273090,
+   9989
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00323.warc.gz",
+   579395644,
+   51018
+  ],
+  "sha256": "e4fc87e73e0066160b62def3e6e338b9b1501a2f70a79d65ac7048c5f05a0b1f",
+  "referenceSha256": "d88dfac25d79a7e2f4a12e8f107b45c14b6535d5b5d9403d8f991c61a00156eb"
+ },
+ {
+  "file": "spreadsheets/7c5c9eb1ebfb.xls",
+  "reference": "spreadsheets/7c5c9eb1ebfb.pdf",
+  "source": "https://www.amsa.nl/files/4814/1917/4510/Salarisschalen_per_1_januari_2014_netto.xls",
+  "referenceSource": "https://www.amsa.nl/files/5714/0656/0640/Salarisschalen_per_1_januari_2014_netto.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2010 / Microsoft\u00ae Excel\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00402.warc.gz",
+   564248154,
+   12610
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00260.warc.gz",
+   535297043,
+   109559
+  ],
+  "sha256": "03b2ebc5386d96e58b49cb8b9a2366982ea237eefcbcfa99901d59389f617c75",
+  "referenceSha256": "4e926c45279c063507fb2921f652f3becf1cc73ce46c3f5e007db37c895fe021"
+ },
+ {
+  "file": "spreadsheets/701af0eedf2a.xls",
+  "reference": "spreadsheets/701af0eedf2a.pdf",
+  "source": "https://www.amsa.nl/files/8714/3059/5433/Salarisschalen_per_1_januari_2015_netto_nieuw.xls",
+  "referenceSource": "https://www.amsa.nl/files/7614/3059/5432/Salarisschalen_per_1_januari_2015_netto_nieuw.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2010 / Microsoft\u00ae Excel\u00ae 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00239.warc.gz",
+   577352451,
+   13692
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700735.54/warc/CC-MAIN-20260914075225-20260914105225-00449.warc.gz",
+   521176580,
+   113364
+  ],
+  "sha256": "b5516484bbc10bf4483a754359e0da7ec8061d6d32a05c68e32b8127cefc4b0d",
+  "referenceSha256": "bcc578fa24e3ddb4a43c1d64cd7f72d76298cecc50c6d6c90ef274db3251642d"
+ },
+ {
+  "file": "spreadsheets/ccdd148669e2.xlsx",
+  "reference": "spreadsheets/ccdd148669e2.pdf",
+  "source": "https://www.swissdrg.org/application/files/6717/6467/3611/20250205_ZE_ST_Reha_3.0_AV2_ZE_Katalog_I.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/5717/6422/4470/20250205_ZE_ST_Reha_3.0_AV2_ZE_Katalog_I.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00843.warc.gz",
+   797324781,
+   42012
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00912.warc.gz",
+   834246687,
+   123120
+  ],
+  "sha256": "0a93ac5e3fc108e422cf82d2acdfd57503f5fe0574ae4e187cfe34f50768ed59",
+  "referenceSha256": "994020e614dd699e1bd5f26344e3e11f1d8d97855a59cd51bc8dde008b960331"
+ },
+ {
+  "file": "spreadsheets/993ad15372b3.xlsx",
+  "reference": "spreadsheets/993ad15372b3.pdf",
+  "source": "https://www.swissdrg.org/application/files/1017/0262/8562/ST_Reha_2.0_AV_Zusatzentgeltkatalog_fr.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/1517/0262/8552/ST_Reha_2.0_AV_Zusatzentgeltkatalog_fr.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00739.warc.gz",
+   837064194,
+   41689
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00778.warc.gz",
+   823075477,
+   67782
+  ],
+  "sha256": "675ba0ce21b54f653287dfc16934e9ec74c708532813eacc461d0b15c67209e2",
+  "referenceSha256": "8341dc65b75de0514c90c0e8436099edca86585d9b8236d2251bf39afe0b7a75"
+ },
+ {
+  "file": "spreadsheets/a5614be293a6.xlsx",
+  "reference": "spreadsheets/a5614be293a6.pdf",
+  "source": "https://www.swissdrg.org/application/files/9716/8983/8979/ST_Reha_2.0_KV_Catalogo_delle_rimunerazioni_supplementari_MwSt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/8216/8983/8977/ST_Reha_2.0_KV_Catalogo_delle_rimunerazioni_supplementari_MwSt.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00003.warc.gz",
+   926317161,
+   42074
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00214.warc.gz",
+   838787668,
+   76493
+  ],
+  "sha256": "c25a63d74c499c7daa3eee9adf20577709130ba494d98404f78c433f3aae83f0",
+  "referenceSha256": "146c4db5da35a877a8b5e7e555bf4f5d5a38eafc50394c48ca9d81b4bd80558f"
+ },
+ {
+  "file": "spreadsheets/50d9ead9ba8f.xlsx",
+  "reference": "spreadsheets/50d9ead9ba8f.pdf",
+  "source": "https://www.swissdrg.org/application/files/6916/8983/8975/ST_Reha_2.0_KV_Catalogue_des_remunerations_supplementaires_MwSt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/5516/8983/8973/ST_Reha_2.0_KV_Catalogue_des_remunerations_supplementaires_MwSt.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00147.warc.gz",
+   837114218,
+   42118
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00291.warc.gz",
+   866566790,
+   111706
+  ],
+  "sha256": "50bfeb2b8c4d5e55549a9e63630daada794153e8529006d48d102fe28429aefe",
+  "referenceSha256": "0dcf4ae57cda604a4af7ff5ea36298b75b0d082b5e9bc198908a8d349afe06c9"
+ },
+ {
+  "file": "spreadsheets/23b765bb327a.xlsx",
+  "reference": "spreadsheets/23b765bb327a.pdf",
+  "source": "https://www.swissdrg.org/application/files/9416/8983/7386/ST_Reha_2.0_PV1_Zusatzentgeltkatalog_f.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/3616/8983/7384/ST_Reha_2.0_PV1_Zusatzentgeltkatalog_f.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00097.warc.gz",
+   833015975,
+   41815
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00508.warc.gz",
+   868307126,
+   113056
+  ],
+  "sha256": "864585038b37493260affd23d33ca8e8836f9bd67a48cec546720d072f047646",
+  "referenceSha256": "b105cb71e750d8855893f9672fccd4be5505b393a7b308c6f7f526aa170064bc"
+ },
+ {
+  "file": "spreadsheets/d70cd196c6bc.xlsx",
+  "reference": "spreadsheets/d70cd196c6bc.pdf",
+  "source": "https://www.swissdrg.org/application/files/3816/8983/7390/ST_Reha_2.0_PV1_Zusatzentgeltkatalog_i.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/6016/8983/7388/ST_Reha_2.0_PV1_Zusatzentgeltkatalog_i.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00129.warc.gz",
+   811066154,
+   41696
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699903.59/warc/CC-MAIN-20260910001732-20260910031732-00660.warc.gz",
+   829039113,
+   76471
+  ],
+  "sha256": "0482256a73ba6c78226a8467cd01432c95ce4b852ff0dedcf48ccf429fc5cddb",
+  "referenceSha256": "34f5a99ca883a808f69baa66df108cc103b3d116b351735055bbdd365a56ed3b"
+ },
+ {
+  "file": "spreadsheets/5b8313806b55.xlsx",
+  "reference": "spreadsheets/5b8313806b55.pdf",
+  "source": "https://www.swissdrg.org/application/files/9017/3271/2822/ST_Reha_3.0_AV_Catalogo_delle_rimunerazioni_supplementari_MwSt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/6317/3271/2830/ST_Reha_3.0_AV_Catalogo_delle_rimunerazioni_supplementari_MwSt.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00122.warc.gz",
+   872897092,
+   41482
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00366.warc.gz",
+   851993167,
+   120890
+  ],
+  "sha256": "cfa98b60358b0bc057d57b56e9cd3b3dc7ec12ec637e1bc59ff48810a62af4d8",
+  "referenceSha256": "02c0554b80bd79ac43690cb88ba5623cfc80525a6412721abc9b22a086fbb05c"
+ },
+ {
+  "file": "spreadsheets/54f75f935410.xlsx",
+  "reference": "spreadsheets/54f75f935410.pdf",
+  "source": "https://www.swissdrg.org/application/files/6917/1334/4091/ST_Reha_3.0_KV_Catalogo_delle_rimunerazioni_supplementari_MwSt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/9417/1334/4108/ST_Reha_3.0_KV_Catalogo_delle_rimunerazioni_supplementari_MwSt.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00036.warc.gz",
+   831049574,
+   41869
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00262.warc.gz",
+   875663707,
+   77853
+  ],
+  "sha256": "d29c85f306bae16787e27fbdf0eaf23bfcfd2e91961c50bb7b3d1b76c578314f",
+  "referenceSha256": "263c7a23b15bf21d1f75645c9ad2b0f66924130df60cfb635c0c2ed33664da36"
+ },
+ {
+  "file": "spreadsheets/fc0b665ab08b.xlsx",
+  "reference": "spreadsheets/fc0b665ab08b.pdf",
+  "source": "https://www.swissdrg.org/application/files/2117/1283/6819/ST_Reha_3.0_PV1_Catalogo_delle_rimunerazioni_supplementari_MwSt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/3617/1283/6839/ST_Reha_3.0_PV1_Catalogo_delle_rimunerazioni_supplementari_MwSt.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00857.warc.gz",
+   808022381,
+   44386
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00524.warc.gz",
+   824803499,
+   77863
+  ],
+  "sha256": "68ba7a9b387ab6db1855496d4117f7b81e3bed40edaa97903085f3f2cc660a36",
+  "referenceSha256": "ec4d5d8c52e94158fda270459c3c87da0f0904167b75d27b4f166d2482b65f8d"
+ },
+ {
+  "file": "spreadsheets/f0ea5e697245.xlsx",
+  "reference": "spreadsheets/f0ea5e697245.pdf",
+  "source": "https://www.swissdrg.org/application/files/5117/1592/6895/ST_Reha_3.0_PV2_Catalogo_delle_rimunerazioni_supplementari_MwSt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/1317/1592/6935/ST_Reha_3.0_PV2_Catalogo_delle_rimunerazioni_supplementari_MwSt.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00128.warc.gz",
+   840248958,
+   41480
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00152.warc.gz",
+   876785059,
+   77826
+  ],
+  "sha256": "1abf49f192860819b66097ffb28dea716c8e795f5c7baab14a3b49ef79eb852a",
+  "referenceSha256": "ce68bd5d395ead594eeee5db86973a13475ea0248e48820e5c315dd08949f313"
+ },
+ {
+  "file": "spreadsheets/4a2e4abe6d6e.xlsx",
+  "reference": "spreadsheets/4a2e4abe6d6e.pdf",
+  "source": "https://www.swissdrg.org/application/files/9617/7927/4643/ST_Reha_4.0_PV2_Catalogue_des_remunerations_supplementaires.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/6017/7927/4706/ST_Reha_4.0_PV2_Catalogue_des_remunerations_supplementaires.pdf",
+  "producer": "Microsoft\u00ae Excel\u00ae 2016 / Microsoft\u00ae Excel\u00ae 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00098.warc.gz",
+   843706533,
+   44013
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00182.warc.gz",
+   863058599,
+   145211
+  ],
+  "sha256": "c7667a925ab2bb14beb9c50b8e06f3b6b0042b01a182f529301a1eb4e956e7ac",
+  "referenceSha256": "322f1e79674b97103949b65ea905ff79e12e7c148297be2954b8a51b7135f923"
+ },
+ {
+  "file": "spreadsheets/fb6c9826ac8f.xlsx",
+  "reference": "spreadsheets/fb6c9826ac8f.pdf",
+  "source": "https://www.swissdrg.org/application/files/4014/9337/2153/Swiss-DRG_Version_6.0_Fallpauschalenkatalog_AV_2017_f_genehmigt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/9714/8189/8723/Swiss-DRG_Version_6.0_Fallpauschalenkatalog_AV_2017_f_genehmigt.pdf",
+  "producer": "Acrobat PDFMaker 11 f\u00fcr Excel / Adobe PDF Library 11.0",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700871.75/warc/CC-MAIN-20260914105557-20260914135557-00646.warc.gz",
+   816143292,
+   279164
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700871.75/warc/CC-MAIN-20260914105557-20260914135557-00166.warc.gz",
+   800561412,
+   979303
+  ],
+  "sha256": "50b1dacdf6df5addd81dbfba3081749804cba21377b761867384945015ff3921",
+  "referenceSha256": "2ed5d0faeb47f7420d83826923d09e899c9e9dd8ae8fff54ef6d1fab462ee079"
+ },
+ {
+  "file": "spreadsheets/1078a5a7c9ca.xlsx",
+  "reference": "spreadsheets/1078a5a7c9ca.pdf",
+  "source": "https://www.swissdrg.org/application/files/7014/8111/4033/Swiss-DRG_Version_6.0_Fallpauschalenkatalog_franz_KV_genehmigt.xlsx",
+  "referenceSource": "https://www.swissdrg.org/application/files/7114/8111/2947/Swiss-DRG_Version_6.0_Fallpauschalenkatalog_franz_KV_genehmigt.pdf",
+  "producer": "Acrobat PDFMaker 11 f\u00fcr Excel / Adobe PDF Library 11.0",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699973.67/warc/CC-MAIN-20260911064402-20260911094402-00057.warc.gz",
+   826705958,
+   277229
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699959.44/warc/CC-MAIN-20260910213606-20260911003606-00803.warc.gz",
+   857773214,
+   981019
+  ],
+  "sha256": "1e41293b0e8942dadbcbf896c7fba922b7994eb3cd7c56ed6988421a1a7c20b6",
+  "referenceSha256": "466fecfbc04d4131177c7ea2ec7512f8ec88353a3c2a216e24f9d0eaa91ae4fe"
+ }
+]

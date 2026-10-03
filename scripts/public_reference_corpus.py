@@ -101,6 +101,13 @@ def payload(rec: dict) -> bytes | None:
     """HTTP body of one WARC response record (one gzip member at offset/length)."""
     raw = fetch(DATA + rec['warc'], {'Range': f"bytes={rec['offset']}-{rec['offset'] + rec['length'] - 1}"})
     data = gzip.GzipFile(fileobj=io.BytesIO(raw)).read()
+    # The WARC block is exactly Content-Length bytes; the record terminator (CRLF CRLF) follows it.
+    end = data.find(b'\r\n\r\n')
+    m = re.search(rb'^content-length:\s*(\d+)', data[:end], re.I | re.M) if end >= 0 else None
+    if m:
+        data = data[:end + 4 + int(m.group(1))]
+    if re.search(rb'^warc-truncated:', data[:end], re.I | re.M):
+        return None  # the crawler kept only the start of a large file
     parts = data.split(b'\r\n\r\n', 2)
     if len(parts) < 3:
         return None
@@ -134,8 +141,16 @@ def same_document(doc: Path, ref: Path, work: Path) -> bool:
     if not office:
         return False
     env = {**os.environ, 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8'}
-    subprocess.run([office, f'-env:UserInstallation=file:///tmp/inkdos-lo-{os.getpid()}', '--headless', '--convert-to', 'pdf',
-                    '--outdir', str(work), str(doc)], capture_output=True, timeout=300, env=env)
+    proc = subprocess.Popen([office, f'-env:UserInstallation=file:///tmp/inkdos-lo-{os.getpid()}', '--headless', '--convert-to', 'pdf',
+                             '--outdir', str(work), str(doc)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env,
+                            start_new_session=True)
+    try:
+        proc.wait(timeout=300)
+    except subprocess.TimeoutExpired:  # a document LibreOffice cannot finish is not a usable pair
+        import signal
+        os.killpg(proc.pid, signal.SIGKILL)
+        proc.wait()
+        return False
     lo = work / (doc.stem + '.pdf')
     if not lo.exists():
         return False

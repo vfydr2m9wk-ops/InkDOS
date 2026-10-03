@@ -84,9 +84,9 @@ def missing_words(want: str, got: str) -> list[str]:
     joined = lambda seq: {''.join(seq[i:i + k]) for k in (2, 3) for i in range(len(seq) - k + 1)}
     ink_joined, ref_joined = joined(ink), joined(ref)
     missing = Counter(ref) - Counter(ink)
-    letters = Counter(''.join(ink))
+    letters, ink_set = Counter(''.join(ink)), set(ink)
     for w in list(missing):
-        if w in ink_joined or any(w in j and j in set(ink) for j in ref_joined):
+        if w in ink_joined or any(w in j and j in ink_set for j in ref_joined):
             del missing[w]
         elif len(w) == 1 and letters[w] >= missing[w]:
             del missing[w]  # stacked/one-letter lines: PDF yields one token per letter

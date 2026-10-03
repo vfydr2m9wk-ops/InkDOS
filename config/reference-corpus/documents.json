@@ -1,0 +1,1602 @@
+[
+ {
+  "file": "documents/9c8ad4135e01.docx",
+  "reference": "documents/9c8ad4135e01.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2025/12/12.12.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_Simulare-jude%C8%9Bean%C4%83-_-Bacalaureat-2026.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2025/12/12.12.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_Simulare-jude%C8%9Bean%C4%83-_-Bacalaureat-2026.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00205.warc.gz",
+   705696165,
+   131232
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00573.warc.gz",
+   722284786,
+   476215
+  ],
+  "sha256": "8bccce7b6e5f9c491c7ac93ca92950f9e76d48b576aba3e80900421db7001245",
+  "referenceSha256": "f4a99098cd4e0d6b8137d73a712efcfdce80abf5df15acc1701af279b80a21bd"
+ },
+ {
+  "file": "documents/2f6015d97ebc.docx",
+  "reference": "documents/2f6015d97ebc.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2023/08/17.08.2023_-Proba-scris%C4%83_E.c_-Bacalaureat-_-sesiunea-august_2023.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2023/08/17.08.2023_-Proba-scris%C4%83_E.c_-Bacalaureat-_-sesiunea-august_2023.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00840.warc.gz",
+   698828406,
+   100929
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00130.warc.gz",
+   699373383,
+   199777
+  ],
+  "sha256": "b596efaca77a612e4b61c5e51833631a0c270c217d96e749491e1ab8a5f71936",
+  "referenceSha256": "9a96a7304b9632d80db526e8108ae8131ef97ad8edb748c6931158a294729738"
+ },
+ {
+  "file": "documents/0145f6099df9.docx",
+  "reference": "documents/0145f6099df9.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2023/08/18.08.2023_-Proba-scris%C4%83_E.d._-Bacalaureat-_-sesiunea-august-2023.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2023/08/18.08.2023_-Proba-scris%C4%83_E.d._-Bacalaureat-_-sesiunea-august-2023.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00498.warc.gz",
+   677662861,
+   125402
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00920.warc.gz",
+   727035137,
+   199290
+  ],
+  "sha256": "1a4f27508ff7201be08ceb0ed356fe4005aa6e34cd40839ead05c8521cabe643",
+  "referenceSha256": "76c6307776ccdc0be3dcb7308b33d4b257eb79b2b0a361d0c134552cd8c3be4c"
+ },
+ {
+  "file": "documents/896ab5e1392d.docx",
+  "reference": "documents/896ab5e1392d.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2025/06/22.06.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_pre_EN_2025.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2025/06/22.06.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_pre_EN_2025.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00651.warc.gz",
+   687689069,
+   109625
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00303.warc.gz",
+   674459406,
+   237647
+  ],
+  "sha256": "5583f937db7c2d5b9f137a9fad797d8d62277617dac97edffaeeb70ca45e7566",
+  "referenceSha256": "a81bf534f7f47977376c4682d448e0d8cd5493bad16a56c2ec218dfe736c1fa1"
+ },
+ {
+  "file": "documents/e79c74587ea4.docx",
+  "reference": "documents/e79c74587ea4.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2024/06/24.06.2024_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_pre_EN_2024.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2024/06/24.06.2024_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_pre_EN_2024.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00420.warc.gz",
+   680273679,
+   128587
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00902.warc.gz",
+   704521483,
+   518444
+  ],
+  "sha256": "9b2f8720fcfa2cd0eaf59fdd375895cdeb2e39092999f2f7b43c654123ebb3cb",
+  "referenceSha256": "20c158c8ffd092ffb1467e11395bf6f41f1f69f9f2bc0c7c2a6ecbdd229d0e63"
+ },
+ {
+  "file": "documents/42e242c895a9.docx",
+  "reference": "documents/42e242c895a9.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2024/03/25.03.2024_-Informare-de-pres%C4%83_-I.%C8%98.J.-Cluj.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2024/03/25.03.2024_-Informare-de-pres%C4%83_-I.%C8%98.J.-Cluj.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00922.warc.gz",
+   696351194,
+   110220
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00752.warc.gz",
+   678679974,
+   197309
+  ],
+  "sha256": "c264dc739aec1ec6c488de2d252090991db1d9fa68ba6702c9b195c568aaaece",
+  "referenceSha256": "5469def2086129919126ddb50b4bc1e786552a85defeda0e001aba504e42754d"
+ },
+ {
+  "file": "documents/e74af8db8363.docx",
+  "reference": "documents/e74af8db8363.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2024/08/26.08.2024_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_-rezultate-ini%C8%9Biale-Bacalaureat-august-2024.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2024/08/26.08.2024_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_-rezultate-ini%C8%9Biale-Bacalaureat-august-2024.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699577.65/warc/CC-MAIN-20260905073245-20260905103245-00972.warc.gz",
+   692455310,
+   126142
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00590.warc.gz",
+   744850516,
+   489169
+  ],
+  "sha256": "8e1603331518838f86d2e2058bc845b8b2a20c34ce852030fa61bc1d64a14683",
+  "referenceSha256": "d28dd323807ca36008184a8fa995e786d5e7813acedc65ade58b582b73c20f21"
+ },
+ {
+  "file": "documents/bb3064a98c1a.docx",
+  "reference": "documents/bb3064a98c1a.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2025/01/27.01.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J._-Bacalaureat-2025_-Competen%C8%9Be-orale_2025.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2025/01/27.01.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J._-Bacalaureat-2025_-Competen%C8%9Be-orale_2025.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700164.15/warc/CC-MAIN-20260912161414-20260912191414-00486.warc.gz",
+   683062166,
+   109581
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00812.warc.gz",
+   674476946,
+   492484
+  ],
+  "sha256": "c74c0bb32509014c30b2789ab9b5910d3c2d5cb07ef0f0992bb25b49c990b0d7",
+  "referenceSha256": "7eb7696eafe84b2ab5565dd989cc68920aa1d23eb75a51651c19c4b7b983e6f2"
+ },
+ {
+  "file": "documents/45d276bb3fd3.docx",
+  "reference": "documents/45d276bb3fd3.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2022/07/4.07.2022_-Informare-de-pres%C4%83_-I.%C8%98.J.-Cluj_-Admitere_-2022.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2022/07/4.07.2022_-Informare-de-pres%C4%83_-I.%C8%98.J.-Cluj_-Admitere-2022.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00382.warc.gz",
+   679435779,
+   107260
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00715.warc.gz",
+   679581058,
+   189114
+  ],
+  "sha256": "e2203936b73643b676aca75b42a21c5d02312d485967a97c487b44bec0de4148",
+  "referenceSha256": "f35f0b449ff58a9a0e5d6a503469f4517b1050206bf0ba924fca642951f0490a"
+ },
+ {
+  "file": "documents/c2505e04323f.docx",
+  "reference": "documents/c2505e04323f.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2025/07/6-iulie-2025_-Comunicat-de-pres%C4%83_I.%C8%98.J.-Cluj_CEOI.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2025/07/6-iulie-2025_-Comunicat-de-pres%C4%83_I.%C8%98.J.-Cluj_CEOI.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00262.warc.gz",
+   663672479,
+   156834
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699577.65/warc/CC-MAIN-20260905073245-20260905103245-00444.warc.gz",
+   699791997,
+   481236
+  ],
+  "sha256": "e00215991b0c7c27853dea9acb658534c064de05c66fe165ec5fe51fd71123a1",
+  "referenceSha256": "fddc2179232ed6e948973752f07c7cf93a3ea6ffad798622072d63bfef32d67d"
+ },
+ {
+  "file": "documents/77d2321ccb09.docx",
+  "reference": "documents/77d2321ccb09.pdf",
+  "source": "https://www.isjcj.ro/wp-content/uploads/2025/04/8.04.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_-Rezultate_-Simulare_-Bacalaureat_-2025.docx",
+  "referenceSource": "https://www.isjcj.ro/wp-content/uploads/2025/04/8.04.2025_-Comunicat-de-pres%C4%83_-I.%C8%98.J.-Cluj_-Rezultate_-Simulare_-Bacalaureat_-2025.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00739.warc.gz",
+   705718705,
+   136613
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00751.warc.gz",
+   648418843,
+   501839
+  ],
+  "sha256": "1d0f2c6dca33650e3faae5091e4710fed1e85901ee193525a1f24021039f5965",
+  "referenceSha256": "8b6329b0f35172b8c8d6a1267e66f25356b97d403cc28d6fcab4e2c76c2eb8ea"
+ },
+ {
+  "file": "documents/81038406644c.docx",
+  "reference": "documents/81038406644c.pdf",
+  "source": "https://primariaavramiancu.ro/wp-content/files/Notificare_dr.Tirsa_Cindesti.docx",
+  "referenceSource": "https://primariaavramiancu.ro/wp-content/files/Notificare_dr.Tirsa_Cindesti.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699611.37/warc/CC-MAIN-20260905224859-20260906014859-00968.warc.gz",
+   391912059,
+   29714
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699611.37/warc/CC-MAIN-20260905224859-20260906014859-00210.warc.gz",
+   403034599,
+   362533
+  ],
+  "sha256": "435f66c1cfa9f5d7803a4db775e8b9e9e41db60b2bfb7ed3afd6685e42ef07af",
+  "referenceSha256": "698f9e58b32c531fbab688688db31ce45f2032faf5817a9b266d20b9b6b2366e"
+ },
+ {
+  "file": "documents/290313297290.docx",
+  "reference": "documents/290313297290.pdf",
+  "source": "https://wp.ufpel.edu.br/historep/files/2019/07/Erup%C3%A7%C3%A3o-e-esfolia%C3%A7%C3%A3o-dent%C3%A1ria.docx",
+  "referenceSource": "https://wp.ufpel.edu.br/historep/files/2019/08/Erup%C3%A7%C3%A3o-e-esfolia%C3%A7%C3%A3o-dent%C3%A1ria.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699611.37/warc/CC-MAIN-20260905224859-20260906014859-00396.warc.gz",
+   517789413,
+   27880
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699611.37/warc/CC-MAIN-20260905224859-20260906014859-00941.warc.gz",
+   547547554,
+   69014
+  ],
+  "sha256": "e823f83323960e76486e6f087a63d15862c6303018943e49794a0da316812ed0",
+  "referenceSha256": "2799299ece9b6f645755c79c5b14a9aa1f8da98d2c21141744b89da84ad6c522"
+ },
+ {
+  "file": "documents/9e60ec3379e7.docx",
+  "reference": "documents/9e60ec3379e7.pdf",
+  "source": "https://wp.ufpel.edu.br/historep/files/2019/07/PERIODONTOS.docx",
+  "referenceSource": "https://wp.ufpel.edu.br/historep/files/2019/08/PERIODONTOS.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699611.37/warc/CC-MAIN-20260905224859-20260906014859-00730.warc.gz",
+   508695624,
+   24864
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699679.12/warc/CC-MAIN-20260906170518-20260906200518-00161.warc.gz",
+   534400805,
+   58269
+  ],
+  "sha256": "a31de45527c7cbae9e2890ad64496afe2cdf612c6f13a0a925c094f371b89819",
+  "referenceSha256": "2e256b8ca7b84da1bdafe0822ec5ab9ab92cdab6bc906b3c0e03af4c3774c843"
+ },
+ {
+  "file": "documents/c216acf6bd2e.docx",
+  "reference": "documents/c216acf6bd2e.pdf",
+  "source": "https://aliautonomie.it/wp-content/uploads/2020/01/Schema-DGC-ALI.docx",
+  "referenceSource": "https://aliautonomie.it/wp-content/uploads/2020/01/Schema-DGC-ALI.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00024.warc.gz",
+   58874363,
+   130352
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00842.warc.gz",
+   62714825,
+   503002
+  ],
+  "sha256": "bf4cfb54de70d8c26c6c7c9ac46ddf5f21a9ee7d3bd934d21fcc490dc5c5b7ec",
+  "referenceSha256": "13a8d76d9e7a74314a4db50fc90354c5935a82beccbedf2c996d9f0f76ed37fa"
+ },
+ {
+  "file": "documents/7cd0dbb57b74.docx",
+  "reference": "documents/7cd0dbb57b74.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2023-04/Scheda_Partecipazione_2022.docx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2023-04/Scheda_Partecipazione_2022.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492995497.76/warc/CC-MAIN-20260915142231-20260915172231-00364.warc.gz",
+   527692867,
+   55200
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00206.warc.gz",
+   492832573,
+   749791
+  ],
+  "sha256": "90e28c13b744f315af424cf8e97ddd4bc33f9f7260cd77cbb2ac1e7fb11195ba",
+  "referenceSha256": "afb191846cba34171bfd894f89ddbb4bcb20e873f875f8e75cc13fb85e463b1c"
+ },
+ {
+  "file": "documents/69910632158c.docx",
+  "reference": "documents/69910632158c.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2025-05/Scheda_Partecipazione_2024.docx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2025-05/Scheda_Partecipazione_2024.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492995497.76/warc/CC-MAIN-20260915142231-20260915172231-00601.warc.gz",
+   518788290,
+   54968
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00553.warc.gz",
+   514979249,
+   753055
+  ],
+  "sha256": "462b3f597d9b5a4c44a756d3a0c1ab44c2e70b53e3d3dcfaafbcb584297453da",
+  "referenceSha256": "0424f7afa39205035d0ce71b6372b5d842a579a8783077ddab7e9eda4e5a70ee"
+ },
+ {
+  "file": "documents/79abb0c95607.docx",
+  "reference": "documents/79abb0c95607.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2026-05/Scheda_Partecipazione_2025.docx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2026-05/Scheda_Partecipazione_2025.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00359.warc.gz",
+   557566312,
+   56272
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00971.warc.gz",
+   525728359,
+   753050
+  ],
+  "sha256": "b4963cc7b219e92cd6f8ce8f180dbee21c149c5039b33a294fc83e2edd8ce645",
+  "referenceSha256": "367d61f6121fa974afb4edaf7b7d4f5f01f5d0bf46c97faeb993785b3fbc1f80"
+ },
+ {
+  "file": "documents/6f0ab7908446.docx",
+  "reference": "documents/6f0ab7908446.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2023-04/Scheda_Revisione-Periodica_2022.docx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2023-04/Scheda_Revisione-Periodica_2022.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00607.warc.gz",
+   526770875,
+   78032
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492995497.76/warc/CC-MAIN-20260915142231-20260915172231-00939.warc.gz",
+   552689828,
+   946052
+  ],
+  "sha256": "c71cfdaea04d5efef2e204a2ffe6935ef8e3c9952076683430e42bcb75925d9c",
+  "referenceSha256": "6ea872297cea10852fb494db153bae87b0d2d8fec3916c5cae0b1f899d2a7732"
+ },
+ {
+  "file": "documents/d08d23c1128c.docx",
+  "reference": "documents/d08d23c1128c.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2025-05/Scheda_Revisione-Periodica_2024.docx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2025-05/Scheda_Revisione-Periodica_2024.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00982.warc.gz",
+   529734829,
+   77627
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00444.warc.gz",
+   520745337,
+   946012
+  ],
+  "sha256": "ae8c29f2090b2a91f1ce77ddbe9030dbedac20be592e1d1cf6338036286b201c",
+  "referenceSha256": "bbd4bec92af1cdaafd986e8d605f7ef7c4c3ec7d34fcb61b2869d087e5a02c92"
+ },
+ {
+  "file": "documents/ea6deececac5.docx",
+  "reference": "documents/ea6deececac5.pdf",
+  "source": "https://www.almalaurea.it/sites/default/files/2026-05/Scheda_Revisione-Periodica_2025.docx",
+  "referenceSource": "https://www.almalaurea.it/sites/default/files/2026-05/Scheda_Revisione-Periodica_2025.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00494.warc.gz",
+   512922078,
+   79037
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999655.85/warc/CC-MAIN-20260916205422-20260916235422-00964.warc.gz",
+   519102877,
+   946145
+  ],
+  "sha256": "e9a7512169d8251a3965e62140f516748395af47c44993373308dc3dfdca65ed",
+  "referenceSha256": "1faad50953c6599dd2f17cad1390dee470050ea2ac7b375ba38020c74155925b"
+ },
+ {
+  "file": "documents/adcfe9c79696.doc",
+  "reference": "documents/adcfe9c79696.pdf",
+  "source": "https://www.100bestbooks.ru/files/Boccaccio_Dekameron.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Boccaccio_Dekameron.pdf",
+  "producer": "Microsoft\u00ae Word Starter 2010 / Microsoft\u00ae Word Starter 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00493.warc.gz",
+   526970127,
+   732101
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00687.warc.gz",
+   548224755,
+   2568039
+  ],
+  "sha256": "76f1b000df8b7d81ec043c651bb62d3704ab719d9a7cb0e895dd17c16d9b39a6",
+  "referenceSha256": "6364681404ef95dbbf8eff230b5e2c077f4639bf5e3866b507c87bcf04d17f61"
+ },
+ {
+  "file": "documents/39927a11c571.doc",
+  "reference": "documents/39927a11c571.pdf",
+  "source": "https://www.100bestbooks.ru/files/Carroll_Alisa_v_Zazerkale.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Carroll_Alisa_v_Zazerkale.pdf",
+  "producer": "Microsoft\u00ae Word Starter 2010 / Microsoft\u00ae Word Starter 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00501.warc.gz",
+   541001953,
+   162286
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00695.warc.gz",
+   489274172,
+   1005135
+  ],
+  "sha256": "e6de3d5113653bfa24e98e4c7d7413e0dd1392982e173fd46002220b9230372c",
+  "referenceSha256": "99bcc595e3407a93936712e051062d249a80cc1addc2db79f44d5a6e754e85eb"
+ },
+ {
+  "file": "documents/5218d5a1a16d.doc",
+  "reference": "documents/5218d5a1a16d.pdf",
+  "source": "https://www.100bestbooks.ru/files/Chesterton_Rasskazyi_ob_otse_Braune.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Chesterton_Rasskazyi_ob_otse_Braune.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00123.warc.gz",
+   455748553,
+   380947
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00317.warc.gz",
+   488670999,
+   1637718
+  ],
+  "sha256": "7707411daf60e6f6d7da6c16022b0704991be3f595b2c08f051f093575aceeb6",
+  "referenceSha256": "b89174756d003353b9a2ab02d34f748eecf52da0cd3a207ffde54de59593fd7f"
+ },
+ {
+  "file": "documents/c36c42385a60.doc",
+  "reference": "documents/c36c42385a60.pdf",
+  "source": "https://www.100bestbooks.ru/files/Dostoevski_besy.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Dostoevski_besy.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00579.warc.gz",
+   511278361,
+   737522
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00773.warc.gz",
+   490065259,
+   2981464
+  ],
+  "sha256": "27a5a5fc03fe44074aba7e02507de8ce04af1f7e9df9a1d7e6b259395807c3c4",
+  "referenceSha256": "e74d3b75da116261ebb5e172f3d6aa644cb80f5db0b610f3349e23c5fdac5999"
+ },
+ {
+  "file": "documents/89ad992ca807.doc",
+  "reference": "documents/89ad992ca807.pdf",
+  "source": "https://www.100bestbooks.ru/files/Dostoevsky_Zapiski_iz_mertvogo_doma.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Dostoevsky_Zapiski_iz_mertvogo_doma.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00941.warc.gz",
+   534558422,
+   334892
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00135.warc.gz",
+   510792091,
+   1396362
+  ],
+  "sha256": "71f80cc82b0b2386aa57ca773f625e40e4eedd0d629c86cbfae8d9c4a235ffae",
+  "referenceSha256": "8c0ca1f7e27c0ac9a151d7546cfeb2ebea093cf65dc9d479340277073dcbe4b3"
+ },
+ {
+  "file": "documents/0aecd3a94d10.doc",
+  "reference": "documents/0aecd3a94d10.pdf",
+  "source": "https://www.100bestbooks.ru/files/Esenin_Chernyi_chelovek.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Esenin_Chernyi_chelovek.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00607.warc.gz",
+   515705772,
+   11125
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00801.warc.gz",
+   580703508,
+   326523
+  ],
+  "sha256": "c6672f25fa1bb9d75e166a06bc70f2b1b7f724ecbc27f3096324af5bf84440f6",
+  "referenceSha256": "3ef90a41d6624c23a0daa69a2e29c6e264b607a80579ff908822786da10c2703"
+ },
+ {
+  "file": "documents/49c3d2c61e34.doc",
+  "reference": "documents/49c3d2c61e34.pdf",
+  "source": "https://www.100bestbooks.ru/files/Goncharov_Obryv.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Goncharov_Obryv.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00648.warc.gz",
+   521816152,
+   898827
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00842.warc.gz",
+   523108257,
+   3458971
+  ],
+  "sha256": "56790b34b27fbbbefac5b96b5f04ccea6d824559d1ef159f1093c54d36b7f231",
+  "referenceSha256": "6a3ce07d02a813f4c1e53d9c2c99f37cb6b0b7f2e11541c190e9fe2187623792"
+ },
+ {
+  "file": "documents/85404b5d5096.doc",
+  "reference": "documents/85404b5d5096.pdf",
+  "source": "https://www.100bestbooks.ru/files/Gorky_Moi_universitety.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Gorky_Moi_universitety.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00842.warc.gz",
+   544208981,
+   159464
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00036.warc.gz",
+   535486413,
+   893401
+  ],
+  "sha256": "49ef4c440c1b316ba26cb8cb4520e316a38d1b4021b49089540d0eac43eb5f9d",
+  "referenceSha256": "7727a5c070f70ea687ced75e7b507d14dbc1cbee196c6188d5a50603c53e314e"
+ },
+ {
+  "file": "documents/574108fd4225.doc",
+  "reference": "documents/574108fd4225.pdf",
+  "source": "https://www.100bestbooks.ru/files/London_Belyi_klyk.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/London_Belyi_klyk.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700221.90/warc/CC-MAIN-20260913012233-20260913042233-00072.warc.gz",
+   524197094,
+   205379
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700221.90/warc/CC-MAIN-20260913012233-20260913042233-00266.warc.gz",
+   545032124,
+   1023224
+  ],
+  "sha256": "963c3961025aec7cbdcbfa32d27134bb9d72fa65da0d751ff95fe7390ce88082",
+  "referenceSha256": "2857c158163b1f884959f2b071315722d0806c703d632846ddfcd2adcbb6241a"
+ },
+ {
+  "file": "documents/57a921678707.doc",
+  "reference": "documents/57a921678707.pdf",
+  "source": "https://www.100bestbooks.ru/files/Nekrasov_General_Toptygin.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Nekrasov_General_Toptygin.pdf",
+  "producer": "Microsoft\u00ae Word Starter 2010 / Microsoft\u00ae Word Starter 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00681.warc.gz",
+   506417198,
+   11317
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00875.warc.gz",
+   486097515,
+   352184
+  ],
+  "sha256": "d2a6be90661a4542718e4ace222cfc2e3f3d696f09b2ae85eed1ad877acdac2d",
+  "referenceSha256": "6dfb72e9a427c3bc72e21d1688de851dd848705ffb424141050034f4fa2b7f5a"
+ },
+ {
+  "file": "documents/6d98eecdc79b.doc",
+  "reference": "documents/6d98eecdc79b.pdf",
+  "source": "https://www.100bestbooks.ru/files/Poe_Padenie_doma_Asherov.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Poe_Padenie_doma_Asherov.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00774.warc.gz",
+   569033713,
+   32241
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00968.warc.gz",
+   513508151,
+   531844
+  ],
+  "sha256": "e3e076b8c9d47500aa07febf85646983cdba9f48f7dad44ac69a11e662d8a6de",
+  "referenceSha256": "055e800023eed4f56ce82cd357d4d9d742d7759476b545cc2e8af1856d21826c"
+ },
+ {
+  "file": "documents/991bd8ad2254.doc",
+  "reference": "documents/991bd8ad2254.pdf",
+  "source": "https://www.100bestbooks.ru/files/Pototskiy_Rukopis_naydennaya_v_Saragose.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Pototskiy_Rukopis_naydennaya_v_Saragose.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00492.warc.gz",
+   554119602,
+   687628
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00686.warc.gz",
+   517223249,
+   2651531
+  ],
+  "sha256": "7bdcc8b194a023d70f75ee9ab6c5be6a537c3cf4f2ee4bc68f883ad9335614d8",
+  "referenceSha256": "f85e356840c6749e7b6933d58091c093196762151c22d0f216c0c6506aed8dba"
+ },
+ {
+  "file": "documents/43aea874ae6a.doc",
+  "reference": "documents/43aea874ae6a.pdf",
+  "source": "https://www.100bestbooks.ru/files/Prevost_Manon_Lescaut.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Prevost_Manon_Lescaut.pdf",
+  "producer": "Microsoft\u00ae Word Starter 2010 / Microsoft\u00ae Word Starter 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00135.warc.gz",
+   512189272,
+   192722
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00329.warc.gz",
+   480712972,
+   1065038
+  ],
+  "sha256": "6e50e86aec0887f9b03b94a38eaf39991c531dfefd6ae2a79e99f6f46b817892",
+  "referenceSha256": "da167b3272888453afe107208109177b74ad4428d7c956055b76adaac6c1f095"
+ },
+ {
+  "file": "documents/fa1103a414ca.doc",
+  "reference": "documents/fa1103a414ca.pdf",
+  "source": "https://www.100bestbooks.ru/files/Pushkin_Poltava.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Pushkin_Poltava.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00604.warc.gz",
+   494832044,
+   40651
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00798.warc.gz",
+   496887662,
+   650043
+  ],
+  "sha256": "87ad8ea7db47e46e6f686eae7afc9db2f7e915b15376b1c03ec15e16f79ea1db",
+  "referenceSha256": "87b348aeeed85f8dcf2d987130c8d9dbccfb9cb9fbbab06d56cf9abfc885020c"
+ },
+ {
+  "file": "documents/f87edeec36ec.doc",
+  "reference": "documents/f87edeec36ec.pdf",
+  "source": "https://www.100bestbooks.ru/files/Shakespeare_Hamlet.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Shakespeare_Hamlet.pdf",
+  "producer": "Microsoft\u00ae Word Starter 2010 / Microsoft\u00ae Word Starter 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00840.warc.gz",
+   548977158,
+   134790
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00034.warc.gz",
+   540823437,
+   941049
+  ],
+  "sha256": "f6d94188a5fe028987b0c44da319b33da13cdd3f0ad94e622ec532fcc12c4eab",
+  "referenceSha256": "8f5388ef387f0e1bd8587a5cb4eb9c5afa5ed1964e7374569732e28c1b588d5c"
+ },
+ {
+  "file": "documents/a3115218c958.doc",
+  "reference": "documents/a3115218c958.pdf",
+  "source": "https://www.100bestbooks.ru/files/Wilde_Kentervilskoe_prividenie.doc",
+  "referenceSource": "https://www.100bestbooks.ru/files/Wilde_Kentervilskoe_prividenie.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00228.warc.gz",
+   491003036,
+   50337
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492998095.91/warc/CC-MAIN-20260916023440-20260916053440-00422.warc.gz",
+   520316440,
+   488809
+  ],
+  "sha256": "e685b4587368ae086a6f7fb794ccf0e6973035097a6e1db6e1c0665785237112",
+  "referenceSha256": "75742f1ee2fb7556c7f4754a24a70f3acf303c59ae50ed1ecf34250ad6667e60"
+ },
+ {
+  "file": "documents/5573171d43f1.doc",
+  "reference": "documents/5573171d43f1.pdf",
+  "source": "https://www.100bestpoems.ru/files/Shakespeare_Hamlet.doc",
+  "referenceSource": "https://www.100bestpoems.ru/files/Shakespeare_Hamlet.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700295.87/warc/CC-MAIN-20260913103209-20260913133209-00762.warc.gz",
+   516019240,
+   117963
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699667.17/warc/CC-MAIN-20260906110016-20260906140016-00956.warc.gz",
+   523072991,
+   841204
+  ],
+  "sha256": "bfa4e423c40e6cebd7721eb3c12ac5c1955369d482e4bd3f8caf60647a10b7b3",
+  "referenceSha256": "7254d0d05c9528f69f7c50ac90107236a064181c65cea37a822e34db7857ca12"
+ },
+ {
+  "file": "documents/de128c35b9fa.doc",
+  "reference": "documents/de128c35b9fa.pdf",
+  "source": "https://www.100bestpoems.ru/files/Wilde_Ballada_Redingskoj_tyurmy.doc",
+  "referenceSource": "https://www.100bestpoems.ru/files/Wilde_Ballada_Redingskoj_tyurmy.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700716.58/warc/CC-MAIN-20260914044959-20260914074959-00339.warc.gz",
+   511074105,
+   23942
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700716.58/warc/CC-MAIN-20260914044959-20260914074959-00533.warc.gz",
+   538331431,
+   463822
+  ],
+  "sha256": "673666a43c9384ccca148ce8f3f7a062249825820912591ffe13e09bcefcea69",
+  "referenceSha256": "a94de977258d65b469a1c474c0851d1d6ea7ded41ae233117e55e9a5bbf33905"
+ },
+ {
+  "file": "documents/dc6e3972cf55.doc",
+  "reference": "documents/dc6e3972cf55.pdf",
+  "source": "https://www.opmega.com/wp-content/uploads/2021/06/Valor-oficio_Bases-concurso.doc",
+  "referenceSource": "https://www.opmega.com/wp-content/uploads/2022/06/Valor-oficio_Bases-concurso.pdf",
+  "producer": "Microsoft\u00ae Word para Microsoft 365 / Microsoft\u00ae Word para Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699585.9/warc/CC-MAIN-20260905103615-20260905133615-00306.warc.gz",
+   842777148,
+   44493
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699585.9/warc/CC-MAIN-20260905103615-20260905133615-00107.warc.gz",
+   809706504,
+   139010
+  ],
+  "sha256": "1a3694bf70c9ebc8f38e3c2ecd6d09ab358b7d7f2324ccd9a61ca2e91d603b31",
+  "referenceSha256": "395c0ea032bd92ea75344dd9ee7763d5c2284a22bbf1e70baf8ac600f0fe89b0"
+ },
+ {
+  "file": "documents/d0d517bc4a7e.docx",
+  "reference": "documents/d0d517bc4a7e.pdf",
+  "source": "https://calc.matemat.it/resources/Limiti/LimA9/LimA9Ver.docx",
+  "referenceSource": "https://calc.matemat.it/resources/Limiti/LimA9/LimA9Ver.pdf",
+  "producer": "Microsoft Word",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700606.74/warc/CC-MAIN-20260914014632-20260914044632-00997.warc.gz",
+   114764805,
+   267436
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700606.74/warc/CC-MAIN-20260914014632-20260914044632-00997.warc.gz",
+   115033036,
+   91446
+  ],
+  "sha256": "6d5e7a7e8ee0d635fbb5a7e7b4f110e96e2928e1c80b38ba5d9876121642fbc6",
+  "referenceSha256": "a9d1107c3ad2c8d42f3db3cfa2e4aef89a473b9aa4dfba80b14b37c9122ad95c"
+ },
+ {
+  "file": "documents/207feadf5f89.docx",
+  "reference": "documents/207feadf5f89.pdf",
+  "source": "https://funz.matemat.it/resources/Stat/StatA2/StatA2Ver.docx",
+  "referenceSource": "https://funz.matemat.it/resources/Stat/StatA2/StatA2Ver.pdf",
+  "producer": "Microsoft Word",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700606.74/warc/CC-MAIN-20260914014632-20260914044632-00487.warc.gz",
+   226033541,
+   158548
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700606.74/warc/CC-MAIN-20260914014632-20260914044632-00339.warc.gz",
+   191996758,
+   218100
+  ],
+  "sha256": "42259d0cd88de736d10280bc551282926c9512457869eea943d6dd100338a072",
+  "referenceSha256": "bcd99eb6b8b0e7046d546ea1330ffced1c97e68e70657f65dc638136ff14a3ff"
+ },
+ {
+  "file": "documents/be3fd0cc2c2f.doc",
+  "reference": "documents/be3fd0cc2c2f.pdf",
+  "source": "https://www.ordineavvocatitrento.it/wp-content/uploads/2024/07/Modulo-accettazione-procedura-obbligatoria-e-volontaria-GDPR-.doc",
+  "referenceSource": "https://www.ordineavvocatitrento.it/wp-content/uploads/2024/07/Modulo-accettazione-procedura-obbligatoria-e-volontaria-GDPR-.pdf",
+  "producer": "Microsoft\u00ae Word 2019 / Microsoft\u00ae Word 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00687.warc.gz",
+   788236872,
+   38810
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00881.warc.gz",
+   753861984,
+   469427
+  ],
+  "sha256": "d5b360167194fb5c58bb84586b4c5e877e08d1965a51c54e69f0776da8f7c1fb",
+  "referenceSha256": "e23fc7a2826f928f90b06cfde8b9a151bab63655288e30e3806911f7dfa83f2c"
+ },
+ {
+  "file": "documents/a83722ff8f27.doc",
+  "reference": "documents/a83722ff8f27.pdf",
+  "source": "https://www.ordineavvocatitrento.it/wp-content/uploads/2024/06/Modulo-dati-fatturazione-GDPR-1-6.doc",
+  "referenceSource": "https://www.ordineavvocatitrento.it/wp-content/uploads/2024/06/Modulo-dati-fatturazione-GDPR-1-6.pdf",
+  "producer": "Microsoft\u00ae Word 2019 / Microsoft\u00ae Word 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00103.warc.gz",
+   749623559,
+   30696
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00297.warc.gz",
+   752693202,
+   144015
+  ],
+  "sha256": "3519fa16a5780ce5b1faf9b20672874e8e71e4ab9ccb512939e72cf6432cd1d3",
+  "referenceSha256": "879bd28408250b36276b57b080a3b62a64ea473580f7cbed1124229ca0bbb949"
+ },
+ {
+  "file": "documents/31e3a64b67d8.doc",
+  "reference": "documents/31e3a64b67d8.pdf",
+  "source": "https://www.ordineavvocatitrento.it/wp-content/uploads/2019/05/Richiesta-rilascio-attestazione-COA-per-iscrizione-Albo-Cassazionisti-GDPR.doc",
+  "referenceSource": "https://www.ordineavvocatitrento.it/wp-content/uploads/2019/05/Richiesta-rilascio-attestazione-COA-per-iscrizione-Albo-Cassazionisti-GDPR.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00706.warc.gz",
+   768201228,
+   14439
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00900.warc.gz",
+   772912702,
+   163738
+  ],
+  "sha256": "2b9dc8c00a4ee55454b4b77bb9fd117ba6254beef96bbd3fbf4f252e5ed616a3",
+  "referenceSha256": "24f10850f250bd6151b6956951d704de2587829c1594078686b86a8ac38a3a1e"
+ },
+ {
+  "file": "documents/8fb1781e9a0f.doc",
+  "reference": "documents/8fb1781e9a0f.pdf",
+  "source": "https://www.ordineavvocatitrento.it/wp-content/uploads/2024/06/Scheda-valutazione-servizio-1.doc",
+  "referenceSource": "https://www.ordineavvocatitrento.it/wp-content/uploads/2024/06/Scheda-valutazione-servizio-1.pdf",
+  "producer": "Microsoft\u00ae Word 2019 / Microsoft\u00ae Word 2019",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00115.warc.gz",
+   760234170,
+   27943
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700105.72/warc/CC-MAIN-20260912040413-20260912070413-00309.warc.gz",
+   795070995,
+   74936
+  ],
+  "sha256": "8ad0caac6c5c7262c5507ed7b5e3f992ff84af7aae7ad284fe6cac735206ea2c",
+  "referenceSha256": "acd7c9307d4c2b59806313933c6eb4b052bce69151962f8fb5ff7eaa4e8b2f1e"
+ },
+ {
+  "file": "documents/45febac23901.docx",
+  "reference": "documents/45febac23901.pdf",
+  "source": "https://www.marche.camcom.it/fai-crescere-la-tua-impresa/bandi-e-contributi/avviso-pubblico-per-la-selezione-di-progetti-e-iniziative-di-soggetti-terzi-portatori-di-interessi-collettivi-delle-imprese-della-regione-marche-da-realizzare-con-il-contributo-camerale-anno-2026/modulistica-per-la-presentazione-della-domanda-di-contributo/mod-a2-dichiarazione-sostitutiva-2026.docx",
+  "referenceSource": "https://www.marche.camcom.it/fai-crescere-la-tua-impresa/bandi-e-contributi/avviso-pubblico-per-la-selezione-di-progetti-e-iniziative-di-soggetti-terzi-portatori-di-interessi-collettivi-delle-imprese-della-regione-marche-da-realizzare-con-il-contributo-camerale-anno-2026/modulistica-per-la-presentazione-della-domanda-di-contributo/mod-a2-dichiarazione-sostitutiva-2026.pdf",
+  "producer": "Microsoft Word(16.0) / www.adlibsoftware.com: CTP (6.5.1.103725) OS (Windows 2012,2,0,64)",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700024.43/warc/CC-MAIN-20260911155054-20260911185054-00050.warc.gz",
+   687605957,
+   24709
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699834.1/warc/CC-MAIN-20260909025510-20260909055510-00792.warc.gz",
+   717067083,
+   122276
+  ],
+  "sha256": "1177dd2117721820bd1978c561f3de8a0cdd405ea2c3bc6eb09e24151bf51a5c",
+  "referenceSha256": "993aed9a151d5f82a244d75496624aae1e13b945746ee0574ef5992362ff6460"
+ },
+ {
+  "file": "documents/da1222c22e99.doc",
+  "reference": "documents/da1222c22e99.pdf",
+  "source": "https://ws.moe.edu.tw/001/Upload/1/relfile/6243/2507/0e877ba7-93e7-48cd-a458-4455cf55c235.doc",
+  "referenceSource": "https://ws.moe.edu.tw/001/Upload/1/relfile/6243/2507/0e877ba7-93e7-48cd-a458-4455cf55c235.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699627.53/warc/CC-MAIN-20260906015231-20260906045231-00496.warc.gz",
+   505325685,
+   354238
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699627.53/warc/CC-MAIN-20260906015231-20260906045231-00690.warc.gz",
+   549154156,
+   104756
+  ],
+  "sha256": "cde1dbbcc51c50f40151bee23421a4e9ada722e90a8c7fb88d9e77359a6cd3cc",
+  "referenceSha256": "5524243a0ed0ac00bf8ce3a5b4973dfc1ec75ea462e1c0b0dfa6e29e61d4b029"
+ },
+ {
+  "file": "documents/5800acc8c49a.doc",
+  "reference": "documents/5800acc8c49a.pdf",
+  "source": "https://www.pecorinoromano.com/application/files/5717/7089/4910/Allegato_A_Domanda_PAS.doc",
+  "referenceSource": "https://www.pecorinoromano.com/application/files/2517/7089/4911/Allegato_A_Domanda_PAS.pdf",
+  "producer": "Microsoft\u00ae Word per Microsoft 365 / Microsoft\u00ae Word per Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00817.warc.gz",
+   733998399,
+   18158
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700252.3/warc/CC-MAIN-20260913042602-20260913072602-00681.warc.gz",
+   778285575,
+   140015
+  ],
+  "sha256": "c3e9372705d9283efe63c5add96166ea3644a14c6974f4529086f5e74d49c932",
+  "referenceSha256": "bda6e72d8ed181b776df1f62e50b103f0598000afcb542649cbdcc2f32ebfb80"
+ },
+ {
+  "file": "documents/df1b67d14154.doc",
+  "reference": "documents/df1b67d14154.pdf",
+  "source": "http://tpd.szczecin.pl/application/files/7116/6617/6786/rozeznanie_rynku_prawnik.doc",
+  "referenceSource": "http://tpd.szczecin.pl/application/files/4716/6617/6786/rozeznanie_rynku_prawnik.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699678.31/warc/CC-MAIN-20260906140247-20260906170247-00453.warc.gz",
+   32734573,
+   147761
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699678.31/warc/CC-MAIN-20260906140247-20260906170247-00398.warc.gz",
+   21216896,
+   309656
+  ],
+  "sha256": "9a160f3d9085813fbbcc6920a8c27c592a8d23393d2c4d00e490822f87a4b08f",
+  "referenceSha256": "bc099aad1a8a70e79643e6d4d09914cf08c30edc42ef48b2601507eec036a699"
+ },
+ {
+  "file": "documents/1ba7198c0b7e.docx",
+  "reference": "documents/1ba7198c0b7e.pdf",
+  "source": "https://umbielskpodlaski.pl/wp-content/uploads/2021/05/2021harmonogram-zabudowy-jednorodzinnej.docx",
+  "referenceSource": "https://umbielskpodlaski.pl/wp-content/uploads/2021/05/2021harmonogram-zabudowy-jednorodzinnej.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492995497.76/warc/CC-MAIN-20260915142231-20260915172231-00451.warc.gz",
+   536646625,
+   337205
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699925.45/warc/CC-MAIN-20260910092715-20260910122715-00431.warc.gz",
+   463354122,
+   630121
+  ],
+  "sha256": "9d2983d5fbbf5440d429cadba45fcc6627eeaceb5b078cf18dfe3df743eda9fe",
+  "referenceSha256": "718318bef6f146b7ebf64b9a1a977dc2abfa7209698784412123cf76477140d1"
+ },
+ {
+  "file": "documents/65332b614d7c.docx",
+  "reference": "documents/65332b614d7c.pdf",
+  "source": "https://wodociagipinczowskie.net/wp-content/uploads/2024/01/Wniosek-o-okreslenie-warunkow-technicznych.docx",
+  "referenceSource": "https://wodociagipinczowskie.net/wp-content/uploads/2024/01/Wniosek-o-okreslenie-warunkow-technicznych.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00160.warc.gz",
+   470004941,
+   28326
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00114.warc.gz",
+   497500958,
+   697583
+  ],
+  "sha256": "d14a0321db7324c7dc824b545ddd582533b2636eaea81e3e68697652be6a49fe",
+  "referenceSha256": "3c04ac71b5e5395dbbcd632e341a99f9c18820705fcf08d82a74ac54458d2713"
+ },
+ {
+  "file": "documents/1af980596993.docx",
+  "reference": "documents/1af980596993.pdf",
+  "source": "https://wodociagipinczowskie.net/wp-content/uploads/2025/09/Wniosek-o-zapewnienie-dostawy-wody-i-odbior-sciekow.docx",
+  "referenceSource": "https://wodociagipinczowskie.net/wp-content/uploads/2025/09/Wniosek-o-zapewnienie-dostawy-wody-i-odbior-sciekow.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00413.warc.gz",
+   509050949,
+   13510
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00229.warc.gz",
+   506095779,
+   146602
+  ],
+  "sha256": "c6a4b727da1e0a992140a03d1bea7e110e59f54056af3314fae715fb0aac0ed4",
+  "referenceSha256": "1e6802a8437aa96badfe65640ac0b95cb819813768e0b92b11baf6d176c067a4"
+ },
+ {
+  "file": "documents/1546c932cf53.docx",
+  "reference": "documents/1546c932cf53.pdf",
+  "source": "https://wodociagipinczowskie.net/wp-content/uploads/2024/01/ZGLOSZENIE-Rozpoczecia-robor-do-WP.odt.docx",
+  "referenceSource": "https://wodociagipinczowskie.net/wp-content/uploads/2024/01/ZGLOSZENIE-Rozpoczecia-robor-do-WP.odt.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00352.warc.gz",
+   516041511,
+   15802
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00650.warc.gz",
+   477502986,
+   489556
+  ],
+  "sha256": "0cd9bcef028a6e3556a746fa24fdc0788c259e3fb6bebf7d98f5dede1b23f185",
+  "referenceSha256": "1fb976a6f2a0876ebe1bb345b2d1a62eff1cd4ce2fb7dea9d36096bf45db66e3"
+ },
+ {
+  "file": "documents/6381edced41b.docx",
+  "reference": "documents/6381edced41b.pdf",
+  "source": "https://wodociagipinczowskie.net/wp-content/uploads/2022/11/zlecenie_wykonania_naprawywzor.docx",
+  "referenceSource": "https://wodociagipinczowskie.net/wp-content/uploads/2022/11/zlecenie_wykonania_naprawy_wzor_.pdf",
+  "producer": "Microsoft\u00ae Word 2016 / Microsoft\u00ae Word 2016",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00819.warc.gz",
+   541952011,
+   14635
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492999466.98/warc/CC-MAIN-20260916144802-20260916174802-00435.warc.gz",
+   515848867,
+   129823
+  ],
+  "sha256": "3f26b05690d9c7dc63f2c5930feaa2fb419c3282726d3b977e58840be66b39b6",
+  "referenceSha256": "b4c5b2003e4a93257704cc5f50ce8912def039f742a92120ce0cecf85544a869"
+ },
+ {
+  "file": "documents/dc9b3c1c2892.doc",
+  "reference": "documents/dc9b3c1c2892.pdf",
+  "source": "http://www.ctwions.ujd.edu.pl/media/domeny/143/download/UMOWA%20O%20WSPO%CC%81LNOS%CC%81CI%20PRAW%20DO%20PATENTU_wz%C3%B3rP2.doc",
+  "referenceSource": "http://www.ctwions.ujd.edu.pl/media/domeny/143/download/UMOWA%20O%20WSPO%CC%81LNOS%CC%81CI%20PRAW%20DO%20PATENTU_wz%C3%B3rP2.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699637.25/warc/CC-MAIN-20260906045500-20260906075500-00576.warc.gz",
+   23487680,
+   12391
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699637.25/warc/CC-MAIN-20260906045500-20260906075500-00770.warc.gz",
+   34454210,
+   258282
+  ],
+  "sha256": "7251eb1fc8429584435036504291d7eaa79b2df4bf9547741d6dd37496f46b5e",
+  "referenceSha256": "b57711fec3ec43886ac948002e0090febe0fcf7bdb1d9695d76d19fa3d38bad3"
+ },
+ {
+  "file": "documents/23cc4a856938.doc",
+  "reference": "documents/23cc4a856938.pdf",
+  "source": "http://www.ctwions.ujd.edu.pl/media/domeny/143/download/UMOWA%20O%20WSPO%CC%81LNOS%CC%81CI%20PRAW%20DO%20PATENTU_wz%C3%B3rP3.doc",
+  "referenceSource": "http://www.ctwions.ujd.edu.pl/media/domeny/143/download/UMOWA%20O%20WSPO%CC%81LNOS%CC%81CI%20PRAW%20DO%20PATENTU_wz%C3%B3rP3.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699637.25/warc/CC-MAIN-20260906045500-20260906075500-00097.warc.gz",
+   54460954,
+   12390
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699637.25/warc/CC-MAIN-20260906045500-20260906075500-00291.warc.gz",
+   19883624,
+   258284
+  ],
+  "sha256": "7251eb1fc8429584435036504291d7eaa79b2df4bf9547741d6dd37496f46b5e",
+  "referenceSha256": "b57711fec3ec43886ac948002e0090febe0fcf7bdb1d9695d76d19fa3d38bad3"
+ },
+ {
+  "file": "documents/681e55ebc243.docx",
+  "reference": "documents/681e55ebc243.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2022/10/E-Transit-GLS.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2022/10/E-Transit-GLS.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00530.warc.gz",
+   193686701,
+   223354
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00544.warc.gz",
+   186532441,
+   176487
+  ],
+  "sha256": "69f853726fd3ebc4d59390a184a8a0feef62d7036dce16f981a5063280508bef",
+  "referenceSha256": "aec4fe238ff8122dff8e3683edef56ad2b96c5c62b8974fa3730207d79a23392"
+ },
+ {
+  "file": "documents/8d295801e413.docx",
+  "reference": "documents/8d295801e413.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2024/09/Ewolucja-Mach-E.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2024/09/Ewolucja-Mach-E.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00732.warc.gz",
+   198697544,
+   192881
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00102.warc.gz",
+   202773892,
+   188024
+  ],
+  "sha256": "8ae9cf143d75747d116055a3ac14e09dfa31cf9a8aade7ea124d6238b7c58ca3",
+  "referenceSha256": "080bc603524c87605e66a92097a2fbd6680442a157bab343b7449d95e348c598"
+ },
+ {
+  "file": "documents/efdda897b83b.docx",
+  "reference": "documents/efdda897b83b.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2024/03/Ford-Bronco-ukryte-ciekawostki.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2024/03/Ford-Bronco-ukryte-ciekawostki.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00539.warc.gz",
+   199967442,
+   226639
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00367.warc.gz",
+   196320917,
+   197579
+  ],
+  "sha256": "9fd5f56b619859c2a57d4ae38bd79f47aaa83f693c34cbd3fa42194cb7443d6e",
+  "referenceSha256": "50fec5a660949205699ae433f9c1b3802ee7ce735576f936ecc46d41abc4276b"
+ },
+ {
+  "file": "documents/ae1b14dbd994.docx",
+  "reference": "documents/ae1b14dbd994.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2026/02/Ford-E-Transit-Courier.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2026/02/Ford-E-Transit-Courier.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00292.warc.gz",
+   190766082,
+   198196
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00838.warc.gz",
+   190937043,
+   205446
+  ],
+  "sha256": "a8e018dca81dd360d63f91b58cce9cf0113bb15c98f49c22e8753e4886342da4",
+  "referenceSha256": "1de868dea9d38d4da85bfa2b949d4373f9af14348ec577de56badbb6caca893d"
+ },
+ {
+  "file": "documents/fb69e1ecc94a.docx",
+  "reference": "documents/fb69e1ecc94a.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2024/09/Ford_finansowanie-dla-firm.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2024/09/Ford_finansowanie-dla-firm.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00039.warc.gz",
+   200719675,
+   225570
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00579.warc.gz",
+   199112638,
+   166408
+  ],
+  "sha256": "6633f2c00e0bf222f8a81216af4439f6e9f8a7d0534ad4e377430aaa4cfca6d1",
+  "referenceSha256": "63944bec8417d9991ef6374a0f11224f13fd5aa3f5762fa36e2d57db44e3608d"
+ },
+ {
+  "file": "documents/cc6771ca58c6.docx",
+  "reference": "documents/cc6771ca58c6.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2024/04/Ford-Mustang-60-lat.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2024/04/Ford-Mustang-60-lat.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00545.warc.gz",
+   205992436,
+   189311
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00937.warc.gz",
+   205418052,
+   169588
+  ],
+  "sha256": "8f2d25f4027fec9d875cad58c0917560108485e844544b0a992138ab77d21a44",
+  "referenceSha256": "a577d159ee02d247594a46c906aedf1c95dc193866ee5573a9326ef42f275523"
+ },
+ {
+  "file": "documents/4b324b699b05.docx",
+  "reference": "documents/4b324b699b05.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2025/01/Ford-Polska_podsumowanie-2024-roku-i-plany-na-przyszlosc.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2025/01/Ford-Polska_podsumowanie-2024-roku-i-plany-na-przyszlosc.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00111.warc.gz",
+   195565830,
+   208558
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00475.warc.gz",
+   204008714,
+   229386
+  ],
+  "sha256": "71228df9a73c781090dab6eec7e643f2f6709f9d4a03cad584f587e2aeba18b8",
+  "referenceSha256": "20e002c4a45c1bda773c33d9dc7451671c21976da246fc76301db5bfd3f19671"
+ },
+ {
+  "file": "documents/beb5ca1e1f91.docx",
+  "reference": "documents/beb5ca1e1f91.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2024/11/Ford-Transit-z-winda.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2024/11/Ford-Transit-z-winda.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00227.warc.gz",
+   203948232,
+   225007
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00839.warc.gz",
+   173797754,
+   168394
+  ],
+  "sha256": "94f0ccb9528025ede5dd554d85ebad812bd3dedf4a80c04dfa338288893674d9",
+  "referenceSha256": "a8cb249df937b9d2e794c3b56d21b251bc5abd0ece00d62baf56c27bff5c6779"
+ },
+ {
+  "file": "documents/e796896c0b55.docx",
+  "reference": "documents/e796896c0b55.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2021/04/Ford-ulepsza-systemy-skomunikowania-pojazdow-dostawczych.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2021/04/Ford-ulepsza-systemy-skomunikowania-pojazdow-dostawczych.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00743.warc.gz",
+   198653967,
+   161060
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00843.warc.gz",
+   201216506,
+   344243
+  ],
+  "sha256": "58ba927d3b6b51f20f2af29d29ae6b1caa641fe0c863e6178032548817efc695",
+  "referenceSha256": "37018307d66cb745df5981981de670e57234d6058f555fd8156e7351cfcc6d71"
+ },
+ {
+  "file": "documents/69ac67362306.docx",
+  "reference": "documents/69ac67362306.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2022/02/Ford-zaprezentuje-model-GT-Alan-Mann-Heritage-Edition_popr.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2022/02/Ford-zaprezentuje-model-GT-Alan-Mann-Heritage-Edition_popr.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00169.warc.gz",
+   174428790,
+   225961
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00297.warc.gz",
+   201806020,
+   336758
+  ],
+  "sha256": "29ffe513f8061e47540971e9a06f125c134900c4a71f61331cbf4c6711d27c57",
+  "referenceSha256": "f21978bb3c90006470d886402d160c7f1ff67d560d1bb69d0af7bd17b492bfa5"
+ },
+ {
+  "file": "documents/a073a6994aba.docx",
+  "reference": "documents/a073a6994aba.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2023/06/FP_Dakar_Euro_FINAL_pl-PL.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2023/06/FP_Dakar_Euro_FINAL_pl-PL.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00049.warc.gz",
+   196434645,
+   163394
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00065.warc.gz",
+   181897249,
+   219230
+  ],
+  "sha256": "cf5a8b5e7dd6308220f7dc1d4fea0f57194f36aecfc6dc25716b4e8a6a2c7fb9",
+  "referenceSha256": "f89bb71d474f6c307b4abcf33e27bbc7dfbea13196bab43b655dc1b42ac43df0"
+ },
+ {
+  "file": "documents/8acf7d65bd46.docx",
+  "reference": "documents/8acf7d65bd46.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2022/07/Mach-E-baby_PL.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2022/07/Mach-E-baby_PL.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00165.warc.gz",
+   211316419,
+   1440063
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00653.warc.gz",
+   175689063,
+   280358
+  ],
+  "sha256": "5df47eed94cad90aecd93484dd80cb6add04e7e715c3212fd8bd6d62860a73d8",
+  "referenceSha256": "4de55621b1558c6f59b4c6d15a230754fba2fc97ee4eec4457f9ab9fa7ccbbfa"
+ },
+ {
+  "file": "documents/dc2eb4dec2ca.docx",
+  "reference": "documents/dc2eb4dec2ca.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2024/11/Maja-EcoExplorer-odc.-1-ZIEMIA.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2024/11/Maja-EcoExplorer-odc.-1-ZIEMIA.pdf",
+  "producer": "Microsoft\u00ae Word dla Microsoft 365 / Microsoft\u00ae Word dla Microsoft 365",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00220.warc.gz",
+   213497300,
+   225368
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00598.warc.gz",
+   202322586,
+   177554
+  ],
+  "sha256": "91c715e0d491e137d625fc02f599debde27f73f01547c2312142b3c87d87565a",
+  "referenceSha256": "748350950c2017a4be1503d051d3048489593f9494ded4fb809df82fda1f8c5c"
+ },
+ {
+  "file": "documents/dc72590d4924.docx",
+  "reference": "documents/dc72590d4924.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2021/09/Mustang-Mach-E-kolejne-rekordy-Guinessa-.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2021/09/Mustang-Mach-E-kolejne-rekordy-Guinessa-.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00441.warc.gz",
+   192447530,
+   222027
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00601.warc.gz",
+   198701875,
+   331999
+  ],
+  "sha256": "61d930db8ffcf0df96e540c023623b527d50f8740ec4ad131cb2ba8a0b4149e3",
+  "referenceSha256": "e85e8effc2af929df54ee8ae50e805281f6a4c1b9673bedd304769d59034d372"
+ },
+ {
+  "file": "documents/6bf3e2fa6c55.docx",
+  "reference": "documents/6bf3e2fa6c55.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2021/03/Wspolpraca-Forda-i-HP.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2021/03/Wspolpraca-Forda-i-HP.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00565.warc.gz",
+   208800857,
+   221378
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00357.warc.gz",
+   211537352,
+   332271
+  ],
+  "sha256": "0fa8f2bfe73292ce2a77d0d0034b758b78c059a16252556f651f134cf7c98b4f",
+  "referenceSha256": "5513e03ae81098e343255cf2c9652be3ce22059ca865193280b432ea5a4b0d40"
+ },
+ {
+  "file": "documents/7120adc2945a.docx",
+  "reference": "documents/7120adc2945a.pdf",
+  "source": "https://fordmedia.pl/wp-content/uploads/2021/04/Zmiany-w-zarzadzie-Ford-Polska-Piotr-Pawlak-obejmuje-stanowisko-Prezesa-i-Dyrektora-Zarzadzajacego.docx",
+  "referenceSource": "https://fordmedia.pl/wp-content/uploads/2021/04/Zmiany-w-zarzadzie-Ford-Polska-Piotr-Pawlak-obejmuje-stanowisko-Prezesa-i-Dyrektora-Zarzadzajacego.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00215.warc.gz",
+   210015012,
+   156036
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.39/warc/CC-MAIN-20260910153055-20260910183055-00179.warc.gz",
+   196849089,
+   326130
+  ],
+  "sha256": "91e036e9d901847c62f5357ad9dec034a667bab9b9a69914c6ea59e289dc9e16",
+  "referenceSha256": "3341121079853f143d1bbc72d3032f6413e4849e0d56fbfe31146784007a3e91"
+ },
+ {
+  "file": "documents/6c8aeb0c4e47.docx",
+  "reference": "documents/6c8aeb0c4e47.pdf",
+  "source": "https://www.wne.uw.edu.pl/application/files/8717/7365/6649/Spinaker_2025_-_declaration.docx",
+  "referenceSource": "https://www.wne.uw.edu.pl/application/files/2417/7365/6655/Spinaker_2025_-_declaration.pdf",
+  "producer": "Microsoft\u00ae Word 2021 / Microsoft\u00ae Word 2021",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492992222.68/warc/CC-MAIN-20260915021126-20260915051126-00433.warc.gz",
+   855179465,
+   759941
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492992222.68/warc/CC-MAIN-20260915021126-20260915051126-00199.warc.gz",
+   886991251,
+   220820
+  ],
+  "sha256": "4584fcc6dffd17fb7fd6e07e06a085293bcbb7041c6dccbce8fac6c770ac3ff0",
+  "referenceSha256": "578def511c3fc25327c5618e8748f80bf0e51350fb258c81fef37f6eeef3b784"
+ },
+ {
+  "file": "documents/0ca1fb0d188b.docx",
+  "reference": "documents/0ca1fb0d188b.pdf",
+  "source": "https://www.uetikonamsee.ch/_docn/3985547/Publikation_Ergebnis_Webseite.docx",
+  "referenceSource": "https://www.uetikonamsee.ch/_docn/5000002/Publikation_Ergebnis_Webseite.pdf",
+  "producer": "Microsoft\u00ae Word LTSC / Microsoft\u00ae Word LTSC",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699937.26/warc/CC-MAIN-20260910122853-20260910152853-00488.warc.gz",
+   846961180,
+   47227
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492699756.80/warc/CC-MAIN-20260907202925-20260907232925-00900.warc.gz",
+   871845376,
+   80202
+  ],
+  "sha256": "615a27b9afa0d4bbb796ee5d1138c1f021f12e7bae61794f96347f7ab260db29",
+  "referenceSha256": "ea5778ef04b8b74a748b39be5c24dd02790cfe1333853124c527b2b5fca8ff9d"
+ },
+ {
+  "file": "documents/af6b9fe14aa8.docx",
+  "reference": "documents/af6b9fe14aa8.pdf",
+  "source": "https://rebeccakunert.com/wp-content/uploads/2018/11/Vanita-Kunert-resume-crisis-support.docx",
+  "referenceSource": "https://rebeccakunert.com/wp-content/uploads/2018/11/Vanita-Kunert-resume-crisis-support.pdf",
+  "producer": "Microsoft Word / Mac OS X 10.6.8 Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700547.52/warc/CC-MAIN-20260913224403-20260914014403-00983.warc.gz",
+   413848906,
+   510564
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700547.52/warc/CC-MAIN-20260913224403-20260914014403-00355.warc.gz",
+   440995132,
+   100994
+  ],
+  "sha256": "8c32d0ff4fa7646aa44d8c62258ac6ceebc71e14e0d64adc7580cc3de7dc1c1c",
+  "referenceSha256": "fb16f33cd0bd3d1194a86bfb152ef57528da1596f2c17205255dc528a4c39bca"
+ },
+ {
+  "file": "documents/bf8cbc575a34.doc",
+  "reference": "documents/bf8cbc575a34.pdf",
+  "source": "https://cpdp.bg/wp-content/uploads/2023/08/ID_01039-2018-0002_Sistema_obuchenie_Documentacia.doc",
+  "referenceSource": "https://cpdp.bg/wp-content/uploads/2023/08/ID_01039-2018-0002_Sistema_obuchenie_Documentacia.pdf",
+  "producer": "Microsoft\u00ae Word 2013 / Microsoft\u00ae Word 2013",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00471.warc.gz",
+   124358033,
+   138658
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00665.warc.gz",
+   123881462,
+   1092846
+  ],
+  "sha256": "f0172f3e4b0ed9b3de32386914f9118c8f09f9e8da003e5500b1c3ef92dc97ae",
+  "referenceSha256": "8aa41e7d033516cbc5ee378d3ce13f8f00a73ff3b094f808b3285e8dc58c7944"
+ },
+ {
+  "file": "documents/8dc7fbc873b9.docx",
+  "reference": "documents/8dc7fbc873b9.pdf",
+  "source": "https://cpdp.bg/wp-content/uploads/2023/08/Prilojenia_Dokumentacia_obuchenia_KZLD_OPAK_2015.docx",
+  "referenceSource": "https://cpdp.bg/wp-content/uploads/2023/08/Prilojenia_Dokumentacia_obuchenia_KZLD_OPAK_2015.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00508.warc.gz",
+   123592202,
+   335612
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00222.warc.gz",
+   137650663,
+   1399115
+  ],
+  "sha256": "f1443e94ef615738191034a3bf6e141a127dd06402ae686e90917184dc74abde",
+  "referenceSha256": "1db63a6c736e61fd95afcbeb4a37b9f6cfb559b937a5370ed2d677543666d83e"
+ },
+ {
+  "file": "documents/bd8d823c1342.docx",
+  "reference": "documents/bd8d823c1342.pdf",
+  "source": "https://cpdp.bg/wp-content/uploads/2023/08/Razyasnenie_01039_2015_001-11_03_2015.docx",
+  "referenceSource": "https://cpdp.bg/wp-content/uploads/2023/08/Razyasnenie_01039_2015_001-11_03_2015.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00141.warc.gz",
+   148139065,
+   102201
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00237.warc.gz",
+   153400055,
+   461377
+  ],
+  "sha256": "86dedcc640717ed59d4bf20ed97c5c1172c4826e31488144317a8d1b9c1b3104",
+  "referenceSha256": "28882c7f3a29fa11048b2847c67ad59bf181376c7096b993783637f6bbd547ae"
+ },
+ {
+  "file": "documents/52cf79dfa3ec.docx",
+  "reference": "documents/52cf79dfa3ec.pdf",
+  "source": "https://cpdp.bg/wp-content/uploads/2023/08/Razyasnenie_01039_2015_001-12_03_2015.docx",
+  "referenceSource": "https://cpdp.bg/wp-content/uploads/2023/08/Razyasnenie_01039_2015_001-12_03_2015.pdf",
+  "producer": "Microsoft\u00ae Word 2010 / Microsoft\u00ae Word 2010",
+  "crawl": "CC-MAIN-2026-39",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00516.warc.gz",
+   134430999,
+   103391
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-39/segments/1788492700114.29/warc/CC-MAIN-20260912070638-20260912100638-00230.warc.gz",
+   122341583,
+   306675
+  ],
+  "sha256": "12455034097e12b7e0b3b0df3b06d38c019c17ef0126fb9b6b95d884fbe7042e",
+  "referenceSha256": "58b814f9e4f74e16b18c2e1d7d033ebcec4db519f516aa69d5083d30d1ac78d1"
+ }
+]
