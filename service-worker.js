@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-277379bcb9ea64f27ff8';
+const CACHE_NAME='inkdos-v2.7.4-f7377c09e6df895018e5';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -152,7 +152,7 @@ const ASSET_HASHES={
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
   "./apps/presentations/io/ppt-p1-structure-writer.js": "911f2782745155b3e799bb0f536ae3148d130782157820c989623f2328aaf55e",
   "./apps/presentations/io/ppt-p2-package.js": "428f7df540e85293fdb7eeb14eab6d1a114f888f0ed73419887659840fa755aa",
-  "./apps/presentations/io/pptx-open-controller.js": "a23a7b379c319cabfad6fc36b3723ddcfe0117e0a96a59324549c446e6908cb0",
+  "./apps/presentations/io/pptx-open-controller.js": "1f9830facd54766922c49980fb8fe966e6343ebc932abb74f3c3025a2faaf673",
   "./apps/presentations/io/pptx-preservation-writer.js": "b6a7f9b7a90f693a1ec3de0b0893633b5fd090e43d5fa72122f1a47f46a56b90",
   "./apps/presentations/io/pptx-text-columns.js": "e034eccc7d269f900370aac3c36bf7ab560033a6954853a995b15f6e797d42a4",
   "./apps/presentations/io/pptx-writer.js": "1f34f988b490c02c24bb2d0c954606883c55abcaab84a2dff891b90e03222671",
@@ -179,8 +179,8 @@ const ASSET_HASHES={
   "./apps/presentations/ui/zoom-controls.js": "d3072d3f3dfd1de9b20cbdc68e29167203b2c116e1d24265111581e55396b4d9",
   "./apps/presentations/ui/zoom-menu.css": "f3c24225eff4bd90b5f9236d2639f50902ae6bfafed09370c26f7af6b4598f25",
   "./apps/presentations/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
-  "./apps/presentations/view/presentation-surface.css": "d6c6d89288b2e57f28a72a314e5978d8a0d0c73834116c961cabfbaa1780d9f6",
-  "./apps/presentations/view/slide-surface.js": "3787cc32f8649d4f1fbe7f9ee618ec1da025d4ee4f50367f43c8ea7852118d65",
+  "./apps/presentations/view/presentation-surface.css": "58574f8439ea203764f5cc10ff7baec575631b027b5d630939a894b920322a1b",
+  "./apps/presentations/view/slide-surface.js": "bea1660d507e37a7cc2400595e1436aeb3010d6ae97d07e1d17e985d206a5e34",
   "./apps/presentations/view/zoom-controller.js": "cc6b8fe19d95882b7da0d77ea456179b6eb5b3b60b72ecef57f314d6a8d21066",
   "./apps/spreadsheets/app.js": "728421ed05ee9953abcea099992023fe5046c54a42739fd9920e0159ccb208fa",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
