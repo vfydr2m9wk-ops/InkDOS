@@ -117,7 +117,9 @@ function paragraphBlock(p,numbering,styles,mediaUrls,listCounters,sourceIndex,so
   else final='<'+info.tag+(state.anchored?' class="has-docx-anchor"':'')+' style="'+info.style+'">'+html+'</'+info.tag+'>';
   return{type:info.tag,html:final,text:textOf(p),outlineLevel:info.level,softPageBreakBefore:state.softPageBreakBefore,hardPageBreakBefore:state.hardPageBreakBefore,keepNext:!!info.props.keepNext,styleId:info.styleId,sourceIndex,sourceSubIndex};
 }
-function tableBlock(tbl,sourceIndex,sourceSubIndex){let h='<table>';for(const tr of all(tbl,'tr')){h+='<tr>';for(const tc of Array.from(tr.children).filter(x=>x.localName==='tc')){const span=num(val(first(first(tc,'tcPr'),'gridSpan')),1);h+='<td'+(span>1?' colspan="'+span+'"':'')+'>'+all(tc,'p').map(p=>esc(textOf(p))).join('<br>')+'</td>'}h+='</tr>'}h+='</table>';return{type:'table',html:h,text:textOf(tbl),outlineLevel:0,softPageBreakBefore:false,hardPageBreakBefore:false,sourceIndex,sourceSubIndex}}
+// A cell paragraph's text with its line breaks and tabs (w:br/w:cr/w:tab), in document order.
+function cellLineHtml(p){let h='';for(const n of Array.from(p.getElementsByTagName('*'))){if(n.localName==='t')h+=esc(n.textContent||'');else if(n.localName==='tab'&&n.parentNode?.localName==='r')h+='\t';else if((n.localName==='br'&&val(n,'type')!=='page')||n.localName==='cr')h+='<br>'}return h}
+function tableBlock(tbl,sourceIndex,sourceSubIndex){let h='<table>';for(const tr of all(tbl,'tr')){h+='<tr>';for(const tc of Array.from(tr.children).filter(x=>x.localName==='tc')){const span=num(val(first(first(tc,'tcPr'),'gridSpan')),1);h+='<td'+(span>1?' colspan="'+span+'"':'')+'>'+all(tc,'p').map(cellLineHtml).join('<br>')+'</td>'}h+='</tr>'}h+='</table>';return{type:'table',html:h,text:textOf(tbl),outlineLevel:0,softPageBreakBefore:false,hardPageBreakBefore:false,sourceIndex,sourceSubIndex}}
 async function parse(buffer){
   let mediaUrls={};
   try{
