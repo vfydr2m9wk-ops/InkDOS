@@ -116,11 +116,21 @@ def pptx_slide_images(pptx: Path) -> list[int]:
         m = re.search(r'Type="[^"]*/' + kind + r'"[^>]*Target="([^"]+)"', r) or re.search(r'Target="([^"]+)"[^>]*Type="[^"]*/' + kind + '"', r)
         return posixpath.normpath(posixpath.join(d, m.group(1))) if m else None
 
-    def drawn(x, template):
+    def media_hash(part, rid):
+        d, b = posixpath.split(part)
+        r = xml(f'{d}/_rels/{b}.rels')
+        m = re.search(r'Id="' + re.escape(rid) + r'"[^>]*Target="([^"]+)"', r) or re.search(r'Target="([^"]+)"[^>]*Id="' + re.escape(rid) + '"', r)
+        target = posixpath.normpath(posixpath.join(d, m.group(1))) if m else None
+        import hashlib
+        return hashlib.sha1(z.read(target)).hexdigest() if target in names else rid
+
+    def drawn(x, template, part=''):
         x = re.sub(r'<mc:Fallback>.*?</mc:Fallback>', '', x, flags=re.S)
         x = re.sub(r'<p:bg>.*?</p:bg>', '', x, flags=re.S)
         items = re.findall(r'<p:pic>.*?</p:pic>', x, re.S) + [sp for sp in re.findall(r'<p:sp>.*?</p:sp>', x, re.S) if '<a:blipFill' in sp]
-        return sum(1 for i in items if not (template and '<p:ph' in i))
+        # identical pictures stacked at the same place look like one: count them once
+        sig = lambda i: (tuple(media_hash(part, r) for r in re.findall(r'r:embed="([^"]+)"', i)), tuple(re.findall(r'<a:off [^>]*/><a:ext [^>]*/>', i)))
+        return len({sig(i) for i in items if not (template and '<p:ph' in i)})
 
     def bg_pic(x):
         m = re.search(r'<p:bg>(.*?)</p:bg>', x, re.S)
@@ -137,11 +147,11 @@ def pptx_slide_images(pptx: Path) -> list[int]:
         lx = xml(lay) if lay else ''
         mas = rel(lay, 'slideMaster') if lay else None
         mx = xml(mas) if mas else ''
-        n = drawn(sx, False)
+        n = drawn(sx, False, part)
         if 'showMasterSp="0"' not in sx[:600]:
-            n += drawn(lx, True)
+            n += drawn(lx, True, lay)
             if 'showMasterSp="0"' not in lx[:600]:
-                n += drawn(mx, True)
+                n += drawn(mx, True, mas)
         for b in (bg_pic(sx), bg_pic(lx), bg_pic(mx)):
             if b is not None:
                 n += int(b)
@@ -330,7 +340,12 @@ def main() -> int:
                         if pkg:
                             texts, images = pptx_slide_text(pkg), pptx_slide_images(pkg)
                             exp = [{'text': t, 'images': i} for t, i in zip(texts, images)]
-                        report.append(check_deck(page, src, work, expected=exp) if exp else {'file': src.name, 'slides': 0, 'refSlides': 0, 'reference': 'none', 'failedSlides': {'open': 1}, 'perSlide': []})
+                        if not exp:  # the reference cannot read it either (password, damaged): nothing to compare
+                            report.append({'file': src.name, 'slides': 0, 'refSlides': 0, 'reference': 'unreadable', 'skipped': True,
+                                           'failedSlides': {c: 0 for c in CRITERIA}, 'perSlide': []})
+                            print(f'{src.name}: skipped (reference cannot read it)')
+                            continue
+                        report.append(check_deck(page, src, work, expected=exp))
                 except Exception as e:  # the deck did not open or a slide never rendered: everything on it is lost
                     report.append({'file': src.name, 'slides': 0, 'refSlides': 0, 'reference': 'none',
                                    'failedSlides': {'open': 1}, 'error': (errors[-1] if errors else str(e))[:300], 'perSlide': []})

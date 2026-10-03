@@ -106,7 +106,9 @@ class StaticContracts(unittest.TestCase):
         self.assertIn("bullet.style.color=bc", SURFACE)
 
     def test_legacy_master_shapes_fonts_and_names(self):
-        self.assertIn("skipPlaceholders:true}).filter(o=>o.type==='image'||o.type==='shape')", PPT)
+        self.assertIn("skipPlaceholders:true}).filter(o=>o.type==='image'||o.type==='shape'||(o.type==='text'&&String(o.text||'').trim()))", PPT)
+        self.assertIn("function footerObjects(", PPT)
+        self.assertIn("props[0x00c0]?.complex&&includeText?officeComplex(optRec):null", PPT)  # WordArt text
         self.assertIn("x.type===0x0bc3", PPT)
         self.assertIn("(mcf.fontRef!=null&&fontTable[mcf.fontRef])", PPT)
         self.assertIn("utf16(record.data.subarray(0,64)).split('\\u0000')[0]", PPT)
@@ -125,7 +127,11 @@ class StaticContracts(unittest.TestCase):
         helper = block(PPT, "function groupChildSp(", "\n")
         self.assertIn("u32(sp.data,4)&0x2", helper)
         for fn in ("backgroundImageFromContainer", "backgroundGradientFromContainer", "backgroundColorFromContainer"):
-            self.assertIn("groupChildSp(own)", block(PPT, f"function {fn}(", "\n"))
+            self.assertIn("groupChildSp(own)", block(PPT, f"function {fn}(", "\nfunction "))
+        color = block(PPT, "function backgroundColorFromContainer(", "\nfunction ")
+        self.assertIn("u32(shape.data,4)&0x400", color)  # the flagged background shape comes first
+        self.assertIn("if(ft===1&&props[0x0183])", color)  # fillBackColor only for pattern fills
+        self.assertIn("function followMasterBackground(slide)", PPT)
 
     def test_pptx_texture_fill_with_gradient_overlay_uses_the_overlay(self):
         helper = block(PPTX, "function fillEffects(", "const sf=child(spPr,'solidFill')")
@@ -157,6 +163,23 @@ class StaticContracts(unittest.TestCase):
         self.assertIn("function textDir(v,fallback)", PPTX)
         self.assertIn("const TEXT_FLOW={1:'vert',2:'vert270',3:'wordArtVert',5:'wordArtVert'}", PPT)
         self.assertIn("content.style.writingMode=o.textDirection==='wordArtVert'?'vertical-lr':'vertical-rl'", SURFACE)
+
+    def test_legacy_ppt_reads_live_records_and_outline_text(self):
+        live = block(PPT, "function liveRecords(", "\nfunction masterLookup(")
+        for needle in ("RT.UserEditAtom", "RT.PersistDirectory", "h&0xfffff", "h>>>20", "if(!map.has(id+k))", "(r.opt>>>4)===inst"):
+            self.assertIn(needle, live)
+        self.assertIn("slidesRaw=live?.slides?.length?live.slides:", PPT)
+        self.assertIn("mainMaster=master&&master.type===RT.Slide?", PPT)
+        self.assertIn("textbox=outlineTextbox(container,own.find(r=>r.type===ES.ClientTextbox))", PPT)
+        self.assertIn("function outlineTexts(list)", PPT)
+
+    def test_legacy_ppt_dual_storage_and_password_message(self):
+        self.assertIn("function pickDocumentStream(cfb)", PPT)
+        self.assertIn("streams(name){", PPT)
+        self.assertIn("This .ppt is password-protected", PPT)
+
+    def test_pptx_slide_list_ignores_section_ids(self):
+        self.assertIn("ids=kids(child(pd.documentElement,'sldIdLst'),'sldId')", PPTX)
 
     def test_reduced_line_spacing_is_not_clamped_by_paragraph_min_height(self):
         self.assertIn("if(parseFloat(line.style.lineHeight)<lineFont)line.style.minHeight=line.style.lineHeight;", SURFACE)

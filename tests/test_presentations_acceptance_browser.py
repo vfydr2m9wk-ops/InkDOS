@@ -72,6 +72,22 @@ def regression_deck(tmp: Path) -> list[corpus.Slide]:
     return out
 
 
+def add_sections(pptx: Path) -> None:
+    """PowerPoint 2010+ sections repeat every slide id in a p14:sectionLst extension; a deck with sections must still open."""
+    import zipfile
+    src = zipfile.ZipFile(pptx).read('ppt/presentation.xml').decode('utf-8')
+    ids = re.findall(r'<p:sldId id="(\d+)"', src)
+    ext = ('<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}"><p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
+           '<p14:section name="Seção" id="{11111111-2222-3333-4444-555555555555}"><p14:sldIdLst>' + ''.join(f'<p14:sldId id="{i}"/>' for i in ids)
+           + '</p14:sldIdLst></p14:section></p14:sectionLst></p:ext></p:extLst>')
+    patched = src.replace('</p:presentation>', ext + '</p:presentation>')
+    tmp = pptx.with_suffix('.tmp')
+    with zipfile.ZipFile(pptx) as zin, zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            zout.writestr(item, patched if item.filename == 'ppt/presentation.xml' else zin.read(item.filename))
+    tmp.replace(pptx)
+
+
 def expectations(pptx: Path) -> list[dict]:
     import zipfile
     z = zipfile.ZipFile(pptx)
@@ -92,6 +108,7 @@ def main() -> None:
             p = tmp / f'{name}.pptx'
             corpus.package(slides, p)
             paths.append(p)
+        add_sections(paths[0])
         server, port = acc.serve()
         failures = []
         try:

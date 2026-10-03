@@ -37,7 +37,12 @@ def free_port() -> int:
 
 
 def run(cmd, **kw):
-    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, **kw)
+    # UTF-8 locale: LibreOffice cannot write output files named after non-ASCII titles or sheets otherwise.
+    env = {**os.environ, 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8', **kw.pop('env', {})}
+    if cmd and Path(str(cmd[0])).name in ('soffice', 'libreoffice'):
+        # One LibreOffice profile per process: concurrent runs sharing a profile fail silently.
+        cmd = [cmd[0], f'-env:UserInstallation=file:///tmp/inkdos-lo-{os.getpid()}', *cmd[1:]]
+    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env, **kw)
 
 
 def reference_pdf(src: Path, work: Path) -> Path | None:
