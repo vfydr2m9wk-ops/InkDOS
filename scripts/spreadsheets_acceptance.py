@@ -99,11 +99,11 @@ def reference(src: Path, work: Path) -> dict | None:
     return {'sheets': sheets}
 
 
-# Workbook as the app holds it: sheet names, and per cell its value, formula flag and displayed text.
-PROBE = r"""() => { const b=globalThis.__inkdosSpreadsheetsS1.session.book;
+# Workbook as the app holds it: sheet names, and per cell its value, formula flag and the text the grid shows.
+PROBE = r"""() => { const b=globalThis.__inkdosSpreadsheetsS1.session.book, grid=globalThis.InkDOS2Spreadsheets?.GridDisplay;
   return b.sheets.map(s=>({name:s.name, merges:(s.merges||[]).map(m=>typeof m==='string'?m:(m.ref||m.range||JSON.stringify(m))),
     cells:Object.fromEntries([...(s.cells instanceof Map?s.cells.entries():Object.entries(s.cells||{}))].filter(([k,c])=>c&&((c.v!==''&&c.v!=null)||c.f)).slice(0,200000)
-      .map(([k,c])=>[k,{v:c?.v??null,f:!!(c&&c.f),d:c?.display??(c?.v==null?'':String(c.v))}]))})) }"""
+      .map(([k,c])=>[k,{v:c?.v??null,f:!!(c&&c.f),d:grid?grid.display(c):(c?.display??(c?.v==null?'':String(c.v)))}]))})) }"""
 
 
 DATE_RE = re.compile(r'^(\d{1,4})[/.-](\d{1,2})[/.-](\d{1,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$')

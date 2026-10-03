@@ -23,6 +23,10 @@ eq(T.decodeFormulaTokens(u([0x1E,...le(2),0x19,0x04,...le(1),...le(0),...le(0),0
 const f=new Uint8Array(22);f[6]=2;f[8]=42;f[12]=0xFF;f[13]=0xFF;eq(T.formulaCached(f).value,'#N/A','error code');
 eq(T.formatNumber(2.71,{numberFormat:'0.000'}),'2.710','three decimals');
 eq(T.formatNumber(2.6,{numberFormat:'0'}),'3','integer format');
+const acc='_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+eq(T.formatNumber(0,{numberFormat:acc,numFmtId:44}).trim(),'-','accounting zero section');
+eq(T.formatNumber(-100,{numberFormat:acc,numFmtId:44}).trim(),'(100.00)','accounting negative section');
+eq(T.formatNumber(35431,{numberFormat:'mmm-yy',numFmtId:17}),'Jan-97','built-in month-year date');
 eq(T.formatNumber(15.534780208110757,{numberFormat:'General'}),'15.5347802081108','General precision');
 eq(T.formatNumber(37270,{numberFormat:'m"月"d"日"',numFmtId:176}),'1月14日','custom date pattern');
 console.log('ok');

@@ -130,8 +130,10 @@ function parseStyles(raw){
   const fontList=fonts?children(fonts,'font').map(f=>({name:children(f,'name')[0]?.getAttribute('val')||'',size:+(children(f,'sz')[0]?.getAttribute('val')||0),bold:!!children(f,'b').length,italic:!!children(f,'i').length,underline:!!children(f,'u').length,strike:!!children(f,'strike').length,color:argb(children(f,'color')[0]?.getAttribute('rgb')||'')})):[];
   const fillList=fills?children(fills,'fill').map(f=>{const p=children(f,'patternFill')[0];return argb(children(p,'fgColor')[0]?.getAttribute('rgb')||'')}):[];
   const borderList=borders?children(borders,'border').map(b=>{const o={};for(const side of['left','right','top','bottom']){const n=children(b,side)[0];if(n&&n.getAttribute('style'))o[side]={style:n.getAttribute('style'),color:argb(children(n,'color')[0]?.getAttribute('rgb')||'')||'#b7bcc4'}}return o}):[];
+  // Custom number formats (ids >= 164) by id, so cells show dates, accounting and literal formats as written.
+  const numFmtNode=children(root,'numFmts')[0],numFmtMap={};if(numFmtNode)children(numFmtNode,'numFmt').forEach(n=>{numFmtMap[n.getAttribute('numFmtId')||'']=n.getAttribute('formatCode')||''});
   const cellXfs=children(root,'cellXfs')[0];
-  if(cellXfs)children(cellXfs,'xf').forEach(x=>{const al=children(x,'alignment')[0];out.push({font:fontList[+(x.getAttribute('fontId')||0)]||{},fill:fillList[+(x.getAttribute('fillId')||0)]||'',border:borderList[+(x.getAttribute('borderId')||0)]||{},align:al?.getAttribute('horizontal')||'',vertical:al?.getAttribute('vertical')||'',wrap:al?.getAttribute('wrapText')==='1',rotation:+(al?.getAttribute('textRotation')||0),numFmtId:+(x.getAttribute('numFmtId')||0)})});
+  if(cellXfs)children(cellXfs,'xf').forEach(x=>{const al=children(x,'alignment')[0];out.push({font:fontList[+(x.getAttribute('fontId')||0)]||{},fill:fillList[+(x.getAttribute('fillId')||0)]||'',border:borderList[+(x.getAttribute('borderId')||0)]||{},align:al?.getAttribute('horizontal')||'',vertical:al?.getAttribute('vertical')||'',wrap:al?.getAttribute('wrapText')==='1',rotation:+(al?.getAttribute('textRotation')||0),numFmtId:+(x.getAttribute('numFmtId')||0),...(numFmtMap[x.getAttribute('numFmtId')||'']?{numberFormat:numFmtMap[x.getAttribute('numFmtId')||'']}:{})})});
   return out;
 }
 function formatValue(v,cell){if(v==null)return'';if(cell?.t==='b')return v?'TRUE':'FALSE';return v}
@@ -145,6 +147,10 @@ async function parseTableParts(read,sheetPath,sheetDoc){
   }
   return result;
 }
+const SHARED_REF=/((?:'(?:[^']|'')+'|[A-Za-z_][A-Za-z0-9_. ]*)!)?(\$?)([A-Za-z]{1,3})(\$?)(\d+)(?:\s*:\s*(\$?)([A-Za-z]{1,3})(\$?)(\d+))?/g;
+function shiftSharedRef(colAbs,col,rowAbs,row,dr,dc){let c=decodeRef(col.toUpperCase()+'1').c,r=Number(row)-1;if(!colAbs)c+=dc;if(!rowAbs)r+=dr;if(c<0||r<0)return'#REF!';return`${colAbs||''}${colName(c)}${rowAbs||''}${r+1}`}
+function shiftSharedChunk(chunk,dr,dc){return chunk.replace(SHARED_REF,(full,prefix,cAbs1,col1,rAbs1,row1,cAbs2,col2,rAbs2,row2,offset,text)=>{const prev=offset>0?text[offset-1]:'',next=text[offset+full.length]||'';if(/[A-Za-z0-9_.\[\]]/.test(prev)||/[A-Za-z0-9_]/.test(next))return full;if(!prefix&&!col2&&next==='(')return full;const first=shiftSharedRef(cAbs1,col1,rAbs1,row1,dr,dc);if(!col2)return`${prefix||''}${first}`;const second=shiftSharedRef(cAbs2,col2,rAbs2,row2,dr,dc);if(first==='#REF!'||second==='#REF!')return'#REF!';return`${prefix||''}${first}:${second}`})}
+function shiftSharedFormula(formula,dr,dc){const text=String(formula||'');let out='',start=0,quoted=false;for(let i=0;i<text.length;i++){if(text[i]!=='"')continue;if(!quoted){out+=shiftSharedChunk(text.slice(start,i),dr,dc);start=i;quoted=true}else{out+=text.slice(start,i+1);start=i+1;quoted=false}}out+=quoted?text.slice(start):shiftSharedChunk(text.slice(start),dr,dc);return out}
 async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
   if(!global.JSZip)throw new Error('JSZip did not load');
   if(global.InkDOS2SpreadsheetPackageValidator)await global.InkDOS2SpreadsheetPackageValidator.validateXlsx(buffer,fileName);
@@ -160,12 +166,17 @@ async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
     const name=s.getAttribute('name')||'Sheet',state=s.getAttribute('state')||'visible',rid=s.getAttributeNS(REL,'id')||s.getAttribute('r:id');let target=relMap[rid]||'';
     if(target.startsWith('/'))target=target.slice(1);else if(!target.startsWith('xl/'))target='xl/'+target.replace(/^\.\//,'');
     const raw=await read(target);if(!raw)continue;const doc=xml(raw),cells=new Map(),originalCells=new Map();let maxR=39,maxC=15;
+    const sharedMasters={},sharedDependents=[];
     localAll(doc,'c').filter(c=>c.parentElement?.localName==='row').forEach(c=>{
       const cellRef=c.getAttribute('r');if(!cellRef)return;const pos=decodeRef(cellRef);maxR=Math.max(maxR,pos.r);maxC=Math.max(maxC,pos.c);
       const t=c.getAttribute('t')||'',f=childText(c,'f');let v=childText(c,'v');
       if(t==='s')v=shared[+v]??'';else if(t==='inlineStr'){v='';localAll(c,'t').forEach(n=>v+=n.textContent)}else if(t==='b')v=v==='1';else if(v!==''&&!isNaN(Number(v)))v=Number(v);
       const styleId=+(c.getAttribute('s')||0),cell={v,f,styleId,style:styles[styleId]||{},t:t||typeof v,display:formatValue(v,{t})};cells.set(cellRef,cell);originalCells.set(cellRef,cloneCell(cell));
+      const fNode=localOne(c,'f');if(fNode&&fNode.getAttribute('t')==='shared'){const si=fNode.getAttribute('si')||'';if(f)sharedMasters[si]={ref:cellRef,f};else sharedDependents.push({ref:cellRef,si})}
     });
+    // Shared formulas: dependent cells carry only the group id; their formula is the group's first formula
+    // moved by the cell's offset, so they keep a formula (cell and original alike, the package is unchanged).
+    for(const d of sharedDependents){const m=sharedMasters[d.si];if(!m)continue;const a=decodeRef(m.ref),b=decodeRef(d.ref),f=shiftSharedFormula(m.f,b.r-a.r,b.c-a.c);cells.get(d.ref).f=f;originalCells.get(d.ref).f=f}
     const sheetRelsRaw=await read(relsPathFor(target)),sheetRelMap={};if(sheetRelsRaw){const rd=xml(sheetRelsRaw,relsPathFor(target));localAll(rd,'Relationship').forEach(r=>sheetRelMap[r.getAttribute('Id')||'']={target:r.getAttribute('Target')||'',mode:r.getAttribute('TargetMode')||'',type:r.getAttribute('Type')||''})}
     localAll(doc,'hyperlink').forEach(h=>{const ref=h.getAttribute('ref')||'',cell=cells.get(ref);if(!cell)return;const rid=h.getAttributeNS(REL,'id')||h.getAttribute('r:id')||'',rel=sheetRelMap[rid];const location=h.getAttribute('location')||'';if(rel?.target)cell.hyperlink={target:rel.target,external:rel.mode==='External'||/^[a-z][a-z0-9+.-]*:/i.test(rel.target),tooltip:h.getAttribute('tooltip')||''};else if(location)cell.hyperlink={target:location,external:false,tooltip:h.getAttribute('tooltip')||''}});
     const commentsRel=Object.values(sheetRelMap).find(rel=>/\/comments$/.test(rel.type||''));if(commentsRel?.target){const commentsRaw=await read(normalizePath(target,commentsRel.target));if(commentsRaw){const cd=xml(commentsRaw,'worksheet comments'),authors=localAll(cd,'author').map(a=>a.textContent||'');localAll(cd,'comment').forEach(n=>{const ref=n.getAttribute('ref')||'',cell=cells.get(ref);if(!cell)return;cell.comment={text:localAll(n,'t').map(t=>t.textContent).join(''),author:authors[+(n.getAttribute('authorId')||0)]||''}})}}
