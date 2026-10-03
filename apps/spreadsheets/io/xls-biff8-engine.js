@@ -15,7 +15,10 @@ const BUILTIN_FORMATS={
   0:'General',1:'0',2:'0.00',3:'#,##0',4:'#,##0.00',9:'0%',10:'0.00%',11:'0.00E+00',12:'# ?/?',13:'# ??/??',
   14:'m/d/yy',15:'d-mmm-yy',16:'d-mmm',17:'mmm-yy',18:'h:mm AM/PM',19:'h:mm:ss AM/PM',20:'h:mm',21:'h:mm:ss',22:'m/d/yy h:mm',
   37:'#,##0 ;(#,##0)',38:'#,##0 ;[Red](#,##0)',39:'#,##0.00;(#,##0.00)',40:'#,##0.00;[Red](#,##0.00)',
-  45:'mm:ss',46:'[h]:mm:ss',47:'mmss.0',49:'@'
+  45:'mm:ss',46:'[h]:mm:ss',47:'mmss.0',49:'@',
+  // East Asian built-ins (locale-dependent in Excel): dates shown as the short date, times as h:mm[:ss].
+  27:'m/d/yy',28:'m/d/yy',29:'m/d/yy',30:'m/d/yy',31:'m/d/yy',32:'h:mm',33:'h:mm:ss',34:'m/d/yy',35:'m/d/yy',36:'m/d/yy',
+  50:'m/d/yy',51:'m/d/yy',52:'m/d/yy',53:'m/d/yy',54:'m/d/yy',55:'m/d/yy',56:'m/d/yy',57:'m/d/yy',58:'m/d/yy'
 };
 const H_ALIGN=['general','left','center','right','fill','justify','center','distributed'];
 const V_ALIGN=['top','center','bottom','justify','distributed'];
