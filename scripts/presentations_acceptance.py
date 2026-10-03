@@ -11,9 +11,11 @@ Level 1 - nothing is lost:
 Level 2 - structure is right:
   background  the slide corners have the reference colour
 
-The reference is a PDF next to the deck (same stem; ideally exported by PowerPoint) or a
-LibreOffice render. Inputs may be private documents: nothing is written to the repository,
-the report goes to --out.
+The reference is a PDF next to the deck (same stem; ideally exported by PowerPoint). Without one,
+the expectations come from the package itself (text of shapes, SmartArt and charts; pictures), so
+public corpora without PDFs can be checked too; --libreoffice compares against a LibreOffice render
+instead. Inputs may be private documents: nothing is written to the repository, the report goes
+to --out.
 
     python3 scripts/presentations_acceptance.py deck.pptx other.ppt --out /tmp/acceptance
 
@@ -37,7 +39,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from presentations_fidelity import ROOT, free_port, reference_pdf, run  # noqa: E402
 
-CRITERIA = ('slides', 'text', 'images', 'hidden', 'offslide', 'background')
+CRITERIA = ('open', 'slides', 'text', 'images', 'hidden', 'offslide', 'background')
 
 # Rendered-slide facts from the live app: text, pictures, invisible/covered runs, off-slide boxes.
 PROBE = r"""() => {
@@ -166,6 +168,33 @@ def pptx_slide_alt_text(pptx: Path) -> list[str]:
     return out
 
 
+def pptx_slide_text(pptx: Path) -> list[str]:
+    """Text each slide shows, read from the package: its shapes (hidden ones excluded), plus the
+    SmartArt drawing and chart titles/categories/series names it references."""
+    import posixpath
+    import zipfile
+    z = zipfile.ZipFile(pptx)
+    names = set(z.namelist())
+    xml = lambda part: z.read(part).decode('utf8', 'ignore') if part in names else ''
+    pres, prels = xml('ppt/presentation.xml'), xml('ppt/_rels/presentation.xml.rels')
+    targets = dict(re.findall(r'Id="([^"]+)"[^>]*Target="([^"]+)"', prels)) | {a: b for b, a in re.findall(r'Target="([^"]+)"[^>]*Id="([^"]+)"', prels)}
+    out = []
+    for rid in re.findall(r'<p:sldId [^>]*r:id="([^"]+)"', pres):
+        part = posixpath.normpath(posixpath.join('ppt', targets.get(rid, '')))
+        x = re.sub(r'<mc:Fallback>.*?</mc:Fallback>', '', xml(part), flags=re.S)
+        x = re.sub(r'<p:sp>(?:(?!</p:sp>).)*?<p:cNvPr [^>]*hidden="1".*?</p:sp>', '', x, flags=re.S)
+        texts = re.findall(r'<a:t>([^<]*)</a:t>', x)
+        d, b = posixpath.split(part)
+        for t, target in re.findall(r'Type="[^"]*/(diagramDrawing|chart)"[^>]*Target="([^"]+)"', xml(f'{d}/_rels/{b}.rels')):
+            sub = xml(posixpath.normpath(posixpath.join(d, target)))
+            texts += re.findall(r'<a:t>([^<]*)</a:t>', sub)
+            if t == 'chart':
+                for cache in re.findall(r'<c:strCache>.*?</c:strCache>', sub, re.S):
+                    texts += re.findall(r'<c:v>([^<]*)</c:v>', cache)
+        out.append(html.unescape(' '.join(texts)))
+    return out
+
+
 def source_package(src: Path, work: Path) -> Path | None:
     """The deck as a .pptx package: itself, or a LibreOffice conversion of a binary .ppt."""
     if src.suffix.lower() == '.pptx':
@@ -273,6 +302,7 @@ def main() -> int:
     ap.add_argument('files', nargs='+', type=Path)
     ap.add_argument('--out', required=True, type=Path)
     ap.add_argument('--chromium', default='/opt/pw-browsers/chromium')
+    ap.add_argument('--libreoffice', action='store_true', help='without a PDF next to the deck, compare against a LibreOffice render instead of the package itself')
     args = ap.parse_args()
     from playwright.sync_api import sync_playwright
     if not shutil.which('pdftotext'):
@@ -288,12 +318,27 @@ def main() -> int:
                 work = args.out / f'{src.stem}-{src.suffix.lstrip(".").lower()}'
                 work.mkdir(parents=True, exist_ok=True)
                 browser, page = open_app(pw, args.chromium, port)
+                errors = []
+                page.on('pageerror', lambda e: errors.append(str(e)[:200]))
                 try:
-                    report.append(check_deck(page, src, work, pdf=reference_pdf(src, work)))
+                    own = src.with_suffix('.pdf')
+                    if own.exists() or args.libreoffice:
+                        report.append(check_deck(page, src, work, pdf=reference_pdf(src, work)))
+                    else:
+                        pkg = source_package(src, work)
+                        exp = None
+                        if pkg:
+                            texts, images = pptx_slide_text(pkg), pptx_slide_images(pkg)
+                            exp = [{'text': t, 'images': i} for t, i in zip(texts, images)]
+                        report.append(check_deck(page, src, work, expected=exp) if exp else {'file': src.name, 'slides': 0, 'refSlides': 0, 'reference': 'none', 'failedSlides': {'open': 1}, 'perSlide': []})
+                except Exception as e:  # the deck did not open or a slide never rendered: everything on it is lost
+                    report.append({'file': src.name, 'slides': 0, 'refSlides': 0, 'reference': 'none',
+                                   'failedSlides': {'open': 1}, 'error': (errors[-1] if errors else str(e))[:300], 'perSlide': []})
                 finally:
                     browser.close()
                 r = report[-1]
                 bad = ', '.join(f'{c} {n}' for c, n in r['failedSlides'].items() if n) or 'all criteria pass'
+                bad += f" ({r['error'][:80]})" if r.get('error') else ''
                 print(f"{r['file']}: {r['slides']}/{r['refSlides']} slides - {bad}")
     finally:
         server.terminate()
