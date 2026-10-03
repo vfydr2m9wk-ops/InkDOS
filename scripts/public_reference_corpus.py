@@ -2,11 +2,13 @@
 """Harvest Office files that were published on the web next to a PDF made by Office itself.
 
 Common Crawl indexes billions of captured URLs. This tool scans its columnar index (Parquet on
-data.commoncrawl.org, read remotely with DuckDB - only two small columns travel) for .ppt/.pptx,
-.doc/.docx and .xls/.xlsx captures that have a .pdf capture at the same address without the
-extension (/lecture3.pptx + /lecture3.pdf). Both are fetched straight from the crawl archives
+data.commoncrawl.org, read remotely with DuckDB - only a few small columns travel) for .ppt/.pptx,
+.doc/.docx and .xls/.xlsx captures that have a .pdf capture with the same file name on the same
+site (/lecture3.pptx + /lecture3.pdf, or /1/talk.pptx + /2/talk.pdf in repositories). Both are fetched straight from the crawl archives
 with HTTP range requests, and a pair is kept only when the PDF says it was produced by the
-matching Office application (PowerPoint, Word or Excel) and neither capture was truncated.
+matching Office application (PowerPoint, Word or Excel), neither capture was truncated, and the
+Office file rendered by LibreOffice has a compatible page count and shares >= 70% of its words
+with the PDF (name-matched files can be different documents).
 
 The result is a corpus with real Office references for scripts/presentations_acceptance.py,
 scripts/presentations_fidelity.py and the other acceptance tools ("deck.pptx" + "deck.pdf").
@@ -56,8 +58,16 @@ def index_parts(crawl: str) -> list[str]:
 
 
 def stem_of(url: str) -> str | None:
-    m = re.match(r'^(https?://[^?#]+?)\.(pptx?|docx?|xlsx?|pdf)$', url.split('#')[0], re.I)
-    return m.group(1).lower() if m else None
+    """Pairing key: site + file name without extension, normalised (repositories often keep the PDF
+    in another folder of the same site: /1/talk.pptx and /2/talk.pdf)."""
+    from urllib.parse import unquote, urlsplit
+    parts = urlsplit(url.split('#')[0])
+    m = re.match(r'^(.*?)\.(pptx?|docx?|xlsx?|pdf)$', unquote(parts.path.rsplit('/', 1)[-1]), re.I)
+    if not m or parts.query:
+        return None
+    name = re.sub(r'[\W_]+', '', re.sub(r'\(\d+\)$', '', m.group(1).strip()).lower())
+    host = parts.netloc.lower().removeprefix('www.')
+    return f'{host}/{name}' if len(name) >= 4 else None
 
 
 def candidates(con, part: str, kind: dict) -> list[tuple[dict, dict]]:
@@ -97,6 +107,35 @@ def payload(rec: dict) -> bytes | None:
             p = nl + 2 + size + 2
         body = bytes(out)
     return body
+
+
+def words(text: str) -> set[str]:
+    import unicodedata
+    return set(re.findall(r'\w{3,}', unicodedata.normalize('NFKC', text).lower()))
+
+
+def same_document(doc: Path, ref: Path, work: Path) -> bool:
+    """Name-matched files can be different documents: render the Office file with LibreOffice and
+    require a compatible page count and at least 70% of its words in the reference PDF."""
+    import os
+    import shutil
+    office = shutil.which('soffice') or shutil.which('libreoffice')
+    if not office:
+        return False
+    env = {**os.environ, 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8'}
+    subprocess.run([office, f'-env:UserInstallation=file:///tmp/inkdos-lo-{os.getpid()}', '--headless', '--convert-to', 'pdf',
+                    '--outdir', str(work), str(doc)], capture_output=True, timeout=300, env=env)
+    lo = work / (doc.stem + '.pdf')
+    if not lo.exists():
+        return False
+    pages = lambda f: int((re.search(r'^Pages:\s+(\d+)', subprocess.run(['pdfinfo', str(f)], capture_output=True, text=True).stdout, re.M) or [0, 0])[1])
+    text = lambda f: subprocess.run(['pdftotext', str(f), '-'], capture_output=True, text=True).stdout
+    a, b = words(text(lo)), words(text(ref))
+    pa, pb = pages(lo), pages(ref)
+    lo.unlink()
+    if not a or not pa or not pb or abs(pa - pb) > max(1, 0.2 * pb):
+        return False
+    return len(a & b) / len(a) >= 0.7
 
 
 def producer(pdf: Path) -> str:
@@ -148,6 +187,12 @@ def main() -> int:
                     tmp.unlink()
                     continue
                 (out / f'{name}{ext}').write_bytes(body)
+                work = out / '.verify'
+                work.mkdir(exist_ok=True)
+                if not same_document(out / f'{name}{ext}', tmp, work):
+                    (out / f'{name}{ext}').unlink()
+                    tmp.unlink()
+                    continue
                 manifest.append({'file': f'{args.kind}/{name}{ext}', 'reference': f'{args.kind}/{name}.pdf', 'source': doc['url'],
                                  'referenceSource': pdf['url'], 'producer': prod, 'crawl': crawl,
                                  'sha256': hashlib.sha256(body).hexdigest(), 'referenceSha256': hashlib.sha256(ref).hexdigest()})
