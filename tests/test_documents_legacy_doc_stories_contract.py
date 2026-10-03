@@ -25,7 +25,7 @@ assert(/<sup>1<\/sup>/.test(blocks[0].html),'footnote reference is not numbered:
 // FBSE (store entry, no name) holding a PNG BLIP: header 16-byte UID + tag byte, then the image bytes
 const png=[0x89,0x50,0x4e,0x47,1,2,3],le32=n=>[n&255,(n>>8)&255,(n>>16)&255,n>>>24],blip=[0x00,0x6e,0x1e,0xf0,...le32(17+png.length),...new Array(17).fill(0),...png];
 const fbse=[0x02,0x00,0x07,0xf0,...le32(36+blip.length),...new Array(36).fill(0),...blip],found=T.findBlip(new Uint8Array(fbse),0,fbse.length);
-assert(found&&/^blob:/.test(found.url),'PNG picture not found in its BLIP store entry');
+assert(found&&/^data:image\/png;base64,/.test(found.url),'PNG picture not found in its BLIP store entry');
 console.log('ok');
 """
 

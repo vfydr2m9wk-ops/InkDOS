@@ -3,7 +3,8 @@
 
 The DOCX is built here (no fixture files) with what used to break the save: a hyperlink (its
 r:id needs the relationships namespace), a tab (rendered as an em space), a text box (its text
-is not in the editor) and a table whose cell holds two paragraphs and a line break.
+is not in the editor), a table whose cell holds two paragraphs and a line break, and footnotes.
+A paragraph rebuilt from the editor (as after rich editing) keeps its footnotes' ids and texts.
 """
 from __future__ import annotations
 
@@ -35,23 +36,32 @@ def docx() -> bytes:
             f'<w:p>{t("Place")}<w:r><w:tab/></w:r>{t("Signature")}</w:p>'
             f'<w:p>{t("Anchor")}{box}</w:p>'
             f'<w:tbl><w:tr><w:tc><w:p>{t("one")}<w:r><w:br/></w:r>{t("two")}</w:p><w:p>{t("three")}</w:p></w:tc>'
-            f'<w:tc><w:p>{t("four")}</w:p></w:tc></w:tr></w:tbl><w:p>{t("End.")}</w:p>')
+            f'<w:tc><w:p>{t("four")}</w:p></w:tc></w:tr></w:tbl>'
+            f'<w:p>{t("Noted")}<w:r><w:footnoteReference w:id="1"/></w:r>{t(" twice")}<w:r><w:footnoteReference w:id="2"/></w:r></w:p>'
+            f'<w:p>{t("End.")}</w:p>')
+    note = lambda i, s: f'<w:footnote w:id="{i}"><w:p><w:r><w:footnoteRef/></w:r>{t(s)}</w:p></w:footnote>'
+    notes = (f'<w:footnotes xmlns:w="{W}"><w:footnote w:type="separator" w:id="-1"><w:p><w:r><w:separator/></w:r></w:p></w:footnote>'
+             f'<w:footnote w:type="continuationSeparator" w:id="0"><w:p><w:r><w:continuationSeparator/></w:r></w:p></w:footnote>'
+             f'{note(1, "First note")}{note(2, "Second note")}</w:footnotes>')
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, 'w') as z:
         z.writestr('[Content_Types].xml', '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
                    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
                    '<Default Extension="xml" ContentType="application/xml"/>'
-                   '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>')
+                   '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+                   '<Override PartName="/word/footnotes.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml"/></Types>')
         z.writestr('_rels/.rels', '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>')
         z.writestr('word/_rels/document.xml.rels', '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-                   '<Relationship Id="rIdL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:info@example.org" TargetMode="External"/></Relationships>')
+                   '<Relationship Id="rIdL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:info@example.org" TargetMode="External"/>'
+                   '<Relationship Id="rIdF" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes" Target="footnotes.xml"/></Relationships>')
+        z.writestr('word/footnotes.xml', notes)
         z.writestr('word/document.xml', f'<w:document xmlns:w="{W}" xmlns:r="{R}"><w:body>{body}<w:sectPr/></w:body></w:document>')
     return buf.getvalue()
 
 
-def text_runs(data: bytes) -> str:
-    xml = zipfile.ZipFile(io.BytesIO(data)).read('word/document.xml').decode()
+def text_runs(data: bytes, part: str = 'word/document.xml') -> str:
+    xml = zipfile.ZipFile(io.BytesIO(data)).read(part).decode()
     return html.unescape(''.join(re.findall(r'<w:t(?:\s[^>]*)?>([^<]*)</w:t>', xml)))
 
 
@@ -89,6 +99,14 @@ def main() -> None:
             saved = base64.b64decode(page.evaluate(SAVE))
             assert text_runs(saved) == text_runs(source), (text_runs(source), text_runs(saved))
             assert b'info@example.org' in zipfile.ZipFile(io.BytesIO(saved)).read('word/_rels/document.xml.rels'), 'hyperlink target lost'
+            assert text_runs(saved, 'word/footnotes.xml') == text_runs(source, 'word/footnotes.xml'), 'footnotes changed'
+            # rebuild the footnoted paragraph from the editor, as rich editing does
+            page.evaluate("() => { const p=[...document.querySelectorAll('.page-content p')].find(x=>x.textContent.includes('Noted')); p.dataset.d2Rich='1' }")
+            rebuilt = base64.b64decode(page.evaluate(SAVE))
+            z = zipfile.ZipFile(io.BytesIO(rebuilt))
+            doc_xml, notes_xml = z.read('word/document.xml').decode(), z.read('word/footnotes.xml').decode()
+            assert re.findall(r'footnoteReference w:id="(\d+)"', doc_xml) == ['1', '2'], doc_xml
+            assert 'First note' in notes_xml and 'Second note' in notes_xml and notes_xml.count('<w:footnote ') == 4, notes_xml
             assert not errors, errors
             browser.close()
     finally:
