@@ -97,12 +97,12 @@ def main() -> None:
                     for(const child of Array.from(bodyPr.children))if(['spAutoFit','noAutofit','normAutofit'].includes(child.localName))child.remove();
                     bodyPr.appendChild(doc.createElementNS(a,'a:normAutofit'));
                     zip.file(path,new XMLSerializer().serializeToString(doc),{createFolders:false});
-                    return Array.from(await zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}}));
+                    return await zip.generateAsync({type:'base64',compression:'DEFLATE',compressionOptions:{level:6}});  // base64: large numeric arrays through evaluate fail intermittently
                 }""",
                 RUNS,
             )
             page.evaluate(
-                """async bytes => {await globalThis.__inkdosPresentations.open(new File([new Uint8Array(bytes)],'real-title-fidelity.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}));}""",
+                """async bytes => {await globalThis.__inkdosPresentations.open(new File([Uint8Array.from(atob(bytes),c=>c.charCodeAt(0))],'real-title-fidelity.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'}));}""",
                 synthetic,
             )
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.sourceKind === 'pptx'")

@@ -132,6 +132,32 @@ class StaticContracts(unittest.TestCase):
         self.assertIn("child(spPr,'blipFill')?first(child(spPr,'effectLst'),'fillOverlay')", helper)
         self.assertIn("(ov&&child(ov,'gradFill'))", helper)
 
+    def test_gradient_stops_keep_their_own_transparency(self):
+        self.assertIn("...stopAlpha(gs)", PPTX)
+        model = (APP / "engine" / "presentation-session.js").read_text(encoding="utf-8")
+        self.assertIn("...(x.opacity!=null&&x.opacity<1?{opacity:", model)
+        self.assertIn("(o.fillOpacity??1)*(st.opacity??1)", SURFACE)
+
+    def test_shape_picture_fill_is_drawn_as_a_texture(self):
+        self.assertIn("fillImage=connector?null:await textureFill(zip,spPr,rels,g)", PPTX)
+        self.assertIn("function texturePattern(", SURFACE)
+        self.assertIn("n.style.mixBlendMode='multiply'", SURFACE)
+
+    def test_text_geometry_presets_and_unknown_preset_fallback(self):
+        for name in ("ellipse:", "roundRect:", "cloudCallout:", "leftArrowCallout:", "downArrowCallout:", "snipRoundRect:"):
+            self.assertIn("\n " + name + "(W,H)=>", SURFACE)
+        self.assertIn("if((cust||(prst!=='rect'&&prst!=='line'))&&(fill||line)&&!ph)obj.geometry", PPTX)
+        self.assertIn("else if(!/Brace$/.test(o.shapeType||'')){add('path',{d:P([[0,0],[W,0],[W,H],[0,H]]),fill:F", SURFACE)
+
+    def test_no_wrap_keeps_explicit_breaks_and_long_words_wrap(self):
+        self.assertIn("if(o.wrap==='none')line.style.whiteSpace='pre';", SURFACE)
+        self.assertIn("else if(o.richSource)content.style.overflowWrap='break-word';", SURFACE)
+
+    def test_vertical_text_flow_is_read_and_rendered(self):
+        self.assertIn("function textDir(v,fallback)", PPTX)
+        self.assertIn("const TEXT_FLOW={1:'vert',2:'vert270',3:'wordArtVert',5:'wordArtVert'}", PPT)
+        self.assertIn("content.style.writingMode=o.textDirection==='wordArtVert'?'vertical-lr':'vertical-rl'", SURFACE)
+
     def test_reduced_line_spacing_is_not_clamped_by_paragraph_min_height(self):
         self.assertIn("if(parseFloat(line.style.lineHeight)<lineFont)line.style.minHeight=line.style.lineHeight;", SURFACE)
 

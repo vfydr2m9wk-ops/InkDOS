@@ -56,10 +56,10 @@ def main() -> None:
                 const table=`<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="93" name="Style Table"/><p:cNvGraphicFramePr/><p:nvPr/></p:nvGraphicFramePr><p:xfrm><a:off x="914400" y="1371600"/><a:ext cx="3657600" cy="1371600"/></p:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr firstRow="1" bandRow="1"><a:tableStyleId>${oldStyle}</a:tableStyleId></a:tblPr><a:tblGrid><a:gridCol w="3657600"/></a:tblGrid><a:tr h="1371600"><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US" sz="1600"/><a:t>Styled cell</a:t></a:r><a:endParaRPr lang="en-US" sz="1600"/></a:p></a:txBody><a:tcPr/></a:tc></a:tr></a:tbl></a:graphicData></a:graphic></p:graphicFrame>`;
                 slide=slide.replace('</p:spTree>',table+'</p:spTree>');
                 zip.file('ppt/slides/slide1.xml',slide,{createFolders:false});
-                return Array.from(await zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}}));
+                return await zip.generateAsync({type:'base64',compression:'DEFLATE',compressionOptions:{level:6}});  // base64: large numeric arrays through evaluate fail intermittently
             }""", OLD_STYLE)
             page.evaluate("""async bytes => {
-                const file=new File([new Uint8Array(bytes)],'table-style.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
+                const file=new File([Uint8Array.from(atob(bytes),c=>c.charCodeAt(0))],'table-style.pptx',{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
                 await globalThis.__inkdosPresentations.open(file);
             }""", fixture)
             page.wait_for_function("() => globalThis.__inkdosPresentations.session.currentSlide?.objects?.some(o => o.type === 'table')")

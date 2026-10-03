@@ -82,14 +82,15 @@ def main() -> None:
                     let slide=await zip.file('ppt/slides/slide1.xml').async('text');
                     slide=slide.replace(/<a:rPr ([^>]*)\/>/, '<a:rPr $1><a:solidFill><a:schemeClr val="accent1"/></a:solidFill><a:latin typeface="+mj-lt"/></a:rPr>');
                     zip.file('ppt/slides/slide1.xml',slide,{createFolders:false});
-                    const out=await zip.generateAsync({type:'uint8array',compression:'DEFLATE',compressionOptions:{level:6}});
-                    return {bytes:Array.from(out),theme};
+                    // base64: large numeric arrays through evaluate fail intermittently
+                    const out=await zip.generateAsync({type:'base64',compression:'DEFLATE',compressionOptions:{level:6}});
+                    return {bytes:out,theme};
                 }"""
             )
 
             page.evaluate(
                 """async bytes => {
-                    const file=new File([new Uint8Array(bytes)],'custom-theme.pptx',{
+                    const file=new File([Uint8Array.from(atob(bytes),c=>c.charCodeAt(0))],'custom-theme.pptx',{
                         type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'
                     });
                     await globalThis.__inkdosPresentations.open(file);
