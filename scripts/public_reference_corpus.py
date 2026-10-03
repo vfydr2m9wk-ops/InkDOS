@@ -15,6 +15,11 @@ scripts/presentations_fidelity.py and the other acceptance tools ("deck.pptx" + 
 Files are public web documents; they go to --out, never into the repository.
 
     python3 scripts/public_reference_corpus.py --kind presentations --out /tmp/ref-corpus --pairs 80
+    python3 scripts/public_reference_corpus.py --kind presentations --out /tmp/ref-corpus --restore
+
+The manifest (public URLs, crawl coordinates, SHA-256) and the list of scanned index parts are
+kept in config/reference-corpus/, so later sessions resume the search and restore the pairs in
+minutes; the documents themselves never enter the repository.
 """
 from __future__ import annotations
 
@@ -30,7 +35,6 @@ import urllib.request
 from pathlib import Path
 
 DATA = 'https://data.commoncrawl.org/'
-CRAWLS = ('CC-MAIN-2024-33', 'CC-MAIN-2024-18', 'CC-MAIN-2023-50', 'CC-MAIN-2023-23', 'CC-MAIN-2022-49')
 KINDS = {
     'presentations': {'mimes': {'application/vnd.ms-powerpoint': '.ppt',
                                 'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx'},
@@ -50,6 +54,13 @@ def fetch(url: str, headers: dict | None = None, timeout: int = 120) -> bytes:
     req = urllib.request.Request(url, headers={**UA, **(headers or {})})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
+
+
+def all_crawls() -> list[str]:
+    """Every crawl with a columnar index (2018 onwards), newest first."""
+    page = fetch(f'{DATA}crawl-data/index.html').decode('utf-8', 'replace')
+    names = sorted(set(re.findall(r'CC-MAIN-(\d{4})-(\d{2})', page)), reverse=True)
+    return [f'CC-MAIN-{y}-{w}' for y, w in names if int(y) >= 2018]
 
 
 def index_parts(crawl: str) -> list[str]:
@@ -143,30 +154,67 @@ def producer(pdf: Path) -> str:
     return ' / '.join(m.strip() for m in re.findall(r'^(?:Producer|Creator):\s*(.*)$', info, re.M))
 
 
+def restore(args) -> int:
+    """Rebuild the corpus from the manifest: each file straight from its crawl archive, hash-checked."""
+    manifest = json.loads((args.state / f'{args.kind}.json').read_text())
+    (args.out / args.kind).mkdir(parents=True, exist_ok=True)
+    ok = 0
+    for m in manifest:
+        for key, coords, digest in (('file', m.get('warc'), m['sha256']), ('reference', m.get('referenceWarc'), m['referenceSha256'])):
+            dest = args.out / m[key]
+            if dest.exists() and hashlib.sha256(dest.read_bytes()).hexdigest() == digest:
+                continue
+            if not coords:
+                continue
+            data = payload({'warc': coords[0], 'offset': coords[1], 'length': coords[2]})
+            if data and hashlib.sha256(data).hexdigest() == digest:
+                dest.write_bytes(data)
+        ok += all((args.out / m[k]).exists() for k in ('file', 'reference'))
+    print(f'{ok}/{len(manifest)} pairs restored in {args.out / args.kind}')
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--kind', choices=sorted(KINDS), default='presentations')
     ap.add_argument('--out', required=True, type=Path)
     ap.add_argument('--pairs', type=int, default=60, help='stop after this many verified pairs')
-    ap.add_argument('--crawls', default=','.join(CRAWLS))
+    ap.add_argument('--crawls', default='auto', help="comma-separated crawl ids, or 'auto' for every crawl newest first")
     ap.add_argument('--parts', type=int, default=300, help='index parts scanned per crawl')
+    ap.add_argument('--state', type=Path, default=Path(__file__).resolve().parents[1] / 'config' / 'reference-corpus',
+                    help='where the manifest (URLs, crawl coordinates, hashes) and the scanned-part list are kept')
+    ap.add_argument('--restore', action='store_true', help='only download the pairs already listed in the manifest')
     args = ap.parse_args()
-    import duckdb
     kind = KINDS[args.kind]
+    if args.restore:
+        return restore(args)
+    import duckdb
     out = args.out / args.kind
     out.mkdir(parents=True, exist_ok=True)
-    manifest_path = args.out / f'{args.kind}-manifest.json'
+    args.state.mkdir(parents=True, exist_ok=True)
+    manifest_path = args.state / f'{args.kind}.json'
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
     seen = {m['source'] for m in manifest}
     con = duckdb.connect()
     con.execute('INSTALL httpfs; LOAD httpfs;')
-    for crawl in args.crawls.split(','):
-        for part in index_parts(crawl)[:args.parts]:
+    # Scanned index parts are remembered, so a later run (another session) resumes where this one stopped.
+    scanned_path = args.state / f'{args.kind}-scanned.txt'
+    scanned = set(scanned_path.read_text().split()) if scanned_path.exists() else set()
+    crawls = all_crawls() if args.crawls == 'auto' else args.crawls.split(',')
+    for crawl in crawls:
+        try:
+            parts = index_parts(crawl)[:args.parts]
+        except Exception as e:
+            print(f'skip crawl {crawl}: {e}', file=sys.stderr)
+            continue
+        for part in parts:
             if len(manifest) >= args.pairs:
                 break
+            if part in scanned:
+                continue
             try:
                 pairs = candidates(con, part, kind)
-            except Exception as e:  # a transient read error skips one part
+            except Exception as e:  # a transient read error leaves the part for a later run
                 print(f'skip {part}: {e}', file=sys.stderr)
                 continue
             for doc, pdf in pairs:
@@ -195,10 +243,15 @@ def main() -> int:
                     continue
                 manifest.append({'file': f'{args.kind}/{name}{ext}', 'reference': f'{args.kind}/{name}.pdf', 'source': doc['url'],
                                  'referenceSource': pdf['url'], 'producer': prod, 'crawl': crawl,
+                                 'warc': [doc['warc'], doc['offset'], doc['length']], 'referenceWarc': [pdf['warc'], pdf['offset'], pdf['length']],
                                  'sha256': hashlib.sha256(body).hexdigest(), 'referenceSha256': hashlib.sha256(ref).hexdigest()})
                 seen.add(doc['url'])
                 manifest_path.write_text(json.dumps(manifest, indent=1), encoding='utf-8')
                 print(f'{len(manifest)}: {doc["url"]}  [{prod}]', flush=True)
+            if len(manifest) < args.pairs:
+                scanned.add(part)
+                with open(scanned_path, 'a', encoding='utf-8') as fh:
+                    fh.write(part + '\n')
         if len(manifest) >= args.pairs:
             break
     print(f'{len(manifest)} verified pairs in {out}')
