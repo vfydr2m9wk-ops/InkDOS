@@ -21,7 +21,7 @@ function reviewRuns(el,ctx){let out='';for(const node of Array.from(el.childNode
 // Saved-body counterparts of htmlParagraphs(), in the same order: body/content-control paragraphs and one
 // entry per table cell, rows (nested tables' included) in document order as the parser renders them. Paragraphs inside cells, text boxes and compatibility fallbacks are not editor
 // paragraphs, so they must not shift the pairing.
-function xmlEditorParagraphs(body){const out=[],walk=el=>{for(const c of Array.from(el.children)){const n=c.localName;if(n==='p'){out.push(c);continue}if(n==='tbl'){for(const tr of all(c,'tr'))for(const tc of Array.from(tr.children))if(tc.localName==='tc')out.push(tc);continue}if(n==='Fallback'||n==='txbxContent'||n==='r')continue;walk(c)}};walk(body);return out}
+function xmlEditorParagraphs(body){const out=[],walk=el=>{for(const c of Array.from(el.children)){const n=c.localName;if(n==='p'){out.push(c);continue}if(n==='tbl'){const cells=el2=>{for(const x of Array.from(el2.children)){if(x.localName==='tc')out.push(x);else if(x.localName==='sdt'||x.localName==='sdtContent')cells(x)}};for(const tr of all(c,'tr'))cells(tr);continue}if(n==='Fallback'||n==='txbxContent'||n==='r')continue;walk(c)}};walk(body);return out}
 // A paragraph is rebuilt from the editor only when it changed: same text and the same links, notes and
 // comments keep the source runs (and their formatting). Runs the editor cannot represent (pictures,
 // text boxes, fields, embedded objects) are never rebuilt away; the text itself was already patched.

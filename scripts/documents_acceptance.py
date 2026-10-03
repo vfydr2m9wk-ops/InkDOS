@@ -31,6 +31,7 @@ import subprocess
 import sys
 import time
 import unicodedata
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
@@ -91,12 +92,27 @@ def package_counts(docx: Path) -> dict:
     try:
         z = zipfile.ZipFile(docx)
         names = z.namelist()
-        read = lambda n: re.sub(rb'<mc:Fallback>.*?</mc:Fallback>', b'', z.read(n), flags=re.S)
-        pics = lambda x: len(re.findall(rb'<a:blip\b[^>]*r:embed=|<v:imagedata\b[^>]*r:id=', x))
+        def read(n: str):
+            return ET.fromstring(z.read(n))
+
+        def pics(root) -> int:  # pictures outside compatibility fallbacks (they repeat a DrawingML one)
+            count = 0
+
+            def walk(el, fallback: bool) -> None:
+                nonlocal count
+                tag = el.tag.rsplit('}', 1)[-1]
+                fallback = fallback or tag == 'Fallback'
+                if not fallback and ((tag == 'blip' and any(k.endswith('}embed') for k in el.attrib)) or
+                                     (tag == 'imagedata' and any(k.endswith('}id') for k in el.attrib))):
+                    count += 1
+                for child in el:
+                    walk(child, fallback)
+            walk(root, False)
+            return count
         doc = read('word/document.xml')
         edge = sum(max([pics(read(n)) for n in names if re.fullmatch(rf'word/{k}\d*\.xml', n)] or [0]) for k in ('header', 'footer'))
-        return {'bodyImages': pics(doc), 'edgeImages': edge, 'tables': len(re.findall(rb'<w:tbl>', doc))}
-    except (zipfile.BadZipFile, KeyError, OSError):
+        return {'bodyImages': pics(doc), 'edgeImages': edge, 'tables': sum(1 for el in doc.iter() if el.tag.endswith('}tbl'))}
+    except (zipfile.BadZipFile, KeyError, OSError, ET.ParseError):
         return {}
 
 

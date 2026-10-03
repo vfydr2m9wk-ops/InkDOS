@@ -1,20 +1,20 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-f7184df9c3a87a05a1d2';
+const CACHE_NAME='inkdos-v2.7.4-6620801da0edc0cf1a89';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
   "./apps/documents/app.js": "a742de41c7af11e5105ff979d098f7dd8ce486f26472a268721d2cc553d073ad",
   "./apps/documents/assets/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./apps/documents/engine/d1-docx-extension.js": "9be5351134ed958dbd2e4276259c9f67b627fbcdaf518d76153637d554326c94",
-  "./apps/documents/engine/d2-docx-extension.js": "43c473e872bf6550dd3bb6f3ac94f24f7e1f58458ed892fbc414241204aeabeb",
+  "./apps/documents/engine/d2-docx-extension.js": "c029c308b3cf6546ce80970c356701c144f5b9a180593b54a08e85d67533d2a5",
   "./apps/documents/engine/d2-sections-extension.js": "1ef9268c7d0e9a22a5d082892207e9dc91499460d8796d7fa4e15ed047430516",
   "./apps/documents/engine/document-session.js": "66be8a77ddaed156b4741bbea88ad0070a87d4e83bc6adc14fae2f530a8401eb",
   "./apps/documents/engine/document-state.js": "7e5e077a6f32f85bd00e0927ecce8cbd20b150fe7972f8ae49bfc3790653894a",
-  "./apps/documents/engine/docx-parser.js": "3ecd377245958f7d1a3130ea618aa7fa4461a89b8ba80b406f4712a08079d49a",
+  "./apps/documents/engine/docx-parser.js": "4cb4051746f94b8f555a7d89c85b614a1ea83915c22e93d917748d5d722b115e",
   "./apps/documents/engine/page-spec.js": "34689c76aa527609df067cea8aec34cdea35c1dfffb1e140d19442766456ff44",
   "./apps/documents/help/help.js": "7b9bb5236b5def839b186ec42fb1df0b9c46d89ac0c6f41abf936def16ea4b42",
   "./apps/documents/index.html": "c9a7ede76c0a40139600cd53e235c281ef08badea121c1c4cd07d42ce0468b74",
-  "./apps/documents/io/docx-writer.js": "0d553a709909fb5c53ced02b2f0b6cb00800ae6e6a52011df23acf9a5a08411c",
+  "./apps/documents/io/docx-writer.js": "c8127b883ee9be7c71627cf52968ac1316c828d35763761ac19b12382e30bf25",
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
   "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
   "./apps/documents/io/legacy-doc-reader.js": "75e59ed490020c02f5f0f30deada1f1ae7ad3d3715cccdd6951816136552b343",
@@ -47,9 +47,9 @@ const ASSET_HASHES={
   "./apps/documents/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
   "./apps/documents/vendor/pako_inflate.min.js": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04",
   "./apps/documents/view/document-surface.css": "471db233fcd560e8d11e6fff9eb16c200a700ff334d21734035399410e5d8de1",
-  "./apps/documents/view/drawing-layout.js": "f382b48648489387d5303d3ccf745e9aa7e317c71254df040edac858e2fbb1f4",
-  "./apps/documents/view/page-surface.js": "bd2416a24214e795b6e42f3d23f4f71a09ea8723e6f02e912b34e54ffc81d150",
-  "./apps/documents/view/pagination-engine.js": "31c3bad26dca78f021d3aa06ea731e36a8d39afc64aabc57931879214b5b0663",
+  "./apps/documents/view/drawing-layout.js": "5668cedf9a36a6c0cd9fc71ea943ec88126a59707774fb29c9691dbfdc5c29b4",
+  "./apps/documents/view/page-surface.js": "ffeba2b51aa077520626ebdab23df3fe5c106939b76f30e86c79a1afecd9192e",
+  "./apps/documents/view/pagination-engine.js": "ad1eaabd846da9d338c163c0e166d343958a5682ecf5fa2e3b3ed59e211982e3",
   "./apps/documents/view/zoom-controller.js": "b5aadbe7fa58cea2b034be26f8f25f641e8f9922f46cc5d39d35cccbe84dd2f0",
   "./apps/epub/app.js": "7e3e4e41b6397c38f75056d3612125f330872ccf789b65271470e90e43f2e32a",
   "./apps/epub/assets/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",

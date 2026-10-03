@@ -110,6 +110,12 @@ function stylePointValue(style,name){
   const match=String(style||'').match(pattern);
   return match?pointToPx(match[1]):0;
 }
+// A picture inside a VML group is placed in the group's coordinate space (coordsize/coordorigin), which
+// the group's own style maps onto the page.
+function vmlInFallback(node){for(let n=node&&node.parentNode;n;n=n.parentNode)if(n.localName==='Fallback')return true;return false}
+function vmlGroupOf(shape){for(let n=shape&&shape.parentNode;n;n=n.parentNode){if(n.localName==='group')return n;if(n.localName==='pict')return null}return null}
+function vmlNumber(style,name){const m=new RegExp('(?:^|;)\\s*'+name+'\\s*:\\s*(-?[\\d.]+)','i').exec(style||'');return m?Number(m[1]):0}
+function vmlGroupChildLayout(group,shape){const outer=vmlImageLayout(group);if(!outer||!shape)return null;const pair=(v,d)=>{const p=String(v||'').split(',').map(Number);return[Number.isFinite(p[0])&&p[0]?p[0]:d[0],Number.isFinite(p[1])&&p[1]?p[1]:d[1]]},[cw,ch]=pair(group.getAttribute('coordsize'),[1000,1000]),origin=String(group.getAttribute('coordorigin')||'0,0').split(',').map(x=>Number(x)||0),style=shape.getAttribute('style')||'',sx=outer.widthPx/cw,sy=outer.heightPx/ch,w=vmlNumber(style,'width')*sx,h=vmlNumber(style,'height')*sy;if(!(w>0&&h>0))return null;return Object.assign({},outer,{leftPx:outer.leftPx+(vmlNumber(style,'left')-origin[0])*sx,topPx:outer.topPx+(vmlNumber(style,'top')-(origin[1]||0))*sy,widthPx:w,heightPx:h})}
 function vmlImageLayout(shape){
   if(!shape)return null;
   const style=shape.getAttribute('style')||'';
@@ -155,12 +161,14 @@ function drawingImageLayout(drawing){
     behindDoc:anchor.getAttribute('behindDoc')==='1'
   };
 }
-function referenceNode(sect,kind){
+function referenceNode(sect,kind,type){
   const nodes=descendants(sect,kind+'Reference');
-  return nodes.find(node=>(node.getAttribute('w:type')||node.getAttribute('type')||'default')==='default')||nodes[0]||null;
+  if(type)return nodes.find(node=>(node.getAttribute('w:type')||node.getAttribute('type')||'default')===type)||null;
+  const kindOf=node=>node.getAttribute('w:type')||node.getAttribute('type')||'default';
+  return nodes.find(node=>kindOf(node)==='default')||nodes.find(node=>kindOf(node)!=='first')||null;
 }
-function partSpec(sect,kind,rels,root,files,mediaUrls){
-  const ref=referenceNode(sect,kind);
+function partSpec(sect,kind,rels,root,files,mediaUrls,type){
+  const ref=referenceNode(sect,kind,type);
   const rid=attrR(ref,'id');
   const target=rid&&rels[rid];
   if(!target)return{text:'',artwork:[]};
@@ -171,12 +179,13 @@ function partSpec(sect,kind,rels,root,files,mediaUrls){
   const relationshipBytes=files.get(relsPath(path));
   const partRels=relationshipBytes?parseRels(parseXml(relationshipBytes)):{};
   const artwork=[];
-  for(const pict of descendants(doc,'pict')){
-    const shape=first(pict,'shape');
-    const image=first(pict,'imagedata');
+  // VML pictures; a compatibility fallback repeats a DrawingML picture already placed below, so it is skipped.
+  for(const image of descendants(doc,'imagedata').filter(x=>descendants(doc,'pict').some(p=>p.contains(x))&&!vmlInFallback(x))){
+    const shape=image.parentNode&&image.parentNode.localName==='shape'?image.parentNode:null;
     const mediaRid=attrR(image,'id');
     const mediaTarget=mediaRid&&partRels[mediaRid];
-    const layout=vmlImageLayout(shape);
+    const group=vmlGroupOf(shape);
+    const layout=group?vmlGroupChildLayout(group,shape):vmlImageLayout(shape);
     if(!mediaTarget||!layout)continue;
     const base=path.split('/').slice(0,-1).join('/');
     const mediaPath=normalPath(base,mediaTarget);
@@ -197,7 +206,7 @@ function partSpec(sect,kind,rels,root,files,mediaUrls){
     if(!src)continue;
     artwork.push(Object.assign({src,opacity:1,partKind:kind},layout));
   }
-  const text=descendants(doc,'t').map(node=>node.textContent||'').join('').trim();
+  const text=descendants(doc,'t').filter(node=>!vmlInFallback(node)).map(node=>node.textContent||'').join('').trim();
   return{text,artwork};
 }
 function installStyles(){
