@@ -13,3 +13,12 @@
 @media print{@page{size:landscape;margin:0}html.ppt-printing,html.ppt-printing body{background:#fff!important;height:auto!important;min-height:0!important;overflow:visible!important;position:static!important}html.ppt-printing body>*:not(#pptPrintSheet){display:none!important}html.ppt-printing #pptPrintSheet{display:block}.ppt-print-page{height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;break-after:page;page-break-after:always}.ppt-print-page:last-child{break-after:auto;page-break-after:auto}.ppt-print-slide{position:relative;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 /* PowerPoint default tab stop: 1 inch (72 pt; slide px are points). */
 .slide-paragraph{tab-size:72px;-moz-tab-size:72px}
+/* Metric-compatible fallbacks for Calibri / Cambria (vendor/fonts/VENDOR-PROVENANCE.txt). */
+@font-face{font-family:"InkDOS Sans";src:url("../vendor/fonts/InkDOSSans-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"InkDOS Sans";src:url("../vendor/fonts/InkDOSSans-Bold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"InkDOS Sans";src:url("../vendor/fonts/InkDOSSans-Italic.ttf") format("truetype");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"InkDOS Sans";src:url("../vendor/fonts/InkDOSSans-BoldItalic.ttf") format("truetype");font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:"InkDOS Serif";src:url("../vendor/fonts/InkDOSSerif-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"InkDOS Serif";src:url("../vendor/fonts/InkDOSSerif-Bold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"InkDOS Serif";src:url("../vendor/fonts/InkDOSSerif-Italic.ttf") format("truetype");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"InkDOS Serif";src:url("../vendor/fonts/InkDOSSerif-BoldItalic.ttf") format("truetype");font-weight:700;font-style:italic;font-display:swap}

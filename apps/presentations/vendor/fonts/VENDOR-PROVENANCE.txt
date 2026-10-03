@@ -1,0 +1,9 @@
+InkDOS Sans (Regular, Bold, Italic, Bold Italic) — metric-compatible with Calibri
+Same files as apps/spreadsheets/vendor/fonts (deliberate per-app copy): derived from Carlito 1.103, npm @expo-google-fonts/carlito 0.4.1, subset with fontTools pyftsubset, hinting removed, renamed "InkDOS Sans" because "Carlito" is a Reserved Font Name for modified versions.
+License: SIL Open Font License 1.1 (OFL-Carlito.txt), copyright The Carlito Project Authors.
+
+InkDOS Serif (Regular, Bold, Italic, Bold Italic) — metric-compatible with Cambria
+Derived from Caladea (npm @expo-google-fonts/caladea 0.4.2, Google Fonts build). Modified with fontTools pyftsubset: Latin, Latin-1, Latin Extended-A/B, spacing modifiers, general punctuation, euro/trademark, arrows, minus and geometric shapes; hinting removed. Renamed "InkDOS Serif" for consistency with InkDOS Sans.
+License: SIL Open Font License 1.1 (OFL-Caladea.txt), copyright 2012 The Caladea Project Authors.
+
+Used by view/presentation-surface.css as fallbacks after the Office font names, so slides keep Office line breaks where Calibri/Cambria are not installed (iPad, Linux).

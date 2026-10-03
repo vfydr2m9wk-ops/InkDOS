@@ -86,7 +86,7 @@ def main() -> int:
             browser = pw.chromium.launch(**launch)
             for src in args.files:
                 src = src.resolve()
-                work = args.out / src.stem
+                work = args.out / f'{src.stem}-{src.suffix.lstrip(".").lower()}'
                 work.mkdir(parents=True, exist_ok=True)
                 pdf = reference_pdf(src, work)
                 ctx = browser.new_context(service_workers='block', viewport={'width': 1400, 'height': 900})
@@ -107,8 +107,13 @@ def main() -> int:
                 refs = sorted(work.glob('ref-*.png'))
                 slides = []
                 for n in range(1, count + 1):
-                    page.locator('.slide-thumb').nth(n - 1).click()
-                    page.wait_for_timeout(500)
+                    thumb = page.locator('.slide-thumb').nth(n - 1)
+                    sid = thumb.get_attribute('data-slide-id')
+                    thumb.click()
+                    # Capture only once the canvas shows this slide and web fonts are ready.
+                    page.wait_for_function("(id)=>{const c=document.getElementById('slideCanvas');return !!c&&(!id||c.dataset.slideId===id)}", arg=sid, timeout=20000)
+                    page.evaluate("()=>document.fonts.ready.then(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))))")
+                    page.wait_for_timeout(250)
                     shot = work / f'ink-{n:03d}.png'
                     page.locator('#slideCanvas').first.screenshot(path=str(shot))
                     ref = refs[n - 1] if n - 1 < len(refs) else None

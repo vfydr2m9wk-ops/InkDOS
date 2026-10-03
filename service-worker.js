@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-99b0ee89c5aa10464eda';
+const CACHE_NAME='inkdos-v2.7.4-3fb612c5f63c45034bdc';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -178,9 +178,17 @@ const ASSET_HASHES={
   "./apps/presentations/ui/visual-system.css": "920e3be86ae693805666ae3c171fb27458fddf083f678b6fadfd617fb80653c7",
   "./apps/presentations/ui/zoom-controls.js": "d3072d3f3dfd1de9b20cbdc68e29167203b2c116e1d24265111581e55396b4d9",
   "./apps/presentations/ui/zoom-menu.css": "f3c24225eff4bd90b5f9236d2639f50902ae6bfafed09370c26f7af6b4598f25",
+  "./apps/presentations/vendor/fonts/InkDOSSans-Bold.ttf": "7697382a540d9a1a91b492312df06565849858c072b4296e6139a27d6f26775e",
+  "./apps/presentations/vendor/fonts/InkDOSSans-BoldItalic.ttf": "94497d34f0a0f4d4cbc2c4f060305d5d1af42dfabf236cdb10773aeef89dd305",
+  "./apps/presentations/vendor/fonts/InkDOSSans-Italic.ttf": "403384337845306025cedfe9cb3b01376c8d58d062bb8e7022338a414b8a4faa",
+  "./apps/presentations/vendor/fonts/InkDOSSans-Regular.ttf": "109913f254f84308f0ff346582cec8da045ec94965950ceb9ab22f4d4b824e5d",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-Bold.ttf": "fdc5adca0df52321950aa3c2b30fbca6550e8b5b1f178f306b9d802074a077d6",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-BoldItalic.ttf": "fea3bfc307036581d17ec4e8ff427cc0d3ac8f02ba66831eaef6f7f8a7863e26",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-Italic.ttf": "1e5f70d6734d7f8c4a41387537c2c7855c1dec235ade6bbdc78a6504d2665842",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-Regular.ttf": "7f7f7c13269dca9e54b6db16bd12d158e73dc00110865bef1944b1b5ae213422",
   "./apps/presentations/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
-  "./apps/presentations/view/presentation-surface.css": "d6c7a14a300d9e76689a29a1f2bddeb6bc078f34e326ef8b45b2a11c22c4d92e",
-  "./apps/presentations/view/slide-surface.js": "233c97abd9a961d06f0b3a7b3972ec7557b66bda384f2c11a89c2518ee1dca78",
+  "./apps/presentations/view/presentation-surface.css": "7d212c360fabfea5a7b5584e4277651ea17d85e3d15593729531747248b770e9",
+  "./apps/presentations/view/slide-surface.js": "c194cec5b35270947bbb46e032576bd8ac7aded6646ad0d5704082a32f1adb50",
   "./apps/presentations/view/zoom-controller.js": "cc6b8fe19d95882b7da0d77ea456179b6eb5b3b60b72ecef57f314d6a8d21066",
   "./apps/spreadsheets/app.js": "728421ed05ee9953abcea099992023fe5046c54a42739fd9920e0159ccb208fa",
   "./apps/spreadsheets/assets/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
@@ -514,6 +522,14 @@ const APP_SHELL=[
   "./apps/presentations/ui/visual-system.css",
   "./apps/presentations/vendor/jszip.min.js",
   "./apps/presentations/view/presentation-surface.css",
+  "./apps/presentations/vendor/fonts/InkDOSSans-Regular.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSans-Bold.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSans-Italic.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSans-BoldItalic.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-Regular.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-Bold.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-Italic.ttf",
+  "./apps/presentations/vendor/fonts/InkDOSSerif-BoldItalic.ttf",
   "./apps/presentations/view/slide-surface.js",
   "./apps/presentations/view/zoom-controller.js",
   "./apps/txt/app.js",
