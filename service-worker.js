@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-4b0105256ceec325ba7b';
+const CACHE_NAME='inkdos-v2.7.4-109c53f3e9a7fea044a4';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -146,13 +146,14 @@ const ASSET_HASHES={
   "./apps/presentations/engine/presentation-policy.js": "760b32087b193ebb106876a835197c66a87aa53d0de14aba7679a6b460481405",
   "./apps/presentations/engine/presentation-session.js": "f55ed4356396e5621b0bd6a04eed1a4cfbc9486d19ba8c37e09a707bf711c588",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
-  "./apps/presentations/index.html": "86fe2e2249877728f44c0ccc9048fc587ca359dba3fa6a4a23cc2251896a129a",
+  "./apps/presentations/index.html": "f0d03015475ca71fb59181f76a10a4a5120749bb792b2f8834e174ca4ec74c44",
   "./apps/presentations/io/file-delivery.js": "ec01fc4533f885f291b92845b79a1f46b4eaebdf3ce99509b497dd5ff191bf3e",
-  "./apps/presentations/io/ppt-legacy-reader.js": "911ed500a750b4f8d44aa4a6f449995fe06ee68509dad0565e5155087f04af04",
+  "./apps/presentations/io/metafile-render.js": "96bf2231d2810470afb9e6a56d7d9a4f98bc2451352eaf1c59e42cff8051b7fc",
+  "./apps/presentations/io/ppt-legacy-reader.js": "f0bfe7d2b5d57c5b0366c219d308a3150419d4a33a63ec890e78f2c9e78608aa",
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
   "./apps/presentations/io/ppt-p1-structure-writer.js": "911f2782745155b3e799bb0f536ae3148d130782157820c989623f2328aaf55e",
   "./apps/presentations/io/ppt-p2-package.js": "428f7df540e85293fdb7eeb14eab6d1a114f888f0ed73419887659840fa755aa",
-  "./apps/presentations/io/pptx-open-controller.js": "3593088f8a3257d20d1dd06b7b86a1c76a523414fbc069c80de606349af3de39",
+  "./apps/presentations/io/pptx-open-controller.js": "9e9ca322404ed90306d8c61c94358836f5b510911617a278d5662ac18b73febc",
   "./apps/presentations/io/pptx-preservation-writer.js": "b6a7f9b7a90f693a1ec3de0b0893633b5fd090e43d5fa72122f1a47f46a56b90",
   "./apps/presentations/io/pptx-text-columns.js": "e034eccc7d269f900370aac3c36bf7ab560033a6954853a995b15f6e797d42a4",
   "./apps/presentations/io/pptx-writer.js": "1f34f988b490c02c24bb2d0c954606883c55abcaab84a2dff891b90e03222671",
@@ -492,6 +493,7 @@ const APP_SHELL=[
   "./apps/presentations/help/help.js",
   "./apps/presentations/index.html",
   "./apps/presentations/io/file-delivery.js",
+  "./apps/presentations/io/metafile-render.js",
   "./apps/presentations/io/ppt-legacy-reader.js",
   "./apps/presentations/io/ppt-p1-object-writer.js",
   "./apps/presentations/io/ppt-p1-structure-writer.js",

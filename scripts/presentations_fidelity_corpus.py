@@ -69,6 +69,16 @@ class Slide:
             f'<{tag}>{nv}<p:spPr><a:xfrm rot="{int(rot * 60000)}"{flip}><a:off x="{emu(x)}" y="{emu(y)}"/><a:ext cx="{emu(w)}" cy="{emu(h)}"/></a:xfrm>'
             f'<a:prstGeom prst="{prst}"><a:avLst/></a:prstGeom>{fill_xml if prst != "line" else ""}{line_xml}</p:spPr></{tag}>')
 
+    def picture(self, x, y, w, h, media):
+        sid = self._id()
+        self.media = getattr(self, 'media', [])
+        self.media.append(media)
+        rid = f'rIdM{len(self.media)}'
+        self.shapes.append(
+            f'<p:pic><p:nvPicPr><p:cNvPr id="{sid}" name="P{sid}"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr>'
+            f'<p:blipFill><a:blip r:embed="{rid}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'
+            f'<p:spPr><a:xfrm><a:off x="{emu(x)}" y="{emu(y)}"/><a:ext cx="{emu(w)}" cy="{emu(h)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
+
     def group(self, x, y, w, h, build):
         sid = self._id()
         inner = Slide()
@@ -190,6 +200,36 @@ def deck_shapes() -> list[Slide]:
     return out
 
 
+CHART_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260">'
+             '<rect x="0" y="0" width="400" height="260" fill="#ffffff" stroke="#888888"/>'
+             '<rect x="40" y="140" width="60" height="90" fill="#4472c4"/><rect x="130" y="80" width="60" height="150" fill="#ed7d31"/>'
+             '<rect x="220" y="110" width="60" height="120" fill="#a5a5a5"/><rect x="310" y="40" width="60" height="190" fill="#ffc000"/>'
+             '<line x1="30" y1="230" x2="390" y2="230" stroke="#000000" stroke-width="2"/>'
+             '<text x="200" y="28" font-family="Arial" font-size="20" text-anchor="middle" fill="#000000">Vendas por trimestre</text></svg>')
+
+
+def deck_metafiles(out: Path) -> list[Slide]:
+    soffice = shutil.which('soffice') or shutil.which('libreoffice')
+    if not soffice:
+        return []
+    svg = out / 'chart.svg'
+    svg.write_text(CHART_SVG, encoding='utf-8')
+    made = []
+    for kind in ('emf', 'wmf'):
+        subprocess.run([soffice, '--headless', '--convert-to', kind, '--outdir', str(out), str(svg)],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=240, check=False)
+        f = out / f'chart.{kind}'
+        if f.exists():
+            made.append(f)
+    if not made:
+        return []
+    s = Slide()
+    s.text(36, 10, 648, 40, [para('Metarquivos (EMF / WMF)', size=24, algn='ctr')])
+    for i, f in enumerate(made):
+        s.picture(40 + i * 340, 90, 300, 195, str(f))
+    return [s]
+
+
 def package(slides: list[Slide], path: Path) -> None:
     ct = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
           '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'
@@ -198,6 +238,7 @@ def package(slides: list[Slide], path: Path) -> None:
           '<Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'
           '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>']
     ct += [f'<Override PartName="/ppt/slides/slide{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>' for i in range(1, len(slides) + 1)]
+    ct.insert(1, '<Default Extension="emf" ContentType="image/x-emf"/><Default Extension="wmf" ContentType="image/x-wmf"/><Default Extension="png" ContentType="image/png"/>')
     ct.append('</Types>')
     rel = lambda items: ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
                          + ''.join(f'<Relationship Id="{i}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/{t}" Target="{g}"/>' for i, t, g in items) + '</Relationships>')
@@ -230,7 +271,11 @@ def package(slides: list[Slide], path: Path) -> None:
         z.writestr('ppt/theme/theme1.xml', theme)
         for i, s in enumerate(slides, 1):
             z.writestr(f'ppt/slides/slide{i}.xml', s.xml())
-            z.writestr(f'ppt/slides/_rels/slide{i}.xml.rels', rel([('rId1', 'slideLayout', '../slideLayouts/slideLayout1.xml')]))
+            media = getattr(s, 'media', [])
+            for k, m in enumerate(media, 1):
+                z.write(m, f'ppt/media/s{i}m{k}{Path(m).suffix}')
+            z.writestr(f'ppt/slides/_rels/slide{i}.xml.rels', rel([('rId1', 'slideLayout', '../slideLayouts/slideLayout1.xml')]
+                       + [(f'rIdM{k}', 'image', f'../media/s{i}m{k}{Path(m).suffix}') for k, m in enumerate(media, 1)]))
 
 
 def main() -> int:
@@ -240,9 +285,12 @@ def main() -> int:
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     made = []
-    for name, build in (('corpus-text', deck_text), ('corpus-shapes', deck_shapes)):
+    for name, build in (('corpus-text', deck_text), ('corpus-shapes', deck_shapes), ('corpus-metafiles', lambda: deck_metafiles(args.out))):
+        slides = build()
+        if not slides:
+            continue
         path = args.out / f'{name}.pptx'
-        package(build(), path)
+        package(slides, path)
         made.append(path)
     soffice = shutil.which('soffice') or shutil.which('libreoffice')
     if soffice and not args.no_ppt:
