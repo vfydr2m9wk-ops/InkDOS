@@ -60,6 +60,8 @@ def main():
             slides_before = page.evaluate("()=>globalThis.__inkdosPresentations.session.slides.length")
             page.click("#pptP2CommentBtn")
             page.wait_for_selector("#inkdosAskPanel:not([hidden])")
+            # The dialog focuses its field on the next animation frame; type only once it has focus.
+            page.wait_for_function("() => document.activeElement?.id === 'inkdosAskField0'")
             page.keyboard.type("Reviewx")
             page.keyboard.press("Backspace")
             page.keyboard.press("Enter")
