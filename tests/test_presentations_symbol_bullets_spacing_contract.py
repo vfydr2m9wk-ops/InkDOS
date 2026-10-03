@@ -57,6 +57,29 @@ process.stdout.write(JSON.stringify([t.color,t.fontSizePt,t.levels[0].pf.align,t
         self.assertEqual(run_node(probe), ["#ffffff", 46, "center", 0, "#123456", "#ffffff", "#595959"])
 
 
+@unittest.skipUnless(shutil.which("node"), "node is required for the behavioural probes")
+class PptxColourTransformTests(unittest.TestCase):
+    def test_lum_mod_off_shade_and_tint_apply_to_solid_colours(self):
+        start = PPTX.index("function colorFrom(")
+        src = PPTX[start : PPTX.index("\n", PPTX.index("function colorTransforms(", start))]
+        lum = PPTX[PPTX.index("function lumAdjust(") :]
+        lum = lum[: lum.index("\n")]
+        probe = r"""
+const kids=n=>n.kids||[],first=(n,name)=>{for(const k of kids(n)){if(k.localName===name)return k;const f=first(k,name);if(f)return f}return null},child=(n,name)=>kids(n).find(k=>k.localName===name)||null,attr=(n,k,d=null)=>n&&n.a&&n.a[k]!=null?n.a[k]:d,num=(v,d)=>Number.isFinite(Number(v))?Number(v):d,hex=v=>/^[0-9a-f]{6}$/i.test(v||'')?'#'+v.toUpperCase():null;
+const el=(localName,a={},k=[])=>({localName,a,kids:k});
+""" + lum + "\n" + src + r"""
+const theme={colors:{tx2:'#C0504D'}};
+const pink=el('solidFill',{},[el('schemeClr',{val:'tx2'},[el('lumMod',{val:'20000'}),el('lumOff',{val:'80000'})])]);
+const shade=el('solidFill',{},[el('srgbClr',{val:'808080'},[el('shade',{val:'50000'})])]);
+const tint=el('solidFill',{},[el('srgbClr',{val:'000000'},[el('tint',{val:'50000'})])]);
+const plain=el('solidFill',{},[el('srgbClr',{val:'123456'})]);
+process.stdout.write(JSON.stringify([colorFrom(pink,theme),colorFrom(shade,theme),colorFrom(tint,theme),colorFrom(plain,theme)]))"""
+        out = run_node(probe)
+        self.assertEqual(out[1:], ["#404040", "#808080", "#123456"])
+        r, g, b = (int(out[0][i : i + 2], 16) for i in (1, 3, 5))
+        self.assertTrue(r > 230 and g > 205 and b > 205 and r > g, out[0])
+
+
 class StaticContracts(unittest.TestCase):
     def test_legacy_picture_background_follows_master(self):
         helper = block(PPT, "function backgroundImageFromContainer", "\nfunction backgroundColorFromContainer")
@@ -71,6 +94,26 @@ class StaticContracts(unittest.TestCase):
         self.assertIn("child(ln,'headEnd')", line)
         self.assertIn("child(ln,'tailEnd')", line)
         self.assertIn("t==='arrow'?'open':'triangle'", line)
+
+    def test_bullet_colour_and_size_flow_from_readers_to_renderer(self):
+        self.assertIn("child(x,'buClr')", PPTX)
+        self.assertIn("child(x,'buSzPct')", PPTX)
+        self.assertIn("out.bulletColorRef=", PPT)
+        self.assertIn("bulletSizePct:bsz", PPT)
+        model = (APP / "engine" / "presentation-session.js").read_text(encoding="utf-8")
+        self.assertIn("bulletColor:p.bulletColor", model)
+        self.assertIn("bulletSizePct:Math.max(25,Math.min(400", model)
+        self.assertIn("bullet.style.color=bc", SURFACE)
+
+    def test_legacy_master_shapes_fonts_and_names(self):
+        self.assertIn("skipPlaceholders:true}).filter(o=>o.type==='image'||o.type==='shape')", PPT)
+        self.assertIn("x.type===0x0bc3", PPT)
+        self.assertIn("(mcf.fontRef!=null&&fontTable[mcf.fontRef])", PPT)
+        self.assertIn("utf16(record.data.subarray(0,64)).split('\\u0000')[0]", PPT)
+
+    def test_missing_fonts_fall_back_by_design_class(self):
+        self.assertIn("SERIF_FACES=/^(constantia|georgia|times", SURFACE)
+        self.assertIn("MONO_FACES.test(n)?'\"Courier New\", monospace':SERIF_FACES.test(n)?", SURFACE)
 
     def test_reduced_line_spacing_is_not_clamped_by_paragraph_min_height(self):
         self.assertIn("if(parseFloat(line.style.lineHeight)<lineFont)line.style.minHeight=line.style.lineHeight;", SURFACE)

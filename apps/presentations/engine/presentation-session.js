@@ -10,7 +10,7 @@ function normalizeParagraphs(input,text,fallback={}){
   if(Array.isArray(input)&&input.length){return input.map(p=>({
     align:['left','center','right','justify'].includes(p.align)?p.align:(fallback.align||'left'),
     level:Math.max(0,Math.min(8,sane(p.level,0))),
-    bullet:p.bullet||null,
+    bullet:p.bullet||null,...(p.bulletColor&&/^#[0-9a-f]{6}$/i.test(p.bulletColor)?{bulletColor:p.bulletColor}:{}),...(p.bulletSizePct?{bulletSizePct:Math.max(25,Math.min(400,sane(p.bulletSizePct,100)))}:{}),
     lineSpacing:sane(p.lineSpacing,1.0),lineSpacingPt:p.lineSpacingPt==null?null:sane(p.lineSpacingPt,null),spaceBeforePt:sane(p.spaceBeforePt,0),spaceAfterPt:sane(p.spaceAfterPt,0),...(p.marginLeftPt!=null?{marginLeftPt:sane(p.marginLeftPt,0),indentPt:sane(p.indentPt,0)}:{}),...(p.tabSizePt?{tabSizePt:Math.max(1,sane(p.tabSizePt,72))}:{}),...(p.autoNumber&&typeof p.autoNumber.type==='string'?{autoNumber:{type:p.autoNumber.type,startAt:Math.max(1,Math.round(sane(p.autoNumber.startAt,1)))}}:{}),
     runs:Array.isArray(p.runs)&&p.runs.length?p.runs.map(r=>({...(r.caps?{caps:true}:{}),...(r.shadow?{shadow:true}:{}),text:String(r.text??''),fontSizePt:sane(r.fontSizePt,fallback.fontSizePt||24),bold:!!r.bold,italic:!!r.italic,underline:!!r.underline,color:r.color||fallback.color||null,fontFamily:r.fontFamily||fallback.fontFamily||null,charSpacingPt:sane(r.charSpacingPt,fallback.charSpacingPt||0)})):[{text:'',fontSizePt:fallback.fontSizePt||24,bold:!!fallback.bold,italic:!!fallback.italic,underline:false,color:fallback.color||null,fontFamily:fallback.fontFamily||null,charSpacingPt:sane(fallback.charSpacingPt,0)}]
   }))}
