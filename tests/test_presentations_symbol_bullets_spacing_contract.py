@@ -120,6 +120,17 @@ class StaticContracts(unittest.TestCase):
         helper = block(PPTX, "function paraSpacePt(", "\n")
         self.assertIn("(sp.rawRatio??sp.ratio??0)*size*1.2", helper)
 
+    def test_group_members_are_never_the_legacy_background_shape(self):
+        helper = block(PPT, "function groupChildSp(", "\n")
+        self.assertIn("u32(sp.data,4)&0x2", helper)
+        for fn in ("backgroundImageFromContainer", "backgroundGradientFromContainer", "backgroundColorFromContainer"):
+            self.assertIn("groupChildSp(own)", block(PPT, f"function {fn}(", "\n"))
+
+    def test_pptx_texture_fill_with_gradient_overlay_uses_the_overlay(self):
+        helper = block(PPTX, "function fillEffects(", "const sf=child(spPr,'solidFill')")
+        self.assertIn("child(spPr,'blipFill')?first(child(spPr,'effectLst'),'fillOverlay')", helper)
+        self.assertIn("(ov&&child(ov,'gradFill'))", helper)
+
     def test_reduced_line_spacing_is_not_clamped_by_paragraph_min_height(self):
         self.assertIn("if(parseFloat(line.style.lineHeight)<lineFont)line.style.minHeight=line.style.lineHeight;", SURFACE)
 
