@@ -238,5 +238,585 @@
   ],
   "sha256": "45a03e09d96b9eac1bff5bf5d9546dc63f6c78888dc5cca08725bf60b615138b",
   "referenceSha256": "5b4b91e0185fc3773654c04460c4bd076918cca7b6d1229e1169cc2313fc48e9"
+ },
+ {
+  "file": "presentations/0a0b10980073.pptx",
+  "reference": "presentations/0a0b10980073.pdf",
+  "source": "https://www.matemat.it/resources/Der/DerA14/DerA14pres.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Der/DerA14/DerA14pres.pdf",
+  "producer": "PowerPoint / macOS Versione 10.14.4 (Build 18E2034) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091677317.76/warc/CC-MAIN-20260818072149-20260818102149-00733.warc.gz",
+   745168321,
+   2698254
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091677317.76/warc/CC-MAIN-20260818072149-20260818102149-00841.warc.gz",
+   758973399,
+   1577103
+  ],
+  "sha256": "81190cc30547933cdc47b15b2cf520f358c88c304e97f508ae9c5831e19a7af9",
+  "referenceSha256": "603d6aff86bfc0289bcd3b81b38ea80f7224fb6994e6a40321e5ebda0069faec"
+ },
+ {
+  "file": "presentations/8dd7d109e055.pptx",
+  "reference": "presentations/8dd7d109e055.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel10_Opplegg_29_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel10_Opplegg_29_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00521.warc.gz",
+   303131310,
+   1038083
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00333.warc.gz",
+   298854952,
+   280802
+  ],
+  "sha256": "70d084b7870db55ef3e1e8760c730aee276b4a0ab72ee0c66745072378d9d6f8",
+  "referenceSha256": "a2be97d1ad3b219dedd401d930941c17f37f63cd857e59e951f25546c2b85c53"
+ },
+ {
+  "file": "presentations/a7a54d196760.pptx",
+  "reference": "presentations/a7a54d196760.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel10_Opplegg_30_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel10_Opplegg_30_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00011.warc.gz",
+   331685573,
+   2648057
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00123.warc.gz",
+   342093777,
+   338726
+  ],
+  "sha256": "41fde0d7062588507546345bb6b7c89275840c69738449cc35e2fd147e5aa55c",
+  "referenceSha256": "e553591142980e9550628233e0a94af1b0d43af06c93f3337005ade3dedf96c2"
+ },
+ {
+  "file": "presentations/389af27b52c2.pptx",
+  "reference": "presentations/389af27b52c2.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel10_Opplegg_31_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel10_Opplegg_31_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00386.warc.gz",
+   284428062,
+   1695620
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00116.warc.gz",
+   283486125,
+   255061
+  ],
+  "sha256": "8ab3f89fe9d6051585f184225100610f8fc438bdf42be579f9564bc98835fd03",
+  "referenceSha256": "27ae7897ccc8e64a54c7c6779c4770c7391da15a1624836e7c53f0bdd250e522"
+ },
+ {
+  "file": "presentations/0f5fe59c02de.pptx",
+  "reference": "presentations/0f5fe59c02de.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel11_Opplegg_33_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel11_Opplegg_33_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00089.warc.gz",
+   300909972,
+   2423598
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00997.warc.gz",
+   294578060,
+   513495
+  ],
+  "sha256": "e664329cbe38ea101ec6793d9fe3abc0dabd7b26eaba7800d61218fe634c530b",
+  "referenceSha256": "4027880d091f18fdd45881bda82787a4eef35acf8a92d8768132eadaeb96f972"
+ },
+ {
+  "file": "presentations/511433cad725.pptx",
+  "reference": "presentations/511433cad725.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel11_Opplegg_34.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel11_Opplegg_34.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00727.warc.gz",
+   317415682,
+   1685202
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00023.warc.gz",
+   306785889,
+   225157
+  ],
+  "sha256": "948eb5b797b1b894333e2c2158c0cec6427216b6ffba4e48c83fe8672ce12d87",
+  "referenceSha256": "1e751b9d49b28482ff2e6fb2f1f936d8d10cc8ac0ed9fc45ec8d34bad0f466d9"
+ },
+ {
+  "file": "presentations/54e976bded2c.pptx",
+  "reference": "presentations/54e976bded2c.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel11_Opplegg_34_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel11_Opplegg_34_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00464.warc.gz",
+   284553532,
+   1667286
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00990.warc.gz",
+   295699765,
+   217011
+  ],
+  "sha256": "94ef780f73fca285ae415e92ec5db3c87d21295f454ef4832332ab9b93eaa96c",
+  "referenceSha256": "602f5fd262653447c141a77f0dfb16fab19e4eafe983e0de715b0bf011a9d8ce"
+ },
+ {
+  "file": "presentations/e6332985ae1c.pptx",
+  "reference": "presentations/e6332985ae1c.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel-12-Introduksjon-til-Python-nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel-12-Introduksjon-til-Python-nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00657.warc.gz",
+   307775420,
+   4528957
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385205.8/warc/CC-MAIN-20260809063011-20260809093011-00829.warc.gz",
+   275729218,
+   1045374
+  ],
+  "sha256": "755693c4a9aa34a8f05fc7a920b7b1744c3aebac18fad3c9cc12a7f52137de6e",
+  "referenceSha256": "e6a28cfe6a0857e5e80f64d3fa0e1fd4a9a0941e8fb59bb93976f4738e51b5c8"
+ },
+ {
+  "file": "presentations/ad5f784a5947.pptx",
+  "reference": "presentations/ad5f784a5947.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel-13-Modellering-med-Python.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel-13-Modellering-med-Python.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00704.warc.gz",
+   267693677,
+   3304138
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385594.25/warc/CC-MAIN-20260813172703-20260813202703-00518.warc.gz",
+   280684586,
+   702832
+  ],
+  "sha256": "9396ddcfed4909e81fd93f9a3dea032614f6b9b80639ae3b20c4e4f2b9024c8f",
+  "referenceSha256": "2149eb9874488fce469f815b2176887b632f0733f0e9dcf418039ef1fd668cdc"
+ },
+ {
+  "file": "presentations/5264502ba9cd.pptx",
+  "reference": "presentations/5264502ba9cd.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel-13-Modellering-med-Python-nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel-13-Modellering-med-Python-nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00719.warc.gz",
+   277690811,
+   3300641
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00135.warc.gz",
+   295964439,
+   742305
+  ],
+  "sha256": "b69ed20d1daffdf2a5fb05ddd698d0bf819c2e4ba1028baad570e7eccb36f1c6",
+  "referenceSha256": "f1404d883b302618174e4686ee7ea0b453f5ee9db87a593e41b90a04381ea925"
+ },
+ {
+  "file": "presentations/f26c6d0dffdc.pptx",
+  "reference": "presentations/f26c6d0dffdc.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_12_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_12_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00294.warc.gz",
+   285478043,
+   398661
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00328.warc.gz",
+   307374079,
+   449705
+  ],
+  "sha256": "07c275c440298fc55d5c40575e8cfb30cad39794f55dd1511105d39733395d2a",
+  "referenceSha256": "f1c19688f7d9fa31080e03c19b63990acf84aa6e0f551907de2505d6e6857a98"
+ },
+ {
+  "file": "presentations/585566336abf.pptx",
+  "reference": "presentations/585566336abf.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_13_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_13_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00669.warc.gz",
+   307856861,
+   1037445
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385594.25/warc/CC-MAIN-20260813172703-20260813202703-00321.warc.gz",
+   307357481,
+   331158
+  ],
+  "sha256": "3c98f569278af14a8fbf7583160147d059ed2a3636f88ede22ebcfe328c8b2a1",
+  "referenceSha256": "fe97bf58471dd823e41994b8af7083816c681696647cfaf066155530c67259d6"
+ },
+ {
+  "file": "presentations/da77e5a3c2b6.pptx",
+  "reference": "presentations/da77e5a3c2b6.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_14_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_14_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00044.warc.gz",
+   265972897,
+   753435
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00314.warc.gz",
+   313436267,
+   341097
+  ],
+  "sha256": "75b471397d513b9d7a261ad535259dd7fee2d9574525e3aa9c0525df4e428fe5",
+  "referenceSha256": "48912da1c5f1bdd81612b148a79d9929fc22292bcde00b974b9ba85307cba86e"
+ },
+ {
+  "file": "presentations/d5af4ca692c8.pptx",
+  "reference": "presentations/d5af4ca692c8.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_15_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel6_Opplegg_15_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00419.warc.gz",
+   300574877,
+   1833527
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00307.warc.gz",
+   297058933,
+   394550
+  ],
+  "sha256": "8b74f26c1831c100f6ed756082dddfc1b56bd97e391ef0628caf974f6a086d96",
+  "referenceSha256": "1be985a2fd6c2d2c493a6a5739fd594e0416eb7f2e3f2d45bff69929011dfbc9"
+ },
+ {
+  "file": "presentations/56d9f35ecc2f.pptx",
+  "reference": "presentations/56d9f35ecc2f.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_intro_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_intro_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385205.8/warc/CC-MAIN-20260809063011-20260809093011-00243.warc.gz",
+   322961238,
+   102091
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00827.warc.gz",
+   284467852,
+   210885
+  ],
+  "sha256": "a3d7a3854dc4fa064f1b6b9324cb91c1c9c0dfe18575ceef9242736d16322135",
+  "referenceSha256": "3b002d965466d00ef5ec4ea7b11302fc5866f248eb74433b508ced5265a717e8"
+ },
+ {
+  "file": "presentations/ce38f59e854f.pptx",
+  "reference": "presentations/ce38f59e854f.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_Opplegg_16_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_Opplegg_16_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00747.warc.gz",
+   315244768,
+   1307749
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00547.warc.gz",
+   317005151,
+   338336
+  ],
+  "sha256": "2fadfa57d610e07100748a7e1b1f72b5f0947d9b416713d54be2e2f70ccbe771",
+  "referenceSha256": "55f2bd9560f439bc4291e4611602ab34b36e7d7ab4f501642c8c6fcb9736cbb2"
+ },
+ {
+  "file": "presentations/352e7489bc81.pptx",
+  "reference": "presentations/352e7489bc81.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_Opplegg_17_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_Opplegg_17_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385205.8/warc/CC-MAIN-20260809063011-20260809093011-00122.warc.gz",
+   279414978,
+   1901522
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00188.warc.gz",
+   297068610,
+   265689
+  ],
+  "sha256": "956dd147f7c3ab23b2e42d7ce1ea3e46ca65f59b4d64ed06d5a7102956b97269",
+  "referenceSha256": "49b081281a6bc79b70c042c2da31eef0f1b3a998a9b7380301a04d9dffa7b131"
+ },
+ {
+  "file": "presentations/3f2ead103b7c.pptx",
+  "reference": "presentations/3f2ead103b7c.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_Opplegg_19_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel7_Opplegg_19nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00872.warc.gz",
+   329882332,
+   2094374
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00711.warc.gz",
+   316938246,
+   327816
+  ],
+  "sha256": "31fa25692bac2f233b0d0170a9e7f70c88ab882e6c261a06857cadf4781e1845",
+  "referenceSha256": "de61fc01ac8296ce79739ed5a2a673c77e3d70515d01ce2f5a138556f0dacded"
+ },
+ {
+  "file": "presentations/2ff5276097dd.pptx",
+  "reference": "presentations/2ff5276097dd.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_20_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_20_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00667.warc.gz",
+   301511640,
+   1246035
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385205.8/warc/CC-MAIN-20260809063011-20260809093011-00211.warc.gz",
+   295085746,
+   339862
+  ],
+  "sha256": "2fa7d623c85e7bb2e45a7e70de4eed40733144a76d162e0d684e455818bd69ca",
+  "referenceSha256": "8bab5c5b3cdc35368dcb714d7ebce85bca3bffd108e6934a5b85884ca2dc81ca"
+ },
+ {
+  "file": "presentations/7a8f8bafb4b2.pptx",
+  "reference": "presentations/7a8f8bafb4b2.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_21_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_21_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00690.warc.gz",
+   306036910,
+   1704049
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00204.warc.gz",
+   306843484,
+   349457
+  ],
+  "sha256": "73887380083f8fe71f743ecc591c40f01209a8bf38e96baf658bd4505c02f648",
+  "referenceSha256": "5013edf60bc15eadcf9b5795c7d02994d9bc305e27c23117282917b4fe21cbe7"
+ },
+ {
+  "file": "presentations/bbe2e7fe7ab7.pptx",
+  "reference": "presentations/bbe2e7fe7ab7.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_22_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_22_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00065.warc.gz",
+   319618367,
+   1223350
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00197.warc.gz",
+   303892313,
+   309561
+  ],
+  "sha256": "3ae245282d7f1a1b37e793e8bc5c8ed14bff090b97c3774d0e7b69f0c5ec079c",
+  "referenceSha256": "6d296bd8e04d341e6e714654361778159bf03b189c74016e4882b257a6867903"
+ },
+ {
+  "file": "presentations/a9cb71c5a917.pptx",
+  "reference": "presentations/a9cb71c5a917.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_23_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_23_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385594.25/warc/CC-MAIN-20260813172703-20260813202703-00440.warc.gz",
+   297066422,
+   1892227
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00190.warc.gz",
+   307906124,
+   317813
+  ],
+  "sha256": "e6f6d0f927d3556907d87f767ee1d3680d6483f0242a4b7ab3fbe4eeead6d45b",
+  "referenceSha256": "bed8266b392c34d9cb271e89ea0403fcc1521f2607f54f6488e0d4a0ad0c42db"
+ },
+ {
+  "file": "presentations/462a2083c876.pptx",
+  "reference": "presentations/462a2083c876.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_24_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_24_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00815.warc.gz",
+   260320012,
+   1524354
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00183.warc.gz",
+   290763679,
+   346090
+  ],
+  "sha256": "c97ae83df6f23c3ad8e60930d84bb367cfb730b73c9ebf4d6e20f5b68a572658",
+  "referenceSha256": "c1f72696d198904f7f5a0b25044d18a9a59bb4b90f309a4cf77e2994b1bde005"
+ },
+ {
+  "file": "presentations/00b6d3dd511f.pptx",
+  "reference": "presentations/00b6d3dd511f.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_25_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel8_Opplegg_25_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00838.warc.gz",
+   288953900,
+   837216
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00824.warc.gz",
+   317043278,
+   276974
+  ],
+  "sha256": "b918c5fa2131e4d8d05629b89527fa2652bcaef249468f0c5e394637c05c29d3",
+  "referenceSha256": "cfea4998c801b6a20da37ca5c92e05dff41698178bf5553889a8f8d45f5b4eaa"
+ },
+ {
+  "file": "presentations/2030e9f06128.pptx",
+  "reference": "presentations/2030e9f06128.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel9_Opplegg_26_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel9_Opplegg_26_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00518.warc.gz",
+   265587638,
+   1946660
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00064.warc.gz",
+   344068421,
+   500457
+  ],
+  "sha256": "c67d04db143117d7cc0e9323e7f01d0a009d15e0705233a2d0a4bd25f42206b7",
+  "referenceSha256": "62b9d9bd9737fee9ad7518e08db258f50714bed4fcd8aa58c0834ea8ce3fc2f1"
+ },
+ {
+  "file": "presentations/e4cd6c0fd227.pptx",
+  "reference": "presentations/e4cd6c0fd227.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel9_Opplegg_27_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel9_Opplegg_27_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00893.warc.gz",
+   261717868,
+   641807
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385205.8/warc/CC-MAIN-20260809063011-20260809093011-00057.warc.gz",
+   305155830,
+   345749
+  ],
+  "sha256": "61f44689defdd0dfe2be56263c9e07fe6cfcae34f61b8715a6db494efec761b9",
+  "referenceSha256": "dc96987f88d9d08e1ec5e9e81af409837732a1b5dd62350fb7ab56da14ce36d7"
+ },
+ {
+  "file": "presentations/7de3ebbd88bd.pptx",
+  "reference": "presentations/7de3ebbd88bd.pdf",
+  "source": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel9_Opplegg_28_nynorsk.pptx",
+  "referenceSource": "https://kunnskapsfilm.no/wp-content/uploads/2021/11/Kapittel9_Opplegg_28_nynorsk.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00268.warc.gz",
+   340315394,
+   319658
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385710.35/warc/CC-MAIN-20260814114419-20260814144419-00050.warc.gz",
+   302020868,
+   338410
+  ],
+  "sha256": "5f58c3bb6597fa1642981baf35f129cca4aea9d1a118a1b42aed17bda5fa7a3a",
+  "referenceSha256": "79e7b8785365730bd93a5494e1967dfc8d9a6b99dd8293f1e28290e78d337166"
+ },
+ {
+  "file": "presentations/59e405c1279b.pptx",
+  "reference": "presentations/59e405c1279b.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1707123134/marinschoolsorg/zh80ptwhc8kjd17vnhms/Executiveordersummaryppt.pptx",
+  "referenceSource": "https://resources.finalsite.net/images/v1718224390/marinschoolsorg/xuhvwvmqpokma6en8vjc/Executiveordersummaryppt.pdf",
+  "producer": "Acrobat PDFMaker 24 for PowerPoint / Adobe PDF Library 24.2.23",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385840.37/warc/CC-MAIN-20260815151410-20260815181410-00656.warc.gz",
+   396450833,
+   312352
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385840.37/warc/CC-MAIN-20260815151410-20260815181410-00955.warc.gz",
+   387561338,
+   278760
+  ],
+  "sha256": "1c7851632f467eac02d1b338f682deca990734e564b6ac6a716c5b3535fb2157",
+  "referenceSha256": "e7bf24a6b96861d600dfc32ee0a519835fa62efd7b9fce2861c8398b259f6600"
+ },
+ {
+  "file": "presentations/63f79be4d82e.pptx",
+  "reference": "presentations/63f79be4d82e.pdf",
+  "source": "https://sycabel.fr/upload/docs/application/vnd.openxmlformats-officedocument.presentationml.presentation/2026-05/2026_05_12_organigramme_sycabel.pptx",
+  "referenceSource": "https://sycabel.fr/upload/docs/application/pdf/2026-05/2026_05_12_organigramme_sycabel.pdf",
+  "producer": "Acrobat PDFMaker 17 pour PowerPoint / Adobe PDF Library 17.11.238",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385444.26/warc/CC-MAIN-20260812014208-20260812044208-00261.warc.gz",
+   422845481,
+   47229
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385444.26/warc/CC-MAIN-20260812014208-20260812044208-00247.warc.gz",
+   418765529,
+   44414
+  ],
+  "sha256": "08d9b93d1e37d1a1e1fe6a86c64b0a216f61f0fd3bf592d18ebbc45518f8c178",
+  "referenceSha256": "61a7602b572374fa91e88db709f471ed2561e8f2c08778616ac6b6ec7282300b"
  }
 ]
