@@ -818,5 +818,185 @@
   ],
   "sha256": "08d9b93d1e37d1a1e1fe6a86c64b0a216f61f0fd3bf592d18ebbc45518f8c178",
   "referenceSha256": "61a7602b572374fa91e88db709f471ed2561e8f2c08778616ac6b6ec7282300b"
+ },
+ {
+  "file": "presentations/7d17fe07bcfb.pptx",
+  "reference": "presentations/7d17fe07bcfb.pdf",
+  "source": "https://www.mdrsp.de/wp-content/files/Elternabend-Schullaufbahn-MDRS.pptx",
+  "referenceSource": "https://www.mdrsp.de/wp-content/files/Elternabend-Schullaufbahn-MDRS.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / Microsoft\u00ae PowerPoint\u00ae 2016",
+  "crawl": "CC-MAIN-2026-34",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385428.43/warc/CC-MAIN-20260811132950-20260811162950-00151.warc.gz",
+   825095019,
+   1616103
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-34/segments/1786091385428.43/warc/CC-MAIN-20260811132950-20260811162950-00407.warc.gz",
+   724078867,
+   555556
+  ],
+  "sha256": "8933b079def0cb0c7c2e303dcc63fdc8a5df9933f582b30cb4ed11ca7125e31c",
+  "referenceSha256": "d7c9cf3df58d1cf6aadc543ec0c76f96b47c99ffa2a11780326b5ddb82efc5a2"
+ },
+ {
+  "file": "presentations/21c7c8ddb5d3.pptx",
+  "reference": "presentations/21c7c8ddb5d3.pdf",
+  "source": "https://calc.matemat.it/resources/Integrali/IntA4/IntA4pres.pptx",
+  "referenceSource": "https://calc.matemat.it/resources/Integrali/IntA4/IntA4pres.pdf",
+  "producer": "PowerPoint / macOS Versione 10.16 (Build 20G817) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00129.warc.gz",
+   112532951,
+   4463303
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00941.warc.gz",
+   99306540,
+   3217529
+  ],
+  "sha256": "aa4804c01368975241fb605cc40d468c822b4b86672e0e8b916b8e35333a3bd3",
+  "referenceSha256": "3cb18c8313854bcf06dbca45feb32902cbc3149d0f8ac7594f428848d79c8d3e"
+ },
+ {
+  "file": "presentations/3f9f80056d94.pptx",
+  "reference": "presentations/3f9f80056d94.pdf",
+  "source": "https://geo.matemat.it/resources/GeAn/GeAnA6/GeAnA6Pres.pptx",
+  "referenceSource": "https://geo.matemat.it/resources/GeAn/GeAnA6/GeAnA6Pres.pdf",
+  "producer": "PowerPoint / macOS Versione 12.5 (Build 21G72) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00097.warc.gz",
+   227062928,
+   2279259
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00069.warc.gz",
+   217048064,
+   1209161
+  ],
+  "sha256": "a760e1be169ccce3b03a4d20ed30286a88fcd46481db392a706615333054f9dc",
+  "referenceSha256": "c33abc1d7df51a08a6ffcb48e4437131e117bd9bf59fcd6a089764f4d3334b8d"
+ },
+ {
+  "file": "presentations/380a82687915.pptx",
+  "reference": "presentations/380a82687915.pdf",
+  "source": "https://www.matemat.it/resources/Num/NumS4/NumS4pres.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Num/NumS4/NumS4pres.pdf",
+  "producer": "PowerPoint / macOS Versione 12.5 (Build 21G72) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00976.warc.gz",
+   776147164,
+   2465148
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00046.warc.gz",
+   713527343,
+   1589089
+  ],
+  "sha256": "527a32e67894f44b957ec1a698cf5b299d74d6db519c8d707957e48c81f93ce5",
+  "referenceSha256": "bbdf02bc10d0228ad37e776c5b70cade16311b6d511c169c877e306d1efc5569"
+ },
+ {
+  "file": "presentations/0e0545d4bf05.pptx",
+  "reference": "presentations/0e0545d4bf05.pdf",
+  "source": "https://www.matemat.it/resources/Num/NumS4/NumS4risp.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Num/NumS4/NumS4risp.pdf",
+  "producer": "PowerPoint / macOS Versione 11.6 (Build 20G165) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00060.warc.gz",
+   735743561,
+   2969746
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951847.87/warc/CC-MAIN-20260716191244-20260716221244-00434.warc.gz",
+   761520809,
+   1146506
+  ],
+  "sha256": "daf1cc3715841c4a45aeb7f235a9f541301b95a6c027d53706dcb4c07d3da4bc",
+  "referenceSha256": "49fef6c00f84028bdcf76080e9bc938a091443f38a24835b20c525c5c721632b"
+ },
+ {
+  "file": "presentations/5397ca6ac11c.pptx",
+  "reference": "presentations/5397ca6ac11c.pdf",
+  "source": "https://computing.hias.hants.gov.uk/pluginfile.php/3258/mod_resource/content/0/conditionendsloop.pptx",
+  "referenceSource": "https://computing.hias.hants.gov.uk/pluginfile.php/3259/mod_resource/content/0/conditionendsloop.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951639.34/warc/CC-MAIN-20260713084117-20260713114117-00447.warc.gz",
+   129357361,
+   189923
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951639.34/warc/CC-MAIN-20260713084117-20260713114117-00702.warc.gz",
+   156622409,
+   241762
+  ],
+  "sha256": "88d03f7b4b316be7e4674d48db072f077d712f27c2c848ba20b323fc73fa731c",
+  "referenceSha256": "18c7936d0959d15bcac8bdf1cd1118e044f01537710f32715cbde77b3932504e"
+ },
+ {
+  "file": "presentations/97fb75945927.pptx",
+  "reference": "presentations/97fb75945927.pdf",
+  "source": "https://www.pomorskakotor.com/podrska3/pluginfile.php/6919/mod_resource/content/0/%D0%95%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%B8%D0%BA%D0%B0.pptx",
+  "referenceSource": "https://www.pomorskakotor.com/podrska3/pluginfile.php/6918/mod_resource/content/0/%D0%95%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%B8%D0%BA%D0%B0.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951864.42/warc/CC-MAIN-20260717012110-20260717042110-00179.warc.gz",
+   813437259,
+   984317
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951864.42/warc/CC-MAIN-20260717012110-20260717042110-00274.warc.gz",
+   826478862,
+   846902
+  ],
+  "sha256": "fe090170211822769fa6c3de1ebe2aa1aaf1eb7593f4c7dcaa9d6dc04efc482a",
+  "referenceSha256": "222b91ac7004d909cf41443aa858ad7d59c4c7a704f532fa05734c281574404e"
+ },
+ {
+  "file": "presentations/eab8c614e8f0.ppt",
+  "reference": "presentations/eab8c614e8f0.pdf",
+  "source": "https://mintoku.com/wp-content/uploads/2024/04/20240416_%E5%81%A5%E5%BA%B7%E8%A8%BA%E6%96%AD.ppt",
+  "referenceSource": "https://mintoku.com/wp-content/uploads/2024/04/20240416_%E5%81%A5%E5%BA%B7%E8%A8%BA%E6%96%AD.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae for Microsoft 365 / Microsoft\u00ae PowerPoint\u00ae for Microsoft 365",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951536.14/warc/CC-MAIN-20260712015859-20260712045859-00277.warc.gz",
+   315540991,
+   558574
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951536.14/warc/CC-MAIN-20260712015859-20260712045859-00891.warc.gz",
+   311573072,
+   664857
+  ],
+  "sha256": "5922e98beffa2826e39379bccd5e3687360b1b973469dfc68806442b6e568dda",
+  "referenceSha256": "ced7f84478582185278f9065e2598ab90074be68a0b55baf1c85de6a00a3b8e0"
+ },
+ {
+  "file": "presentations/57717aefac29.pptx",
+  "reference": "presentations/57717aefac29.pdf",
+  "source": "https://heta-liitto.fi/wp-content/uploads/TES-tilaisuus_esitys_1.pptx",
+  "referenceSource": "https://heta-liitto.fi/wp-content/uploads/TES-tilaisuus_esitys_1.pdf",
+  "producer": "Acrobat PDFMaker 18 for PowerPointille / Adobe PDF Library 15.0",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951385.13/warc/CC-MAIN-20260710161448-20260710191448-00055.warc.gz",
+   255492152,
+   106855
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951385.13/warc/CC-MAIN-20260710161448-20260710191448-00303.warc.gz",
+   238124366,
+   211365
+  ],
+  "sha256": "0bb582c8eb5ccfd19573756e62acb4cabddb528e15e5d5eade4f073028ac41ca",
+  "referenceSha256": "9ae6c19192b883c6c0c93d4063be533ff7b6e26893e01e9805bd5109e2cdd571"
  }
 ]
