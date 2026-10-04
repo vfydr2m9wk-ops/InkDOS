@@ -14,6 +14,7 @@ CMDS = [
     [sys.executable, "tests/test_tauri_security_csp_contract.py"],
     [sys.executable, "tests/test_desktop_beta_channel_contract.py"],
     [sys.executable, "tests/test_desktop_beta_tools_menu_browser.py"],
+    [sys.executable, "tests/test_desktop_no_service_worker_browser.py"],
     [sys.executable, "tests/test_home_pdf_trust_contract.py"],
     [sys.executable, "tests/test_agent_workflow_contract.py"],
     ["node", "tests/test_pdf_p2_page_tools.cjs"],

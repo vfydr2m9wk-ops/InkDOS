@@ -4,6 +4,33 @@
   const tauri = typeof window !== 'undefined' ? window.__TAURI__ : g.__TAURI__;
   if (!tauri || !tauri.dialog || !tauri.fs) return;
 
+  // The desktop app ships its pages inside the binary, so the web edition's offline service worker
+  // only gets in the way: on Windows (http://tauri.localhost) it kept serving the previous version's
+  // cached pages after a desktop update. Never register it here and remove any earlier one.
+  const serviceWorker = typeof navigator !== 'undefined' ? navigator.serviceWorker : null;
+  if (serviceWorker) {
+    try {
+      Object.defineProperty(serviceWorker, 'register', {
+        configurable: true,
+        value: () => Promise.reject(new Error('Service workers are not used by the InkDOS desktop app.'))
+      });
+    } catch (_) {}
+    const controlled = !!serviceWorker.controller;
+    Promise.resolve()
+      .then(() => serviceWorker.getRegistrations ? serviceWorker.getRegistrations() : [])
+      .then(registrations => Promise.all(registrations.map(registration => registration.unregister())))
+      .then(() => typeof caches !== 'undefined' ? caches.keys() : [])
+      .then(names => Promise.all(names.filter(name => name.startsWith('inkdos-v')).map(name => caches.delete(name))))
+      .then(() => {
+        // A page served by the old worker shows the old version; load the bundled one once.
+        if (controlled && !sessionStorage.getItem('inkdos:desktop-sw-cleared')) {
+          sessionStorage.setItem('inkdos:desktop-sw-cleared', '1');
+          location.reload();
+        }
+      })
+      .catch(() => {});
+  }
+
   const dialog = tauri.dialog;
   const fs = tauri.fs;
   const opener = tauri.opener;
