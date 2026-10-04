@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.7.5 — 2026-10-04
+
+Measured against public Office files with PDF references (Word, Excel and PowerPoint exports) and level-1/2 acceptance tools (`scripts/*_acceptance.py`).
+
+Documents:
+- Saving an untouched DOCX keeps its text exactly: hyperlink paragraphs no longer make Save fail; footnotes, comments, table cells, text boxes, tabs and symbols are no longer rewritten.
+- Tables taller than a page are no longer clipped; cell line breaks, tabs, pictures and content-control cells are shown.
+- First-page headers/footers; continuous section breaks no longer start a page.
+- DOC: footnotes, endnotes, comments, text boxes, header/footer and inline/floating pictures; field codes hidden.
+
+Spreadsheets:
+- The grid shows dates and formatted numbers (dates showed as serial numbers), accounting/section formats and XLSX custom formats.
+- Opening keeps Excel's cached results; XLS 3-D references, array formulas and the full function table decode; XLSX shared formulas keep their formula; chart sheets keep their tab.
+
+Presentations:
+- Equations and 3-D models (compatibility fallbacks), picture-filled text boxes, translucent backgrounds, footer placeholders without body bullets.
+- PPTX/DOCX with bytes after the archive end open.
+
+Other:
+- The browser extension moved to the `extension` branch; Home no longer links it.
+
 ## 2.7.4 — 2026-10-02
 
 Interface (all workspaces):
