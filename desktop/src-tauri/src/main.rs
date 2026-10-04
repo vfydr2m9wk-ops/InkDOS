@@ -59,6 +59,36 @@ fn discard_open_file(token: &str) {
     }
 }
 
+const MAX_OPEN_FILE_BYTES: u64 = 256 * 1024 * 1024;
+
+/// InkDOS windows only ever show the app's own pages (and beta tool pages in beta windows). Any other
+/// navigation, e.g. a footer link to GitHub, opens https in the user's browser instead of inside an
+/// InkDOS window.
+fn is_app_page(url: &tauri::Url) -> bool {
+    match url.scheme() {
+        "tauri" => url.host_str() == Some("localhost"),
+        "http" | "https" => matches!(url.host_str(), Some("tauri.localhost") | Some("inkdos-beta.localhost")),
+        "inkdos-beta" => url.host_str() == Some("localhost"),
+        "about" | "blob" | "data" => true,
+        _ => false,
+    }
+}
+
+fn navigation_guard<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
+    tauri::plugin::Builder::new("inkdos-navigation")
+        .on_navigation(|webview, url| {
+            if is_app_page(url) {
+                return true;
+            }
+            if url.scheme() == "https" || url.scheme() == "mailto" {
+                use tauri_plugin_opener::OpenerExt;
+                let _ = webview.app_handle().opener().open_url(url.as_str(), None::<&str>);
+            }
+            false
+        })
+        .build()
+}
+
 /// App commands are for InkDOS's own windows only; beta tool windows get no native access.
 fn require_trusted_window<R: tauri::Runtime>(webview: &tauri::Webview<R>) -> Result<(), String> {
     let label = webview.label();
@@ -89,6 +119,13 @@ fn inkdos_read_open_file(webview: tauri::Webview, token: String) -> Result<Nativ
         .and_then(|value| value.to_str())
         .unwrap_or("InkDOS file")
         .to_string();
+    // Larger than any workspace accepts; refuse before reading it into memory and over IPC.
+    let size = std::fs::metadata(&path)
+        .map_err(|error| format!("InkDOS could not read {name}: {error}"))?
+        .len();
+    if size > MAX_OPEN_FILE_BYTES {
+        return Err(format!("{name} is too large for InkDOS ({} MB; the limit is {} MB).", size / (1024 * 1024), MAX_OPEN_FILE_BYTES / (1024 * 1024)));
+    }
     let bytes = std::fs::read(&path)
         .map_err(|error| format!("InkDOS could not read {name}: {error}"))?;
     Ok(NativeOpenFile { name, bytes })
@@ -408,6 +445,7 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(navigation_guard())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .register_uri_scheme_protocol(beta::SCHEME, |ctx, request| {
             beta::serve(ctx.app_handle(), ctx.webview_label(), &request)
