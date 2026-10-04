@@ -1,0 +1,121 @@
+name: InkDOS beta tools channel
+
+# Publishes the web-edition beta tools as a signed bundle the desktop app installs without a
+# desktop release (desktop/src-tauri/src/beta.rs). Each run creates an immutable
+# `beta-tools-<run number>` prerelease that is never marked latest, so the desktop updater's
+# `releases/latest` is unaffected. The bundle is signed with the beta-channel key, separate from
+# the updater key; the desktop app pins its public key in desktop/src-tauri/beta-channel.pub.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'labs/**'
+      - 'apps/pdf/pdfjs/pdfjs-global.mjs'
+      - 'apps/pdf/vendor/pdfjs/**'
+      - 'apps/pdf/vendor/pdf-lib/**'
+      - 'apps/pdf/assets/pdf.svg'
+      - 'config/beta-channel.json'
+      - 'scripts/build_beta_bundle.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-beta-channel
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Test, sign and publish beta tools
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Check channel configuration
+        id: config
+        env:
+          SIGNING_KEY: ${{ secrets.INKDOS_BETA_SIGNING_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$SIGNING_KEY" ] || grep -qx 'INKDOS_BETA_PUBLIC_KEY_REQUIRED' desktop/src-tauri/beta-channel.pub; then
+            echo "::notice::Beta channel not configured (INKDOS_BETA_SIGNING_KEY secret or beta-channel.pub missing); nothing published."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        if: steps.config.outputs.enabled == 'true'
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Test the beta tools
+        if: steps.config.outputs.enabled == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-ci.txt
+          python -m playwright install --with-deps chromium
+          python tests/test_home_pdf_lab_browser.py
+
+      - name: Restore verified Tauri CLI cache
+        if: steps.config.outputs.enabled == 'true'
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: |
+            ~/.cargo/bin/cargo-tauri
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: inkdos-tauri-cli-${{ runner.os }}-rust-1.98.1-tauri-2.11.4-${{ hashFiles('desktop/src-tauri/Cargo.lock') }}
+
+      - name: Install verified Tauri CLI
+        if: steps.config.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.98.1 --profile minimal
+          rustup default 1.98.1
+          if ! cargo tauri --version 2>/dev/null | grep -F "2.11.4" >/dev/null; then
+            cargo install tauri-cli --version "2.11.4" --locked --force
+          fi
+          cargo tauri --version | grep -F "2.11.4"
+
+      - name: Build and sign the bundle
+        if: steps.config.outputs.enabled == 'true'
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.INKDOS_BETA_SIGNING_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.INKDOS_BETA_SIGNING_KEY_PASSWORD }}
+          VERSION: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          python scripts/build_beta_bundle.py stage --out "$RUNNER_TEMP/beta" --version "$VERSION" --commit "$GITHUB_SHA"
+          cargo tauri signer sign "$RUNNER_TEMP/beta/manifest.json"
+          python scripts/build_beta_bundle.py pack "$RUNNER_TEMP/beta" "$RUNNER_TEMP/inkdos-beta-tools.tar.gz"
+          sha256sum "$RUNNER_TEMP/inkdos-beta-tools.tar.gz"
+
+      - name: Publish prerelease
+        if: steps.config.outputs.enabled == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          gh release create "beta-tools-$VERSION" "$RUNNER_TEMP/inkdos-beta-tools.tar.gz" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --latest=false \
+            --title "Beta tools $VERSION" \
+            --notes "Signed beta tools for the InkDOS desktop app, built from $GITHUB_SHA. Installed automatically from Settings → Beta tools; not a desktop release."

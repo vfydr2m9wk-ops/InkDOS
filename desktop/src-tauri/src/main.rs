@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod beta;
+
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
@@ -57,8 +59,19 @@ fn discard_open_file(token: &str) {
     }
 }
 
+/// App commands are for InkDOS's own windows only; beta tool windows get no native access.
+fn require_trusted_window<R: tauri::Runtime>(webview: &tauri::Webview<R>) -> Result<(), String> {
+    let label = webview.label();
+    if label == "main" || label.starts_with("file-") || label.starts_with("workspace-") {
+        Ok(())
+    } else {
+        Err("This window is not allowed to use InkDOS desktop commands.".to_string())
+    }
+}
+
 #[tauri::command]
-fn inkdos_read_open_file(token: String) -> Result<NativeOpenFile, String> {
+fn inkdos_read_open_file(webview: tauri::Webview, token: String) -> Result<NativeOpenFile, String> {
+    require_trusted_window(&webview)?;
     let path = {
         let mut files = open_file_tokens()
             .lock()
@@ -82,7 +95,11 @@ fn inkdos_read_open_file(token: String) -> Result<NativeOpenFile, String> {
 }
 
 #[tauri::command]
-async fn inkdos_check_for_updates(app: tauri::AppHandle) -> Result<UpdateCheckResponse, String> {
+async fn inkdos_check_for_updates(
+    app: tauri::AppHandle,
+    webview: tauri::Webview,
+) -> Result<UpdateCheckResponse, String> {
+    require_trusted_window(&webview)?;
     let current_version = app.package_info().version.to_string();
     let updater = app
         .updater()
@@ -113,8 +130,10 @@ async fn inkdos_check_for_updates(app: tauri::AppHandle) -> Result<UpdateCheckRe
 #[tauri::command]
 async fn inkdos_install_update(
     app: tauri::AppHandle,
+    webview: tauri::Webview,
     expected_version: String,
 ) -> Result<(), String> {
+    require_trusted_window(&webview)?;
     if expected_version.trim().is_empty() {
         return Err("InkDOS updater requires an explicitly approved version.".to_string());
     }
@@ -139,6 +158,24 @@ async fn inkdos_install_update(
         .download_and_install(|_, _| {}, || {})
         .await
         .map_err(|error| format!("InkDOS could not install update {expected_version}: {error}"))
+}
+
+#[tauri::command]
+fn inkdos_beta_status(app: tauri::AppHandle, webview: tauri::Webview) -> Result<beta::BetaStatus, String> {
+    require_trusted_window(&webview)?;
+    Ok(beta::status(&app))
+}
+
+#[tauri::command]
+async fn inkdos_beta_update(app: tauri::AppHandle, webview: tauri::Webview) -> Result<beta::BetaUpdate, String> {
+    require_trusted_window(&webview)?;
+    beta::update(&app).await
+}
+
+#[tauri::command]
+fn inkdos_beta_open(app: tauri::AppHandle, webview: tauri::Webview, tool: String) -> Result<(), String> {
+    require_trusted_window(&webview)?;
+    beta::open(&app, &tool)
 }
 
 fn workspace_manifest() -> Result<serde_json::Map<String, serde_json::Value>, String> {
@@ -372,10 +409,16 @@ fn main() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .register_uri_scheme_protocol(beta::SCHEME, |ctx, request| {
+            beta::serve(ctx.app_handle(), ctx.webview_label(), &request)
+        })
         .invoke_handler(tauri::generate_handler![
             inkdos_read_open_file,
             inkdos_check_for_updates,
-            inkdos_install_update
+            inkdos_install_update,
+            inkdos_beta_status,
+            inkdos_beta_update,
+            inkdos_beta_open
         ])
         .setup(|app| {
             let opened = handle_launch_args(app.handle(), std::env::args());
