@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.4-6620801da0edc0cf1a89';
+const CACHE_NAME='inkdos-v2.7.4-13bfecba62b6da603d38';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "dc45ccbd31cde1fa356b1cd8c0ff23576e748641bc593619a88df8892cc15fb8",
@@ -18,7 +18,7 @@ const ASSET_HASHES={
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
   "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
   "./apps/documents/io/legacy-doc-reader.js": "75e59ed490020c02f5f0f30deada1f1ae7ad3d3715cccdd6951816136552b343",
-  "./apps/documents/io/package-reader.js": "ce28f6c593b89642eb034e4228362441e4394d4b0616f9efaaea57a100fee043",
+  "./apps/documents/io/package-reader.js": "99f16bd5b7b3abd729a170404fbccedea5c67f8ed675162807438d9b9effcd07",
   "./apps/documents/io/rtf-importer.js": "c68088a02a0b6bcaf31d62855c61238363fd4dbc9bba44c9ca9a1a787912583c",
   "./apps/documents/io/save-controller.js": "23127fb60ff47119a42e2c26985a7dca1e6a2a50cb0ca9d79f89acfd134f211c",
   "./apps/documents/manifest.webmanifest": "38169f9c5c5093c7fe4f6dd991f828e9af3c39274db0c29c488d83b2ac2750ef",
@@ -143,7 +143,7 @@ const ASSET_HASHES={
   "./apps/pdf/view/zoom-controller.js": "c581cb34c50761b533cd41a08e9a650ea04863fe36eb9483463fb866d7e2dc53",
   "./apps/presentations/app.js": "e057d41d323080717dcfccf2ebe64c7ac9c169aae1d44c52653c03cddda5cfeb",
   "./apps/presentations/assets/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
-  "./apps/presentations/engine/presentation-policy.js": "760b32087b193ebb106876a835197c66a87aa53d0de14aba7679a6b460481405",
+  "./apps/presentations/engine/presentation-policy.js": "554e19172bde13469d197b228f8742bf48cbf32f0026d09370af50f328cf76f9",
   "./apps/presentations/engine/presentation-session.js": "b0d37cac3c5b3698f72630593f008efd8a0233d5bbf3ef65420e63c275ee34ae",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
   "./apps/presentations/index.html": "f0d03015475ca71fb59181f76a10a4a5120749bb792b2f8834e174ca4ec74c44",
@@ -153,7 +153,7 @@ const ASSET_HASHES={
   "./apps/presentations/io/ppt-p1-object-writer.js": "fb3b3917b0338ca622f9420601e447a49a0cb3d9e2371f3fffa1a8d7bd9f4937",
   "./apps/presentations/io/ppt-p1-structure-writer.js": "911f2782745155b3e799bb0f536ae3148d130782157820c989623f2328aaf55e",
   "./apps/presentations/io/ppt-p2-package.js": "428f7df540e85293fdb7eeb14eab6d1a114f888f0ed73419887659840fa755aa",
-  "./apps/presentations/io/pptx-open-controller.js": "d723cef5543de26cfbc4d560145278b680c3dfa7fc76b9b4f821261ab187c4e1",
+  "./apps/presentations/io/pptx-open-controller.js": "f944f6c1538ca23e6f9ae406dd905a0b1825cd001263a112a0afdfec630a279c",
   "./apps/presentations/io/pptx-preservation-writer.js": "b6a7f9b7a90f693a1ec3de0b0893633b5fd090e43d5fa72122f1a47f46a56b90",
   "./apps/presentations/io/pptx-text-columns.js": "e034eccc7d269f900370aac3c36bf7ab560033a6954853a995b15f6e797d42a4",
   "./apps/presentations/io/pptx-writer.js": "1f34f988b490c02c24bb2d0c954606883c55abcaab84a2dff891b90e03222671",
@@ -278,7 +278,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "861bd7bbef896dfded7cdc135ab626d6a1a6636bf6c09af9b2b613026156a437",
+  "./index.html": "505fd5a25f2723352970951f63c4665ad18d6e618f0d83e748af77356ec170df",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
   "./shared/localization/locales/de.js": "81af7d97a9efb3743d0e1e5812065d0238452a57d3dc48e5cd7545908186d495",

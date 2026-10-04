@@ -33,7 +33,7 @@ Generated files are checked in and must be regenerated with the repository scrip
 - `service-worker.js` offline snapshot: `python scripts/build_offline_snapshot.py`.
 - Content-Security-Policy metadata: `python scripts/generate_csp.py`.
 
-The browser extension (`extension/`) is loaded unpacked; see [extension/README.md](extension/README.md).
+The browser extension lives on the `extension` branch (not on main); it is loaded unpacked, see its [README](https://github.com/vfydr2m9wk-ops/InkDOS/tree/extension/extension#readme).
 
 ## How changes are organized
 

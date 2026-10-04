@@ -998,5 +998,605 @@
   ],
   "sha256": "0bb582c8eb5ccfd19573756e62acb4cabddb528e15e5d5eade4f073028ac41ca",
   "referenceSha256": "9ae6c19192b883c6c0c93d4063be533ff7b6e26893e01e9805bd5109e2cdd571"
+ },
+ {
+  "file": "presentations/24e5cb6cf6c2.pptx",
+  "reference": "presentations/24e5cb6cf6c2.pdf",
+  "source": "https://www.reseau-entreprendre.org/occitanie-mediterranee/wp-content/uploads/sites/14/2024/08/presentation-REOM-2024.pptx",
+  "referenceSource": "https://www.reseau-entreprendre.org/occitanie-mediterranee/wp-content/uploads/sites/14/2024/08/Presentation-REOM-2024.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae pour Microsoft\u00a0365 / Microsoft\u00ae PowerPoint\u00ae pour Microsoft\u00a0365",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951686.44/warc/CC-MAIN-20260713235832-20260714025832-00403.warc.gz",
+   854868928,
+   1801449
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783664240082.70/warc/CC-MAIN-20260721002628-20260721032628-00851.warc.gz",
+   812633973,
+   1448651
+  ],
+  "sha256": "2c34abe39a3e0ed1d077d7b5afb536cd053a51d27add4eb7e7522895e38b4b8c",
+  "referenceSha256": "ca1d862670c6258e3b979eb8cd71f45e207564904d9b4b6011a83e2d927ccc13"
+ },
+ {
+  "file": "presentations/b20f0e82f331.pptx",
+  "reference": "presentations/b20f0e82f331.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1721041901/cchs165jacksnk12ilus/dybgja0phnevnq6vl4ng/sroagreementmeeting.pptx",
+  "referenceSource": "https://resources.finalsite.net/images/v1721041902/cchs165jacksnk12ilus/fhtsanie3p20mzc9xoiw/sroagreementmeeting.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2019 / Microsoft\u00ae PowerPoint\u00ae 2019",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00053.warc.gz",
+   425906848,
+   919614
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00707.warc.gz",
+   401064568,
+   627229
+  ],
+  "sha256": "fc1f3e6117e99734eb2ca53bfd963a1699966d02b4623b7d7a7b2de2673a30ee",
+  "referenceSha256": "e2dafe715846305b09c1163ca5b720850f2269279014725ce3ea0c305207150b"
+ },
+ {
+  "file": "presentations/7cc39fb4cd03.pptx",
+  "reference": "presentations/7cc39fb4cd03.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1721041906/cchs165jacksnk12ilus/gsljmnc6uwuqevowxag6/sroagreementmeeting_1.pptx",
+  "referenceSource": "https://resources.finalsite.net/images/v1721041907/cchs165jacksnk12ilus/dv5ldxkyzv6rvlnnbdhw/sroagreementmeeting_1.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2019 / Microsoft\u00ae PowerPoint\u00ae 2019",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00093.warc.gz",
+   387315123,
+   822622
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00055.warc.gz",
+   392220465,
+   559456
+  ],
+  "sha256": "05c5ddd1b296545ebeae5fba9d70c4608adf16d1cbf5d5a8318e0ae845820478",
+  "referenceSha256": "5d49701aa4148ada9a46128261be165c6ff6a8099135c341635352e3340c3ae5"
+ },
+ {
+  "file": "presentations/49f0e8666424.pptx",
+  "reference": "presentations/49f0e8666424.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1721041908/cchs165jacksnk12ilus/qj81ju227spt7oqyif7u/sroagreementmeeting_2.pptx",
+  "referenceSource": "https://resources.finalsite.net/images/v1721041910/cchs165jacksnk12ilus/iammshzelkka3pyqavnm/sroagreementmeeting_2.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2019 / Microsoft\u00ae PowerPoint\u00ae 2019",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00367.warc.gz",
+   368247437,
+   824044
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00836.warc.gz",
+   386975066,
+   555174
+  ],
+  "sha256": "e368ab77aba15fcbd541667c0514bc9f361fa564460035846a3514ae4317bbfb",
+  "referenceSha256": "74641e63a022b402d71393472856aa9f2408cd16597aa4d662b5b1b8f8c395e0"
+ },
+ {
+  "file": "presentations/0a097a22f754.pptx",
+  "reference": "presentations/0a097a22f754.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1721041911/cchs165jacksnk12ilus/rwec1ylneihmrajbg8mm/sroagreementmeeting_3.pptx",
+  "referenceSource": "https://resources.finalsite.net/images/v1721041912/cchs165jacksnk12ilus/etbiku29humgfavbxf7x/sroagreementmeeting_3.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2019 / Microsoft\u00ae PowerPoint\u00ae 2019",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00008.warc.gz",
+   401040890,
+   945007
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00437.warc.gz",
+   401716918,
+   669764
+  ],
+  "sha256": "280279fcad2b2d00fb66c5cb20e6c44cf835e0bf8e90a63eca5c4be22640a6d5",
+  "referenceSha256": "7aaa4540f0d99c496c35beae57ead1708bf3544d506175f33bce65b231408847"
+ },
+ {
+  "file": "presentations/4471118fccd3.pptx",
+  "reference": "presentations/4471118fccd3.pdf",
+  "source": "https://resources.finalsite.net/files/t_file_download/v1721041913/cchs165jacksnk12ilus/hyo7ddioeeumtdn8hlsh/sroboardrecappresnetation.pptx",
+  "referenceSource": "https://resources.finalsite.net/images/v1721041914/cchs165jacksnk12ilus/yb2xcmsh23hnopmz1f45/sroboardrecappresnetation.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2019 / Microsoft\u00ae PowerPoint\u00ae 2019",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00006.warc.gz",
+   396449258,
+   338660
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951671.71/warc/CC-MAIN-20260713205422-20260713235422-00376.warc.gz",
+   387640952,
+   255143
+  ],
+  "sha256": "a05a8e572663ed39fb4adc34579d9f4a6821889fcffccd4d653c1b3ee0d660bb",
+  "referenceSha256": "2ac5fac0a6dbb724afa18ce65802ead016fa9521f2c30b65f2f62ef18ffb0c0e"
+ },
+ {
+  "file": "presentations/1bd678e3083b.pptx",
+  "reference": "presentations/1bd678e3083b.pdf",
+  "source": "https://sycabel.com/upload/docs/application/vnd.openxmlformats-officedocument.presentationml.presentation/2026-05/2026_05_12_organigramme_sycabel.pptx",
+  "referenceSource": "https://sycabel.com/upload/docs/application/pdf/2026-05/2026_05_12_organigramme_sycabel.pdf",
+  "producer": "Acrobat PDFMaker 17 pour PowerPoint / Adobe PDF Library 17.11.238",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951692.32/warc/CC-MAIN-20260714060659-20260714090659-00866.warc.gz",
+   445162178,
+   47227
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951692.32/warc/CC-MAIN-20260714060659-20260714090659-00314.warc.gz",
+   466743138,
+   44413
+  ],
+  "sha256": "08d9b93d1e37d1a1e1fe6a86c64b0a216f61f0fd3bf592d18ebbc45518f8c178",
+  "referenceSha256": "61a7602b572374fa91e88db709f471ed2561e8f2c08778616ac6b6ec7282300b"
+ },
+ {
+  "file": "presentations/108aadb1ebee.pptx",
+  "reference": "presentations/108aadb1ebee.pdf",
+  "source": "https://spacedge.nss.org/pluginfile.php/3331/mod_resource/content/3/Introductory%20Presentation.pptx",
+  "referenceSource": "https://spacedge.nss.org/pluginfile.php/3356/mod_resource/content/1/Introductory%20Presentation.pdf",
+  "producer": "PowerPoint / Mac OS X 10.11.6 Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-30",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951692.32/warc/CC-MAIN-20260714060659-20260714090659-00499.warc.gz",
+   450655277,
+   1991845
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-30/segments/1783663951692.32/warc/CC-MAIN-20260714060659-20260714090659-00958.warc.gz",
+   415720755,
+   1385918
+  ],
+  "sha256": "6c3ade169082ed4936df492bff8b75f3fcb7502e9b6730b80398086c3063f37a",
+  "referenceSha256": "505dbff88199d26bc57fc52cc024a09d33352fabdbdd0758b2b799244776fc4b"
+ },
+ {
+  "file": "presentations/ed17caadfdae.pptx",
+  "reference": "presentations/ed17caadfdae.pdf",
+  "source": "https://calc.matemat.it/resources/Limiti/LimP7/LimP7Pres.pptx",
+  "referenceSource": "https://calc.matemat.it/resources/Limiti/LimP7/LimP7Pres.pdf",
+  "producer": "PowerPoint / macOS Versione 10.14.4 (Build 18E2034) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00802.warc.gz",
+   125216821,
+   974894
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00756.warc.gz",
+   111294153,
+   629360
+  ],
+  "sha256": "6dc43955ae7a27aee65e6f3f4f65d5bafad97a264a4359ab915af412ef945274",
+  "referenceSha256": "2cc1de321fefd9ae0ba63cc113e44f15ad8c7f74597ff073965a881831d76ac2"
+ },
+ {
+  "file": "presentations/ee78853f67f8.pptx",
+  "reference": "presentations/ee78853f67f8.pdf",
+  "source": "https://calc.matemat.it/resources/Limiti/LimP9/LimP9Pres.pptx",
+  "referenceSource": "https://calc.matemat.it/resources/Limiti/LimP9/LimP9Pres.pdf",
+  "producer": "PowerPoint / macOS Versione 10.14.4 (Build 18E2034) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00086.warc.gz",
+   112494763,
+   798305
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00448.warc.gz",
+   117856789,
+   938564
+  ],
+  "sha256": "3dfc9eb580e8c519c7693e6b37955ad29476bf9cdad3dc272a78f894aeb866b9",
+  "referenceSha256": "40ba484d9eb72653abb0b39947b0d9d21673169316d67d33231c9184432c2d2b"
+ },
+ {
+  "file": "presentations/0ea9ada9ebc2.pptx",
+  "reference": "presentations/0ea9ada9ebc2.pdf",
+  "source": "https://funz.matemat.it/resources/Funzioni/FunzA3/FunzA3Pres.pptx",
+  "referenceSource": "https://funz.matemat.it/resources/Funzioni/FunzA3/FunzA3Pres.pdf",
+  "producer": "PowerPoint / macOS Versione 10.14.6 (Build 18G95) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00062.warc.gz",
+   214181112,
+   1162849
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00768.warc.gz",
+   207270359,
+   1679008
+  ],
+  "sha256": "aa3b7ca0780d4fe35e2a17430c5a8d81e8737c921850788bed6da80a9306f403",
+  "referenceSha256": "f64f6d19165ec80819786ac0eb4904ed66f40d4ea844e672349fc58af1449a6a"
+ },
+ {
+  "file": "presentations/15fed59ef0fb.pptx",
+  "reference": "presentations/15fed59ef0fb.pdf",
+  "source": "https://www.matemat.it/resources/Der/DerAll/DerR8.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Der/DerAll/DerR8.pdf",
+  "producer": "PowerPoint / macOS Versione 10.14.4 (Build 18E2034) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00232.warc.gz",
+   712363676,
+   494249
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00470.warc.gz",
+   674335174,
+   618806
+  ],
+  "sha256": "0d81f539a43f9895e876055d6f2c48a403577a5b810d045cb32eaeddad0317da",
+  "referenceSha256": "d4e0a1a1c162f8fdfac35589ec23c5361e7a5532cd028042c7ed28f8d0c65c91"
+ },
+ {
+  "file": "presentations/ecad9155d6d8.pptx",
+  "reference": "presentations/ecad9155d6d8.pdf",
+  "source": "https://www.matemat.it/resources/Num/NumA11/NumA11pres.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Num/NumA11/NumA11pres.pdf",
+  "producer": "PowerPoint / macOS Versione 12.5 (Build 21G72) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00432.warc.gz",
+   710846757,
+   2731557
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00526.warc.gz",
+   705139030,
+   1519422
+  ],
+  "sha256": "5c4430f0bc3316952e6a442c3cd294ffa5fd0994e123928bb26f4a0697c1ae17",
+  "referenceSha256": "578f2434edc35b1773bb9bbdbf291f52b7266d82b7bd38a2651a82f959854f78"
+ },
+ {
+  "file": "presentations/57033f5b37e9.pptx",
+  "reference": "presentations/57033f5b37e9.pdf",
+  "source": "https://www.matemat.it/resources/Num/NumA5/NumA5pres.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Num/NumA5/NumA5pres.pdf",
+  "producer": "PowerPoint / macOS Versione 12.5 (Build 21G72) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00266.warc.gz",
+   749726602,
+   1335917
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00780.warc.gz",
+   725758687,
+   861395
+  ],
+  "sha256": "e5eae1d32c094569d4b5d8cee3d1565ec8492c3dc2f52bc4243e1fdaecf4b978",
+  "referenceSha256": "19a2bd4f88e4f3d1818eedf642a12329335bea5615918f17162540a1882ee3a3"
+ },
+ {
+  "file": "presentations/eaa7efe6d488.pptx",
+  "reference": "presentations/eaa7efe6d488.pdf",
+  "source": "https://www.matemat.it/resources/Num/NumA7/NumA7pres.pptx",
+  "referenceSource": "https://www.matemat.it/resources/Num/NumA7/NumA7pres.pdf",
+  "producer": "PowerPoint / macOS Versione 12.5 (Build 21G72) Quartz PDFContext",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00902.warc.gz",
+   697399217,
+   1618985
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572654.3/warc/CC-MAIN-20260611153841-20260611183841-00120.warc.gz",
+   729766679,
+   1297036
+  ],
+  "sha256": "c8ac0d74f7518ab0c5c87c18fd04865f8fdcd9a3838b5d1c94a63513406937bd",
+  "referenceSha256": "6f5a4c678fca7c40a2f81bc44683fd1de08478db02e755f6f45041643a581a17"
+ },
+ {
+  "file": "presentations/d0f571feb45f.pptx",
+  "reference": "presentations/d0f571feb45f.pdf",
+  "source": "https://av.jusmendoza.gob.ar/moodle/pluginfile.php/39219/mod_resource/content/0/4.-%20Actualidad%20de%20la%20responsabilidad%20del%20estado%20por%20actividad.pptx",
+  "referenceSource": "https://av.jusmendoza.gob.ar/moodle/pluginfile.php/39223/mod_resource/content/0/4.-%20Actualidad%20de%20la%20responsabilidad%20del%20estado%20por%20actividad.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2019 / Microsoft\u00ae PowerPoint\u00ae 2019",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687863316.94/warc/CC-MAIN-20260617122441-20260617152441-00996.warc.gz",
+   93811831,
+   74090
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687863316.94/warc/CC-MAIN-20260617122441-20260617152441-00401.warc.gz",
+   67982787,
+   59809
+  ],
+  "sha256": "3f9b1336bd47eff43a73e873a6e6296418fd1eded21823368c03572d9c6bc1cb",
+  "referenceSha256": "d994d2259b62d678850d629295e75aa91817c8e3bb0b69407c683dd607fecabb"
+ },
+ {
+  "file": "presentations/2884aa1909bc.pptx",
+  "reference": "presentations/2884aa1909bc.pdf",
+  "source": "https://www.uart.org.ar/wp-content/uploads/El-sistema-de-riesgos-del-trabajo-hoy-042026-2.pptx",
+  "referenceSource": "https://www.uart.org.ar/wp-content/uploads/El-sistema-de-riesgos-del-trabajo-hoy-042026-2.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2016 / Microsoft\u00ae PowerPoint\u00ae 2016",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687862097.79/warc/CC-MAIN-20260617060931-20260617090931-00270.warc.gz",
+   847712917,
+   1468970
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687862097.79/warc/CC-MAIN-20260617060931-20260617090931-00752.warc.gz",
+   864939878,
+   1152460
+  ],
+  "sha256": "ecb8c3fed146571356af799a0ff79aa997cf2ad2f01d10196df737855a0e85cd",
+  "referenceSha256": "ff02e4adbedad52ab31dd18d3e7638b427118e8e1bb54cc19ecf52577e9364b9"
+ },
+ {
+  "file": "presentations/4336b654f008.pptx",
+  "reference": "presentations/4336b654f008.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3775/mod_resource/content/0/Chap1-TimeSeries.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3774/mod_resource/content/0/Chap1-TimeSeries.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00891.warc.gz",
+   13764869,
+   478292
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00042.warc.gz",
+   8496808,
+   597133
+  ],
+  "sha256": "5bb34df4792694285d5614292f891d4149044226f0d52e8947b06c22ecf6fdb1",
+  "referenceSha256": "d83fc4f567b12ae196011e0602eb349bd01d48b23175fa9d8c196cd85e282fdd"
+ },
+ {
+  "file": "presentations/fad5d1b1df55.pptx",
+  "reference": "presentations/fad5d1b1df55.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3777/mod_resource/content/0/Chap2-Regression.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3776/mod_resource/content/0/Chap2-Regression.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00101.warc.gz",
+   14289998,
+   512913
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00424.warc.gz",
+   14431646,
+   744970
+  ],
+  "sha256": "e12b9d555e1c1ba204120e7072762c8cfad0370f1e4c485e808b46fa26ef48e8",
+  "referenceSha256": "e7987b88c0f148640afbe8e9907aa483c31e584085e732517b017ed0d04cb70e"
+ },
+ {
+  "file": "presentations/79cae2cb1bd7.pptx",
+  "reference": "presentations/79cae2cb1bd7.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3779/mod_resource/content/0/Chap3-Model_Checking.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3778/mod_resource/content/0/Chap3-Model_Checking.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00541.warc.gz",
+   8568553,
+   423129
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00904.warc.gz",
+   9308285,
+   561436
+  ],
+  "sha256": "f62c180cba68bd216e0dbc37fce10eb4067b4dd91a11e47d0c414480c2a96b0e",
+  "referenceSha256": "44b8c8bbf505f9f3adfc09e394a3e615a5d92523bcf12ba390085c52d0092d19"
+ },
+ {
+  "file": "presentations/092afa40314e.pptx",
+  "reference": "presentations/092afa40314e.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3781/mod_resource/content/0/Chap4-ExponentialSmoothing.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3780/mod_resource/content/0/Chap4-ExponentialSmoothing.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00536.warc.gz",
+   10488910,
+   526855
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00589.warc.gz",
+   9169963,
+   855551
+  ],
+  "sha256": "315a27f52b91a29a51a5b6a9bb679dfc7ee8dfee59d852c2c6ba11d50989f436",
+  "referenceSha256": "d4d935aef9acba1bc241c1b8fc37dab3f0d2443c31d8c538615ddeabfe874707"
+ },
+ {
+  "file": "presentations/ee0d14f25d15.pptx",
+  "reference": "presentations/ee0d14f25d15.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3783/mod_resource/content/0/Chap5-ARIMAModel.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3782/mod_resource/content/0/Chap5-ARIMAModel.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00601.warc.gz",
+   14222692,
+   579812
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00044.warc.gz",
+   9376221,
+   760465
+  ],
+  "sha256": "5c23a123808a70836a3fa3b16cb292216dc0dc8b8e5250a792bea055c0637f7f",
+  "referenceSha256": "31414b68c877ec9688c83f0469eed14d798b926543e52189a0f8d5e9bce7ad66"
+ },
+ {
+  "file": "presentations/d3edf2b33b25.pptx",
+  "reference": "presentations/d3edf2b33b25.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3785/mod_resource/content/0/Chap6-IdentficationARIMA.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3784/mod_resource/content/0/Chap6-IdentficationARIMA.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00198.warc.gz",
+   13696581,
+   573120
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00663.warc.gz",
+   17097933,
+   396240
+  ],
+  "sha256": "dfaf4e1bd9d0a675e86167355d7be87c729cc0505f29f63f95cec439a834179d",
+  "referenceSha256": "676c26d08c6e07479815ea78da3b817b3097be07c0d91086d15577f7ae375cee"
+ },
+ {
+  "file": "presentations/69e887adac9a.pptx",
+  "reference": "presentations/69e887adac9a.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3787/mod_resource/content/0/Chap7-SARIMAModel.pptx",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3786/mod_resource/content/0/Chap7-SARIMAModel.pdf",
+  "producer": "Microsoft\u00ae Office PowerPoint\u00ae 2007 / Microsoft\u00ae Office PowerPoint\u00ae 2007",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00496.warc.gz",
+   19132749,
+   591500
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00511.warc.gz",
+   9677368,
+   948460
+  ],
+  "sha256": "70a64585b9626a4b30d6aaa1fa0837d03eab88ad3bbcda508b0462faeaaaf82e",
+  "referenceSha256": "03007366142f21b2eed210b3b23e1fe257d812c33097e7003115ff971aa13ce4"
+ },
+ {
+  "file": "presentations/52022c77f3fc.ppt",
+  "reference": "presentations/52022c77f3fc.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3936/mod_resource/content/0/keegan_globalmktg6e_01_GE.ppt",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3960/mod_resource/content/0/keegan_globalmktg6e_01_GE.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00194.warc.gz",
+   17519695,
+   1392735
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00905.warc.gz",
+   15252569,
+   998323
+  ],
+  "sha256": "5b24f241568320e81b5469e9c758bc8cf888ea7cd05eb3c5b6c69718e48d6b9d",
+  "referenceSha256": "9209314ddd65a27ba7a870d57c02ea5849bf0f9c6649b9c67f2c61963db5b847"
+ },
+ {
+  "file": "presentations/4258e2ced93a.ppt",
+  "reference": "presentations/4258e2ced93a.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3939/mod_resource/content/0/keegan_globalmktg6e_02_GE.ppt",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3961/mod_resource/content/0/keegan_globalmktg6e_02_GE.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00390.warc.gz",
+   16517543,
+   1132229
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00095.warc.gz",
+   9167937,
+   1030052
+  ],
+  "sha256": "6555cdd8ca6e8b293a6dd5fc73243de68bb2010e55522250f076e70430c0d7df",
+  "referenceSha256": "1b943e1a51a73636ce3ac3a94c05f8110221b6bfa084c67e8709f5e5dc818b9c"
+ },
+ {
+  "file": "presentations/c16cb53e8904.ppt",
+  "reference": "presentations/c16cb53e8904.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3943/mod_resource/content/0/keegan_globalmktg6e_03_GE.ppt",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3962/mod_resource/content/0/keegan_globalmktg6e_03_GE.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00412.warc.gz",
+   9908541,
+   1954330
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00285.warc.gz",
+   9304275,
+   1147852
+  ],
+  "sha256": "f6c23a4fdbb83ca56672fb3fc519231a7172be9f7f3a03dc07c5ca2c8ff75a9c",
+  "referenceSha256": "3081b0fb5b7f63e60ded4a14e0e4fb898ec5e1490bbfa1a920f108f5bff7a082"
+ },
+ {
+  "file": "presentations/794ebd5b5582.ppt",
+  "reference": "presentations/794ebd5b5582.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3944/mod_resource/content/0/keegan_globalmktg6e_04_GE.ppt",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3963/mod_resource/content/0/keegan_globalmktg6e_04_GE.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00602.warc.gz",
+   10081575,
+   878331
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687855752.48/warc/CC-MAIN-20260616050644-20260616080644-00475.warc.gz",
+   17236138,
+   812058
+  ],
+  "sha256": "846b3e9cf623266dae38aa9fa47584acb5bf85ecc58215958834b0ddf5f22d07",
+  "referenceSha256": "cb6ea1289ff4e3deda9f775bc4ee8821ebcdec5eced6240ce057cd189e2a688d"
+ },
+ {
+  "file": "presentations/15b5dd94cd23.ppt",
+  "reference": "presentations/15b5dd94cd23.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3945/mod_resource/content/0/keegan_globalmktg6e_05_GE.ppt",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3964/mod_resource/content/0/keegan_globalmktg6e_05_GE.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00792.warc.gz",
+   14797750,
+   3124948
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00665.warc.gz",
+   17323814,
+   746830
+  ],
+  "sha256": "dfef4ab3885a36c78b15b08b20f5306249cfd37a5efcdc8484c4fae648bedf93",
+  "referenceSha256": "8ffc66664cc84b1ba949750c7e57159c11903b64bb8d1bea2d2577d42466510a"
+ },
+ {
+  "file": "presentations/4442765f4599.ppt",
+  "reference": "presentations/4442765f4599.pdf",
+  "source": "http://ocw.utm.my/pluginfile.php/3946/mod_resource/content/0/keegan_globalmktg6e_06_GE.ppt",
+  "referenceSource": "http://ocw.utm.my/pluginfile.php/3965/mod_resource/content/0/keegan_globalmktg6e_06_GE.pdf",
+  "producer": "Microsoft\u00ae PowerPoint\u00ae 2010 / Microsoft\u00ae PowerPoint\u00ae 2010",
+  "crawl": "CC-MAIN-2026-25",
+  "warc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00982.warc.gz",
+   16182824,
+   1380997
+  ],
+  "referenceWarc": [
+   "crawl-data/CC-MAIN-2026-25/segments/1780687572580.11/warc/CC-MAIN-20260610112837-20260610142837-00855.warc.gz",
+   8851083,
+   785558
+  ],
+  "sha256": "612152a37a3080cfa2bc97914d7da4f6efe26337609010d12fc799bc5b38e612",
+  "referenceSha256": "5a69b9cbdc99e3448ae2bc4082286829d4e3263c4527ab1f9f71c528fc753839"
  }
 ]
