@@ -175,7 +175,7 @@ def test_tag_release_workflow_builds_every_platform_before_publication():
         "InkDOS-Windows",
         "InkDOS-macOS",
         "InkDOS-Linux",
-        "actions/download-artifact@v4",
+        "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0",
         "contents: write",
         "gh release create",
         "https://vfydr2m9wk-ops.github.io/InkDOS/",

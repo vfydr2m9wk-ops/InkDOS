@@ -79,7 +79,7 @@ jobs:
         run: python scripts/run_behavioral_stability_validation.py
       - name: Upload behavioral stability report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: behavioral-stability-report
           path: artifacts/behavioral-stability/
@@ -147,7 +147,7 @@ jobs:
         run: python scripts/run_candidate_audit.py
       - name: Preserve performance benchmark evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: performance-candidate-${{ matrix.browser }}
           path: artifacts/performance/${{ matrix.browser }}/
@@ -155,7 +155,7 @@ jobs:
           retention-days: 14
       - name: Preserve candidate audit evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: candidate-distribution-${{ matrix.browser }}
           path: artifacts/candidate-${{ matrix.browser }}/
