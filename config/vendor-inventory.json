@@ -1,7 +1,6 @@
 {
   "description": "Third-party code shipped in InkDOS. Every vendored script must be listed here with its exact bytes. Check known advisories with: python3 scripts/check_vendor_advisories.py",
   "accepted_advisories": {
-    "GHSA-wgrm-67xf-hhpq": "Mitigated: every pdfjsLib.getDocument call passes isEvalSupported:false (guarded by tests/test_security_pdfjs_config.py) and the page CSP has no unsafe-eval. Remove when PDF.js is upgraded (separate revision, see apps/pdf/vendor/pdfjs/VENDOR-PROVENANCE.txt).",
     "GHSA-86w9-cpqp-85rv": "Not reachable: node-forge is used only to read .pfx/.p12 files and to build signatures; signature verification uses WebCrypto (labs/pdf/sign.js verifySignature). No fixed release exists yet (latest 1.4.0)."
   },
   "files": [
@@ -41,19 +40,54 @@
       "sha256": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f"
     },
     {
-      "path": "apps/pdf/vendor/pdfjs/pdf.min.js",
+      "path": "apps/pdf/vendor/pdfjs/pdf.min.mjs",
       "package": "pdfjs-dist",
       "ecosystem": "npm",
-      "version": "3.11.174",
-      "sha256": "5b5799e6f8c680663207ac5b42ee14eed2a406fa7af48f50c154f0c0b1566946"
+      "version": "6.4.299",
+      "sha256": "bccc24ea711db8e44503629519904a5292d73b9daaa214bbe7cdcc282b0f4259"
     },
     {
-      "path": "apps/pdf/vendor/pdfjs/pdf.worker.min.js",
+      "path": "apps/pdf/vendor/pdfjs/pdf.worker.min.mjs",
       "package": "pdfjs-dist",
       "ecosystem": "npm",
-      "version": "3.11.174",
-      "sha256": "7a623a54c2ad7b7be0ce90fed307f5aa41d09c15a6ab529d408f6ae53cf10d5c",
-      "note": "InkDOS-local modification, see apps/pdf/vendor/pdfjs/VENDOR-PROVENANCE.txt"
+      "version": "6.4.299",
+      "sha256": "9ddd2c36b87cbb3319ac7ea354c0f396f344a06c8b6f8e3037e5e92ec5f005a4",
+      "note": "InkDOS-local patch applied by scripts/vendor_pdfjs.py, see apps/pdf/vendor/pdfjs/VENDOR-PROVENANCE.txt"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/wasm/jbig2.wasm",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "6.4.299",
+      "sha256": "466f45c2a61a698152fb5400c27e56ff2ceb73dcb71fde3fc366a502308eaab0"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/wasm/jbig2_nowasm_fallback.js",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "6.4.299",
+      "sha256": "68686ced624a48c42f84cdaa482ec44b72b0de4dc84a0df903af1fb7b45b5d9a"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/wasm/openjpeg.wasm",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "6.4.299",
+      "sha256": "95e5002597af0824004aa57b1900fe019715db389e37640b1e58395e42f00cc5"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/wasm/openjpeg_nowasm_fallback.js",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "6.4.299",
+      "sha256": "9047b34b6bc142d85e4b0aa1b08b0b9baad4c6f8b7ac87641b9e8f90eb6fd23e"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/wasm/qcms_bg.wasm",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "6.4.299",
+      "sha256": "663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e"
     },
     {
       "path": "apps/presentations/vendor/jszip.min.js",

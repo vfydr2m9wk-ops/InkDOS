@@ -34,7 +34,7 @@ def test_vendored_scripts_match_inventory():
     import json
     inventory = json.loads((ROOT / "config/vendor-inventory.json").read_text(encoding="utf-8"))
     listed = {f["path"]: f["sha256"] for f in inventory["files"]}
-    shipped = sorted(p.relative_to(ROOT).as_posix() for pattern in ("apps/*/vendor/**/*.js", "labs/*/vendor/**/*.js") for p in ROOT.glob(pattern))
+    shipped = sorted(p.relative_to(ROOT).as_posix() for pattern in ("apps/*/vendor/**/*.js", "apps/*/vendor/**/*.mjs", "apps/*/vendor/**/*.wasm", "labs/*/vendor/**/*.js") for p in ROOT.glob(pattern))
     assert sorted(listed) == shipped, "update config/vendor-inventory.json when adding or removing vendored code"
     for rel, digest in listed.items():
         assert hashlib.sha256((ROOT / rel).read_bytes()).hexdigest() == digest, f"{rel} changed: record the new version in config/vendor-inventory.json"

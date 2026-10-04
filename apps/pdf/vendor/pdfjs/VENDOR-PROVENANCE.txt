@@ -1,20 +1,29 @@
-PDF.js vendor provenance — InkDOS 2.0 PDF P4
+PDF.js vendor provenance — InkDOS PDF workspace
 
-Upstream project: Mozilla PDF.js
-Upstream repository: https://github.com/mozilla/pdf.js
-Vendored display/runtime version: 3.11.174
-Vendored build identifier: ce8716743
-License: Apache License 2.0
+Upstream project: Mozilla PDF.js (https://github.com/mozilla/pdf.js)
+Vendored display/runtime version: 6.4.299
+Package: pdfjs-dist 6.4.299, legacy build (broader WebView support for the desktop hosts)
+npm integrity: sha512-AVl138zALtfaAPvADulE0PZThbYzCBS79nL4pOSL/6Sm/4AH5A21BD9VHt97OlCuzJuCpmeZtAtkinisF4Vb1g==
+License: Apache License 2.0 (LICENSE-PDFJS.txt; decoder licenses in wasm/)
 
-Main display library:
-- pdf.min.js: upstream PDF.js 3.11.174 vendored build.
+Reproduce: npm pack pdfjs-dist@6.4.299, then
+  python scripts/vendor_pdfjs.py pdfjs-dist-6.4.299.tgz          (write)
+  python scripts/vendor_pdfjs.py pdfjs-dist-6.4.299.tgz --check  (verify)
+The script checks the tarball against the npm integrity above and applies the worker patch.
 
-Worker:
-- pdf.worker.min.js: InkDOS-local modified PDF.js 3.11.174 worker.
-- SHA-256: 7a623a54c2ad7b7be0ce90fed307f5aa41d09c15a6ab529d408f6ae53cf10d5c
-- Purpose of modification: allow the same PDFDocumentProxy.saveDocument()/AnnotationStorage path to serialize the narrow InkDOS extension records used for Highlight, Underline and Text comments while retaining normal PDF.js reading, forms, FreeText and Ink behavior.
-- Extension record IDs are isolated behind apps/pdf/extensions/ and are not used by the App Frame, ContentViewport or renderer.
+Files:
+- pdf.min.mjs: upstream legacy/build/pdf.min.mjs, unmodified. SHA-256 bccc24ea711db8e44503629519904a5292d73b9daaa214bbe7cdcc282b0f4259
+- pdf.worker.min.mjs: upstream legacy/build/pdf.worker.min.mjs with the InkDOS patch.
+  SHA-256 9ddd2c36b87cbb3319ac7ea354c0f396f344a06c8b6f8e3037e5e92ec5f005a4
+- wasm/: upstream image decoders (OpenJPEG for JPEG 2000, JBIG2) with their pure-JS fallbacks, and
+  QCMS for ICC colors, unmodified. Fetched from this origin through the getDocument wasmUrl option.
 
-P4 has exactly one PDF.js worker at runtime. There is no separate InkDOS structural-writer worker and no remote/CDN runtime dependency.
+Worker patch (only change to PDF.js): AnnotationFactory.saveNewAnnotations writes the InkDOS review
+records kept in AnnotationStorage by apps/pdf/extensions/review-annotations.js (types 1109 Highlight,
+1110 Underline, 1101 Text) as standard PDF markup annotations, so saveDocument() keeps them in the
+incremental update. The types sit outside PDF.js's own editor type range (101 is SIGNATURE in 6.x).
+The 3.11.174 "structural only" save switch was not carried over: no InkDOS code used it.
 
-A future PDF.js major-version upgrade is intentionally isolated behind apps/pdf/pdfjs/, apps/pdf/extensions/ and vendor/pdfjs/ and must be validated as a separate revision.
+Loading: PDF.js 6 is an ES module. apps/pdf/pdfjs/pdfjs-global.mjs publishes it as the pdfjsLib
+global; the workspace scripts load with `defer` after it. There is no remote/CDN dependency and one
+PDF.js worker at runtime.
