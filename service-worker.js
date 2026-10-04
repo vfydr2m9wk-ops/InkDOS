@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.6-3b534c8c347040d5dce0';
+const CACHE_NAME='inkdos-v2.7.6-f2922fc2bfec10a4ff9a';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "13870e7ded349c28ea0694702a6741ad7e8a86af3eb14dc4e94ea18cb627398c",
@@ -18,7 +18,7 @@ const ASSET_HASHES={
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
   "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
   "./apps/documents/io/legacy-doc-reader.js": "75e59ed490020c02f5f0f30deada1f1ae7ad3d3715cccdd6951816136552b343",
-  "./apps/documents/io/package-reader.js": "99f16bd5b7b3abd729a170404fbccedea5c67f8ed675162807438d9b9effcd07",
+  "./apps/documents/io/package-reader.js": "3c3687fc44b1565102f82468f0f54a3b6b7492dc420d6acd80aed72b38aa69ad",
   "./apps/documents/io/rtf-importer.js": "c68088a02a0b6bcaf31d62855c61238363fd4dbc9bba44c9ca9a1a787912583c",
   "./apps/documents/io/save-controller.js": "23127fb60ff47119a42e2c26985a7dca1e6a2a50cb0ca9d79f89acfd134f211c",
   "./apps/documents/manifest.webmanifest": "38169f9c5c5093c7fe4f6dd991f828e9af3c39274db0c29c488d83b2ac2750ef",
@@ -61,7 +61,7 @@ const ASSET_HASHES={
   "./apps/epub/index.html": "eef1df561c471f253ec4724e269f881391e51e39208e131f1ea6e59bf1e18a77",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "1e81a4c8220fd6575b6f56173ac0501a3e613c85dc27ed096ef084067a375e58",
-  "./apps/epub/io/package-reader.js": "aeb8c4de6759a64e5ffdc64d965e279f9973196c5bb7bbc750b0b704b77acab8",
+  "./apps/epub/io/package-reader.js": "9ba3db3c3f767f941ff182c5cf2c5213ffec8b1b4473485128dfdc70a82556ed",
   "./apps/epub/manifest.webmanifest": "746b4e4d5db7429b22e04bc9b7440d7fd12d4370bfbcd10a97495a62cc9f4256",
   "./apps/epub/runtime/frame/app-frame.css": "d55d2a35302f191c81a420cb68d73c09d97fa77abe281b11ea817bd95fd74dbb",
   "./apps/epub/runtime/frame/frame-menu.js": "373d33e8259258574cd166a2598848abab3c0f6bf669dc961421c70e3382eb0c",
