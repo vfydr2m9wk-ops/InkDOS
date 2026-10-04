@@ -18,6 +18,10 @@ Desktop releases are built from an immutable version tag. The release workflow v
 
 The Tauri updater public key may be configured in the built application. The signing private key and its password must remain GitHub Actions secrets and must never be committed to this repository.
 
+## Desktop beta tools trust boundary
+
+Beta tools are delivered to the desktop app outside desktop releases (see `docs/UPDATE_MODEL.md`). The app installs a bundle only when its manifest is signed by the beta-channel key pinned in the app (separate from the updater key) and every file matches the signed hash, and never installs an older bundle over a newer one. Beta tools run in isolated windows with no native access: they cannot read or write files except those the user picks in the page, and cannot call the updater or any other InkDOS desktop command.
+
 ## Digital signatures (PDF tools, beta)
 
 The PDF tools sign with an A1 certificate (.pfx/.p12) entirely in the browser; the certificate, key and password never leave the device. Signatures are PAdES baseline B-B (`/ETSI.CAdES.detached`, SHA-256, signing-certificate-v2). Expired, not-yet-valid, sub-2048-bit or non-signing certificates are refused, and every new signature must pass the built-in check before it is returned.

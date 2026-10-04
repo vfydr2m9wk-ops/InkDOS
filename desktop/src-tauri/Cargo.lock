@@ -1795,8 +1795,16 @@ dependencies = [
 name = "inkdos-desktop"
 version = "2.7.6"
 dependencies = [
+ "base64 0.22.1",
+ "flate2",
+ "minisign-verify",
+ "reqwest",
+ "ring",
+ "rustls",
  "serde",
  "serde_json",
+ "sha2",
+ "tar",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",
@@ -1804,6 +1812,7 @@ dependencies = [
  "tauri-plugin-opener",
  "tauri-plugin-single-instance",
  "tauri-plugin-updater",
+ "tempfile",
 ]
 
 [[package]]

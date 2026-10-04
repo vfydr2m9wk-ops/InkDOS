@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "channel": "beta-tools",
+  "minDesktop": "2.7.7",
+  "tools": [
+    {"id": "pdf", "title": "PDF tools (beta)", "entry": "labs/pdf/index.html"}
+  ],
+  "include": [
+    "labs/",
+    "apps/pdf/pdfjs/pdfjs-global.mjs",
+    "apps/pdf/vendor/pdfjs/",
+    "apps/pdf/vendor/pdf-lib/",
+    "apps/pdf/assets/pdf.svg"
+  ]
+}
