@@ -109,6 +109,8 @@ def main() -> None:
             corpus.package(slides, p)
             paths.append(p)
         add_sections(paths[0])
+        # bytes after the archive (transfer leftovers) must not stop the deck from opening
+        paths[1].write_bytes(paths[1].read_bytes() + b'\r\n\r\n')
         server, port = acc.serve()
         failures = []
         try:

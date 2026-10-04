@@ -78,6 +78,11 @@ function findEocd(bytes){
     const comment=u16(bytes,i+20);
     if(i+22+comment===bytes.length)return i;
   }
+  // Bytes appended after the archive (download or transfer leftovers) are tolerated as other Office readers
+  // do, when the record found still closes its central directory exactly.
+  for(let i=bytes.length-22;i>=min;i--){
+    if(u32(bytes,i)===0x06054b50&&i+22+u16(bytes,i+20)<=bytes.length&&u32(bytes,i+16)+u32(bytes,i+12)===i)return i;
+  }
   pptxFail('PPTX_ZIP_EOCD','PPTX ZIP end-of-central-directory is missing.');
 }
 

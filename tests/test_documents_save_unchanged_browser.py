@@ -94,7 +94,8 @@ def main() -> None:
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(f'http://127.0.0.1:{PORT}/apps/documents/', wait_until='load')
             page.wait_for_function('() => !!globalThis.InkDOS2Documents?.DocumentsDebug?.openBytes')
-            page.evaluate('async b => { await globalThis.InkDOS2Documents.DocumentsDebug.openBytes("links.docx", new Uint8Array(b)) }', list(source))
+            # bytes after the archive (transfer leftovers) must not stop the document from opening
+            page.evaluate('async b => { await globalThis.InkDOS2Documents.DocumentsDebug.openBytes("links.docx", new Uint8Array(b)) }', list(source + b'\r\n\r\n'))
             page.wait_for_timeout(1200)
             saved = base64.b64decode(page.evaluate(SAVE))
             assert text_runs(saved) == text_runs(source), (text_runs(source), text_runs(saved))
