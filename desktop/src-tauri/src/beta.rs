@@ -424,6 +424,7 @@ pub fn open<R: Runtime>(app: &tauri::AppHandle<R>, tool_id: &str) -> Result<(), 
         .map_err(|error| format!("Beta tool address is invalid: {error}"))?;
     let label = format!("{WINDOW_PREFIX}{}-{}", tool.id, BETA_WINDOW_SEQUENCE.fetch_add(1, Ordering::Relaxed));
     let opener_app = app.clone();
+    let popup_app = app.clone();
     let window = WebviewWindowBuilder::new(app, &label, WebviewUrl::CustomProtocol(url))
         .title(format!("InkDOS — {}", tool.title))
         .inner_size(1180.0, 820.0)
@@ -439,6 +440,23 @@ pub fn open<R: Runtime>(app: &tauri::AppHandle<R>, tool_id: &str) -> Result<(), 
                 let _ = opener_app.opener().open_url(url.as_str(), None::<&str>);
             }
             false
+        })
+        // `window.open(...)` bypasses on_navigation: https targets go to the user's browser, nothing
+        // else opens a window from a beta tool.
+        .on_new_window(move |url, _features| {
+            if url.scheme() == "https" {
+                use tauri_plugin_opener::OpenerExt;
+                let _ = popup_app.opener().open_url(url.as_str(), None::<&str>);
+            }
+            tauri::webview::NewWindowResponse::Deny
+        })
+        // Without a handler some webviews (WKWebView) cancel `<a download>`; results are saved to the
+        // platform's default download location chosen by the webview, never to a page-chosen path.
+        .on_download(|_webview, event| {
+            if let tauri::webview::DownloadEvent::Finished { path: Some(path), success: true, .. } = event {
+                let _ = tauri_plugin_opener::reveal_item_in_dir(path);
+            }
+            true
         })
         .build()
         .map_err(|error| format!("InkDOS could not open {}: {error}", tool.title))?;
