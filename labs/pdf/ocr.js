@@ -41,13 +41,13 @@
   async function ocrPdf(bytes, options) {
     const o = Object.assign({ languages: 'por+eng', allPages: false, onProgress: () => {} }, options);
     const pdfjs = global.pdfjsLib, Tesseract = global.Tesseract, PDFLib = global.PDFLib;
-    const src = await pdfjs.getDocument({ data: bytes.slice(), isEvalSupported: false, enableScripting: false }).promise;
+    const src = await pdfjs.getDocument({ data: bytes.slice(), isEvalSupported: false, enableScripting: false, wasmUrl: new URL('../../apps/pdf/vendor/pdfjs/wasm/', global.location.href).href }).promise;
     const total = src.numPages, todo = [];
     for (let i = 1; i <= total; i++) {
       const page = await src.getPage(i);
       if (o.allPages || !(await pageHasText(page))) todo.push(i);
     }
-    if (!todo.length) { await src.destroy(); return { bytes, pages: 0, words: 0, skipped: total }; }
+    if (!todo.length) { await src.loadingTask.destroy(); return { bytes, pages: 0, words: 0, skipped: total }; }
 
     const workers = Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1, todo.length));
     const scheduler = Tesseract.createScheduler(), core = corePath();
@@ -77,7 +77,7 @@
       await Promise.all(queue);
     } finally {
       await scheduler.terminate();
-      await src.destroy();
+      await src.loadingTask.destroy();
     }
 
     // invisible text layer

@@ -70,7 +70,8 @@
   };
   if (PT) { document.documentElement.lang = 'pt-BR'; for (const el of document.querySelectorAll('[data-i18n]')) if (typeof T[el.dataset.i18n] === 'string') el.textContent = T[el.dataset.i18n]; document.title = 'InkDOS — ' + T.title + ' (beta)'; }
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '../../apps/pdf/vendor/pdfjs/pdf.worker.min.js';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '../../apps/pdf/vendor/pdfjs/pdf.worker.min.mjs';
+  const PDFJS_WASM = new URL('../../apps/pdf/vendor/pdfjs/wasm/', location.href).href;
   const doc = { name: '', bytes: null, changed: false };
   const status = (msg, error) => { $('status').textContent = msg || ''; $('status').classList.toggle('error', !!error); };
   const fail = e => { console.error(e); status(String(e && e.message || e), true); };
@@ -161,12 +162,12 @@
 
   async function renderPreview() {
     if (!doc.bytes || document.querySelector('[data-panel=stamp]').hidden) return;
-    const pdf = await pdfjsLib.getDocument({ data: doc.bytes.slice(), isEvalSupported: false }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: doc.bytes.slice(), isEvalSupported: false, wasmUrl: PDFJS_WASM }).promise;
     const n = Math.min(Math.max(1, Number($('stampPage').value) || 1), pdf.numPages); $('stampPage').max = String(pdf.numPages); $('stampPage').value = String(n);
     const page = await pdf.getPage(n), vp = page.getViewport({ scale: 1 }), scale = Math.min(1.5, 760 / vp.width), viewport = page.getViewport({ scale });
     const canvas = $('preview'); canvas.width = viewport.width; canvas.height = viewport.height;
     await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-    previewInfo = { viewport, pageIndex: n - 1 }; await pdf.destroy(); updateMark();
+    previewInfo = { viewport, pageIndex: n - 1 }; await pdf.loadingTask.destroy(); updateMark();
   }
 
   function updateMark() {

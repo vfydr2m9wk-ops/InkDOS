@@ -21,6 +21,7 @@ TESTS = (
     "tests/test_ppt_p1_structure_roundtrip.py",
     "tests/test_epub_stability_browser.py",
     "tests/test_pdf_stability_roundtrip.py",
+    "tests/test_pdf_editor_annotations_browser.py",
 )
 
 
