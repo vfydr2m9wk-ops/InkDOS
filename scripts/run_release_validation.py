@@ -11,6 +11,7 @@ CMDS = [
     [sys.executable, "scripts/build_txt_bundle.py", "--check"],
     [sys.executable, "tests/test_csp_contract.py"],
     [sys.executable, "tests/test_security_pdfjs_config.py"],
+    [sys.executable, "tests/test_tauri_security_csp_contract.py"],
     [sys.executable, "tests/test_agent_workflow_contract.py"],
     ["node", "tests/test_pdf_p2_page_tools.cjs"],
     [sys.executable, "tests/test_doc_d1_contract.py"],
