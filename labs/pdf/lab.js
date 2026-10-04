@@ -13,7 +13,7 @@
     language: 'Idioma', ocrAll: 'Também páginas que já têm texto', ocrRun: 'Executar OCR',
     stampHelp: 'Desenhe ou escolha uma imagem de assinatura e clique na página onde ela fica. A assinatura visual é uma imagem: para validade jurídica use a assinatura digital.',
     clear: 'Limpar', chooseImage: 'Usar uma imagem…', page: 'Página', size: 'Largura', stampRun: 'Colocar assinatura',
-    signHelp: 'Assina o PDF com seu certificado A1 (.pfx/.p12). A assinatura é acrescentada ao arquivo, então assinaturas anteriores continuam válidas. Coloque a assinatura visual antes.',
+    signHelp: 'Assina o PDF no padrão PAdES com seu certificado A1 (.pfx/.p12) válido. A assinatura é acrescentada ao arquivo, então assinaturas anteriores continuam válidas. Coloque a assinatura visual antes.',
     signVisible: 'Mostrar a assinatura com data e hora na página', position: 'Posição', posBL: 'Rodapé à esquerda', posBR: 'Rodapé à direita', posTR: 'Topo à direita',
     signLock: 'Bloquear o documento após assinar', signLockHelp: 'Bloquear certifica o documento: qualquer alteração posterior (texto, páginas, anotações ou outra assinatura) faz os leitores de PDF indicarem a assinatura como inválida. Só a primeira assinatura pode bloquear um documento.',
     signedBy: 'Assinado digitalmente por', dateLabel: 'Data', locked: 'Documento bloqueado (certificado): alterações posteriores não são permitidas.',
@@ -27,7 +27,16 @@
     signNeed: 'Escolha o certificado.', signing: 'Assinando…', signDone: n => `Assinado por ${n}.`,
     checking: 'Verificando…', none: 'Nenhuma assinatura digital neste PDF.', valid: 'Assinatura íntegra · identidade não verificada', untrusted: 'O documento não mudou desde a assinatura, mas esta versão beta não confirma se o certificado foi emitido por uma autoridade confiável (ICP-Brasil ou outra). Confira o emissor ou valide no verificador oficial (validar.iti.gov.br).', invalid: 'Assinatura inválida',
     changedAfter: 'O documento recebeu alterações depois desta assinatura.', wholeFile: 'Cobre o documento inteiro.',
-    signer: 'Assinante', issuer: 'Emissor', signedAt: 'Assinado em', certExpired: 'O certificado não era válido na data da assinatura.', reasonL: 'Motivo'
+    signer: 'Assinante', issuer: 'Emissor', signedAt: 'Assinado em', certExpired: 'O certificado não era válido na data da assinatura.', reasonL: 'Motivo',
+    chain: 'Cadeia', notes: {
+      'no-timestamp': 'Sem carimbo do tempo: a data da assinatura é a do relógio do computador de quem assinou.',
+      'timestamp-not-checked': 'Há um carimbo do tempo, mas esta versão beta não o confere.',
+      'chain-incomplete': 'A cadeia do certificado está incompleta dentro da assinatura.',
+      'chain-unsupported': 'A cadeia do certificado usa um algoritmo que esta verificação não confere.',
+      'weak-chain-hash': 'A cadeia do certificado usa SHA-1, considerado fraco.',
+      'weak-key': 'A chave do certificado tem menos de 2048 bits, considerada fraca.',
+      'no-signing-certificate': 'A assinatura não vincula o certificado nos atributos assinados (não é PAdES).'
+    }
   } : {
     returned: 'Result opened in the InkDOS workspace.', needPdf: 'Open a PDF first.', opened: 'PDF opened', ocrLoading: 'Loading OCR…', ocrPage: (d, t) => `Recognising pages: ${d} of ${t}`, ocrWriting: 'Writing the text…',
     ocrDone: (p, w, s) => `OCR finished: ${p} page(s), ${w} words${s ? `; ${s} page(s) already had text` : ''}.`, ocrNothing: 'Every page already has text; nothing to do.',
@@ -36,7 +45,16 @@
     signedBy: 'Digitally signed by', dateLabel: 'Date', locked: 'Document locked (certified): no later changes are allowed.',
     signNeed: 'Choose the certificate.', signing: 'Signing…', signDone: n => `Signed by ${n}.`, checking: 'Checking…', none: 'No digital signature in this PDF.',
     valid: 'Signature intact · identity not verified', untrusted: 'The document has not changed since signing, but this beta does not confirm that the certificate was issued by a trusted authority. Check the issuer or use an official validator.', invalid: 'Invalid signature', changedAfter: 'The document was changed after this signature.', wholeFile: 'Covers the whole document.',
-    signer: 'Signer', issuer: 'Issuer', signedAt: 'Signed at', certExpired: 'The certificate was not valid at signing time.', reasonL: 'Reason'
+    signer: 'Signer', issuer: 'Issuer', signedAt: 'Signed at', certExpired: 'The certificate was not valid at signing time.', reasonL: 'Reason',
+    chain: 'Chain', notes: {
+      'no-timestamp': 'No timestamp: the signing time comes from the signer\'s computer clock.',
+      'timestamp-not-checked': 'There is a timestamp, but this beta does not check it.',
+      'chain-incomplete': 'The certificate chain inside the signature is incomplete.',
+      'chain-unsupported': 'The certificate chain uses an algorithm this check does not verify.',
+      'weak-chain-hash': 'The certificate chain uses SHA-1, which is considered weak.',
+      'weak-key': 'The certificate key is shorter than 2048 bits, which is considered weak.',
+      'no-signing-certificate': 'The signature does not bind its certificate in the signed attributes (not PAdES).'
+    }
   };
   if (PT) { document.documentElement.lang = 'pt-BR'; for (const el of document.querySelectorAll('[data-i18n]')) if (typeof T[el.dataset.i18n] === 'string') el.textContent = T[el.dataset.i18n]; document.title = 'InkDOS — ' + T.title + ' (beta)'; }
 
@@ -194,7 +212,7 @@
         const li = document.createElement('li'), head = document.createElement('span');
         head.className = r.ok ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${r.ok ? T.valid : T.invalid}`; li.append(head);
         const lines = [r.signer && `${T.signer}: ${r.signer}`, r.issuer && `${T.issuer}: ${r.issuer}`, r.signedAt && `${T.signedAt}: ${fmt(r.signedAt)}`, r.reason && `${T.reasonL}: ${r.reason}`,
-          r.ok && T.untrusted, r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, ...r.problems];
+          r.ok && T.untrusted, r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, r.chain && r.chain.length && `${T.chain}: ${r.chain.join(' → ')}`, ...r.problems, ...(r.notes || []).map(n => T.notes[n])];
         for (const l of lines.filter(Boolean)) { const s = document.createElement('small'); s.textContent = l; li.append(s); }
         list.append(li);
       });
