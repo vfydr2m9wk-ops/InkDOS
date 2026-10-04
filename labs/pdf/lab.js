@@ -6,7 +6,7 @@
   const $ = id => document.getElementById(id);
   const PT = /^pt/i.test(navigator.language || '');
   const T = PT ? {
-    back: '← InkDOS', title: 'Ferramentas de PDF', intro: 'Ferramentas experimentais da versão web. Tudo roda neste navegador: arquivos, certificados e senhas não saem do seu dispositivo.',
+    back: '← InkDOS', title: 'Ferramentas de PDF', intro: 'Ferramentas experimentais da versão web. Tudo roda neste navegador: arquivos, certificados e senhas não saem do seu dispositivo, a menos que você mesmo envie um arquivo ao verificador oficial do ITI.',
     open: 'Abrir PDF', noFile: 'Nenhum PDF aberto', download: 'Baixar resultado', tabOcr: 'OCR (texto pesquisável)', tabStamp: 'Assinatura visual',
     tabSign: 'Assinatura digital (A1)', tabCheck: 'Verificar assinaturas',
     ocrHelp: 'Reconhece o texto de páginas escaneadas e adiciona uma camada de texto invisível, para o PDF poder ser pesquisado e copiado. As páginas continuam iguais.',
@@ -18,14 +18,13 @@
     signLock: 'Bloquear o documento após assinar', signLockHelp: 'Bloquear certifica o documento: qualquer alteração posterior (texto, páginas, anotações ou outra assinatura) faz os leitores de PDF indicarem a assinatura como inválida. Só a primeira assinatura pode bloquear um documento.',
     signedBy: 'Assinado digitalmente por', dateLabel: 'Data', locked: 'Documento bloqueado (certificado): alterações posteriores não são permitidas.',
     certificate: 'Certificado (.pfx/.p12)', password: 'Senha', reason: 'Motivo', location: 'Local', signRun: 'Assinar PDF',
-    checkHelp: 'Confere se cada assinatura corresponde ao documento e se o documento não foi alterado depois. A cadeia do certificado é mostrada, mas nesta versão beta não é conferida contra uma lista de autoridades confiáveis.',
     checkRun: 'Verificar assinaturas', returnApp: 'Abrir no InkDOS', returned: 'Resultado aberto no app do InkDOS.', needPdf: 'Abra um PDF primeiro.', opened: 'PDF aberto', ocrLoading: 'Carregando o OCR…',
     ocrPage: (d, t) => `Reconhecendo páginas: ${d} de ${t}`, ocrWriting: 'Gravando o texto…',
     ocrDone: (p, w, s) => `OCR concluído: ${p} página(s), ${w} palavras${s ? `; ${s} página(s) já tinham texto` : ''}.`, ocrNothing: 'Todas as páginas já têm texto; nada a fazer.',
     stampNeed: 'Desenhe ou escolha a assinatura e clique na página para posicioná-la.', stampDone: 'Assinatura visual colocada.',
     stampSigned: 'Este PDF já tem assinatura digital: colocar uma imagem agora invalidaria a assinatura.',
     signNeed: 'Escolha o certificado.', signing: 'Assinando…', signDone: n => `Assinado por ${n}.`,
-    checking: 'Verificando…', none: 'Nenhuma assinatura digital neste PDF.', valid: 'Assinatura íntegra · identidade não verificada', untrusted: 'O documento não mudou desde a assinatura, mas esta versão beta não confirma se o certificado foi emitido por uma autoridade confiável (ICP-Brasil ou outra). Confira o emissor ou valide no verificador oficial (validar.iti.gov.br).', invalid: 'Assinatura inválida',
+    checking: 'Verificando…', none: 'Nenhuma assinatura digital neste PDF.', valid: 'Assinatura íntegra · identidade não verificada', untrusted: 'O documento não mudou desde a assinatura, mas o certificado não leva a uma raiz ICP-Brasil incluída no InkDOS, então a identidade de quem assinou não foi confirmada. Confira o emissor ou use o verificador oficial do ITI.', invalid: 'Assinatura inválida',
     changedAfter: 'O documento recebeu alterações depois desta assinatura.', wholeFile: 'Cobre o documento inteiro.',
     signer: 'Assinante', issuer: 'Emissor', signedAt: 'Assinado em', certExpired: 'O certificado não era válido na data da assinatura.', reasonL: 'Motivo',
     chain: 'Cadeia', notes: {
@@ -35,8 +34,18 @@
       'chain-unsupported': 'A cadeia do certificado usa um algoritmo que esta verificação não confere.',
       'weak-chain-hash': 'A cadeia do certificado usa SHA-1, considerado fraco.',
       'weak-key': 'A chave do certificado tem menos de 2048 bits, considerada fraca.',
-      'no-signing-certificate': 'A assinatura não vincula o certificado nos atributos assinados (não é PAdES).'
-    }
+      'no-signing-certificate': 'A assinatura não vincula o certificado nos atributos assinados (não é PAdES).',
+      'revocation-not-checked': 'Revogação não conferida (LCR/OCSP).'
+    },
+    signPolicy: 'Declarar a política de assinatura ICP-Brasil AD-RB v1.1 (experimental)', signPolicyHelp: 'Inclui na assinatura a política PA_PAdES_AD_RB v1.1 da ICP-Brasil. Use só com certificado ICP-Brasil e confirme o resultado no verificador oficial do ITI.',
+    checkHelp: 'Confere, neste dispositivo, se cada assinatura corresponde ao documento, se o documento não foi alterado depois e se a cadeia do certificado leva a uma raiz ICP-Brasil. A revogação não é conferida aqui: para a validação completa use o verificador oficial.',
+    itiRun: 'Validar no verificador oficial (ITI)…', itiTitle: 'Validação oficial (ITI)',
+    itiWarnOpen: 'Isto abre o validar.iti.gov.br, o verificador de assinaturas do governo federal, numa nova aba. O InkDOS não envia nada: você escolhe o arquivo no site do ITI.',
+    itiWarnUpload: 'Nesse site o documento inteiro (conteúdo, assinaturas e metadados) é enviado aos servidores do governo para ser validado. Não continue com um documento que não pode sair deste dispositivo.',
+    itiWarnFile: 'Valide exatamente o arquivo que você vai entregar: se assinou aqui, baixe-o antes.',
+    itiDownload: 'Baixar este PDF', itiOpen: 'Abrir o verificador do ITI', itiCancel: 'Cancelar', itiOpened: 'Verificador do ITI aberto numa nova aba. Escolha o arquivo lá.',
+    validTrusted: 'Assinatura íntegra · certificado ICP-Brasil', policy: 'Política',
+    trustedNote: a => `A cadeia leva à ${a}, incluída no InkDOS. A revogação do certificado não é conferida aqui: para a validação completa use o verificador oficial do ITI.`
   } : {
     returned: 'Result opened in the InkDOS workspace.', needPdf: 'Open a PDF first.', opened: 'PDF opened', ocrLoading: 'Loading OCR…', ocrPage: (d, t) => `Recognising pages: ${d} of ${t}`, ocrWriting: 'Writing the text…',
     ocrDone: (p, w, s) => `OCR finished: ${p} page(s), ${w} words${s ? `; ${s} page(s) already had text` : ''}.`, ocrNothing: 'Every page already has text; nothing to do.',
@@ -44,7 +53,7 @@
     stampSigned: 'This PDF is already digitally signed: adding a picture now would invalidate the signature.',
     signedBy: 'Digitally signed by', dateLabel: 'Date', locked: 'Document locked (certified): no later changes are allowed.',
     signNeed: 'Choose the certificate.', signing: 'Signing…', signDone: n => `Signed by ${n}.`, checking: 'Checking…', none: 'No digital signature in this PDF.',
-    valid: 'Signature intact · identity not verified', untrusted: 'The document has not changed since signing, but this beta does not confirm that the certificate was issued by a trusted authority. Check the issuer or use an official validator.', invalid: 'Invalid signature', changedAfter: 'The document was changed after this signature.', wholeFile: 'Covers the whole document.',
+    valid: 'Signature intact · identity not verified', untrusted: 'The document has not changed since signing, but the certificate does not lead to an ICP-Brasil root bundled with InkDOS, so the signer\'s identity is not confirmed. Check the issuer or use the official ITI validator.', invalid: 'Invalid signature', changedAfter: 'The document was changed after this signature.', wholeFile: 'Covers the whole document.',
     signer: 'Signer', issuer: 'Issuer', signedAt: 'Signed at', certExpired: 'The certificate was not valid at signing time.', reasonL: 'Reason',
     chain: 'Chain', notes: {
       'no-timestamp': 'No timestamp: the signing time comes from the signer\'s computer clock.',
@@ -53,8 +62,11 @@
       'chain-unsupported': 'The certificate chain uses an algorithm this check does not verify.',
       'weak-chain-hash': 'The certificate chain uses SHA-1, which is considered weak.',
       'weak-key': 'The certificate key is shorter than 2048 bits, which is considered weak.',
-      'no-signing-certificate': 'The signature does not bind its certificate in the signed attributes (not PAdES).'
-    }
+      'no-signing-certificate': 'The signature does not bind its certificate in the signed attributes (not PAdES).',
+      'revocation-not-checked': 'Revocation not checked (CRL/OCSP).'
+    },
+    itiOpened: 'ITI validator opened in a new tab. Choose the file there.', validTrusted: 'Signature intact · ICP-Brasil certificate', policy: 'Policy',
+    trustedNote: a => `The chain leads to ${a}, bundled with InkDOS. Certificate revocation is not checked here: use the official ITI validator for the complete validation.`
   };
   if (PT) { document.documentElement.lang = 'pt-BR'; for (const el of document.querySelectorAll('[data-i18n]')) if (typeof T[el.dataset.i18n] === 'string') el.textContent = T[el.dataset.i18n]; document.title = 'InkDOS — ' + T.title + ' (beta)'; }
 
@@ -194,10 +206,22 @@
     try {
       const r = await InkDOSPdfLabSign.signPdf(doc.bytes, { p12: await readFile(f), password: $('p12Password').value, reason: $('signReason').value.trim(), location: $('signLocation').value.trim(),
         pageIndex: Math.max(0, (Number($('signPage').value) || 1) - 1), visible: $('signVisible').checked ? { position: $('signPosition').value } : null, lock: $('signLock').checked,
-        labels: { signedBy: T.signedBy, date: T.dateLabel } });
+        policy: $('signPolicy').checked ? 'AD-RB' : null, labels: { signedBy: T.signedBy, date: T.dateLabel } });
       $('p12Password').value = '';
       setResult(r.bytes, '-assinado'); status(T.signDone(r.signer));
     } catch (e) { fail(e); } finally { busy(false); }
+  });
+
+  // ---- official validation: the user opens ITI's validator and uploads the file there; InkDOS sends nothing
+  const ITI_VALIDATOR = 'https://validar.iti.gov.br/';
+  const itiDialog = $('itiDialog');
+  $('itiBtn').addEventListener('click', () => { $('itiDownload').hidden = !doc.bytes; itiDialog.showModal(); });
+  $('itiCancel').addEventListener('click', () => itiDialog.close());
+  $('itiDownload').addEventListener('click', () => { if (doc.bytes) $('downloadBtn').click(); });
+  $('itiOpen').addEventListener('click', () => {
+    itiDialog.close();
+    window.open(ITI_VALIDATOR, '_blank', 'noopener,noreferrer');
+    status(T.itiOpened);
   });
 
   // ---- check
@@ -210,9 +234,9 @@
       const fmt = d => d instanceof Date ? d.toLocaleString() : (d || '');
       results.forEach((r, i) => {
         const li = document.createElement('li'), head = document.createElement('span');
-        head.className = r.ok ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${r.ok ? T.valid : T.invalid}`; li.append(head);
+        head.className = r.ok ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${r.ok ? (r.trust ? T.validTrusted : T.valid) : T.invalid}`; li.append(head);
         const lines = [r.signer && `${T.signer}: ${r.signer}`, r.issuer && `${T.issuer}: ${r.issuer}`, r.signedAt && `${T.signedAt}: ${fmt(r.signedAt)}`, r.reason && `${T.reasonL}: ${r.reason}`,
-          r.ok && T.untrusted, r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, r.chain && r.chain.length && `${T.chain}: ${r.chain.join(' → ')}`, ...r.problems, ...(r.notes || []).map(n => T.notes[n])];
+          r.policy && `${T.policy}: ${r.policy}`, r.ok && (r.trust ? T.trustedNote(r.trustAnchor) : T.untrusted), r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, r.chain && r.chain.length && `${T.chain}: ${r.chain.join(' → ')}`, ...r.problems, ...(r.notes || []).map(n => T.notes[n])];
         for (const l of lines.filter(Boolean)) { const s = document.createElement('small'); s.textContent = l; li.append(s); }
         list.append(li);
       });

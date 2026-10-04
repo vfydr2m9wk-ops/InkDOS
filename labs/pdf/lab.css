@@ -38,3 +38,7 @@ progress{display:block;width:100%;margin-top:12px}
 @media (max-width:600px){.lab-head h1{font-size:22px}.tabs button{padding:6px 8px}}
 [hidden]{display:none!important}
 .note.small{font-size:12px;margin:4px 0 12px}
+dialog#itiDialog{max-width:min(100% - 32px,560px);color:var(--text)}
+dialog#itiDialog::backdrop{background:rgba(0,0,0,.45)}
+dialog#itiDialog h2{margin:0 0 8px;font-size:18px}
+.warn{color:var(--bad)}

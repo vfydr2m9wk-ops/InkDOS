@@ -6,7 +6,9 @@ picture of text, and a throw-away self-signed RSA certificate (.p12) made with f
 result must be searchable, two successive digital signatures must both verify, a stamped picture
 must be added, and changing one signed byte must be reported. Signatures are PAdES
 (ETSI.CAdES.detached); expired or weak certificates are refused, and a byte range that leaves
-out more than the signature itself is reported as invalid.
+out more than the signature itself is reported as invalid. The bundled ICP-Brasil list loads, a
+chain is trusted only through a listed root (a test root is swapped in), the AD-RB policy is
+declared on request, and the ITI validator is opened only from the warning dialog, by the user.
 """
 from __future__ import annotations
 
@@ -66,13 +68,39 @@ SCRIPT = r"""async () => {
   const [r0, r1, r2, r3] = raw.slice(at + 1, close - 1).trim().split(/\s+/).map(Number);
   const widened = once.bytes.slice(); widened.set(new TextEncoder().encode(('[' + [r0, r1 - 10, r2, r3].join(' ') + ']').padEnd(close - at, ' ')), at);
   const gap = (await InkDOSPdfLabSign.checkPdf(widened)).map(r => [r.ok, r.problems.join(' ')]);
+  // trust: the bundled ICP-Brasil list does not trust the self-signed test certificate
+  const bundled = InkDOSPdfLabSign._test.trustPool(), bundle = [bundled.name, bundled.anchors.length, bundled.intermediates.length, globalThis.InkDOSPdfLabTrust.intermediates.length];
+  const realTrust = checks.map(r => r.trust);
+  // every bundled ICP-Brasil CA that is valid today builds a trusted path with WebCrypto (real keys and algorithms)
+  const all = [...bundled.intermediates, ...bundled.anchors], today = new Date();
+  const current = bundled.intermediates.filter(c => today >= c.notBefore && today <= c.notAfter);
+  const realPaths = [];
+  for (const c of current) { const r = await InkDOSPdfLabSign._test.buildChain(c, all, today); realPaths.push(r.trusted ? 'trusted' : r.status); }
+  // Ed448 and post-quantum hierarchies are reported as unsupported where WebCrypto lacks them, never trusted
+  const realChains = [current.length, realPaths.filter(x => x === 'trusted').length, realPaths.filter(x => x !== 'trusted' && x !== 'unsupported')];
+  // a test root swapped in as the only anchor; the .p12 carries just the end-entity certificate,
+  // so the path must be completed from the trust list
+  const caKeys = forge.pki.rsa.generateKeyPair(2048), eeKeys = forge.pki.rsa.generateKeyPair(2048);
+  const mk = (pub, serial, subj, iss, signKey, isCa) => { const c = forge.pki.createCertificate(); c.publicKey = pub; c.serialNumber = serial;
+    c.validity.notBefore = new Date(Date.now() - 864e5); c.validity.notAfter = new Date(Date.now() + 864e5 * 30); c.setSubject([{ name: 'commonName', value: subj }]); c.setIssuer([{ name: 'commonName', value: iss }]);
+    c.setExtensions(isCa ? [{ name: 'basicConstraints', cA: true }, { name: 'keyUsage', keyCertSign: true, cRLSign: true }] : [{ name: 'basicConstraints', cA: false }, { name: 'keyUsage', digitalSignature: true, nonRepudiation: true }]);
+    c.sign(signKey, forge.md.sha256.create()); return c; };
+  const caCert = mk(caKeys.publicKey, '0a', 'Raiz Teste', 'Raiz Teste', caKeys.privateKey, true), eeCert = mk(eeKeys.publicKey, '0b', 'Fulano Teste', 'Raiz Teste', caKeys.privateKey, false);
+  const realList = globalThis.InkDOSPdfLabTrust;
+  globalThis.InkDOSPdfLabTrust = { name: 'Lista de teste', anchors: [{ der: btoa(forge.asn1.toDer(forge.pki.certificateToAsn1(caCert)).getBytes()) }], intermediates: [] };
+  InkDOSPdfLabSign._test.resetTrust();
+  const chained = await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12: p12Of(eeKeys.privateKey, eeCert), password: 'senha', policy: 'AD-RB' });
+  const trusted = (await InkDOSPdfLabSign.checkPdf(chained.bytes)).map(r => [r.ok, r.trust, r.trustAnchor, r.chain, r.policy, r.notes.includes('revocation-not-checked')]);
+  const selfSignedUnderTestList = (await InkDOSPdfLabSign.checkPdf(once.bytes)).map(r => r.trust);
+  globalThis.InkDOSPdfLabTrust = realList; InkDOSPdfLabSign._test.resetTrust();
+  let unknownPolicy = ''; try { await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12, password: 'senha', policy: 'XYZ' }); } catch (e) { unknownPolicy = e.message; }
   const appended = new Uint8Array([...locked.bytes, ...new TextEncoder().encode('\n% change\n')]);
   const lockedChanged = (await InkDOSPdfLabSign.checkPdf(appended)).map(r => r.ok);
   const stampPdf = await pdfjsLib.getDocument({ data: locked.bytes.slice(), isEvalSupported: false }).promise;
   const annots = await (await stampPdf.getPage(1)).getAnnotations();
   return { locked: lockedCheck.map(r => [r.ok, r.locked]), resign, lockedChanged, widget: annots.filter(a => a.fieldType === 'Sig').map(a => a.rect.map(Math.round)),
     words: ocr.words, text, checks: checks.map(r => [r.ok, r.coversWholeFile, r.signer, r.reason]), broken: broken.map(r => r.ok), wrongPassword,
-    pades: checks.map(r => [r.subFilter, r.chainStatus, r.notes.includes('no-timestamp'), r.notes.includes('no-signing-certificate')]), expired, weak, gap };
+    pades: checks.map(r => [r.subFilter, r.chainStatus, r.notes.includes('no-timestamp'), r.notes.includes('no-signing-certificate')]), expired, weak, gap, bundle, realTrust, trusted, selfSignedUnderTestList, unknownPolicy, realChains };
 }"""
 
 
@@ -108,11 +136,30 @@ def main() -> None:
             assert 'expired' in got['expired'].lower(), got['expired']
             assert '2048' in got['weak'], got['weak']
             assert got['gap'][0][0] is False and 'byte range' in got['gap'][0][1].lower(), got['gap']
+            assert got['bundle'][0] == 'ICP-Brasil' and got['bundle'][1] == 4 and got['bundle'][2] == got['bundle'][3] > 100, got['bundle']
+            assert got['realTrust'] == [None, None], got['realTrust']
+            assert got['realChains'][0] > 50 and got['realChains'][1] > 0.9 * got['realChains'][0] and got['realChains'][2] == [], got['realChains']
+            assert got['trusted'] == [[True, 'Lista de teste', 'Raiz Teste', ['Fulano Teste', 'Raiz Teste'], 'ICP-Brasil PA_PAdES_AD_RB v1.1', True]], got['trusted']
+            assert got['selfSignedUnderTestList'] == [None], got['selfSignedUnderTestList']
+            assert 'unknown signature policy' in got['unknownPolicy'].lower(), got['unknownPolicy']
             assert 'password' in got['wrongPassword'].lower(), got['wrongPassword']
             assert got['locked'] == [[True, True]], got['locked']
             assert 'locked' in got['resign'].lower(), got['resign']
             assert got['lockedChanged'] == [False], got['lockedChanged']
             assert len(got['widget']) == 1 and got['widget'][0][2] - got['widget'][0][0] == 250, got['widget']
+            # official validation: opened by the user from the warning dialog, never fetched by the page
+            requests: list[str] = []
+            page.on('request', lambda r: requests.append(r.url))
+            page.evaluate("() => { window.__opened = []; window.open = (u, t, f) => { window.__opened.push([u, t, f]); return null; }; }")
+            page.click('[data-tab=check]')
+            page.click('#itiBtn')
+            assert page.evaluate("() => document.getElementById('itiDialog').open"), 'warning dialog did not open'
+            assert 'servers' in page.inner_text('#itiDialog') and page.evaluate('() => window.__opened.length') == 0
+            page.click('#itiCancel')
+            assert page.evaluate('() => window.__opened.length') == 0
+            page.click('#itiBtn'); page.click('#itiOpen')
+            assert page.evaluate('() => window.__opened') == [['https://validar.iti.gov.br/', '_blank', 'noopener,noreferrer']]
+            assert not any('iti.gov.br' in u for u in requests), requests
             # the page itself loads without errors and the Home link exists on the web edition
             home = (ROOT / 'index.html').read_text(encoding='utf-8')
             assert 'href="./labs/pdf/index.html"' in home and 'class="web-only"' in home
