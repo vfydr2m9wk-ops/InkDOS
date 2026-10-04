@@ -32,7 +32,7 @@ def docx() -> bytes:
     t = lambda s: f'<w:r><w:t xml:space="preserve">{s}</w:t></w:r>'
     box = ('<w:r><w:pict><v:shape xmlns:v="urn:schemas-microsoft-com:vml" style="width:100pt;height:40pt"><v:textbox>'
            f'<w:txbxContent><w:p>{t("Boxed words")}</w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r>')
-    body = (f'<w:p>{t("Write to ")}<w:hyperlink r:id="rIdL">{t("info@example.org")}</w:hyperlink>{t(" today.")}</w:p>'
+    body = (f'<w:p>{t("Write to ")}<w:hyperlink r:id="rIdL">{t("example.org/info")}</w:hyperlink>{t(" today.")}</w:p>'
             f'<w:p>{t("Place")}<w:r><w:tab/></w:r>{t("Signature")}</w:p>'
             f'<w:p>{t("Anchor")}{box}</w:p>'
             f'<w:tbl><w:tr><w:tc><w:p>{t("one")}<w:r><w:br/></w:r>{t("two")}</w:p><w:p>{t("three")}</w:p></w:tc>'
@@ -53,7 +53,7 @@ def docx() -> bytes:
         z.writestr('_rels/.rels', '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>')
         z.writestr('word/_rels/document.xml.rels', '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-                   '<Relationship Id="rIdL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:info@example.org" TargetMode="External"/>'
+                   '<Relationship Id="rIdL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="https://example.org/info" TargetMode="External"/>'
                    '<Relationship Id="rIdF" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes" Target="footnotes.xml"/></Relationships>')
         z.writestr('word/footnotes.xml', notes)
         z.writestr('word/document.xml', f'<w:document xmlns:w="{W}" xmlns:r="{R}"><w:body>{body}<w:sectPr/></w:body></w:document>')
@@ -99,7 +99,7 @@ def main() -> None:
             page.wait_for_timeout(1200)
             saved = base64.b64decode(page.evaluate(SAVE))
             assert text_runs(saved) == text_runs(source), (text_runs(source), text_runs(saved))
-            assert b'info@example.org' in zipfile.ZipFile(io.BytesIO(saved)).read('word/_rels/document.xml.rels'), 'hyperlink target lost'
+            assert b'example.org/info' in zipfile.ZipFile(io.BytesIO(saved)).read('word/_rels/document.xml.rels'), 'hyperlink target lost'
             assert text_runs(saved, 'word/footnotes.xml') == text_runs(source, 'word/footnotes.xml'), 'footnotes changed'
             # rebuild the footnoted paragraph from the editor, as rich editing does
             page.evaluate("() => { const p=[...document.querySelectorAll('.page-content p')].find(x=>x.textContent.includes('Noted')); p.dataset.d2Rich='1' }")
