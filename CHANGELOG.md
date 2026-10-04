@@ -1,5 +1,34 @@
 # Changelog
 
+## 2.7.7 — 2026-10-04
+
+Desktop:
+- Beta tools channel: Settings (☀) → Beta tools opens beta tools that are installed and updated separately from desktop releases. Packages are signed (minisign, pinned key) and checked before use.
+- The desktop app no longer uses the web service worker, so after an update it no longer shows an older Home page (the earlier extension card disappears).
+- Downloads from beta tools are saved and shown in their folder; external links open in the default browser; the app window cannot navigate to outside pages.
+- Files opened from the system are limited to 256 MB; a host Content-Security-Policy is enforced.
+
+PDF:
+- PDF.js upgraded to 6.4.299 (closes CVE-2024-4367 exposure); eval stays disabled.
+- Text can be selected and copied while reading.
+- Page navigation, keyboard and scrollbar scrolls made while pages re-render are kept; search no longer uses stale page text.
+
+PDF tools (beta):
+- PAdES baseline signatures with AD-RB policy; the signature check now uses the ICP-Brasil trust list and points to the official ITI validator (2.7.6 said there was no trust-list check yet).
+- Stricter check: the chain must be valid now, CA certificates and certificates without signing usage are refused, and a signature followed by changes is shown as changed.
+- The visible-signature preview no longer mixes results from earlier renders.
+
+Work safety:
+- Recovery drafts are encrypted, kept for 7 days, can use an optional password and can be turned off.
+
+Security:
+- Documents and EPUB stop decompressing an archive entry once it passes its declared size.
+- Presentations sets the unsaved-changes dialog message as text.
+- Vendored-code inventory and advisory check; all GitHub Actions pinned to commit SHAs.
+
+Home:
+- Removed the empty 'Beta features' heading.
+
 ## 2.7.6 — 2026-10-04
 
 Work safety (all editing workspaces):
