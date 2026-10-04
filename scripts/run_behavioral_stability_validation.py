@@ -23,6 +23,7 @@ TESTS = (
     "tests/test_pdf_stability_roundtrip.py",
     "tests/test_pdf_editor_annotations_browser.py",
     "tests/test_pdf_view_text_selection_browser.py",
+    "tests/test_pdf_navigation_during_rerender_browser.py",
 )
 
 
