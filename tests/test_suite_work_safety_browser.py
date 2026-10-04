@@ -105,11 +105,49 @@ def main() -> None:
             page.evaluate("async () => { await InkDOSWorkSafety.setDraftsEnabled(false); for (const h of InkDOSWorkSafety._test.handles) await h.snapshotNow(); }")
             assert page.evaluate("async () => (await InkDOSWorkSafety._test.allDrafts()).length") == 0
             page.evaluate("() => InkDOSWorkSafety.setDraftsEnabled(true)")
+            page.close(run_before_unload=False)
+            # password mode: the draft is sealed with a key derived from a password asked once per session;
+            # the field is not a saveable password field (no form, autocomplete off, password-manager opt-outs)
+            url = f'http://127.0.0.1:{PORT}/apps/spreadsheets/index.html'
+            page = context.new_page()
+            page.on('pageerror', lambda e: errors.append(f'password: {e}'))
+            page.goto(url, wait_until='load')
+            page.wait_for_function(CASES['spreadsheets']['ready'], timeout=30000)
+            page.evaluate("() => InkDOSWorkSafety.setDraftsMode('password')")
+            page.evaluate(CASES['spreadsheets']['edit'])
+            page.evaluate("() => { globalThis.__snap = Promise.all(InkDOSWorkSafety._test.handles.map(h => h.snapshotNow())); }")
+            page.wait_for_selector('.inkdos-safety-dialog input', timeout=10000)
+            field = page.evaluate("""() => [...document.querySelectorAll('.inkdos-safety-dialog input')].map(i => ({
+                type: i.type, ac: i.autocomplete, form: !!i.form, lp: i.getAttribute('data-lpignore'), op: i.getAttribute('data-1p-ignore') }))""")
+            assert len(field) == 2 and all(f['type'] == 'text' and f['ac'] == 'off' and not f['form'] and f['lp'] == 'true' and f['op'] == 'true' for f in field), field
+            inputs = page.locator('.inkdos-safety-dialog input')
+            inputs.nth(0).fill('segredo123')
+            inputs.nth(1).fill('segredo123')
+            page.locator('.inkdos-safety-dialog button').last.click()
+            page.evaluate("() => globalThis.__snap")
+            rec = page.evaluate("async () => { const d=(await InkDOSWorkSafety._test.allDrafts()).find(d=>d.app==='spreadsheets'); return { v:d.v, salt: d.salt instanceof Uint8Array && d.salt.length===16 } }")
+            assert rec == {'v': 3, 'salt': True}, rec
+            assert page.evaluate("() => [...document.querySelectorAll('input')].every(i => !i.value.includes('segredo'))")
+            page.close(run_before_unload=False)
+            page = context.new_page()
+            page.on('pageerror', lambda e: errors.append(f'password: {e}'))
+            page.goto(url, wait_until='load')
+            page.wait_for_function(CASES['spreadsheets']['ready'], timeout=30000)
+            page.wait_for_selector('.inkdos-safety-bar', timeout=15000)
+            page.locator('.inkdos-safety-bar button').first.click()
+            page.wait_for_selector('.inkdos-safety-dialog input', timeout=10000)
+            page.locator('.inkdos-safety-dialog input').fill('errada999')
+            page.locator('.inkdos-safety-dialog button').last.click()
+            page.wait_for_function("() => (document.querySelector('.inkdos-safety-dialog p:last-of-type')?.textContent || '').trim().length > 0", timeout=15000)
+            page.locator('.inkdos-safety-dialog input').fill('segredo123')
+            page.locator('.inkdos-safety-dialog button').last.click()
+            page.wait_for_function(f"() => ({CASES['spreadsheets']['check']})().text.includes('RECOVERYMARKER')", timeout=30000)
+            page.evaluate("() => InkDOSWorkSafety.setDraftsMode('on')")
             assert not errors, errors
             browser.close()
     finally:
         server.terminate()
-    print('Work safety: unsaved work recovered after a closed tab in Documents, Spreadsheets and Presentations')
+    print('Work safety: unsaved work recovered after a closed tab in Documents, Spreadsheets and Presentations; password drafts unlock only with the password')
 
 
 if __name__ == '__main__':
