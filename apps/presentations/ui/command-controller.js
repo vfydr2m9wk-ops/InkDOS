@@ -17,7 +17,8 @@ function create({session,history,selection,chrome,fileOpen,save,editor,panel,sli
   if(unsavedDialog)return Promise.resolve('cancel');
   return new Promise(resolve=>{
    const node=document.createElement('div');node.id='presentationsUnsavedDialog';node.className='error-overlay';node.setAttribute('role','dialog');node.setAttribute('aria-modal','true');node.setAttribute('aria-label','Unsaved changes');
-   node.innerHTML='<div class="error-card"><h2>Unsaved changes</h2><p>'+String(message||'Save your current presentation before continuing?')+'</p><div class="error-actions"><button type="button" data-choice="cancel">Cancel</button><button type="button" data-choice="discard">Discard</button><button type="button" class="retry-open" data-choice="save">Save</button></div></div>';
+   node.innerHTML='<div class="error-card"><h2>Unsaved changes</h2><p></p><div class="error-actions"><button type="button" data-choice="cancel">Cancel</button><button type="button" data-choice="discard">Discard</button><button type="button" class="retry-open" data-choice="save">Save</button></div></div>';
+   node.querySelector('p').textContent=String(message||'Save your current presentation before continuing?');
    unsavedDialog={node,resolve};document.body.appendChild(node);
    node.querySelectorAll('[data-choice]').forEach(button=>button.onclick=()=>closeUnsavedDialog(button.dataset.choice));
    node.querySelector('[data-choice="cancel"]')?.focus();
