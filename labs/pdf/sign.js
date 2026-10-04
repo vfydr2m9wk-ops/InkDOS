@@ -20,6 +20,13 @@
   const binary = bytes => { let s = ''; for (let i = 0; i < bytes.length; i += 32768) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 32768)); return s; };
   const pad = (n, w) => String(n).padStart(w, '0');
 
+  // local date and time with the UTC offset, e.g. 04/10/2026 14:05:09 (UTC-03:00)
+  function localStamp(d) {
+    const off = -d.getTimezoneOffset(), sign = off >= 0 ? '+' : '-', a = Math.abs(off);
+    return pad(d.getDate(), 2) + '/' + pad(d.getMonth() + 1, 2) + '/' + d.getFullYear() + ' ' + pad(d.getHours(), 2) + ':' + pad(d.getMinutes(), 2) + ':' + pad(d.getSeconds(), 2) +
+      ' (UTC' + sign + pad(Math.floor(a / 60), 2) + ':' + pad(a % 60, 2) + ')';
+  }
+
   function pdfDate(d) {
     return 'D:' + d.getUTCFullYear() + pad(d.getUTCMonth() + 1, 2) + pad(d.getUTCDate(), 2) + pad(d.getUTCHours(), 2) + pad(d.getUTCMinutes(), 2) + pad(d.getUTCSeconds(), 2) + 'Z';
   }
@@ -59,18 +66,25 @@
   async function signPdf(bytes, options) {
     const PDFLib = global.PDFLib, forge = global.forge;
     const { PDFName, PDFArray, PDFDict, PDFRef, PDFHexString, PDFNumber } = PDFLib;
-    const o = Object.assign({ reason: '', location: '', contact: '', pageIndex: 0, placeholderBytes: 12000, now: new Date() }, options);
+    const o = Object.assign({ reason: '', location: '', contact: '', pageIndex: 0, placeholderBytes: 12000, now: new Date(), visible: null, lock: false, labels: {} }, options);
     const certificate = readCertificate(o.p12, o.password);
     let doc;
     try { doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false }); } catch (e) {
       throw new Error(/encrypt/i.test(String(e && e.message)) ? 'Encrypted PDFs cannot be signed in this beta.' : 'The PDF could not be read: ' + (e && e.message));
     }
+    // a certification that allows no changes ends the document's signing; a lock must be the first signature
+    const existing = signatureFields(bytes);
+    if (existing.some(f => f.docmdp === 1)) throw new Error('This document is locked by a certification signature: it cannot be signed again.');
+    if (o.lock && existing.length) throw new Error('Only the first signature can lock the document; this PDF is already signed.');
     const ctx = doc.context, text = latin1.decode(bytes);
     const prev = lastStartXref(text), classic = text.slice(prev, prev + 4) === 'xref';
     const catalogRef = ctx.trailerInfo.Root, infoRef = ctx.trailerInfo.Info, id = ctx.trailerInfo.ID;
     const page = doc.getPage(Math.min(Math.max(0, o.pageIndex | 0), doc.getPageCount() - 1));
-    let next = ctx.largestObjectNumber + 1;
+    // new objects are numbered after everything in the file, including object streams and xref streams
+    const sizeMatch = /\/Size\s+(\d+)/.exec(text.slice(prev, prev + 400000));
+    let next = Math.max(ctx.largestObjectNumber + 1, sizeMatch ? Number(sizeMatch[1]) : 0);
     const sigNum = next++, widgetNum = next++, widgetRef = PDFRef.of(widgetNum), sigRef = PDFRef.of(sigNum);
+    const apNum = o.visible ? next++ : 0, fontNum = o.visible ? next++ : 0;
     const fieldCount = (() => { const af = doc.catalog.lookup(PDFName.of('AcroForm')); const f = af instanceof PDFDict ? af.lookup(PDFName.of('Fields')) : null; return f instanceof PDFArray ? f.size() : 0; })();
     const rewritten = []; // [objectNumber, pdf syntax]
 
@@ -89,22 +103,41 @@
       const arr = fields instanceof PDFArray ? fields.clone(ctx) : ctx.obj([]); arr.push(widgetRef);
       dict.set(PDFName.of('Fields'), arr); dict.set(PDFName.of('SigFlags'), PDFNumber.of(3)); return dict;
     };
+    let cat = null;
     if (afEntry instanceof PDFRef) {
       rewritten.push([afEntry.objectNumber, withField(ctx.lookup(afEntry).clone(ctx)).toString()]);
     } else {
-      const cat = doc.catalog.clone(ctx);
+      cat = doc.catalog.clone(ctx);
       cat.set(PDFName.of('AcroForm'), withField(afEntry instanceof PDFDict ? afEntry.clone(ctx) : ctx.obj({})));
-      rewritten.push([catalogRef.objectNumber, cat.toString()]);
     }
+    // certification (DocMDP, P 1): readers report any later change to the document as invalidating it
+    if (o.lock) { cat = cat || doc.catalog.clone(ctx); cat.set(PDFName.of('Perms'), ctx.obj({ DocMDP: sigRef })); }
+    if (cat) rewritten.push([catalogRef.objectNumber, cat.toString()]);
 
     const hexText = s => PDFHexString.fromText(String(s)).toString();
     const contentsLen = o.placeholderBytes * 2, brPlaceholder = '[0 0000000000 0000000000 0000000000]';
     const sigDict = '<< /Type /Sig /Filter /Adobe.PPKLite /SubFilter /adbe.pkcs7.detached /ByteRange ' + brPlaceholder +
       ' /Contents <' + '0'.repeat(contentsLen) + '> /M (' + pdfDate(o.now) + ') /Name ' + hexText(certificate.subject) +
       (o.reason ? ' /Reason ' + hexText(o.reason) : '') + (o.location ? ' /Location ' + hexText(o.location) : '') +
-      (o.contact ? ' /ContactInfo ' + hexText(o.contact) : '') + ' >>';
-    const widget = '<< /Type /Annot /Subtype /Widget /FT /Sig /T ' + hexText('Signature' + (fieldCount + 1)) + ' /V ' + sigRef + ' /F 132 /Rect [0 0 0 0] /P ' + page.ref + ' >>';
-    const objects = [[sigNum, sigDict], [widgetNum, widget], ...rewritten].sort((a, b) => a[0] - b[0]);
+      (o.contact ? ' /ContactInfo ' + hexText(o.contact) : '') +
+      (o.lock ? ' /Reference [<< /Type /SigRef /TransformMethod /DocMDP /TransformParams << /Type /TransformParams /P 1 /V /1.2 >> >>]' : '') + ' >>';
+    // visible signature: a box with the signer and the signing date and time
+    let rect = '[0 0 0 0]', extra = [];
+    if (o.visible) {
+      const box = page.getCropBox ? page.getCropBox() : page.getMediaBox(), W = 250, H = 50, m = 24;
+      const pos = String(o.visible.position || 'bottom-left');
+      const x = pos.endsWith('right') ? box.x + box.width - W - m : box.x + m, y = pos.startsWith('top') ? box.y + box.height - H - m : box.y + m;
+      rect = '[' + [x, y, x + W, y + H].map(v => v.toFixed(2)).join(' ') + ']';
+      const pdfText = t => '(' + [...String(t)].map(ch => { const c = ch.charCodeAt(0); return c > 255 ? '?' : ch === '(' || ch === ')' || ch === '\\' ? '\\' + ch : c < 32 || c > 126 ? '\\' + c.toString(8).padStart(3, '0') : ch; }).join('') + ')';
+      const lines = [o.labels.signedBy || 'Digitally signed by', certificate.subject, (o.labels.date || 'Date') + ': ' + localStamp(o.now)];
+      const stream = 'q 0.96 0.97 0.98 rg 0 0 ' + W + ' ' + H + ' re f 0.55 0.6 0.66 RG 0.8 w 0.4 0.4 ' + (W - 0.8) + ' ' + (H - 0.8) + ' re S Q\n' +
+        'BT 0.12 0.14 0.18 rg /F1 8 Tf 6 ' + (H - 13) + ' Td ' + pdfText(lines[0]) + ' Tj /F1 10 Tf 0 -14 Td ' + pdfText(lines[1]) + ' Tj /F1 8 Tf 0 -14 Td ' + pdfText(lines[2]) + ' Tj ET';
+      extra = [[apNum, '<< /Type /XObject /Subtype /Form /BBox [0 0 ' + W + ' ' + H + '] /Resources << /Font << /F1 ' + fontNum + ' 0 R >> >> /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream'],
+        [fontNum, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>']];
+    }
+    const widget = '<< /Type /Annot /Subtype /Widget /FT /Sig /T ' + hexText('Signature' + (fieldCount + 1)) + ' /V ' + sigRef + ' /F 132 /Rect ' + rect + ' /P ' + page.ref +
+      (o.visible ? ' /AP << /N ' + apNum + ' 0 R >>' : '') + ' >>';
+    const objects = [[sigNum, sigDict], [widgetNum, widget], ...extra, ...rewritten].sort((a, b) => a[0] - b[0]);
 
     // body of the update
     let body = '\n';
@@ -171,7 +204,8 @@
       if (!c) continue;
       const str = key => { const r = new RegExp('\\/' + key + '\\s*(\\((?:\\\\.|[^\\\\)])*\\)|<[0-9A-Fa-f\\s]*>)').exec(seg); return r ? decodePdfString(r[1]) : ''; };
       out.push({ range: m.slice(1, 5).map(Number), contents: c[1].replace(/\s+/g, ''), subFilter: (/\/SubFilter\s*\/([A-Za-z0-9.]+)/.exec(seg) || [])[1] || '',
-        name: str('Name'), reason: str('Reason'), location: str('Location'), time: str('M') });
+        name: str('Name'), reason: str('Reason'), location: str('Location'), time: str('M'),
+        docmdp: /\/TransformMethod\s*\/DocMDP/.test(seg) ? Number((/\/P\s+(\d)/.exec(seg.slice(seg.indexOf('/TransformParams'))) || [])[1] || 2) : 0 });
     }
     return out;
   }
@@ -215,7 +249,7 @@
   async function checkPdf(bytes) {
     const forge = global.forge, results = [];
     for (const f of signatureFields(bytes)) {
-      const r = { name: f.name, reason: f.reason, location: f.location, time: f.time, subFilter: f.subFilter, coversWholeFile: f.range[2] + f.range[3] === bytes.length, problems: [] };
+      const r = { name: f.name, reason: f.reason, location: f.location, time: f.time, subFilter: f.subFilter, coversWholeFile: f.range[2] + f.range[3] === bytes.length, locked: f.docmdp === 1, problems: [] };
       try {
         const [a, b, c, d] = f.range;
         if (a !== 0 || c + d > bytes.length || b > c) throw new Error('Invalid byte range.');
@@ -252,6 +286,7 @@
         } else r.problems.push('No signer certificate in the signature.');
         if (r.signatureValid === null) r.problems.push('Signature algorithm not supported by this check.');
         r.ok = r.integrity !== false && r.signatureValid === true;
+        if (r.locked && !r.coversWholeFile) { r.ok = false; r.problems.push('The document was changed after a certification that allows no changes.'); }
       } catch (e) {
         r.ok = false; r.problems.push(String(e && e.message || e));
       }
@@ -260,5 +295,5 @@
     return results;
   }
 
-  global.InkDOSPdfLabSign = Object.freeze({ signPdf, checkPdf, readCertificate, _test: { signatureFields, decodePdfString } });
+  global.InkDOSPdfLabSign = Object.freeze({ signPdf, checkPdf, readCertificate, isLocked: bytes => signatureFields(bytes).some(f => f.docmdp === 1), _test: { signatureFields, decodePdfString } });
 })(globalThis);

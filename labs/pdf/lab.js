@@ -14,6 +14,9 @@
     stampHelp: 'Desenhe ou escolha uma imagem de assinatura e clique na página onde ela fica. A assinatura visual é uma imagem: para validade jurídica use a assinatura digital.',
     clear: 'Limpar', chooseImage: 'Usar uma imagem…', page: 'Página', size: 'Largura', stampRun: 'Colocar assinatura',
     signHelp: 'Assina o PDF com seu certificado A1 (.pfx/.p12). A assinatura é acrescentada ao arquivo, então assinaturas anteriores continuam válidas. Coloque a assinatura visual antes.',
+    signVisible: 'Mostrar a assinatura com data e hora na página', position: 'Posição', posBL: 'Rodapé à esquerda', posBR: 'Rodapé à direita', posTR: 'Topo à direita',
+    signLock: 'Bloquear o documento após assinar', signLockHelp: 'Bloquear certifica o documento: qualquer alteração posterior (texto, páginas, anotações ou outra assinatura) faz os leitores de PDF indicarem a assinatura como inválida. Só a primeira assinatura pode bloquear um documento.',
+    signedBy: 'Assinado digitalmente por', dateLabel: 'Data', locked: 'Documento bloqueado (certificado): alterações posteriores não são permitidas.',
     certificate: 'Certificado (.pfx/.p12)', password: 'Senha', reason: 'Motivo', location: 'Local', signRun: 'Assinar PDF',
     checkHelp: 'Confere se cada assinatura corresponde ao documento e se o documento não foi alterado depois. A cadeia do certificado é mostrada, mas nesta versão beta não é conferida contra uma lista de autoridades confiáveis.',
     checkRun: 'Verificar assinaturas', returnApp: 'Abrir no InkDOS', returned: 'Resultado aberto no app do InkDOS.', needPdf: 'Abra um PDF primeiro.', opened: 'PDF aberto', ocrLoading: 'Carregando o OCR…',
@@ -30,6 +33,7 @@
     ocrDone: (p, w, s) => `OCR finished: ${p} page(s), ${w} words${s ? `; ${s} page(s) already had text` : ''}.`, ocrNothing: 'Every page already has text; nothing to do.',
     stampNeed: 'Draw or choose the signature and click on the page to place it.', stampDone: 'Visual signature placed.',
     stampSigned: 'This PDF is already digitally signed: adding a picture now would invalidate the signature.',
+    signedBy: 'Digitally signed by', dateLabel: 'Date', locked: 'Document locked (certified): no later changes are allowed.',
     signNeed: 'Choose the certificate.', signing: 'Signing…', signDone: n => `Signed by ${n}.`, checking: 'Checking…', none: 'No digital signature in this PDF.',
     valid: 'Valid signature', invalid: 'Invalid signature', changedAfter: 'The document was changed after this signature.', wholeFile: 'Covers the whole document.',
     signer: 'Signer', issuer: 'Issuer', signedAt: 'Signed at', certExpired: 'The certificate was not valid at signing time.', reasonL: 'Reason'
@@ -170,7 +174,9 @@
     const f = $('p12Input').files[0]; if (!f) { status(T.signNeed, true); return; }
     busy(true); status(T.signing);
     try {
-      const r = await InkDOSPdfLabSign.signPdf(doc.bytes, { p12: await readFile(f), password: $('p12Password').value, reason: $('signReason').value.trim(), location: $('signLocation').value.trim() });
+      const r = await InkDOSPdfLabSign.signPdf(doc.bytes, { p12: await readFile(f), password: $('p12Password').value, reason: $('signReason').value.trim(), location: $('signLocation').value.trim(),
+        pageIndex: Math.max(0, (Number($('signPage').value) || 1) - 1), visible: $('signVisible').checked ? { position: $('signPosition').value } : null, lock: $('signLock').checked,
+        labels: { signedBy: T.signedBy, date: T.dateLabel } });
       $('p12Password').value = '';
       setResult(r.bytes, '-assinado'); status(T.signDone(r.signer));
     } catch (e) { fail(e); } finally { busy(false); }
@@ -188,7 +194,7 @@
         const li = document.createElement('li'), head = document.createElement('span');
         head.className = r.ok ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${r.ok ? T.valid : T.invalid}`; li.append(head);
         const lines = [r.signer && `${T.signer}: ${r.signer}`, r.issuer && `${T.issuer}: ${r.issuer}`, r.signedAt && `${T.signedAt}: ${fmt(r.signedAt)}`, r.reason && `${T.reasonL}: ${r.reason}`,
-          r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, ...r.problems];
+          r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, ...r.problems];
         for (const l of lines.filter(Boolean)) { const s = document.createElement('small'); s.textContent = l; li.append(s); }
         list.append(li);
       });

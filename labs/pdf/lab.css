@@ -37,3 +37,4 @@ progress{display:block;width:100%;margin-top:12px}
 .check-list small{display:block;color:var(--muted)}
 @media (max-width:600px){.lab-head h1{font-size:22px}.tabs button{padding:6px 8px}}
 [hidden]{display:none!important}
+.note.small{font-size:12px;margin:4px 0 12px}

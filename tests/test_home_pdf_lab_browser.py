@@ -48,7 +48,15 @@ SCRIPT = r"""async () => {
   const broken = await InkDOSPdfLabSign.checkPdf(tampered);
   let wrongPassword = '';
   try { await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12, password: 'x' }); } catch (e) { wrongPassword = e.message; }
-  return { words: ocr.words, text, checks: checks.map(r => [r.ok, r.coversWholeFile, r.signer, r.reason]), broken: broken.map(r => r.ok), wrongPassword };
+  const locked = await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12, password: 'senha', visible: { position: 'bottom-right' }, lock: true, labels: { signedBy: 'Assinado por', date: 'Data' } });
+  const lockedCheck = await InkDOSPdfLabSign.checkPdf(locked.bytes);
+  let resign = ''; try { await InkDOSPdfLabSign.signPdf(locked.bytes, { p12, password: 'senha' }); } catch (e) { resign = e.message; }
+  const appended = new Uint8Array([...locked.bytes, ...new TextEncoder().encode('\n% change\n')]);
+  const lockedChanged = (await InkDOSPdfLabSign.checkPdf(appended)).map(r => r.ok);
+  const stampPdf = await pdfjsLib.getDocument({ data: locked.bytes.slice(), isEvalSupported: false }).promise;
+  const annots = await (await stampPdf.getPage(1)).getAnnotations();
+  return { locked: lockedCheck.map(r => [r.ok, r.locked]), resign, lockedChanged, widget: annots.filter(a => a.fieldType === 'Sig').map(a => a.rect.map(Math.round)),
+    words: ocr.words, text, checks: checks.map(r => [r.ok, r.coversWholeFile, r.signer, r.reason]), broken: broken.map(r => r.ok), wrongPassword };
 }"""
 
 
@@ -81,6 +89,10 @@ def main() -> None:
             assert got['checks'] == [[True, False, 'Teste Lab', 'Aprovação'], [True, True, 'Teste Lab', 'Revisão']], got['checks']
             assert got['broken'] == [False, False], got['broken']
             assert 'password' in got['wrongPassword'].lower(), got['wrongPassword']
+            assert got['locked'] == [[True, True]], got['locked']
+            assert 'locked' in got['resign'].lower(), got['resign']
+            assert got['lockedChanged'] == [False], got['lockedChanged']
+            assert len(got['widget']) == 1 and got['widget'][0][2] - got['widget'][0][0] == 250, got['widget']
             # the page itself loads without errors and the Home link exists on the web edition
             home = (ROOT / 'index.html').read_text(encoding='utf-8')
             assert 'href="./labs/pdf/index.html"' in home and 'class="web-only"' in home

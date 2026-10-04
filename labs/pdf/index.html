@@ -66,6 +66,14 @@
         <label><span data-i18n="reason">Reason</span><input id="signReason" type="text"></label>
         <label><span data-i18n="location">Location</span><input id="signLocation" type="text"></label>
       </div>
+      <div class="row">
+        <label class="check"><input id="signVisible" type="checkbox" checked> <span data-i18n="signVisible">Show the signature with date and time on the page</span></label>
+        <label><span data-i18n="page">Page</span> <input id="signPage" type="number" min="1" value="1"></label>
+        <label><span data-i18n="position">Position</span>
+          <select id="signPosition"><option value="bottom-left" data-i18n="posBL">Bottom left</option><option value="bottom-right" data-i18n="posBR">Bottom right</option><option value="top-right" data-i18n="posTR">Top right</option></select></label>
+      </div>
+      <label class="check"><input id="signLock" type="checkbox"> <span data-i18n="signLock">Lock the document after signing</span></label>
+      <p class="note small" data-i18n="signLockHelp">Locking certifies the document: any later change (text, pages, annotations or another signature) makes PDF readers report the signature as invalid. Only the first signature can lock a document.</p>
       <button id="signBtn" class="button primary" type="button" data-i18n="signRun">Sign PDF</button>
     </section>
 
