@@ -1,0 +1,8 @@
+PDF tools (beta, web edition only; not staged into the desktop build or the offline shell)
+
+tesseract/tesseract.min.js, worker.min.js   tesseract.js 7.0.0 (npm, dist/)          Apache-2.0  licenses/TESSERACT-JS.txt
+tesseract/core/*.wasm.js                     tesseract.js-core 7.0.0 (simd-lstm, lstm) Apache-2.0  licenses/TESSERACT-CORE.txt
+tesseract/lang/por.traineddata.gz            @tesseract.js-data/por 1.0.0, 4.0.0_best_int (tessdata, Apache-2.0)
+tesseract/lang/eng.traineddata.gz            @tesseract.js-data/eng 1.0.0, 4.0.0_best_int (tessdata, Apache-2.0)
+forge/forge.min.js                           node-forge 1.4.0 (npm, dist/), used under the BSD licence  licenses/NODE-FORGE.txt
+pdf.js and pdf-lib are read from apps/pdf/vendor/ (not duplicated).

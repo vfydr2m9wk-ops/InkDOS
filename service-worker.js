@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.5-09a63b1c4610c380b995';
+const CACHE_NAME='inkdos-v2.7.5-66d6b87059cf25957d9a';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "99c5ca269b799a8676dd18fee52360a7809e960fc1e3af088c3ad61ca0073043",
@@ -269,7 +269,7 @@ const ASSET_HASHES={
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
   "./assets/home-launch.js": "fe2268b2de2c553e657069ab83ad50ac7fe4260b37ac804800a0dd41d4d6a32b",
-  "./assets/home.css": "69eca94965983111ebd236cd40bffe610784d8322135cfc7648a40758561f7a7",
+  "./assets/home.css": "0d78dd2e70570e26b49d6c12e450ca144ba24fbec4f2153d462d200c66f07b6e",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./assets/icons/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./assets/icons/office.png": "3419ee565a70ba6caf26dcc1d86b1e4a493afb21e072941ebf9c4d21b62ffba5",
@@ -278,7 +278,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "bc857e386c3a124f248374c292b10b419189400b71829509fd6e06141409472a",
+  "./index.html": "4c11f453ae4e4e5e60e72ee0ed09c6210c9e2111a37280f75ac971c9950ddb12",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
   "./shared/localization/locales/de.js": "81af7d97a9efb3743d0e1e5812065d0238452a57d3dc48e5cd7545908186d495",

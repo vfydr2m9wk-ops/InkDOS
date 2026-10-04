@@ -8,7 +8,7 @@
       "entry": "index.html",
       "formats": [],
       "ownedPaths": ["index.html", "manifest.webmanifest", "service-worker.js"],
-      "ownedPrefixes": ["assets/"],
+      "ownedPrefixes": ["assets/", "labs/"],
       "smokeTests": [
         "tests/test_home_density_layout_contract.py",
         "tests/test_suite_settings_concordance_contract.py"
