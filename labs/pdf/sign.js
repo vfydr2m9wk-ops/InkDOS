@@ -12,8 +12,13 @@
  * the signer's signature over its signed attributes (RSA PKCS#1 v1.5 and ECDSA through WebCrypto),
  * the signer certificate and whether the file was changed after signing. The byte range may leave
  * out only the /Contents hex string, the signing-certificate attribute must name the signer, SHA-1
- * digests are refused, and the chain carried in the signature is checked issuer by issuer. The chain
- * is not checked against a trust list, revocation or timestamps in this beta.
+ * digests are refused, and the chain is built issuer by issuer from the certificates in the signature
+ * and the bundled ICP-Brasil list (labs/pdf/trust/icp-brasil.js); it is trusted only when it ends at
+ * a pinned ICP-Brasil root. Revocation and timestamps are not checked here: the page offers the
+ * official ITI validator for that, opened by the user after a warning (nothing is sent by InkDOS).
+ *
+ * Optionally the signature declares the ICP-Brasil policy PA_PAdES_AD_RB v1.1 (signature-policy-
+ * identifier with the policy hash from ITI's LPA).
  */
 (function (global) {
   'use strict';
@@ -77,10 +82,17 @@
     if (usage && !usage.digitalSignature && !usage.nonRepudiation) throw new Error('The certificate is not allowed to make digital signatures (key usage).');
   }
 
+  // ICP-Brasil signature policy PA_PAdES_AD_RB v1.1 (DOC-ICP-15.03). The hash is the SHA-256 of the
+  // policy file as listed in ITI's LPA_PAdES.der; the policy may be used for signatures until 2029-03-02.
+  const POLICIES = {
+    'AD-RB': { label: 'ICP-Brasil PA_PAdES_AD_RB v1.1', oid: '2.16.76.1.7.1.11.1.1', until: new Date('2029-03-02T00:00:00Z'),
+      sha256: '95752d26ca974d46675ae7fb787b606a71ea941f26b59f6b6a321f97d63b9cb1', uri: 'http://politicas.icpbrasil.gov.br/PA_PAdES_AD_RB_v1_1.der' }
+  };
+
   // CMS SignedData for PAdES baseline (ETSI.CAdES.detached): signed attributes are content-type,
   // message-digest and signing-certificate-v2 (binds the signer certificate to the signature); the
   // claimed signing time is the signature dictionary's /M, so no signing-time attribute is added.
-  function buildCms(signedBytes, certificate) {
+  function buildCms(signedBytes, certificate, policy) {
     const forge = global.forge, asn1 = forge.asn1, U = asn1.Class.UNIVERSAL, T = asn1.Type, C = asn1.Class.CONTEXT_SPECIFIC;
     const seq = v => asn1.create(U, T.SEQUENCE, true, v), set = v => asn1.create(U, T.SET, true, v);
     const oid = o => asn1.create(U, T.OID, false, asn1.oidToDer(o).getBytes());
@@ -96,7 +108,10 @@
     const attrs = [
       [OID.contentType, oid(OID.data)],
       [OID.messageDigest, octets(sha256(binary(signedBytes)).digest().getBytes())],
-      [OID.signingCertificateV2, seq([seq([essCertIdV2])])]
+      [OID.signingCertificateV2, seq([seq([essCertIdV2])])],
+      // signature-policy-identifier (CAdES-EPES): policy OID, policy hash and where to fetch it
+      ...(policy ? [[OID.sigPolicyId, seq([oid(policy.oid), seq([seq([oid(OID.sha256)]), octets(forge.util.hexToBytes(policy.sha256))]),
+        seq([seq([oid(OID.spqUri), asn1.create(U, T.IA5STRING, false, policy.uri)])])])]] : [])
     ].map(([type, value]) => seq([oid(type), set([value])]));
     // DER SET OF: elements in ascending order of their encodings
     attrs.sort((a, b) => { const x = der(a), y = der(b); return x < y ? -1 : x > y ? 1 : 0; });
@@ -117,6 +132,9 @@
     const o = Object.assign({ reason: '', location: '', contact: '', pageIndex: 0, placeholderBytes: 12000, now: new Date(), visible: null, lock: false, labels: {} }, options);
     const certificate = readCertificate(o.p12, o.password);
     assertUsable(certificate, o.now);
+    const policy = o.policy ? POLICIES[o.policy] : null;
+    if (o.policy && !policy) throw new Error('Unknown signature policy: ' + o.policy);
+    if (policy && o.now >= policy.until) throw new Error(policy.label + ' can no longer be used for new signatures.');
     let doc;
     try { doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false }); } catch (e) {
       throw new Error(/encrypt/i.test(String(e && e.message)) ? 'Encrypted PDFs cannot be signed in this beta.' : 'The PDF could not be read: ' + (e && e.message));
@@ -218,7 +236,7 @@
 
     // CMS SignedData (detached) over the two ranges
     const signed = concat([out.subarray(0, cStart), out.subarray(cEnd)]);
-    const hex = forge.util.bytesToHex(buildCms(signed, certificate));
+    const hex = forge.util.bytesToHex(buildCms(signed, certificate, policy));
     if (hex.length > contentsLen) throw new Error('The signature is larger than its reserved space.');
     out.set(enc(hex.padEnd(contentsLen, '0')), cStart + 1);
     // never hand out a signature this module itself would not accept
@@ -236,12 +254,15 @@
     p256: '1.2.840.10045.3.1.7', p384: '1.3.132.0.34', p521: '1.3.132.0.35', commonName: '2.5.4.3',
     data: '1.2.840.113549.1.7.1', signedData: '1.2.840.113549.1.7.2', contentType: '1.2.840.113549.1.9.3', sha256WithRSA: '1.2.840.113549.1.1.11',
     signingCertificate: '1.2.840.113549.1.9.16.2.12', signingCertificateV2: '1.2.840.113549.1.9.16.2.47', timeStampToken: '1.2.840.113549.1.9.16.2.14',
-    basicConstraints: '2.5.29.19', subjectKeyIdentifier: '2.5.29.14'
+    basicConstraints: '2.5.29.19', subjectKeyIdentifier: '2.5.29.14',
+    sigPolicyId: '1.2.840.113549.1.9.16.2.15', spqUri: '1.2.840.113549.1.9.16.5.1'
   };
   const HASH = { [OID.sha1]: 'SHA-1', [OID.sha256]: 'SHA-256', [OID.sha384]: 'SHA-384', [OID.sha512]: 'SHA-512' };
   // certificate signature algorithms (RSA PKCS#1 v1.5 and ECDSA) and their digests
   const CERT_SIG = { '1.2.840.113549.1.1.5': 'SHA-1', '1.2.840.113549.1.1.11': 'SHA-256', '1.2.840.113549.1.1.12': 'SHA-384', '1.2.840.113549.1.1.13': 'SHA-512',
-    '1.2.840.10045.4.1': 'SHA-1', '1.2.840.10045.4.3.2': 'SHA-256', '1.2.840.10045.4.3.3': 'SHA-384', '1.2.840.10045.4.3.4': 'SHA-512' };
+    '1.2.840.10045.4.1': 'SHA-1', '1.2.840.10045.4.3.2': 'SHA-256', '1.2.840.10045.4.3.3': 'SHA-384', '1.2.840.10045.4.3.4': 'SHA-512',
+    '1.3.101.112': 'EdDSA', '1.3.101.113': 'EdDSA' };
+  const EDDSA = { '1.3.101.112': 'Ed25519', '1.3.101.113': 'Ed448' };
 
   // PDF date (D:YYYYMMDDHHmmSSOHH'mm) to Date; null when unreadable
   function parsePdfDate(s) {
@@ -314,14 +335,34 @@
     let cur = signer, status = 'incomplete';
     for (let depth = 0; depth < 10; depth++) {
       if (cur.subjectDer === cur.issuerDer) { const ok = await certSignedBy(cur, cur); status = ok === true ? 'root' : ok === null ? 'unsupported' : 'broken'; break; }
-      const parent = certs.find(c => c !== cur && c.subjectDer === cur.issuerDer);
-      if (!parent) break;
-      const ok = await certSignedBy(cur, parent);
-      if (ok !== true) { status = ok === null ? 'unsupported' : 'broken'; break; }
+      // several certificates can share an issuer name (renewed CAs): take the one whose key signed
+      const candidates = certs.filter(c => c !== cur && c.subjectDer === cur.issuerDer && !chain.includes(c));
+      if (!candidates.length) break;
+      let parent = null, result = false;
+      for (const c of candidates) { const ok = await certSignedBy(cur, c); if (ok === true) { parent = c; break; } if (ok === null) result = null; }
+      if (!parent) { status = result === null ? 'unsupported' : 'broken'; break; }
       if (parent.ca === false) { status = 'broken'; break; }
       chain.push(parent); cur = parent;
     }
-    return { names: chain.map(c => c.subject || c.serial), status, validAtSigning: chain.every(c => when >= c.notBefore && when <= c.notAfter), weakHash: chain.some(c => CERT_SIG[c.sigAlg] === 'SHA-1' && c.subjectDer !== c.issuerDer) };
+    const root = chain[chain.length - 1];
+    const anchor = status === 'root' ? trustPool().anchors.find(a => a.der === root.der) : null;
+    return { names: chain.map(c => c.subject || c.serial), status, validAtSigning: chain.every(c => when >= c.notBefore && when <= c.notAfter),
+      weakHash: chain.some(c => CERT_SIG[c.sigAlg] === 'SHA-1' && c.subjectDer !== c.issuerDer),
+      trusted: anchor && chain.slice(1).every(c => c.ca === true) ? anchor : null };
+  }
+
+  // bundled trust list (labs/pdf/trust/icp-brasil.js), parsed once: anchors and path-building candidates
+  let pool = null;
+  function trustPool() {
+    if (pool) return pool;
+    const forge = global.forge, list = global.InkDOSPdfLabTrust;
+    const parse = b64 => { try { return certInfo(forge.asn1.fromDer(atob(b64))); } catch (_) { return null; } };
+    pool = { name: list ? list.name : '', anchors: [], intermediates: [] };
+    if (list) {
+      pool.anchors = list.anchors.map(a => parse(a.der)).filter(Boolean).map(a => Object.assign(a, { trustName: list.name }));
+      pool.intermediates = list.intermediates.map(i => parse(i.der)).filter(Boolean);
+    }
+    return pool;
   }
 
   async function digest(alg, bytes) { return new Uint8Array(await crypto.subtle.digest(alg, bytes)); }
@@ -340,6 +381,12 @@
       const size = { 'P-256': 32, 'P-384': 48, 'P-521': 66 }[curve], seq = forge.asn1.fromDer(binary(sig));
       const part = v => { const b = enc(v.value).filter((x, i, a) => !(i === 0 && x === 0 && a.length > size)); const r = new Uint8Array(size); r.set(b.slice(-size), size - Math.min(size, b.length)); return r; };
       return crypto.subtle.verify({ name: 'ECDSA', hash: hashName }, key, concat([part(seq.value[0]), part(seq.value[1])]), data);
+    }
+    if (EDDSA[algOid]) {
+      // Ed25519/Ed448 where the browser's WebCrypto has them; otherwise reported as unsupported
+      let key;
+      try { key = await crypto.subtle.importKey('spki', der, { name: EDDSA[algOid] }, false, ['verify']); } catch (_) { return null; }
+      return crypto.subtle.verify({ name: EDDSA[algOid] }, key, sig, data);
     }
     return null;
   }
@@ -390,6 +437,14 @@
             const certHash = (v2 && id[0].type === asn1.Type.SEQUENCE ? id[1] : id[0]).value;
             certBound = !!alg && same(enc(certHash), await digest(alg, enc(cert.der)));
           } else if (!sc) r.notes.push('no-signing-certificate');
+          const sp = attrs.value.find(at => oidOf(at) === OID.sigPolicyId);
+          if (sp) {
+            const id = sp.value[1].value[0], policyOid = asn1.derToOid(id.value[0].value), known = Object.values(POLICIES).find(p => p.oid === policyOid);
+            const hashOk = !!known && forge.util.bytesToHex(id.value[1].value[1].value) === known.sha256;
+            r.policy = known && hashOk ? known.label : policyOid;
+            if (known && !hashOk) r.problems.push('The signature policy hash does not match ' + known.label + '.');
+            r.policyOk = !known || hashOk;
+          }
           const setDer = asn1.toDer(asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SET, true, attrs.value)).getBytes();
           r.signatureValid = cert ? await verifySignature(cert.spki, hashName, enc(setDer), sig) : null;
         } else {
@@ -403,8 +458,10 @@
           Object.assign(r, { signer: cert.subject, issuer: cert.issuer, notBefore: cert.notBefore, notAfter: cert.notAfter });
           const when = r.signedAt || new Date();
           r.certificateValidAtSigning = when >= cert.notBefore && when <= cert.notAfter;
-          const chain = await buildChain(cert, certs, when);
+          const tp = trustPool(), chain = await buildChain(cert, [...certs, ...tp.intermediates, ...tp.anchors], when);
           r.chain = chain.names; r.chainStatus = chain.status;
+          r.trust = chain.trusted && chain.validAtSigning ? chain.trusted.trustName : null; r.trustAnchor = r.trust ? chain.trusted.subject : null;
+          if (r.trust) r.notes.push('revocation-not-checked');
           if (chain.status === 'broken') r.problems.push('The certificate chain in the signature is not consistent (a certificate is not signed by its issuer).');
           if (chain.status === 'incomplete') r.notes.push('chain-incomplete');
           if (chain.status === 'unsupported') r.notes.push('chain-unsupported');
@@ -419,7 +476,7 @@
         if (r.signatureValid === null && cert) r.problems.push('Signature algorithm not supported by this check.');
         if (r.signatureValid === false) r.problems.push('The cryptographic signature does not verify.');
         r.ok = r.integrity !== false && r.signatureValid === true && certBound !== false && hashName !== 'SHA-1' &&
-          r.certificateValidAtSigning !== false && r.chainValidAtSigning !== false && r.chainStatus !== 'broken';
+          r.certificateValidAtSigning !== false && r.chainValidAtSigning !== false && r.chainStatus !== 'broken' && r.policyOk !== false;
         if (r.locked && !r.coversWholeFile) { r.ok = false; r.problems.push('The document was changed after a certification that allows no changes.'); }
       } catch (e) {
         r.ok = false; r.problems.push(String(e && e.message || e));
@@ -429,5 +486,5 @@
     return results;
   }
 
-  global.InkDOSPdfLabSign = Object.freeze({ signPdf, checkPdf, readCertificate, isLocked: bytes => signatureFields(bytes).some(f => f.docmdp === 1), _test: { signatureFields, decodePdfString } });
+  global.InkDOSPdfLabSign = Object.freeze({ signPdf, checkPdf, readCertificate, isLocked: bytes => signatureFields(bytes).some(f => f.docmdp === 1), _test: { signatureFields, decodePdfString, trustPool, buildChain, resetTrust: () => { pool = null; } } });
 })(globalThis);

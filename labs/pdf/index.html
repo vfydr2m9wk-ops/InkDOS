@@ -14,7 +14,7 @@
     <header class="lab-head">
       <a class="back" href="../../index.html" data-i18n="back">← InkDOS</a>
       <h1><span data-i18n="title">PDF tools</span> <span class="beta">Beta</span></h1>
-      <p class="note" data-i18n="intro">Experimental tools for the web edition. Everything runs in this browser: files, certificates and passwords never leave your device.</p>
+      <p class="note" data-i18n="intro">Experimental tools for the web edition. Everything runs in this browser: files, certificates and passwords never leave your device unless you send a file to the official ITI validator yourself.</p>
     </header>
 
     <section class="card file-card">
@@ -74,22 +74,40 @@
       </div>
       <label class="check"><input id="signLock" type="checkbox"> <span data-i18n="signLock">Lock the document after signing</span></label>
       <p class="note small" data-i18n="signLockHelp">Locking certifies the document: any later change (text, pages, annotations or another signature) makes PDF readers report the signature as invalid. Only the first signature can lock a document.</p>
+      <label class="check"><input id="signPolicy" type="checkbox"> <span data-i18n="signPolicy">Declare the ICP-Brasil signature policy AD-RB v1.1 (experimental)</span></label>
+      <p class="note small" data-i18n="signPolicyHelp">Adds the ICP-Brasil policy PA_PAdES_AD_RB v1.1 to the signature. Use it only with an ICP-Brasil certificate, and confirm the result on the official ITI validator.</p>
       <button id="signBtn" class="button primary" type="button" data-i18n="signRun">Sign PDF</button>
     </section>
 
     <section class="card panel" data-panel="check" hidden>
-      <p data-i18n="checkHelp">Checks that each signature matches the document and that the document was not changed afterwards. The certificate chain is shown but not checked against a trust list in this beta.</p>
-      <button id="checkBtn" class="button primary" type="button" data-i18n="checkRun">Check signatures</button>
+      <p data-i18n="checkHelp">Checks, on this device, that each signature matches the document, that the document was not changed afterwards and whether the certificate chain leads to an ICP-Brasil root. Revocation is not checked here: use the official validator for the complete validation.</p>
+      <div class="row">
+        <button id="checkBtn" class="button primary" type="button" data-i18n="checkRun">Check signatures</button>
+        <button id="itiBtn" class="button" type="button" data-i18n="itiRun">Validate on the official ITI validator…</button>
+      </div>
       <ul id="checkList" class="check-list"></ul>
     </section>
 
     <p id="status" class="status" role="status" aria-live="polite"></p>
   </main>
+
+  <dialog id="itiDialog" class="card" aria-labelledby="itiTitle">
+    <h2 id="itiTitle" data-i18n="itiTitle">Official validation (ITI)</h2>
+    <p data-i18n="itiWarnOpen">This opens validar.iti.gov.br, the Brazilian government's signature validator, in a new tab. InkDOS sends nothing: you choose the file on the ITI site.</p>
+    <p class="warn" data-i18n="itiWarnUpload">On that site the whole document (content, signatures and metadata) is sent to the government's servers to be validated. Do not continue with a document that must not leave this device.</p>
+    <p data-i18n="itiWarnFile">Validate the exact file you will deliver: if you signed it here, download it first.</p>
+    <div class="row">
+      <button id="itiDownload" class="button" type="button" data-i18n="itiDownload">Download this PDF</button>
+      <button id="itiOpen" class="button primary" type="button" data-i18n="itiOpen">Open the ITI validator</button>
+      <button id="itiCancel" class="button" type="button" data-i18n="itiCancel">Cancel</button>
+    </div>
+  </dialog>
   <script src="../../apps/pdf/vendor/pdfjs/pdf.min.js"></script>
   <script src="../../apps/pdf/vendor/pdf-lib/pdf-lib.min.js"></script>
   <script src="vendor/tesseract/tesseract.min.js"></script>
   <script src="vendor/forge/forge.min.js"></script>
   <script src="ocr.js"></script>
+  <script src="trust/icp-brasil.js"></script>
   <script src="sign.js"></script>
   <script src="lab.js"></script>
 </body>
