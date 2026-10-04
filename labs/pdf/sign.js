@@ -305,13 +305,15 @@
     const time = t => (t.type === asn1.Type.UTCTIME ? asn1.utcTimeToDate : asn1.generalizedTimeToDate)(t.value);
     const der = a => asn1.toDer(a).getBytes();
     // extensions: CA flag (null when absent) and subject key identifier
-    let ca = null, ski = '';
+    let ca = null, ski = '', signUsage = null;
     const extList = tbs.value.find(v => v.tagClass === asn1.Class.CONTEXT_SPECIFIC && v.type === 3);
     for (const ext of (extList && extList.value[0] ? extList.value[0].value : [])) {
       try {
         const id = asn1.derToOid(ext.value[0].value), inner = asn1.fromDer(ext.value[ext.value.length - 1].value);
         if (id === OID.basicConstraints) ca = !!(inner.value[0] && inner.value[0].type === asn1.Type.BOOLEAN && inner.value[0].value !== '\x00');
         if (id === OID.subjectKeyIdentifier) ski = forge.util.bytesToHex(inner.value);
+        // keyUsage BIT STRING: digitalSignature (bit 0) or nonRepudiation (bit 1)
+        if (id === '2.5.29.15') { const b = 'bitStringContents' in inner ? inner.bitStringContents : inner.value; signUsage = b.length > 1 && (b.charCodeAt(1) & 0xc0) !== 0; }
       } catch (_) { /* unreadable extension: ignored */ }
     }
     const bits = certAsn1.value[2], sigRaw = 'bitStringContents' in bits ? bits.bitStringContents : bits.value;
@@ -319,7 +321,7 @@
     try { const pk = f[5].value[1].value; if (Array.isArray(pk) && pk[0] && Array.isArray(pk[0].value)) keyBits = pk[0].value[0].value.replace(/^\x00+/, '').length * 8; } catch (_) { /* EC or unreadable */ }
     return { serial: forge.util.bytesToHex(f[0].value), issuer: name(f[2]), notBefore: time(f[3].value[0]), notAfter: time(f[3].value[1]), subject: name(f[4]), spki: f[5],
       der: der(certAsn1), tbsDer: der(tbs), issuerDer: der(f[2]), subjectDer: der(f[4]), sigAlg: asn1.derToOid(certAsn1.value[1].value[0].value),
-      sig: enc(sigRaw.slice(1)), ca, ski, keyBits };
+      sig: enc(sigRaw.slice(1)), ca, ski, keyBits, signUsage };
   }
 
   // does `issuer` sign `cert`? true / false, or null when the algorithm is not supported
@@ -460,7 +462,13 @@
           r.certificateValidAtSigning = when >= cert.notBefore && when <= cert.notAfter;
           const tp = trustPool(), chain = await buildChain(cert, [...certs, ...tp.intermediates, ...tp.anchors], when);
           r.chain = chain.names; r.chainStatus = chain.status;
-          r.trust = chain.trusted && chain.validAtSigning ? chain.trusted.trustName : null; r.trustAnchor = r.trust ? chain.trusted.subject : null;
+          // The signing time is claimed by the signer (timestamps are not checked), so identity is only
+          // confirmed for a chain that is valid today: a backdated time cannot revive an expired certificate.
+          const now = await buildChain(cert, [...certs, ...tp.intermediates, ...tp.anchors], new Date());
+          r.signerUsageOk = cert.ca !== true && cert.signUsage !== false;
+          r.trust = chain.trusted && chain.validAtSigning && now.trusted && now.validAtSigning && r.signerUsageOk ? chain.trusted.trustName : null; r.trustAnchor = r.trust ? chain.trusted.subject : null;
+          if (chain.trusted && chain.validAtSigning && !now.validAtSigning) r.notes.push('not-valid-now');
+          if (!r.signerUsageOk) r.problems.push('The signer certificate is not meant for signatures (CA certificate or key usage).');
           if (r.trust) r.notes.push('revocation-not-checked');
           if (chain.status === 'broken') r.problems.push('The certificate chain in the signature is not consistent (a certificate is not signed by its issuer).');
           if (chain.status === 'incomplete') r.notes.push('chain-incomplete');
@@ -476,7 +484,7 @@
         if (r.signatureValid === null && cert) r.problems.push('Signature algorithm not supported by this check.');
         if (r.signatureValid === false) r.problems.push('The cryptographic signature does not verify.');
         r.ok = r.integrity !== false && r.signatureValid === true && certBound !== false && hashName !== 'SHA-1' &&
-          r.certificateValidAtSigning !== false && r.chainValidAtSigning !== false && r.chainStatus !== 'broken' && r.policyOk !== false;
+          r.certificateValidAtSigning !== false && r.chainValidAtSigning !== false && r.chainStatus !== 'broken' && r.policyOk !== false && r.signerUsageOk !== false;
         if (r.locked && !r.coversWholeFile) { r.ok = false; r.problems.push('The document was changed after a certification that allows no changes.'); }
       } catch (e) {
         r.ok = false; r.problems.push(String(e && e.message || e));
