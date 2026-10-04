@@ -169,7 +169,7 @@
   let previewToken = 0;
   async function renderPreview() {
     if (!doc.bytes || document.querySelector('[data-panel=stamp]').hidden) return;
-    const token = ++previewToken, task = pdfjsLib.getDocument({ data: doc.bytes.slice(), wasmUrl: PDFJS_WASM });
+    const token = ++previewToken, task = pdfjsLib.getDocument({ data: doc.bytes.slice(), isEvalSupported: false, wasmUrl: PDFJS_WASM });
     try {
       const pdf = await task.promise;
       const n = Math.min(Math.max(1, Number($('stampPage').value) || 1), pdf.numPages);
