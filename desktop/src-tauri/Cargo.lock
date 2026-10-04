@@ -1793,7 +1793,7 @@ dependencies = [
 
 [[package]]
 name = "inkdos-desktop"
-version = "2.7.6"
+version = "2.7.7"
 dependencies = [
  "base64 0.22.1",
  "flate2",
