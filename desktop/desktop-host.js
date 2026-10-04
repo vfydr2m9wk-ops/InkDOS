@@ -9,12 +9,46 @@
   const opener = tauri.opener;
   const core = tauri.core;
 
+  // Beta tools channel: signed beta bundles installed and opened by the host (src/beta.rs) in
+  // isolated windows. `tools` lists the installed bundle's tools for the Settings menu.
+  const betaTools = {
+    tools: [],
+    async refresh() {
+      const status = await core.invoke('inkdos_beta_status');
+      betaTools.tools = Array.isArray(status && status.tools) ? status.tools : [];
+      return status;
+    },
+    async open(tool) {
+      let updateError = null;
+      try {
+        await core.invoke('inkdos_beta_update');
+      } catch (error) {
+        updateError = error;
+      }
+      try {
+        await core.invoke('inkdos_beta_open', { tool: String(tool || '') });
+      } catch (error) {
+        const installed = await betaTools.refresh().then(status => status && status.installedVersion, () => null);
+        const message = String((!installed && updateError) || error || 'InkDOS could not open the beta tools.');
+        if (dialog && typeof dialog.message === 'function') {
+          dialog.message(message, { title: 'InkDOS — Beta tools', kind: 'error' }).catch(() => {});
+        }
+        return false;
+      }
+      betaTools.refresh().catch(() => {});
+      return true;
+    }
+  };
+  const hasInvoke = !!(core && typeof core.invoke === 'function');
+  if (hasInvoke) betaTools.refresh().catch(() => {});
+
   g.InkDOSDesktop = Object.freeze({
     host: 'tauri',
     nativeDialogs: true,
     nativeFilesystem: true,
     deliveryConfirmed: true,
-    manualUpdater: !!(core && typeof core.invoke === 'function')
+    manualUpdater: hasInvoke,
+    betaTools: hasInvoke ? Object.freeze({ get tools() { return betaTools.tools.slice(); }, open: betaTools.open }) : null
   });
   document.documentElement.dataset.inkdosHost = 'tauri';
 
