@@ -200,7 +200,7 @@ jobs:
           PY
 
       - name: Upload immutable build provenance
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Release-Provenance
           path: release-provenance/provenance.json
@@ -331,7 +331,7 @@ jobs:
         run: cargo tauri build --bundles ${{ matrix.bundles }} --config tauri.updater.release.conf.json
 
       - name: Upload final native installers and updater artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.release_paths }}
@@ -357,14 +357,14 @@ jobs:
 
       - name: Download current-run native artifacts
         if: needs.validate.outputs.native_builds == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           pattern: InkDOS-*
           path: release-assets
           merge-multiple: true
 
       - name: Download current-run provenance
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: Release-Provenance
           path: release-provenance
