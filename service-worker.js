@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.6-17587f67918f4bc3a7ba';
+const CACHE_NAME='inkdos-v2.7.6-0474f38b3ceb14d12b3a';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "13870e7ded349c28ea0694702a6741ad7e8a86af3eb14dc4e94ea18cb627398c",
@@ -285,7 +285,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "8847b8d9e3a6ee082f51bd3c8ae47243648fa200a9f989e626c955f6d12f9982",
+  "./index.html": "3899f8f481caf54e2b3ef71b89f052d545cc22d7e3683af66dd23e8b09b7453c",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
   "./shared/localization/locales/de.js": "944c71548f0848b895e168512b26cffdf270de9eb72103233db3d748f3b206d1",
