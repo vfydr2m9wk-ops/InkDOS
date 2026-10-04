@@ -57,6 +57,9 @@ global.addEventListener('beforeunload',e=>{if(authorizedUnload){authorizedUnload
 chrome.syncDirty();
 surface.updateStats();
 NS.DocumentsApp=Object.freeze({session,state,zoom,d1,d2,d2Sections,open:fileOpen.openFile,requestOpen:fileOpen.requestOpen,newDocument:fileOpen.requestNew,save:saveController.save});
+// Recovery draft while there are unsaved changes (shared/work-safety.js): the document as Save would write it.
+global.InkDOSWorkSafety?.attachRecovery({app:'documents',isDirty:()=>session.active!==false&&session.dirty,revision:()=>session.revision,snapshot:async()=>{const docx=session.kind==='docx',base=String(chrome.displayName?.()||session.fileName||'Document').replace(/\.(docx|doc|rtf)$/i,'');const r=await NS.DocxWriter.save(pagesHost,base+'.docx',docx?session.sourceBuffer:null,docx?session.sourceContext:null);return{data:r.blob,name:base+'.docx'}},restore:async file=>{await fileOpen.openFile(file);session.markDirty();chrome.syncDirty?.()}});
+
 }
 boot().catch(e=>{console.error(e);const status=$('statusText');if(status)status.textContent='Documents tools failed to load'});
 })(globalThis);

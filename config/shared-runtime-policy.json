@@ -2,7 +2,8 @@
   "version": 1,
   "allowedFiles": [
     "ui-density.css",
-    "ui-density.js"
+    "ui-density.js",
+    "work-safety.js"
   ],
   "allowedPrefixes": [
     "localization/"

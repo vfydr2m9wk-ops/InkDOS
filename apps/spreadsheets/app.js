@@ -10,5 +10,7 @@ NS.FileMenuController.create({chrome,openController,saveController,session});
 NS.FrameUI.installToolbarRail(document.getElementById('formatbar'));
 const home=document.querySelector('a[aria-label="Home"]');home?.addEventListener('click',async e=>{if(leaving||!session.dirty)return;e.preventDefault();leaving=true;try{if(await openController.requestLeave()){authorizedUnload=true;root.location.href=home.href}}finally{leaving=false}});
 window.addEventListener('beforeunload',e=>{if(authorizedUnload){authorizedUnload=false;return}if(!session.dirty)return;e.preventDefault();e.returnValue=''});
+// Recovery draft while there are unsaved changes (shared/work-safety.js): the workbook as an XLSX copy.
+root.InkDOSWorkSafety?.attachRecovery({app:'spreadsheets',isDirty:()=>!!(session.book&&session.dirty),revision:()=>session.revision,snapshot:async()=>{const base=String(session.fileName||'Workbook').replace(/\.(xlsx|xls|csv|tsv)$/i,'');return{data:await root.LocalXLSX.saveCopy(session.book),name:base+'.xlsx'}},restore:async file=>{await openController.handle(file);session.markDirty();chrome.sync()}});
 root.__inkdosSpreadsheetsS1=Object.freeze({get session(){return session},get editor(){return editorController},openController,saveController});
 })(globalThis);
