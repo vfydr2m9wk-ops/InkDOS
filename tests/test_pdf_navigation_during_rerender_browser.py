@@ -26,6 +26,14 @@ def main():
             page.wait_for_function("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.pageCount === 3")
             result=page.evaluate(r"""async()=>{const L=globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout;L.goToPage(1);await new Promise(r=>setTimeout(r,300));const render=L.render;let slow=true;L.render=async function(...args){if(slow)await new Promise(r=>setTimeout(r,250));return render.apply(this,args)};const rerender=L.rerenderVisible(true);slow=false;const nav=L.goToPage(2);await Promise.all([rerender,nav]);L.render=render;await new Promise(r=>setTimeout(r,500));return L.currentPage}""")
             assert result==2,{"browser":browser_name,"currentPage":result}
+            # a keyboard scroll made while visible pages re-render must not be undone by the stale anchor
+            page.evaluate("async()=>{const L=globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout;await L.goToPage(1);await new Promise(r=>setTimeout(r,300));L.viewport.tabIndex=-1;L.viewport.focus()}")
+            page.evaluate("()=>{const L=globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout,render=L.render;window.__restoreRender=()=>{L.render=render};L.render=async function(...args){await new Promise(r=>setTimeout(r,600));return render.apply(this,args)};window.__rerender=L.rerenderVisible(true)}")
+            start=page.evaluate("()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.viewport.scrollTop")
+            for _ in range(3):page.keyboard.press("ArrowDown")
+            page.wait_for_function(f"()=>globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.viewport.scrollTop>{start}+20")
+            scrolled=page.evaluate("async()=>{await window.__rerender;window.__restoreRender();await new Promise(r=>setTimeout(r,300));return globalThis.InkDOS2PdfP4.PdfStabilityDebug.layout.viewport.scrollTop}")
+            assert scrolled>start+20,{"browser":browser_name,"start":start,"after":scrolled}
             browser.close()
         print(f"PDF navigation during re-render regression passed on {browser_name}.")
     finally:
