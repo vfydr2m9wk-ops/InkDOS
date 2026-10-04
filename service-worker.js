@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.5-cd0621505c81161f6833';
+const CACHE_NAME='inkdos-v2.7.5-82b791a06d0e2af66a51';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "99c5ca269b799a8676dd18fee52360a7809e960fc1e3af088c3ad61ca0073043",
@@ -82,7 +82,7 @@ const ASSET_HASHES={
   "./apps/epub/view/reader-viewport.js": "85b6a908764936174acea53d63d65bfe5dfb091b75aa1f494fd0d03536648a9c",
   "./apps/epub/view/reader.css": "8398aa4e111df61ffcb5669bec4f2a69a1b16e73e1b0f10f606b9da1b655cc1e",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
-  "./apps/pdf/app.js": "1991fd880b7294d9273de375e2569b158c1f6773fc71a831d930e97d48a2ebcb",
+  "./apps/pdf/app.js": "e0044907b2ec6c5ca71d5247be52be5507837ad1c5775a9123af9650c15d2231",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
@@ -281,15 +281,15 @@ const ASSET_HASHES={
   "./index.html": "4c11f453ae4e4e5e60e72ee0ed09c6210c9e2111a37280f75ac971c9950ddb12",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "81af7d97a9efb3743d0e1e5812065d0238452a57d3dc48e5cd7545908186d495",
-  "./shared/localization/locales/es.js": "e14c5039b1d4561b36314095a7a9f18a73341d4fccfe12418f5d0819fc270f7b",
-  "./shared/localization/locales/fr.js": "8473a82f0d48766c7f19500052c94f3fb80594e9540ba36665483e244b44831e",
-  "./shared/localization/locales/ja.js": "7e8a8160bae55c727c6c9625141fa1997ca680dd15c88ad21c5f6eae19d19526",
-  "./shared/localization/locales/pt-BR.js": "58c7f1eb69e22ec8996b21ee3c95061efa0448ece713d5e60c0d534413f34d71",
-  "./shared/localization/locales/ru.js": "82e9300682c2979027ae257ebaa76920c1fbe9408d5047ec6f5b79419e164f95",
-  "./shared/localization/locales/zh-CN.js": "21683c06a21ec9688ff6aaa74d88cdea63291c4e45106ef25d8cca41fe1fd637",
+  "./shared/localization/locales/de.js": "2f935311164a74100d3d99371b3e7632c589020c0bb2d40d37d5723b8fdbed66",
+  "./shared/localization/locales/es.js": "91e3207233feb70c83cd57b1ddbce2a48479ef406a40ab56b1dc0a4164d14e4d",
+  "./shared/localization/locales/fr.js": "07d41e85755d2ec9682431befefaac1ea681c06742144d9bd09c83cb55c76d8c",
+  "./shared/localization/locales/ja.js": "f714bbc7841d6ca1e9186297325273a55c045b99bdf51a159d569d3c355ab294",
+  "./shared/localization/locales/pt-BR.js": "8b5bf3c204ad39296fcef1b76c1a359df035dc8ee63fe92116656ce7600c5f1c",
+  "./shared/localization/locales/ru.js": "1426d51bc82dd375d1af2ec411c3c6ee16695dcd6005a6edc9c418e49b3f4ab8",
+  "./shared/localization/locales/zh-CN.js": "87f56563019803aad35468286c5563fde6d39d9950e302ee4d87eca5e83d5755",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
-  "./shared/localization/settings-strip.js": "94bffe64fe8fabcbe4d5ce47c9adc7ddd63079baba656e33aa275adae6a15d60",
+  "./shared/localization/settings-strip.js": "ae2ec4318e9073db1fddd852924248a7495aca63e221e00e0634d8292110c5da",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
   "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
   "./shared/ui-density.js": "1c095e14a884af69a957b83d8d282701af0988a1cf544a778fe5e003e6d76c22",

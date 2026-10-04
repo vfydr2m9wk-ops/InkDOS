@@ -16,7 +16,7 @@
     signHelp: 'Assina o PDF com seu certificado A1 (.pfx/.p12). A assinatura é acrescentada ao arquivo, então assinaturas anteriores continuam válidas. Coloque a assinatura visual antes.',
     certificate: 'Certificado (.pfx/.p12)', password: 'Senha', reason: 'Motivo', location: 'Local', signRun: 'Assinar PDF',
     checkHelp: 'Confere se cada assinatura corresponde ao documento e se o documento não foi alterado depois. A cadeia do certificado é mostrada, mas nesta versão beta não é conferida contra uma lista de autoridades confiáveis.',
-    checkRun: 'Verificar assinaturas', needPdf: 'Abra um PDF primeiro.', opened: 'PDF aberto', ocrLoading: 'Carregando o OCR…',
+    checkRun: 'Verificar assinaturas', returnApp: 'Abrir no InkDOS', returned: 'Resultado aberto no app do InkDOS.', needPdf: 'Abra um PDF primeiro.', opened: 'PDF aberto', ocrLoading: 'Carregando o OCR…',
     ocrPage: (d, t) => `Reconhecendo páginas: ${d} de ${t}`, ocrWriting: 'Gravando o texto…',
     ocrDone: (p, w, s) => `OCR concluído: ${p} página(s), ${w} palavras${s ? `; ${s} página(s) já tinham texto` : ''}.`, ocrNothing: 'Todas as páginas já têm texto; nada a fazer.',
     stampNeed: 'Desenhe ou escolha a assinatura e clique na página para posicioná-la.', stampDone: 'Assinatura visual colocada.',
@@ -26,7 +26,7 @@
     changedAfter: 'O documento recebeu alterações depois desta assinatura.', wholeFile: 'Cobre o documento inteiro.',
     signer: 'Assinante', issuer: 'Emissor', signedAt: 'Assinado em', certExpired: 'O certificado não era válido na data da assinatura.', reasonL: 'Motivo'
   } : {
-    needPdf: 'Open a PDF first.', opened: 'PDF opened', ocrLoading: 'Loading OCR…', ocrPage: (d, t) => `Recognising pages: ${d} of ${t}`, ocrWriting: 'Writing the text…',
+    returned: 'Result opened in the InkDOS workspace.', needPdf: 'Open a PDF first.', opened: 'PDF opened', ocrLoading: 'Loading OCR…', ocrPage: (d, t) => `Recognising pages: ${d} of ${t}`, ocrWriting: 'Writing the text…',
     ocrDone: (p, w, s) => `OCR finished: ${p} page(s), ${w} words${s ? `; ${s} page(s) already had text` : ''}.`, ocrNothing: 'Every page already has text; nothing to do.',
     stampNeed: 'Draw or choose the signature and click on the page to place it.', stampDone: 'Visual signature placed.',
     stampSigned: 'This PDF is already digitally signed: adding a picture now would invalidate the signature.',
@@ -45,16 +45,34 @@
   const readFile = f => f.arrayBuffer().then(b => new Uint8Array(b));
   const base = () => doc.name.replace(/\.pdf$/i, '');
 
+  // opened from an InkDOS workspace: it hands over its current PDF and takes results back
+  const opener = new URLSearchParams(location.search).has('from') && window.opener && !window.opener.closed ? window.opener : null;
   function setResult(bytes, suffix) {
     doc.bytes = bytes; doc.changed = true; doc.suffix = suffix;
-    $('downloadBtn').hidden = false; renderPreview();
+    $('downloadBtn').hidden = false; $('returnBtn').hidden = !opener; renderPreview();
+  }
+  function loadDocument(name, bytes) {
+    doc.name = name; doc.bytes = bytes; doc.changed = false;
+    $('fileName').textContent = name; $('downloadBtn').hidden = true; $('returnBtn').hidden = true; $('checkList').replaceChildren();
+    status(T.opened); renderPreview();
   }
 
   $('pdfInput').addEventListener('change', async e => {
     const f = e.target.files[0]; if (!f) return;
-    doc.name = f.name; doc.bytes = await readFile(f); doc.changed = false;
-    $('fileName').textContent = f.name; $('downloadBtn').hidden = true; $('checkList').replaceChildren();
-    status(T.opened); renderPreview();
+    loadDocument(f.name, await readFile(f));
+  });
+  if (opener) {
+    window.addEventListener('message', e => {
+      if (e.origin !== location.origin || !e.data || e.data.type !== 'inkdos-lab-file') return;
+      loadDocument(String(e.data.name || 'document.pdf'), new Uint8Array(e.data.bytes));
+    });
+    try { opener.postMessage({ type: 'inkdos-lab-ready' }, location.origin); } catch (_) {}
+  }
+  $('returnBtn').addEventListener('click', () => {
+    if (!opener || opener.closed || !doc.bytes) return;
+    opener.postMessage({ type: 'inkdos-lab-result', name: base() + (doc.suffix || '') + '.pdf', bytes: doc.bytes }, location.origin);
+    try { opener.focus(); } catch (_) {}
+    status(T.returned);
   });
   $('downloadBtn').addEventListener('click', () => {
     const url = URL.createObjectURL(new Blob([doc.bytes], { type: 'application/pdf' })), a = document.createElement('a');
