@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.7.6 — 2026-10-04
+
+Work safety (all editing workspaces):
+- Documents, Spreadsheets and Presentations keep a recovery draft on this device while there are unsaved changes (every ~45 s of editing and when the page goes to the background or closes). Reopening the workspace offers Recover / Discard; recovered work stays unsaved.
+- Persistent storage is requested so the browser does not evict drafts.
+- A notice says when a new version is waiting; it is used once every InkDOS window is closed (open pages are never replaced).
+
+PDF tools (beta, web edition only):
+- Settings (☀) → Beta tools → PDF tools in every workspace; the PDF workspace hands over its open PDF and takes results back.
+- OCR (Portuguese/English) makes scanned PDFs searchable, entirely in the browser.
+- Visual signature: draw or choose an image and place it on a page.
+- Digital signature with an A1 certificate (.pfx/.p12) as an incremental update (earlier signatures stay valid), with an optional visible box showing the signing date and time and an optional document lock (certification: later changes invalidate it).
+- Signature check: integrity, signer, certificate dates, changes after signing (no ICP-Brasil trust-list check yet).
+
+Home:
+- The browser extension link moved to the footer (extension branch); 'PDF tools (beta)' link on the web edition.
+
 ## 2.7.5 — 2026-10-04
 
 Measured against public Office files with PDF references (Word, Excel and PowerPoint exports) and level-1/2 acceptance tools (`scripts/*_acceptance.py`).
