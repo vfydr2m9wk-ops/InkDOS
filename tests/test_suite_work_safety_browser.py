@@ -77,6 +77,10 @@ def main() -> None:
                 first.evaluate("async () => { for (const h of InkDOSWorkSafety._test.handles) await h.snapshotNow(); }")
                 drafts = first.evaluate(f"async () => (await InkDOSWorkSafety._test.allDrafts()).filter(d=>d.app==='{app}').length")
                 assert drafts == 1, (app, drafts)
+                # stored encrypted: no plaintext body or file name in the record
+                sealed = first.evaluate(f"""async () => {{ const d=(await InkDOSWorkSafety._test.allDrafts()).find(d=>d.app==='{app}');
+                    const hay=new TextDecoder('latin1').decode(d.body.ct); return {{ v:d.v, plain:'data' in d, marker:hay.includes('RECOVERYMARKER'), nameIsBytes: d.name.ct instanceof Uint8Array }} }}""")
+                assert sealed == {'v': 2, 'plain': False, 'marker': False, 'nameIsBytes': True}, (app, sealed)
                 first.close(run_before_unload=False)
 
                 second = context.new_page()
@@ -93,6 +97,14 @@ def main() -> None:
                 left = second.evaluate(f"async () => (await InkDOSWorkSafety._test.allDrafts()).filter(d=>d.app==='{app}').length")
                 assert left == 1, (app, 'the recovered draft is replaced by this page draft', left)
                 second.close(run_before_unload=False)
+            # turning drafts off deletes them and stops new ones
+            page = context.new_page()
+            page.goto(f'http://127.0.0.1:{PORT}/apps/spreadsheets/index.html', wait_until='load')
+            page.wait_for_function(CASES['spreadsheets']['ready'], timeout=30000)
+            page.evaluate(CASES['spreadsheets']['edit'])
+            page.evaluate("async () => { await InkDOSWorkSafety.setDraftsEnabled(false); for (const h of InkDOSWorkSafety._test.handles) await h.snapshotNow(); }")
+            assert page.evaluate("async () => (await InkDOSWorkSafety._test.allDrafts()).length") == 0
+            page.evaluate("() => InkDOSWorkSafety.setDraftsEnabled(true)")
             assert not errors, errors
             browser.close()
     finally:

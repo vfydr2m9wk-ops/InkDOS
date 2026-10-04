@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.6-469421a4e8c1023f94c4';
+const CACHE_NAME='inkdos-v2.7.6-679eb1d7668da94532fc';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "13870e7ded349c28ea0694702a6741ad7e8a86af3eb14dc4e94ea18cb627398c",
@@ -281,19 +281,19 @@ const ASSET_HASHES={
   "./index.html": "8847b8d9e3a6ee082f51bd3c8ae47243648fa200a9f989e626c955f6d12f9982",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "2f935311164a74100d3d99371b3e7632c589020c0bb2d40d37d5723b8fdbed66",
-  "./shared/localization/locales/es.js": "91e3207233feb70c83cd57b1ddbce2a48479ef406a40ab56b1dc0a4164d14e4d",
-  "./shared/localization/locales/fr.js": "07d41e85755d2ec9682431befefaac1ea681c06742144d9bd09c83cb55c76d8c",
-  "./shared/localization/locales/ja.js": "f714bbc7841d6ca1e9186297325273a55c045b99bdf51a159d569d3c355ab294",
-  "./shared/localization/locales/pt-BR.js": "8b5bf3c204ad39296fcef1b76c1a359df035dc8ee63fe92116656ce7600c5f1c",
-  "./shared/localization/locales/ru.js": "1426d51bc82dd375d1af2ec411c3c6ee16695dcd6005a6edc9c418e49b3f4ab8",
-  "./shared/localization/locales/zh-CN.js": "87f56563019803aad35468286c5563fde6d39d9950e302ee4d87eca5e83d5755",
+  "./shared/localization/locales/de.js": "ba81bb51f1f3bab78d389f4d9de291040d83777626a013cc03fef5b0c49ef3e8",
+  "./shared/localization/locales/es.js": "e238f9e28e23ea13eedbc2faa7d9531b10a25c22a8bec1ae7952503374213fc8",
+  "./shared/localization/locales/fr.js": "1e9bc99ba6f4e549cba6bdc01922907f705d4b527820b7fe77943af117bb23ed",
+  "./shared/localization/locales/ja.js": "a8174165a0417e21fd95d326ecb271c44138ed82ef29cf4f79ebf2160c7a522d",
+  "./shared/localization/locales/pt-BR.js": "019ddc9750cc2b9c1e292ef6c591e90375538b5722f5e765988f0ebb824fd496",
+  "./shared/localization/locales/ru.js": "27f37370a6173f70ca03998b65dc2cce9f6b6efd0cd3f519de8b31c9da35912e",
+  "./shared/localization/locales/zh-CN.js": "1b347fb1d2372f54168bccd233769a6aa91636bb68ce6858b1b003fe079396f5",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
-  "./shared/localization/settings-strip.js": "ae2ec4318e9073db1fddd852924248a7495aca63e221e00e0634d8292110c5da",
+  "./shared/localization/settings-strip.js": "36071b96aba1a1f7d8f6a46286eb0e701b127c4d7b8701e326953087ae7c6c7c",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
   "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
   "./shared/ui-density.js": "1c095e14a884af69a957b83d8d282701af0988a1cf544a778fe5e003e6d76c22",
-  "./shared/work-safety.js": "fe268f870839c50f74fe9e66d31b0b56f220899f4c2976dcf4706caa42e59709"
+  "./shared/work-safety.js": "f06338295da53c19c3e9b55a751b938ec86b39a9f5a24af3b803dd48bb156127"
 };
 // END OFFLINE HASHES
 const APP_SHELL=[

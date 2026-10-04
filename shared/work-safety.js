@@ -5,7 +5,8 @@
  * every ~45 s of editing and whenever the page goes to the background or is closed. Each page
  * keeps its own draft; when a workspace opens and finds a draft whose page is no longer open
  * (no answer to a roll call between InkDOS pages), it offers to recover it. A draft is deleted when its page saves or the user
- * discards it. Drafts stay on this device; persistent storage is requested with the first draft
+ * discards it. Drafts stay on this device, encrypted, for at most 7 days, and can be turned off in
+ * Settings; persistent storage is requested with the first draft
  * so the browser does not evict them under storage pressure.
  *
  * The service worker never replaces itself under open pages; this module only tells the user that
@@ -15,9 +16,10 @@
   'use strict';
   if (g.InkDOSWorkSafety) return;
 
-  const DB = 'inkdos-work-safety', VER = 1, DRAFTS = 'drafts', BEATS = 'beats'; // BEATS kept for schema stability
+  const DB = 'inkdos-work-safety', VER = 2, DRAFTS = 'drafts', BEATS = 'beats', KEYS = 'keys'; // BEATS kept for schema stability
+  const ENABLED_KEY = 'inkdos.recoveryDrafts';
   const TAB = (g.crypto && g.crypto.randomUUID ? g.crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
-  const BEAT_MS = 15000, SNAP_MS = 45000, KEEP_MS = 30 * 864e5, MAX_PER_APP = 5;
+  const BEAT_MS = 15000, SNAP_MS = 45000, KEEP_MS = 7 * 864e5, MAX_PER_APP = 5;
 
   const LANG = String(document.documentElement.lang || navigator.language || 'en').toLowerCase();
   const L = (() => {
@@ -39,7 +41,7 @@
     return new Promise((resolve, reject) => {
       if (!g.indexedDB) return reject(new Error('IndexedDB unavailable'));
       const r = indexedDB.open(DB, VER);
-      r.onupgradeneeded = () => { const db = r.result; if (!db.objectStoreNames.contains(DRAFTS)) db.createObjectStore(DRAFTS, { keyPath: 'key' }); if (!db.objectStoreNames.contains(BEATS)) db.createObjectStore(BEATS, { keyPath: 'tab' }); };
+      r.onupgradeneeded = () => { const db = r.result; if (!db.objectStoreNames.contains(DRAFTS)) db.createObjectStore(DRAFTS, { keyPath: 'key' }); if (!db.objectStoreNames.contains(BEATS)) db.createObjectStore(BEATS, { keyPath: 'tab' }); if (!db.objectStoreNames.contains(KEYS)) db.createObjectStore(KEYS); };
       r.onsuccess = () => resolve(r.result); r.onerror = () => reject(r.error);
     });
   }
@@ -53,6 +55,29 @@
   }
   const req = r => new Promise((resolve, reject) => { r.onsuccess = () => resolve(r.result); r.onerror = () => reject(r.error); });
   const putDraft = d => tx(DRAFTS, 'readwrite', s => { s.put(d); });
+
+  // Drafts are encrypted (AES-GCM) with a key generated in this browser and stored non-extractable, so the
+  // draft bytes and file names are not readable in the browser's storage files; without WebCrypto no draft
+  // is kept. Drafts can be turned off in Settings; turning them off deletes every draft.
+  const subtle = g.crypto && g.crypto.subtle;
+  let keyPromise = null;
+  function draftKey() {
+    if (!keyPromise) keyPromise = tx(KEYS, 'readonly', s => req(s.get('draft'))).then(async k => {
+      if (k) return k;
+      const fresh = await subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+      await tx(KEYS, 'readwrite', s => { s.put(fresh, 'draft'); });
+      return fresh;
+    }).catch(e => { keyPromise = null; throw e; });
+    return keyPromise;
+  }
+  async function seal(bytes) { const iv = g.crypto.getRandomValues(new Uint8Array(12)); return { iv, ct: new Uint8Array(await subtle.encrypt({ name: 'AES-GCM', iv }, await draftKey(), bytes)) }; }
+  async function open(sealed) { return new Uint8Array(await subtle.decrypt({ name: 'AES-GCM', iv: sealed.iv }, await draftKey(), sealed.ct)); }
+  const text = new TextEncoder(), untext = new TextDecoder();
+  function enabled() { try { return g.localStorage.getItem(ENABLED_KEY) !== 'off'; } catch (_) { return true; } }
+  async function setEnabled(on) {
+    try { g.localStorage.setItem(ENABLED_KEY, on ? 'on' : 'off'); } catch (_) {}
+    if (!on) await tx(DRAFTS, 'readwrite', s => { s.clear(); }).catch(() => {});
+  }
   const delDraft = key => tx(DRAFTS, 'readwrite', s => { s.delete(key); });
   const allDrafts = () => tx(DRAFTS, 'readonly', s => req(s.getAll()));
   // which InkDOS pages are open right now: every page answers a roll call on a broadcast channel
@@ -100,7 +125,7 @@
       if (running) return;
       let dirty = false;
       try { dirty = !!adapter.isDirty(); } catch (_) { return; }
-      if (!dirty) { if (wrote) { wrote = false; lastRevision = null; delDraft(key).catch(() => {}); } return; }
+      if (!dirty || !enabled()) { if (wrote) { wrote = false; lastRevision = null; delDraft(key).catch(() => {}); } return; }
       const revision = typeof adapter.revision === 'function' ? adapter.revision() : null;
       const now = Date.now();
       if (!force && (now - lastSnap < SNAP_MS || (revision !== null && revision === lastRevision))) return;
@@ -109,8 +134,10 @@
       try {
         const out = await adapter.snapshot();
         if (!out || !out.data) return;
-        const data = out.data instanceof Blob ? out.data : new Blob([out.data]);
-        await putDraft({ key, app, tab: TAB, name: out.name || L.untitled, savedAt: Date.now(), data });
+        if (!enabled() || !subtle) return;
+        const raw = out.data instanceof Blob ? new Uint8Array(await out.data.arrayBuffer()) : new Uint8Array(out.data);
+        const [body, name] = await Promise.all([seal(raw), seal(text.encode(out.name || L.untitled))]);
+        await putDraft({ key, app, tab: TAB, savedAt: Date.now(), v: 2, body, name });
         wrote = true; lastSnap = Date.now(); lastRevision = revision; askPersistence();
       } catch (e) { console.warn('InkDOS recovery draft not written', e); } finally { running = false; }
     }
@@ -122,14 +149,17 @@
         const [list, alive] = await Promise.all([allDrafts(), openTabs()]);
         const mine = list.filter(d => d.app === app && d.tab !== TAB).sort((a, b) => b.savedAt - a.savedAt);
         for (const d of mine.slice(MAX_PER_APP)) delDraft(d.key).catch(() => {});
-        for (const d of mine) if (Date.now() - d.savedAt > KEEP_MS) delDraft(d.key).catch(() => {});
-        drafts = mine.slice(0, MAX_PER_APP).filter(d => !alive.has(d.tab) && Date.now() - d.savedAt <= KEEP_MS);
+        for (const d of mine) if (Date.now() - d.savedAt > KEEP_MS || d.v !== 2) delDraft(d.key).catch(() => {}); // expired or unencrypted (older versions)
+        if (!enabled() || !subtle) return;
+        drafts = mine.slice(0, MAX_PER_APP).filter(d => d.v === 2 && !alive.has(d.tab) && Date.now() - d.savedAt <= KEEP_MS);
       } catch (_) { return; }
       const d = drafts[0];
       if (!d) return;
+      let name;
+      try { name = untext.decode(await open(d.name)); } catch (_) { delDraft(d.key).catch(() => {}); return; } // key lost or data damaged
       const when = new Date(d.savedAt).toLocaleString();
-      bar(L.found(d.name, when), [
-        { label: L.recover, primary: true, run: async () => { await adapter.restore(new File([d.data], d.name, { type: d.data.type || '' })); await delDraft(d.key).catch(() => {}); } },
+      bar(L.found(name, when), [
+        { label: L.recover, primary: true, run: async () => { await adapter.restore(new File([await open(d.body)], name)); await delDraft(d.key).catch(() => {}); } },
         { label: L.discard, run: () => delDraft(d.key) }
       ]);
     }
@@ -157,5 +187,5 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchUpdates, { once: true }); else watchUpdates();
 
-  g.InkDOSWorkSafety = Object.freeze({ attachRecovery, _test: { TAB, allDrafts, handles } });
+  g.InkDOSWorkSafety = Object.freeze({ attachRecovery, get draftsEnabled() { return enabled(); }, setDraftsEnabled: setEnabled, _test: { TAB, allDrafts, handles } });
 })(globalThis);
