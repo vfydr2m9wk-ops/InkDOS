@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.6-1d4d77975326d0e580ea';
+const CACHE_NAME='inkdos-v2.7.6-e93b3efdfc856082d156';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "13870e7ded349c28ea0694702a6741ad7e8a86af3eb14dc4e94ea18cb627398c",
@@ -143,7 +143,7 @@ const ASSET_HASHES={
   "./apps/pdf/vendor/pdfjs/wasm/openjpeg.wasm": "95e5002597af0824004aa57b1900fe019715db389e37640b1e58395e42f00cc5",
   "./apps/pdf/vendor/pdfjs/wasm/openjpeg_nowasm_fallback.js": "9047b34b6bc142d85e4b0aa1b08b0b9baad4c6f8b7ac87641b9e8f90eb6fd23e",
   "./apps/pdf/vendor/pdfjs/wasm/qcms_bg.wasm": "663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e",
-  "./apps/pdf/view/page-layout.js": "4333072e059e9a036eb90baafc4bd32141879d0a769fea14274599444e9cf1a0",
+  "./apps/pdf/view/page-layout.js": "6c70e04d4d0987298352aaec96fc6b59d28a3b1f25cd51aaabeb8cd08ea55d9d",
   "./apps/pdf/view/page-renderer.js": "02c87a03608ed525648a0926536d81151983d5f8d67596c95c9f3eb45ed7440b",
   "./apps/pdf/view/page-scheduler.js": "f62dced89ba9cb077b66918d797528be1c48a5fd0a441ab3910d8d1ac3a712d0",
   "./apps/pdf/view/pdf-surface.css": "288b31b86bfcbaf6b28c8d96d09a7564b1b8c3bae4d3f7d604cff2426dfe83ed",
