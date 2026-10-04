@@ -27,7 +27,7 @@ def main() -> None:
     if '../documents/' in package_reader or '../spreadsheets/' in package_reader:
         raise AssertionError('EPUB WebKit deflate fallback: cross-app dependency is forbidden')
     require(package_reader, "global.pako&&typeof global.pako.inflateRaw==='function'", 'EPUB WebKit deflate fallback')
-    require(package_reader, 'global.pako.inflateRaw(bytes)', 'EPUB WebKit deflate fallback')
+    require(package_reader, 'new global.pako.Inflate({raw:true})', 'EPUB WebKit deflate fallback')
     require(package_reader, "script.addEventListener('load'", 'EPUB WebKit deflate fallback')
     require(package_reader, "fail('deflate-failed'", 'EPUB WebKit deflate fallback')
     require(service_worker, '"./apps/epub/vendor/pako_inflate.min.js"', 'EPUB offline inflater')
