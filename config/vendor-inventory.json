@@ -1,0 +1,129 @@
+{
+  "description": "Third-party code shipped in InkDOS. Every vendored script must be listed here with its exact bytes. Check known advisories with: python3 scripts/check_vendor_advisories.py",
+  "accepted_advisories": {
+    "GHSA-wgrm-67xf-hhpq": "Mitigated: every pdfjsLib.getDocument call passes isEvalSupported:false (guarded by tests/test_security_pdfjs_config.py) and the page CSP has no unsafe-eval. Remove when PDF.js is upgraded (separate revision, see apps/pdf/vendor/pdfjs/VENDOR-PROVENANCE.txt).",
+    "GHSA-86w9-cpqp-85rv": "Not reachable: node-forge is used only to read .pfx/.p12 files and to build signatures; signature verification uses WebCrypto (labs/pdf/sign.js verifySignature). No fixed release exists yet (latest 1.4.0)."
+  },
+  "files": [
+    {
+      "path": "apps/documents/vendor/jszip.min.js",
+      "package": "jszip",
+      "ecosystem": "npm",
+      "version": "3.10.1",
+      "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+    },
+    {
+      "path": "apps/documents/vendor/pako_inflate.min.js",
+      "package": "pako",
+      "ecosystem": "npm",
+      "version": "1.0.11",
+      "sha256": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04"
+    },
+    {
+      "path": "apps/epub/vendor/pako_inflate.min.js",
+      "package": "pako",
+      "ecosystem": "npm",
+      "version": "1.0.11",
+      "sha256": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04"
+    },
+    {
+      "path": "apps/pdf/vendor/jszip.min.js",
+      "package": "jszip",
+      "ecosystem": "npm",
+      "version": "3.10.1",
+      "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+    },
+    {
+      "path": "apps/pdf/vendor/pdf-lib/pdf-lib.min.js",
+      "package": "pdf-lib",
+      "ecosystem": "npm",
+      "version": "1.17.1",
+      "sha256": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/pdf.min.js",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "3.11.174",
+      "sha256": "5b5799e6f8c680663207ac5b42ee14eed2a406fa7af48f50c154f0c0b1566946"
+    },
+    {
+      "path": "apps/pdf/vendor/pdfjs/pdf.worker.min.js",
+      "package": "pdfjs-dist",
+      "ecosystem": "npm",
+      "version": "3.11.174",
+      "sha256": "7a623a54c2ad7b7be0ce90fed307f5aa41d09c15a6ab529d408f6ae53cf10d5c",
+      "note": "InkDOS-local modification, see apps/pdf/vendor/pdfjs/VENDOR-PROVENANCE.txt"
+    },
+    {
+      "path": "apps/presentations/vendor/jszip.min.js",
+      "package": "jszip",
+      "ecosystem": "npm",
+      "version": "3.10.1",
+      "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+    },
+    {
+      "path": "apps/spreadsheets/vendor/fontkit/fontkit.umd.min.js",
+      "package": "@pdf-lib/fontkit",
+      "ecosystem": "npm",
+      "version": "1.1.1",
+      "sha256": "d8df561b9fba98e24f2e5130e40948809281bbbc55a20c412359f1a0a5eb35a6"
+    },
+    {
+      "path": "apps/spreadsheets/vendor/jszip.min.js",
+      "package": "jszip",
+      "ecosystem": "npm",
+      "version": "3.10.1",
+      "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+    },
+    {
+      "path": "apps/spreadsheets/vendor/pako_inflate.min.js",
+      "package": "pako",
+      "ecosystem": "npm",
+      "version": "1.0.11",
+      "sha256": "2ca27e9a8dae569cdeac42752ed1aed1afeff7f19282d3cc12c0aaa54a08bc04"
+    },
+    {
+      "path": "apps/spreadsheets/vendor/pdf-lib/pdf-lib.min.js",
+      "package": "pdf-lib",
+      "ecosystem": "npm",
+      "version": "1.17.1",
+      "sha256": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f"
+    },
+    {
+      "path": "labs/pdf/vendor/forge/forge.min.js",
+      "package": "node-forge",
+      "ecosystem": "npm",
+      "version": "1.4.0",
+      "sha256": "d9b9074e6861200d676e25dcfe97889db5e8f4150bb766d29c491ad709a51b58"
+    },
+    {
+      "path": "labs/pdf/vendor/tesseract/core/tesseract-core-lstm.wasm.js",
+      "package": "tesseract.js-core",
+      "ecosystem": "npm",
+      "version": "7.0.0",
+      "sha256": "eef5f8b2f8e20e150680b20adaec4a60babafee3adbe8a94583c81fee46e8680"
+    },
+    {
+      "path": "labs/pdf/vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js",
+      "package": "tesseract.js-core",
+      "ecosystem": "npm",
+      "version": "7.0.0",
+      "sha256": "c58b46a4c796c0b8afccf77591d5b875b6896b45d402bbce8caa6f5362447b38"
+    },
+    {
+      "path": "labs/pdf/vendor/tesseract/tesseract.min.js",
+      "package": "tesseract.js",
+      "ecosystem": "npm",
+      "version": "7.0.0",
+      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e"
+    },
+    {
+      "path": "labs/pdf/vendor/tesseract/worker.min.js",
+      "package": "tesseract.js",
+      "ecosystem": "npm",
+      "version": "7.0.0",
+      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    }
+  ]
+}

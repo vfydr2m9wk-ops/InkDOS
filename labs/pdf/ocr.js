@@ -41,7 +41,7 @@
   async function ocrPdf(bytes, options) {
     const o = Object.assign({ languages: 'por+eng', allPages: false, onProgress: () => {} }, options);
     const pdfjs = global.pdfjsLib, Tesseract = global.Tesseract, PDFLib = global.PDFLib;
-    const src = await pdfjs.getDocument({ data: bytes.slice() }).promise;
+    const src = await pdfjs.getDocument({ data: bytes.slice(), isEvalSupported: false, enableScripting: false }).promise;
     const total = src.numPages, todo = [];
     for (let i = 1; i <= total; i++) {
       const page = await src.getPage(i);

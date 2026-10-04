@@ -25,7 +25,7 @@
     stampNeed: 'Desenhe ou escolha a assinatura e clique na página para posicioná-la.', stampDone: 'Assinatura visual colocada.',
     stampSigned: 'Este PDF já tem assinatura digital: colocar uma imagem agora invalidaria a assinatura.',
     signNeed: 'Escolha o certificado.', signing: 'Assinando…', signDone: n => `Assinado por ${n}.`,
-    checking: 'Verificando…', none: 'Nenhuma assinatura digital neste PDF.', valid: 'Assinatura válida', invalid: 'Assinatura inválida',
+    checking: 'Verificando…', none: 'Nenhuma assinatura digital neste PDF.', valid: 'Assinatura íntegra · identidade não verificada', untrusted: 'O documento não mudou desde a assinatura, mas esta versão beta não confirma se o certificado foi emitido por uma autoridade confiável (ICP-Brasil ou outra). Confira o emissor ou valide no verificador oficial (validar.iti.gov.br).', invalid: 'Assinatura inválida',
     changedAfter: 'O documento recebeu alterações depois desta assinatura.', wholeFile: 'Cobre o documento inteiro.',
     signer: 'Assinante', issuer: 'Emissor', signedAt: 'Assinado em', certExpired: 'O certificado não era válido na data da assinatura.', reasonL: 'Motivo'
   } : {
@@ -35,7 +35,7 @@
     stampSigned: 'This PDF is already digitally signed: adding a picture now would invalidate the signature.',
     signedBy: 'Digitally signed by', dateLabel: 'Date', locked: 'Document locked (certified): no later changes are allowed.',
     signNeed: 'Choose the certificate.', signing: 'Signing…', signDone: n => `Signed by ${n}.`, checking: 'Checking…', none: 'No digital signature in this PDF.',
-    valid: 'Valid signature', invalid: 'Invalid signature', changedAfter: 'The document was changed after this signature.', wholeFile: 'Covers the whole document.',
+    valid: 'Signature intact · identity not verified', untrusted: 'The document has not changed since signing, but this beta does not confirm that the certificate was issued by a trusted authority. Check the issuer or use an official validator.', invalid: 'Invalid signature', changedAfter: 'The document was changed after this signature.', wholeFile: 'Covers the whole document.',
     signer: 'Signer', issuer: 'Issuer', signedAt: 'Signed at', certExpired: 'The certificate was not valid at signing time.', reasonL: 'Reason'
   };
   if (PT) { document.documentElement.lang = 'pt-BR'; for (const el of document.querySelectorAll('[data-i18n]')) if (typeof T[el.dataset.i18n] === 'string') el.textContent = T[el.dataset.i18n]; document.title = 'InkDOS — ' + T.title + ' (beta)'; }
@@ -194,7 +194,7 @@
         const li = document.createElement('li'), head = document.createElement('span');
         head.className = r.ok ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${r.ok ? T.valid : T.invalid}`; li.append(head);
         const lines = [r.signer && `${T.signer}: ${r.signer}`, r.issuer && `${T.issuer}: ${r.issuer}`, r.signedAt && `${T.signedAt}: ${fmt(r.signedAt)}`, r.reason && `${T.reasonL}: ${r.reason}`,
-          r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, ...r.problems];
+          r.ok && T.untrusted, r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, ...r.problems];
         for (const l of lines.filter(Boolean)) { const s = document.createElement('small'); s.textContent = l; li.append(s); }
         list.append(li);
       });

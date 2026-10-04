@@ -59,6 +59,8 @@ python scripts/agent_verify.py <component> --base main
 
 `scripts/run_release_validation.py` is the full release gate; the maintainers run it before a release.
 
+Vendored third-party code is listed with exact hashes in `config/vendor-inventory.json`. Before a release, run `python3 scripts/check_vendor_advisories.py` (network) to check those versions for known advisories on OSV.dev; an advisory must be fixed by updating the library or accepted with a written reason.
+
 ## Pull requests
 
 1. Fork the repository and create a branch from `main`.
