@@ -113,7 +113,7 @@
         "tests/test_pdf_toolbar_25_contract.py",
         "tests/test_pdf_stability_offline_contract.py"
       ],
-      "browserSmokeTests": ["tests/test_pdf_stability_browser.py", "tests/test_pdf_editor_annotations_browser.py"],
+      "browserSmokeTests": ["tests/test_pdf_stability_browser.py", "tests/test_pdf_editor_annotations_browser.py", "tests/test_pdf_view_text_selection_browser.py"],
       "testGlobs": ["tests/test_pdf*.py", "tests/test_pdf*.cjs"]
     }
   }
