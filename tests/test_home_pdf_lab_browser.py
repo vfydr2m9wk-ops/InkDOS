@@ -92,6 +92,25 @@ SCRIPT = r"""async () => {
   const chained = await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12: p12Of(eeKeys.privateKey, eeCert), password: 'senha', policy: 'AD-RB' });
   const trusted = (await InkDOSPdfLabSign.checkPdf(chained.bytes)).map(r => [r.ok, r.trust, r.trustAnchor, r.chain, r.policy, r.notes.includes('revocation-not-checked')]);
   const selfSignedUnderTestList = (await InkDOSPdfLabSign.checkPdf(once.bytes)).map(r => r.trust);
+  // a certificate that expired before today is not trusted on the strength of a signing time the
+  // signer chose (no checked timestamp), even when that time falls inside its validity
+  const oldRootKeys = forge.pki.rsa.generateKeyPair(2048), oldRoot = forge.pki.createCertificate(); oldRoot.publicKey = oldRootKeys.publicKey; oldRoot.serialNumber = '0e';
+  oldRoot.validity.notBefore = new Date(Date.now() - 864e5 * 90); oldRoot.validity.notAfter = new Date(Date.now() + 864e5 * 90);
+  oldRoot.setSubject([{ name: 'commonName', value: 'Raiz Antiga' }]); oldRoot.setIssuer([{ name: 'commonName', value: 'Raiz Antiga' }]);
+  oldRoot.setExtensions([{ name: 'basicConstraints', cA: true }, { name: 'keyUsage', keyCertSign: true, cRLSign: true }]); oldRoot.sign(oldRootKeys.privateKey, forge.md.sha256.create());
+  globalThis.InkDOSPdfLabTrust.anchors.push({ der: btoa(forge.asn1.toDer(forge.pki.certificateToAsn1(oldRoot)).getBytes()) }); InkDOSPdfLabSign._test.resetTrust();
+  const oldKeys = forge.pki.rsa.generateKeyPair(2048), lapsed = forge.pki.createCertificate(); lapsed.publicKey = oldKeys.publicKey; lapsed.serialNumber = '0c';
+  lapsed.validity.notBefore = new Date(Date.now() - 864e5 * 60); lapsed.validity.notAfter = new Date(Date.now() - 864e5 * 30);
+  lapsed.setSubject([{ name: 'commonName', value: 'Fulano Vencido' }]); lapsed.setIssuer([{ name: 'commonName', value: 'Raiz Antiga' }]);
+  lapsed.setExtensions([{ name: 'basicConstraints', cA: false }, { name: 'keyUsage', digitalSignature: true, nonRepudiation: true }]); lapsed.sign(oldRootKeys.privateKey, forge.md.sha256.create());
+  const backdated = await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12: p12Of(oldKeys.privateKey, lapsed), password: 'senha', now: new Date(Date.now() - 864e5 * 45) });
+  const backdatedCheck = (await InkDOSPdfLabSign.checkPdf(backdated.bytes)).map(r => [r.trust, r.notes.includes('not-valid-now')]);
+  // a CA certificate is not accepted as the signer (the new signature's own check refuses it)
+  const caSigner = forge.pki.createCertificate(), caSignerKeys = forge.pki.rsa.generateKeyPair(2048); caSigner.publicKey = caSignerKeys.publicKey; caSigner.serialNumber = '0d';
+  caSigner.validity.notBefore = new Date(Date.now() - 864e5); caSigner.validity.notAfter = new Date(Date.now() + 864e5 * 30);
+  caSigner.setSubject([{ name: 'commonName', value: 'AC Intermediaria' }]); caSigner.setIssuer([{ name: 'commonName', value: 'Raiz Teste' }]);
+  caSigner.setExtensions([{ name: 'basicConstraints', cA: true }]); caSigner.sign(caKeys.privateKey, forge.md.sha256.create());
+  let caSignedCheck = ''; try { await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12: p12Of(caSignerKeys.privateKey, caSigner), password: 'senha' }); } catch (e) { caSignedCheck = e.message; }
   globalThis.InkDOSPdfLabTrust = realList; InkDOSPdfLabSign._test.resetTrust();
   let unknownPolicy = ''; try { await InkDOSPdfLabSign.signPdf(ocr.bytes, { p12, password: 'senha', policy: 'XYZ' }); } catch (e) { unknownPolicy = e.message; }
   const appended = new Uint8Array([...locked.bytes, ...new TextEncoder().encode('\n% change\n')]);
@@ -100,7 +119,8 @@ SCRIPT = r"""async () => {
   const annots = await (await stampPdf.getPage(1)).getAnnotations();
   return { locked: lockedCheck.map(r => [r.ok, r.locked]), resign, lockedChanged, widget: annots.filter(a => a.fieldType === 'Sig').map(a => a.rect.map(Math.round)),
     words: ocr.words, text, checks: checks.map(r => [r.ok, r.coversWholeFile, r.signer, r.reason]), broken: broken.map(r => r.ok), wrongPassword,
-    pades: checks.map(r => [r.subFilter, r.chainStatus, r.notes.includes('no-timestamp'), r.notes.includes('no-signing-certificate')]), expired, weak, gap, bundle, realTrust, trusted, selfSignedUnderTestList, unknownPolicy, realChains };
+    pades: checks.map(r => [r.subFilter, r.chainStatus, r.notes.includes('no-timestamp'), r.notes.includes('no-signing-certificate')]), expired, weak, gap, bundle, realTrust, trusted, selfSignedUnderTestList, unknownPolicy, realChains, backdatedCheck, caSignedCheck,
+    twice: btoa(Array.from(twice.bytes, ch => String.fromCharCode(ch)).join('')) };
 }"""
 
 
@@ -141,12 +161,22 @@ def main() -> None:
             assert got['realChains'][0] > 50 and got['realChains'][1] > 0.9 * got['realChains'][0] and got['realChains'][2] == [], got['realChains']
             assert got['trusted'] == [[True, 'Lista de teste', 'Raiz Teste', ['Fulano Teste', 'Raiz Teste'], 'ICP-Brasil PA_PAdES_AD_RB v1.1', True]], got['trusted']
             assert got['selfSignedUnderTestList'] == [None], got['selfSignedUnderTestList']
+            assert got['backdatedCheck'] == [[None, True]], got['backdatedCheck']
+            assert 'not meant for signatures' in got['caSignedCheck'], got['caSignedCheck']
             assert 'unknown signature policy' in got['unknownPolicy'].lower(), got['unknownPolicy']
             assert 'password' in got['wrongPassword'].lower(), got['wrongPassword']
             assert got['locked'] == [[True, True]], got['locked']
             assert 'locked' in got['resign'].lower(), got['resign']
             assert got['lockedChanged'] == [False], got['lockedChanged']
             assert len(got['widget']) == 1 and got['widget'][0][2] - got['widget'][0][0] == 250, got['widget']
+            # the check panel never shows a signature followed by later changes as intact (green)
+            import base64
+            page.set_input_files('#pdfInput', files=[{'name': 'twice.pdf', 'mimeType': 'application/pdf', 'buffer': base64.b64decode(got['twice'])}])
+            page.click('[data-tab=check]')
+            page.click('#checkBtn')
+            page.wait_for_function("() => document.querySelectorAll('#checkList li').length === 2")
+            heads = page.eval_on_selector_all('#checkList li > span', 'els => els.map(e => e.className)')
+            assert heads == ['bad', 'ok'], heads
             # official validation: opened by the user from the warning dialog, never fetched by the page
             requests: list[str] = []
             page.on('request', lambda r: requests.append(r.url))

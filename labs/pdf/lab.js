@@ -35,8 +35,10 @@
       'weak-chain-hash': 'A cadeia do certificado usa SHA-1, considerado fraco.',
       'weak-key': 'A chave do certificado tem menos de 2048 bits, considerada fraca.',
       'no-signing-certificate': 'A assinatura não vincula o certificado nos atributos assinados (não é PAdES).',
-      'revocation-not-checked': 'Revogação não conferida (LCR/OCSP).'
+      'revocation-not-checked': 'Revogação não conferida (LCR/OCSP).',
+      'not-valid-now': 'O certificado ou a cadeia não é válido hoje. Sem carimbo do tempo conferido, a data declarada não basta: a identidade não é confirmada.'
     },
+    validChanged: 'Assinatura íntegra para a versão assinada · o documento foi alterado depois',
     signPolicy: 'Declarar a política de assinatura ICP-Brasil AD-RB v1.1 (experimental)', signPolicyHelp: 'Inclui na assinatura a política PA_PAdES_AD_RB v1.1 da ICP-Brasil. Use só com certificado ICP-Brasil e confirme o resultado no verificador oficial do ITI.',
     checkHelp: 'Confere, neste dispositivo, se cada assinatura corresponde ao documento, se o documento não foi alterado depois e se a cadeia do certificado leva a uma raiz ICP-Brasil. A revogação não é conferida aqui: para a validação completa use o verificador oficial.',
     itiRun: 'Validar no verificador oficial (ITI)…', itiTitle: 'Validação oficial (ITI)',
@@ -63,8 +65,10 @@
       'weak-chain-hash': 'The certificate chain uses SHA-1, which is considered weak.',
       'weak-key': 'The certificate key is shorter than 2048 bits, which is considered weak.',
       'no-signing-certificate': 'The signature does not bind its certificate in the signed attributes (not PAdES).',
-      'revocation-not-checked': 'Revocation not checked (CRL/OCSP).'
+      'revocation-not-checked': 'Revocation not checked (CRL/OCSP).',
+      'not-valid-now': 'The certificate or its chain is not valid today. Without a checked timestamp the claimed signing time is not enough: the identity is not confirmed.'
     },
+    validChanged: 'Signature intact for the signed version · the document was changed afterwards',
     itiOpened: 'ITI validator opened in a new tab. Choose the file there.', validTrusted: 'Signature intact · ICP-Brasil certificate', policy: 'Policy',
     trustedNote: a => `The chain leads to ${a}, bundled with InkDOS. Certificate revocation is not checked here: use the official ITI validator for the complete validation.`
   };
@@ -160,14 +164,23 @@
   }
   function currentStamp() { return image || (drawn ? padImage() : null); }
 
+  // Overlapping previews (file open, tab switch, page change) each render off-screen; only the
+  // latest one is shown and decides the page the stamp goes on.
+  let previewToken = 0;
   async function renderPreview() {
     if (!doc.bytes || document.querySelector('[data-panel=stamp]').hidden) return;
-    const pdf = await pdfjsLib.getDocument({ data: doc.bytes.slice(), isEvalSupported: false, wasmUrl: PDFJS_WASM }).promise;
-    const n = Math.min(Math.max(1, Number($('stampPage').value) || 1), pdf.numPages); $('stampPage').max = String(pdf.numPages); $('stampPage').value = String(n);
-    const page = await pdf.getPage(n), vp = page.getViewport({ scale: 1 }), scale = Math.min(1.5, 760 / vp.width), viewport = page.getViewport({ scale });
-    const canvas = $('preview'); canvas.width = viewport.width; canvas.height = viewport.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-    previewInfo = { viewport, pageIndex: n - 1 }; await pdf.loadingTask.destroy(); updateMark();
+    const token = ++previewToken, task = pdfjsLib.getDocument({ data: doc.bytes.slice(), wasmUrl: PDFJS_WASM });
+    try {
+      const pdf = await task.promise;
+      const n = Math.min(Math.max(1, Number($('stampPage').value) || 1), pdf.numPages);
+      const page = await pdf.getPage(n), vp = page.getViewport({ scale: 1 }), scale = Math.min(1.5, 760 / vp.width), viewport = page.getViewport({ scale });
+      const off = document.createElement('canvas'); off.width = viewport.width; off.height = viewport.height;
+      await page.render({ canvasContext: off.getContext('2d'), viewport }).promise;
+      if (token !== previewToken) return;
+      $('stampPage').max = String(pdf.numPages); $('stampPage').value = String(n);
+      const canvas = $('preview'); canvas.width = off.width; canvas.height = off.height; canvas.getContext('2d').drawImage(off, 0, 0);
+      previewInfo = { viewport, pageIndex: n - 1 }; updateMark();
+    } finally { try { await task.destroy(); } catch (_) { /* already gone */ } }
   }
 
   function updateMark() {
@@ -235,9 +248,11 @@
       const fmt = d => d instanceof Date ? d.toLocaleString() : (d || '');
       results.forEach((r, i) => {
         const li = document.createElement('li'), head = document.createElement('span');
-        head.className = r.ok ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${r.ok ? (r.trust ? T.validTrusted : T.valid) : T.invalid}`; li.append(head);
+        // a later change to the document is never shown as an intact (green) signature
+        const intact = r.ok && r.coversWholeFile;
+        head.className = intact ? 'ok' : 'bad'; head.textContent = `#${i + 1} · ${!r.ok ? T.invalid : !r.coversWholeFile ? T.validChanged : r.trust ? T.validTrusted : T.valid}`; li.append(head);
         const lines = [r.signer && `${T.signer}: ${r.signer}`, r.issuer && `${T.issuer}: ${r.issuer}`, r.signedAt && `${T.signedAt}: ${fmt(r.signedAt)}`, r.reason && `${T.reasonL}: ${r.reason}`,
-          r.policy && `${T.policy}: ${r.policy}`, r.ok && (r.trust ? T.trustedNote(r.trustAnchor) : T.untrusted), r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, r.chain && r.chain.length && `${T.chain}: ${r.chain.join(' → ')}`, ...r.problems, ...(r.notes || []).map(n => T.notes[n])];
+          r.policy && `${T.policy}: ${r.policy}`, r.ok && (r.trust ? T.trustedNote(r.trustAnchor) : r.coversWholeFile && T.untrusted), r.locked && T.locked, r.coversWholeFile ? T.wholeFile : T.changedAfter, r.certificateValidAtSigning === false && T.certExpired, r.chain && r.chain.length && `${T.chain}: ${r.chain.join(' → ')}`, ...r.problems, ...(r.notes || []).map(n => T.notes[n])];
         for (const l of lines.filter(Boolean)) { const s = document.createElement('small'); s.textContent = l; li.append(s); }
         list.append(li);
       });
