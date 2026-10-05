@@ -53,7 +53,7 @@
         updateError = error;
       }
       try {
-        await core.invoke('inkdos_beta_open', { tool: String(tool || '') });
+        if (!await betaTools.openWithCurrentPdf(tool)) await core.invoke('inkdos_beta_open', { tool: String(tool || '') });
       } catch (error) {
         const installed = await betaTools.refresh().then(status => status && status.installedVersion, () => null);
         const message = String((!installed && updateError) || error || 'InkDOS could not open the beta tools.');
@@ -64,10 +64,40 @@
       }
       betaTools.refresh().catch(() => {});
       return true;
+    },
+    // A workspace that registers InkDOSBetaToolsProvider (the PDF workspace) hands the PDF it has open
+    // to the tool window; the host keeps it for that window only (src/beta.rs).
+    async openWithCurrentPdf(tool) {
+      const provider = g.InkDOSBetaToolsProvider;
+      if (!provider || typeof provider.currentPdf !== 'function') return false;
+      let file = null;
+      try { file = await provider.currentPdf(); } catch (_) { return false; }
+      if (!file || !file.bytes || !file.bytes.length) return false;
+      const name = String(file.name || 'document.pdf').slice(-150);
+      await core.invoke('inkdos_beta_open_with_file', file.bytes, {
+        headers: { 'x-inkdos-tool': String(tool || ''), 'x-inkdos-file-name': encodeURIComponent(name) }
+      });
+      return true;
+    },
+    // A result sent back by a tool window this window opened: fetched once and opened here.
+    async receiveResult(encodedName) {
+      const provider = g.InkDOSBetaToolsProvider;
+      if (!provider || typeof provider.openPdf !== 'function') return;
+      const data = await core.invoke('inkdos_beta_take_result');
+      let name = 'document.pdf';
+      try { name = decodeURIComponent(String(encodedName || '')).split(/[\\/]/).pop() || name; } catch (_) {}
+      provider.openPdf(new File([new Uint8Array(data)], name, { type: 'application/pdf' }));
     }
   };
   const hasInvoke = !!(core && typeof core.invoke === 'function');
   if (hasInvoke) betaTools.refresh().catch(() => {});
+  if (hasInvoke) {
+    const current = tauri.webviewWindow && typeof tauri.webviewWindow.getCurrentWebviewWindow === 'function'
+      ? tauri.webviewWindow.getCurrentWebviewWindow() : null;
+    const listen = current && typeof current.listen === 'function' ? current.listen.bind(current)
+      : (tauri.event && typeof tauri.event.listen === 'function' ? tauri.event.listen : null);
+    if (listen) listen('inkdos-beta-result', event => betaTools.receiveResult(event && event.payload).catch(() => {})).catch(() => {});
+  }
 
   g.InkDOSDesktop = Object.freeze({
     host: 'tauri',

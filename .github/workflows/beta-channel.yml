@@ -66,6 +66,7 @@ jobs:
           python -m pip install --disable-pip-version-check -r requirements-ci.txt
           python -m playwright install --with-deps chromium
           python tests/test_home_pdf_lab_browser.py
+          python tests/test_home_pdf_lab_desktop_handoff_browser.py
 
       - name: Restore verified Tauri CLI cache
         if: steps.config.outputs.enabled == 'true'

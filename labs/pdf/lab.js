@@ -91,9 +91,14 @@
   const embedded = params.has('from') && params.has('embed') && sameOriginParent();
   const opener = embedded ? window.parent : (params.has('from') && window.opener && !window.opener.closed ? window.opener : null);
   if (embedded) { document.documentElement.classList.add('embedded'); const back = document.querySelector('.lab-head .back'); if (back) back.hidden = true; }
+  // desktop app: the host hands over the PDF of the window that opened this tool, and takes the result
+  // back, through this page's own scheme (desktop/src-tauri/src/beta.rs); there is no opener here
+  const desktopBeta = location.protocol === 'inkdos-beta:' || location.hostname === 'inkdos-beta.localhost';
+  let hostReturn = false;
+  const canReturn = () => !!opener || hostReturn;
   function setResult(bytes, suffix) {
     doc.bytes = bytes; doc.changed = true; doc.suffix = suffix;
-    $('downloadBtn').hidden = false; $('returnBtn').hidden = !opener; renderPreview();
+    $('downloadBtn').hidden = false; $('returnBtn').hidden = !canReturn(); renderPreview();
   }
   function loadDocument(name, bytes) {
     doc.name = name; doc.bytes = bytes; doc.changed = false;
@@ -112,8 +117,27 @@
     });
     try { opener.postMessage({ type: 'inkdos-lab-ready' }, location.origin); } catch (_) {}
   }
-  $('returnBtn').addEventListener('click', () => {
-    if (!opener || opener.closed || !doc.bytes) return;
+  if (desktopBeta) {
+    fetch('/__inkdos/file', { cache: 'no-store' }).then(async response => {
+      if (response.status !== 200) return;
+      let name = 'document.pdf';
+      try { name = decodeURIComponent(response.headers.get('x-inkdos-file-name') || '') || name; } catch (_) {}
+      hostReturn = true;
+      loadDocument(name, new Uint8Array(await response.arrayBuffer()));
+    }).catch(() => {});
+  }
+  $('returnBtn').addEventListener('click', async () => {
+    if (!doc.bytes) return;
+    if (hostReturn) {
+      try {
+        const name = (base() + (doc.suffix || '')).slice(-140) + '.pdf';
+        const response = await fetch('/__inkdos/result', { method: 'POST', headers: { 'x-inkdos-file-name': encodeURIComponent(name) }, body: doc.bytes });
+        if (!response.ok) throw new Error(await response.text());
+        status(T.returned);
+      } catch (e) { fail(e); }
+      return;
+    }
+    if (!opener || opener.closed) return;
     opener.postMessage({ type: 'inkdos-lab-result', name: base() + (doc.suffix || '') + '.pdf', bytes: doc.bytes }, location.origin);
     try { opener.focus(); } catch (_) {}
     status(T.returned);
