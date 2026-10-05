@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """PDF tools (beta) are reachable from inside the PDF workspace and work on the open file.
 
-Settings (sun) → 'PDF tools (beta)' opens the tools page in a new tab; the PDF open in the
-workspace is handed over automatically; a tool result ('Open in InkDOS') comes back to the
-workspace. The PDF is built here (no fixture files).
+The toolbar's 'Beta tools' button and Settings (sun) → 'PDF tools (beta)' open the tools page
+in a panel on the same page (no new tab); the PDF open in the workspace is handed over
+automatically; a tool result ('Open in InkDOS') comes back to the workspace and closes the panel.
+Hidden in the desktop app. The PDF is built here (no fixture files).
 """
 from __future__ import annotations
 
@@ -65,23 +66,46 @@ def main() -> None:
             app.wait_for_function('() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug')
             app.set_input_files('#fileInput', str(pdf))
             app.wait_for_function("() => (document.getElementById('titleText')?.textContent||'').includes('handoff')", timeout=30000)
-            app.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
-            app.click('[data-frame-action="sun"]')
-            with context.expect_page() as popup:
-                app.click('.inkdos-settings-option[data-settings-value="beta-pdf"]')
-            lab = popup.value
-            lab.on('pageerror', lambda e: errors.append(f'lab: {e}'))
+            # the toolbar entry is visible and opens the tools in a panel on the same page
+            button = app.locator('#betaToolsBtn')
+            assert button.is_visible() and 'Beta tools' in button.inner_text()
+            button.click()
+            app.wait_for_selector('#betaToolsPanel:not([hidden]) iframe.beta-tools-frame')
+            lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
             lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('handoff')", timeout=30000)
+            assert lab.evaluate("() => document.querySelector('.lab-head .back').hidden"), 'the tools page must not navigate the panel away'
             lab.check('#ocrAll')
             lab.click('#ocrBtn')
             lab.wait_for_selector('#returnBtn:not([hidden])', timeout=120000)
             lab.click('#returnBtn')
             app.wait_for_function("() => (document.getElementById('titleText')?.textContent||'').includes('-ocr')", timeout=30000)
+            app.wait_for_selector('#betaToolsPanel', state='hidden')
+            assert app.locator('#betaToolsPanel iframe').count() == 0, 'closing the panel must drop the tools frame'
+            assert len(context.pages) == 1, 'no other tab or window may be opened'
+            # Settings (sun) → 'PDF tools (beta)' opens the same panel, and Escape closes it
+            app.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
+            app.click('[data-frame-action="sun"]')
+            app.click('.inkdos-settings-option[data-settings-value="beta-pdf"]')
+            app.wait_for_selector('#betaToolsPanel:not([hidden]) iframe.beta-tools-frame')
+            lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
+            lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('-ocr')", timeout=30000)
+            app.keyboard.press('Escape')
+            app.wait_for_selector('#betaToolsPanel', state='hidden')
+            assert len(context.pages) == 1
+            # the desktop app keeps these tools in its beta channel: no toolbar entry there
+            desktop = browser.new_context(service_workers='block')
+            desktop.add_init_script('window.InkDOSDesktop = {host: "tauri"}')
+            dpage = desktop.new_page()
+            dpage.goto(f'http://127.0.0.1:{PORT}/apps/pdf/index.html', wait_until='load')
+            dpage.wait_for_function('() => !!globalThis.InkDOS2PdfP4?.PdfBetaToolsPanel')
+            assert dpage.locator('#betaToolsBtn').is_hidden()
+            assert dpage.evaluate('() => globalThis.InkDOS2PdfP4.PdfBetaToolsPanel.open()') is False
+            desktop.close()
             assert not errors, errors
             browser.close()
     finally:
         server.terminate()
-    print('PDF tools (beta): reachable from the PDF workspace, file handed over and result returned')
+    print('PDF tools (beta): panel on the same page, file handed over and result returned')
 
 
 if __name__ == '__main__':

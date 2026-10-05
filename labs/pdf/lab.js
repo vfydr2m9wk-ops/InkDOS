@@ -84,8 +84,13 @@
   const readFile = f => f.arrayBuffer().then(b => new Uint8Array(b));
   const base = () => doc.name.replace(/\.pdf$/i, '');
 
-  // opened from an InkDOS workspace: it hands over its current PDF and takes results back
-  const opener = new URLSearchParams(location.search).has('from') && window.opener && !window.opener.closed ? window.opener : null;
+  // opened from an InkDOS workspace (a new tab, or the workspace's own panel with ?embed): it hands over
+  // its current PDF and takes results back
+  const params = new URLSearchParams(location.search);
+  const sameOriginParent = () => { try { return window.parent !== window && window.parent.location.origin === location.origin; } catch (_) { return false; } };
+  const embedded = params.has('from') && params.has('embed') && sameOriginParent();
+  const opener = embedded ? window.parent : (params.has('from') && window.opener && !window.opener.closed ? window.opener : null);
+  if (embedded) { document.documentElement.classList.add('embedded'); const back = document.querySelector('.lab-head .back'); if (back) back.hidden = true; }
   function setResult(bytes, suffix) {
     doc.bytes = bytes; doc.changed = true; doc.suffix = suffix;
     $('downloadBtn').hidden = false; $('returnBtn').hidden = !opener; renderPreview();
