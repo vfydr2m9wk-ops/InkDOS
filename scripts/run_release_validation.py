@@ -13,6 +13,7 @@ CMDS = [
     [sys.executable, "scripts/run_function_tests.py"],
     [sys.executable, "tests/test_csp_contract.py"],
     [sys.executable, "tests/test_security_pdfjs_config.py"],
+    [sys.executable, "tests/test_pdf_ocr_offline_contract.py"],
     [sys.executable, "tests/test_tauri_security_csp_contract.py"],
     [sys.executable, "tests/test_desktop_beta_channel_contract.py"],
     [sys.executable, "tests/test_desktop_beta_tools_menu_browser.py"],

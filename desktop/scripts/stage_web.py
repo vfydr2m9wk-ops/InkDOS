@@ -17,6 +17,8 @@ INJECTION = '<script src="/desktop-host.js"></script>'
 ROOT_FILES = ("index.html", "manifest.webmanifest", "service-worker.js", "VERSION.json")
 ROOT_DIRS = ("assets", "apps", "shared")
 DOC_FILES = ("KNOWN_LIMITATIONS.md",)
+# web-edition-only assets: the OCR engine (the PDF app hides OCR in the desktop app)
+WEB_ONLY_DIRS = ("apps/pdf/vendor/tesseract",)
 
 
 def _copy_runtime(destination: Path) -> None:
@@ -29,6 +31,8 @@ def _copy_runtime(destination: Path) -> None:
         source = ROOT / name
         if source.exists():
             shutil.copytree(source, destination / name)
+    for rel in WEB_ONLY_DIRS:
+        shutil.rmtree(destination / rel, ignore_errors=True)
     docs = destination / "docs"
     docs.mkdir(parents=True, exist_ok=True)
     for name in DOC_FILES:
@@ -83,8 +87,11 @@ def stage(destination: Path) -> int:
     from build_offline_snapshot import build
     worker = destination / "service-worker.js"
     text = worker.read_text(encoding="utf-8")
+    # the desktop app never uses the service worker; drop on-demand entries for assets not staged
+    text = re.sub(r"const ON_DEMAND=\[.*?\];", "const ON_DEMAND=[];", text, count=1, flags=re.S)
     if '"./desktop-host.js"' not in text:
-        worker.write_text(text.replace("const APP_SHELL=[", 'const APP_SHELL=[\n  "./desktop-host.js",', 1), encoding="utf-8")
+        text = text.replace("const APP_SHELL=[", 'const APP_SHELL=[\n  "./desktop-host.js",', 1)
+    worker.write_text(text, encoding="utf-8")
     build(destination)
     _validate(destination)
     return count

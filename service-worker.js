@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.7-1f267e973ecaea5a5e43';
+const CACHE_NAME='inkdos-v2.7.7-c5fef25dc5b809eebf24';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "87fd689f38e2f33950b2942474c3cab7de8677541554b0391f710a41c5f151c3",
@@ -82,17 +82,19 @@ const ASSET_HASHES={
   "./apps/epub/view/reader-viewport.js": "85b6a908764936174acea53d63d65bfe5dfb091b75aa1f494fd0d03536648a9c",
   "./apps/epub/view/reader.css": "8398aa4e111df61ffcb5669bec4f2a69a1b16e73e1b0f10f606b9da1b655cc1e",
   "./apps/epub/view/renderer.js": "c96717fcdff9ff1e7e3f00297eb33a61e12581c9110d38e7abda0d613da5d98d",
-  "./apps/pdf/app.js": "4a312c55bc42a6a71831d69c7245a4104870bfbcd2e33033547f27de3ea04766",
+  "./apps/pdf/app.js": "8ba54512f7989d9dcb385dde0171872e838c340af1ca6be1b918a4e08fc51a01",
   "./apps/pdf/assets/pdf.svg": "304f50d31d52f764e88a57106046369e4087a1321413780be778e9accf89f156",
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
   "./apps/pdf/engine/pdf-session.js": "89395397bed46650417033b2eb02abacc37161e020e2c8a6fb544fd58e9f05f8",
   "./apps/pdf/extensions/review-annotations.css": "30440a1a6990354847b937ebe65dfa5eb34763bf19b9678dc497a3d2dc0f45ce",
   "./apps/pdf/extensions/review-annotations.js": "d0e6565d4ccf3fe0bfe2fe8ef923c0c462ba0efcb01cb3007500037f3fe74ddf",
+  "./apps/pdf/features/ocr/ocr-engine.js": "68f709ab6f3b4f8f55a2bb10150ab79035a860486a0b1d021721f7c00dd72b89",
   "./apps/pdf/features/page-tools/actions/delete-page.js": "918f6eb61b61b013c7deb8249e8a07bc9e1396174d054c4e1ebac71a47656602",
   "./apps/pdf/features/page-tools/actions/extract-page.js": "d673d74fcf8b947cb8c6edc8177abb488e9bbca6cbacd0c62c15d54048c94096",
   "./apps/pdf/features/page-tools/actions/merge-pdfs.js": "d3b3f153d3e3deeddaab05a01ebf0dd60b48dd795f80fb705fc4ec99f77eb845",
   "./apps/pdf/features/page-tools/actions/move-page.js": "d405a0d288d910aa68429e47a4cc2e77eef75c58f3bb7b387c2aacc65676ff9b",
+  "./apps/pdf/features/page-tools/actions/ocr-document.js": "2465211f9a444bf5b1bea80da460a055f1eaf300dd9a1bd90d8ccabc5bf7a3ed",
   "./apps/pdf/features/page-tools/actions/rotate-page.js": "c4f2c8f43eef7eb790c1bbb6dbe68cf5030276e2b90b795dfc9ee35e3d21eea1",
   "./apps/pdf/features/page-tools/actions/split-pdf.js": "1aba0877b819779d08af408da7a6977f43070f06828970a3748b147178d869da",
   "./apps/pdf/features/page-tools/page-tools-runtime.js": "d7d01f8dff7aae1e8b3f3cf6b277c0763a99f2c3d4f46532759e78696693d63b",
@@ -127,7 +129,7 @@ const ASSET_HASHES={
   "./apps/pdf/ui/navigation-controller.js": "c84cae8aa15f289db3620a788dede851cff0e8a1e56c7a77ef37b1f9004901dd",
   "./apps/pdf/ui/navigation.css": "845a2ee58082e3adefd23c96ed2fe74cdcc19b262b46b76b00877b8eb8030498",
   "./apps/pdf/ui/page-tools.css": "d0148228c07eddbb62a8e9956dc25bd85fb4aff69e3a89f0bb91f45d3c4ebf08",
-  "./apps/pdf/ui/page-tools.js": "8de32cfda8e4c8ebe53c39d2c606cc5e72e0a668943782c3b5bac6041cfe5808",
+  "./apps/pdf/ui/page-tools.js": "ef6b3a9008d4b23c499a0f220433c2fb691ae93a27b0a93d2449ecb2a85ed943",
   "./apps/pdf/ui/pdf-toolbar.css": "1c9c758ee0ab3def8ab23cd75544f60af4017a9fa32b6cf4e07d92b5d5d9aab5",
   "./apps/pdf/ui/reader-tools.js": "d4615477fad92be910bfc2aefc783376b90a47e633691707768215ae6c6d4600",
   "./apps/pdf/ui/toolbar-rail.js": "48d99ec35f449e68099bdef83ec149e3e039a4b4ede7b068bec3204228e86374",
@@ -143,6 +145,12 @@ const ASSET_HASHES={
   "./apps/pdf/vendor/pdfjs/wasm/openjpeg.wasm": "95e5002597af0824004aa57b1900fe019715db389e37640b1e58395e42f00cc5",
   "./apps/pdf/vendor/pdfjs/wasm/openjpeg_nowasm_fallback.js": "9047b34b6bc142d85e4b0aa1b08b0b9baad4c6f8b7ac87641b9e8f90eb6fd23e",
   "./apps/pdf/vendor/pdfjs/wasm/qcms_bg.wasm": "663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e",
+  "./apps/pdf/vendor/tesseract/core/tesseract-core-lstm.wasm.js": "eef5f8b2f8e20e150680b20adaec4a60babafee3adbe8a94583c81fee46e8680",
+  "./apps/pdf/vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js": "c58b46a4c796c0b8afccf77591d5b875b6896b45d402bbce8caa6f5362447b38",
+  "./apps/pdf/vendor/tesseract/lang/eng.traineddata.gz": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91",
+  "./apps/pdf/vendor/tesseract/lang/por.traineddata.gz": "dacebc1386ddaaf8389f81094236cca0d690897cde693d48cbdaa881c86e2b4c",
+  "./apps/pdf/vendor/tesseract/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
+  "./apps/pdf/vendor/tesseract/worker.min.js": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d",
   "./apps/pdf/view/page-layout.js": "1079703c4e64f21f9aa6ceaacb27949aae1d3730dad3457e5657be889910e164",
   "./apps/pdf/view/page-renderer.js": "02c87a03608ed525648a0926536d81151983d5f8d67596c95c9f3eb45ed7440b",
   "./apps/pdf/view/page-scheduler.js": "f62dced89ba9cb077b66918d797528be1c48a5fd0a441ab3910d8d1ac3a712d0",
@@ -288,13 +296,13 @@ const ASSET_HASHES={
   "./index.html": "f39305a0cedd19f698eced0596c1b250c139d4a74380f6dec3afa0845409dabc",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "944c71548f0848b895e168512b26cffdf270de9eb72103233db3d748f3b206d1",
-  "./shared/localization/locales/es.js": "5f582bfa7abcb89785467a5f55190b5516c36fa4ca5d4504acbce46cbec36793",
-  "./shared/localization/locales/fr.js": "17e9202f63795a7125688004dab95bbe4af0a46c5748f3b30dcfb4362e4a0235",
-  "./shared/localization/locales/ja.js": "59a552fae86700a03168f1924e942fa11a104d73e115053f38874736fd25fe20",
-  "./shared/localization/locales/pt-BR.js": "4471a540b343dd9f86d9e6b7c6faa5a4a487e64e61f7af9e13efc7293121e877",
-  "./shared/localization/locales/ru.js": "f48f91b6e278657a5754042b8386e82aceb7530b1a029a1d09d7e90f17edd760",
-  "./shared/localization/locales/zh-CN.js": "49470e87eb2005b2b37c0b201719a00e0ca5706adb6fc3f4c0b30b261b9b1270",
+  "./shared/localization/locales/de.js": "6b78250819e2fc6b0d4e0fe997b353e2a4ef992ae866652dc28aad3fa9644852",
+  "./shared/localization/locales/es.js": "f24f9909f86852ce176da483efcdff728685a13b22830990e153a2b212e8b8a6",
+  "./shared/localization/locales/fr.js": "d9c04cbc675fe01c1c0765950cfe7ec617ca0a7fc93cc908a7abbb77fe86c306",
+  "./shared/localization/locales/ja.js": "8cb356cd6e103ccecbb58451f76225480780ca5a852e0e58c3491c61f662aca5",
+  "./shared/localization/locales/pt-BR.js": "bd163c21d61ca8c604a1840ed593c32148afb2ba7db89130afe643e2cb3143a2",
+  "./shared/localization/locales/ru.js": "08bd7dca5cf4791365971284e72ecd58e435957d53a0dd75a4484c13a00e332a",
+  "./shared/localization/locales/zh-CN.js": "c8d61baa5e73d4772ce34f71b6750af47fdb4fde0f94ca4e803f40605242289a",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
   "./shared/localization/settings-strip.js": "d4e7b2f9f0177235eb6814901bab215fce7a84854d2507f64ba1c3f5981c42ad",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
@@ -346,6 +354,8 @@ const APP_SHELL=[
   "./apps/pdf/features/page-tools/actions/extract-page.js",
   "./apps/pdf/features/page-tools/actions/split-pdf.js",
   "./apps/pdf/features/page-tools/actions/merge-pdfs.js",
+  "./apps/pdf/features/page-tools/actions/ocr-document.js",
+  "./apps/pdf/features/ocr/ocr-engine.js",
   "./apps/pdf/help/help.js",
   "./apps/pdf/index.html",
   "./apps/pdf/io/file-delivery.js",
@@ -604,6 +614,8 @@ const APP_SHELL=[
   "./apps/epub/view/reader.css",
   "./apps/epub/view/renderer.js"
 ];
+// Large, rarely used assets (the OCR engine): integrity-checked and cached on first use, not at install.
+const ON_DEMAND=["./apps/pdf/vendor/tesseract/core/tesseract-core-lstm.wasm.js", "./apps/pdf/vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js", "./apps/pdf/vendor/tesseract/lang/eng.traineddata.gz", "./apps/pdf/vendor/tesseract/lang/por.traineddata.gz", "./apps/pdf/vendor/tesseract/tesseract.min.js", "./apps/pdf/vendor/tesseract/worker.min.js"];
 const NAVIGATION_PATHS=new Set(["./", "./index.html", "./apps/pdf/", "./apps/pdf/index.html", "./apps/documents/", "./apps/documents/index.html", "./apps/spreadsheets/", "./apps/spreadsheets/index.html", "./apps/presentations/", "./apps/presentations/index.html", "./apps/txt/", "./apps/txt/index.html", "./apps/epub/", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 // The cache is scoped to this installation, including same-origin sibling projects.
 const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);
