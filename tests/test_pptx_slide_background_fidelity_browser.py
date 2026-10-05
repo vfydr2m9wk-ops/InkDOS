@@ -72,15 +72,23 @@ def main() -> None:
                 }"""
             )
 
+            # Start the open without awaiting it inside evaluate: Chromium can drop the promise handle
+            # Playwright awaits ("Promise was collected"), which surfaces as a bogus navigation error.
             page.evaluate(
-                """async bytes => {
+                """bytes => {
                     const file=new File([new Uint8Array(bytes)],'background-regression.pptx',{
                         type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'
                     });
-                    await globalThis.__inkdosPresentations.open(file);
+                    window.__backgroundOpen=null;
+                    globalThis.__inkdosPresentations.open(file).then(
+                        ok => { window.__backgroundOpen = ok === true ? 'ok' : 'failed'; },
+                        error => { window.__backgroundOpen = 'error: ' + error; }
+                    );
                 }""",
                 synthetic,
             )
+            page.wait_for_function("() => window.__backgroundOpen !== null")
+            assert page.evaluate("() => window.__backgroundOpen") == "ok", page.evaluate("() => window.__backgroundOpen")
             page.wait_for_function(
                 "() => globalThis.__inkdosPresentations.session.sourceKind === 'pptx'"
             )
