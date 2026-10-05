@@ -324,6 +324,10 @@ fn install_package(
     Ok(manifest.version)
 }
 
+fn within_download_limit(received: usize, next_chunk: usize) -> bool {
+    received.checked_add(next_chunk).is_some_and(|total| total <= MAX_DOWNLOAD_BYTES)
+}
+
 fn latest_release(releases: Vec<Release>) -> Option<(u64, String)> {
     releases
         .into_iter()
@@ -370,7 +374,7 @@ pub async fn update<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<BetaUpdate,
     if installed.is_some_and(|installed| installed >= version) {
         return Ok(BetaUpdate { updated: false, version: installed });
     }
-    let response = client
+    let mut response = client
         .get(&url)
         .send()
         .await
@@ -379,12 +383,17 @@ pub async fn update<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<BetaUpdate,
     if response.content_length().is_some_and(|length| length > MAX_DOWNLOAD_BYTES as u64) {
         return Err("Beta tools package is too large.".to_string());
     }
-    let package = response
-        .bytes()
+    // read in chunks and stop at the limit, also when the server sends no (or a wrong) length
+    let mut package = Vec::new();
+    while let Some(chunk) = response
+        .chunk()
         .await
-        .map_err(|error| format!("InkDOS could not download beta tools: {error}"))?;
-    if package.len() > MAX_DOWNLOAD_BYTES {
-        return Err("Beta tools package is too large.".to_string());
+        .map_err(|error| format!("InkDOS could not download beta tools: {error}"))?
+    {
+        if !within_download_limit(package.len(), chunk.len()) {
+            return Err("Beta tools package is too large.".to_string());
+        }
+        package.extend_from_slice(&chunk);
     }
     let root = root_dir(app)?;
     let host = host_version(app);
@@ -517,6 +526,14 @@ mod tests {
             assert!(safe_relative_path(path).is_none(), "{path}");
         }
         assert_eq!(safe_relative_path("labs/pdf/index.html"), Some(PathBuf::from("labs/pdf/index.html")));
+    }
+
+    #[test]
+    fn download_limit_counts_every_chunk() {
+        assert!(within_download_limit(0, MAX_DOWNLOAD_BYTES));
+        assert!(!within_download_limit(MAX_DOWNLOAD_BYTES, 1));
+        assert!(!within_download_limit(MAX_DOWNLOAD_BYTES - 10, 11));
+        assert!(!within_download_limit(usize::MAX, 1));
     }
 
     #[test]

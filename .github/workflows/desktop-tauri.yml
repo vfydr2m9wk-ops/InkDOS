@@ -58,7 +58,7 @@ jobs:
         run: python tests/test_desktop_ux_contract.py
       - name: Run Documents 2.4.3 interaction contracts
         run: |
-          python tests/test_documents_243_insert_table_cancel_contract.py
+          python scripts/run_function_tests.py tests/test_documents_243_insert_table_cancel_contract.py
           python tests/test_documents_243_interaction_contract.py
       - name: Run Home density layout contract
         run: python tests/test_home_density_layout_contract.py
