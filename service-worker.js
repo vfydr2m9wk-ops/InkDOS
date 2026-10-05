@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.7-dfa321656ae225bb3137';
+const CACHE_NAME='inkdos-v2.7.7-cab7720f270ba95eef0b';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "87fd689f38e2f33950b2942474c3cab7de8677541554b0391f710a41c5f151c3",
@@ -295,6 +295,14 @@ const ASSET_HASHES={
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
   "./index.html": "f39305a0cedd19f698eced0596c1b250c139d4a74380f6dec3afa0845409dabc",
+  "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
+  "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
+  "./labs/pdf/lab.js": "a96142b4beb9bbb1e6c414642521e1dfe167252a1a8c04406bd050b7f755a2ab",
+  "./labs/pdf/ocr.js": "33a28084e31fa1e16b7b6e97d173d7f8b39c4ca935eb52828ffbf7bb09d50965",
+  "./labs/pdf/sign.js": "1b101b2b8032b02e3a21ce2df8ffa4fc3296de11046dc7c2cf658d1c80054c8a",
+  "./labs/pdf/trust/icp-brasil.js": "29a9c298a6a73df1f1a06449bff8e74cd5d064bde2103b4b4c5fafb115150596",
+  "./labs/pdf/vendor/forge/forge.min.js": "d9b9074e6861200d676e25dcfe97889db5e8f4150bb766d29c491ad709a51b58",
+  "./labs/pdf/vendor/tesseract/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
   "./manifest.webmanifest": "b6790ec8f126b77223ca3f76a19c8aa5d14559a66c893488e1d30d36591ae8bd",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
   "./shared/localization/locales/de.js": "6b78250819e2fc6b0d4e0fe997b353e2a4ef992ae866652dc28aad3fa9644852",
@@ -616,8 +624,9 @@ const APP_SHELL=[
   "./apps/epub/view/reader.css",
   "./apps/epub/view/renderer.js"
 ];
-// Large, rarely used assets (the OCR engine): integrity-checked and cached on first use, not at install.
-const ON_DEMAND=["./apps/pdf/vendor/tesseract/core/tesseract-core-lstm.wasm.js", "./apps/pdf/vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js", "./apps/pdf/vendor/tesseract/lang/eng.traineddata.gz", "./apps/pdf/vendor/tesseract/lang/por.traineddata.gz", "./apps/pdf/vendor/tesseract/tesseract.min.js", "./apps/pdf/vendor/tesseract/worker.min.js"];
+// Large or rarely used assets (the OCR engine, the PDF tools (beta) page): integrity-checked and cached
+// on first use, not at install.
+const ON_DEMAND=["./apps/pdf/vendor/tesseract/core/tesseract-core-lstm.wasm.js", "./apps/pdf/vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js", "./apps/pdf/vendor/tesseract/lang/eng.traineddata.gz", "./apps/pdf/vendor/tesseract/lang/por.traineddata.gz", "./apps/pdf/vendor/tesseract/tesseract.min.js", "./apps/pdf/vendor/tesseract/worker.min.js", "./labs/pdf/index.html", "./labs/pdf/lab.css", "./labs/pdf/lab.js", "./labs/pdf/ocr.js", "./labs/pdf/sign.js", "./labs/pdf/trust/icp-brasil.js", "./labs/pdf/vendor/forge/forge.min.js", "./labs/pdf/vendor/tesseract/tesseract.min.js"];
 const NAVIGATION_PATHS=new Set(["./", "./index.html", "./apps/pdf/", "./apps/pdf/index.html", "./apps/documents/", "./apps/documents/index.html", "./apps/spreadsheets/", "./apps/spreadsheets/index.html", "./apps/presentations/", "./apps/presentations/index.html", "./apps/txt/", "./apps/txt/index.html", "./apps/epub/", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 // The cache is scoped to this installation, including same-origin sibling projects.
 const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);

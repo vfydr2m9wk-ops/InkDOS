@@ -74,11 +74,24 @@ def main() -> None:
             lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
             lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('handoff')", timeout=30000)
             assert lab.evaluate("() => document.querySelector('.lab-head .back').hidden"), 'the tools page must not navigate the panel away'
-            lab.check('#ocrAll')
-            lab.click('#ocrBtn')
-            lab.wait_for_selector('#returnBtn:not([hidden])', timeout=120000)
+            # the web edition's OCR is the official one in the workspace: the tools page hides its copy
+            assert lab.locator('[role=tab][data-tab="ocr"]').is_hidden()
+            assert lab.get_attribute('[role=tab][data-tab="stamp"]', 'aria-selected') == 'true'
+            # visual signature: draw it (bounding boxes are in page coordinates), place it, apply
+            box = lab.locator('#pad').bounding_box()
+            x0, y0 = box['x'], box['y']
+            app.mouse.move(x0 + 40, y0 + 100)
+            app.mouse.down()
+            for step in range(1, 12):
+                app.mouse.move(x0 + 40 + step * 25, y0 + 100 - (step % 3) * 20)
+            app.mouse.up()
+            lab.wait_for_function("() => document.getElementById('preview').width > 0", timeout=30000)
+            lab.click('#preview')
+            assert lab.evaluate("() => { const c = document.getElementById('pad'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) if (d[i]) return true; return false; }"), 'nothing was drawn on the pad'
+            lab.click('#stampBtn')
+            lab.wait_for_selector('#returnBtn:not([hidden])', timeout=60000)
             lab.click('#returnBtn')
-            app.wait_for_function("() => (document.getElementById('titleText')?.textContent||'').includes('-ocr')", timeout=30000)
+            app.wait_for_function("() => (document.getElementById('titleText')?.textContent||'').includes('-assinado')", timeout=30000)
             app.wait_for_selector('#betaToolsPanel', state='hidden')
             assert app.locator('#betaToolsPanel iframe').count() == 0, 'closing the panel must drop the tools frame'
             assert len(context.pages) == 1, 'no other tab or window may be opened'
@@ -88,7 +101,7 @@ def main() -> None:
             app.click('.inkdos-settings-option[data-settings-value="beta-pdf"]')
             app.wait_for_selector('#betaToolsPanel:not([hidden]) iframe.beta-tools-frame')
             lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
-            lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('-ocr')", timeout=30000)
+            lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('-assinado')", timeout=30000)
             app.keyboard.press('Escape')
             app.wait_for_selector('#betaToolsPanel', state='hidden')
             assert len(context.pages) == 1
