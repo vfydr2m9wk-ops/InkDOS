@@ -78,6 +78,9 @@ def choose_language(page, label: str, code: str) -> None:
     popover = page.locator(".inkdos-settings-popover")
     popover.locator("button.inkdos-settings-option", has_text=label).first.click()
     page.wait_for_function(f"() => globalThis.InkDOSLocalization?.currentLanguage === {code!r}")
+    # the option closes the popover only after the language switch resolves; wait for it, or the next
+    # sun click lands while it is still open and toggles it shut instead of opening it
+    popover.wait_for(state="hidden")
 
 
 def main() -> None:
