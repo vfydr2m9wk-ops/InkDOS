@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.7.8 — 2026-10-05
+
+PDF:
+- Official OCR in the web edition: Page tools → Make searchable (OCR) adds an invisible text layer to scanned pages so they can be searched and copied. Poor scans get a second, cleaned-up reading and the more confident one is kept; signed PDFs are refused (a text layer would invalidate the signature); the 12 MB engine is downloaded on first use and then works offline. Not in the desktop app.
+- PDF tools (beta) open from a new Beta tools button in the toolbar, in a panel on the same page: the open PDF is handed over and the result comes back into the workspace. The panel works offline after its first use; its OCR tab is hidden in the web edition, which has the official OCR.
+
+Desktop:
+- Beta tools receive the PDF open in the workspace and send their result back (needs this desktop release and the current beta tools bundle).
+- A beta-tools download stops as soon as it passes the size limit.
+
+Tests and CI:
+- Release validation runs the 49 function-style test files that were never run; two stale checks were updated.
+- The PPTX background fidelity test no longer fails intermittently.
+
 ## 2.7.7 — 2026-10-04
 
 Desktop:
