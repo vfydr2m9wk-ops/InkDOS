@@ -1,0 +1,13 @@
+OCR engine for the PDF workspace (web edition only; not staged into the desktop app, and fetched on
+first use instead of at offline install — see ON_DEMAND in service-worker.js)
+
+tesseract.min.js, worker.min.js   tesseract.js 7.0.0 (npm, dist/)                 Apache-2.0  licenses/TESSERACT-JS.txt
+core/*.wasm.js                     tesseract.js-core 7.0.0 (simd-lstm, lstm)       Apache-2.0  licenses/TESSERACT-CORE.txt
+lang/por.traineddata.gz            @tesseract.js-data/por 1.0.0, 4.0.0_best_int     Apache-2.0 (tessdata_best, int8)
+lang/eng.traineddata.gz            @tesseract.js-data/eng 1.0.0, 4.0.0_best_int     Apache-2.0 (tessdata_best, int8)
+
+Same bytes as labs/pdf/vendor/tesseract (the beta tools keep their own copy). Model choice: the
+full-precision tessdata_best models (8.2 MB for Portuguese) were measured against these int8 models
+on Portuguese text under clean, low-resolution, fax-like, noisy and faint scans: no accuracy gain
+(0 % vs 0 % clean; 3.9 % vs 4.3 % on fax), about 1.7x slower and 3-5x larger. The accuracy gain on
+poor scans comes from the cleaned second reading in apps/pdf/features/ocr/ocr-engine.js.
