@@ -153,6 +153,12 @@
     for (const p of document.querySelectorAll('[data-panel]')) p.hidden = p.dataset.panel !== tab.dataset.tab;
     if (tab.dataset.tab === 'stamp') renderPreview();
   });
+  // The web edition has the official OCR in the PDF workspace (Page tools → Make searchable (OCR)), so
+  // this copy is shown only in the desktop app's beta window, which has no official OCR.
+  if (!desktopBeta) {
+    const ocrTab = document.querySelector('[role=tab][data-tab="ocr"]');
+    if (ocrTab) { ocrTab.hidden = true; document.querySelector('[role=tab][data-tab="stamp"]')?.click(); }
+  }
 
   // ---- OCR
   $('ocrBtn').addEventListener('click', async () => {

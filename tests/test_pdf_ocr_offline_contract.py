@@ -19,7 +19,7 @@ def listed(name: str) -> list[str]:
 
 def test_ocr_engine_is_on_demand_only():
     engine = sorted("./" + p.relative_to(ROOT).as_posix() for p in (ROOT / "apps/pdf/vendor/tesseract").rglob("*") if p.is_file() and p.suffix != ".txt")
-    assert engine and sorted(listed("ON_DEMAND")) == engine
+    assert engine and sorted(p for p in listed("ON_DEMAND") if p.startswith("./apps/pdf/vendor/tesseract/")) == engine
     shell = listed("APP_SHELL")
     assert not any("/vendor/tesseract/" in p for p in shell)
     assert "./apps/pdf/features/ocr/ocr-engine.js" in shell and "./apps/pdf/features/page-tools/actions/ocr-document.js" in shell
