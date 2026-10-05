@@ -16,6 +16,7 @@ def main():
         root=Path(td)
         template=(ROOT/'service-worker.js').read_text()
         template=re.sub(r'const APP_SHELL=\[.*?\];','const APP_SHELL=["./index.html","./app.js","./VERSION.json"];',template,flags=re.S)
+        template=re.sub(r'const ON_DEMAND=\[.*?\];','const ON_DEMAND=[];',template,flags=re.S)
         (root/'VERSION.json').write_text('{"version":"2.5.2"}')
         (root/'index.html').write_text("<html><head><title>Snapshot probe</title></head><body><script>navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});</script></body></html>")
         def revision(code):
