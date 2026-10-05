@@ -27,6 +27,8 @@ PDF_DYNAMIC_URLS = (
     "/apps/pdf/features/page-tools/actions/extract-page.js",
     "/apps/pdf/features/page-tools/actions/split-pdf.js",
     "/apps/pdf/features/page-tools/actions/merge-pdfs.js",
+    "/apps/pdf/features/page-tools/actions/ocr-document.js",
+    "/apps/pdf/features/ocr/ocr-engine.js",
 )
 
 def tiny_pdf() -> list[int]:

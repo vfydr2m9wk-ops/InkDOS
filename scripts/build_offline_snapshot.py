@@ -7,10 +7,12 @@ import json
 import re
 ROOT=Path(__file__).resolve().parents[1]
 SHELL=re.compile(r'const APP_SHELL=(\[.*?\]);',re.S)
+ON_DEMAND=re.compile(r'const ON_DEMAND=(\[.*?\]);',re.S)
 HASHES=re.compile(r'// BEGIN OFFLINE HASHES\n.*?// END OFFLINE HASHES\n',re.S)
 CACHE=re.compile(r"const CACHE_NAME=['\"][^'\"]+['\"];\n")
 def render(root: Path, source: str) -> str:
-    paths=json.loads(SHELL.search(source)[1])
+    on_demand=ON_DEMAND.search(source)
+    paths=json.loads(SHELL.search(source)[1])+(json.loads(on_demand[1]) if on_demand else [])
     if len(paths)!=len(set(paths)):raise ValueError('Duplicate offline shell path')
     hashes={}
     for rel in paths:

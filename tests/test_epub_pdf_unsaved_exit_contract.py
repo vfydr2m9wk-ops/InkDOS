@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,7 +70,8 @@ def test_pdf_guards_dirty_open_and_home_with_three_way_choice():
 
 
 def test_pdf_authorized_home_exit_bypasses_native_beforeunload_prompt():
-    assert "let authorizedUnload=false" in PDF_APP
+    # declared with the other app-level flags in one `let` list
+    assert re.search(r"\blet [^;]*\bauthorizedUnload=false", PDF_APP)
     assert "commands.consumeAuthorizedUnload()" in PDF_APP
     assert "authorizedUnload=true;global.location.assign(href)" in PDF_COMMANDS
 
