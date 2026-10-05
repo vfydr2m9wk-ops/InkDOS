@@ -215,6 +215,27 @@ fn inkdos_beta_open(app: tauri::AppHandle, webview: tauri::Webview, tool: String
     beta::open(&app, &tool)
 }
 
+/// Opens a beta tool with the PDF this window has open: raw PDF bytes as the body, the tool id and the
+/// percent-encoded file name as headers.
+#[tauri::command]
+fn inkdos_beta_open_with_file(app: tauri::AppHandle, webview: tauri::Webview, request: tauri::ipc::Request<'_>) -> Result<(), String> {
+    require_trusted_window(&webview)?;
+    let header = |name: &str| request.headers().get(name).and_then(|value| value.to_str().ok()).unwrap_or("").to_string();
+    let tauri::ipc::InvokeBody::Raw(bytes) = request.body() else {
+        return Err("InkDOS could not hand this PDF to the beta tools.".to_string());
+    };
+    beta::open_with_file(&app, &header("x-inkdos-tool"), webview.label(), &header("x-inkdos-file-name"), bytes.clone())
+}
+
+/// The PDF a beta tool sent back to this window (announced by the `inkdos-beta-result` event).
+#[tauri::command]
+fn inkdos_beta_take_result(webview: tauri::Webview) -> Result<tauri::ipc::Response, String> {
+    require_trusted_window(&webview)?;
+    beta::take_result(webview.label())
+        .map(tauri::ipc::Response::new)
+        .ok_or_else(|| "No beta tools result is waiting.".to_string())
+}
+
 fn workspace_manifest() -> Result<serde_json::Map<String, serde_json::Value>, String> {
     let manifest: serde_json::Value = serde_json::from_str(WORKSPACES_JSON)
         .map_err(|error| format!("InkDOS workspace manifest is invalid: {error}"))?;
@@ -456,7 +477,9 @@ fn main() {
             inkdos_install_update,
             inkdos_beta_status,
             inkdos_beta_update,
-            inkdos_beta_open
+            inkdos_beta_open,
+            inkdos_beta_open_with_file,
+            inkdos_beta_take_result
         ])
         .setup(|app| {
             let opened = handle_launch_args(app.handle(), std::env::args());

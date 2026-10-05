@@ -8,6 +8,11 @@
 //!
 //! Installed bundles are served only through the `inkdos-beta` scheme, into `beta-*` windows that
 //! no capability names and that the app commands refuse: beta code gets no native access.
+//!
+//! A trusted window may hand the PDF it has open to the beta window it opens. The beta window
+//! reads it, and posts a result back, through its own scheme at `__inkdos/*`; both are scoped to
+//! that window, and the result only reaches the window that opened it (which fetches it with a
+//! trusted command). The beta window still gets no IPC.
 
 use std::{
     borrow::Cow,
@@ -15,14 +20,16 @@ use std::{
     fs,
     io::Read,
     path::{Path, PathBuf},
+    collections::HashMap,
     sync::atomic::{AtomicU64, Ordering},
+    sync::{Mutex, OnceLock},
     time::Duration,
 };
 
 use base64::Engine;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tauri::{http, Manager, Runtime, WebviewUrl, WebviewWindowBuilder};
+use tauri::{http, Emitter, Manager, Runtime, WebviewUrl, WebviewWindowBuilder};
 
 pub const SCHEME: &str = "inkdos-beta";
 pub const WINDOW_PREFIX: &str = "beta-";
@@ -38,6 +45,42 @@ const MAX_MANIFEST_BYTES: u64 = 1024 * 1024;
 const CSP: &str = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; frame-ancestors 'none'";
 
 static BETA_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+
+const HANDOFF_FILE: &str = "__inkdos/file";
+const HANDOFF_RESULT: &str = "__inkdos/result";
+const HANDOFF_NAME_HEADER: &str = "x-inkdos-file-name";
+pub const RESULT_EVENT: &str = "inkdos-beta-result";
+const MAX_HANDOFF_BYTES: usize = 64 * 1024 * 1024;
+const MAX_HANDOFF_NAME: usize = 600;
+
+/// What a beta window was handed: the window that opened it and, until read, the PDF.
+struct Handoff {
+    opener: String,
+    file: Option<(String, Vec<u8>)>,
+}
+
+static HANDOFFS: OnceLock<Mutex<HashMap<String, Handoff>>> = OnceLock::new();
+static RESULTS: OnceLock<Mutex<HashMap<String, (String, Vec<u8>)>>> = OnceLock::new();
+
+fn handoffs() -> &'static Mutex<HashMap<String, Handoff>> {
+    HANDOFFS.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn results() -> &'static Mutex<HashMap<String, (String, Vec<u8>)>> {
+    RESULTS.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+/// File names cross as percent-encoded text (the pages encode and decode them); anything else is refused.
+fn valid_encoded_name(name: &str) -> bool {
+    !name.is_empty()
+        && name.len() <= MAX_HANDOFF_NAME
+        && name.bytes().all(|b| b.is_ascii_alphanumeric() || b"%._~-!*'()".contains(&b))
+}
+
+/// A PDF header within the first KiB, as PDF readers accept; and within the size limit.
+fn acceptable_pdf(bytes: &[u8]) -> bool {
+    bytes.len() <= MAX_HANDOFF_BYTES && bytes[..bytes.len().min(1024)].windows(5).any(|w| w == b"%PDF-")
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -421,6 +464,45 @@ fn scheme_base() -> String {
 }
 
 pub fn open<R: Runtime>(app: &tauri::AppHandle<R>, tool_id: &str) -> Result<(), String> {
+    let label = next_label(tool_id);
+    open_window(app, tool_id, &label)
+}
+
+/// Opens a beta tool with the PDF the calling trusted window has open (`encoded_name` percent-encoded).
+pub fn open_with_file<R: Runtime>(
+    app: &tauri::AppHandle<R>,
+    tool_id: &str,
+    opener: &str,
+    encoded_name: &str,
+    bytes: Vec<u8>,
+) -> Result<(), String> {
+    if !valid_encoded_name(encoded_name) || !acceptable_pdf(&bytes) {
+        return Err("InkDOS could not hand this PDF to the beta tools.".to_string());
+    }
+    let label = next_label(tool_id);
+    lock(handoffs())?.insert(label.clone(), Handoff { opener: opener.to_string(), file: Some((encoded_name.to_string(), bytes)) });
+    open_window(app, tool_id, &label).inspect_err(|_| {
+        if let Ok(mut map) = handoffs().lock() {
+            map.remove(&label);
+        }
+    })
+}
+
+/// The latest result a beta window sent back to `opener`, once.
+pub fn take_result(opener: &str) -> Option<Vec<u8>> {
+    results().lock().ok()?.remove(opener).map(|(_, bytes)| bytes)
+}
+
+fn lock<T>(mutex: &Mutex<T>) -> Result<std::sync::MutexGuard<'_, T>, String> {
+    mutex.lock().map_err(|_| "InkDOS beta tools state is unavailable.".to_string())
+}
+
+fn next_label(tool_id: &str) -> String {
+    let id: String = tool_id.chars().filter(|c| c.is_ascii_alphanumeric() || *c == '-').collect();
+    format!("{WINDOW_PREFIX}{id}-{}", BETA_WINDOW_SEQUENCE.fetch_add(1, Ordering::Relaxed))
+}
+
+fn open_window<R: Runtime>(app: &tauri::AppHandle<R>, tool_id: &str, label: &str) -> Result<(), String> {
     let (_, manifest) = installed_manifest(app)?
         .ok_or_else(|| "Beta tools are not installed yet. Connect to the internet and try again.".to_string())?;
     let tool = manifest
@@ -431,10 +513,9 @@ pub fn open<R: Runtime>(app: &tauri::AppHandle<R>, tool_id: &str) -> Result<(), 
     let base = scheme_base();
     let url = tauri::Url::parse(&format!("{base}{}", tool.entry))
         .map_err(|error| format!("Beta tool address is invalid: {error}"))?;
-    let label = format!("{WINDOW_PREFIX}{}-{}", tool.id, BETA_WINDOW_SEQUENCE.fetch_add(1, Ordering::Relaxed));
     let opener_app = app.clone();
     let popup_app = app.clone();
-    let window = WebviewWindowBuilder::new(app, &label, WebviewUrl::CustomProtocol(url))
+    let window = WebviewWindowBuilder::new(app, label, WebviewUrl::CustomProtocol(url))
         .title(format!("InkDOS — {}", tool.title))
         .inner_size(1180.0, 820.0)
         .min_inner_size(720.0, 520.0)
@@ -469,6 +550,14 @@ pub fn open<R: Runtime>(app: &tauri::AppHandle<R>, tool_id: &str) -> Result<(), 
         })
         .build()
         .map_err(|error| format!("InkDOS could not open {}: {error}", tool.title))?;
+    let closed = label.to_string();
+    window.on_window_event(move |event| {
+        if let tauri::WindowEvent::Destroyed = event {
+            if let Ok(mut map) = handoffs().lock() {
+                map.remove(&closed);
+            }
+        }
+    });
     let _ = window.set_focus();
     Ok(())
 }
@@ -500,10 +589,16 @@ fn respond(status: u16, content_type: &str, body: Vec<u8>) -> http::Response<Cow
 
 /// `inkdos-beta` scheme: serves files of the installed, signature-checked bundle to beta windows only.
 pub fn serve<R: Runtime>(app: &tauri::AppHandle<R>, webview_label: &str, request: &http::Request<Vec<u8>>) -> http::Response<Cow<'static, [u8]>> {
-    if !webview_label.starts_with(WINDOW_PREFIX) || request.method() != http::Method::GET {
+    if !webview_label.starts_with(WINDOW_PREFIX) {
         return respond(403, "text/plain", b"Forbidden".to_vec());
     }
     let path = request.uri().path().trim_start_matches('/');
+    if path == HANDOFF_FILE || path == HANDOFF_RESULT {
+        return serve_handoff(app, webview_label, path, request);
+    }
+    if request.method() != http::Method::GET {
+        return respond(403, "text/plain", b"Forbidden".to_vec());
+    }
     let Ok(Some((dir, manifest))) = installed_manifest(app) else {
         return respond(404, "text/plain", b"Beta tools are not installed".to_vec());
     };
@@ -516,6 +611,40 @@ pub fn serve<R: Runtime>(app: &tauri::AppHandle<R>, webview_label: &str, request
     }
 }
 
+fn serve_handoff<R: Runtime>(app: &tauri::AppHandle<R>, label: &str, path: &str, request: &http::Request<Vec<u8>>) -> http::Response<Cow<'static, [u8]>> {
+    let Ok(mut map) = handoffs().lock() else {
+        return respond(500, "text/plain", b"Unavailable".to_vec());
+    };
+    let Some(handoff) = map.get_mut(label) else {
+        return respond(404, "text/plain", b"Not found".to_vec());
+    };
+    if path == HANDOFF_FILE && request.method() == http::Method::GET {
+        // read once: a reload of the tool page does not get the document again
+        let Some((name, bytes)) = handoff.file.take() else {
+            return respond(204, "text/plain", Vec::new());
+        };
+        let mut response = respond(200, "application/pdf", bytes);
+        if let Ok(value) = http::HeaderValue::from_str(&name) {
+            response.headers_mut().insert(HANDOFF_NAME_HEADER, value);
+        }
+        return response;
+    }
+    if path == HANDOFF_RESULT && request.method() == http::Method::POST {
+        let name = request.headers().get(HANDOFF_NAME_HEADER).and_then(|value| value.to_str().ok()).unwrap_or("");
+        if !valid_encoded_name(name) || !acceptable_pdf(request.body()) {
+            return respond(400, "text/plain", b"Not a PDF result".to_vec());
+        }
+        let opener = handoff.opener.clone();
+        drop(map);
+        if let Ok(mut pending) = results().lock() {
+            pending.insert(opener.clone(), (name.to_string(), request.body().clone()));
+        }
+        let _ = app.emit_to(opener.as_str(), RESULT_EVENT, name.to_string());
+        return respond(204, "text/plain", Vec::new());
+    }
+    respond(405, "text/plain", b"Method not allowed".to_vec())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -526,6 +655,33 @@ mod tests {
             assert!(safe_relative_path(path).is_none(), "{path}");
         }
         assert_eq!(safe_relative_path("labs/pdf/index.html"), Some(PathBuf::from("labs/pdf/index.html")));
+    }
+
+    #[test]
+    fn handoff_accepts_only_encoded_names_and_pdfs() {
+        assert!(valid_encoded_name("Contrato%20assinado.pdf"));
+        assert!(valid_encoded_name("a-b_c.d~e.pdf"));
+        for bad in ["", "a b.pdf", "a/b.pdf", "a\\b.pdf", "a\r\nX: y", "ç.pdf", "a".repeat(MAX_HANDOFF_NAME + 1).as_str()] {
+            assert!(!valid_encoded_name(bad), "{bad:?}");
+        }
+        assert!(acceptable_pdf(b"%PDF-1.7\n"));
+        assert!(acceptable_pdf(&[b"\n\n".as_slice(), b"%PDF-1.4"].concat()));
+        assert!(!acceptable_pdf(b"PK\x03\x04 not a pdf"));
+        assert!(!acceptable_pdf(&[vec![b' '; 1100], b"%PDF-1.7".to_vec()].concat()));
+    }
+
+    #[test]
+    fn handoff_results_are_taken_once_per_opener() {
+        results().lock().unwrap().insert("main-test".to_string(), ("x.pdf".to_string(), b"%PDF-1.7".to_vec()));
+        assert_eq!(take_result("main-test").as_deref(), Some(b"%PDF-1.7".as_slice()));
+        assert!(take_result("main-test").is_none());
+        assert!(take_result("other").is_none());
+    }
+
+    #[test]
+    fn beta_labels_keep_only_safe_characters() {
+        assert!(next_label("pdf").starts_with("beta-pdf-"));
+        assert!(next_label("p d/f").starts_with("beta-pdf-"));
     }
 
     #[test]
