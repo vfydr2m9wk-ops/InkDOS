@@ -20,6 +20,16 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8792
+# a page of the same origin that is not the PDF tools page (e.g. a sibling GitHub Pages project)
+FOREIGN_PAGE = """<!doctype html><script>
+let leaked = false;
+addEventListener('message', e => { if (e.data && e.data.type === 'inkdos-lab-file') leaked = true; });
+const forged = {name: 'forged.pdf', bytes: new Uint8Array([37, 80, 68, 70, 45])};
+parent.postMessage({type: 'inkdos-lab-ready'}, location.origin);
+parent.postMessage({type: 'inkdos-lab-result', ...forged}, location.origin);
+parent.document.querySelector('iframe.beta-tools-frame').contentWindow.postMessage({type: 'inkdos-lab-file', ...forged}, location.origin);
+setTimeout(() => parent.postMessage({type: 'foreign-done', leaked}, location.origin), 1000);
+</script>"""
 
 
 def text_pdf(path: Path) -> None:
@@ -102,6 +112,18 @@ def main() -> None:
             app.wait_for_selector('#betaToolsPanel:not([hidden]) iframe.beta-tools-frame')
             lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
             lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('-assinado')", timeout=30000)
+            # any other page of the same origin (e.g. a sibling GitHub Pages project) is ignored by both
+            # sides: it gets no copy of the open PDF, cannot replace it, and cannot push one to the tools
+            context.route(f'http://127.0.0.1:{PORT}/foreign.html', lambda route: route.fulfill(content_type='text/html', body=FOREIGN_PAGE))
+            leaked = app.evaluate("""() => new Promise(resolve => {
+                const f = document.createElement('iframe'); f.id = 'foreignPage'; f.src = '/foreign.html';
+                addEventListener('message', e => { if (e.data && e.data.type === 'foreign-done') resolve(e.data.leaked); });
+                document.body.appendChild(f); })""")
+            assert leaked is False, 'a non-tools page must not receive the open PDF'
+            app.wait_for_timeout(800)
+            assert 'forged' not in (app.text_content('#titleText') or ''), 'a non-tools page must not replace the open PDF'
+            assert 'forged' not in (lab.text_content('#fileName') or ''), 'only the opener may hand the tools a document'
+            app.evaluate("() => document.getElementById('foreignPage').remove()")
             app.keyboard.press('Escape')
             app.wait_for_selector('#betaToolsPanel', state='hidden')
             assert len(context.pages) == 1
