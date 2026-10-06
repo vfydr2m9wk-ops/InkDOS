@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-9400053a92f46ea644f5';
+const CACHE_NAME='inkdos-v2.7.8-2fb7af1e5aeeae037ef1';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -237,7 +237,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
   "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "4866f5f2a13d9bc9584fe385086d2c6fa1664c509f69fd0e0a4e9f6fadb70edf",
-  "./apps/spreadsheets/ui/editor-controller.js": "c4af3f6d3cad4bdfaced3914345084608c1244d4dc7deb0a095212b03453f0de",
+  "./apps/spreadsheets/ui/editor-controller.js": "04fcac09336b93b576e6038fff29f39113301ac2bd3d82f4a4063ed16819240c",
   "./apps/spreadsheets/ui/editor-toolbar.css": "07400f79f4351695ae5ab1232695cdcededff9f42a67a32ee198e3c8535262c8",
   "./apps/spreadsheets/ui/file-menu-controller.js": "a1362e6901cb98c0271f6f28dad40a30e0cf4d2a5ade25d15a453672ae21083b",
   "./apps/spreadsheets/ui/formula-bar.js": "29587039c397b64fc22dbb305357f8d86276e04fba3e27583198bc4c20137ea6",

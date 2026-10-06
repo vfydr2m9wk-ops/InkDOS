@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Spreadsheets: a legacy Excel workbook (.xls) is shown view-only, without converting it to XLSX.
 
-Typing, double-click editing, the formula bar, paste, formatting/structure commands, worksheet
+Typing, double-click editing, the formula bar (and the greyed-out editing toolbar), paste, formatting/structure commands, worksheet
 add/delete, rename, Save, Share and XLSX/CSV export do nothing for a .xls; selection, copy and PDF
 export keep working. The BIFF8 decoding itself is covered by the XLS contract tests; here the
 reader's parse step returns a known workbook so the real open flow runs on it. An XLSX stays
@@ -78,6 +78,10 @@ def main() -> None:
             page.dblclick('.cell[data-r="0"][data-c="0"]')
             assert page.evaluate("() => !document.querySelector('.cell[contenteditable=\"true\"]')"), 'a cell entered edit mode'
             assert page.evaluate("() => document.getElementById('formulaInput').readOnly")
+            # the editing toolbar is greyed out; zoom and print stay available
+            bar = page.evaluate("""() => ({ bold: document.getElementById('boldBtn').disabled, font: document.getElementById('fontFamily').disabled,
+                zoom: document.getElementById('zoomIn').disabled, print: document.getElementById('printBtn').disabled })""")
+            assert bar == {'bold': True, 'font': True, 'zoom': False, 'print': False}, bar
             assert a1(page) == 'Legacy'
 
             state = page.evaluate("""async () => {
@@ -123,6 +127,8 @@ def main() -> None:
             page.wait_for_function("() => globalThis.__inkdosSpreadsheetsS1.session.sourceKind !== 'xls'")
             assert page.evaluate("""() => { const api = globalThis.__inkdosSpreadsheetsS1;
                 return api.editor.editor.commitValue('fresh', 0, 0) !== false && api.session.activeSheet().cells.get('A1')?.v === 'fresh'; }""")
+            page.click('.cell[data-r="1"][data-c="1"]')
+            assert not page.evaluate("() => document.getElementById('boldBtn').disabled || document.getElementById('fontFamily').disabled"), 'toolbar stayed disabled'
             assert not errors, errors
             browser.close()
     finally:
