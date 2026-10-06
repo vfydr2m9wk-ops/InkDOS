@@ -19,6 +19,7 @@ const TOOLS=Object.freeze([
   {id:'image-to-pdf',group:'Convert',title:'Images to PDF',description:'Combine JPG, PNG, HEIC, WebP and other images into a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/image-to-pdf.html',icon:'convert',window:true},
   {id:'pdf-to-jpg',group:'Convert',title:'PDF to images',description:'Save the pages of a PDF as JPG images.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-jpg.html',icon:'convert',window:true},
   {id:'compress-pdf',group:'Convert',title:'Compress PDF',description:'Make a PDF file smaller.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/compress-pdf.html',icon:'convert',window:true},
+  {id:'squoosh',group:'Convert',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
   {id:'merge-pdf',group:'Convert',title:'Merge PDFs',description:'Join several PDF files into one.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/merge-pdf.html',icon:'convert',window:true},
   {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
   {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
@@ -29,6 +30,7 @@ const ICONS={
   pdf:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/>',
   archive:'<path d="M4 4h16v4H4z"/><path d="M5 8v12h14V8"/><path d="M10 12h4"/>',
   convert:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  image:'<path d="M4 5h16v14H4z"/><path d="M4 16l5-5 4 4 2-2 5 5"/><circle cx="15.5" cy="9" r="1.5"/>',
   code:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>',
   tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L4 16.8V20h3.2l5.3-5.3a4 4 0 0 0 5.2-5.4l-2.5 2.5-2.3-.6-.6-2.3z"/>'
 };
