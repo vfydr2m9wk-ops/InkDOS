@@ -112,7 +112,8 @@
   });
   if (opener) {
     window.addEventListener('message', e => {
-      if (e.origin !== location.origin || !e.data || e.data.type !== 'inkdos-lab-file') return;
+      // only the InkDOS window that opened (or embeds) this page may hand it a document
+      if (e.origin !== location.origin || e.source !== opener || !e.data || e.data.type !== 'inkdos-lab-file') return;
       loadDocument(String(e.data.name || 'document.pdf'), new Uint8Array(e.data.bytes));
     });
     try { opener.postMessage({ type: 'inkdos-lab-ready' }, location.origin); } catch (_) {}
