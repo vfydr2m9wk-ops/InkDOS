@@ -5,7 +5,7 @@
 const TOOLS=Object.freeze([
   {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
   // from here on: open-source tools built and served by https://github.com/vfydr2m9wk-ops/InkDOS-tools
-  {id:'bentopdf',group:'PDF',title:'PDF toolkit (BentoPDF)',description:'Merge, split, compress, convert, OCR, edit and protect PDFs.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/',icon:'pdf'},
+  {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/',icon:'pdf'},
   {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
   {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/cyberchef/',icon:'code'},
   {id:'python',group:'Developer',title:'Python terminal',description:'A Python 3 console with the standard library (Pyodide).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/python/',icon:'code'},
