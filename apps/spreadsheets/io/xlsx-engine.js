@@ -16,6 +16,9 @@ function serializeXml(doc){return new XMLSerializer().serializeToString(doc)}
 function childText(node,name){if(!node)return'';for(let n=node.firstElementChild;n;n=n.nextElementSibling)if(n.localName===name)return n.textContent;return''}
 function children(node,name){return node?[...node.children].filter(x=>x.localName===name):[]}
 function localOne(node,name){return node?node.getElementsByTagNameNS('*',name)[0]:null}
+// First element with this name in a worksheet outside <sheetData> (none of these sheet-level parts can be inside
+// it): searching the whole document walked every cell of large sheets for each part that is absent.
+function sheetPart(doc,name){const root=doc?.documentElement;if(!root)return null;for(let n=root.firstElementChild;n;n=n.nextElementSibling){if(n.localName===name)return n;if(n.localName==='sheetData')continue;const hit=n.getElementsByTagNameNS('*',name)[0];if(hit)return hit}return null}
 function localAll(node,name){return node?[...node.getElementsByTagNameNS('*',name)]:[]}
 function create(doc,name,ns=NS){return doc.createElementNS(ns,name)}
 function colName(n){let s='';while(n>=0){s=String.fromCharCode(n%26+65)+s;n=Math.floor(n/26)-1}return s}
@@ -87,7 +90,8 @@ async function parseChart(read,chartPath){
   return{title,chartType:chartNode.localName,series};
 }
 async function parseDrawings(zip,read,sheetPath,sheetDoc){
-  const result=[];const drawingNode=[...sheetDoc.querySelectorAll('*')].find(n=>n.localName==='drawing');
+  // <drawing> is a child of <worksheet> (ECMA-376); listing every element of a large sheet to find it was slow
+  const result=[];let drawingNode=null;for(let n=sheetDoc.documentElement?.firstElementChild;n;n=n.nextElementSibling)if(n.localName==='drawing'){drawingNode=n;break}
   if(!drawingNode)return result;
   const sheetRelsRaw=await read(relsPathFor(sheetPath));if(!sheetRelsRaw)return result;
   const sheetRels=xml(sheetRelsRaw),sheetRelMap={};
@@ -151,7 +155,11 @@ const SHARED_REF=/((?:'(?:[^']|'')+'|[A-Za-z_][A-Za-z0-9_. ]*)!)?(\$?)([A-Za-z]{
 function shiftSharedRef(colAbs,col,rowAbs,row,dr,dc){let c=decodeRef(col.toUpperCase()+'1').c,r=Number(row)-1;if(!colAbs)c+=dc;if(!rowAbs)r+=dr;if(c<0||r<0)return'#REF!';return`${colAbs||''}${colName(c)}${rowAbs||''}${r+1}`}
 function shiftSharedChunk(chunk,dr,dc){return chunk.replace(SHARED_REF,(full,prefix,cAbs1,col1,rAbs1,row1,cAbs2,col2,rAbs2,row2,offset,text)=>{const prev=offset>0?text[offset-1]:'',next=text[offset+full.length]||'';if(/[A-Za-z0-9_.\[\]]/.test(prev)||/[A-Za-z0-9_]/.test(next))return full;if(!prefix&&!col2&&next==='(')return full;const first=shiftSharedRef(cAbs1,col1,rAbs1,row1,dr,dc);if(!col2)return`${prefix||''}${first}`;const second=shiftSharedRef(cAbs2,col2,rAbs2,row2,dr,dc);if(first==='#REF!'||second==='#REF!')return'#REF!';return`${prefix||''}${first}:${second}`})}
 function shiftSharedFormula(formula,dr,dc){const text=String(formula||'');let out='',start=0,quoted=false;for(let i=0;i<text.length;i++){if(text[i]!=='"')continue;if(!quoted){out+=shiftSharedChunk(text.slice(start,i),dr,dc);start=i;quoted=true}else{out+=text.slice(start,i+1);start=i+1;quoted=false}}out+=quoted?text.slice(start):shiftSharedChunk(text.slice(start),dr,dc);return out}
-async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
+// Large sheets: hand the page back to the browser every ~40 ms while reading cells, so the window stays
+// responsive and can show progress. MessageChannel (or scheduler.yield) is not throttled like setTimeout in
+// background tabs.
+function yieldToPage(){return typeof globalThis.scheduler?.yield==='function'?globalThis.scheduler.yield():new Promise(resolve=>{const ch=new MessageChannel();ch.port1.onmessage=()=>resolve();ch.port2.postMessage(0)})}
+async function parseWorkbook(buffer,fileName='Workbook.xlsx',{onProgress}={}){
   if(!global.JSZip)throw new Error('JSZip did not load');
   if(global.InkDOS2SpreadsheetPackageValidator)await global.InkDOS2SpreadsheetPackageValidator.validateXlsx(buffer,fileName);
   const zip=await JSZip.loadAsync(buffer,{checkCRC32:true}),read=async p=>zip.file(p)?zip.file(p).async('text'):'';
@@ -167,13 +175,18 @@ async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
     if(target.startsWith('/'))target=target.slice(1);else if(!target.startsWith('xl/'))target='xl/'+target.replace(/^\.\//,'');
     const raw=await read(target);if(!raw)continue;const doc=xml(raw),cells=new Map(),originalCells=new Map();let maxR=39,maxC=15;
     const sharedMasters={},sharedDependents=[];
-    localAll(doc,'c').filter(c=>c.parentElement?.localName==='row').forEach(c=>{
-      const cellRef=c.getAttribute('r');if(!cellRef)return;const pos=decodeRef(cellRef);maxR=Math.max(maxR,pos.r);maxC=Math.max(maxC,pos.c);
-      const t=c.getAttribute('t')||'',f=childText(c,'f');let v=childText(c,'v');
+    // one pass per row and per cell (the formula and value are child elements of <c>): generic descendant
+    // searches for every one of hundreds of thousands of cells dominated opening large workbooks
+    const rows=localAll(doc,'row');let sliceStart=performance.now();
+    for(let ri=0;ri<rows.length;ri++){if((ri&255)===0&&performance.now()-sliceStart>40){onProgress?.({sheet:name,done:ri,total:rows.length});await yieldToPage();sliceStart=performance.now()}
+     for(let c=rows[ri].firstElementChild;c;c=c.nextElementSibling){if(c.localName!=='c')continue;
+      const cellRef=c.getAttribute('r');if(!cellRef)continue;const pos=decodeRef(cellRef);if(pos.r>maxR)maxR=pos.r;if(pos.c>maxC)maxC=pos.c;
+      let fNode=null,vNode=null;for(let n=c.firstElementChild;n;n=n.nextElementSibling){const name=n.localName;if(name==='f'){if(!fNode)fNode=n}else if(name==='v'){if(!vNode)vNode=n}}
+      const t=c.getAttribute('t')||'',f=fNode?fNode.textContent:'';let v=vNode?vNode.textContent:'';
       if(t==='s')v=shared[+v]??'';else if(t==='inlineStr'){v='';localAll(c,'t').forEach(n=>v+=n.textContent)}else if(t==='b')v=v==='1';else if(v!==''&&!isNaN(Number(v)))v=Number(v);
       const styleId=+(c.getAttribute('s')||0),cell={v,f,styleId,style:styles[styleId]||{},t:t||typeof v,display:formatValue(v,{t})};cells.set(cellRef,cell);originalCells.set(cellRef,cloneCell(cell));
-      const fNode=localOne(c,'f');if(fNode&&fNode.getAttribute('t')==='shared'){const si=fNode.getAttribute('si')||'';if(f)sharedMasters[si]={ref:cellRef,f};else sharedDependents.push({ref:cellRef,si})}
-    });
+      if(fNode&&fNode.getAttribute('t')==='shared'){const si=fNode.getAttribute('si')||'';if(f)sharedMasters[si]={ref:cellRef,f};else sharedDependents.push({ref:cellRef,si})}
+    }}
     // Shared formulas: dependent cells carry only the group id; their formula is the group's first formula
     // moved by the cell's offset, so they keep a formula (cell and original alike, the package is unchanged).
     for(const d of sharedDependents){const m=sharedMasters[d.si];if(!m)continue;const a=decodeRef(m.ref),b=decodeRef(d.ref),f=shiftSharedFormula(m.f,b.r-a.r,b.c-a.c);cells.get(d.ref).f=f;originalCells.get(d.ref).f=f}
@@ -182,15 +195,15 @@ async function parseWorkbook(buffer,fileName='Workbook.xlsx'){
     const commentsRel=Object.values(sheetRelMap).find(rel=>/\/comments$/.test(rel.type||''));if(commentsRel?.target){const commentsRaw=await read(normalizePath(target,commentsRel.target));if(commentsRaw){const cd=xml(commentsRaw,'worksheet comments'),authors=localAll(cd,'author').map(a=>a.textContent||'');localAll(cd,'comment').forEach(n=>{const ref=n.getAttribute('ref')||'',cell=cells.get(ref);if(!cell)return;cell.comment={text:localAll(n,'t').map(t=>t.textContent).join(''),author:authors[+(n.getAttribute('authorId')||0)]||''}})}}
 
     const merges=[];localAll(doc,'mergeCell').forEach(m=>{const x=m.getAttribute('ref');if(x)merges.push(x)});
-    const sfp=localOne(doc,'sheetFormatPr'),defaultColWidth=widthPx(sfp?.getAttribute('defaultColWidth')||8.43),defaultRowHeight=heightPx(sfp?.getAttribute('defaultRowHeight')||15),widths={};
+    const sfp=sheetPart(doc,'sheetFormatPr'),defaultColWidth=widthPx(sfp?.getAttribute('defaultColWidth')||8.43),defaultRowHeight=heightPx(sfp?.getAttribute('defaultRowHeight')||15),widths={};
     localAll(doc,'col').forEach(c=>{const min=+(c.getAttribute('min')||1),max=+(c.getAttribute('max')||min),w=+(c.getAttribute('width')||8.43);for(let i=min-1;i<max;i++)widths[i]=widthPx(w)});
     const heights={};localAll(doc,'row').forEach(r=>{if(r.hasAttribute('ht'))heights[+(r.getAttribute('r')||1)-1]=heightPx(r.getAttribute('ht'))});
-    const dim=localOne(doc,'dimension')?.getAttribute('ref');if(dim){const dr=decodeRange(dim);maxR=Math.max(maxR,dr.r2);maxC=Math.max(maxC,dr.c2)}
-    const pm=localOne(doc,'pageMargins'),ps=localOne(doc,'pageSetup'),pane=localOne(doc,'pane'),filter=localOne(doc,'autoFilter');
+    const dim=sheetPart(doc,'dimension')?.getAttribute('ref');if(dim){const dr=decodeRange(dim);maxR=Math.max(maxR,dr.r2);maxC=Math.max(maxC,dr.c2)}
+    const pm=sheetPart(doc,'pageMargins'),ps=sheetPart(doc,'pageSetup'),pane=sheetPart(doc,'pane'),filter=sheetPart(doc,'autoFilter');
     const margins=pm?Object.fromEntries(['left','right','top','bottom','header','footer'].map(k=>[k,+(pm.getAttribute(k)||0)])):{};
     const pageSetup=ps?{orientation:ps.getAttribute('orientation')||'',paperSize:+(ps.getAttribute('paperSize')||0),scale:+(ps.getAttribute('scale')||0),fitToWidth:+(ps.getAttribute('fitToWidth')||0),fitToHeight:+(ps.getAttribute('fitToHeight')||0)}:{};
     const drawings=await parseDrawings(zip,read,target,doc),tables=await parseTableParts(read,target,doc);
-    sheets.push({name,state,path:target,xml:raw,cells,originalCells,merges,originalMerges:[...merges],widths,originalWidths:{...widths},heights,originalHeights:{...heights},defaultColWidth,defaultRowHeight,drawings,tables,maxR:Math.min(maxR+12,1048575),maxC:Math.min(maxC+6,16383),printArea:definedPrintAreas[sheetIndex]||'',margins,pageSetup,printGridlines:/^(1|true)$/.test(localOne(doc,'printOptions')?.getAttribute('gridLines')||''),freezePane:pane?{xSplit:+(pane.getAttribute('xSplit')||0),ySplit:+(pane.getAttribute('ySplit')||0),topLeftCell:pane.getAttribute('topLeftCell')||'',state:pane.getAttribute('state')||''}:null,autoFilter:filter?.getAttribute('ref')||'',originalAutoFilter:filter?.getAttribute('ref')||'',hasConditionalFormatting:!!localOne(doc,'conditionalFormatting'),hasDataValidation:!!localOne(doc,'dataValidation')});
+    sheets.push({name,state,path:target,xml:raw,cells,originalCells,merges,originalMerges:[...merges],widths,originalWidths:{...widths},heights,originalHeights:{...heights},defaultColWidth,defaultRowHeight,drawings,tables,maxR:Math.min(maxR+12,1048575),maxC:Math.min(maxC+6,16383),printArea:definedPrintAreas[sheetIndex]||'',margins,pageSetup,printGridlines:/^(1|true)$/.test(sheetPart(doc,'printOptions')?.getAttribute('gridLines')||''),freezePane:pane?{xSplit:+(pane.getAttribute('xSplit')||0),ySplit:+(pane.getAttribute('ySplit')||0),topLeftCell:pane.getAttribute('topLeftCell')||'',state:pane.getAttribute('state')||''}:null,autoFilter:filter?.getAttribute('ref')||'',originalAutoFilter:filter?.getAttribute('ref')||'',hasConditionalFormatting:!!sheetPart(doc,'conditionalFormatting'),hasDataValidation:!!sheetPart(doc,'dataValidation')});
   }
   if(!sheets.length)throw new Error('No worksheets were found');resolveChartData(sheets);
   let active=+(localOne(workbookXml,'workbookView')?.getAttribute('activeTab')||0);active=Math.min(Math.max(0,active),sheets.length-1);if(sheets[active]?.state!=='visible'){const visible=sheets.findIndex(s=>s.state==='visible');if(visible>=0)active=visible}
