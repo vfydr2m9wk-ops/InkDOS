@@ -40,6 +40,7 @@ CMDS = [
     [sys.executable, "tests/test_file_delivery_exactly_once_contract.py"],
     [sys.executable, "tests/test_real_device_documents_sheets_review.py"],
     [sys.executable, "tests/test_presentations_unsaved_exit_contract.py"],
+    [sys.executable, "tests/test_presentations_ppt_view_only_browser.py"],
     [sys.executable, "tests/test_txt_unsaved_exit_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_text_contract.py"],
     [sys.executable, "tests/test_spreadsheets_delimited_encoding_contract.py"],

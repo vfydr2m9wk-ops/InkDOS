@@ -161,8 +161,8 @@ class SuiteIntegration(unittest.TestCase):
         self.assertNotIn("this.compatibility=[];this.resetNew()", presentation_session)
         presentation_commands = (ROOT / "apps/presentations/ui/command-controller.js").read_text(encoding="utf-8")
         self.assertIn("const active=session.active", presentation_commands)
-        self.assertRegex(presentation_commands, r"register\('file\.save'.*=>session\.active\)")
-        self.assertRegex(presentation_commands, r"register\('file\.share'.*=>session\.active\)")
+        self.assertRegex(presentation_commands, r"register\('file\.save'.*=>session\.active&&session\.sourceKind!=='ppt'\)")  # legacy PPT is view-only
+        self.assertRegex(presentation_commands, r"register\('file\.share'.*=>session\.active&&session\.sourceKind!=='ppt'\)")  # legacy PPT is view-only
         self.assertIn("structureEditable(){return session.active&&session.sourceKind!=='ppt'}", presentation_commands)
         self.assertIn("Legacy PowerPoint (.ppt) opened read-only.", presentation_commands)
         self.assertIn("Save editable PPTX copy", presentation_commands)
