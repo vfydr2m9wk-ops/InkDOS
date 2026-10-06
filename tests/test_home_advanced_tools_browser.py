@@ -82,9 +82,27 @@ def main() -> None:
             page.click('#advancedToolsClose'); overlay.wait_for(state='hidden')
             button.click(); overlay.wait_for(state='visible')
             page.mouse.click(10, 10); overlay.wait_for(state='hidden')
-            # an entry opens its tool
+            # an entry opens its tool inside the InkDOS tool panel (same bar and theme as the workspaces)
             button.click(); overlay.wait_for(state='visible')
             page.locator('.tools-item[data-tool-id="pdf-tools"]').click()
+            tool_panel = page.locator('#toolPanel')
+            tool_panel.wait_for(state='visible')
+            assert overlay.is_hidden()
+            panel_state = page.evaluate("""() => ({ title: document.getElementById('toolPanelTitle').textContent,
+                src: document.querySelector('#toolPanel iframe')?.getAttribute('src'),
+                full: document.querySelector('#toolPanel [data-tool-full]').getAttribute('href') })""")
+            assert panel_state == {'title': 'PDF tools (beta)', 'src': './labs/pdf/index.html', 'full': './labs/pdf/index.html'}, panel_state
+            page.frame_locator('#toolPanel iframe').locator('body').wait_for(timeout=15000)
+            # back returns to the list, Escape closes everything and drops the frame
+            page.click('#toolPanel [data-tool-back]')
+            overlay.wait_for(state='visible'); assert tool_panel.is_hidden()
+            page.locator('.tools-item[data-tool-id="pdf-tools"]').click(); tool_panel.wait_for(state='visible')
+            page.keyboard.press('Escape'); tool_panel.wait_for(state='hidden')
+            assert page.locator('#toolPanel iframe').count() == 0 and overlay.is_hidden()
+            # "Open full window" leaves for the tool itself
+            button.click(); overlay.wait_for(state='visible')
+            page.locator('.tools-item[data-tool-id="pdf-tools"]').click(); tool_panel.wait_for(state='visible')
+            page.click('#toolPanel [data-tool-full]')
             page.wait_for_url('**/labs/pdf/index.html')
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')

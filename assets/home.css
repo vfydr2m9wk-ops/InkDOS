@@ -41,5 +41,13 @@ html.tools-open,html.tools-open body{overflow:hidden}
 .tools-item-chevron{color:var(--chevron);font-size:22px}
 .tools-empty{margin:18px 10px;color:var(--muted);font-size:14px}
 .tools-note{margin:0;padding:10px 20px 14px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
-@media(max-width:720px){.tools-button{height:36px;padding:0 10px;border-radius:10px}.tools-button span{display:none}.tools-panel{max-height:100%}}
+.tool-shell{position:fixed;inset:0;z-index:110;display:flex;flex-direction:column;background:var(--bg)}.tool-shell[hidden]{display:none}
+.tool-shell-bar{display:flex;align-items:center;gap:10px;min-height:52px;padding:max(6px,env(safe-area-inset-top)) 12px 6px;background:var(--card);border-bottom:1px solid var(--border)}
+.tool-shell-back{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font:600 14px/1 inherit;font-family:inherit;cursor:pointer}.tool-shell-back:hover{background:var(--menu-hover)}
+.tool-shell-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;font-weight:720;letter-spacing:-.01em}
+.tool-shell-badge{padding:2px 8px;border-radius:999px;background:var(--pill-bg);color:var(--pill-text);font-size:11px;font-weight:720}
+.tool-shell-full{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}.tool-shell-full:hover{background:var(--menu-hover)}
+.tool-shell-full svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tool-shell-body{flex:1;min-height:0}.tool-shell-frame{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+@media(max-width:720px){.tools-button{height:36px;padding:0 10px;border-radius:10px}.tools-button span,.tool-shell-back span{display:none}.tools-panel{max-height:100%}}
 html[data-inkdos-host=tauri] .brand-row .home-appearance{margin-left:auto}
