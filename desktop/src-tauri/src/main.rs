@@ -414,6 +414,27 @@ fn is_current_executable(path: &Path) -> bool {
     }
 }
 
+/// The Home window (`main` in tauri.conf.json, created on demand: `"create": false`). A launch that opens
+/// files or a workspace does not start it, so closing those windows ends the app; a launch without
+/// either (or a second launch while InkDOS runs) shows Home, created again if it was closed.
+fn show_home(app: &tauri::AppHandle) {
+    if let Some(home) = app.get_webview_window("main") {
+        let _ = home.unminimize();
+        let _ = home.show();
+        let _ = home.set_focus();
+        return;
+    }
+    let Some(config) = app.config().app.windows.iter().find(|window| window.label == "main") else {
+        return;
+    };
+    match WebviewWindowBuilder::from_config(app, config).and_then(|builder| builder.build()) {
+        Ok(home) => {
+            let _ = home.set_focus();
+        }
+        Err(error) => show_open_error(app, format!("InkDOS could not open its Home: {error}")),
+    }
+}
+
 fn handle_launch_args<I>(app: &tauri::AppHandle, args: I) -> usize
 where
     I: IntoIterator<Item = String>,
@@ -461,7 +482,9 @@ where
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
-            handle_launch_args(app, args);
+            if handle_launch_args(app, args) == 0 {
+                show_home(app);
+            }
         }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
@@ -482,11 +505,9 @@ fn main() {
             inkdos_beta_take_result
         ])
         .setup(|app| {
-            let opened = handle_launch_args(app.handle(), std::env::args());
-            if opened > 0 {
-                if let Some(main) = app.get_webview_window("main") {
-                    let _ = main.hide();
-                }
+            // a hidden Home used to stay alive behind a launched file, so the app never exited
+            if handle_launch_args(app.handle(), std::env::args()) == 0 {
+                show_home(app.handle());
             }
             Ok(())
         })
