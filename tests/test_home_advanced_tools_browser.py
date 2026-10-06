@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PORT = 8814
 BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
-TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python'}
+TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python', 'squoosh'}
 TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
 
 
@@ -43,6 +43,8 @@ def main() -> None:
         with sync_playwright() as pw:
             browser = getattr(pw, os.environ.get('BROWSER', 'chromium')).launch(headless=True)
             context = browser.new_context(service_workers='block', viewport={'width': 1180, 'height': 820})
+            # the tools site is not loaded for real: a tab opened on it gets a stub page
+            context.route(TOOLS_SITE + '**', lambda route: route.fulfill(status=200, content_type='text/html', body='<title>tool</title>'))
             page = context.new_page()
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(BASE + '/index.html', wait_until='load')
@@ -76,6 +78,24 @@ def main() -> None:
             # LibreOffice and Apple iWork files open in Documents, Spreadsheets and Presentations instead
             assert not {'pnk', 'odt-view', 'ods-view', 'odp-view'} & {t['id'] for t in tools}
             assert page.locator('.tools-item').count() == len(tools)
+            # the PDF toolkit and its conversion shortcuts open in their own tab: Office-to-PDF conversion needs a
+            # cross-origin isolated page, which a frame inside InkDOS cannot be
+            convert = [t for t in tools if t['group'] == 'Convert' and t['id'] != 'squoosh']
+            assert {'word-to-pdf', 'pdf-to-docx', 'image-to-pdf', 'compress-pdf'} <= {t['id'] for t in convert}, convert
+            for tool in convert + [t for t in tools if t['id'] == 'bentopdf']:
+                assert tool.get('window') and tool['href'].startswith(TOOLS_SITE + 'bentopdf/'), tool
+                item = page.locator(f'.tools-item[data-tool-id="{tool["id"]}"]')
+                assert (item.get_attribute('target'), item.get_attribute('rel')) == ('_blank', 'noopener'), tool['id']
+            with context.expect_page() as opened:
+                page.locator('.tools-item[data-tool-id="word-to-pdf"]').click()
+            assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/word-to-pdf.html?inkdos-theme='), opened.value.url
+            opened.value.close()
+            assert page.locator('#toolPanel iframe').count() == 0
+            assert page.locator('.tools-item[data-tool-id="pdf-tools"]').get_attribute('target') is None
+            # the image converter (Squoosh) needs no isolation and opens in the panel like the other tools
+            squoosh = next(t for t in tools if t['id'] == 'squoosh')
+            assert squoosh['group'] == 'Convert' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
+            assert page.locator('.tools-item[data-tool-id="squoosh"]').get_attribute('target') is None
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
             assert page.locator('.tools-item').count() == 0 and page.locator('.tools-empty').is_visible()
