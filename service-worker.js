@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-033569adf30845385184';
+const CACHE_NAME='inkdos-v2.7.8-7a9b6402065be0afb918';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -295,7 +295,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "0871afa3c4ec47ec8a1088502409d7beae90bcb9ac08f5a70bbd587465c97667",
+  "./index.html": "87a7e2475bad71bcc1453a6a5b1a6c1f7cf91c44431a6da1ad96f15403f58d93",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "a96142b4beb9bbb1e6c414642521e1dfe167252a1a8c04406bd050b7f755a2ab",
@@ -321,9 +321,6 @@ const ASSET_HASHES={
   "./shared/work-safety.js": "36b14fd88c9b19fd6fd0920e62515c57080038559a8e9661da0ec9e18c7164d5"
 };
 // END OFFLINE HASHES
-<<<<<<< HEAD
-=======
->>>>>>> origin/main
 const APP_SHELL=[
   "./VERSION.json",
   "./apps/txt/runtime/platform/file-launch.js",
