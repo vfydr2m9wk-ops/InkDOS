@@ -20,7 +20,6 @@ body:
         - PDF
         - EPUB
         - Plain Text
-        - Browser extension (beta)
         - Desktop app
         - Other
     validations:
