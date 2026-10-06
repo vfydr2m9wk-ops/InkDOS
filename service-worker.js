@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-fcf3d0d4558a7335e113';
+const CACHE_NAME='inkdos-v2.7.8-e1cce12dedac34da3a42';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -298,7 +298,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "47a918511ff590e4dac4966745fa769d4ca8579945925c7f1b1e85c660ccd5ea",
+  "./index.html": "04e9024ab75794b959387f9b02f6043439a554b9ab1b60eb90d90a18cd9a08b4",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
@@ -309,13 +309,13 @@ const ASSET_HASHES={
   "./labs/pdf/vendor/tesseract/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
   "./manifest.webmanifest": "0d0938adf9208849472062be4b8a5a247c986d76ca982095f1cf4ec05e4cdaf8",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "eead538547076f63300716113fdbb9a396c71759331b3f409e88ff5356c03e8a",
-  "./shared/localization/locales/es.js": "ffe30acb4681aeceaf716f558d42ea12664120c139298cdd099ba1e999857c24",
-  "./shared/localization/locales/fr.js": "3c8437bd7aad195db92d0186fa83f5c1b9b902b422b7a2b75e200aa994ac71d8",
-  "./shared/localization/locales/ja.js": "f593e875cacc1f5cf0580f2a53e8e2a8e8ec7533b2e4c4110e87a784b29db733",
-  "./shared/localization/locales/pt-BR.js": "2cfe5ec6c51313e735c1b4594d0c0462d8c7c9a2d7d81d88b1e920ef193c88cc",
-  "./shared/localization/locales/ru.js": "2f5326c1564d358ce846149e25ae8f0d7cea1d3e9a69c3aa15620f9c5f37fbd6",
-  "./shared/localization/locales/zh-CN.js": "661100fb6f4d7a5dcd6b8e2d331fc8de11de483ca7fa438920eeeb1e3eb9b58d",
+  "./shared/localization/locales/de.js": "accab1e93d8acca49e47d6170e5dc09470d52df3017f074e2bea9466dd27bddd",
+  "./shared/localization/locales/es.js": "ef1b55d6f5c11428fa81bc30812848b1dfc258718b1fa2e98eb92c025d1c178d",
+  "./shared/localization/locales/fr.js": "6169d5a001a3f544a08cc527fe7d7fc010a953803cf438805b176b36d8183458",
+  "./shared/localization/locales/ja.js": "127a043522cdc319474e5ad7929dbc80d91c26851c2b5eca42b6e846b2ff87d8",
+  "./shared/localization/locales/pt-BR.js": "a59a631a31955226429317c5437e6f06f8636389d5bd1d4ee095213bae92ae4c",
+  "./shared/localization/locales/ru.js": "851a1e4c5a783afa0b2ebefbe8af55633e16e1c206236bb79c815b866ae91347",
+  "./shared/localization/locales/zh-CN.js": "0edc27a6032924dfe8ff650aa71720c62bbdb9505021f3e6c5e95c6b39e1c868",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
   "./shared/localization/settings-strip.js": "67046549278145618301ef81f28be55ea05d8c042d43a9be36b69b78d4c518e6",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
