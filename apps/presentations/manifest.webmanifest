@@ -23,6 +23,12 @@
         ],
         "application/vnd.ms-powerpoint": [
           ".ppt"
+        ],
+        "application/vnd.oasis.opendocument.presentation": [
+          ".odp"
+        ],
+        "application/vnd.apple.keynote": [
+          ".key"
         ]
       }
     }

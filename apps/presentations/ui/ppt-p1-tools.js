@@ -1,7 +1,7 @@
 (function(global){'use strict';
 const NS=global.InkDOS2Presentations=global.InkDOS2Presentations||{};
 function create({session,history,selection,surface,panel,editor,chrome}={}){const $=id=>document.getElementById(id);let built=false,imageInput=null,colorControls={},backgroundCtl=null,fitFrame=0,formatPaint=null;
- function selected(){return selection.getObject(session)}function editable(){return session.active&&session.sourceKind!=='ppt'}function objectEditable(o){return editable()&&!!o&&!o.importedUnmapped}
+ function selected(){return selection.getObject(session)}function editable(){return session.active&&session.sourceKind!=='ppt'&&session.sourceKind!=='view'}function objectEditable(o){return editable()&&!!o&&!o.importedUnmapped}
  function rerender(){surface.render();panel.render({ensureActive:false});editor?.sync?.();chrome?.stats?.();scheduleLegacyTextFit()}
  function transact(label,fn){history.transact(label,fn);rerender()}
  function setDisabled(id,value){const node=$(id);if(node)node.disabled=!!value}

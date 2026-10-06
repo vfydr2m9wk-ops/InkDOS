@@ -237,7 +237,8 @@ function secureController(original){
         options.session?.beginOperation?.();
         options.onPreviewClear?.({op:staleOp,committed:false,stale:true});
       }
-      if(/\.ppt$/i.test(String(file.name||''))){
+      // .ppt has its own reader; .odp/.key are not parsed here at all (shown by the embedded viewer)
+      if(/\.ppt$/i.test(String(file.name||''))||globalThis.InkDOS2Presentations?.ExternalViewer?.viewerFor(file.name)){
         if(request!==requestSeq)return false;
         return inner.openFile(file);
       }

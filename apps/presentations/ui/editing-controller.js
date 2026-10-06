@@ -5,7 +5,7 @@ function create({session,history,selection,surface,panel,zoom,chrome,onStructure
  function setDisabled(id,value){const node=$(id);if(node)node.disabled=!!value}
  function setTitle(id,value){const node=$(id);if(node)node.title=value}
  function sync(){
-  const active=session.active,o=selected(),textEditable=active&&session.sourceKind!=='ppt',has=!!o&&o.type==='text'&&textEditable,structure=active&&session.sourceKind!=='ppt';
+  const active=session.active,o=selected(),textEditable=active&&session.sourceKind!=='ppt'&&session.sourceKind!=='view',has=!!o&&o.type==='text'&&textEditable,structure=active&&session.sourceKind!=='ppt'&&session.sourceKind!=='view';
   setDisabled('undoBtn',commands?!commands.isEnabled('history.undo'):!history.canUndo);setDisabled('redoBtn',commands?!commands.isEnabled('history.redo'):!history.canRedo);
   ['fontFamily','fontSize','boldBtn','italicBtn','underlineBtn','alignSelect'].forEach(id=>setDisabled(id,commands?!commands.isEnabled(id==='fontFamily'?'format.fontFamily':id==='fontSize'?'format.fontSize':id==='boldBtn'?'format.bold':id==='italicBtn'?'format.italic':id==='underlineBtn'?'format.underline':'format.alignment'):!has));
   setDisabled('slidePanelBtn',commands?!commands.isEnabled('panel.toggle'):!active);const panelBtn=$('slidePanelBtn');if(panelBtn){panelBtn.classList.toggle('active',panel.isOpen);panelBtn.setAttribute('aria-expanded',String(panel.isOpen))}setDisabled('prevSlideBtn',commands?!commands.isEnabled('navigation.previous'):!active||session.currentIndex<=0);setDisabled('nextSlideBtn',commands?!commands.isEnabled('navigation.next'):!active||session.currentIndex>=session.slides.length-1);

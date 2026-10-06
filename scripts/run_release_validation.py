@@ -38,6 +38,8 @@ CMDS = [
     [sys.executable, "tests/test_web_file_handling_contract.py"],
     [sys.executable, "tests/test_documents_doc_view_only_browser.py"],
     [sys.executable, "tests/test_spreadsheets_xls_view_only_browser.py"],
+    [sys.executable, "tests/test_documents_external_viewer_browser.py"],
+    [sys.executable, "tests/test_workspace_external_viewers_browser.py"],
     [sys.executable, "tests/test_file_delivery_exactly_once_contract.py"],
     [sys.executable, "tests/test_real_device_documents_sheets_review.py"],
     [sys.executable, "tests/test_presentations_unsaved_exit_contract.py"],
