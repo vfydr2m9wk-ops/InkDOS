@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.8.0 — 2026-10-06
+
+Home:
+- Advanced tools: a button on Home opens a central, searchable list of open-source tools that run in the browser (PDF toolkit, extract ZIP/RAR/7z, CyberChef, IT-Tools, Python terminal) inside an InkDOS panel with the same bar and theme as the workspaces, or in a full window.
+- The workspace cards describe what each one opens now that legacy and LibreOffice/Apple files are view only.
+- The browser extension link is gone (the extension is discontinued).
+
+Documents, Spreadsheets, Presentations:
+- Legacy .doc, .xls and .ppt open view only, without converting them.
+- LibreOffice (.odt, .ods, .odp) and Apple (.pages, .numbers, .key) files open view only in the matching workspace, also straight from the computer when InkDOS is installed from the browser; nothing is uploaded or converted.
+
+Spreadsheets:
+- Large workbooks: editing a cell takes milliseconds instead of a pause (undo keeps only the touched cells); opening is faster, shows its progress and no longer freezes the window; scrolling back and forth reuses cells instead of rebuilding them.
+
+Plain Text:
+- Opening a very large file (4 MB or more) says so before the editor pauses, and opens faster.
+
+Desktop (Windows):
+- Closing the last window ends InkDOS: a file opened from Windows no longer leaves a hidden Home window running in the background (and holding memory); starting InkDOS again shows Home.
+- Release builds produce only the Windows package.
+
+Security:
+- The advanced tools and viewers are served from their own origin (inkdos-tools.github.io), so their third-party code cannot reach InkDOS's storage, offline cache or windows; files are exchanged only with explicitly checked origins, and every tools page has a strict Content-Security-Policy (nothing is sent to other sites).
+- The offline service worker serves a cached file only while it matches the release snapshot.
+- PDF tools (beta) exchange documents only with the window that opened them.
+- AGENTS.md and SECURITY.md state the origin-isolation rule; a release-validation test enforces it.
+
 ## 2.7.8 — 2026-10-05
 
 PDF:
