@@ -197,13 +197,12 @@ class Audit:
             self.presentation_base(p); p.locator("#addSlideBtn").click()
             p.evaluate("()=>{const a=globalThis.__inkdosPresentations;a.session.sourceKind='ppt';a.executeCommand('navigation.to',0)}")
             p.locator("#legacyPptNotice").wait_for(state="visible")
-            btn=p.get_by_role("button",name="Save editable PPTX copy",exact=True)
-            downloads=[]
-            p.on("download",lambda d:(downloads.append(d.suggested_filename),d.cancel()))
-            try:
-                btn.click(timeout=4000,no_wait_after=True);p.wait_for_timeout(250)
-                self.record("Save editable PPTX copy","clicked","text=Save editable PPTX copy",effect={"downloads":downloads})
-            except Exception as exc:self.record("Save editable PPTX copy","click-exception","text=Save editable PPTX copy",error=repr(exc))
+            # legacy .ppt is view-only: no conversion is offered and save/share stay disabled
+            converts=p.get_by_role("button",name="Save editable PPTX copy",exact=True)
+            state=p.evaluate("()=>({save:document.getElementById('saveMenuBtn')?.disabled,share:document.getElementById('shareMenuBtn')?.disabled,cmd:globalThis.__inkdosPresentations.executeCommand('file.save')})")
+            if converts.count() and converts.is_visible():self.record("Legacy PPT view-only","clicked-with-error","#legacyPptNotice",error="conversion button visible")
+            elif state["save"] is False or state["share"] is False or state["cmd"]:self.record("Legacy PPT view-only","clicked-with-error","#saveMenuBtn",error=repr(state))
+            else:self.hidden.append({"id":"legacyPptNotice button","text":"Save editable PPTX copy","visible":False,"reason":"legacy PPT is view-only"})
         finally:c.close()
 
     def open_pdf(self,p,count=5):
