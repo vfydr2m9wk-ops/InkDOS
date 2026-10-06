@@ -190,9 +190,10 @@ def main() -> None:
             page.click('#itiBtn'); page.click('#itiOpen')
             assert page.evaluate('() => window.__opened') == [['https://validar.iti.gov.br/', '_blank', 'noopener,noreferrer']]
             assert not any('iti.gov.br' in u for u in requests), requests
-            # the page itself loads without errors and the Home link exists on the web edition
+            # the page itself loads without errors and Home reaches it through Advanced tools (web edition only)
             home = (ROOT / 'index.html').read_text(encoding='utf-8')
-            assert 'href="./labs/pdf/index.html"' in home and 'class="web-only"' in home
+            catalog = (ROOT / 'assets' / 'advanced-tools.js').read_text(encoding='utf-8')
+            assert "href:'./labs/pdf/index.html'" in catalog and 'class="tools-button web-only"' in home
             assert not errors, errors
             browser.close()
     finally:
