@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-1e72ccbca22fdb544560';
+const CACHE_NAME='inkdos-v2.7.8-fcf3d0d4558a7335e113';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -301,7 +301,7 @@ const ASSET_HASHES={
   "./index.html": "47a918511ff590e4dac4966745fa769d4ca8579945925c7f1b1e85c660ccd5ea",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
-  "./labs/pdf/lab.js": "a96142b4beb9bbb1e6c414642521e1dfe167252a1a8c04406bd050b7f755a2ab",
+  "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
   "./labs/pdf/ocr.js": "33a28084e31fa1e16b7b6e97d173d7f8b39c4ca935eb52828ffbf7bb09d50965",
   "./labs/pdf/sign.js": "1b101b2b8032b02e3a21ce2df8ffa4fc3296de11046dc7c2cf658d1c80054c8a",
   "./labs/pdf/trust/icp-brasil.js": "29a9c298a6a73df1f1a06449bff8e74cd5d064bde2103b4b4c5fafb115150596",
@@ -317,7 +317,7 @@ const ASSET_HASHES={
   "./shared/localization/locales/ru.js": "2f5326c1564d358ce846149e25ae8f0d7cea1d3e9a69c3aa15620f9c5f37fbd6",
   "./shared/localization/locales/zh-CN.js": "661100fb6f4d7a5dcd6b8e2d331fc8de11de483ca7fa438920eeeb1e3eb9b58d",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
-  "./shared/localization/settings-strip.js": "7fddced2ef9f1b1b13239215c56a688d12448bc565a5d05b2b8f07d177eacd79",
+  "./shared/localization/settings-strip.js": "67046549278145618301ef81f28be55ea05d8c042d43a9be36b69b78d4c518e6",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
   "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
   "./shared/ui-density.js": "1c095e14a884af69a957b83d8d282701af0988a1cf544a778fe5e003e6d76c22",
@@ -641,13 +641,16 @@ const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);
 const CACHE_KEY=CACHE_NAME+CACHE_SUFFIX;
 const HASH_BY_URL=new Map(Object.entries(ASSET_HASHES).map(([path,hash])=>[new URL(path,self.registration.scope).href,hash]));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';if(request.mode==='navigate'&&NAVIGATION_PATHS.has(u.pathname)&&u.pathname.endsWith('/'))u.pathname+='index.html';return new Request(u.href,{method:'GET'})}
+async function matchesSnapshot(response,expected){
+  const bytes=await response.clone().arrayBuffer();
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+  return digest===expected;
+}
 async function verifiedFetch(request){
   const expected=HASH_BY_URL.get(request.url);
   const response=await fetch(new Request(request,{cache:'no-store'}));
   if(!expected||!response.ok||response.type==='opaque')throw new Error('Offline snapshot response unavailable');
-  const bytes=await response.clone().arrayBuffer();
-  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
-  if(digest!==expected)throw new Error('Offline snapshot integrity mismatch');
+  if(!await matchesSnapshot(response,expected))throw new Error('Offline snapshot integrity mismatch');
   return response;
 }
 self.addEventListener('install',event=>event.waitUntil((async()=>{
@@ -669,7 +672,10 @@ self.addEventListener('fetch',event=>{
   const normalized=key(request);if(!HASH_BY_URL.has(normalized.url))return;
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE_KEY),cached=await cache.match(normalized);
-    if(cached)return cached;
+    // Cache Storage is shared by every page of this origin (including sibling projects such as
+    // InkDOS-tools), so a cached entry is served only while it still matches this snapshot.
+    if(cached&&await matchesSnapshot(cached,HASH_BY_URL.get(normalized.url)))return cached;
+    if(cached)await cache.delete(normalized);
     // Evicted entries may only be repaired with bytes from this exact snapshot.
     const response=await verifiedFetch(normalized);await cache.put(normalized,response.clone());return response;
   })());
