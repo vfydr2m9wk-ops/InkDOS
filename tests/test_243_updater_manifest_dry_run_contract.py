@@ -12,9 +12,7 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         t=Path(td); a=t/'assets'; a.mkdir()
         fixtures={
-          'InkDOS_2.4.3_x64-setup.exe':b'win', 'InkDOS_2.4.3_x64-setup.exe.sig':b'WIN243SIG\n',
-          'InkDOS.app.tar.gz':b'mac', 'InkDOS.app.tar.gz.sig':b'MAC243SIG\n',
-          'InkDOS_2.4.3_amd64.AppImage':b'linux', 'InkDOS_2.4.3_amd64.AppImage.sig':b'LINUX243SIG\n'}
+          'InkDOS_2.4.3_x64-setup.exe':b'win', 'InkDOS_2.4.3_x64-setup.exe.sig':b'WIN243SIG\n'}
         for n,b in fixtures.items():(a/n).write_bytes(b)
         notes=t/'notes.md'; notes.write_text('InkDOS 2.4.3 dry-run notes.\n',encoding='utf-8')
         out=t/'latest.json'
@@ -22,7 +20,7 @@ def main():
         assert ok.returncode==0,ok.stderr
         m=json.loads(out.read_text(encoding='utf-8'))
         assert m['version']=='2.4.3'
-        expected={'windows-x86_64':('InkDOS_2.4.3_x64-setup.exe','WIN243SIG'),'darwin-aarch64':('InkDOS.app.tar.gz','MAC243SIG'),'linux-x86_64':('InkDOS_2.4.3_amd64.AppImage','LINUX243SIG')}
+        expected={'windows-x86_64':('InkDOS_2.4.3_x64-setup.exe','WIN243SIG')}
         for platform,(name,sig) in expected.items():
             e=m['platforms'][platform]
             assert e['url'].endswith('/releases/download/v2.4.3/'+name),(platform,e)

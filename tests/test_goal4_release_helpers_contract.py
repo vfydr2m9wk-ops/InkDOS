@@ -54,10 +54,6 @@ def main() -> int:
         fixtures = {
             "InkDOS_2.3.0_x64-setup.exe": b"windows",
             "InkDOS_2.3.0_x64-setup.exe.sig": b"WINDOWS_SIGNATURE\n",
-            "InkDOS.app.tar.gz": b"macos",
-            "InkDOS.app.tar.gz.sig": b"MACOS_SIGNATURE\n",
-            "InkDOS_2.3.0_amd64.AppImage": b"linux",
-            "InkDOS_2.3.0_amd64.AppImage.sig": b"LINUX_SIGNATURE\n",
         }
         for name, data in fixtures.items():
             (assets / name).write_bytes(data)
@@ -83,14 +79,12 @@ def main() -> int:
         require(manifest["version"] == "2.3.0", "manifest version must match the release version")
         require(manifest["notes"] == "InkDOS 2.3 release notes.\n", "manifest must preserve release notes")
         require(
-            set(manifest["platforms"]) == {"windows-x86_64", "darwin-aarch64", "linux-x86_64"},
-            "manifest must match the actual native runner architectures",
+            set(manifest["platforms"]) == {"windows-x86_64"},
+            "manifest must match the released platforms (Windows only)",
         )
 
         expected_signatures = {
             "windows-x86_64": "WINDOWS_SIGNATURE",
-            "darwin-aarch64": "MACOS_SIGNATURE",
-            "linux-x86_64": "LINUX_SIGNATURE",
         }
         for platform, signature in expected_signatures.items():
             entry = manifest["platforms"][platform]
@@ -98,7 +92,7 @@ def main() -> int:
             require("/releases/download/v2.3.0/" in entry["url"], f"{platform} URL must bind to the tagged release")
             require(entry["url"].startswith("https://github.com/vfydr2m9wk-ops/InkDOS/"), f"{platform} URL must stay on the canonical repository")
 
-        (assets / "InkDOS_2.3.0_amd64.AppImage.sig").unlink()
+        (assets / "InkDOS_2.3.0_x64-setup.exe.sig").unlink()
         rejected_manifest = run(
             str(MANIFEST),
             "--version",

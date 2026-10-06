@@ -47,4 +47,4 @@ InkDOS is intentionally narrower than Microsoft Office, LibreOffice or Acrobat. 
 
 ## Release and device validation
 
-The maintained release workflow validates source contracts and builds native packages on Windows, macOS and Linux runners. That does not constitute manual acceptance on every OS distribution, device or embedded WebView. Real-device findings remain authoritative when they differ from synthetic browser tests.
+The maintained release workflow validates source contracts and builds the native Windows package (macOS and Linux desktop builds are discontinued after 2.7.8). That does not constitute manual acceptance on every OS distribution, device or embedded WebView. Real-device findings remain authoritative when they differ from synthetic browser tests.

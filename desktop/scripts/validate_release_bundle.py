@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse,hashlib,json,re
 from pathlib import Path
 from urllib.parse import unquote,urlparse
-PLATFORMS={'windows-x86_64':('.exe','.exe.sig'),'darwin-aarch64':('.app.tar.gz','.app.tar.gz.sig'),'linux-x86_64':('.AppImage','.AppImage.sig')}
+PLATFORMS={'windows-x86_64':('.exe','.exe.sig')}  # Windows-only desktop releases
 def fail(msg): raise SystemExit(msg)
 def one(root,suffix):
  m=sorted(p for p in root.iterdir() if p.is_file() and p.name.endswith(suffix));

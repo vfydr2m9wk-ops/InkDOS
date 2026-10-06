@@ -3,9 +3,10 @@ from __future__ import annotations
 import argparse, hashlib
 from pathlib import Path
 
-REQUIRED = ('.exe', '.dmg', '.AppImage', '.exe.sig', '.app.tar.gz', '.app.tar.gz.sig', '.AppImage.sig')
-VERSIONED = ('.exe', '.AppImage')
-PAIRS = (('.exe', '.exe.sig'), ('.AppImage', '.AppImage.sig'), ('.app.tar.gz', '.app.tar.gz.sig'))
+# Desktop releases are Windows-only; macOS and Linux builds are discontinued.
+REQUIRED = ('.exe', '.exe.sig')
+VERSIONED = ('.exe',)
+PAIRS = (('.exe', '.exe.sig'),)
 
 def one(root: Path, suffix: str) -> Path:
     matches=sorted(p for p in root.iterdir() if p.is_file() and p.name.endswith(suffix) and (suffix.endswith('.sig') or not p.name.endswith('.sig')))
