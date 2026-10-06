@@ -28,6 +28,7 @@ CMDS = [
     [sys.executable, "tests/test_documents_zip_inflation_budget_contract.py"],
     [sys.executable, "tests/test_epub_zip_inflation_budget_contract.py"],
     [sys.executable, "tests/test_home_density_layout_contract.py"],
+    [sys.executable, "tests/test_home_advanced_tools_browser.py"],
     [sys.executable, "tests/test_suite_settings_concordance_contract.py"],
     [sys.executable, "tests/test_ppt_p1_structure_contract.py"],
     [sys.executable, "tests/test_ppt_p1_objects_contract.py"],
