@@ -5,7 +5,7 @@ A 20,000-row workbook (240,000 cells, a SUM formula per row) is built here. Open
 ("Opening workbook… N%"), which proves the page is handed back to the browser while cells are read instead
 of freezing until the end. Editing keeps only the touched cells in undo history and recalculates only what
 depends on them: a value edit updates the row's SUM, a formula edit evaluates, bold applies, and undo/redo
-restore every step.
+restore every step. Cells that scroll out and back are reused and show edits made meanwhile.
 """
 from __future__ import annotations
 
@@ -98,6 +98,21 @@ def main() -> None:
             assert state['sum1'] == state['sum0'] - state['b1'] + 5000, state
             assert state['formula'] == 10000 and state['bold'] and state['unbold'] and state['formulaGone'], state
             assert state['sum2'] == state['sum0'] and state['b2'] == state['b1'] and state['sum3'] == state['sum1'], state
+            # cells leaving the visible window are reused when they come back: one edited while off screen
+            # must show its new value, and the reused element must be the same one
+            recycled = page.evaluate("""async () => {
+                const a = globalThis.__inkdosSpreadsheetsS1, vp = document.getElementById('contentViewport');
+                const cellEl = () => document.querySelector('.cell[data-ref="C3"]');
+                const frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+                const before = cellEl(); const scroller = vp;
+                scroller.scrollTop = 30000; await frame(); await frame();
+                const gone = !cellEl();
+                a.editor.editor.commitValue('777', 2, 2);
+                scroller.scrollTop = 0; await frame(); await frame();
+                const after = cellEl();
+                return { gone, same: after === before, text: after?.textContent };
+            }""")
+            assert recycled == {'gone': True, 'same': True, 'text': '777'}, recycled
             assert not errors, errors
             browser.close()
     finally:
