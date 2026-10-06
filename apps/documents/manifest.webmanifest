@@ -27,6 +27,12 @@
         ],
         "application/msword": [
           ".doc"
+        ],
+        "application/vnd.oasis.opendocument.text": [
+          ".odt"
+        ],
+        "application/vnd.apple.pages": [
+          ".pages"
         ]
       }
     }

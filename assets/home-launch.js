@@ -3,9 +3,9 @@
 // matching workspace, loaded unchanged in a frame. The workspace keeps its own runtime and
 // state; Home only routes the file into the workspace's own "Open" input.
 const ROUTES=[
- {app:'documents',label:'Documents',ext:['docx','rtf','doc'],mime:['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/rtf','application/msword']},
- {app:'spreadsheets',label:'Spreadsheets',ext:['xlsx','xls','csv','tsv'],mime:['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','text/csv','text/tab-separated-values']},
- {app:'presentations',label:'Presentations',ext:['pptx','ppt'],mime:['application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.ms-powerpoint']},
+ {app:'documents',label:'Documents',ext:['docx','rtf','doc','odt','pages'],mime:['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/rtf','application/msword','application/vnd.oasis.opendocument.text','application/vnd.apple.pages']},
+ {app:'spreadsheets',label:'Spreadsheets',ext:['xlsx','xls','csv','tsv','ods','numbers'],mime:['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','text/csv','text/tab-separated-values','application/vnd.oasis.opendocument.spreadsheet','application/vnd.apple.numbers']},
+ {app:'presentations',label:'Presentations',ext:['pptx','ppt','odp','key'],mime:['application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.ms-powerpoint','application/vnd.oasis.opendocument.presentation','application/vnd.apple.keynote']},
  {app:'pdf',label:'PDF',ext:['pdf'],mime:['application/pdf']},
  {app:'epub',label:'EPUB',ext:['epub'],mime:['application/epub+zip']},
  {app:'txt',label:'Plain Text',ext:['txt','md','markdown','log','ini','cfg','conf','toml','properties','xml','json','jsonl','ndjson','yaml','yml'],mime:['text/plain','application/xml','application/json','application/yaml']}

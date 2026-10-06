@@ -19,7 +19,7 @@ async function boot(){installDocxOnOffFix();await loadScript('runtime/commands/d
 const session=new NS.DocumentSession();
 const state=new NS.DocumentState(session);
 const viewport=$('viewport'),pagesHost=$('pagesHost'),welcome=$('welcome'),fileInput=$('fileInput');
-fileInput.accept='.docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword';
+fileInput.accept='.docx,.rtf,.doc,.odt,.pages,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword,application/vnd.oasis.opendocument.text,application/vnd.apple.pages';
 const adapter=new NS.ContentViewportAdapter(viewport,pagesHost);
 let zoomControls=null;
 const zoom=new NS.ZoomController(adapter,pagesHost,info=>zoomControls?.update(info));
