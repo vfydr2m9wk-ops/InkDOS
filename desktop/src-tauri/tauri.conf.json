@@ -12,6 +12,7 @@
     "windows": [
       {
         "label": "main",
+        "create": false,
         "title": "InkDOS",
         "width": 1280,
         "height": 820,
