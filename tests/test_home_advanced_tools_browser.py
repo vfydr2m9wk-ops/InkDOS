@@ -58,12 +58,17 @@ def main() -> None:
                 assert href.startswith('./') or href.startswith('https://vfydr2m9wk-ops.github.io/'), href
                 if href.startswith('./'):
                     assert (ROOT / href[2:].split('?')[0]).is_file(), href
+                else:  # built and served by the inkdos-tools repository, one folder per tool
+                    assert href == f"https://vfydr2m9wk-ops.github.io/InkDOS-tools/{tool['id']}/", href
+            assert {'archivedrop', 'pnk', 'cyberchef', 'it-tools'} <= {t['id'] for t in tools}
             assert page.locator('.tools-item').count() == len(tools)
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
             assert page.locator('.tools-item').count() == 0 and page.locator('.tools-empty').is_visible()
             page.fill('#advancedToolsSearch', 'signature')
             assert page.locator('.tools-item').count() >= 1
+            page.fill('#advancedToolsSearch', 'numbers')
+            assert page.locator('.tools-item[data-tool-id="pnk"]').count() == 1
             # Escape closes and returns focus to the button
             page.keyboard.press('Escape')
             overlay.wait_for(state='hidden')
