@@ -27,7 +27,7 @@ Support is intentionally narrower than Microsoft Office, LibreOffice or Acrobat.
 
 ## Release baseline
 
-InkDOS 2.7.8 is the current stable source release identity. Windows uses the signed NSIS installer, macOS uses the signed DMG/application bundle and Linux uses AppImage, all built from the matching immutable `v2.7.8` tag. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases. Pre-publication physical Windows upgrade validation is no longer a release gate; the evidence collector remains available as an optional manual tool.
+InkDOS 2.7.8 is the current stable source release identity. Windows uses the signed NSIS installer built from the matching immutable `v2.7.8` tag. From the next desktop release on, only Windows is built; 2.7.8 is the last macOS (DMG) and Linux (AppImage) build. The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases. Pre-publication physical Windows upgrade validation is no longer a release gate; the evidence collector remains available as an optional manual tool.
 
 A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.2` tag remains the preserved beta checkpoint and `v2.6.1` remains the previous stable fallback.
 
@@ -65,7 +65,7 @@ See `AGENTS.md` for the operational maintenance rules and `config/components.jso
 
 ## Desktop builds and updates
 
-Windows, macOS and Linux packages are built with Tauri v2. The supported installer set is NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Update checking is explicit in the installed desktop application; installation remains a separate user action.
+The desktop package is built with Tauri v2 for Windows (NSIS/EXE). macOS and Linux desktop builds are discontinued after 2.7.8; those platforms use the web/PWA edition. Update checking is explicit in the installed desktop application; installation remains a separate user action.
 
 The permanent GitHub Actions surface is intentionally small:
 

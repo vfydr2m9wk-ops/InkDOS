@@ -163,18 +163,18 @@ def test_release_has_controlled_tag_or_one_shot_entrypoint_and_no_promotion_stat
     assert not PROMOTION_REQUEST.exists()
 
 
-def test_tag_release_workflow_builds_every_platform_before_publication():
+def test_tag_release_workflow_builds_windows_before_publication():
     workflow = read(RELEASE_WORKFLOW)
+    # desktop releases are Windows-only; macOS and Linux builds are discontinued
+    for retired in ("macos-latest", "InkDOS-macOS", "InkDOS-Linux"):
+        assert retired not in workflow
     for marker in (
         "windows-latest",
-        "macos-latest",
         "ubuntu-22.04",
         "python desktop/scripts/release_version.py --check-tag",
         "python desktop/scripts/release_version.py --check-config",
         "python desktop/scripts/generate_workspace_icons.py",
         "InkDOS-Windows",
-        "InkDOS-macOS",
-        "InkDOS-Linux",
         "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0",
         "contents: write",
         "gh release create",
@@ -194,15 +194,14 @@ def test_release_builds_only_supported_installer_formats():
     workflow = read(RELEASE_WORKFLOW)
     for marker in (
         "bundles: nsis",
-        "bundles: app,dmg",
-        "bundles: appimage",
         "bundle/nsis/*.exe",
-        "bundle/dmg/*.dmg",
-        "bundle/macos/*.app.tar.gz",
-        "bundle/appimage/*.AppImage",
     ):
         assert marker in workflow
     for forbidden in (
+        "bundles: app,dmg",
+        "bundles: appimage",
+        "bundle/dmg/",
+        "bundle/appimage/",
         "bundles: nsis,msi",
         "bundles: deb,appimage,rpm",
         "bundle/msi/",
@@ -222,9 +221,9 @@ def test_tag_release_publishes_only_current_run_final_assets():
     assert "Download reused" not in workflow
     assert "Download current-run native artifacts" in workflow
     assert "Download current-run provenance" in workflow
-    assert "required_installers = ('.exe', '.dmg', '.AppImage')" in workflow
-    assert "updater_required = ('.exe.sig', '.app.tar.gz', '.app.tar.gz.sig', '.AppImage.sig')" in workflow
-    assert 'if [ "${#ASSETS[@]}" -lt 8 ]; then' in workflow
+    assert "required_installers = ('.exe',)" in workflow
+    assert "updater_required = ('.exe.sig',)" in workflow
+    assert 'if [ "${#ASSETS[@]}" -lt 4 ]; then' in workflow
 
 
 def test_generated_desktop_bundles_are_ignored_within_desktop_boundary():

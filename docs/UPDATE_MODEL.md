@@ -1,6 +1,6 @@
 # Desktop update model
 
-InkDOS desktop updates use the signed Tauri updater for Windows, macOS and Linux.
+InkDOS desktop updates use the signed Tauri updater for Windows. macOS and Linux desktop builds are discontinued after 2.7.8: those installs keep working but receive no further desktop updates (use the web/PWA edition).
 
 ## Version authority
 
@@ -12,7 +12,7 @@ A public desktop release uses a matching immutable `vX.Y.Z` tag. The stable 2.7 
 
 1. An immutable `vX.Y.Z` tag is pushed for a commit already contained in `main`.
 2. `.github/workflows/release.yml` validates the tagged source without write credentials.
-3. Native runners build the supported packages: NSIS/EXE on Windows, DMG on macOS and AppImage on Linux, plus the signed Tauri updater artifacts required by each platform.
+3. A Windows runner builds the supported package (NSIS/EXE) plus the signed Tauri updater artifacts.
 4. The release workflow records provenance for the tagged commit and artifacts produced by that same workflow run.
 5. Tauri updater artifacts are signed with the configured signing key.
 6. `desktop/scripts/build_updater_manifest.py` creates `latest.json`.

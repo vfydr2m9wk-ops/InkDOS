@@ -6,15 +6,13 @@ import json
 from pathlib import Path
 from urllib.parse import quote
 
+# Desktop releases are Windows-only; macOS and Linux builds are discontinued.
 PLATFORMS = {
     "windows-x86_64": (".exe", ".exe.sig"),
-    "darwin-aarch64": (".app.tar.gz", ".app.tar.gz.sig"),
-    "linux-x86_64": (".AppImage", ".AppImage.sig"),
 }
 
 VERSIONED_ARTIFACT_PREFIX = {
     "windows-x86_64": "InkDOS_{version}_",
-    "linux-x86_64": "InkDOS_{version}_",
 }
 
 

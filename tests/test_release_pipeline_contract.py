@@ -32,9 +32,8 @@ def main() -> None:
     require(not PROMOTION_REQUEST.exists(), "redundant release promotion state still exists")
 
     require("bundles: nsis" in text, "Windows release build does not use NSIS")
-    require("bundles: app,dmg" in text, "macOS release build does not request the updater app bundle")
-    require("bundles: appimage" in text, "Linux release build does not use AppImage")
-    require("*.app.tar.gz" in text and "*.app.tar.gz.sig" in text, "macOS updater artifacts are not required")
+    require("bundles: app,dmg" not in text and "macos-latest" not in text, "macOS desktop builds are discontinued")
+    require("bundles: appimage" not in text and "InkDOS-Linux" not in text, "Linux desktop builds are discontinued")
     require("bundles: nsis,msi" not in text, "MSI is still built")
     require("bundles: deb,appimage,rpm" not in text, "DEB/RPM are still built")
 
