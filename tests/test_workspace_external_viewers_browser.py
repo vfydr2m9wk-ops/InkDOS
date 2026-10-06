@@ -2,7 +2,7 @@
 """Spreadsheets and Presentations: OpenDocument and Apple iWork files open view-only in the workspace.
 
 .ods/.numbers (Spreadsheets) and .odp/.key (Presentations) are shown by the InkDOS-tools viewer on the
-same origin; a stub speaking the viewer protocol stands in for it (see
+own origin; a stub speaking the viewer protocol stands in for it on another origin (see
 test_documents_external_viewer_browser.py). Checked: the right viewer is embedded and gets the file,
 the session cannot be saved, shared, renamed, edited or presented, and a new workbook/presentation
 afterwards closes the viewer and is editable again.
@@ -18,7 +18,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from test_documents_external_viewer_browser import STUB  # noqa: E402
+from test_documents_external_viewer_browser import STUB, tools_base, use_stub_tools  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = 8819
@@ -47,7 +47,8 @@ def check_spreadsheets(page, files: Path) -> None:
         page.set_input_files('#fileInput', str(files / name))
         page.wait_for_function("(n) => (document.getElementById('statusText')?.textContent || '').includes(n + ' · View only · shown')", arg=name, timeout=15000)
         assert f'VIEWER {viewer} {name}' in page.frame_locator('.external-viewer iframe').locator('body').inner_text(timeout=10000)
-        assert page.get_attribute('.external-viewer iframe', 'src').endswith(f'/InkDOS-tools/{viewer}/?embed=1')
+        assert page.get_attribute('.external-viewer iframe', 'src') == tools_base(PORT) + f'{viewer}/?embed=1&inkdos-theme=light'
+        assert "frame-src 'self' https://inkdos-tools.github.io;" in page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
         state = page.evaluate("""async () => {
             const api = globalThis.__inkdosSpreadsheetsS1, s = api.session;
             return { kind: s.sourceKind, name: s.fileName, rename: s.rename('Other.xlsx'),
@@ -108,7 +109,8 @@ def main() -> None:
             with sync_playwright() as pw:
                 browser = getattr(pw, os.environ.get('BROWSER', 'chromium')).launch(headless=True)
                 for check in (check_spreadsheets, check_presentations):
-                    context = browser.new_context(service_workers='block', viewport={'width': 1280, 'height': 860})
+                    context = browser.new_context(service_workers='block', viewport={'width': 1280, 'height': 860}, bypass_csp=True)
+                    use_stub_tools(context, PORT)
                     page = context.new_page()
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     check(page, files)

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Documents: .odt and .pages files open view-only inside the workspace through the InkDOS-tools viewer.
 
-The viewer is published by the InkDOS-tools repository on the same origin (/InkDOS-tools/<viewer>/);
-here a stub that speaks the same protocol stands in for it, so this test checks the Documents side:
+The viewer is published by the InkDOS-tools repository on its own origin (inkdos-tools.github.io);
+here a stub that speaks the same protocol stands in for it on another origin (localhost instead of
+127.0.0.1), so the exchange really crosses origins. This test checks the Documents side:
 the right viewer is embedded, the file is handed over, the session is view-only (no save, share or
 rename), and opening a DOCX or a new document afterwards closes the viewer.
 """
@@ -26,14 +27,24 @@ BASE = f'http://127.0.0.1:{PORT}'
 
 STUB = """<!doctype html><meta charset="utf-8"><title>stub viewer</title><body>waiting
 <script>
+const inkdos = new URL(document.referrer).origin;
 addEventListener('message', async e => {
-  if (e.origin !== location.origin || !e.data || e.data.type !== 'inkdos-viewer-open') return;
+  if (e.origin !== inkdos || !e.data || e.data.type !== 'inkdos-viewer-open') return;
   const file = e.data.file, text = await file.text();
-  document.body.textContent = 'VIEWER __NAME__ ' + file.name + ' ' + file.size;
-  parent.postMessage({type: 'inkdos-viewer-loaded', ok: !/broken/.test(file.name), error: 'stub cannot read'}, location.origin);
+  document.body.textContent = 'VIEWER __NAME__ ' + file.name + ' ' + file.size + ' ' + location.search;
+  parent.postMessage({type: 'inkdos-viewer-loaded', ok: !/broken/.test(file.name), error: 'stub cannot read'}, inkdos);
 });
-parent.postMessage({type: 'inkdos-viewer-ready'}, location.origin);
+parent.postMessage({type: 'inkdos-viewer-ready'}, inkdos);
 </script>"""
+# the viewers' origin in this test; the pages enforce the published one in their CSP frame-src, so these
+# contexts bypass CSP (the CSP itself is checked by tests/test_home_advanced_tools_browser.py and the
+# frame-src assertion below)
+def tools_base(port: int) -> str:
+    return f'http://localhost:{port}/InkDOS-tools/'
+
+
+def use_stub_tools(context, port: int) -> None:
+    context.add_init_script(f'window.InkDOSToolsBase = {tools_base(port)!r};')
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -76,12 +87,15 @@ def main() -> None:
             wait_port()
             with sync_playwright() as pw:
                 browser = getattr(pw, os.environ.get('BROWSER', 'chromium')).launch(headless=True)
-                context = browser.new_context(service_workers='block', viewport={'width': 1280, 'height': 860})
+                context = browser.new_context(service_workers='block', viewport={'width': 1280, 'height': 860}, bypass_csp=True)
+                use_stub_tools(context, PORT)
                 page = context.new_page()
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.goto(BASE + '/InkDOS/apps/documents/index.html', wait_until='load')
                 page.wait_for_function("() => !!globalThis.InkDOS2Documents?.DocumentsApp && !!globalThis.InkDOS2Documents?.ExternalViewer")
                 assert '.odt' in page.get_attribute('#fileInput', 'accept') and '.pages' in page.get_attribute('#fileInput', 'accept')
+                csp = page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
+                assert "frame-src 'self' https://inkdos-tools.github.io;" in csp, csp
 
                 def open_file(name: str) -> None:
                     page.set_input_files('#fileInput', str(files / name))
@@ -95,7 +109,7 @@ def main() -> None:
                     page.wait_for_function("(n) => (document.getElementById('statusText')?.textContent || '').includes(n + ' · View only')", arg=name, timeout=15000)
                     assert f'VIEWER {viewer} {name}' in viewer_text(), viewer_text()
                     src = page.get_attribute('.external-viewer iframe', 'src')
-                    assert src.endswith(f'/InkDOS-tools/{viewer}/?embed=1'), src
+                    assert src == tools_base(PORT) + f'{viewer}/?embed=1&inkdos-theme=light', src
                     state = page.evaluate("""async () => {
                         const app = InkDOS2Documents.DocumentsApp;
                         const saved = await app.save();

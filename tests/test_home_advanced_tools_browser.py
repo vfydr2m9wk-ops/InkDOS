@@ -20,6 +20,7 @@ PORT = 8814
 BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
 TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python'}
+TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -57,13 +58,20 @@ def main() -> None:
             assert tools, 'the catalog must not be empty'
             for tool in tools:
                 href = tool['href']
-                assert href.startswith('./') or href.startswith('https://vfydr2m9wk-ops.github.io/'), href
+                # third-party tools are served from their own origin, never from the InkDOS one
+                assert href.startswith('./') or href.startswith(TOOLS_SITE), href
                 if href.startswith('./'):
                     assert (ROOT / href[2:].split('?')[0]).is_file(), href
                 else:  # built and served by the InkDOS-tools repository, one folder per tool (or a page inside it)
-                    folder = href.removeprefix('https://vfydr2m9wk-ops.github.io/InkDOS-tools/').split('/')[0]
-                    assert href.startswith('https://vfydr2m9wk-ops.github.io/InkDOS-tools/') and folder, href
+                    folder = href.removeprefix(TOOLS_SITE).split('/')[0]
+                    assert folder, href
                     assert folder in TOOL_FOLDERS, href
+            # Home may frame that origin (and nothing else besides itself)
+            csp = page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
+            assert "frame-src 'self' https://inkdos-tools.github.io;" in csp, csp
+            # the other origin cannot read the InkDOS appearance, so the links carry it
+            link = page.get_attribute('.tools-item[data-tool-id="cyberchef"]', 'href')
+            assert link.startswith(TOOLS_SITE + 'cyberchef/?inkdos-theme='), link
             assert {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python'} <= {t['id'] for t in tools}
             # LibreOffice and Apple iWork files open in Documents, Spreadsheets and Presentations instead
             assert not {'pnk', 'odt-view', 'ods-view', 'odp-view'} & {t['id'] for t in tools}

@@ -4,12 +4,14 @@
 // available are listed, so the menu never leads to a missing page.
 const TOOLS=Object.freeze([
   {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
-  // from here on: open-source tools built and served by https://github.com/vfydr2m9wk-ops/InkDOS-tools
-  {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/',icon:'pdf'},
-  {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
-  {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/cyberchef/',icon:'code'},
-  {id:'python',group:'Developer',title:'Python terminal',description:'A Python 3 console with the standard library (Pyodide).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/python/',icon:'code'},
-  {id:'it-tools',group:'Developer',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/it-tools/',icon:'code'}
+  // from here on: open-source tools built and served by https://github.com/inkdos-tools/InkDOS-tools, a
+  // separate origin on purpose (their third-party code cannot reach InkDOS storage); toolHref() passes
+  // the InkDOS appearance along, since that site cannot read it
+  {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/',icon:'pdf'},
+  {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
+  {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
+  {id:'python',group:'Developer',title:'Python terminal',description:'A Python 3 console with the standard library (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
+  {id:'it-tools',group:'Developer',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://inkdos-tools.github.io/InkDOS-tools/it-tools/',icon:'code'}
 ]);
 const ICONS={
   pdf:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/>',
@@ -37,12 +39,16 @@ function toolShell(){
   doc.body.appendChild(shell);
   return shell;
 }
+function toolHref(tool){
+  if(!/^https:/.test(tool.href))return tool.href;
+  const url=new URL(tool.href);url.searchParams.set('inkdos-theme',doc.documentElement.dataset.theme==='dark'?'dark':'light');return url.href;
+}
 function openTool(tool){
   const panel=toolShell();
   close();lastFocus=lastFocus||trigger;
   panel.querySelector('.tool-shell-title').textContent=tool.title;
-  panel.querySelector('[data-tool-full]').href=tool.href;
-  const frame=doc.createElement('iframe');frame.className='tool-shell-frame';frame.title=tool.title;frame.src=tool.href;
+  panel.querySelector('[data-tool-full]').href=toolHref(tool);
+  const frame=doc.createElement('iframe');frame.className='tool-shell-frame';frame.title=tool.title;frame.src=toolHref(tool);
   frame.setAttribute('allow','clipboard-read; clipboard-write');
   panel.querySelector('.tool-shell-body').replaceChildren(frame);
   panel.dataset.toolId=tool.id;panel.hidden=false;doc.documentElement.classList.add('tools-open');
@@ -62,7 +68,7 @@ function render(query){
   let group='';
   for(const tool of shown){
     if(tool.group!==group){group=tool.group;const h=doc.createElement('h3');h.className='tools-group';h.textContent=group;list.appendChild(h)}
-    const a=doc.createElement('a');a.className='tools-item';a.href=tool.href;a.dataset.toolId=tool.id;
+    const a=doc.createElement('a');a.className='tools-item';a.href=toolHref(tool);a.dataset.toolId=tool.id;
     a.innerHTML='<span class="tools-item-icon">'+icon(tool.icon)+'</span><span class="tools-item-copy"><strong></strong><small></small></span><span class="tools-item-chevron" aria-hidden="true">›</span>';
     a.querySelector('strong').textContent=tool.title;a.querySelector('small').textContent=tool.description;
     list.appendChild(a);

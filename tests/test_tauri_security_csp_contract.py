@@ -12,6 +12,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TAURI_CONFIG = ROOT / "desktop" / "src-tauri" / "tauri.conf.json"
 STAGED_DIRS = ("apps", "shared", "assets")
+# Web-edition-only sources the desktop host deliberately keeps blocking: the InkDOS-tools site (its own
+# origin) backs Home's Advanced tools, hidden on desktop, and the OpenDocument/iWork viewers, which the
+# desktop edition does not associate and which report "viewer did not load" there instead of opening.
+WEB_ONLY = {"frame-src": {"https://inkdos-tools.github.io"}}
 CSP_META = re.compile(r'http-equiv\s*=\s*["\']Content-Security-Policy["\']\s+content\s*=\s*"([^"]+)"', re.IGNORECASE)
 
 
@@ -55,7 +59,7 @@ def test_host_csp_does_not_block_what_pages_allow():
     for page, directives in page_policies():
         for name, sources in directives.items():
             allowed = policy.get(name, policy["default-src"])
-            missing = {s for s in sources if not s.startswith("'sha256-") and s != "'none'"} - allowed
+            missing = {s for s in sources if not s.startswith("'sha256-") and s != "'none'"} - allowed - WEB_ONLY.get(name, set())
             assert not missing, f"{page}: host CSP {name} would block {sorted(missing)}"
 
 

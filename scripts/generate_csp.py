@@ -72,19 +72,25 @@ def inline_script_hashes(text: str) -> list[str]:
 
 # Home hosts a launched file's workspace in a same-origin frame, the PDF workspace hosts the
 # PDF tools (beta) page in its panel, and Documents, Spreadsheets and Presentations show
-# OpenDocument and Apple iWork files in the same-origin InkDOS-tools viewers (view only); the
-# other workspaces frame nothing.
+# OpenDocument and Apple iWork files in the InkDOS-tools viewers (view only); the other
+# workspaces frame nothing.
 FRAME_SELF_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/pdf/index.html"),
                                      Path("apps/documents/index.html"), Path("apps/spreadsheets/index.html"),
                                      Path("apps/presentations/index.html")})
+# InkDOS-tools is served from its own origin (a separate GitHub organization) so its third-party
+# code cannot reach InkDOS storage; Home's Advanced tools panel and the three viewers frame it.
+TOOLS_ORIGIN = "https://inkdos-tools.github.io"
+FRAME_TOOLS_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/documents/index.html"),
+                                      Path("apps/spreadsheets/index.html"), Path("apps/presentations/index.html")})
 
 
-def policy_for(text_without_csp: str, frame_self: bool = False) -> str:
+def policy_for(text_without_csp: str, frame_self: bool = False, frame_tools: bool = False) -> str:
     hashes = inline_script_hashes(text_without_csp)
     script = "script-src 'self'"
     if hashes:
         script += " " + " ".join(hashes)
-    rest = [("frame-src 'self'" if frame_self and d == "frame-src 'none'" else d) for d in BASE_DIRECTIVES[1:]]
+    frame = "frame-src 'self'" + (" " + TOOLS_ORIGIN if frame_tools else "")
+    rest = [(frame if frame_self and d == "frame-src 'none'" else d) for d in BASE_DIRECTIVES[1:]]
     return "; ".join((BASE_DIRECTIVES[0], script, *rest))
 
 
@@ -105,7 +111,7 @@ def insertion_for(text: str, charset: re.Match[str], meta: str) -> str:
     return "\n" + prefix + meta
 
 
-def render(text: str, frame_self: bool = False) -> str:
+def render(text: str, frame_self: bool = False, frame_tools: bool = False) -> str:
     """Render exactly one deterministic CSP meta tag into an entry point.
 
     Idempotence is intentionally enforced at the artifact boundary by
@@ -114,7 +120,7 @@ def render(text: str, frame_self: bool = False) -> str:
     bundle construction (notably the compact Plain Text entry point).
     """
     clean = strip_existing_csp(text)
-    policy = policy_for(clean, frame_self)
+    policy = policy_for(clean, frame_self, frame_tools)
     meta = f'<meta http-equiv="Content-Security-Policy" content="{policy}">'
     charset = CHARSET_RE.search(clean)
     if not charset:
@@ -125,7 +131,8 @@ def render(text: str, frame_self: bool = False) -> str:
 
 def process(path: Path, check: bool) -> bool:
     source = path.read_text(encoding="utf-8")
-    expected = render(source, path.relative_to(ROOT) in FRAME_SELF_ENTRY_POINTS)
+    relative = path.relative_to(ROOT)
+    expected = render(source, relative in FRAME_SELF_ENTRY_POINTS, relative in FRAME_TOOLS_ENTRY_POINTS)
     if source == expected:
         return False
     if check:

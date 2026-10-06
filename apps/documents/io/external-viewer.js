@@ -1,7 +1,9 @@
 (function(global){'use strict';
 // View-only documents InkDOS does not edit (LibreOffice/OpenDocument .odt, Apple Pages .pages):
-// an open-source viewer published by InkDOS-tools on this same origin is embedded in the
-// workspace and the file is handed to it locally (postMessage); nothing is uploaded or converted.
+// an open-source viewer published by InkDOS-tools is embedded in the workspace and the file is
+// handed to it locally (postMessage); nothing is uploaded or converted. InkDOS-tools is a separate
+// origin on purpose (its third-party code cannot reach InkDOS storage), so every message is
+// checked against, and addressed to, that origin only.
 // Viewer protocol: InkDOS-tools site-src/viewers/viewer-embed.js.
 const NS=global.InkDOS2Documents=global.InkDOS2Documents||{};
 const VIEWERS=Object.freeze([
@@ -10,7 +12,9 @@ const VIEWERS=Object.freeze([
 ]);
 const LOAD_TIMEOUT_MS=45000;
 function viewerFor(name){const m=/\.([a-z0-9]+)$/i.exec(String(name||''));const ext=m?m[1].toLowerCase():'';return VIEWERS.find(v=>v.ext.includes(ext))||null}
-function viewerUrl(viewer){return new URL('../../../InkDOS-tools/'+viewer+'/?embed=1',global.location.href).href}
+// global.InkDOSToolsBase overrides the published site (local tests serve a stub viewer)
+const TOOLS_BASE=String(global.InkDOSToolsBase||'https://inkdos-tools.github.io/InkDOS-tools/'),TOOLS_ORIGIN=new URL(TOOLS_BASE,global.location.href).origin;
+function viewerUrl(viewer){const url=new URL(viewer+'/',new URL(TOOLS_BASE,global.location.href));url.searchParams.set('embed','1');url.searchParams.set('inkdos-theme',document.documentElement.dataset.theme==='dark'?'dark':'light');return url.href}
 function create({host,cover=[]}={}){
  let box=null,cleanup=null;
  function close(){cleanup?.();cleanup=null;box?.remove();box=null;for(const el of cover)if(el)el.style.display=''}
@@ -29,9 +33,9 @@ function create({host,cover=[]}={}){
    let settled=false;
    const finish=(ok,error)=>{if(settled)return;settled=true;clearTimeout(timer);ok?resolve():reject(error)};
    const onMessage=event=>{
-    if(event.origin!==global.location.origin||event.source!==frame.contentWindow)return;
+    if(event.origin!==TOOLS_ORIGIN||event.source!==frame.contentWindow)return;
     const data=event.data||{};
-    if(data.type==='inkdos-viewer-ready')frame.contentWindow.postMessage({type:'inkdos-viewer-open',file},global.location.origin);
+    if(data.type==='inkdos-viewer-ready')frame.contentWindow.postMessage({type:'inkdos-viewer-open',file},TOOLS_ORIGIN);
     else if(data.type==='inkdos-viewer-loaded')finish(!!data.ok,new Error(data.error||'This file could not be shown.'));
    };
    const timer=setTimeout(()=>finish(false,new Error('The viewer did not load. It is part of the InkDOS web edition and needs a connection the first time it is used.')),LOAD_TIMEOUT_MS);
