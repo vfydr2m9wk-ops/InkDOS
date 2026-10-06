@@ -17,7 +17,7 @@ class LegacyDocImportContractTests(unittest.TestCase):
         self.assertIn("NS.LegacyDocReader", source)
         self.assertRegex(source, r"kind\s*:\s*isDoc\s*\?\s*['\"]doc['\"]")
         self.assertIn("setLegacyMode(isDoc)", source)
-        self.assertIn("Save editable DOCX copy", source)
+        self.assertIn("View only (legacy DOC)", source)
 
     def test_save_controller_promotes_only_after_confirmed_delivery(self):
         source = (DOCS / "io" / "save-controller.js").read_text(encoding="utf-8")
