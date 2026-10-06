@@ -4,10 +4,15 @@
 // available are listed, so the menu never leads to a missing page.
 const TOOLS=Object.freeze([
   {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
-  // open-source tools built and served by https://github.com/vfydr2m9wk-ops/InkDOS-tools
+  // from here on: open-source tools built and served by https://github.com/vfydr2m9wk-ops/InkDOS-tools
+  {id:'bentopdf',group:'PDF',title:'PDF toolkit (BentoPDF)',description:'Merge, split, compress, convert, OCR, edit and protect PDFs.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/',icon:'pdf'},
   {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
+  {id:'odt-view',group:'View',title:'LibreOffice Writer (.odt)',description:'Open an .odt document as a PDF to read, view only (BentoPDF).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/odt-to-pdf.html',icon:'view'},
+  {id:'ods-view',group:'View',title:'LibreOffice Calc (.ods)',description:'Open an .ods spreadsheet as a PDF to read, view only (BentoPDF).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/ods-to-pdf.html',icon:'view'},
+  {id:'odp-view',group:'View',title:'LibreOffice Impress (.odp)',description:'Open an .odp presentation as a PDF to read, view only (BentoPDF).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/bentopdf/odp-to-pdf.html',icon:'view'},
   {id:'pnk',group:'View',title:'Apple Pages, Numbers and Keynote',description:'View .pages, .numbers and .key files, view only (pnk).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/pnk/',icon:'view'},
   {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/cyberchef/',icon:'code'},
+  {id:'python',group:'Developer',title:'Python terminal',description:'A Python 3 console with the standard library (Pyodide).',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/python/',icon:'code'},
   {id:'it-tools',group:'Developer',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://vfydr2m9wk-ops.github.io/InkDOS-tools/it-tools/',icon:'code'}
 ]);
 const ICONS={

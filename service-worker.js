@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-8b480927ae73c8671a3b';
+const CACHE_NAME='inkdos-v2.7.8-48c42c423d3edadd5823';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -185,7 +185,7 @@ const ASSET_HASHES={
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
   "./apps/presentations/ui/chrome-controller.js": "1d25be7fd41a1b2e65853334afb2cbb8eb4dafab5708ef1bd96c0d499ab4dfb2",
-  "./apps/presentations/ui/command-controller.js": "c1eced33cfb5f9322928b528af11e75b01ca4297e68488d40545066525d2c03c",
+  "./apps/presentations/ui/command-controller.js": "d5718b6177694360f3cba7e16b1c1e21dff5a260f7679398cfe933caf604b94c",
   "./apps/presentations/ui/editing-controller.js": "a3f43a2e3b0633344e1d46d688ae0ec8a0567e15ee56a33c3ae8596b0d0deca9",
   "./apps/presentations/ui/editor.css": "74b92b9343852886a4969f28bdd397ee51148a91a793bcdc591f70ff72dc1232",
   "./apps/presentations/ui/ppt-p1-tools.js": "49cf05b71e273b67721366185bd74fd4414979c1f29f09627b1a71745d73101f",
@@ -284,7 +284,7 @@ const ASSET_HASHES={
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
-  "./assets/advanced-tools.js": "3117277e3526878b52bc05b6e956870d185a9afb1bac1cddc55150ffb0e35d16",
+  "./assets/advanced-tools.js": "68eda55e88056a6d22cbe28613eabb89007b690fd3cb42e6e92527166c11233a",
   "./assets/home-launch.js": "fe2268b2de2c553e657069ab83ad50ac7fe4260b37ac804800a0dd41d4d6a32b",
   "./assets/home.css": "24a48a211d55da12e3901e9f51febd7961961618e2e78ca299db4f8bb4735b9f",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
