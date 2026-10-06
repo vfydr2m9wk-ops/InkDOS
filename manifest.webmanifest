@@ -64,6 +64,12 @@
         ],
         "application/msword": [
           ".doc"
+        ],
+        "application/vnd.oasis.opendocument.text": [
+          ".odt"
+        ],
+        "application/vnd.apple.pages": [
+          ".pages"
         ]
       }
     },
@@ -81,6 +87,12 @@
         ],
         "text/tab-separated-values": [
           ".tsv"
+        ],
+        "application/vnd.oasis.opendocument.spreadsheet": [
+          ".ods"
+        ],
+        "application/vnd.apple.numbers": [
+          ".numbers"
         ]
       }
     },
@@ -92,6 +104,12 @@
         ],
         "application/vnd.ms-powerpoint": [
           ".ppt"
+        ],
+        "application/vnd.oasis.opendocument.presentation": [
+          ".odp"
+        ],
+        "application/vnd.apple.keynote": [
+          ".key"
         ]
       }
     },

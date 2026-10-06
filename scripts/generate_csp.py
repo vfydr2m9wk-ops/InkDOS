@@ -70,9 +70,13 @@ def inline_script_hashes(text: str) -> list[str]:
     return sorted(hashes)
 
 
-# Home hosts a launched file's workspace in a same-origin frame, and the PDF workspace hosts the
-# PDF tools (beta) page in its panel; the other workspaces frame nothing.
-FRAME_SELF_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/pdf/index.html")})
+# Home hosts a launched file's workspace in a same-origin frame, the PDF workspace hosts the
+# PDF tools (beta) page in its panel, and Documents, Spreadsheets and Presentations show
+# OpenDocument and Apple iWork files in the same-origin InkDOS-tools viewers (view only); the
+# other workspaces frame nothing.
+FRAME_SELF_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/pdf/index.html"),
+                                     Path("apps/documents/index.html"), Path("apps/spreadsheets/index.html"),
+                                     Path("apps/presentations/index.html")})
 
 
 def policy_for(text_without_csp: str, frame_self: bool = False) -> str:

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PORT = 8814
 BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
-TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'pnk', 'bentopdf', 'python'}
+TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python'}
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -64,17 +64,15 @@ def main() -> None:
                     folder = href.removeprefix('https://vfydr2m9wk-ops.github.io/InkDOS-tools/').split('/')[0]
                     assert href.startswith('https://vfydr2m9wk-ops.github.io/InkDOS-tools/') and folder, href
                     assert folder in TOOL_FOLDERS, href
-            assert {'archivedrop', 'pnk', 'cyberchef', 'it-tools', 'bentopdf', 'python', 'odt-view'} <= {t['id'] for t in tools}
+            assert {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python'} <= {t['id'] for t in tools}
+            # LibreOffice and Apple iWork files open in Documents, Spreadsheets and Presentations instead
+            assert not {'pnk', 'odt-view', 'ods-view', 'odp-view'} & {t['id'] for t in tools}
             assert page.locator('.tools-item').count() == len(tools)
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
             assert page.locator('.tools-item').count() == 0 and page.locator('.tools-empty').is_visible()
             page.fill('#advancedToolsSearch', 'signature')
             assert page.locator('.tools-item').count() >= 1
-            page.fill('#advancedToolsSearch', 'numbers')
-            assert page.locator('.tools-item[data-tool-id="pnk"]').count() == 1
-            page.fill('#advancedToolsSearch', '.odt')
-            assert page.locator('.tools-item[data-tool-id="odt-view"]').count() == 1
             # Escape closes and returns focus to the button
             page.keyboard.press('Escape')
             overlay.wait_for(state='hidden')

@@ -13,7 +13,7 @@ function create({session,chrome,dialog,actions}={}){const $=id=>document.getElem
  function sheet(){return session.activeSheet()}function ref(r=selection.active.r,c=selection.active.c){return root.LocalXLSX.encodeRef(r,c)}
  function isDelimited(){return session.sourceKind==='csv'||session.sourceKind==='tsv'}
  // Legacy .xls is shown view-only (no conversion to an editable XLSX); reading commands stay available.
- const VIEW_COMMANDS=new Set(['query.hyperlink','query.comment','edit.copyPayload','file.open']);function viewOnly(){return session.sourceKind==='xls'}
+ const VIEW_COMMANDS=new Set(['query.hyperlink','query.comment','edit.copyPayload','file.open']);function viewOnly(){return session.sourceKind==='xls'||session.sourceKind==='view'}
  async function ensureXlsxFor(feature){if(viewOnly()){chrome.toast('Legacy XLS is view-only');return false}if(!isDelimited())return true;const source=session.sourceKind.toUpperCase();const ok=await dialog.confirm({title:'Convert to XLSX?',message:`${feature} cannot be preserved in ${source}. Convert this workbook to XLSX before applying it?`,confirmLabel:'Convert to XLSX'});if(!ok)return false;session.convertToXlsx();chrome.sync();chrome.toast(`Converted to XLSX for ${feature}`);return true}
  function styleHasValue(value){if(value==null||value===''||value===false)return false;if(Array.isArray(value))return value.some(styleHasValue);if(typeof value==='object')return Object.values(value).some(styleHasValue);return true}
  function cellNeedsXlsx(cell){return!!(cell&&(cell.f||cell._styleDirty||Number(cell.styleId)>0||styleHasValue(cell.style)))}

@@ -30,6 +30,12 @@
         ],
         "text/tab-separated-values": [
           ".tsv"
+        ],
+        "application/vnd.oasis.opendocument.spreadsheet": [
+          ".ods"
+        ],
+        "application/vnd.apple.numbers": [
+          ".numbers"
         ]
       }
     }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-wsAsX4UmOqJBCFKo6yzO/qi5JelUdcneLUMNZG1dS+M='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-wsAsX4UmOqJBCFKo6yzO/qi5JelUdcneLUMNZG1dS+M='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'self'; manifest-src 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f7f8fa">
@@ -75,7 +75,7 @@
   </main>
 
   <footer class="statusbar"><span id="statusText">Ready</span><span id="slideStatus">Slide 1 of 1</span></footer>
-  <input id="fileInput" type="file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
+  <input id="fileInput" type="file" accept=".ppt,.pptx,.odp,.key,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.oasis.opendocument.presentation,application/vnd.apple.keynote" hidden>
 
   <div id="menuBackdrop" class="backdrop" hidden></div>
   <aside data-inkdos-commands id="generalMenu" class="drawer" aria-label="Presentations menu" hidden>
@@ -103,6 +103,7 @@
 <script src="state/selection-controller.js"></script>
 <script src="io/metafile-render.js"></script>
 <script src="io/ppt-legacy-reader.js"></script>
+<script src="io/external-viewer.js"></script>
 <script src="io/pptx-open-controller.js"></script>
 <script src="io/pptx-writer.js"></script>
 <script src="io/pptx-preservation-writer.js"></script>

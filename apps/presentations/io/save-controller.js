@@ -38,7 +38,7 @@ function create({session,chrome,promoteLegacyPpt}={}){
   }
   async function saveForReplacement(){
     if(!session.active||!session.dirty)return true;
-    if(session.sourceKind==='ppt')return true;
+    if(session.sourceKind==='ppt'||session.sourceKind==='view')return true;
     if(busy)return false;
     busy=true;const revision=session.revision;
     try{

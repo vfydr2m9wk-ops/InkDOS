@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+j0d5CZaVtB5SJ2+qtCCi6AaKaNs/aVHTyHc2qUIP0o='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+j0d5CZaVtB5SJ2+qtCCi6AaKaNs/aVHTyHc2qUIP0o='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'self'; manifest-src 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f7f8fa">
@@ -97,7 +97,7 @@
     <span id="pageStatus">—</span>
   </footer>
 
-  <input id="fileInput" type="file" accept=".docx,.rtf,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword" hidden>
+  <input id="fileInput" type="file" accept=".docx,.rtf,.doc,.odt,.pages,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf,application/msword,application/vnd.oasis.opendocument.text,application/vnd.apple.pages" hidden>
 
   <div id="menuBackdrop" class="backdrop" hidden></div>
   <aside data-inkdos-commands id="generalMenu" class="drawer general-drawer" aria-label="Documents menu" hidden>
@@ -160,6 +160,7 @@
 <script src="ui/zoom-controls.js"></script>
 <script src="ui/session-dialog.js"></script>
 <script src="io/legacy-doc-reader.js"></script>
+<script src="io/external-viewer.js"></script>
 <script src="io/file-open-controller.js"></script>
 <script src="io/save-controller.js"></script>
 <script src="ui/command-controller.js"></script>

@@ -15,6 +15,13 @@ EXPECTED = {
     "epub": {"epub"},
     "txt": {"txt", "xml", "md", "markdown", "json", "jsonl", "ndjson", "yaml", "yml", "log", "ini", "cfg", "conf", "toml", "properties"},
 }
+# Web-only, view-only formats: shown by the InkDOS-tools viewers embedded from the same origin
+# (io/external-viewer.js), so the web picker and file handlers list them but the desktop app does not.
+VIEW_ONLY = {
+    "documents": {"odt", "pages"},
+    "spreadsheets": {"ods", "numbers"},
+    "presentations": {"odp", "key"},
+}
 
 
 def handler_extensions(manifest: dict) -> set[str]:
@@ -76,9 +83,10 @@ def main() -> None:
         if launch_handler.get("client_mode") == "focus-existing":
             raise AssertionError(f"{app}: focus-existing makes XeOS reuse another workspace's window")
 
+        web = expected | VIEW_ONLY.get(app, set())
         handled = handler_extensions(manifest)
-        if handled != expected:
-            raise AssertionError(f"{app}: manifest formats mismatch: {sorted(handled)} != {sorted(expected)}")
+        if handled != web:
+            raise AssertionError(f"{app}: manifest formats mismatch: {sorted(handled)} != {sorted(web)}")
 
         desktop_extensions = {str(ext).lower().lstrip(".") for ext in desktop[app]["extensions"]}
         if desktop_extensions != expected:
@@ -93,8 +101,8 @@ def main() -> None:
                 raise AssertionError(f"txt: policy formats mismatch: {sorted(declared)} != {sorted(expected)}")
         else:
             picker = static_picker_extensions(app)
-            if picker != expected:
-                raise AssertionError(f"{app}: picker formats mismatch: {sorted(picker)} != {sorted(expected)}")
+            if picker != web:
+                raise AssertionError(f"{app}: picker formats mismatch: {sorted(picker)} != {sorted(web)}")
 
         index = (root / "index.html").read_text(encoding="utf-8")
         if 'src="runtime/platform/file-launch.js"' not in index:
