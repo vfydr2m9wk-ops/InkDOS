@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-7a9b6402065be0afb918';
+const CACHE_NAME='inkdos-v2.7.8-dd98dcc6eb24ba7112eb';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -16,11 +16,11 @@ const ASSET_HASHES={
   "./apps/documents/index.html": "99e51d57eff34286317268e5926d0cb683bc7887cf886225328ffe88c89d94fc",
   "./apps/documents/io/docx-writer.js": "c8127b883ee9be7c71627cf52968ac1316c828d35763761ac19b12382e30bf25",
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
-  "./apps/documents/io/file-open-controller.js": "9d87d8ba7b2d1b49d90705eb46db700613643badec1251aaed609c463101308d",
+  "./apps/documents/io/file-open-controller.js": "adf9c101d4ac8428dc1ee5e66422b0e2418a08045f4aa575aca1b7425792bf54",
   "./apps/documents/io/legacy-doc-reader.js": "75e59ed490020c02f5f0f30deada1f1ae7ad3d3715cccdd6951816136552b343",
   "./apps/documents/io/package-reader.js": "3c3687fc44b1565102f82468f0f54a3b6b7492dc420d6acd80aed72b38aa69ad",
   "./apps/documents/io/rtf-importer.js": "c68088a02a0b6bcaf31d62855c61238363fd4dbc9bba44c9ca9a1a787912583c",
-  "./apps/documents/io/save-controller.js": "23127fb60ff47119a42e2c26985a7dca1e6a2a50cb0ca9d79f89acfd134f211c",
+  "./apps/documents/io/save-controller.js": "0a30f41e3af79922ba04438854388b722aa0fca64f2f938c7cb95b859eb4ab5f",
   "./apps/documents/manifest.webmanifest": "38169f9c5c5093c7fe4f6dd991f828e9af3c39274db0c29c488d83b2ac2750ef",
   "./apps/documents/runtime/commands/document-commands.js": "8ad3598706e9ebf9f056997b026496be982a9f3945b56c42fae9ec877776d11f",
   "./apps/documents/runtime/frame/app-frame.css": "40ae5877868f7f18e0f0515bd44c1c0fa5403d3b51ac31d0ad2ba30f4d7a2371",
