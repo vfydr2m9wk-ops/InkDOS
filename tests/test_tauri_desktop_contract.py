@@ -27,6 +27,18 @@ def test_tauri_shell_configuration_matches_inkdos_release():
     assert config["app"]["windows"][0]["label"] == "main"
 
 
+def test_home_window_is_created_on_demand_so_closing_files_ends_the_app():
+    # A launch that opens a file must not keep a hidden Home window alive behind it (the process then
+    # never exits and a second WebView keeps its memory); Home is built only when nothing else opened.
+    config = json.loads(read(TAURI / "tauri.conf.json"))
+    assert config["app"]["windows"][0].get("create") is False
+    main = read(TAURI / "src" / "main.rs")
+    assert ".hide()" not in main
+    assert "fn show_home(" in main and "WebviewWindowBuilder::from_config(app, config)" in main
+    assert "if handle_launch_args(app.handle(), std::env::args()) == 0 {\n                show_home(app.handle());" in main
+    assert "if handle_launch_args(app, args) == 0 {\n                show_home(app);" in main
+
+
 def test_tauri_rust_dependencies_are_pinned_to_verified_release_versions():
     cargo = read(TAURI / "Cargo.toml")
     for marker in (
