@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.7.8-25b655816165db88d702';
+const CACHE_NAME='inkdos-v2.7.8-90fe35256a4775e6c46f';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "c58c1079511944d0cb2662915758564675b469f93786dd901d01574cfeaaa02b",
@@ -641,13 +641,16 @@ const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);
 const CACHE_KEY=CACHE_NAME+CACHE_SUFFIX;
 const HASH_BY_URL=new Map(Object.entries(ASSET_HASHES).map(([path,hash])=>[new URL(path,self.registration.scope).href,hash]));
 function key(request){const u=new URL(request.url);u.search='';u.hash='';if(request.mode==='navigate'&&NAVIGATION_PATHS.has(u.pathname)&&u.pathname.endsWith('/'))u.pathname+='index.html';return new Request(u.href,{method:'GET'})}
+async function matchesSnapshot(response,expected){
+  const bytes=await response.clone().arrayBuffer();
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+  return digest===expected;
+}
 async function verifiedFetch(request){
   const expected=HASH_BY_URL.get(request.url);
   const response=await fetch(new Request(request,{cache:'no-store'}));
   if(!expected||!response.ok||response.type==='opaque')throw new Error('Offline snapshot response unavailable');
-  const bytes=await response.clone().arrayBuffer();
-  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
-  if(digest!==expected)throw new Error('Offline snapshot integrity mismatch');
+  if(!await matchesSnapshot(response,expected))throw new Error('Offline snapshot integrity mismatch');
   return response;
 }
 self.addEventListener('install',event=>event.waitUntil((async()=>{
@@ -669,7 +672,10 @@ self.addEventListener('fetch',event=>{
   const normalized=key(request);if(!HASH_BY_URL.has(normalized.url))return;
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE_KEY),cached=await cache.match(normalized);
-    if(cached)return cached;
+    // Cache Storage is shared by every page of this origin (including sibling projects such as
+    // InkDOS-tools), so a cached entry is served only while it still matches this snapshot.
+    if(cached&&await matchesSnapshot(cached,HASH_BY_URL.get(normalized.url)))return cached;
+    if(cached)await cache.delete(normalized);
     // Evicted entries may only be repaired with bytes from this exact snapshot.
     const response=await verifiedFetch(normalized);await cache.put(normalized,response.clone());return response;
   })());

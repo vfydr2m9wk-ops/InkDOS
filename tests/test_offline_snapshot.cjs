@@ -6,7 +6,7 @@ const original=new Map(paths.map(p=>[new URL(p,scope).href,fs.readFileSync(p.sli
 function harness(){
  const stores=new Map(),events={},network=new Map(original);let skip=0,claim=0,offline=false;
  const url=r=>typeof r==='string'?new URL(r,scope).href:r.url;
- const cache=name=>({async match(r){return stores.get(name).get(url(r))?.clone()},async put(r,v){stores.get(name).set(url(r),v.clone())},async addAll(ps){for(const p of ps)await this.put(p,await fetcher(p))}});
+ const cache=name=>({async match(r){return stores.get(name).get(url(r))?.clone()},async put(r,v){stores.get(name).set(url(r),v.clone())},async delete(r){return stores.get(name).delete(url(r))},async addAll(ps){for(const p of ps)await this.put(p,await fetcher(p))}});
  const fetcher=async r=>{if(offline)throw Error('offline');const b=network.get(url(r));return new Response(b||'missing',{status:b?200:404})};
  const ctx={URL,Request,Response,crypto,Uint8Array,TextEncoder,console,fetch:fetcher,caches:{async open(n){if(!stores.has(n))stores.set(n,new Map());return cache(n)},async keys(){return [...stores.keys()]},async delete(n){return stores.delete(n)}},self:{registration:{scope},location:{origin:'https://example.test'},addEventListener:(t,f)=>events[t]=f,skipWaiting:async()=>skip++,clients:{claim:async()=>claim++}}};
  vm.createContext(ctx);vm.runInContext(source,ctx);
@@ -25,5 +25,12 @@ function harness(){
  const bad=harness();bad.network.set(u,Buffer.from('partial deployment'));
  await assert.rejects(bad.dispatch('install'),/integrity|snapshot|digest/i);
  assert.equal(bad.stores.size,0,'incomplete candidate cache removed');
- console.log('Worker snapshot: immutable fetch, native waiting, offline navigation, integrity rejection PASS');
+ // Cache Storage is shared by the whole origin: an entry rewritten by another same-origin page is not served
+ const poisoned=harness();await poisoned.dispatch('install');await poisoned.dispatch('activate');
+ const [cacheName]=poisoned.stores.keys();poisoned.stores.get(cacheName).set(u,new Response('document.title="POISONED"'));
+ assert.equal(await (await poisoned.get(target)).text(),original.get(u).toString(),'tampered cache entry replaced by snapshot bytes');
+ assert.equal(await (await poisoned.stores.get(cacheName).get(u)).text(),original.get(u).toString(),'cache repaired with verified bytes');
+ poisoned.stores.get(cacheName).set(u,new Response('document.title="POISONED"'));poisoned.offline();
+ await assert.rejects(poisoned.get(target),/offline|snapshot/i,'tampered entry never served, even offline');
+ console.log('Worker snapshot: immutable fetch, native waiting, offline navigation, integrity rejection, tampered cache rejection PASS');
 })().catch(e=>{console.error(e);process.exitCode=1});
