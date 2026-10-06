@@ -159,8 +159,9 @@ def main() -> None:
     # Converted legacy imports must keep their existing safe-copy semantics.
     documents = (ROOT / "apps" / "documents" / "io" / "file-open-controller.js").read_text(encoding="utf-8")
     doc_save = (ROOT / "apps" / "documents" / "io" / "save-controller.js").read_text(encoding="utf-8")
-    if "Save editable DOCX copy" not in documents or "session.kind==='doc'" not in doc_save:
-        raise AssertionError("Documents legacy DOC conversion guard missing")
+    # legacy .doc is view-only: save/share stop before the (kept) DOCX conversion
+    if "session.kind==='doc'&&!LEGACY_COPY" not in doc_save or "session.kind==='doc'" not in doc_save:
+        raise AssertionError("Documents legacy DOC view-only guard missing")
     if "legacyOutputName(file.name)" not in documents:
         raise AssertionError("RTF import must target a DOCX copy name")
 
