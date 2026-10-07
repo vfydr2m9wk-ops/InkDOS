@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-4548dfb4a919b2f1f4f7';
+const CACHE_NAME='inkdos-v2.8.0-0aac94d17275f915cd25';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -287,9 +287,9 @@ const ASSET_HASHES={
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
-  "./assets/advanced-tools.js": "a3b534c515a04e5d6e3d84a464aec5ebdc8f073f79fb403c00d00bcb71806093",
+  "./assets/advanced-tools.js": "f54062427972fb1703903371b717621d9016fa7ea1f8fe42c0373c77edf6c9e3",
   "./assets/home-launch.js": "7610e94bcfd5c2a5e765e3e1fdf2633ed1ec2901a0e775fe817aff7fb4ecbb3c",
-  "./assets/home.css": "46f82feed1f3dd312694eb108676427cb290713579b6ed91b90e6b738c0a3abf",
+  "./assets/home.css": "6e6e0a82db95c4f8cfc9dafc4468c32be3ede47018ec2016a9a47c085367b18e",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./assets/icons/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./assets/icons/office.png": "3419ee565a70ba6caf26dcc1d86b1e4a493afb21e072941ebf9c4d21b62ffba5",
@@ -298,7 +298,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "355a410b070a12623f26bdd11d50dc4ca50ad8d5f9e3e23d77e1b3f99a44ca12",
+  "./index.html": "ecb5fe561deca886dd38d411b281a461c2cc0f8f8880b79cae591678aff5b9db",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
@@ -313,7 +313,7 @@ const ASSET_HASHES={
   "./shared/localization/locales/es.js": "ef1b55d6f5c11428fa81bc30812848b1dfc258718b1fa2e98eb92c025d1c178d",
   "./shared/localization/locales/fr.js": "6169d5a001a3f544a08cc527fe7d7fc010a953803cf438805b176b36d8183458",
   "./shared/localization/locales/ja.js": "127a043522cdc319474e5ad7929dbc80d91c26851c2b5eca42b6e846b2ff87d8",
-  "./shared/localization/locales/pt-BR.js": "a59a631a31955226429317c5437e6f06f8636389d5bd1d4ee095213bae92ae4c",
+  "./shared/localization/locales/pt-BR.js": "ff65380259080db7e246157355bae4f14a47b7d061f54c633aded0a35212c3ac",
   "./shared/localization/locales/ru.js": "851a1e4c5a783afa0b2ebefbe8af55633e16e1c206236bb79c815b866ae91347",
   "./shared/localization/locales/zh-CN.js": "0edc27a6032924dfe8ff650aa71720c62bbdb9505021f3e6c5e95c6b39e1c868",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",

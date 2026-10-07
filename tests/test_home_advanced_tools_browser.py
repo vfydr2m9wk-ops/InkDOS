@@ -106,7 +106,7 @@ def main() -> None:
             assert page.locator('.tools-item[data-tool-id="pdf-tools"]').get_attribute('target') is None
             # the image converter (Squoosh) needs no isolation and opens in the panel like the other tools
             squoosh = next(t for t in tools if t['id'] == 'squoosh')
-            assert squoosh['group'] == 'Convert' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
+            assert squoosh['group'] == 'Images' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
             assert page.locator('.tools-item[data-tool-id="squoosh"]').get_attribute('target') is None
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
@@ -144,10 +144,27 @@ def main() -> None:
             page.locator('.tools-item[data-tool-id="pdf-tools"]').click(); tool_panel.wait_for(state='visible')
             page.click('#toolPanel [data-tool-full]')
             page.wait_for_url('**/labs/pdf/index.html')
+            page.goto(BASE + '/index.html', wait_until='load')
+            # quick tools row on the Home: Convert, OCR, Signer and Terminal open their tools directly
+            row = page.locator('.quick-tools [data-quick-tool]')
+            assert [row.nth(i).get_attribute('data-quick-tool') for i in range(row.count())] == ['pdf-converter', 'ocr-pdf', 'pdf-tools', 'python']
+            with context.expect_page() as opened:
+                page.click('[data-quick-tool="pdf-converter"]')
+            assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/pdf-converter.html?inkdos-theme='), opened.value.url
+            opened.value.close()
+            page.click('[data-quick-tool="python"]')
+            page.locator('#toolPanel').wait_for(state='visible')
+            assert page.get_attribute('#toolPanel iframe', 'src').startswith(TOOLS_SITE + 'python/?inkdos-theme=')
+            page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
+            assert page.evaluate("() => document.activeElement.dataset.quickTool") == 'python'
+            # developer utilities come last in the list
+            tools = page.evaluate("() => InkDOSAdvancedTools.tools")
+            assert [t['group'] for t in tools[-2:]] == ['Developer', 'Developer'], tools[-2:]
+            assert next(t for t in tools if t['id'] == 'python')['group'] == 'Data analysis'
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')
             page.evaluate("() => { document.documentElement.dataset.inkdosHost = 'tauri'; }")
-            assert button.is_hidden()
+            assert button.is_hidden() and page.locator('.quick-tools').is_hidden()
             assert not errors, errors
             browser.close()
     finally:

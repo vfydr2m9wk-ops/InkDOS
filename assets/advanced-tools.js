@@ -16,14 +16,17 @@ const TOOLS=Object.freeze([
   {id:'powerpoint-to-pdf',group:'Convert',title:'PowerPoint to PDF',description:'Convert presentations (PPTX, PPT, ODP) to PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/powerpoint-to-pdf.html',icon:'convert',window:true},
   {id:'image-to-pdf',group:'Convert',title:'Images to PDF',description:'Combine JPG, PNG, HEIC, WebP and other images into a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/image-to-pdf.html',icon:'convert',window:true},
   {id:'pdf-to-jpg',group:'Convert',title:'PDF to images',description:'Save the pages of a PDF as JPG images.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-jpg.html',icon:'convert',window:true},
-  {id:'squoosh',group:'Convert',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
+  {id:'pdf-converter',group:'Convert',title:'All conversions',description:'Every conversion to and from PDF in one list.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-converter.html',icon:'convert',window:true},
   {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
   {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/',icon:'pdf',window:true},
+  {id:'ocr-pdf',group:'PDF',title:'OCR (searchable PDF)',description:'Recognize the text of scanned pages so it can be searched and copied.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/ocr-pdf.html',icon:'pdf',window:true},
   {id:'compress-pdf',group:'PDF',title:'Compress PDF',description:'Make a PDF file smaller.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/compress-pdf.html',icon:'pdf',window:true},
   {id:'merge-pdf',group:'PDF',title:'Merge PDFs',description:'Join several PDF files into one.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/merge-pdf.html',icon:'pdf',window:true},
+  {id:'squoosh',group:'Images',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
   {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
+  {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
+  // developer utilities last: rarely needed outside software work
   {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
-  {id:'python',group:'Developer',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
   {id:'it-tools',group:'Developer',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://inkdos-tools.github.io/InkDOS-tools/it-tools/',icon:'code'}
 ]);
 const ICONS={
@@ -86,7 +89,9 @@ function closeTool(){
 function icon(name){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[name]||ICONS.tool)+'</svg>'}
 function render(query){
   const q=String(query||'').trim().toLowerCase();
-  const shown=TOOLS.filter(t=>!q||(t.title+' '+t.description+' '+t.group).toLowerCase().includes(q));
+  // search the shown (translated) words as well as the English ones
+  const tr=s=>{try{const l=window.InkDOSLocalization;return l&&typeof l.t==='function'?String(l.t(s)):s}catch(_){return s}};
+  const shown=TOOLS.filter(t=>!q||[t.title,t.description,t.group].map(s=>s+' '+tr(s)).join(' ').toLowerCase().includes(q));
   list.replaceChildren();
   let group='';
   for(const tool of shown){
@@ -115,6 +120,11 @@ function install(){
   if(!trigger||!overlay)return;
   list=doc.getElementById('advancedToolsList');search=doc.getElementById('advancedToolsSearch');
   trigger.addEventListener('click',open);
+  // quick tools row on the Home: each button opens one tool directly (a new tab for window tools)
+  doc.querySelectorAll('[data-quick-tool]').forEach(button=>button.addEventListener('click',()=>{
+    const tool=TOOLS.find(t=>t.id===button.dataset.quickTool);if(!tool)return;
+    lastFocus=button;if(tool.window)openWindowTool(tool);else openTool(tool);
+  }));
   doc.getElementById('advancedToolsClose')?.addEventListener('click',close);
   overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
   search.addEventListener('input',()=>render(search.value));
