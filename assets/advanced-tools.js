@@ -23,7 +23,7 @@ const TOOLS=Object.freeze([
   {id:'merge-pdf',group:'Convert',title:'Merge PDFs',description:'Join several PDF files into one.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/merge-pdf.html',icon:'convert',window:true},
   {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
   {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
-  {id:'python',group:'Developer',title:'Python terminal',description:'A Python 3 console with the standard library (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
+  {id:'python',group:'Developer',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
   {id:'it-tools',group:'Developer',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://inkdos-tools.github.io/InkDOS-tools/it-tools/',icon:'code'}
 ]);
 const ICONS={
