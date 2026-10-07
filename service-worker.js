@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-0aac94d17275f915cd25';
+const CACHE_NAME='inkdos-v2.8.0-4d17ea9c278019770e08';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -309,13 +309,13 @@ const ASSET_HASHES={
   "./labs/pdf/vendor/tesseract/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
   "./manifest.webmanifest": "0d0938adf9208849472062be4b8a5a247c986d76ca982095f1cf4ec05e4cdaf8",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "accab1e93d8acca49e47d6170e5dc09470d52df3017f074e2bea9466dd27bddd",
-  "./shared/localization/locales/es.js": "ef1b55d6f5c11428fa81bc30812848b1dfc258718b1fa2e98eb92c025d1c178d",
-  "./shared/localization/locales/fr.js": "6169d5a001a3f544a08cc527fe7d7fc010a953803cf438805b176b36d8183458",
-  "./shared/localization/locales/ja.js": "127a043522cdc319474e5ad7929dbc80d91c26851c2b5eca42b6e846b2ff87d8",
+  "./shared/localization/locales/de.js": "6bedfe8356fc20485c04368c404ec56a9f7749b3180c7e5320bfee55ef648d55",
+  "./shared/localization/locales/es.js": "c2627c0511b896a7cc1396f74848efdff67a418bf6f77a6323b4961de341c150",
+  "./shared/localization/locales/fr.js": "11aa759c02a221a3120ff3f7814c02ca2062191c082d060e81bf20a2083a5648",
+  "./shared/localization/locales/ja.js": "d054b314f4dde93eea465f52d9c5468cf29bb629b8e6309012bfe77ad2252dc4",
   "./shared/localization/locales/pt-BR.js": "ff65380259080db7e246157355bae4f14a47b7d061f54c633aded0a35212c3ac",
-  "./shared/localization/locales/ru.js": "851a1e4c5a783afa0b2ebefbe8af55633e16e1c206236bb79c815b866ae91347",
-  "./shared/localization/locales/zh-CN.js": "0edc27a6032924dfe8ff650aa71720c62bbdb9505021f3e6c5e95c6b39e1c868",
+  "./shared/localization/locales/ru.js": "7081ce9b650164a6ac70364fbb4f4f444152257a5983437d6776f4fae13c002a",
+  "./shared/localization/locales/zh-CN.js": "535a6fd3a93d8d75c8aad98e56c3770511ab152358954f23f36a4f739c68b55c",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
   "./shared/localization/settings-strip.js": "67046549278145618301ef81f28be55ea05d8c042d43a9be36b69b78d4c518e6",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
