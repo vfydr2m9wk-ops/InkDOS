@@ -3,24 +3,24 @@
 // existing open-source tool that runs entirely in this browser; only tools that are actually
 // available are listed, so the menu never leads to a missing page.
 const TOOLS=Object.freeze([
-  {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
-  // from here on: open-source tools built and served by https://github.com/inkdos-tools/InkDOS-tools, a
-  // separate origin on purpose (their third-party code cannot reach InkDOS storage); toolHref() passes
-  // the InkDOS appearance along, since that site cannot read it
-  // BentoPDF opens in its own tab (window:true): its Office-to-PDF conversion (LibreOffice WebAssembly) needs a
-  // cross-origin isolated page, which a frame inside InkDOS cannot be
-  {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/',icon:'pdf',window:true},
-  // direct shortcuts to the most used PDF toolkit conversions
+  // Convert first: the Office <-> PDF conversions are the most used tools. They are pages of the PDF toolkit below,
+  // served (like every tool from here on except pdf-tools) by https://github.com/inkdos-tools/InkDOS-tools, a
+  // separate origin on purpose (their third-party code cannot reach InkDOS storage); toolHref() passes the InkDOS
+  // appearance along, since that site cannot read it. Toolkit pages open in their own tab (window:true): its
+  // Office-to-PDF conversion (LibreOffice WebAssembly) needs a cross-origin isolated page, which a frame inside
+  // InkDOS cannot be
   {id:'word-to-pdf',group:'Convert',title:'Word to PDF',description:'Convert Word documents (DOCX, DOC, ODT, RTF) to PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/word-to-pdf.html',icon:'convert',window:true},
-  {id:'excel-to-pdf',group:'Convert',title:'Excel to PDF',description:'Convert spreadsheets (XLSX, XLS, ODS) to PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/excel-to-pdf.html',icon:'convert',window:true},
-  {id:'powerpoint-to-pdf',group:'Convert',title:'PowerPoint to PDF',description:'Convert presentations (PPTX, PPT, ODP) to PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/powerpoint-to-pdf.html',icon:'convert',window:true},
   {id:'pdf-to-docx',group:'Convert',title:'PDF to Word',description:'Turn a PDF into an editable Word document (DOCX).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-docx.html',icon:'convert',window:true},
+  {id:'excel-to-pdf',group:'Convert',title:'Excel to PDF',description:'Convert spreadsheets (XLSX, XLS, ODS) to PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/excel-to-pdf.html',icon:'convert',window:true},
   {id:'pdf-to-excel',group:'Convert',title:'PDF to Excel',description:'Extract the tables of a PDF into a spreadsheet (XLSX).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-excel.html',icon:'convert',window:true},
+  {id:'powerpoint-to-pdf',group:'Convert',title:'PowerPoint to PDF',description:'Convert presentations (PPTX, PPT, ODP) to PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/powerpoint-to-pdf.html',icon:'convert',window:true},
   {id:'image-to-pdf',group:'Convert',title:'Images to PDF',description:'Combine JPG, PNG, HEIC, WebP and other images into a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/image-to-pdf.html',icon:'convert',window:true},
   {id:'pdf-to-jpg',group:'Convert',title:'PDF to images',description:'Save the pages of a PDF as JPG images.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-jpg.html',icon:'convert',window:true},
-  {id:'compress-pdf',group:'Convert',title:'Compress PDF',description:'Make a PDF file smaller.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/compress-pdf.html',icon:'convert',window:true},
   {id:'squoosh',group:'Convert',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
-  {id:'merge-pdf',group:'Convert',title:'Merge PDFs',description:'Join several PDF files into one.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/merge-pdf.html',icon:'convert',window:true},
+  {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
+  {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/',icon:'pdf',window:true},
+  {id:'compress-pdf',group:'PDF',title:'Compress PDF',description:'Make a PDF file smaller.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/compress-pdf.html',icon:'pdf',window:true},
+  {id:'merge-pdf',group:'PDF',title:'Merge PDFs',description:'Join several PDF files into one.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/merge-pdf.html',icon:'pdf',window:true},
   {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
   {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
   {id:'python',group:'Developer',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
