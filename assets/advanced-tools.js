@@ -69,6 +69,14 @@ function openTool(tool){
   panel.dataset.toolId=tool.id;panel.hidden=false;doc.documentElement.classList.add('tools-open');
   requestAnimationFrame(()=>panel.querySelector('[data-tool-back]').focus({preventScroll:true}));
 }
+// Window tools open in a new tab; where a new tab cannot open (a web desktop or an installed app that blocks
+// pop-ups, as on iPad), they open in the panel instead, where everything but Office-to-PDF still works.
+function openWindowTool(tool){
+  let win=null;
+  try{win=window.open(toolHref(tool),'_blank')}catch(_){}
+  if(win){try{win.opener=null}catch(_){}close();return}
+  openTool(tool);
+}
 function closeTool(){
   if(!shell||shell.hidden)return;
   shell.hidden=true;shell.querySelector('.tool-shell-body').replaceChildren();delete shell.dataset.toolId;
@@ -113,8 +121,8 @@ function install(){
   list.addEventListener('click',event=>{
     const item=event.target.closest('.tools-item');
     if(!item||event.metaKey||event.ctrlKey||event.shiftKey||event.button!==0)return; // new tab/window: the browser handles it
-    const tool=TOOLS.find(t=>t.id===item.dataset.toolId);if(!tool||tool.window)return; // window tools: the link opens a new tab
-    event.preventDefault();openTool(tool);
+    const tool=TOOLS.find(t=>t.id===item.dataset.toolId);if(!tool)return;
+    event.preventDefault();if(tool.window)openWindowTool(tool);else openTool(tool);
   });
   doc.addEventListener('keydown',event=>{if(event.key==='Escape'&&shell&&!shell.hidden){event.preventDefault();closeTool()}});
   doc.addEventListener('keydown',event=>{
@@ -129,5 +137,5 @@ function install(){
   });
 }
 if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',install,{once:true});else install();
-window.InkDOSAdvancedTools=Object.freeze({open,close,openTool:id=>{const tool=TOOLS.find(t=>t.id===id);if(tool&&tool.window)window.open(toolHref(tool),'_blank','noopener');else if(tool)openTool(tool);return !!tool},closeTool,get tools(){return TOOLS.slice()}});
+window.InkDOSAdvancedTools=Object.freeze({open,close,openTool:id=>{const tool=TOOLS.find(t=>t.id===id);if(tool&&tool.window)openWindowTool(tool);else if(tool)openTool(tool);return !!tool},closeTool,get tools(){return TOOLS.slice()}});
 })();

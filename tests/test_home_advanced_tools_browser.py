@@ -94,6 +94,15 @@ def main() -> None:
             assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/word-to-pdf.html?inkdos-theme='), opened.value.url
             opened.value.close()
             assert page.locator('#toolPanel iframe').count() == 0
+            # where a new tab cannot open (pop-ups blocked, e.g. a web desktop on iPad), the tool opens in the panel
+            page.evaluate("() => { window.__open = window.open; window.open = () => null; }")
+            button.click(); overlay.wait_for(state='visible')
+            page.locator('.tools-item[data-tool-id="word-to-pdf"]').click()
+            page.locator('#toolPanel').wait_for(state='visible')
+            assert page.get_attribute('#toolPanel iframe', 'src').startswith(TOOLS_SITE + 'bentopdf/word-to-pdf.html?inkdos-theme=')
+            page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
+            page.evaluate("() => { window.open = window.__open; }")
+            button.click(); overlay.wait_for(state='visible')
             assert page.locator('.tools-item[data-tool-id="pdf-tools"]').get_attribute('target') is None
             # the image converter (Squoosh) needs no isolation and opens in the panel like the other tools
             squoosh = next(t for t in tools if t['id'] == 'squoosh')
