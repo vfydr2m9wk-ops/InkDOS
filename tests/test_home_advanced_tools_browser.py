@@ -80,9 +80,12 @@ def main() -> None:
             assert page.locator('.tools-item').count() == len(tools)
             # the PDF toolkit and its conversion shortcuts open in their own tab: Office-to-PDF conversion needs a
             # cross-origin isolated page, which a frame inside InkDOS cannot be
-            convert = [t for t in tools if t['group'] == 'Convert' and t['id'] != 'squoosh']
-            assert {'word-to-pdf', 'pdf-to-docx', 'image-to-pdf', 'compress-pdf'} <= {t['id'] for t in convert}, convert
-            for tool in convert + [t for t in tools if t['id'] == 'bentopdf']:
+            # Convert comes first, Word <-> PDF at the top, each Office conversion next to its reverse
+            assert [t['id'] for t in tools[:5]] == ['word-to-pdf', 'pdf-to-docx', 'excel-to-pdf', 'pdf-to-excel', 'powerpoint-to-pdf'], tools[:5]
+            assert all(t['group'] == 'Convert' for t in tools[:5]) and page.locator('.tools-group').first.inner_text().strip().lower() == 'convert'
+            toolkit = [t for t in tools if t['href'].startswith(TOOLS_SITE + 'bentopdf/')]
+            assert {'bentopdf', 'word-to-pdf', 'pdf-to-docx', 'image-to-pdf', 'compress-pdf'} <= {t['id'] for t in toolkit}, toolkit
+            for tool in toolkit:
                 assert tool.get('window') and tool['href'].startswith(TOOLS_SITE + 'bentopdf/'), tool
                 item = page.locator(f'.tools-item[data-tool-id="{tool["id"]}"]')
                 assert (item.get_attribute('target'), item.get_attribute('rel')) == ('_blank', 'noopener'), tool['id']
@@ -91,6 +94,15 @@ def main() -> None:
             assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/word-to-pdf.html?inkdos-theme='), opened.value.url
             opened.value.close()
             assert page.locator('#toolPanel iframe').count() == 0
+            # where a new tab cannot open (pop-ups blocked, e.g. a web desktop on iPad), the tool opens in the panel
+            page.evaluate("() => { window.__open = window.open; window.open = () => null; }")
+            button.click(); overlay.wait_for(state='visible')
+            page.locator('.tools-item[data-tool-id="word-to-pdf"]').click()
+            page.locator('#toolPanel').wait_for(state='visible')
+            assert page.get_attribute('#toolPanel iframe', 'src').startswith(TOOLS_SITE + 'bentopdf/word-to-pdf.html?inkdos-theme=')
+            page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
+            page.evaluate("() => { window.open = window.__open; }")
+            button.click(); overlay.wait_for(state='visible')
             assert page.locator('.tools-item[data-tool-id="pdf-tools"]').get_attribute('target') is None
             # the image converter (Squoosh) needs no isolation and opens in the panel like the other tools
             squoosh = next(t for t in tools if t['id'] == 'squoosh')
