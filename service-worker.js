@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-abb03891f742bff01ec6';
+const CACHE_NAME='inkdos-v2.8.0-24c66a082505fcbb431b';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -287,7 +287,7 @@ const ASSET_HASHES={
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
-  "./assets/advanced-tools.js": "c16decfcfb38d5c512e4eeb394792ad800571cbdc869a5cba611e9c67f5785ad",
+  "./assets/advanced-tools.js": "e2d712ad2b7830994ad80b4ace5fc753ca5c598764ef296d927967d500fcdcfc",
   "./assets/home-launch.js": "7610e94bcfd5c2a5e765e3e1fdf2633ed1ec2901a0e775fe817aff7fb4ecbb3c",
   "./assets/home.css": "3820d85201c2629b99db71e20207c6c662e8d1ac397384d0ec58163ed9ee906e",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",

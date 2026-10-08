@@ -45,7 +45,7 @@ def main() -> None:
                 page.goto(BASE + '/index.html', wait_until='load')
                 link = page.locator('.beta-office a.beta-tool')
                 assert link.count() == 1 and link.is_visible(), width
-                assert link.get_attribute('href') == 'https://inkdos-tools.github.io/'
+                assert link.get_attribute('href').split('?')[0] == 'https://inkdos-tools.github.io/'
                 assert link.get_attribute('target') == '_blank'
                 assert set(link.get_attribute('rel').split()) >= {'noopener', 'noreferrer'}
                 assert link.inner_text().strip() == 'Full office (beta)'
@@ -69,6 +69,10 @@ def main() -> None:
             page.goto(BASE + '/index.html', wait_until='load')
             page.wait_for_function("() => (document.querySelector('.beta-office a')?.innerText || '').includes('Office completo')", timeout=10000)
             assert 'celulares' in page.locator('.beta-office small').inner_text()
+            # the start page on the tools origin gets the InkDOS appearance and language with the link
+            page.locator('.beta-office a').dispatch_event('pointerdown')
+            href = page.locator('.beta-office a').get_attribute('href')
+            assert href.startswith('https://inkdos-tools.github.io/?') and 'lang=pt-BR' in href and 'inkdos-theme=' in href, href
             browser.close()
     finally:
         server.terminate()
