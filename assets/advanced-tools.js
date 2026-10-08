@@ -139,6 +139,12 @@ function install(){
     const tool=TOOLS.find(t=>t.id===button.dataset.quickTool);if(!tool)return;
     lastFocus=button;if(tool.window)openWindowTool(tool);else openTool(tool);
   }));
+  // Full office (beta): the start page on the tools origin follows the InkDOS appearance and language (it cannot
+  // read InkDOS storage), so they ride on the link; set just before the browser follows it (click, middle click)
+  doc.querySelectorAll('a.beta-tool').forEach(link=>{
+    const withSettings=()=>{const url=new URL(link.getAttribute('href'),location.href);url.searchParams.set('inkdos-theme',doc.documentElement.dataset.theme==='dark'?'dark':'light');const lang=window.InkDOSLocalization?.currentLanguage;if(lang)url.searchParams.set('lang',lang);link.href=url.href};
+    link.addEventListener('pointerdown',withSettings);link.addEventListener('click',withSettings);link.addEventListener('focus',withSettings);
+  });
   doc.getElementById('advancedToolsClose')?.addEventListener('click',close);
   overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
   search.addEventListener('input',()=>{onlyGroup=null;render(search.value)});
