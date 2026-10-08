@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-21871a2cc446fdc5b3fb';
+const CACHE_NAME='inkdos-v2.8.0-53677d24640f95f80f79';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -298,7 +298,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "4fff69833f5eaa3e54e0ae8449e46e0b22b7996a6fbbb82df6ebdc3967ef29aa",
+  "./index.html": "621f27a51c91642c47b7d35cc43fa435ddcf1e8619cf2cb05ab564f28a9c06a0",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
@@ -666,6 +666,16 @@ self.addEventListener('install',event=>event.waitUntil((async()=>{
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   for(const name of await caches.keys())if(name!==CACHE_KEY&&name.startsWith('inkdos-v')&&name.endsWith(CACHE_SUFFIX))await caches.delete(name);
 })()));
+// A new version waits for every InkDOS page to close (it never replaces the worker beneath an open editor). The Home
+// asks a waiting worker to take over only when no other InkDOS page is open, so an installed app or a web desktop that
+// keeps one tab alive still receives updates.
+self.addEventListener('message',event=>{
+  if(event.data!=='inkdos:activate-if-alone')return;
+  event.waitUntil((async()=>{
+    const pages=(await self.clients.matchAll({type:'window',includeUncontrolled:true})).filter(c=>c.url.startsWith(self.registration.scope));
+    if(pages.length<=1)await self.skipWaiting();
+  })());
+});
 self.addEventListener('fetch',event=>{
   const request=event.request;if(request.method!=='GET')return;
   const url=new URL(request.url);if(url.origin!==self.location.origin)return;
