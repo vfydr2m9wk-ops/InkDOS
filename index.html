@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-fqvsUHTwqTos1UGKFAQ0WiJqHz6X/fd7NHpppe0z/7E=' 'sha256-gibK2JzfOND/upLXOEj95heKe3Qc8DpiycBkWBQZINA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'self' https://inkdos-tools.github.io; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-cKiSdvXMPT0RSlfmUkr2CET7ai4elz3QgKQjGYnyhz0=' 'sha256-fqvsUHTwqTos1UGKFAQ0WiJqHz6X/fd7NHpppe0z/7E='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; media-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'self' https://inkdos-tools.github.io; manifest-src 'self'">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f8fa">
@@ -102,7 +102,7 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   // Home reloads once to show the new version.
   const sw=navigator.serviceWorker;let reloaded=false;
   const ask=reg=>{if(reg&&reg.waiting&&sw.controller)reg.waiting.postMessage('inkdos:activate-if-alone')};
-  sw.register('./service-worker.js',{scope:'./'}).then(reg=>{
+  navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).then(reg=>{
     ask(reg);
     reg.addEventListener('updatefound',()=>{const w=reg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed')ask(reg)})});
   }).catch(()=>{});
