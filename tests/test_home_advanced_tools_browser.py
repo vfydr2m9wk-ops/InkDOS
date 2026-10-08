@@ -104,9 +104,9 @@ def main() -> None:
             page.evaluate("() => { window.open = window.__open; }")
             button.click(); overlay.wait_for(state='visible')
             assert page.locator('.tools-item[data-tool-id="pdf-tools"]').get_attribute('target') is None
-            # the image converter (Squoosh) needs no isolation and opens in the panel like the other tools
+            # the image converter (Squoosh, legacy) needs no isolation and opens in the panel like the other tools
             squoosh = next(t for t in tools if t['id'] == 'squoosh')
-            assert squoosh['group'] == 'Images' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
+            assert squoosh['group'] == 'Legacy' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
             assert page.locator('.tools-item[data-tool-id="squoosh"]').get_attribute('target') is None
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
@@ -131,7 +131,7 @@ def main() -> None:
             panel_state = page.evaluate("""() => ({ title: document.getElementById('toolPanelTitle').textContent,
                 src: document.querySelector('#toolPanel iframe')?.getAttribute('src'),
                 full: document.querySelector('#toolPanel [data-tool-full]').getAttribute('href') })""")
-            assert panel_state == {'title': 'PDF tools (beta)', 'src': './labs/pdf/index.html', 'full': './labs/pdf/index.html'}, panel_state
+            assert panel_state == {'title': 'PDF signer (legacy)', 'src': './labs/pdf/index.html', 'full': './labs/pdf/index.html'}, panel_state
             page.frame_locator('#toolPanel iframe').locator('body').wait_for(timeout=15000)
             # back returns to the list, Escape closes everything and drops the frame
             page.click('#toolPanel [data-tool-back]')
@@ -145,9 +145,9 @@ def main() -> None:
             page.click('#toolPanel [data-tool-full]')
             page.wait_for_url('**/labs/pdf/index.html')
             page.goto(BASE + '/index.html', wait_until='load')
-            # quick tools row on the Home: Convert, OCR, Signer and Terminal open their tools directly
+            # quick tools row on the Home: Convert, OCR, the PDF toolkit and Terminal open their tools directly
             row = page.locator('.quick-tools button')
-            assert [row.nth(i).get_attribute('data-quick-group') or row.nth(i).get_attribute('data-quick-tool') for i in range(row.count())] == ['Convert', 'ocr-pdf', 'pdf-tools', 'python']
+            assert [row.nth(i).get_attribute('data-quick-group') or row.nth(i).get_attribute('data-quick-tool') for i in range(row.count())] == ['Convert', 'ocr-pdf', 'bentopdf', 'python']
             # Convert opens the list with only the conversions (light, inside InkDOS); searching shows every group again
             page.click('[data-quick-group="Convert"]')
             overlay.wait_for(state='visible')
@@ -160,6 +160,10 @@ def main() -> None:
                 page.click('[data-quick-tool="ocr-pdf"]')
             assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/ocr-pdf.html?inkdos-theme='), opened.value.url
             opened.value.close()
+            with context.expect_page() as opened:
+                page.click('[data-quick-tool="bentopdf"]')
+            assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/?inkdos-theme='), opened.value.url
+            opened.value.close()
             # the main PDF tools are direct shortcuts (a toolkit page in its own tab), not only inside the toolkit
             assert {'edit-pdf', 'sign-pdf', 'split-pdf', 'form-filler', 'encrypt-pdf'} <= {t['id'] for t in tools}
             page.click('[data-quick-tool="python"]')
@@ -167,9 +171,10 @@ def main() -> None:
             assert page.get_attribute('#toolPanel iframe', 'src').startswith(TOOLS_SITE + 'python/?inkdos-theme=')
             page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
             assert page.evaluate("() => document.activeElement.dataset.quickTool") == 'python'
-            # developer utilities come last in the list
+            # legacy-home-tools: the tools outside the maintained set (PDF toolkit, Python) come last, in Legacy
             tools = page.evaluate("() => InkDOSAdvancedTools.tools")
-            assert [t['group'] for t in tools[-2:]] == ['Developer', 'Developer'], tools[-2:]
+            assert [t['id'] for t in tools if t['group'] == 'Legacy'] == ['pdf-tools', 'squoosh', 'archivedrop', 'cyberchef', 'it-tools']
+            assert [t['group'] for t in tools[-5:]] == ['Legacy'] * 5, tools[-5:]
             assert next(t for t in tools if t['id'] == 'python')['group'] == 'Data analysis'
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')
