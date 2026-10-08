@@ -48,6 +48,11 @@ def main() -> None:
             page = context.new_page()
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(BASE + '/index.html', wait_until='load')
+            # the Light Home shows no buttons under the workspaces (owner request): the row is hidden; shown here to
+            # keep exercising the catalog behind it
+            assert page.locator('.quick-tools').is_hidden()
+            unhide = "() => { document.querySelector('.quick-tools').hidden = false; }"
+            page.evaluate(unhide)
             button = page.locator('#advancedToolsButton')
             assert button.is_visible() and 'Advanced tools' in button.inner_text()
             button.click()
@@ -145,6 +150,7 @@ def main() -> None:
             page.click('#toolPanel [data-tool-full]')
             page.wait_for_url('**/labs/pdf/index.html')
             page.goto(BASE + '/index.html', wait_until='load')
+            page.evaluate(unhide)
             # quick tools row on the Home: Convert, OCR, the PDF toolkit and Terminal open their tools directly; the
             # Advanced tools button ends the same row
             row = page.locator('.quick-tools button')
