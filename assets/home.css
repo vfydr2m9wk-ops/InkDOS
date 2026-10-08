@@ -51,3 +51,6 @@ html.tools-open,html.tools-open body{overflow:hidden}
 .tool-shell-body{flex:1;min-height:0}.tool-shell-frame{display:block;width:100%;height:100%;border:0;background:var(--bg)}
 @media(max-width:720px){.tools-button{height:36px;padding:0 10px;border-radius:10px}.tools-button span,.tool-shell-back span{display:none}.tools-panel{max-height:100%}}
 html[data-inkdos-host=tauri] .brand-row .home-appearance{margin-left:auto}
+/* quick tools: the most used advanced tools, one tap from the Home (assets/advanced-tools.js opens them) */
+.quick-tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.quick-tool{height:40px;padding:0 16px 0 12px;border:1px solid var(--border);border-radius:12px;background:var(--pill-bg);color:var(--text);display:inline-flex;align-items:center;gap:8px;font:600 14px/1 inherit;font-family:inherit;cursor:pointer}.quick-tool:hover{background:var(--menu-active)}.quick-tool:focus-visible{outline:3px solid color-mix(in srgb,#2f6fed 32%,transparent);outline-offset:2px}.quick-tool svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:720px){.quick-tools{margin-top:16px;gap:8px}.quick-tool{height:38px;padding:0 12px 0 10px;font-size:13px}}
