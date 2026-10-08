@@ -1,116 +1,67 @@
-# InkDOS 2.8.0
+# InkDOS
 
-**Official GitHub repository:** [InkDOS by vfydr2m9wk-ops](https://github.com/vfydr2m9wk-ops/InkDOS) — canonical source repository for InkDOS.
+**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
 
-> **Current source release identity:** InkDOS 2.8.0 (stable). `v2.7.8`, `v2.7.7`, `v2.7.6`, `v2.7.5`, `v2.7.4`, `v2.7.3`, `v2.7.2`, `v2.7.1` and `v2.7.0` remain preserved as earlier 2.7 stable releases, `v2.6.2` remains preserved as the last 2.6 beta checkpoint and `v2.6.1` as the previous stable fallback.
+InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser or in a small Windows app. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
-**Live web/PWA:** https://vfydr2m9wk-ops.github.io/InkDOS/  
-**Latest release:** https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest  
-**Source:** https://github.com/vfydr2m9wk-ops/InkDOS
+## Why it exists
 
-InkDOS is a local-first productivity suite with six workspaces: Documents, Spreadsheets, Presentations, Plain Text, EPUB and PDF. The browser/PWA edition and the Tauri desktop editions use the same application source. InkDOS has no application backend or telemetry service.
+I wanted one place to open and edit my files on every device I actually use (an iPad, often inside the XeOS web desktop, iPad Safari, and a Windows PC) without installing a full office suite on each one, without uploading documents anywhere, and without a heavy app eating RAM. Office suites in the browser usually mean a cloud account; desktop suites mean a large install per device. InkDOS sits in between: a static web app that works offline once loaded, and the same thing packaged for Windows.
 
-## Direct web apps
+It began as a set of lightweight editors written for this project. Over time the goal changed: instead of rebuilding what mature open-source projects already do well, InkDOS now gathers them behind one Home and keeps them on the device.
 
-Each workspace can be opened directly; Home is a launcher rather than a required runtime dependency.
+## Where it stands
 
-| Workspace | Direct link | Primary formats |
+InkDOS has two engines, switched on the Home:
+
+| | **Full version** | **Light version** |
 | --- | --- | --- |
-| Documents | https://vfydr2m9wk-ops.github.io/InkDOS/apps/documents/ | DOC / DOCX / RTF |
-| Spreadsheets | https://vfydr2m9wk-ops.github.io/InkDOS/apps/spreadsheets/ | XLS / XLSX |
-| Presentations | https://vfydr2m9wk-ops.github.io/InkDOS/apps/presentations/ | PPT / PPTX |
-| Plain Text | https://vfydr2m9wk-ops.github.io/InkDOS/apps/txt/ | TXT |
-| EPUB | https://vfydr2m9wk-ops.github.io/InkDOS/apps/epub/ | EPUB |
-| PDF | https://vfydr2m9wk-ops.github.io/InkDOS/apps/pdf/ | PDF |
+| Word, Excel, PowerPoint | ONLYOFFICE editors running in the browser ([ranuts/document](https://github.com/ranuts/document)) | InkDOS's own editors |
+| PDF | PDF.js viewer, plus the BentoPDF toolkit (edit, split, merge, sign, OCR, convert) | InkDOS PDF workspace |
+| EPUB and e-books | foliate-js (EPUB, MOBI, FB2, CBZ) | InkDOS EPUB reader |
+| Plain text | CodeMirror | InkDOS text editor |
+| Extras | Python terminal (Pyodide) | none |
+| Default on | Windows app | Web (light enough for XeOS on iPad) |
 
-Support is intentionally narrower than Microsoft Office, LibreOffice or Acrobat. Accepting an extension does not imply exhaustive preservation of every construct in that format.
+- **Full version:** built from established projects. It lives on its own site, [inkdos-tools.github.io](https://inkdos-tools.github.io), kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. Its **Offline tools** panel downloads every tool to the device in one go and shows what is already stored.
+- **Light version:** the original InkDOS editors. Smaller and faster, with narrower format support. It stays as the light option and as the fallback.
 
-## Release baseline
+Files opened from the system (Windows "Open with", or the browser's file handling) go to the matching app of the chosen engine.
 
-InkDOS 2.8.0 is the current stable source release identity. Windows uses the signed NSIS installer built from the matching immutable `v2.8.0` tag; only Windows is built (2.7.8 was the last macOS (DMG) and Linux (AppImage) build). The desktop updater consumes the release `latest.json` manifest and matching signatures from GitHub Releases. Pre-publication physical Windows upgrade validation is no longer a release gate; the evidence collector remains available as an optional manual tool.
+**Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) always load from the internet.
 
-A release tag is the immutable product checkpoint. `main` may contain later documentation, CI or development-process improvements without rewriting published baselines. The `v2.6.2` tag remains the preserved beta checkpoint and `v2.6.1` remains the previous stable fallback.
+**Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Other platforms may work but are not maintained.
 
-See `docs/QA-BASELINE-2.5.2.md` for the final verification summary.
+## Privacy and storage
 
-## Resource efficiency
+- No backend and no analytics. Every tool runs in the browser.
+- Each site's Content Security Policy only lets it reach its own address. The one exception is the optional online Python terminal, which may install packages from PyPI.
+- Drafts and recent files stay in the browser's storage on the device.
+- InkDOS drafts and the ONLYOFFICE recent-files history are encrypted (AES-GCM) with a key that cannot be exported from the device.
 
-In some informal local tests, InkDOS showed substantially lower application-attributed RAM usage than conventional desktop applications when opening comparable PDF and DOCX workloads. These observations are not standardized benchmarks and may vary depending on the operating system, runtime, document complexity and how background processes are accounted for. They nevertheless suggest that InkDOS's lightweight, local-first architecture has the potential to reduce memory overhead for common document workflows.
+## Credits
 
-## Runtime
+InkDOS stands on the work of these projects:
 
-The application runtime is intentionally small and explicit:
+- [ONLYOFFICE](https://github.com/ONLYOFFICE) via [ranuts/document](https://github.com/ranuts/document)
+- [BentoPDF](https://github.com/alam00000/bentopdf) and [PDF.js](https://github.com/mozilla/pdf.js)
+- [foliate-js](https://github.com/johnfactotum/foliate-js)
+- [CodeMirror](https://codemirror.net/5/)
+- [Pyodide](https://pyodide.org)
+- [Tauri](https://tauri.app)
+- pdf-lib, JSZip, pako and Tesseract.js in the Light editors
 
-- `index.html`, `assets/`, `service-worker.js` and `manifest.webmanifest` provide the optional Home/PWA shell.
-- `apps/<workspace>/` contains each workspace's functional code, state, I/O, UI and local vendor dependencies.
-- `shared/` is currently limited to approved presentation-layer localization and interface-density helpers.
-- `desktop/` contains the Tauri host, native packaging, signing and updater support.
+Each keeps its own license; see `docs/THIRD_PARTY_NOTICES.md` and the license files shipped with each tool.
 
-`VERSION.json` is the authoritative product version for web and desktop editions.
+## For contributors
 
-## Maintenance model
+- `index.html`, `assets/`, `service-worker.js` and `manifest.webmanifest`: the Home and offline shell.
+- `apps/<workspace>/`: the Light editors.
+- `desktop/`: the Windows app (Tauri v2), its installer and updater.
+- `VERSION.json`: the product version.
 
-InkDOS is maintained with AI-assisted implementation and human audit. Repository rules intentionally favor:
+The project is maintained with AI-assisted changes and human review: small, component-local changes, regression tests before merging, and protected frozen legacy code. See `AGENTS.md`, `CONTRIBUTING.md`, `docs/ARCHITECTURE.md` and `docs/KNOWN_LIMITATIONS.md`.
 
-- small, component-local changes;
-- preservation of working code over cosmetic refactoring;
-- no opportunistic rewrites during unrelated fixes;
-- regression tests before integration;
-- explicit protection for deliberately preserved frozen legacy;
-- independent workspace ownership so a repair to one app does not require rewriting its siblings.
+The full-version tools are built in their own repositories: [InkDOS-tools](https://github.com/inkdos-tools/InkDOS-tools) and [inkdos-tools.github.io](https://github.com/inkdos-tools/inkdos-tools.github.io).
 
-The 2.6 line formalizes conservative isolation: each workspace owns its state and preferences, while proven APIs, names and legacy structures remain unchanged unless a concrete compatibility requirement justifies a change.
-
-See `AGENTS.md` for the operational maintenance rules and `config/components.json` for machine-readable component ownership.
-
-## Desktop builds and updates
-
-The desktop package is built with Tauri v2 for Windows (NSIS/EXE). macOS and Linux desktop builds are discontinued after 2.7.8; those platforms use the web/PWA edition. Update checking is explicit in the installed desktop application; installation remains a separate user action.
-
-The permanent GitHub Actions surface is intentionally small:
-
-- `.github/workflows/ci.yml` — integration and regression validation;
-- `.github/workflows/audit-online.yml` — manual online visual/stateful auditing;
-- `.github/workflows/desktop-tauri.yml` — desktop metadata and staging contracts;
-- `.github/workflows/release.yml` — immutable tag-driven signed release publication.
-
-Immutable `vX.Y.Z` tags drive publication. Stable tags build source plus native installers/signatures/updater metadata; beta tags publish a GitHub prerelease for the web/PWA source only and skip the native Rust/Tauri build matrix.
-
-See `docs/UPDATE_MODEL.md` for the updater path.
-
-## Maintenance and regression checks
-
-The release-validation entry point is `scripts/run_release_validation.py`. Component-local AI work uses `scripts/agent_context.py`, `scripts/agent_test.py` and `scripts/agent_verify.py` so ordinary fixes do not need to rediscover or retest the whole repository unnecessarily.
-
-The online visual matrix and active-control audit are preserved as manual tools instead of version-specific temporary workflows. The behavioral stability gate remains part of normal CI.
-
-The current tree does not intentionally contain real user documents or private QA material. `scripts/audit_source.py` and `tests/test_repository_privacy_contract.py` enforce the repository privacy boundary.
-
-## Privacy
-
-Do not commit real user files, screenshots, recordings, private filenames, medical information, educational records or other identifying source material. Use synthetic fixtures and minimal anonymized reproductions only. The repository `.gitignore`, `SECURITY.md` and bug-report template reinforce this rule.
-
-## Repository layout
-
-```text
-.github/
-apps/
-assets/
-config/
-desktop/
-docs/
-licenses/
-scripts/
-shared/
-tests/
-index.html
-manifest.webmanifest
-service-worker.js
-VERSION.json
-```
-
-See `docs/ARCHITECTURE.md`, `docs/KNOWN_LIMITATIONS.md`, `docs/QA-BASELINE-2.5.2.md` and `docs/UPDATE_MODEL.md`.
-
-## Community
-
-Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Report security issues privately as described in [SECURITY.md](SECURITY.md).
+Do not commit real user files; use synthetic fixtures only (see `SECURITY.md`). Security issues: report privately as described in `SECURITY.md`.
