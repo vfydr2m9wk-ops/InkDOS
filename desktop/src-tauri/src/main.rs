@@ -20,6 +20,16 @@ static FILE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static WORKSPACE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static OPEN_FILE_TOKEN_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static OPEN_FILE_TOKENS: OnceLock<Mutex<HashMap<String, PathBuf>>> = OnceLock::new();
+static OFFICE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+/// Full version (Home engine switch): the ONLYOFFICE editors of InkDOS Office, on their own origin. They open in
+/// `office-*` windows: no IPC (not in any capability, refused by require_trusted_window), navigation limited to
+/// that origin. WebView2 keeps their offline copy in the app's own data folder, so after the first use they open
+/// with no network.
+const OFFICE_HOST: &str = "inkdos-tools.github.io";
+const OFFICE_EXTENSIONS: &[&str] = &["docx", "doc", "odt", "rtf", "xlsx", "xls", "ods", "csv", "pptx", "ppt", "odp"];
+/// A file handed to an office window travels inside its start script; larger files open in the Light version.
+const MAX_OFFICE_FILE_BYTES: u64 = 64 * 1024 * 1024;
+const OFFICE_OPEN_SCRIPT: &str = include_str!("office_open.js");
 const WORKSPACES_JSON: &str = include_str!("../../workspaces.json");
 
 #[derive(Serialize)]
@@ -74,10 +84,18 @@ fn is_app_page(url: &tauri::Url) -> bool {
     }
 }
 
+fn is_office_page(url: &tauri::Url) -> bool {
+    url.scheme() == "https" && url.host_str() == Some(OFFICE_HOST)
+}
+
 fn navigation_guard<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
     tauri::plugin::Builder::new("inkdos-navigation")
         .on_navigation(|webview, url| {
             if is_app_page(url) {
+                return true;
+            }
+            // an office window stays on the office site (any other page opens in the browser)
+            if webview.label().starts_with("office-") && is_office_page(url) {
                 return true;
             }
             if url.scheme() == "https" || url.scheme() == "mailto" {
@@ -234,6 +252,103 @@ fn inkdos_beta_take_result(webview: tauri::Webview) -> Result<tauri::ipc::Respon
     beta::take_result(webview.label())
         .map(tauri::ipc::Response::new)
         .ok_or_else(|| "No beta tools result is waiting.".to_string())
+}
+
+/// The ONLYOFFICE editor language for an InkDOS language code (the editor's own site codes).
+fn office_locale(lang: &str) -> Option<&'static str> {
+    match lang.split('-').next().unwrap_or("").to_ascii_lowercase().as_str() {
+        "pt" => Some("pt"),
+        "es" => Some("es"),
+        "de" => Some("de"),
+        "ja" => Some("ja"),
+        "fr" => Some("fr"),
+        "ru" => Some("ru"),
+        "zh" => Some("zh-CN"),
+        _ => None,
+    }
+}
+
+fn open_office_window(
+    app: &tauri::AppHandle,
+    path_and_query: &str,
+    title: String,
+    script: Option<String>,
+) -> Result<(), String> {
+    let url = tauri::Url::parse(&format!("https://{OFFICE_HOST}{path_and_query}"))
+        .map_err(|error| format!("InkDOS could not open the full version: {error}"))?;
+    let label = format!("office-{}", OFFICE_WINDOW_SEQUENCE.fetch_add(1, Ordering::Relaxed));
+    let mut builder = WebviewWindowBuilder::new(app, &label, WebviewUrl::External(url))
+        .title(title)
+        .inner_size(1280.0, 820.0)
+        .min_inner_size(900.0, 600.0)
+        .resizable(true);
+    if let Some(script) = script {
+        builder = builder.initialization_script(script);
+    }
+    let window = builder
+        .build()
+        .map_err(|error| format!("InkDOS could not open the full version: {error}"))?;
+    window
+        .set_focus()
+        .map_err(|error| format!("InkDOS opened the full version but could not focus its window: {error}"))?;
+    Ok(())
+}
+
+/// Home, Full version: the InkDOS Office start page (Open / New for Word, Excel and PowerPoint) in an office window.
+#[tauri::command]
+fn inkdos_open_office(app: tauri::AppHandle, webview: tauri::Webview, theme: String, lang: String) -> Result<(), String> {
+    require_trusted_window(&webview)?;
+    let theme = if theme == "dark" { "dark" } else { "light" };
+    let mut query = format!("/?inkdos-theme={theme}");
+    if !lang.is_empty() && lang.len() <= 10 && lang.chars().all(|c| c.is_ascii_alphanumeric() || c == '-') {
+        query.push_str("&lang=");
+        query.push_str(&lang);
+    }
+    open_office_window(&app, &query, "InkDOS Office".to_string(), None)
+}
+
+/// A Word, Excel or PowerPoint file opened from the system, with the Full version chosen: the workspace window that
+/// received it hands its token over, the file opens in an office window (the ONLYOFFICE editor's embed mode, driven
+/// from inside its own origin) and the workspace window closes. Ok(false) when the file is not for the full version
+/// (another format, or too large); the token then stays for the workspace.
+#[tauri::command]
+fn inkdos_open_office_file(app: tauri::AppHandle, webview: tauri::Webview, token: String, lang: String) -> Result<bool, String> {
+    require_trusted_window(&webview)?;
+    let path = open_file_tokens()
+        .lock()
+        .map_err(|_| "InkDOS could not access the associated file token.".to_string())?
+        .get(&token)
+        .cloned()
+        .ok_or_else(|| "The associated file token is invalid or has already been used.".to_string())?;
+    let extension = path_extension(&path)?;
+    if !OFFICE_EXTENSIONS.contains(&extension.as_str()) {
+        return Ok(false);
+    }
+    let size = std::fs::metadata(&path)
+        .map_err(|error| format!("InkDOS could not read {}: {error}", path.display()))?
+        .len();
+    if size > MAX_OFFICE_FILE_BYTES {
+        return Ok(false);
+    }
+    let name = path.file_name().and_then(|value| value.to_str()).unwrap_or("document").to_string();
+    let bytes = std::fs::read(&path).map_err(|error| format!("InkDOS could not read {name}: {error}"))?;
+    use base64::Engine;
+    let data = base64::engine::general_purpose::STANDARD.encode(bytes);
+    let name_json = serde_json::to_string(&name).map_err(|error| error.to_string())?;
+    let script = OFFICE_OPEN_SCRIPT
+        .replacen("__NAME__", &name_json, 1)
+        .replacen("__DATA__", &format!("\"{data}\""), 1);
+    let mut query = format!("/editor?embed=1&embedOrigin=https%3A%2F%2F{OFFICE_HOST}");
+    if let Some(locale) = office_locale(&lang) {
+        query.push_str("&locale=");
+        query.push_str(locale);
+    }
+    // the token stays until the office window exists, so a failure still leaves the file to the workspace
+    open_office_window(&app, &query, format!("InkDOS Office — {name}"), Some(script))?;
+    discard_open_file(&token);
+    // the workspace window only received the file for the office window; it closes
+    let _ = webview.window().close();
+    Ok(true)
 }
 
 fn workspace_manifest() -> Result<serde_json::Map<String, serde_json::Value>, String> {
@@ -502,7 +617,9 @@ fn main() {
             inkdos_beta_update,
             inkdos_beta_open,
             inkdos_beta_open_with_file,
-            inkdos_beta_take_result
+            inkdos_beta_take_result,
+            inkdos_open_office,
+            inkdos_open_office_file
         ])
         .setup(|app| {
             // a hidden Home used to stay alive behind a launched file, so the app never exited
@@ -513,4 +630,34 @@ fn main() {
         })
         .run(tauri::generate_context!())
         .expect("error while running InkDOS desktop");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn office_windows_stay_on_the_office_site() {
+        assert!(is_office_page(&tauri::Url::parse("https://inkdos-tools.github.io/editor?embed=1").unwrap()));
+        assert!(!is_office_page(&tauri::Url::parse("http://inkdos-tools.github.io/").unwrap()));
+        assert!(!is_office_page(&tauri::Url::parse("https://vfydr2m9wk-ops.github.io/InkDOS/").unwrap()));
+        assert!(!is_office_page(&tauri::Url::parse("https://inkdos-tools.github.io.example.com/").unwrap()));
+        // the office site is never an app page: main and workspace windows cannot navigate there
+        assert!(!is_app_page(&tauri::Url::parse("https://inkdos-tools.github.io/").unwrap()));
+    }
+
+    #[test]
+    fn office_locale_follows_the_inkdos_language() {
+        assert_eq!(office_locale("pt-BR"), Some("pt"));
+        assert_eq!(office_locale("zh-CN"), Some("zh-CN"));
+        assert_eq!(office_locale("en"), None);
+        assert_eq!(office_locale(""), None);
+    }
+
+    #[test]
+    fn office_open_script_has_its_placeholders_once() {
+        assert_eq!(OFFICE_OPEN_SCRIPT.matches("__NAME__").count(), 1);
+        assert_eq!(OFFICE_OPEN_SCRIPT.matches("__DATA__").count(), 1);
+        assert!(OFFICE_OPEN_SCRIPT.contains("location.origin !== 'https://inkdos-tools.github.io'"));
+    }
 }

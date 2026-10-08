@@ -2,8 +2,9 @@
 """Home: the engine switch. Light (default on the web) keeps the InkDOS editors behind the Documents, Spreadsheets
 and Presentations cards; Full version sends those three cards to the ONLYOFFICE editors of InkDOS Office on the
 InkDOS-tools origin (https://inkdos-tools.github.io/), with the InkDOS appearance and language. The choice is
-remembered, the other cards never change, the switch is hidden in the desktop app (which keeps the InkDOS editors
-until the engine is installed there) and it is translated. Replaces the "Full office (beta)" button."""
+remembered, the other cards never change, and it is translated. In the desktop app the switch shows too, Full
+version is the default, and the office cards open InkDOS Office in an office window of their own (inkdos_open_office)
+instead of leaving the app. Replaces the "Full office (beta)" button."""
 from __future__ import annotations
 
 import os
@@ -71,19 +72,30 @@ def main() -> None:
                 # the offline status line says whether this browser keeps InkDOS on the device (no worker here)
                 page.wait_for_function("() => document.getElementById('engineOffline').dataset.state === 'online'")
                 assert page.evaluate("() => document.documentElement.scrollWidth <= innerWidth"), width
-                # the desktop app hides the switch and keeps the InkDOS editors
-                page.click('[data-engine="complete"]')
-                page.evaluate("() => { document.documentElement.dataset.inkdosHost = 'tauri'; }")
-                assert switch.is_hidden()
                 assert not errors, errors
                 context.close()
 
-            # desktop host from the start: InkDOS editors even with Full version stored
+            # desktop app: the switch shows, Full version by default; an office card opens an office window through the
+            # host (the card keeps its InkDOS link, so nothing navigates this window away from the app)
             context = browser.new_context(service_workers='block')
-            context.add_init_script("localStorage.setItem('inkdos2:engine', 'complete'); window.InkDOSDesktop = {host: 'tauri'}")
+            context.add_init_script("""window.InkDOSDesktop = {host: 'tauri'}; window.__calls = [];
+                window.__TAURI__ = {core: {invoke: (cmd, args) => { window.__calls.push([cmd, args]); return Promise.resolve(); }}};""")
             page = context.new_page()
             page.goto(BASE + '/index.html', wait_until='load')
+            assert page.locator('.engine-switch').is_visible()
+            assert page.get_attribute('[data-engine="complete"]', 'aria-pressed') == 'true', 'Full version by default on desktop'
             assert page.get_attribute('a.workspace-card.documents', 'href').startswith('./apps/documents/')
+            page.click('a.workspace-card.documents')
+            page.wait_for_function("() => window.__calls.length === 1")
+            calls = page.evaluate("() => window.__calls")
+            assert calls[0][0] == 'inkdos_open_office' and calls[0][1]['theme'] in ('light', 'dark'), calls
+            assert page.url.endswith('/index.html'), 'the Home stays'
+            page.wait_for_function("() => document.getElementById('engineOffline').textContent === 'Installed on this computer'")
+            # Light chosen: the card opens the InkDOS workspace as before
+            page.click('[data-engine="light"]')
+            page.click('a.workspace-card.pdf')
+            page.wait_for_url('**/apps/pdf/**')
+            assert page.evaluate("() => localStorage.getItem('inkdos2:engine')") == 'light'
             context.close()
 
             # translated with the Home language; the office link carries the appearance and language
@@ -100,7 +112,7 @@ def main() -> None:
             browser.close()
     finally:
         server.terminate()
-    print('Home: engine switch (Light / Full version) leads the office cards to the chosen editors, web only, translated')
+    print('Home: engine switch (Light / Full version) leads the office cards to the chosen editors (web, desktop window), translated')
 
 
 if __name__ == '__main__':
