@@ -10,3 +10,5 @@
 #presentationsUnsavedDialog .error-actions button,#inkdosAskPanel .error-actions button{min-height:var(--control);padding:0 13px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
 #presentationsUnsavedDialog .error-actions .retry-open,#inkdosAskPanel .error-actions .retry-open{background:var(--accent);border-color:var(--accent);color:#fff}
 #inkdosAskPanel.error-overlay[hidden]{display:none}#inkdosAskPanel .ask-fields{display:grid;gap:10px;margin:12px 0 4px}#inkdosAskPanel .ask-field{display:grid;gap:4px}#inkdosAskPanel .ask-field input{min-height:var(--control);padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:inherit;font:inherit}
+/* Preview (ui/pptx-preview.js): while the preview is shown the editing controls rest */
+.editbar.is-previewing>:not(#pptPreviewGroup){opacity:.35;pointer-events:none}
