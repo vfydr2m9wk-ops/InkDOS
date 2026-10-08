@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-ec1a65080ce680659bc4';
+const CACHE_NAME='inkdos-v2.8.0-abb03891f742bff01ec6';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -289,7 +289,7 @@ const ASSET_HASHES={
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
   "./assets/advanced-tools.js": "c16decfcfb38d5c512e4eeb394792ad800571cbdc869a5cba611e9c67f5785ad",
   "./assets/home-launch.js": "7610e94bcfd5c2a5e765e3e1fdf2633ed1ec2901a0e775fe817aff7fb4ecbb3c",
-  "./assets/home.css": "6e6e0a82db95c4f8cfc9dafc4468c32be3ede47018ec2016a9a47c085367b18e",
+  "./assets/home.css": "3820d85201c2629b99db71e20207c6c662e8d1ac397384d0ec58163ed9ee906e",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./assets/icons/epub.svg": "89f2fb944949b8d6d7c528c17ccdd7b78bae702fd4d4959168e14c09d3f71cc6",
   "./assets/icons/office.png": "3419ee565a70ba6caf26dcc1d86b1e4a493afb21e072941ebf9c4d21b62ffba5",
@@ -298,7 +298,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "c45694f703b6d5a4dcc67a6e025c63eacf48b3fa7fe1c820d5da7f97ed2c84de",
+  "./index.html": "4fa61041cfe254b62af9246a46ade1aa1147f9fc48c148f045ed9149390535c8",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
@@ -309,13 +309,13 @@ const ASSET_HASHES={
   "./labs/pdf/vendor/tesseract/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
   "./manifest.webmanifest": "0d0938adf9208849472062be4b8a5a247c986d76ca982095f1cf4ec05e4cdaf8",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "0cdfa6761886d4a6464d0ede8bbc47262fb83cc88731a3af44463a2b5c71ad1b",
-  "./shared/localization/locales/es.js": "a83df52766f1f21557e5bcce2b4185213da5b10dc6f9557325460bda8371f6db",
-  "./shared/localization/locales/fr.js": "088d7d8681c26ce83c94c1acefd40100edb759e7ca2930075c449653ba0fe518",
-  "./shared/localization/locales/ja.js": "7bcd4b9d3dc3506677f5904fbffc1db48bdac5b5cd3d3745ef56df09d3fb3aab",
-  "./shared/localization/locales/pt-BR.js": "fa4f5be6a0b6bc10b9d7a5b2133875d1abeca62fa0cda0efab31981ddf2ec920",
-  "./shared/localization/locales/ru.js": "c46593db0bc2bf2bdb6eae7894c884108a76a2c539ba1bf641aed13a679ad5fb",
-  "./shared/localization/locales/zh-CN.js": "19ca602d2da2be56fd7ae2a47ef09001189b096d89cf5459f1c128e4d5e93918",
+  "./shared/localization/locales/de.js": "a6b651f14a03475c3c5a9c83024fce943d292a82044b3cb6b40b99b3204095ed",
+  "./shared/localization/locales/es.js": "601ab71336309ef7dedd68bd05ed039a441513065eaf1ac462c44ac85a8e8c63",
+  "./shared/localization/locales/fr.js": "b45a4f9589e2880fcf14c06f9c509ac4d14cdf2c3483799b57e93e562e6dc4fc",
+  "./shared/localization/locales/ja.js": "a2656ca97c3f5a03307c58ba576a8d309cbc818df639e576bc9538ad1d898024",
+  "./shared/localization/locales/pt-BR.js": "acbd010f73fc165f586dba1b40e04723ea80441e3641b4e5fab72463bf108859",
+  "./shared/localization/locales/ru.js": "d607da954f2d2ff866576d217c70ffe9d0a99ea1f9f747898251ed60524fbce5",
+  "./shared/localization/locales/zh-CN.js": "42a4abe249d4e3800e7fb8f143ef2ee5439435315342ee99f5b48c54bf39e692",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
   "./shared/localization/settings-strip.js": "67046549278145618301ef81f28be55ea05d8c042d43a9be36b69b78d4c518e6",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
