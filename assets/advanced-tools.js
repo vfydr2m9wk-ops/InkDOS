@@ -17,7 +17,6 @@ const TOOLS=Object.freeze([
   {id:'image-to-pdf',group:'Convert',title:'Images to PDF',description:'Combine JPG, PNG, HEIC, WebP and other images into a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/image-to-pdf.html',icon:'convert',window:true},
   {id:'pdf-to-jpg',group:'Convert',title:'PDF to images',description:'Save the pages of a PDF as JPG images.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-jpg.html',icon:'convert',window:true},
   {id:'pdf-converter',group:'Convert',title:'All conversions',description:'Every conversion to and from PDF in one list.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-converter.html',icon:'convert',window:true},
-  {id:'pdf-tools',group:'PDF',title:'PDF tools (beta)',description:'Visual signature, digital signature (A1) and signature check.',href:'./labs/pdf/index.html',icon:'pdf'},
   {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/',icon:'pdf',window:true},
   {id:'ocr-pdf',group:'PDF',title:'OCR (searchable PDF)',description:'Recognize the text of scanned pages so it can be searched and copied.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/ocr-pdf.html',icon:'pdf',window:true},
   {id:'compress-pdf',group:'PDF',title:'Compress PDF',description:'Make a PDF file smaller.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/compress-pdf.html',icon:'pdf',window:true},
@@ -33,12 +32,14 @@ const TOOLS=Object.freeze([
   {id:'add-watermark',group:'PDF',title:'Watermark',description:'Add a text or image watermark to a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/add-watermark.html',icon:'pdf',window:true},
   {id:'encrypt-pdf',group:'PDF',title:'Protect with password',description:'Lock a PDF with a password.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/encrypt-pdf.html',icon:'pdf',window:true},
   {id:'decrypt-pdf',group:'PDF',title:'Remove password',description:'Unlock a PDF whose password you know.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/decrypt-pdf.html',icon:'pdf',window:true},
-  {id:'squoosh',group:'Images',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
-  {id:'archivedrop',group:'Files',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
   {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
-  // developer utilities last: rarely needed outside software work
-  {id:'cyberchef',group:'Developer',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
-  {id:'it-tools',group:'Developer',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://inkdos-tools.github.io/InkDOS-tools/it-tools/',icon:'code'}
+  // INKDOS:FROZEN-LEGACY legacy-home-tools (config/frozen-legacy.json): kept working, listed last and out of the
+  // quick tools row; the maintained set is the PDF toolkit (BentoPDF, OCR) and the Python terminal
+  {id:'pdf-tools',group:'Legacy',title:'PDF signer (legacy)',description:'Visual and A1 signature with signature check. Not a legally valid signature service; kept for reference.',href:'./labs/pdf/index.html',icon:'pdf'},
+  {id:'squoosh',group:'Legacy',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
+  {id:'archivedrop',group:'Legacy',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
+  {id:'cyberchef',group:'Legacy',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
+  {id:'it-tools',group:'Legacy',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://inkdos-tools.github.io/InkDOS-tools/it-tools/',icon:'code'}
 ]);
 const ICONS={
   pdf:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/>',

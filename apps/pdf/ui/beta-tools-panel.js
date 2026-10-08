@@ -35,7 +35,9 @@ function close(){
 function install(){
  const button=doc.getElementById('betaToolsBtn');if(!button)return;
  if(desktop()){button.hidden=true;return}
- button.hidden=false;button.addEventListener('click',()=>isOpen()?close():open());
+ // INKDOS:FROZEN-LEGACY legacy-pdf-signer: the signer is no longer offered from the toolbar (its signatures carry
+ // no legal validity check a user could rely on); open() and the hand-over bridge stay for its reactivation
+ button.hidden=true;button.addEventListener('click',()=>isOpen()?close():open());
 }
 if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',install,{once:true});else install();
 NS.PdfBetaToolsPanel=Object.freeze({open,close,get isOpen(){return isOpen()},get frame(){return frame}});

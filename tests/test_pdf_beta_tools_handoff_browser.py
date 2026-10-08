@@ -76,10 +76,9 @@ def main() -> None:
             app.wait_for_function('() => !!globalThis.InkDOS2PdfP4?.PdfStabilityDebug')
             app.set_input_files('#fileInput', str(pdf))
             app.wait_for_function("() => (document.getElementById('titleText')?.textContent||'').includes('handoff')", timeout=30000)
-            # the toolbar entry is visible and opens the tools in a panel on the same page
-            button = app.locator('#betaToolsBtn')
-            assert button.is_visible() and 'Beta tools' in button.inner_text()
-            button.click()
+            # legacy-pdf-signer: no toolbar entry any more; the kept panel still opens on the same page
+            assert app.locator('#betaToolsBtn').is_hidden()
+            assert app.evaluate('() => globalThis.InkDOS2PdfP4.PdfBetaToolsPanel.open()') is True
             app.wait_for_selector('#betaToolsPanel:not([hidden]) iframe.beta-tools-frame')
             lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
             lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('handoff')", timeout=30000)
@@ -105,10 +104,12 @@ def main() -> None:
             app.wait_for_selector('#betaToolsPanel', state='hidden')
             assert app.locator('#betaToolsPanel iframe').count() == 0, 'closing the panel must drop the tools frame'
             assert len(context.pages) == 1, 'no other tab or window may be opened'
-            # Settings (sun) → 'PDF tools (beta)' opens the same panel, and Escape closes it
+            # Settings (sun) no longer lists the signer; the panel reopens through its API, and Escape closes it
             app.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
             app.click('[data-frame-action="sun"]')
-            app.click('.inkdos-settings-option[data-settings-value="beta-pdf"]')
+            assert app.locator('.inkdos-settings-option[data-settings-value="beta-pdf"]').count() == 0
+            app.keyboard.press('Escape')
+            app.evaluate('() => globalThis.InkDOS2PdfP4.PdfBetaToolsPanel.open()')
             app.wait_for_selector('#betaToolsPanel:not([hidden]) iframe.beta-tools-frame')
             lab = next(f for f in app.frames if '/labs/pdf/' in f.url)
             lab.wait_for_function("() => (document.getElementById('fileName')?.textContent||'').includes('-assinado')", timeout=30000)
