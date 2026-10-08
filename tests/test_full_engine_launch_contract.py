@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Full version (Home engine switch): a Word, Excel or PowerPoint file opened from the system goes to the ONLYOFFICE
+editors of InkDOS Office, framed in their embed mode on their own origin and driven only by InkDOS (embedOrigin);
+other formats, the Light version and the desktop app keep the InkDOS workspace. Every workspace carries the same
+launch bridge, and the office workspaces may frame that origin."""
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OFFICE = 'https://inkdos-tools.github.io'
+
+
+def main() -> None:
+    bridge = (ROOT / 'apps/documents/runtime/platform/file-launch.js').read_text(encoding='utf-8')
+    assert f"OFFICE_ORIGIN='{OFFICE}'" in bridge
+    assert "localStorage?.getItem('inkdos2:engine')==='complete'" in bridge, 'only the Full version'
+    assert '!g.InkDOSDesktop' in bridge and "inkdosHost!=='tauri'" in bridge, 'not in the desktop app'
+    assert "searchParams.set('embed','1')" in bridge and "searchParams.set('embedOrigin',g.location.origin)" in bridge
+    # the file goes only to the office origin, and only messages from that frame are read
+    assert "postMessage({id:'inkdos-launch',type:'document:open-file',payload:{file,fileName:file.name}},OFFICE_ORIGIN)" in bridge
+    assert 'event.origin!==OFFICE_ORIGIN||event.source!==frame.contentWindow' in bridge
+    assert "'*'" not in bridge, 'no wildcard target origin'
+    exts = set(re.search(r"OFFICE_EXT=new Set\(\[([^\]]*)\]\)", bridge).group(1).replace("'", '').split(','))
+    assert exts == {'docx', 'doc', 'odt', 'rtf', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp'}, exts
+    assert 'routeFile(file){if(!file)return false;if(fullEngine(file)&&openInOffice(file,lightRoute))return true;return lightRoute(file)}' in bridge
+    for app in ('documents', 'spreadsheets', 'presentations'):
+        html = (ROOT / f'apps/{app}/index.html').read_text(encoding='utf-8')
+        assert f"frame-src 'self' {OFFICE}" in html, app
+    print('Full version launch route: OK')
+
+
+if __name__ == '__main__':
+    main()

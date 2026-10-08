@@ -8,7 +8,41 @@ function acceptsFile(input,file){const tokens=acceptTokens(input?.accept);if(!to
 function compatibleInput(file){if(!doc)return null;for(const input of doc.querySelectorAll('input[type="file"]'))if(acceptsFile(input,file))return input;return null}
 function dispatchError(error){try{doc?.dispatchEvent(new CustomEvent('inkdos:file-launch-error',{detail:{message:String(error?.message||error||'File launch failed')}}))}catch(_){}}
 async function injectFile(file,input=compatibleInput(file)){if(!file)return false;if(!input||!acceptsFile(input,file))throw new Error('Unsupported file format for this InkDOS workspace.');if(typeof g.DataTransfer!=='function'||typeof g.File!=='function')throw new Error('This host cannot inject a file into the workspace.');const transfer=new DataTransfer();transfer.items.add(file);input.files=transfer.files;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));return true}
-async function routeFile(file){if(!file)return false;setCurrentFile(file);if(openHandler)return !!(await openHandler(file));pendingLaunchFiles.push(file);return true}
+// Full version (Home engine switch, inkdos2:engine): a Word, Excel or PowerPoint file opened from the system goes to
+// the ONLYOFFICE editors of InkDOS Office. They live on their own origin (AGENTS.md, origin isolation): the editor is
+// framed over this workspace in its embed mode (/editor?embed=1, which takes orders only from embedOrigin, this
+// origin) and gets the file with document:open-file; "Open in the Light version" opens it here instead.
+const OFFICE_ORIGIN='https://inkdos-tools.github.io',OFFICE_EXT=new Set(['docx','doc','odt','rtf','xlsx','xls','ods','csv','pptx','ppt','odp']);
+function fullEngine(file){try{return OFFICE_EXT.has(extension(file?.name))&&g.localStorage?.getItem('inkdos2:engine')==='complete'&&!g.InkDOSDesktop&&doc?.documentElement?.dataset?.inkdosHost!=='tauri'}catch(_){return false}}
+function openInOffice(file,light){
+ if(!doc?.body)return false;
+ const lang=String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||'en'),pt=/^pt/i.test(lang);
+ const LOCALE={pt:'pt',es:'es',de:'de',ja:'ja',zh:'zh-CN',fr:'fr',ru:'ru'}[lang.toLowerCase().split('-')[0]];
+ const shell=doc.createElement('div');shell.className='inkdos-office-launch';shell.setAttribute('role','dialog');shell.setAttribute('aria-label','InkDOS Office');
+ shell.style.cssText='position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;background:#f2f5f8';
+ const bar=doc.createElement('div');bar.style.cssText='display:flex;align-items:center;gap:10px;padding:6px 10px;background:#fff;border-bottom:1px solid #e3e8ef;font:600 13px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#192235';
+ const title=doc.createElement('span');title.style.cssText='flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';title.textContent=(pt?'Versão completa · ':'Full version · ')+file.name;
+ const back=doc.createElement('button');back.type='button';back.textContent=pt?'Abrir na versão light':'Open in the Light version';
+ back.style.cssText='height:32px;padding:0 12px;border:1px solid #d5dce6;border-radius:9px;background:#f0f2f5;color:#192235;font:inherit;cursor:pointer';
+ bar.append(title,back);
+ const frame=doc.createElement('iframe');frame.title='InkDOS Office';frame.style.cssText='flex:1;width:100%;border:0;background:#fff';frame.setAttribute('allow','clipboard-read; clipboard-write');
+ const url=new URL('/editor',OFFICE_ORIGIN);url.searchParams.set('embed','1');url.searchParams.set('embedOrigin',g.location.origin);if(LOCALE)url.searchParams.set('locale',LOCALE);frame.src=url.href;
+ shell.append(bar,frame);doc.body.appendChild(shell);
+ let sent=false,opened=false;
+ const toLight=()=>{g.removeEventListener('message',onMessage);shell.remove();light(file)};
+ back.addEventListener('click',toLight);
+ async function onMessage(event){
+  if(event.origin!==OFFICE_ORIGIN||event.source!==frame.contentWindow||!event.data)return;
+  if(event.data.type==='document:error'&&!opened){toLight();return}
+  if(event.data.type==='document:opened'){opened=true;return}
+  if(event.data.type!=='document:ready'||sent)return;
+  sent=true;frame.contentWindow.postMessage({id:'inkdos-launch',type:'document:open-file',payload:{file,fileName:file.name}},OFFICE_ORIGIN);
+ }
+ g.addEventListener('message',onMessage);
+ return true;
+}
+async function lightRoute(file){if(!file)return false;setCurrentFile(file);if(openHandler)return !!(await openHandler(file));pendingLaunchFiles.push(file);return true}
+async function routeFile(file){if(!file)return false;if(fullEngine(file)&&openInOffice(file,lightRoute))return true;return lightRoute(file)}
 async function drainPending(){if(!openHandler||!pendingLaunchFiles.length)return;const files=pendingLaunchFiles.splice(0);for(const file of files){try{await openHandler(file)}catch(error){console.error('InkDOS launched-file open failed:',error);dispatchError(error)}}}
 function setOpenHandler(handler){openHandler=typeof handler==='function'?handler:null;if(openHandler)Promise.resolve().then(drainPending);return !!openHandler}
 function rememberHandle(file,handle){try{const map=g.InkDOSFileHandles||(g.InkDOSFileHandles=new Map());map.set([file.name,file.size,file.lastModified].join('|'),handle)}catch(_){}}
