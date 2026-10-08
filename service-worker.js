@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-4d17ea9c278019770e08';
+const CACHE_NAME='inkdos-v2.8.0-21871a2cc446fdc5b3fb';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -287,7 +287,7 @@ const ASSET_HASHES={
   "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
-  "./assets/advanced-tools.js": "f54062427972fb1703903371b717621d9016fa7ea1f8fe42c0373c77edf6c9e3",
+  "./assets/advanced-tools.js": "c16decfcfb38d5c512e4eeb394792ad800571cbdc869a5cba611e9c67f5785ad",
   "./assets/home-launch.js": "7610e94bcfd5c2a5e765e3e1fdf2633ed1ec2901a0e775fe817aff7fb4ecbb3c",
   "./assets/home.css": "6e6e0a82db95c4f8cfc9dafc4468c32be3ede47018ec2016a9a47c085367b18e",
   "./assets/icons/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
@@ -298,7 +298,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "ecb5fe561deca886dd38d411b281a461c2cc0f8f8880b79cae591678aff5b9db",
+  "./index.html": "4fff69833f5eaa3e54e0ae8449e46e0b22b7996a6fbbb82df6ebdc3967ef29aa",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
@@ -309,13 +309,13 @@ const ASSET_HASHES={
   "./labs/pdf/vendor/tesseract/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
   "./manifest.webmanifest": "0d0938adf9208849472062be4b8a5a247c986d76ca982095f1cf4ec05e4cdaf8",
   "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "6bedfe8356fc20485c04368c404ec56a9f7749b3180c7e5320bfee55ef648d55",
-  "./shared/localization/locales/es.js": "c2627c0511b896a7cc1396f74848efdff67a418bf6f77a6323b4961de341c150",
-  "./shared/localization/locales/fr.js": "11aa759c02a221a3120ff3f7814c02ca2062191c082d060e81bf20a2083a5648",
-  "./shared/localization/locales/ja.js": "d054b314f4dde93eea465f52d9c5468cf29bb629b8e6309012bfe77ad2252dc4",
-  "./shared/localization/locales/pt-BR.js": "ff65380259080db7e246157355bae4f14a47b7d061f54c633aded0a35212c3ac",
-  "./shared/localization/locales/ru.js": "7081ce9b650164a6ac70364fbb4f4f444152257a5983437d6776f4fae13c002a",
-  "./shared/localization/locales/zh-CN.js": "535a6fd3a93d8d75c8aad98e56c3770511ab152358954f23f36a4f739c68b55c",
+  "./shared/localization/locales/de.js": "0cdfa6761886d4a6464d0ede8bbc47262fb83cc88731a3af44463a2b5c71ad1b",
+  "./shared/localization/locales/es.js": "a83df52766f1f21557e5bcce2b4185213da5b10dc6f9557325460bda8371f6db",
+  "./shared/localization/locales/fr.js": "088d7d8681c26ce83c94c1acefd40100edb759e7ca2930075c449653ba0fe518",
+  "./shared/localization/locales/ja.js": "7bcd4b9d3dc3506677f5904fbffc1db48bdac5b5cd3d3745ef56df09d3fb3aab",
+  "./shared/localization/locales/pt-BR.js": "fa4f5be6a0b6bc10b9d7a5b2133875d1abeca62fa0cda0efab31981ddf2ec920",
+  "./shared/localization/locales/ru.js": "c46593db0bc2bf2bdb6eae7894c884108a76a2c539ba1bf641aed13a679ad5fb",
+  "./shared/localization/locales/zh-CN.js": "19ca602d2da2be56fd7ae2a47ef09001189b096d89cf5459f1c128e4d5e93918",
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
   "./shared/localization/settings-strip.js": "67046549278145618301ef81f28be55ea05d8c042d43a9be36b69b78d4c518e6",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",

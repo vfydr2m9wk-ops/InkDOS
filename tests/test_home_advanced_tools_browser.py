@@ -146,12 +146,22 @@ def main() -> None:
             page.wait_for_url('**/labs/pdf/index.html')
             page.goto(BASE + '/index.html', wait_until='load')
             # quick tools row on the Home: Convert, OCR, Signer and Terminal open their tools directly
-            row = page.locator('.quick-tools [data-quick-tool]')
-            assert [row.nth(i).get_attribute('data-quick-tool') for i in range(row.count())] == ['pdf-converter', 'ocr-pdf', 'pdf-tools', 'python']
+            row = page.locator('.quick-tools button')
+            assert [row.nth(i).get_attribute('data-quick-group') or row.nth(i).get_attribute('data-quick-tool') for i in range(row.count())] == ['Convert', 'ocr-pdf', 'pdf-tools', 'python']
+            # Convert opens the list with only the conversions (light, inside InkDOS); searching shows every group again
+            page.click('[data-quick-group="Convert"]')
+            overlay.wait_for(state='visible')
+            groups = page.locator('.tools-group').all_inner_texts()
+            assert [g.strip().lower() for g in groups] == ['convert'], groups
+            page.fill('#advancedToolsSearch', 'pdf')
+            assert page.locator('.tools-group').count() > 1
+            page.keyboard.press('Escape'); overlay.wait_for(state='hidden')
             with context.expect_page() as opened:
-                page.click('[data-quick-tool="pdf-converter"]')
-            assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/pdf-converter.html?inkdos-theme='), opened.value.url
+                page.click('[data-quick-tool="ocr-pdf"]')
+            assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/ocr-pdf.html?inkdos-theme='), opened.value.url
             opened.value.close()
+            # the main PDF tools are direct shortcuts (a toolkit page in its own tab), not only inside the toolkit
+            assert {'edit-pdf', 'sign-pdf', 'split-pdf', 'form-filler', 'encrypt-pdf'} <= {t['id'] for t in tools}
             page.click('[data-quick-tool="python"]')
             page.locator('#toolPanel').wait_for(state='visible')
             assert page.get_attribute('#toolPanel iframe', 'src').startswith(TOOLS_SITE + 'python/?inkdos-theme=')
