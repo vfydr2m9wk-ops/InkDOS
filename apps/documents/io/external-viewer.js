@@ -18,9 +18,10 @@ function viewerUrl(viewer){const url=new URL(viewer+'/',new URL(TOOLS_BASE,globa
 function create({host,cover=[]}={}){
  let box=null,cleanup=null;
  function close(){cleanup?.();cleanup=null;box?.remove();box=null;for(const el of cover)if(el)el.style.display=''}
- function show(file){
+ // options.viewer names a viewer for a file this table does not list (the DOCX preview of ui/docx-preview.js)
+ function show(file,options={}){
   close();
-  const v=viewerFor(file&&file.name);
+  const v=options.viewer?{viewer:options.viewer,label:options.label||'Document'}:viewerFor(file&&file.name);
   if(!v||!host)return Promise.reject(new Error('This file type has no viewer.'));
   box=document.createElement('div');box.className='external-viewer';box.dataset.viewer=v.viewer;
   box.style.cssText='position:absolute;inset:0;z-index:4;background:var(--bg)';

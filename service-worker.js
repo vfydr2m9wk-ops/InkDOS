@@ -1,9 +1,9 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-12f79b561e3a0dcc1ab5';
+const CACHE_NAME='inkdos-v2.8.0-ec1a65080ce680659bc4';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
-  "./apps/documents/app.js": "f3a031f80569af6279b2e4ea4d077f281a05a60af48fdaeb408e9ff4342bed40",
+  "./apps/documents/app.js": "3661fc54d62bf36765491e8171d989e742ad8dc8cfaf61fd6cc0c9e1cd48ffad",
   "./apps/documents/assets/documents.svg": "109a807046f4574927d3e3295aef8d04ff2235329b3bd5925fe2f9115f3f5a5f",
   "./apps/documents/engine/d1-docx-extension.js": "9be5351134ed958dbd2e4276259c9f67b627fbcdaf518d76153637d554326c94",
   "./apps/documents/engine/d2-docx-extension.js": "c029c308b3cf6546ce80970c356701c144f5b9a180593b54a08e85d67533d2a5",
@@ -13,9 +13,9 @@ const ASSET_HASHES={
   "./apps/documents/engine/docx-parser.js": "4cb4051746f94b8f555a7d89c85b614a1ea83915c22e93d917748d5d722b115e",
   "./apps/documents/engine/page-spec.js": "34689c76aa527609df067cea8aec34cdea35c1dfffb1e140d19442766456ff44",
   "./apps/documents/help/help.js": "7b9bb5236b5def839b186ec42fb1df0b9c46d89ac0c6f41abf936def16ea4b42",
-  "./apps/documents/index.html": "a5418821b2b498ab19e635faec3508e5b4abbc5a9b43f4ff2d7dfa77b6beafcc",
+  "./apps/documents/index.html": "f301304e1ad595b3180fa65ccfcf33723433a2838741d0fc2fceb509d2e72eac",
   "./apps/documents/io/docx-writer.js": "c8127b883ee9be7c71627cf52968ac1316c828d35763761ac19b12382e30bf25",
-  "./apps/documents/io/external-viewer.js": "1522b83bba77371fadfaf059e808732346ec45ea2ff55883448d6d9eb8efebf1",
+  "./apps/documents/io/external-viewer.js": "0240182e55da6543606ec892d2067381e9d1eab14b5d3340a4d5db8db899b43b",
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
   "./apps/documents/io/file-open-controller.js": "13155366d406a8c2d49fb26d6dabd9ede7c5905239fa0093db17ea3e99118cc9",
   "./apps/documents/io/legacy-doc-reader.js": "75e59ed490020c02f5f0f30deada1f1ae7ad3d3715cccdd6951816136552b343",
@@ -38,7 +38,7 @@ const ASSET_HASHES={
   "./apps/documents/ui/d2-tools.css": "b92b86aabddd9426051f40413a440924356eb8a37866ace0510e88c173ea1c34",
   "./apps/documents/ui/d2-tools.js": "c779a3e4a1435c4a5f2d88c8499dd5cce42ca9e3617f0990b9a03c17078660cc",
   "./apps/documents/ui/editor-controller.js": "8b29f00fa0d0f10b6ca7914b5a19cd8a63ad069c22fa765d7227d799ca58ea31",
-  "./apps/documents/ui/editor.css": "aa35143470c1ee059aa3ba7656773b20c5b395bf8214712b3705a4f8a44b76f0",
+  "./apps/documents/ui/editor.css": "d8e1f04793ce6eab436cad525bcdf8397b1097a90dd4623e8454fe2764a3598a",
   "./apps/documents/ui/navigation-panel.js": "87be9a118d7b3175e98fd60bb62e49ecb517dc4b2dd1a87970ab214e50410ba7",
   "./apps/documents/ui/ruler-controller.js": "7ced9c6e4d808038a5a4b2874df7c24cd585f9f3ab50bb6e82d4f48702a21b80",
   "./apps/documents/ui/session-dialog.js": "4f1b50ff60660652eb89589630254862893e66dc2e29d40581dc8f7fd82986cd",
