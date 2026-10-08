@@ -63,7 +63,8 @@
       <a class="workspace-card epub" href="./apps/epub/index.html?v=2.8.0&amp;suite=1"><span class="accent"></span><span class="app-icon"><img src="./assets/icons/epub.svg" alt=""></span><span class="workspace-copy"><strong>EPUB Reader</strong><small>Read local EPUB books with navigation, themes and annotations.</small></span><span class="chevron">›</span></a>
     </section>
 
-    <nav class="quick-tools web-only" aria-label="Quick tools">
+    <!-- owner request: no buttons under the workspaces in the Light version; the row stays for the frozen catalog -->
+    <nav class="quick-tools web-only" aria-label="Quick tools" hidden>
       <button type="button" class="quick-tool" data-quick-group="Convert"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg><span>Convert</span></button>
       <button type="button" class="quick-tool" data-quick-tool="ocr-pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/><path d="M8 10h8M8 14h5"/></svg><span>OCR</span></button>
       <button type="button" class="quick-tool" data-quick-tool="bentopdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/></svg><span>PDF tools</span></button>
