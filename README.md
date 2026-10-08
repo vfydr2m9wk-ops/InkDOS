@@ -36,8 +36,8 @@ Files opened from the system (Windows "Open with", or the browser's file handlin
 
 - No backend and no analytics. Every tool runs in the browser.
 - Each site's Content Security Policy only lets it reach its own address. The one exception is the optional online Python terminal, which may install packages from PyPI.
-- Drafts and recent files stay in the browser's storage on the device.
-- InkDOS drafts and the ONLYOFFICE recent-files history are encrypted (AES-GCM) with a key that cannot be exported from the device.
+- No list of recent files is kept: files are found again with the device's own file manager.
+- The only thing stored is the Light editors' recovery drafts, kept on the device and encrypted (AES-GCM) with a key that cannot be exported from it.
 
 ## Credits
 
