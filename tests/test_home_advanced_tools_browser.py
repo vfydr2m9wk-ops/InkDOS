@@ -145,9 +145,11 @@ def main() -> None:
             page.click('#toolPanel [data-tool-full]')
             page.wait_for_url('**/labs/pdf/index.html')
             page.goto(BASE + '/index.html', wait_until='load')
-            # quick tools row on the Home: Convert, OCR, the PDF toolkit and Terminal open their tools directly
+            # quick tools row on the Home: Convert, OCR, the PDF toolkit and Terminal open their tools directly; the
+            # Advanced tools button ends the same row
             row = page.locator('.quick-tools button')
-            assert [row.nth(i).get_attribute('data-quick-group') or row.nth(i).get_attribute('data-quick-tool') for i in range(row.count())] == ['Convert', 'ocr-pdf', 'bentopdf', 'python']
+            assert [row.nth(i).get_attribute('data-quick-group') or row.nth(i).get_attribute('data-quick-tool') or row.nth(i).get_attribute('id')
+                    for i in range(row.count())] == ['Convert', 'ocr-pdf', 'bentopdf', 'python', 'advancedToolsButton']
             # Convert opens the list with only the conversions (light, inside InkDOS); searching shows every group again
             page.click('[data-quick-group="Convert"]')
             overlay.wait_for(state='visible')

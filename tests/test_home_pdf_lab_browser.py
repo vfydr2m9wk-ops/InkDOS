@@ -193,7 +193,7 @@ def main() -> None:
             # the page itself loads without errors and Home reaches it through Advanced tools (web edition only)
             home = (ROOT / 'index.html').read_text(encoding='utf-8')
             catalog = (ROOT / 'assets' / 'advanced-tools.js').read_text(encoding='utf-8')
-            assert "href:'./labs/pdf/index.html'" in catalog and 'class="tools-button web-only"' in home
+            assert "href:'./labs/pdf/index.html'" in catalog and 'id="advancedToolsButton" class="quick-tool"' in home
             assert not errors, errors
             browser.close()
     finally:

@@ -1,11 +1,13 @@
 (function(){'use strict';
-// Engine switch (Home): Light uses the InkDOS editors; Complete opens Word, Excel and PowerPoint files in the
-// ONLYOFFICE editors of InkDOS Office (https://github.com/inkdos-tools/inkdos-tools.github.io). That suite is
-// third-party code, so it stays on its own origin (AGENTS.md, origin isolation). On the web the cards lead there, in
-// this same tab (one page in memory; also where a web desktop such as XeOS cannot open new tabs), and its service
-// worker keeps each editor on the device after its first use. In the desktop app (Complete by default) they open it
-// in an office window of its own (inkdos_open_office), whose offline copy stays in the app's data folder. Files opened
-// from the system follow the same choice (workspace launch bridges, desktop-host.js).
+// Engine switch (Home): Light uses the InkDOS editors and this Home; Full is InkDOS Office, a Home of its own whose
+// Word, Excel and PowerPoint cards use the ONLYOFFICE editors (https://github.com/inkdos-tools/inkdos-tools.github.io).
+// That suite is third-party code, so it stays on its own origin (AGENTS.md, origin isolation). On the web, choosing
+// Full goes to the InkDOS Office Home right away, in this same tab (one page in memory; also where a web desktop such
+// as XeOS cannot open new tabs), and this Home sends there while Full is the choice; its "Light version" button comes
+// back with ?engine=light. Its service worker keeps each editor on the device after its first use. In the desktop app
+// (Full by default) InkDOS Office opens in an office window of its own (inkdos_open_office), whose offline copy stays
+// in the app's data folder. Files opened from the system follow the same choice (workspace launch bridges,
+// desktop-host.js).
 const KEY='inkdos2:engine',OFFICE='https://inkdos-tools.github.io/';
 const OFFICE_CARDS=['documents','spreadsheets','presentations'];
 const doc=document,root=doc.documentElement;
@@ -19,6 +21,14 @@ let engine='light',cards=[],buttons=[],note=null,offline=null;
 const say=(el,text)=>{if(el&&el.dataset.source!==text){el.dataset.source=text;el.textContent=text}};
 const desktop=()=>!!window.InkDOSDesktop||root.dataset.inkdosHost==='tauri';
 // stored choice; without one, Complete in the desktop app and Light on the web
+// ?engine=light|complete (from the InkDOS Office Home) sets the choice, then leaves the address
+function fromAddress(){
+  try{
+    const url=new URL(location.href),v=url.searchParams.get('engine');if(v===null)return;
+    if(v==='complete'||v==='light')localStorage.setItem(KEY,v);
+    url.searchParams.delete('engine');history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+  }catch(_){}
+}
 function read(){let v=null;try{v=localStorage.getItem(KEY)}catch(_){}return v==='complete'||v==='light'?v:(desktop()?'complete':'light')}
 function officeHref(){
   const url=new URL(OFFICE);url.searchParams.set('inkdos-theme',root.dataset.theme==='dark'?'dark':'light');
@@ -49,15 +59,24 @@ async function status(ask){
 function openOffice(event){
   if(root.dataset.inkdosEngine!=='complete'||!desktop())return;
   const invoke=window.__TAURI__?.core?.invoke;if(typeof invoke!=='function')return;
-  event.preventDefault();
+  event.preventDefault();goFull();
+}
+// Full: switch the Home itself, now (web: go to the InkDOS Office Home; desktop: open it in its office window)
+function goFull(){
+  if(!desktop()){location.assign(officeHref());return}
+  const invoke=window.__TAURI__?.core?.invoke;if(typeof invoke!=='function')return;
   invoke('inkdos_open_office',{theme:root.dataset.theme==='dark'?'dark':'light',lang:String(window.InkDOSLocalization?.currentLanguage||'')}).catch(error=>console.error('InkDOS could not open the full version:',error));
 }
 function set(next){
   if(next!=='light'&&next!=='complete')return;
   engine=next;try{localStorage.setItem(KEY,engine)}catch(_){}
   apply();status(true);
+  if(engine==='complete')goFull();
 }
 function install(){
+  fromAddress();
+  // web, Full chosen: this Home is the Light one, so the InkDOS Office Home takes its place
+  if(!desktop()&&read()==='complete'){location.replace(officeHref());return}
   cards=OFFICE_CARDS.map(id=>doc.querySelector('.workspace-grid a.workspace-card.'+id)).filter(Boolean);
   buttons=[...doc.querySelectorAll('[data-engine]')];note=doc.getElementById('engineNote');offline=doc.getElementById('engineOffline');
   engine=read();
