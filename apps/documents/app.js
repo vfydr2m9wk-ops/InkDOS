@@ -50,6 +50,7 @@ commands.install();
 d1.install();
 d2.install();
 d2Sections.install();
+const preview=NS.DocxPreview?.create({session,pagesHost,chrome});preview?.install();
 let authorizedUnload=false;
 const homeLink=document.querySelector('a[aria-label="Home"]');
 homeLink?.addEventListener('click',async e=>{if(!session.dirty)return;e.preventDefault();const href=homeLink.href;if(!(await fileOpen.requestLeave()))return;authorizedUnload=true;global.location.assign(href)});

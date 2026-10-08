@@ -1,0 +1,168 @@
+{
+  "app": "epub",
+  "checks": [
+    {
+      "label": "nextBtn",
+      "selector": "#nextBtn",
+      "status": "clicked",
+      "effect": {
+        "before": 0,
+        "after": 1
+      },
+      "error": null
+    },
+    {
+      "label": "prevBtn",
+      "selector": "#prevBtn",
+      "status": "clicked",
+      "effect": {
+        "before": 1,
+        "after": 0
+      },
+      "error": null
+    },
+    {
+      "label": "searchNext",
+      "selector": "#searchNext",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "searchPrev",
+      "selector": "#searchPrev",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "readingBackBtn",
+      "selector": "#readingBackBtn",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Open bookmark",
+      "selector": ".epub-nav-open",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Add note to bookmark",
+      "selector": "[aria-label=\"Add note to bookmark\"]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Remove bookmark",
+      "selector": ".epub-nav-delete",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Add note to bookmark",
+      "selector": "[aria-label=\"Add note to bookmark\"]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "librarySaveNote",
+      "selector": "#librarySaveNote",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Add note to bookmark",
+      "selector": "[aria-label=\"Add note to bookmark\"]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "libraryCancelNote",
+      "selector": "#libraryCancelNote",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Cancel note",
+      "selector": "[data-note-cancel]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Save note",
+      "selector": ".epub-note-dialog button[type=\"submit\"]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Scroll toolbar right",
+      "selector": "button[aria-label=\"Scroll toolbar right\"]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    },
+    {
+      "label": "Scroll toolbar left",
+      "selector": "button[aria-label=\"Scroll toolbar left\"]",
+      "status": "clicked",
+      "effect": null,
+      "error": null
+    }
+  ],
+  "intentionallyHidden": [
+    {
+      "id": null,
+      "text": "Auto",
+      "visible": false,
+      "reason": "settings-strip replacement: data-inkdos-settings-redundant"
+    },
+    {
+      "id": null,
+      "text": "Desktop",
+      "visible": false,
+      "reason": "settings-strip replacement: data-inkdos-settings-redundant"
+    },
+    {
+      "id": null,
+      "text": "Smartphone",
+      "visible": false,
+      "reason": "settings-strip replacement: data-inkdos-settings-redundant"
+    },
+    {
+      "id": null,
+      "text": "Help",
+      "visible": false,
+      "reason": "settings-strip replacement: data-inkdos-settings-redundant"
+    },
+    {
+      "id": "highlightClear",
+      "text": null,
+      "visible": false,
+      "reason": "hidden by persistent EPUB annotation-mode CSS"
+    },
+    {
+      "id": "highlightClose",
+      "text": null,
+      "visible": false,
+      "reason": "hidden inside compact color popover header"
+    }
+  ],
+  "summary": {
+    "checks": 16,
+    "clicked": 16,
+    "disabledNoOverflow": 0,
+    "failures": 0,
+    "hiddenByDesign": 6
+  }
+}

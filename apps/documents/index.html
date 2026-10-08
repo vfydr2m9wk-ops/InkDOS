@@ -36,6 +36,8 @@
   </header>
 
   <div id="formatbar" class="formatbar command-scroll" tabindex="0" aria-label="Horizontally scrollable editing toolbar">
+    <button id="docPreviewBtn" class="fmt-btn doc-preview-btn" type="button" title="Preview with the layout of the Word file (view only)" aria-label="Preview with the layout of the Word file" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg><span>Preview</span></button>
+    <span class="separator"></span>
     <button id="undoBtn" class="fmt-btn icon-only" type="button" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M5 12h8a6 6 0 0 1 6 6"/></svg></button>
     <button id="redoBtn" class="fmt-btn icon-only" type="button" title="Redo" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M19 12h-8a6 6 0 0 0-6 6"/></svg></button>
     <button id="printBtn" class="fmt-btn icon-only" type="button" title="Print" aria-label="Print"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4h10v5"/><path d="M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7z"/></svg></button>
@@ -165,6 +167,7 @@
 <script src="io/save-controller.js"></script>
 <script src="ui/command-controller.js"></script>
 <script src="help/help.js"></script>
+<script src="ui/docx-preview.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){const n=document.getElementById('startNew'),o=document.getElementById('startOpen');if(n)n.addEventListener('click',()=>document.getElementById('newMenuBtn')?.click());if(o)o.addEventListener('click',()=>document.getElementById('openMenuBtn')?.click());})();
