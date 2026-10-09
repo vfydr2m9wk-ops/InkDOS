@@ -24,7 +24,11 @@ STEPS = [
 
 def run(name, cmd):
     print(f'== {name}', flush=True)
-    result = subprocess.run(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    try:
+        result = subprocess.run(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=420)
+    except subprocess.TimeoutExpired as error:
+        print((error.stdout or '')[-4000:] if isinstance(error.stdout, str) else '')
+        sys.exit(f'FAILED (over 7 minutes, stuck): {name}')
     if result.returncode:
         print(result.stdout[-4000:])
         sys.exit(f'FAILED: {name}')

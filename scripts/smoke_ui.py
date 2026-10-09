@@ -131,6 +131,24 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
     page.wait_for_timeout(3500)
     run.check(f'{app}: opens {name}', name.split('.')[0] in (page.title() or '') or page.evaluate(
         "n=>document.body.innerText.includes(n)", name), page.title())
+    titles = ("()=>Array.from(document.querySelectorAll('.inkdos-settings-popover-title'))"
+              ".filter(x=>x.offsetParent).map(x=>x.textContent.trim())")
+    page.click('[data-frame-action="sun"]')
+    page.wait_for_timeout(300)
+    sun = page.evaluate(titles)
+    run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', sun == ['Appearance', 'Interface', 'Language'], str(sun))
+    run.shot(page, f'{app}-sun')
+    page.click('[data-frame-action="sun"]')
+    lock = page.locator('[data-frame-action="lock"]')
+    ok = lock.count() == 1 and page.evaluate(
+        "()=>document.querySelector('[data-frame-action=\"sun\"]').nextElementSibling===document.querySelector('[data-frame-action=\"lock\"]')")
+    run.check(f'{app}: lock right of the sun', ok)
+    if lock.count():
+        lock.click()
+        page.wait_for_timeout(300)
+        run.check(f'{app}: lock shows Security / Recovery', page.evaluate(titles) == ['Security', 'Recovery'], str(page.evaluate(titles)))
+        run.shot(page, f'{app}-lock')
+        lock.click()
     if app in ('documents', 'spreadsheets', 'presentations'):
         run.check(f'{app}: Edit with ONLYOFFICE enabled, left of Settings', page.evaluate(
             "()=>{const b=document.getElementById('inkdosOfficeBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');"
@@ -144,6 +162,22 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
             "()=>{const e=document.getElementById('editbar');return e.scrollWidth<=e.clientWidth+1}"))
     run.shot(page, f'{app}-{scheme}-{size[0]}')
     run.check(f'{app}: no page errors', not errors, '; '.join(errors[:2]))
+    ctx.close()
+
+
+def menus(run, browser, base, app):
+    ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
+    page = ctx.new_page()
+    page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
+    page.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
+    titles = ("()=>Array.from(document.querySelectorAll('.inkdos-settings-popover-title'))"
+              ".filter(x=>x.offsetParent).map(x=>x.textContent.trim())")
+    page.click('[data-frame-action="sun"]')
+    page.wait_for_timeout(300)
+    run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', page.evaluate(titles) == ['Appearance', 'Interface', 'Language'], str(page.evaluate(titles)))
+    page.click('[data-frame-action="sun"]')
+    run.check(f'{app}: lock right of the sun', page.evaluate(
+        "()=>document.querySelector('[data-frame-action=\"sun\"]').nextElementSibling===document.querySelector('[data-frame-action=\"lock\"]')"))
     ctx.close()
 
 
@@ -167,6 +201,8 @@ def main():
         workspace(run, browser, base, 'documents', 'smoke.docx', docx(), '.docx')
         workspace(run, browser, base, 'pdf', 'smoke.pdf', PDF, '.pdf')
         workspace(run, browser, base, 'txt', 'smoke.txt', b'InkDOS smoke\n', '.txt')
+        for app in ('spreadsheets', 'presentations', 'epub'):
+            menus(run, browser, base, app)
         browser.close()
     if server:
         server.shutdown()

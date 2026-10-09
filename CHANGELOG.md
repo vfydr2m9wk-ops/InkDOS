@@ -17,6 +17,13 @@ ONLYOFFICE button joined the header (it now waits for it).
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 4 · Settings (sun) and Security (lock), all six workspaces:
+- The sun keeps only Appearance (light, dark, system), Interface (auto, desktop, smartphone) and Language.
+- Full screen leaves the sun.
+- Recovery drafts (keep, with password, none) move to a new lock button right of the sun, titled Security
+  (translated in the seven languages).
+- Still in the sun, only in the Windows app: the Beta tools entry, pending the owner's decision.
+
 Step 3 · one entry point:
 - Owner decision: everything goes through this repository and https://vfydr2m9wk-ops.github.io/InkDOS/. The site
   inkdos-tools.github.io is now only the hidden engine InkDOS calls (ONLYOFFICE, BentoPDF, the Offline tools
