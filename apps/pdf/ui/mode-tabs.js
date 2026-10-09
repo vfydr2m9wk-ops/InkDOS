@@ -16,6 +16,10 @@ function editing(){return $('editModeBtn')?.getAttribute('aria-pressed')==='true
 function hasDocument(){const b=$('editModeBtn');return !!b&&b.dataset.editState!=='empty'}
 function whenEditing(fn){const b=$('editModeBtn');if(!b)return;if(editing())return fn();if(b.disabled)return;b.click();let n=0;(function wait(){if(editing())return fn();if(++n<100)setTimeout(wait,100)})()}
 function css(){const s=doc.createElement('style');s.textContent=
+ // one more row for this bar in the app grid; the tools below wrap onto a second line instead of scrolling behind side
+ // arrows (cut off on iPad)
+ '.app-shell{grid-template-rows:auto auto auto minmax(0,1fr) auto!important}.inkdos-toolbar-rail{display:block!important}.inkdos-toolbar-rail>.inkdos-toolbar-arrow,.inkdos-toolbar-rail>.inkdos-toolbar-separator{display:none!important}.inkdos-toolbar-rail>.inkdos-toolbar-scroll{grid-column:1!important}'+
+ '#editbar.editbar{height:auto!important;min-height:44px;flex-wrap:wrap!important;overflow:visible!important;justify-content:center;align-content:flex-start;row-gap:4px;padding-top:6px!important;padding-bottom:6px!important}#editbar.editbar>*{min-height:0!important;height:auto!important}'+
  '.pdf-task-bar{display:flex;gap:6px;align-items:center;overflow-x:auto;white-space:nowrap;padding:6px calc(var(--safe-r,0px) + 12px) 6px calc(var(--safe-l,0px) + 12px);background:var(--chrome);border-bottom:1px solid var(--line);scrollbar-width:none}'+
  '.pdf-task-bar button{height:32px;padding:0 14px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--muted,inherit);font:inherit;font-size:13px;font-weight:600;cursor:pointer}'+
  '.pdf-task-bar button[data-current]{background:var(--surface,#fff);border-color:var(--line);color:var(--text,inherit);box-shadow:0 1px 3px rgba(31,45,61,.1)}'+
