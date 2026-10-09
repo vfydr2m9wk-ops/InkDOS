@@ -88,15 +88,18 @@ jobs:
       - name: Validate staged desktop runtime
         run: python desktop/scripts/stage_web.py --check
 
+  # Owner decision (2026-10-09): one browser (Chromium) for now, and only after the fast validation above passed,
+  # so a red run stops early instead of running for minutes more.
   candidate-distribution:
     name: Candidate distribution (${{ matrix.browser }})
     if: github.event_name == 'pull_request'
+    needs: integration-validation
     runs-on: ubuntu-22.04
-    timeout-minutes: 55
+    timeout-minutes: 30
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium]
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -131,28 +134,12 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: python tests/test_pdf_first_page_first_browser.py
-      - name: Benchmark numeric and visual workspace performance
-        continue-on-error: true
-        env:
-          BROWSER: ${{ matrix.browser }}
-          INKDOS_PERF_ITERATIONS: "5"
-          INKDOS_PERF_VISUAL: "1"
-          INKDOS_PERF_OUT: artifacts/performance/${{ matrix.browser }}
-        run: python scripts/benchmark_workspace_performance.py
       - name: Audit exact candidate without deployment
         env:
           INKDOS_EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
           INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
           INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
         run: python scripts/run_candidate_audit.py
-      - name: Preserve performance benchmark evidence
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: performance-candidate-${{ matrix.browser }}
-          path: artifacts/performance/${{ matrix.browser }}/
-          if-no-files-found: warn
-          retention-days: 14
       - name: Preserve candidate audit evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

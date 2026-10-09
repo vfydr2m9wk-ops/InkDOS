@@ -14,6 +14,8 @@ check again on the published site, and the CI result on GitHub, before telling t
 CI fixes (2026-10-09): the CI had been red since the Plain Text wording change, whose generated bundle was not
 rebuilt (`build_txt_bundle.py --check`); and the localization test took its snapshot before the Edit with
 ONLYOFFICE button joined the header (it now waits for it).
+CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
+only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
 Step 3 · one entry point:
 - Owner decision: everything goes through this repository and https://vfydr2m9wk-ops.github.io/InkDOS/. The site
