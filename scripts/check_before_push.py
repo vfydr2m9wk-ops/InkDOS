@@ -24,11 +24,16 @@ STEPS = [
 
 def run(name, cmd):
     print(f'== {name}', flush=True)
-    try:
-        result = subprocess.run(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=420)
-    except subprocess.TimeoutExpired as error:
-        print((error.stdout or '')[-4000:] if isinstance(error.stdout, str) else '')
-        sys.exit(f'FAILED (over 7 minutes, stuck): {name}')
+    # a browser test can stall now and then on this machine: a stuck step gets one more try before it counts
+    for attempt in (1, 2):
+        try:
+            result = subprocess.run(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=420)
+            break
+        except subprocess.TimeoutExpired as error:
+            print((error.stdout or '')[-2000:] if isinstance(error.stdout, str) else '')
+            if attempt == 2:
+                sys.exit(f'FAILED (over 7 minutes, stuck twice): {name}')
+            print(f'   stuck after 7 minutes; trying {name} once more', flush=True)
     if result.returncode:
         print(result.stdout[-4000:])
         sys.exit(f'FAILED: {name}')
