@@ -12,10 +12,10 @@ async function injectFile(file,input=compatibleInput(file)){if(!file)return fals
 // InkDOS-tools origin (AGENTS.md, origin isolation), framed over this workspace; "Open in the Light version" opens it
 // here instead. Word, Excel and PowerPoint files, legacy and OpenDocument ones included, go to the ONLYOFFICE editors
 // (/editor?embed=1, which takes orders only from embedOrigin, this origin; the file comes with document:open-file).
-// Apple iWork files, PDFs and plain text go to the InkDOS-tools viewers (pnk, PDF.js, CodeMirror); EPUB books stay
-// in the InkDOS EPUB reader (it searches, bookmarks, highlights and resumes) through the viewer protocol (InkDOS-tools viewers/viewer-embed.js: ready, open with the File, loaded).
+// Apple iWork files and PDFs go to the InkDOS-tools viewers (pnk, PDF.js); EPUB books and plain text stay in the
+// InkDOS EPUB reader and Plain Text editor (they keep the file's encoding, recover drafts, search, bookmark...) through the viewer protocol (InkDOS-tools viewers/viewer-embed.js: ready, open with the File, loaded).
 const OFFICE_ORIGIN='https://inkdos-tools.github.io',OFFICE_EXT=new Set(['docx','doc','odt','rtf','xlsx','xls','ods','csv','pptx','ppt','odp','docm','dotx','dot','fodt','xlsm','xltx','fods','pptm','ppsx','pps','potx','fodp']);
-const TOOLS=OFFICE_ORIGIN+'/InkDOS-tools/',VIEWER_PAGE={pages:'pnk/',numbers:'pnk/',key:'pnk/',pdf:'bentopdf/pdfjs-viewer/viewer.html?file=',txt:'txt/',md:'txt/',markdown:'txt/',log:'txt/',json:'txt/',yaml:'txt/',yml:'txt/',xml:'txt/',ini:'txt/',toml:'txt/'};
+const TOOLS=OFFICE_ORIGIN+'/InkDOS-tools/',VIEWER_PAGE={pages:'pnk/',numbers:'pnk/',key:'pnk/',pdf:'bentopdf/pdfjs-viewer/viewer.html?file='};
 function engineComplete(){try{return g.localStorage?.getItem('inkdos2:engine')==='complete'&&!g.InkDOSDesktop&&doc?.documentElement?.dataset?.inkdosHost!=='tauri'}catch(_){return false}}
 function fullEngine(file){return OFFICE_EXT.has(extension(file?.name))&&engineComplete()}
 function viewerPage(file){return engineComplete()?VIEWER_PAGE[extension(file?.name)]||'':''}

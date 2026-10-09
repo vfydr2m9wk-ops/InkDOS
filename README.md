@@ -19,7 +19,7 @@ InkDOS has two engines, switched on the Home:
 | Word, Excel, PowerPoint | ONLYOFFICE editors running in the browser ([ranuts/document](https://github.com/ranuts/document)) | InkDOS's own editors |
 | PDF | PDF.js viewer, plus the BentoPDF toolkit (edit, split, merge, sign, OCR, convert) | InkDOS PDF workspace |
 | EPUB | InkDOS EPUB reader (search, bookmarks, highlights, resume) | InkDOS EPUB reader |
-| Plain text | CodeMirror | InkDOS text editor |
+| Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | InkDOS text editor |
 | Default on | Windows app | Web (light enough for XeOS on iPad) |
 
 - **Full version:** built from established projects. It lives on its own site, **https://inkdos-offic.pages.dev**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. Its **Offline tools** panel downloads every tool to the device in one go and shows what is already stored.
@@ -46,7 +46,6 @@ InkDOS stands on the work of these projects:
 
 - [ONLYOFFICE](https://github.com/ONLYOFFICE) via [ranuts/document](https://github.com/ranuts/document)
 - [BentoPDF](https://github.com/alam00000/bentopdf) and [PDF.js](https://github.com/mozilla/pdf.js)
-- [CodeMirror](https://codemirror.net/5/)
 - [Pyodide](https://pyodide.org)
 - [Tauri](https://tauri.app)
 - pdf-lib, JSZip, pako and Tesseract.js in the Light editors
