@@ -60,24 +60,25 @@ function requestPicker(input){if(!input||typeof g.showOpenFilePicker!=='function
 function install(){if(g.document)g.document.addEventListener('change',e=>{const t=e.target;if(t&&t.type==='file'&&t.files&&t.files[0]&&!/^image\//.test(String(t.accept||'').trim())){setCurrentFile(t.files[0]);noteOpened(t.files[0])}},true);const queue=g.launchQueue;if(!queue||typeof queue.setConsumer!=='function')return false;queue.setConsumer(params=>consume(params).catch(error=>{console.error('InkDOS launched-file open failed:',error);dispatchError(error)}));return true}
 // Home hands a launched file over by storing it in IndexedDB and opening this page with #inkdos-launch=<id>.
 function takeHandoff(){const m=/(?:^#|&)inkdos-launch=([A-Za-z0-9-]+)/.exec(g.location?.hash||'');if(!m||!g.indexedDB)return false;const id=m[1];try{g.history.replaceState(g.history.state,'',g.location.pathname+g.location.search)}catch(_){}let req;try{req=g.indexedDB.open('inkdos-launch-handoff',1)}catch(error){dispatchError(error);return false}req.onupgradeneeded=()=>req.result.createObjectStore('files');req.onerror=()=>dispatchError(req.error);req.onsuccess=()=>{const db=req.result;let tx;try{tx=db.transaction('files','readwrite')}catch(error){db.close();dispatchError(error);return}const store=tx.objectStore('files'),get=store.get(id);get.onsuccess=()=>{const v=get.result;store.delete(id);if(!v)return;const file=new File([v.data],v.name,{type:v.type||'',lastModified:v.lastModified||Date.now()});routeFile(file).catch(error=>{console.error('InkDOS launched-file open failed:',error);dispatchError(error)})};tx.oncomplete=tx.onabort=()=>db.close()};return true}
-// "Edit with ONLYOFFICE" (Documents, Spreadsheets, Presentations, web edition): before the Preview button, or at the
-// start of the toolbar. It opens the file as it was opened in ONLYOFFICE (changes not yet saved here stay here).
+// "Edit with ONLYOFFICE" (Documents, Spreadsheets, Presentations, web edition): in the top bar, left of the Settings
+// (sun) button. It opens the file as it was opened in ONLYOFFICE (changes not yet saved here stay here).
 let openedFile=null;
 function noteOpened(file){openedFile=OFFICE_EXT.has(extension(file?.name))?file:null;const b=doc?.getElementById('inkdosOfficeBtn');if(b)b.disabled=!openedFile}
-const OFFICE_MARK='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;flex:0 0 auto"><path fill="#ff6f3d" d="M12 14.6 2.6 10.3a.5.5 0 0 1 0-.9l1.9-.9L12 12l7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z"/><path fill="#95c038" d="M12 18.3 2.6 14a.5.5 0 0 1 0-.9l1.9-.9 7.5 3.5 7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z"/><path fill="#5dc0e8" d="M12 10.9 2.6 6.6a.5.5 0 0 1 0-.9L12 1.4l9.4 4.3a.5.5 0 0 1 0 .9z"/><path fill="#8a8f98" d="M12 22 2.6 17.7a.5.5 0 0 1 0-.9l1.9-.9L12 19.4l7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z" opacity=".55"/></svg>';
-function installOfficeButton(){
+const OFFICE_MARK='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;flex:0 0 auto;fill:none;stroke:none"><path fill="#ff6f3d" d="M12 14.6 2.6 10.3a.5.5 0 0 1 0-.9l1.9-.9L12 12l7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z"/><path fill="#95c038" d="M12 18.3 2.6 14a.5.5 0 0 1 0-.9l1.9-.9 7.5 3.5 7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z"/><path fill="#5dc0e8" d="M12 10.9 2.6 6.6a.5.5 0 0 1 0-.9L12 1.4l9.4 4.3a.5.5 0 0 1 0 .9z"/></svg>';
+function installOfficeButton(tries=0){
  if(!doc||!/\/apps\/(documents|spreadsheets|presentations)\//.test(g.location.pathname)||g.InkDOSDesktop||doc.documentElement.dataset.inkdosHost==='tauri'||doc.getElementById('inkdosOfficeBtn'))return;
- const anchor=doc.getElementById('docPreviewBtn')||doc.getElementById('pptPreviewGroup');const bar=anchor?.parentNode||doc.getElementById('formatbar')||doc.querySelector('.formatbar,.toolbar,[role="toolbar"]');if(!bar)return;
+ const sun=doc.querySelector('[data-frame-action="sun"]');
+ if(!sun){if(tries<100)setTimeout(()=>installOfficeButton(tries+1),100);return}
  const pt=/^pt/i.test(String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||''));
- const b=doc.createElement('button');b.type='button';b.id='inkdosOfficeBtn';const look=doc.getElementById('docPreviewBtn')||doc.getElementById('pptPreviewBtn');b.className=(look?.className||'fmt-btn').replace(/\b(doc|ppt)-preview-btn\b|\bicon-only\b|\blabeled-tool\b/g,'').trim()||'fmt-btn';
+ const b=doc.createElement('button');b.type='button';b.id='inkdosOfficeBtn';b.className='frame-btn inkdos-office-btn';
  b.title=pt?'Editar com ONLYOFFICE (abre o arquivo como foi aberto)':'Edit with ONLYOFFICE (opens the file as it was opened)';b.setAttribute('aria-label',pt?'Editar com ONLYOFFICE':'Edit with ONLYOFFICE');
- b.style.cssText='display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-weight:600';
+ b.style.cssText='width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font:inherit;font-size:13px;font-weight:600';
  b.innerHTML=OFFICE_MARK+'<span>'+(pt?'Editar com ':'Edit with ')+'ONLYOFFICE</span>';b.disabled=!openedFile;
  b.addEventListener('click',()=>{if(openedFile)openInOffice(openedFile)});
- if(anchor)bar.insertBefore(b,anchor);else bar.insertBefore(b,bar.firstChild);
+ sun.parentNode.insertBefore(b,sun);
 }
 install();
 takeHandoff();
-if(doc){if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',installOfficeButton,{once:true});else installOfficeButton()}
+if(doc){if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>installOfficeButton(),{once:true});else installOfficeButton()}
 g.InkDOSFileLaunch=Object.freeze({openInOffice:file=>OFFICE_EXT.has(extension(file?.name))&&openInOffice(file),officeExtensions:OFFICE_EXT,install,consume,openHandle,routeFile,injectFile,compatibleInput,acceptsFile,extensionsFromAccept,requestPicker,setOpenHandler});
 })(globalThis);

@@ -21,6 +21,7 @@ def main() -> None:
     assert "getItem('inkdos2:engine')" not in bridge, 'no Light/Full switch'
     assert 'openInOffice:file=>OFFICE_EXT.has(extension(file?.name))&&openInOffice(file)' in bridge
     assert "b.id='inkdosOfficeBtn'" in bridge and '/apps\\/(documents|spreadsheets|presentations)\\//' in bridge, 'Edit with ONLYOFFICE button'
+    assert 'data-frame-action="sun"' in bridge, 'the button sits left of the Settings (sun) button'
     assert "searchParams.set('embed','1')" in bridge and "searchParams.set('embedOrigin',g.location.origin)" in bridge
     # the file goes only to the office origin, and only messages from that frame are read
     assert "postMessage({id:'inkdos-launch',type:'document:open-file',payload:{file,fileName:file.name}},OFFICE_ORIGIN)" in bridge
