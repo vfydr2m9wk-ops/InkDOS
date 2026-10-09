@@ -1,6 +1,6 @@
 # InkDOS
 
-**Full version:** https://inkdos-offic.pages.dev · **Light version:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
+**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Tools (ONLYOFFICE, BentoPDF):** https://inkdos-offic.pages.dev · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
 
 InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser or in a small Windows app. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
@@ -12,24 +12,24 @@ It began as a set of lightweight editors written for this project. Over time the
 
 ## Where it stands
 
-InkDOS has two engines, switched on the Home:
+Every file opens in InkDOS first: its own apps are small and fast. The mature open-source tools come in only when you ask, for that file:
 
-| | **Full version** | **Light version** |
+| | **Opens in** | **On request** |
 | --- | --- | --- |
-| Word, Excel, PowerPoint | ONLYOFFICE editors running in the browser ([ranuts/document](https://github.com/ranuts/document)) | InkDOS's own editors |
-| PDF | InkDOS PDF workspace (forms, highlights, notes, text; verified saves), plus the BentoPDF toolkit (split, merge, sign, OCR, convert) | InkDOS PDF workspace |
-| EPUB | InkDOS EPUB reader (search, bookmarks, highlights, resume) | InkDOS EPUB reader |
-| Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | InkDOS text editor |
-| Default on | Windows app | Web (light enough for XeOS on iPad) |
+| Word, Excel, PowerPoint (also DOC, XLS, PPT, OpenDocument) | InkDOS Documents, Spreadsheets, Presentations | **Edit with ONLYOFFICE**: the ONLYOFFICE editors running in the browser ([ranuts/document](https://github.com/ranuts/document)) |
+| PDF | InkDOS PDF workspace (forms, highlights, notes, text; verified saves) | the BentoPDF toolkit (split, merge, OCR, convert) |
+| EPUB | InkDOS EPUB reader (search, bookmarks, highlights, resume) | |
+| Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | |
+| Apple Pages, Numbers, Keynote | shown by the pnk viewer, view only | |
 
-- **Full version:** built from established projects. It lives on its own site, **https://inkdos-offic.pages.dev**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. Its **Offline tools** panel downloads every tool to the device in one go and shows what is already stored.
-- **Light version:** the original InkDOS editors. Smaller and faster, with narrower format support. It stays as the light option and as the fallback.
+- **The tools** live on their own site, **https://inkdos-offic.pages.dev**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. ONLYOFFICE opens over the InkDOS app with "Back to InkDOS"; it gets the file as it was opened.
+- That site also has its own Home with an **Offline tools** panel that downloads the editors and tools to the device in one go.
 
-Files opened from the system (Windows "Open with", or the browser's file handling) go to the matching app of the chosen engine.
+Files opened from the system (Windows "Open with", the browser's file handling, XeOS) go to the matching InkDOS app.
 
 **Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) load from the internet.
 
-**Why the Full version is on Cloudflare Pages:** the editors are large (about 100 MB), and GitHub Pages tells browsers to recheck every file after 10 minutes. In a web view without service workers that keeps its sessions and site data (XeOS on iPad), that meant hundreds of requests and a slow reload on every open. Cloudflare Pages lets the site tell the browser to keep the program files for a long time (up to a year for build files), so once loaded the editors open from the device's own cache. Pages themselves are always rechecked, and **Check for updates** in the Offline tools panel fetches a new version right away. The same site is still published at [inkdos-tools.github.io](https://inkdos-tools.github.io) as a mirror.
+**Why the tools are on Cloudflare Pages:** the editors are large (about 100 MB), and GitHub Pages tells browsers to recheck every file after 10 minutes. In a web view without service workers that keeps its sessions and site data (XeOS on iPad), that meant hundreds of requests and a slow reload on every open. Cloudflare Pages lets the site tell the browser to keep the program files for a long time (up to a year for build files), so once loaded the editors open from the device's own cache. Pages themselves are always rechecked, and **Check for updates** in the Offline tools panel fetches a new version right away. The same site is still published at [inkdos-tools.github.io](https://inkdos-tools.github.io) as a mirror.
 
 **Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Other platforms may work but are not maintained.
 

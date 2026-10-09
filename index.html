@@ -24,7 +24,6 @@
   <script src="./shared/localization/ui-localization.js"></script>
   <script src="./shared/localization/home-settings.js"></script>
   <script src="./assets/advanced-tools.js" defer></script>
-  <script src="./assets/engine-switch.js" defer></script>
 </head>
 <body>
   <main class="home-shell" data-inkdos-i18n-root>
@@ -46,12 +45,6 @@
     </header>
 
     <section class="intro" aria-labelledby="workspaceTitle"><h1 id="workspaceTitle">Choose a workspace</h1>
-      <div class="engine-switch" role="group" aria-labelledby="engineLabel">
-        <span id="engineLabel" class="engine-label">Engine</span>
-        <span class="engine-segment"><button type="button" data-engine="light" aria-pressed="true">Light version</button><button type="button" data-engine="complete" aria-pressed="false">Full version</button></span>
-        <small id="engineNote" class="engine-note">InkDOS editors: light and fast, kept on this device.</small>
-        <small id="engineOffline" class="engine-offline" aria-live="polite"></small>
-      </div>
     </section>
 
     <section class="workspace-grid" aria-label="InkDOS workspaces">
