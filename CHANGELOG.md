@@ -12,6 +12,12 @@ Step 1 · tools address and suite Home:
 - Suite Home (inkdos-tools.github.io repository): plain workspace cards, no OCR button, Offline tools as a download
   button left of the sun. See that repository's CHANGELOG.md.
 
+Step 2 · InkDOS Home (the base):
+- Header: a download button left of the Settings (sun) button opens the offline tools of the suite
+  (https://inkdos-tools.github.io/?offline=1).
+- Footer: only "Powered by ONLYOFFICE" (logo in `assets/icons/onlyoffice.svg`) and "Source"; the GitHub,
+  Desktop release and Limitations links are gone.
+
 ## 2.8.0 — 2026-10-06
 
 Home:
