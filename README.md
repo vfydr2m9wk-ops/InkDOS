@@ -18,7 +18,7 @@ InkDOS has two engines, switched on the Home:
 | --- | --- | --- |
 | Word, Excel, PowerPoint | ONLYOFFICE editors running in the browser ([ranuts/document](https://github.com/ranuts/document)) | InkDOS's own editors |
 | PDF | PDF.js viewer, plus the BentoPDF toolkit (edit, split, merge, sign, OCR, convert) | InkDOS PDF workspace |
-| EPUB and e-books | foliate-js (EPUB, MOBI, FB2, CBZ) | InkDOS EPUB reader |
+| EPUB | InkDOS EPUB reader (search, bookmarks, highlights, resume) | InkDOS EPUB reader |
 | Plain text | CodeMirror | InkDOS text editor |
 | Default on | Windows app | Web (light enough for XeOS on iPad) |
 
@@ -46,7 +46,6 @@ InkDOS stands on the work of these projects:
 
 - [ONLYOFFICE](https://github.com/ONLYOFFICE) via [ranuts/document](https://github.com/ranuts/document)
 - [BentoPDF](https://github.com/alam00000/bentopdf) and [PDF.js](https://github.com/mozilla/pdf.js)
-- [foliate-js](https://github.com/johnfactotum/foliate-js)
 - [CodeMirror](https://codemirror.net/5/)
 - [Pyodide](https://pyodide.org)
 - [Tauri](https://tauri.app)
