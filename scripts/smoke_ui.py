@@ -108,9 +108,14 @@ def home(run, browser, base, scheme, size, no_sw=False):
     run.shot(page, tag + '-download')
     # Close is posted only to the published InkDOS origin, so it can be checked only on the published site
     if visible and base.startswith('https://vfydr2m9wk-ops.github.io/'):
-        panel.locator('[data-offline-close]').click()
-        page.wait_for_timeout(500)
+        box = panel.locator('[data-offline-close]').bounding_box()
+        url = page.url
+        page.touchscreen.tap(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
+        page.wait_for_timeout(150)
+        page.mouse.click(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)  # the late click of the same tap
+        page.wait_for_timeout(900)
         run.check(f'{tag}: Close removes the panel', not page.evaluate("()=>!!document.querySelector('.tools-download-layer')"))
+        run.check(f'{tag}: closing tap does not open the card behind', page.url == url, page.url)
     page.keyboard.press('Escape')
     page.evaluate("()=>document.querySelector('.tools-download-layer')?.remove()")
     page.click('#appearanceButton')

@@ -4,7 +4,11 @@
 const ORIGIN='https://inkdos-tools.github.io',button=document.getElementById('toolsDownload');
 if(!button)return;
 let layer=null,frame=null;
-function close(){if(!layer)return;layer.remove();layer=frame=null;button.focus()}
+// Closing: the frame goes at once, but an empty shield stays half a second so the rest of the tap (iPad sends the
+// click after the finger lifts) does not land on the workspace card behind it.
+function close(){if(!layer)return;const shield=layer;layer=frame=null;shield.replaceChildren();shield.style.background='transparent';
+ const eat=event=>{event.preventDefault();event.stopPropagation()};for(const type of ['click','pointerup','touchend','mouseup'])shield.addEventListener(type,eat,true);
+ setTimeout(()=>shield.remove(),500);button.focus({preventScroll:true})}
 button.addEventListener('click',event=>{
  event.preventDefault();if(layer)return;
  const root=document.documentElement,theme=root.dataset.theme==='dark'?'dark':'light';

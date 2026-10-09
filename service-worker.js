@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-30da1d3e02cab2e71a4f';
+const CACHE_NAME='inkdos-v2.8.0-e961e7410acdbb21bb93';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -300,7 +300,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./assets/tools-download.js": "46eb7350176991f653ead33e93632f4edebead5121a4abe3f942633c2ad077d1",
+  "./assets/tools-download.js": "64334a1c3174e4387c5b8c28d65948527be69fc7ad37f1756e0e6088624240be",
   "./index.html": "d7f1a948d72f4c417911128844d99a9da3eaf238883ac0c3872b40b1d77b87ce",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
