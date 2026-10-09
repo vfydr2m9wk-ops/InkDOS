@@ -154,8 +154,10 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
             "()=>{const b=document.getElementById('inkdosOfficeBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');"
             "return !!b&&!b.disabled&&b.nextElementSibling===s}"))
     if app == 'pdf':
-        run.check('pdf: task bar View · Annotate · Edit PDF', page.evaluate(
-            "()=>[...document.querySelectorAll('#pdfTaskBar [data-task]')].map(b=>b.dataset.task).join(',')") == 'view,annotate,edit')
+        run.check('pdf: task bar View · Annotate', page.evaluate(
+            "()=>[...document.querySelectorAll('#pdfTaskBar [data-task]')].map(b=>b.dataset.task).join(',')") == 'view,annotate')
+        run.check('pdf: Edit with BentoPDF left of Settings', page.evaluate(
+            "()=>{const b=document.getElementById('pdfBentoBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');return !!b&&b.nextElementSibling===s}"))
         page.click('#editModeBtn')
         page.wait_for_timeout(600)
         run.check('pdf: tool bar not cut off', page.evaluate(

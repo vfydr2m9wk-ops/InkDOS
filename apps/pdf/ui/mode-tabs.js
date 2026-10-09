@@ -1,14 +1,14 @@
 (function(global){'use strict';
-// PDF workspace, two bars: this top bar chooses what to do (View, Annotate, Edit PDF) and the toolbar
+// PDF workspace, two bars: this top bar chooses what to do (View, Annotate) and the toolbar
 // below shows that task's tools. The existing editing switch (#editModeBtn) moves into this bar as Annotate
-// (form fields are filled there too). Edit PDF frames the BentoPDF toolkit of InkDOS-tools (its own
+// (form fields are filled there too). Edit with BentoPDF, a header button left of Settings (sun), frames the BentoPDF toolkit of InkDOS-tools (its own
 // origin, AGENTS.md origin isolation) over the workspace and hands it the open PDF through the viewer protocol
 // (InkDOS-tools viewers/viewer-embed.js + bento-carry.js): every message checked against, and sent to, that origin.
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{};
 const TOOLS_ORIGIN='https://inkdos-tools.github.io',TOOLKIT=TOOLS_ORIGIN+'/InkDOS-tools/bentopdf/';
 const doc=document,root=doc.documentElement,$=id=>doc.getElementById(id);
 const pt=()=>/^pt/i.test(String(global.InkDOSLocalization?.currentLanguage||root.lang||global.navigator.language||''));
-const LABELS={view:['Visualizar','View'],annotate:['Anotar','Annotate'],edit:['Editar PDF','Edit PDF'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.']};
+const LABELS={view:['Visualizar','View'],annotate:['Anotar','Annotate'],edit:['Editar com BentoPDF','Edit with BentoPDF'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.']};
 const label=k=>LABELS[k][pt()?0:1];
 const desktop=()=>!!global.InkDOSDesktop||root.dataset.inkdosHost==='tauri';
 function debug(){return NS.PdfStabilityDebug||null}
@@ -59,8 +59,7 @@ function install(){
  const editbar=$('editbar');if(!editbar||$('pdfTaskBar'))return;css();
  bar=doc.createElement('div');bar.id='pdfTaskBar';bar.className='pdf-task-bar';bar.setAttribute('role','toolbar');bar.setAttribute('aria-label',pt()?'Tarefa no PDF':'PDF task');
  const edit=$('editModeBtn');
- for(const k of ['view','annotate','edit']){
-  if(k==='edit'&&desktop())continue;
+ for(const k of ['view','annotate']){
   if(k==='annotate'&&edit){edit.dataset.task='annotate';const t=doc.createElement('span');t.className='pdf-task-label';t.textContent=label('annotate');edit.appendChild(t);bar.appendChild(edit);continue}
   const b=doc.createElement('button');b.type='button';b.dataset.task=k;b.textContent=label(k);b.setAttribute('aria-pressed',String(k==='view'));b.addEventListener('click',()=>choose(k));bar.appendChild(b)}
  // Annotate while already editing: switch the task, do not finish editing
@@ -71,6 +70,16 @@ function install(){
  for(const b of bar.querySelectorAll('[data-task]'))if(b.dataset.task!=='view'&&b.id!=='editModeBtn')b.disabled=!hasDocument();
  setTask('view');
 }
-if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>setTimeout(install,0),{once:true});else setTimeout(install,0);
+// Edit with BentoPDF: a header button left of the Settings (sun) button, like Edit with ONLYOFFICE in the office apps
+function installHeaderButton(tries=0){
+ if(desktop()||$('pdfBentoBtn'))return;
+ const sun=doc.querySelector('[data-frame-action="sun"]');
+ if(!sun){if(tries<100)setTimeout(()=>installHeaderButton(tries+1),100);return}
+ const b=doc.createElement('button');b.type='button';b.id='pdfBentoBtn';b.className='frame-btn inkdos-office-btn';b.title=label('edit');b.setAttribute('aria-label',label('edit'));
+ b.style.cssText='width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font:inherit;font-size:13px;font-weight:600';
+ b.textContent=label('edit');b.addEventListener('click',openToolkit);sun.parentNode.insertBefore(b,sun);
+}
+function start(){install();installHeaderButton()}
+if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>setTimeout(start,0),{once:true});else setTimeout(start,0);
 NS.PdfTaskBar=Object.freeze({choose,get task(){return task}});
 })(globalThis);

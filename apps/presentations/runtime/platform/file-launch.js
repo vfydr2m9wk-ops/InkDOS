@@ -64,7 +64,6 @@ function takeHandoff(){const m=/(?:^#|&)inkdos-launch=([A-Za-z0-9-]+)/.exec(g.lo
 // (sun) button. It opens the file as it was opened in ONLYOFFICE (changes not yet saved here stay here).
 let openedFile=null;
 function noteOpened(file){openedFile=OFFICE_EXT.has(extension(file?.name))?file:null;const b=doc?.getElementById('inkdosOfficeBtn');if(b)b.disabled=!openedFile}
-const OFFICE_MARK='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;flex:0 0 auto;fill:none;stroke:none"><path fill="#ff6f3d" d="M12 14.6 2.6 10.3a.5.5 0 0 1 0-.9l1.9-.9L12 12l7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z"/><path fill="#95c038" d="M12 18.3 2.6 14a.5.5 0 0 1 0-.9l1.9-.9 7.5 3.5 7.5-3.5 1.9.9a.5.5 0 0 1 0 .9z"/><path fill="#5dc0e8" d="M12 10.9 2.6 6.6a.5.5 0 0 1 0-.9L12 1.4l9.4 4.3a.5.5 0 0 1 0 .9z"/></svg>';
 function installOfficeButton(tries=0){
  if(!doc||!/\/apps\/(documents|spreadsheets|presentations)\//.test(g.location.pathname)||g.InkDOSDesktop||doc.documentElement.dataset.inkdosHost==='tauri'||doc.getElementById('inkdosOfficeBtn'))return;
  const sun=doc.querySelector('[data-frame-action="sun"]');
@@ -73,7 +72,9 @@ function installOfficeButton(tries=0){
  const b=doc.createElement('button');b.type='button';b.id='inkdosOfficeBtn';b.className='frame-btn inkdos-office-btn';
  b.title=pt?'Editar com ONLYOFFICE (abre o arquivo como foi aberto)':'Edit with ONLYOFFICE (opens the file as it was opened)';b.setAttribute('aria-label',pt?'Editar com ONLYOFFICE':'Edit with ONLYOFFICE');
  b.style.cssText='width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font:inherit;font-size:13px;font-weight:600';
- b.innerHTML=OFFICE_MARK+'<span>'+(pt?'Editar com ':'Edit with ')+'ONLYOFFICE</span>';b.disabled=!openedFile;
+ // the ONLYOFFICE name in its original logo (assets/icons/onlyoffice.svg), light text on the dark theme
+ b.innerHTML='<span>'+(pt?'Editar com':'Edit with')+'</span><img src="../../assets/icons/onlyoffice.svg" alt="ONLYOFFICE" style="height:14px;width:auto;display:block">';b.disabled=!openedFile;
+ if(!doc.getElementById('inkdosOfficeBtnStyle')){const st=doc.createElement('style');st.id='inkdosOfficeBtnStyle';st.textContent='html[data-theme="dark"] .inkdos-office-btn img{filter:invert(1) hue-rotate(180deg)}';doc.head.appendChild(st)}
  b.addEventListener('click',()=>{if(openedFile)openInOffice(openedFile)});
  sun.parentNode.insertBefore(b,sun);
 }

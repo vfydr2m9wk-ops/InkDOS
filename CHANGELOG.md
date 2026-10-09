@@ -17,6 +17,15 @@ ONLYOFFICE button joined the header (it now waits for it).
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 6 · PDF: Edit with BentoPDF:
+- "Edit with BentoPDF" ("Editar com BentoPDF") is a header button left of the Settings (sun) button. It opens BentoPDF's
+  editing tools over the workspace with the current PDF, as Edit PDF did.
+- The task bar under the header keeps View and Annotate; the Edit PDF tab is gone.
+
+Step 5 · Documents, Spreadsheets, Presentations: Edit with ONLYOFFICE:
+- The button left of the sun reads "Edit with" / "Editar com" followed by the original ONLYOFFICE logo
+  (`assets/icons/onlyoffice.svg`, light on the dark theme), in place of the small mark and plain text.
+
 Step 4 · Settings (sun) and Security (lock), all six workspaces:
 - The sun keeps only Appearance (light, dark, system), Interface (auto, desktop, smartphone) and Language.
 - Full screen leaves the sun.
