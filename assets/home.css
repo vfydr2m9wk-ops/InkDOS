@@ -60,7 +60,7 @@ html[data-inkdos-host=tauri] .brand-row .home-appearance{margin-left:auto}
 /* header: tools download left of Settings; footer: ONLYOFFICE credit and Source */
 .home-actions{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
 a.theme-button{display:inline-grid;place-items:center;text-decoration:none;color:inherit}
-.home-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.home-footer{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center}.home-footer .powered{grid-column:2}.home-footer nav{grid-column:3;justify-self:end;margin-left:0}
 .home-footer .powered{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
 .home-footer .powered img{height:14px;width:auto}
 :root[data-theme=dark] .home-footer .powered img{filter:invert(1) hue-rotate(180deg)}

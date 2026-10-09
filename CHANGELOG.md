@@ -17,7 +17,7 @@ Step 2 · InkDOS Home (the base):
   Check for updates, per-tool status and warnings) over Home, in a frame of the suite's origin
   (`assets/tools-download.js`); Home and its theme stay as they are.
 - Footer: only "Powered by ONLYOFFICE" (logo in `assets/icons/onlyoffice.svg`) and "Source"; the GitHub,
-  Desktop release and Limitations links are gone.
+  Desktop release and Limitations links are gone. "Powered by ONLYOFFICE" sits centered, "Source" on the right.
 
 ## 2.8.0 — 2026-10-06
 
