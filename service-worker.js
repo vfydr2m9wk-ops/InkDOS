@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-9190e931ee416c4559b6';
+const CACHE_NAME='inkdos-v2.8.0-fb2a20cac03f2f3d528c';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -320,7 +320,7 @@ const ASSET_HASHES={
   "./shared/localization/localization.css": "95230db60db0f7994aab9ebc656b1033a527b389edf3c19ba56983ff1aebf775",
   "./shared/localization/settings-strip.js": "3e681c93afc2afe38a596ba9518ce92bc7b64013c234da1acd4162e2ddebc9bb",
   "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
-  "./shared/ui-density.css": "af02f8e39494afd286ec0fd93ae47db7e531c128bdd134f1bc9a005e4ee2173f",
+  "./shared/ui-density.css": "aed9423563cd12968e2d46ce4f25ea475b99a1dc97fbb2d932dedeb573552382",
   "./shared/ui-density.js": "1c095e14a884af69a957b83d8d282701af0988a1cf544a778fe5e003e6d76c22",
   "./shared/work-safety.js": "36b14fd88c9b19fd6fd0920e62515c57080038559a8e9661da0ec9e18c7164d5"
 };
