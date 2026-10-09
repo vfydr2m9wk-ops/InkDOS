@@ -20,7 +20,6 @@ InkDOS has two engines, switched on the Home:
 | PDF | PDF.js viewer, plus the BentoPDF toolkit (edit, split, merge, sign, OCR, convert) | InkDOS PDF workspace |
 | EPUB and e-books | foliate-js (EPUB, MOBI, FB2, CBZ) | InkDOS EPUB reader |
 | Plain text | CodeMirror | InkDOS text editor |
-| Extras | Python terminal (Pyodide) | none |
 | Default on | Windows app | Web (light enough for XeOS on iPad) |
 
 - **Full version:** built from established projects. It lives on its own site, [inkdos-tools.github.io](https://inkdos-tools.github.io), kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. Its **Offline tools** panel downloads every tool to the device in one go and shows what is already stored.
@@ -35,7 +34,7 @@ Files opened from the system (Windows "Open with", or the browser's file handlin
 ## Privacy and storage
 
 - No backend and no analytics. Every tool runs in the browser.
-- Each site's Content Security Policy only lets it reach its own address. The one exception is the optional online Python terminal, which may install packages from PyPI.
+- Each site's Content Security Policy only lets it reach its own address.
 - No list of recent files is kept: files are found again with the device's own file manager.
 - The only thing stored is the Light editors' recovery drafts, kept on the device and encrypted (AES-GCM) with a key that cannot be exported from it.
 
