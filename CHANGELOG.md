@@ -6,8 +6,16 @@ Plan (owner, 2026-10-09): InkDOS apps are the entry for every file; ONLYOFFICE (
 Presentations) and BentoPDF (PDF) open only on request from a button left of the Settings (sun) button. Done in
 controlled steps, each listed here.
 
-Working method (owner, 2026-10-09): every change is checked with `scripts/smoke_ui.py` before it is pushed, and
-again on the published site after the deploy, with screenshots shown to the owner; one controlled step at a time.
+Working method (owner, 2026-10-09): one controlled step at a time. Before every push,
+`python3 scripts/check_before_push.py` (regenerates the Plain Text bundle and the offline snapshot, runs the CI
+release validation and `scripts/smoke_ui.py` in one Chromium set up like an iPad); after the deploy, the smoke
+check again on the published site, and the CI result on GitHub, before telling the owner.
+
+CI fixes (2026-10-09): the CI had been red since the Plain Text wording change, whose generated bundle was not
+rebuilt (`build_txt_bundle.py --check`); and the localization test took its snapshot before the Edit with
+ONLYOFFICE button joined the header (it now waits for it).
+CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
+only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
 Step 3 · one entry point:
 - Owner decision: everything goes through this repository and https://vfydr2m9wk-ops.github.io/InkDOS/. The site

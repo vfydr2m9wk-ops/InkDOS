@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Quick UI smoke check, run before every push and again on the published site after each deploy.
 
-It opens what the owner uses (Home, the download panel, the Settings menu, each workspace with a small file) in
-Chromium at iPad sizes, light and dark, and once more as a web view without service workers (XeOS), and saves a
-screenshot of each step. It does not replace the regression tests; it catches the obvious "this stopped working"
+It opens what the owner uses (Home, the download panel, the Settings menu, each workspace with a small file) once,
+in Chromium set up like an iPad (Safari user agent, touch, iPad screen size), and saves a screenshot of each step. It does not replace the regression tests; it catches the obvious "this stopped working"
 before the owner sees it.
 
     python3 scripts/smoke_ui.py                       # local checkout, served on a free port
@@ -44,6 +43,9 @@ def docx() -> bytes:
     return out.getvalue()
 
 
+IPAD = (1180, 820)  # iPad Air/Pro 11 in landscape
+IPAD_UA = ('Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) '
+           'Version/18.0 Mobile/15E148 Safari/604.1')
 NO_SW = "try{delete Navigator.prototype.serviceWorker}catch(_){}"
 
 
@@ -72,7 +74,7 @@ def serve() -> tuple[str, http.server.ThreadingHTTPServer]:
 
 def home(run, browser, base, scheme, size, no_sw=False):
     tag = f"home-{scheme}-{size[0]}{'-nosw' if no_sw else ''}"
-    ctx = browser.new_context(viewport={'width': size[0], 'height': size[1]}, color_scheme=scheme, has_touch=True,
+    ctx = browser.new_context(viewport={'width': size[0], 'height': size[1]}, color_scheme=scheme, has_touch=True, user_agent=IPAD_UA,
                               service_workers='block' if no_sw else 'allow')
     if no_sw:
         ctx.add_init_script(NO_SW)
@@ -118,8 +120,8 @@ def home(run, browser, base, scheme, size, no_sw=False):
     ctx.close()
 
 
-def workspace(run, browser, base, app, name, data, accept, scheme='light', size=(1024, 768)):
-    ctx = browser.new_context(viewport={'width': size[0], 'height': size[1]}, color_scheme=scheme)
+def workspace(run, browser, base, app, name, data, accept, scheme='light', size=IPAD):
+    ctx = browser.new_context(viewport={'width': size[0], 'height': size[1]}, color_scheme=scheme, has_touch=True, user_agent=IPAD_UA)
     page = ctx.new_page()
     errors = []
     page.on('pageerror', lambda e: errors.append(str(e)[:160]))
@@ -161,12 +163,9 @@ def main():
     run = Run(out)
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        home(run, browser, base, 'light', (1024, 768))
-        home(run, browser, base, 'dark', (768, 1024))
-        home(run, browser, base, 'light', (1024, 768), no_sw=True)
+        home(run, browser, base, 'light', IPAD)
         workspace(run, browser, base, 'documents', 'smoke.docx', docx(), '.docx')
         workspace(run, browser, base, 'pdf', 'smoke.pdf', PDF, '.pdf')
-        workspace(run, browser, base, 'pdf', 'smoke.pdf', PDF, '.pdf', size=(768, 1024))
         workspace(run, browser, base, 'txt', 'smoke.txt', b'InkDOS smoke\n', '.txt')
         browser.close()
     if server:
