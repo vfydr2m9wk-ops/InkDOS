@@ -71,15 +71,21 @@ function install(){
  setTask('view');
 }
 // Edit with BentoPDF: a header button left of the Settings (sun) button, like Edit with ONLYOFFICE in the office apps
-function installHeaderButton(tries=0){
+function installHeaderButton(){
  if(desktop()||$('pdfBentoBtn'))return;
- const sun=doc.querySelector('[data-frame-action="sun"]');
- if(!sun){if(tries<100)setTimeout(()=>installHeaderButton(tries+1),100);return}
+ const find=()=>doc.querySelector('[data-frame-action="sun"]'),sun=find();
+ if(sun)return addHeaderButton(sun);
+ // joins the header in the same moment as the sun, so the sun never moves under a finger
+ const watch=new MutationObserver(()=>{const s=find();if(s){watch.disconnect();if(!$('pdfBentoBtn'))addHeaderButton(s)}});
+ watch.observe(doc.documentElement,{childList:true,subtree:true});setTimeout(()=>watch.disconnect(),15000);
+}
+function addHeaderButton(sun){
  const b=doc.createElement('button');b.type='button';b.id='pdfBentoBtn';b.className='frame-btn inkdos-office-btn';b.title=label('edit');b.setAttribute('aria-label',label('edit'));
  b.style.cssText='width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font:inherit;font-size:13px;font-weight:600';
- b.textContent=label('edit');b.addEventListener('click',openToolkit);sun.parentNode.insertBefore(b,sun);
+ b.innerHTML='<span class="inkdos-office-label"></span><span>BentoPDF</span>';b.firstChild.textContent=pt()?'Editar com':'Edit with';b.addEventListener('click',openToolkit);
+ if(!$('pdfBentoBtnStyle')){const st=doc.createElement('style');st.id='pdfBentoBtnStyle';st.textContent='@media (max-width:640px){#pdfBentoBtn .inkdos-office-label{display:none}#pdfBentoBtn{padding:0 6px!important}}';doc.head.appendChild(st)}sun.parentNode.insertBefore(b,sun);
 }
-function start(){install();installHeaderButton()}
-if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>setTimeout(start,0),{once:true});else setTimeout(start,0);
+installHeaderButton();
+if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>setTimeout(install,0),{once:true});else setTimeout(install,0);
 NS.PdfTaskBar=Object.freeze({choose,get task(){return task}});
 })(globalThis);

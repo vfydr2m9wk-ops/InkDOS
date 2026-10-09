@@ -183,6 +183,20 @@ def menus(run, browser, base, app):
     ctx.close()
 
 
+def phone_header(run, browser, base):
+    # a phone-width header must keep every button on screen (the sun, the lock and share included)
+    ctx = browser.new_context(viewport={'width': 390, 'height': 844}, has_touch=True, is_mobile=True)
+    for app in ('documents', 'spreadsheets', 'presentations', 'pdf', 'txt', 'epub'):
+        page = ctx.new_page()
+        page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
+        page.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
+        page.wait_for_timeout(500)
+        right = page.evaluate("()=>Math.max(...[...document.querySelectorAll('header button')].filter(b=>b.offsetParent).map(b=>b.getBoundingClientRect().right))")
+        run.check(f'{app}: phone header fits (390 px)', right <= 391, f'right edge {right:.0f}')
+        page.close()
+    ctx.close()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--base', help='site to check (default: this checkout, served locally)')
@@ -205,6 +219,7 @@ def main():
         workspace(run, browser, base, 'txt', 'smoke.txt', b'InkDOS smoke\n', '.txt')
         for app in ('spreadsheets', 'presentations', 'epub'):
             menus(run, browser, base, app)
+        phone_header(run, browser, base)
         browser.close()
     if server:
         server.shutdown()

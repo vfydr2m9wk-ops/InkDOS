@@ -21,6 +21,9 @@ Step 6 · PDF: Edit with BentoPDF:
 - "Edit with BentoPDF" ("Editar com BentoPDF") is a header button left of the Settings (sun) button. It opens BentoPDF's
   editing tools over the workspace with the current PDF, as Edit PDF did.
 - The task bar under the header keeps View and Annotate; the Edit PDF tab is gone.
+- On phones the header buttons shorten ("BentoPDF", the ONLYOFFICE logo alone) and the document title gives way, so
+  the sun, the lock and Share stay on screen; the buttons join the header together with the sun, so it never
+  moves under a finger (the CI's first-tap test caught both).
 
 Step 5 · Documents, Spreadsheets, Presentations: Edit with ONLYOFFICE:
 - The button left of the sun reads "Edit with" / "Editar com" followed by the original ONLYOFFICE logo

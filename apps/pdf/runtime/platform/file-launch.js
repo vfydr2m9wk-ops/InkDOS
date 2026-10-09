@@ -64,17 +64,20 @@ function takeHandoff(){const m=/(?:^#|&)inkdos-launch=([A-Za-z0-9-]+)/.exec(g.lo
 // (sun) button. It opens the file as it was opened in ONLYOFFICE (changes not yet saved here stay here).
 let openedFile=null;
 function noteOpened(file){openedFile=OFFICE_EXT.has(extension(file?.name))?file:null;const b=doc?.getElementById('inkdosOfficeBtn');if(b)b.disabled=!openedFile}
-function installOfficeButton(tries=0){
+// The button joins the header in the same moment as the Settings (sun) button (no shift under a finger or a click)
+function whenSun(run){const find=()=>doc.querySelector('[data-frame-action="sun"]');const sun=find();if(sun)return run(sun);const watch=new MutationObserver(()=>{const s=find();if(s){watch.disconnect();run(s)}});watch.observe(doc.documentElement,{childList:true,subtree:true});setTimeout(()=>watch.disconnect(),15000)}
+function installOfficeButton(){
  if(!doc||!/\/apps\/(documents|spreadsheets|presentations)\//.test(g.location.pathname)||g.InkDOSDesktop||doc.documentElement.dataset.inkdosHost==='tauri'||doc.getElementById('inkdosOfficeBtn'))return;
- const sun=doc.querySelector('[data-frame-action="sun"]');
- if(!sun){if(tries<100)setTimeout(()=>installOfficeButton(tries+1),100);return}
+ whenSun(sun=>{if(!doc.getElementById('inkdosOfficeBtn'))addOfficeButton(sun)});
+}
+function addOfficeButton(sun){
  const pt=/^pt/i.test(String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||''));
  const b=doc.createElement('button');b.type='button';b.id='inkdosOfficeBtn';b.className='frame-btn inkdos-office-btn';
  b.title=pt?'Editar com ONLYOFFICE (abre o arquivo como foi aberto)':'Edit with ONLYOFFICE (opens the file as it was opened)';b.setAttribute('aria-label',pt?'Editar com ONLYOFFICE':'Edit with ONLYOFFICE');
  b.style.cssText='width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font:inherit;font-size:13px;font-weight:600';
  // the ONLYOFFICE name in its original logo (assets/icons/onlyoffice.svg), light text on the dark theme
- b.innerHTML='<span>'+(pt?'Editar com':'Edit with')+'</span><img src="../../assets/icons/onlyoffice.svg" alt="ONLYOFFICE" style="height:14px;width:auto;display:block">';b.disabled=!openedFile;
- if(!doc.getElementById('inkdosOfficeBtnStyle')){const st=doc.createElement('style');st.id='inkdosOfficeBtnStyle';st.textContent='html[data-theme="dark"] .inkdos-office-btn img{filter:invert(1) hue-rotate(180deg)}';doc.head.appendChild(st)}
+ b.innerHTML='<span class="inkdos-office-label">'+(pt?'Editar com':'Edit with')+'</span><img src="../../assets/icons/onlyoffice.svg" alt="ONLYOFFICE" style="height:14px;width:auto;display:block">';b.disabled=!openedFile;
+ if(!doc.getElementById('inkdosOfficeBtnStyle')){const st=doc.createElement('style');st.id='inkdosOfficeBtnStyle';st.textContent='html[data-theme="dark"] .inkdos-office-btn img{filter:invert(1) hue-rotate(180deg)}@media (max-width:640px){.inkdos-office-btn .inkdos-office-label{display:none}.inkdos-office-btn{padding:0 6px!important}}';doc.head.appendChild(st)}
  b.addEventListener('click',()=>{if(openedFile)openInOffice(openedFile)});
  sun.parentNode.insertBefore(b,sun);
 }
