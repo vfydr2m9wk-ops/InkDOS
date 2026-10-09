@@ -17,6 +17,34 @@ ONLYOFFICE button joined the header (it now waits for it).
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 7 · tool bars back to 2.8 (owner, 2026-10-09):
+- PDF: the single 2.8 tool bar is back (the View · Annotate task bar is gone; the editing pencil is in the tool bar
+  again). "Edit with BentoPDF" becomes "Edit PDF" ("Editar PDF") in the header, left of the sun, like Edit with
+  ONLYOFFICE; it still opens BentoPDF's editing tools with the current PDF. Fill & sign (Beta tools) stays removed.
+- Documents and Presentations: the Preview button added after 2.8 leaves the tool bar (with its modules and tests),
+  so the bars match 2.8; the original layout is what Edit with ONLYOFFICE shows.
+- Phones: Edit with ONLYOFFICE shows only the ONLYOFFICE mark, and the Presentations title gives way like the
+  others, so nothing in the header covers the title (`smoke_ui.py` checks it).
+
+Step 6 · PDF: Edit with BentoPDF:
+- "Edit with BentoPDF" ("Editar com BentoPDF") is a header button left of the Settings (sun) button. It opens BentoPDF's
+  editing tools over the workspace with the current PDF, as Edit PDF did.
+- The task bar under the header keeps View and Annotate; the Edit PDF tab is gone.
+- On phones the header buttons shorten ("BentoPDF", the ONLYOFFICE logo alone) and the document title gives way, so
+  the sun, the lock and Share stay on screen; the buttons join the header together with the sun, so it never
+  moves under a finger (the CI's first-tap test caught both).
+
+Step 5 · Documents, Spreadsheets, Presentations: Edit with ONLYOFFICE:
+- The button left of the sun reads "Edit with" / "Editar com" followed by the original ONLYOFFICE logo
+  (`assets/icons/onlyoffice.svg`, light on the dark theme), in place of the small mark and plain text.
+
+Step 4 · Settings (sun) and Security (lock), all six workspaces:
+- The sun keeps only Appearance (light, dark, system), Interface (auto, desktop, smartphone) and Language.
+- Full screen leaves the sun.
+- Recovery drafts (keep, with password, none) move to a new lock button right of the sun, titled Security
+  (translated in the seven languages).
+- Still in the sun, only in the Windows app: the Beta tools entry, pending the owner's decision.
+
 Step 3 · one entry point:
 - Owner decision: everything goes through this repository and https://vfydr2m9wk-ops.github.io/InkDOS/. The site
   inkdos-tools.github.io is now only the hidden engine InkDOS calls (ONLYOFFICE, BentoPDF, the Offline tools
@@ -35,6 +63,7 @@ Step 2 · InkDOS Home (the base):
 - Header: a download button left of the Settings (sun) button opens the suite's Offline tools panel (Download all,
   Check for updates, per-tool status and warnings) over Home, in a frame of the suite's origin
   (`assets/tools-download.js`); Home and its theme stay as they are.
+- Closing that panel no longer lets the same tap open the workspace card behind it (a short invisible shield).
 - Footer: only "Powered by ONLYOFFICE" (logo in `assets/icons/onlyoffice.svg`) and "Source"; the GitHub,
   Desktop release and Limitations links are gone. "Powered by ONLYOFFICE" sits centered, "Source" on the right.
 

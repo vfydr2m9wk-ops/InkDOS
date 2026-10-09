@@ -34,7 +34,7 @@ function viewerUrl(viewer){const url=new URL(viewer+'/',new URL(TOOLS_BASE,globa
 function create({host,cover=[]}={}){
  let box=null,cleanup=null;
  function close(){cleanup?.();cleanup=null;box?.remove();box=null;for(const el of cover)if(el)el.style.display=''}
- // options.viewer names a viewer for a file this table does not list (the PPTX preview of ui/pptx-preview.js)
+ // options.viewer names a viewer for a file this table does not list
  function show(file,options={}){
   close();
   const v=options.viewer?{viewer:options.viewer,label:options.label||'Presentation'}:viewerFor(file&&file.name);

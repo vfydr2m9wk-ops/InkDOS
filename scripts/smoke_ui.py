@@ -108,9 +108,14 @@ def home(run, browser, base, scheme, size, no_sw=False):
     run.shot(page, tag + '-download')
     # Close is posted only to the published InkDOS origin, so it can be checked only on the published site
     if visible and base.startswith('https://vfydr2m9wk-ops.github.io/'):
-        panel.locator('[data-offline-close]').click()
-        page.wait_for_timeout(500)
+        box = panel.locator('[data-offline-close]').bounding_box()
+        url = page.url
+        page.touchscreen.tap(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
+        page.wait_for_timeout(150)
+        page.mouse.click(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)  # the late click of the same tap
+        page.wait_for_timeout(900)
         run.check(f'{tag}: Close removes the panel', not page.evaluate("()=>!!document.querySelector('.tools-download-layer')"))
+        run.check(f'{tag}: closing tap does not open the card behind', page.url == url, page.url)
     page.keyboard.press('Escape')
     page.evaluate("()=>document.querySelector('.tools-download-layer')?.remove()")
     page.click('#appearanceButton')
@@ -131,19 +136,70 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
     page.wait_for_timeout(3500)
     run.check(f'{app}: opens {name}', name.split('.')[0] in (page.title() or '') or page.evaluate(
         "n=>document.body.innerText.includes(n)", name), page.title())
+    titles = ("()=>Array.from(document.querySelectorAll('.inkdos-settings-popover-title'))"
+              ".filter(x=>x.offsetParent).map(x=>x.textContent.trim())")
+    page.click('[data-frame-action="sun"]')
+    page.wait_for_timeout(300)
+    sun = page.evaluate(titles)
+    run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', sun == ['Appearance', 'Interface', 'Language'], str(sun))
+    run.shot(page, f'{app}-sun')
+    page.click('[data-frame-action="sun"]')
+    lock = page.locator('[data-frame-action="lock"]')
+    ok = lock.count() == 1 and page.evaluate(
+        "()=>document.querySelector('[data-frame-action=\"sun\"]').nextElementSibling===document.querySelector('[data-frame-action=\"lock\"]')")
+    run.check(f'{app}: lock right of the sun', ok)
+    if lock.count():
+        lock.click()
+        page.wait_for_timeout(300)
+        run.check(f'{app}: lock shows Security / Recovery', page.evaluate(titles) == ['Security', 'Recovery'], str(page.evaluate(titles)))
+        run.shot(page, f'{app}-lock')
+        lock.click()
     if app in ('documents', 'spreadsheets', 'presentations'):
         run.check(f'{app}: Edit with ONLYOFFICE enabled, left of Settings', page.evaluate(
             "()=>{const b=document.getElementById('inkdosOfficeBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');"
             "return !!b&&!b.disabled&&b.nextElementSibling===s}"))
     if app == 'pdf':
-        run.check('pdf: task bar View · Annotate · Edit PDF', page.evaluate(
-            "()=>[...document.querySelectorAll('#pdfTaskBar [data-task]')].map(b=>b.dataset.task).join(',')") == 'view,annotate,edit')
-        page.click('#editModeBtn')
-        page.wait_for_timeout(600)
-        run.check('pdf: tool bar not cut off', page.evaluate(
-            "()=>{const e=document.getElementById('editbar');return e.scrollWidth<=e.clientWidth+1}"))
+        run.check('pdf: one tool bar, as in 2.8 (no task bar; editing switch in the tool bar)', page.evaluate(
+            "()=>!document.getElementById('pdfTaskBar')&&!!document.querySelector('#editbar #editModeBtn')"))
+        run.check('pdf: Edit PDF left of Settings', page.evaluate(
+            "()=>{const b=document.getElementById('pdfEditBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');return !!b&&b.nextElementSibling===s}"))
     run.shot(page, f'{app}-{scheme}-{size[0]}')
     run.check(f'{app}: no page errors', not errors, '; '.join(errors[:2]))
+    ctx.close()
+
+
+def menus(run, browser, base, app):
+    ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
+    page = ctx.new_page()
+    page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
+    page.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
+    titles = ("()=>Array.from(document.querySelectorAll('.inkdos-settings-popover-title'))"
+              ".filter(x=>x.offsetParent).map(x=>x.textContent.trim())")
+    page.click('[data-frame-action="sun"]')
+    page.wait_for_timeout(300)
+    run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', page.evaluate(titles) == ['Appearance', 'Interface', 'Language'], str(page.evaluate(titles)))
+    page.click('[data-frame-action="sun"]')
+    run.check(f'{app}: lock right of the sun', page.evaluate(
+        "()=>document.querySelector('[data-frame-action=\"sun\"]').nextElementSibling===document.querySelector('[data-frame-action=\"lock\"]')"))
+    ctx.close()
+
+
+def phone_header(run, browser, base):
+    # a phone-width header must keep every button on screen (the sun, the lock and share included)
+    ctx = browser.new_context(viewport={'width': 390, 'height': 844}, has_touch=True, is_mobile=True)
+    for app in ('documents', 'spreadsheets', 'presentations', 'pdf', 'txt', 'epub'):
+        page = ctx.new_page()
+        page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
+        page.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
+        page.wait_for_timeout(500)
+        right = page.evaluate("()=>Math.max(...[...document.querySelectorAll('header button')].filter(b=>b.offsetParent).map(b=>b.getBoundingClientRect().right))")
+        run.check(f'{app}: phone header fits (390 px)', right <= 391, f'right edge {right:.0f}')
+        # nothing in the header sits on top of the document title
+        gap = page.evaluate("()=>{const t=document.querySelector('.document-title,.presentation-title,.title-input,#titleText');if(!t)return 0;"
+                            "const r=t.getBoundingClientRect(),side=document.querySelector('header .inkdos-frame-right');if(!side)return 0;"
+                            "return side.getBoundingClientRect().left-r.right}")
+        run.check(f'{app}: phone header buttons do not cover the title', gap >= -1, f'gap {gap:.0f}')
+        page.close()
     ctx.close()
 
 
@@ -167,6 +223,9 @@ def main():
         workspace(run, browser, base, 'documents', 'smoke.docx', docx(), '.docx')
         workspace(run, browser, base, 'pdf', 'smoke.pdf', PDF, '.pdf')
         workspace(run, browser, base, 'txt', 'smoke.txt', b'InkDOS smoke\n', '.txt')
+        for app in ('spreadsheets', 'presentations', 'epub'):
+            menus(run, browser, base, app)
+        phone_header(run, browser, base)
         browser.close()
     if server:
         server.shutdown()
