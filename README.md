@@ -22,12 +22,14 @@ InkDOS has two engines, switched on the Home:
 | Plain text | CodeMirror | InkDOS text editor |
 | Default on | Windows app | Web (light enough for XeOS on iPad) |
 
-- **Full version:** built from established projects. It lives on its own site, [inkdos-tools.github.io](https://inkdos-tools.github.io), kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. Its **Offline tools** panel downloads every tool to the device in one go and shows what is already stored.
+- **Full version:** built from established projects. It lives on its own site, **https://inkdos-offic.pages.dev**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. Its **Offline tools** panel downloads every tool to the device in one go and shows what is already stored.
 - **Light version:** the original InkDOS editors. Smaller and faster, with narrower format support. It stays as the light option and as the fallback.
 
 Files opened from the system (Windows "Open with", or the browser's file handling) go to the matching app of the chosen engine.
 
-**Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) always load from the internet.
+**Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) load from the internet.
+
+**Why the Full version is on Cloudflare Pages:** the editors are large (about 100 MB), and GitHub Pages tells browsers to recheck every file after 10 minutes. In a web view without service workers that keeps its sessions and site data (XeOS on iPad), that meant hundreds of requests and a slow reload on every open. Cloudflare Pages lets the site tell the browser to keep the program files for a long time (up to a year for build files), so once loaded the editors open from the device's own cache. Pages themselves are always rechecked, and **Check for updates** in the Offline tools panel fetches a new version right away. The same site is still published at [inkdos-tools.github.io](https://inkdos-tools.github.io) as a mirror.
 
 **Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Other platforms may work but are not maintained.
 
