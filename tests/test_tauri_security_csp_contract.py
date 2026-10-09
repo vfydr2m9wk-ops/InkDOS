@@ -15,7 +15,7 @@ STAGED_DIRS = ("apps", "shared", "assets")
 # Web-edition-only sources the desktop host deliberately keeps blocking: the InkDOS-tools site (its own
 # origin) backs Home's Advanced tools, hidden on desktop, and the OpenDocument/iWork viewers, which the
 # desktop edition does not associate and which report "viewer did not load" there instead of opening.
-WEB_ONLY = {"frame-src": {"https://inkdos-tools.github.io"}}
+WEB_ONLY = {"frame-src": {"https://inkdos-offic.pages.dev"}}
 CSP_META = re.compile(r'http-equiv\s*=\s*["\']Content-Security-Policy["\']\s+content\s*=\s*"([^"]+)"', re.IGNORECASE)
 
 

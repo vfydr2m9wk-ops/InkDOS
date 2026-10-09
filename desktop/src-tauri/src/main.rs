@@ -25,7 +25,7 @@ static OFFICE_WINDOW_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 /// `office-*` windows: no IPC (not in any capability, refused by require_trusted_window), navigation limited to
 /// that origin. WebView2 keeps their offline copy in the app's own data folder, so after the first use they open
 /// with no network.
-const OFFICE_HOST: &str = "inkdos-tools.github.io";
+const OFFICE_HOST: &str = "inkdos-offic.pages.dev";
 const OFFICE_EXTENSIONS: &[&str] = &["docx", "doc", "odt", "rtf", "xlsx", "xls", "ods", "csv", "pptx", "ppt", "odp"];
 /// A file handed to an office window travels inside its start script; larger files open in the Light version.
 const MAX_OFFICE_FILE_BYTES: u64 = 64 * 1024 * 1024;
@@ -638,12 +638,12 @@ mod tests {
 
     #[test]
     fn office_windows_stay_on_the_office_site() {
-        assert!(is_office_page(&tauri::Url::parse("https://inkdos-tools.github.io/editor?embed=1").unwrap()));
-        assert!(!is_office_page(&tauri::Url::parse("http://inkdos-tools.github.io/").unwrap()));
+        assert!(is_office_page(&tauri::Url::parse("https://inkdos-offic.pages.dev/editor?embed=1").unwrap()));
+        assert!(!is_office_page(&tauri::Url::parse("http://inkdos-offic.pages.dev/").unwrap()));
         assert!(!is_office_page(&tauri::Url::parse("https://vfydr2m9wk-ops.github.io/InkDOS/").unwrap()));
-        assert!(!is_office_page(&tauri::Url::parse("https://inkdos-tools.github.io.example.com/").unwrap()));
+        assert!(!is_office_page(&tauri::Url::parse("https://inkdos-offic.pages.dev.example.com/").unwrap()));
         // the office site is never an app page: main and workspace windows cannot navigate there
-        assert!(!is_app_page(&tauri::Url::parse("https://inkdos-tools.github.io/").unwrap()));
+        assert!(!is_app_page(&tauri::Url::parse("https://inkdos-offic.pages.dev/").unwrap()));
     }
 
     #[test]
@@ -658,6 +658,6 @@ mod tests {
     fn office_open_script_has_its_placeholders_once() {
         assert_eq!(OFFICE_OPEN_SCRIPT.matches("__NAME__").count(), 1);
         assert_eq!(OFFICE_OPEN_SCRIPT.matches("__DATA__").count(), 1);
-        assert!(OFFICE_OPEN_SCRIPT.contains("location.origin !== 'https://inkdos-tools.github.io'"));
+        assert!(OFFICE_OPEN_SCRIPT.contains("location.origin !== 'https://inkdos-offic.pages.dev'"));
     }
 }

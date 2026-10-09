@@ -48,7 +48,7 @@ def check_spreadsheets(page, files: Path) -> None:
         page.wait_for_function("(n) => (document.getElementById('statusText')?.textContent || '').includes(n + ' · View only · shown')", arg=name, timeout=15000)
         assert f'VIEWER {viewer} {name}' in page.frame_locator('.external-viewer iframe').locator('body').inner_text(timeout=10000)
         assert page.get_attribute('.external-viewer iframe', 'src') == tools_base(PORT) + f'{viewer}/?embed=1&inkdos-theme=light'
-        assert "frame-src 'self' https://inkdos-tools.github.io;" in page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
+        assert "frame-src 'self' https://inkdos-offic.pages.dev;" in page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
         state = page.evaluate("""async () => {
             const api = globalThis.__inkdosSpreadsheetsS1, s = api.session;
             return { kind: s.sourceKind, name: s.fileName, rename: s.rename('Other.xlsx'),
