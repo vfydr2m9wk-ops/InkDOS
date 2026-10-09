@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-c803c8e91b453e3d22fc';
+const CACHE_NAME='inkdos-v2.8.0-539e81afbb3a2fb6f4e3';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -27,7 +27,7 @@ const ASSET_HASHES={
   "./apps/documents/runtime/frame/app-frame.css": "40ae5877868f7f18e0f0515bd44c1c0fa5403d3b51ac31d0ad2ba30f4d7a2371",
   "./apps/documents/runtime/frame/frame-menu.js": "1878bd2da9ccf1a23c166c5ba583778cb0df162f3b15f5bfb27944a18a9a3ec8",
   "./apps/documents/runtime/platform/content-viewport-adapter.js": "aa348b1bb217a1d02b31638970a6941dcc742509d537c72fd2de40606531cdf3",
-  "./apps/documents/runtime/platform/file-launch.js": "857f3aaae1d1e56f048435723c1e63341cfefefc76d70c9b04b03f930d6b3581",
+  "./apps/documents/runtime/platform/file-launch.js": "fbd06a6b4a794f2beb865139678727ac15345ad64a5b89234c01907a6bbea97f",
   "./apps/documents/runtime/tokens/base.css": "b56b459804e0e712c9adb26bcbcb7d7649029f3114117e919d1607041192e1d7",
   "./apps/documents/state/appearance.js": "4fe0c8f13e6c1933723003896741bd0aa9a555d9995a8828587b934345e12ab8",
   "./apps/documents/ui/chrome-controller.js": "862fe9e5070a7b443522ae4a14644f195e500045b02257fe709859bea4f24fcc",
@@ -66,7 +66,7 @@ const ASSET_HASHES={
   "./apps/epub/manifest.webmanifest": "746b4e4d5db7429b22e04bc9b7440d7fd12d4370bfbcd10a97495a62cc9f4256",
   "./apps/epub/runtime/frame/app-frame.css": "d55d2a35302f191c81a420cb68d73c09d97fa77abe281b11ea817bd95fd74dbb",
   "./apps/epub/runtime/frame/frame-menu.js": "373d33e8259258574cd166a2598848abab3c0f6bf669dc961421c70e3382eb0c",
-  "./apps/epub/runtime/platform/file-launch.js": "857f3aaae1d1e56f048435723c1e63341cfefefc76d70c9b04b03f930d6b3581",
+  "./apps/epub/runtime/platform/file-launch.js": "fbd06a6b4a794f2beb865139678727ac15345ad64a5b89234c01907a6bbea97f",
   "./apps/epub/runtime/tokens/base.css": "3a9afb52b36ed58080688bff0f627a5adf7b205095ceeddb43e94d90bd37572d",
   "./apps/epub/session/book-session.js": "d6a40ede14fd62c25243bd46c7beeb6d8a1fafd5001d22473a49b5475b4454b0",
   "./apps/epub/state/annotation-store.js": "8a5b8a38ac29db007a08e18ccac738da141d846ea560314d6ab413c5f73b7828",
@@ -120,7 +120,7 @@ const ASSET_HASHES={
   "./apps/pdf/runtime/frame/app-frame.css": "8ebef62e5c21114419b9710a53b0e11c199acbfd45bd48cb3f55440b13bdb2c8",
   "./apps/pdf/runtime/frame/frame-menu.js": "bf821b2ab69da010743dac587d233634154e6b3f189bb594c22566743a0d0506",
   "./apps/pdf/runtime/platform/content-viewport-adapter.js": "72fab1e7698b716855385537bba73673771ac564d4ed1ce50595bcca14eb35b0",
-  "./apps/pdf/runtime/platform/file-launch.js": "857f3aaae1d1e56f048435723c1e63341cfefefc76d70c9b04b03f930d6b3581",
+  "./apps/pdf/runtime/platform/file-launch.js": "fbd06a6b4a794f2beb865139678727ac15345ad64a5b89234c01907a6bbea97f",
   "./apps/pdf/runtime/tokens/base.css": "349ba732eba74dfa79413baf44a8e1326bea0a19c7ce7708c25335d12ab8f717",
   "./apps/pdf/state/appearance.js": "994c78c3390a74470784185e43f4ee9a96813421671679fa1f050aa9675f511c",
   "./apps/pdf/ui/beta-tools-panel.js": "87b60d9fe5536b9217e3de8fab07bd9882be1f2facfb1dce1e57558aefaf6361",
@@ -181,7 +181,7 @@ const ASSET_HASHES={
   "./apps/presentations/runtime/frame/app-frame.css": "f48f85ce2943a08d29ad96f6fe285f54ea0b47abda33887815ac4005bf8fe6ff",
   "./apps/presentations/runtime/frame/frame-menu.js": "bb7f126b58cae5b58bfcd68067ba648d193f7ebea6e5495d08853ce4ed13208e",
   "./apps/presentations/runtime/platform/content-viewport-adapter.js": "210541319a346f9ffb854f876e70ba2768f9540aa999aee52b82a4162240ff4c",
-  "./apps/presentations/runtime/platform/file-launch.js": "857f3aaae1d1e56f048435723c1e63341cfefefc76d70c9b04b03f930d6b3581",
+  "./apps/presentations/runtime/platform/file-launch.js": "fbd06a6b4a794f2beb865139678727ac15345ad64a5b89234c01907a6bbea97f",
   "./apps/presentations/runtime/tokens/base.css": "c5225baf077b9d9c9b871b9276b890689e8c9bc4bf98719e546a1c943e8d2539",
   "./apps/presentations/state/appearance.js": "1b6f81ee203b92b0ec7658de201685e733bcbf7a108b13a58034994f3c8a0e97",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
@@ -236,7 +236,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/runtime/frame/app-frame.css": "e95874e209605ac43a559f868be937ea03cac33d386978258e14c2f7953690e0",
   "./apps/spreadsheets/runtime/frame/frame-menu.js": "4755b28d6affb0c8633671f23ab3fd6fc5a0e3c8319438c4c7134ad7ffe70670",
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
-  "./apps/spreadsheets/runtime/platform/file-launch.js": "857f3aaae1d1e56f048435723c1e63341cfefefc76d70c9b04b03f930d6b3581",
+  "./apps/spreadsheets/runtime/platform/file-launch.js": "fbd06a6b4a794f2beb865139678727ac15345ad64a5b89234c01907a6bbea97f",
   "./apps/spreadsheets/runtime/tokens/base.css": "63221d631d62c79bfbcc299fc4528677463faf197b138c03514b9cd75ea23c20",
   "./apps/spreadsheets/state/appearance.js": "32e307d767c497c9b0675b21438a5966daf71fa2deaa7b6974ba5ada17e4a16f",
   "./apps/spreadsheets/ui/chrome-controller.js": "62bab368e9719b6d2887c8dbe54f3069f63e0cdb19853f64b2dd916ed0fc3fd9",
@@ -277,7 +277,7 @@ const ASSET_HASHES={
   "./apps/txt/runtime/frame/app-frame.css": "11b2b77ee72e8047dd6d9c484c9564bd1ce4f3c31b92545e808523b6a8a7d524",
   "./apps/txt/runtime/frame/app-frame.js": "a9f1f64ef5f2aac0da5760fdebb11f89e4b4fb172a0994e92e63a22af7dae606",
   "./apps/txt/runtime/platform/content-viewport-adapter.js": "0c48d18a5230f540dd36a1e52659f72cec1041123ca5b0d45cc3d65c255639c8",
-  "./apps/txt/runtime/platform/file-launch.js": "857f3aaae1d1e56f048435723c1e63341cfefefc76d70c9b04b03f930d6b3581",
+  "./apps/txt/runtime/platform/file-launch.js": "fbd06a6b4a794f2beb865139678727ac15345ad64a5b89234c01907a6bbea97f",
   "./apps/txt/runtime/services/file-delivery.js": "0988213acf0a9d65b59320e5f53bf9cdc1683de9ae4ca61693fbba4d3ae6baf3",
   "./apps/txt/runtime/services/recovery-store.js": "1928d3db8bada6d60e918ff0d29c8640058c9d7324331f1b07defd69cb15bff0",
   "./apps/txt/runtime/tokens/base.css": "3ca9310a61d220437a5748fb44f93476397c44a34b067506e8df0cf76b7f7fd7",
