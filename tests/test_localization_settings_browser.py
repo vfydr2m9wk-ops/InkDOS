@@ -127,6 +127,8 @@ def main() -> None:
             # Translation is presentation-only: IDs/actions/commands and editable name remain unchanged.
             page.goto(BASE + WORKSPACES[0][1], wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip")
+            # the Edit with ONLYOFFICE button joins the header once the Settings (sun) button exists
+            page.wait_for_function("() => !!document.getElementById('inkdosOfficeBtn')")
             open_menu(page)
             before = snapshot_functional_attributes(page)
             title_before = page.locator("#titleText").input_value()

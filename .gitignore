@@ -38,3 +38,4 @@ qa-screenshots/
 .env
 .env.*
 !.env.example
+smoke-out/
