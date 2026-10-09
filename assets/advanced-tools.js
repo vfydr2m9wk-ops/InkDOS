@@ -18,7 +18,6 @@ const TOOLS=Object.freeze([
   {id:'pdf-to-jpg',group:'Convert',title:'PDF to images',description:'Save the pages of a PDF as JPG images.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-to-jpg.html',icon:'convert',window:true},
   {id:'pdf-converter',group:'Convert',title:'All conversions',description:'Every conversion to and from PDF in one list.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/pdf-converter.html',icon:'convert',window:true},
   {id:'bentopdf',group:'PDF',title:'PDF toolkit',description:'Merge, split, compress, convert, OCR, edit and protect PDFs (BentoPDF).',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/',icon:'pdf',window:true},
-  {id:'ocr-pdf',group:'PDF',title:'OCR (searchable PDF)',description:'Recognize the text of scanned pages so it can be searched and copied.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/ocr-pdf.html',icon:'pdf',window:true},
   {id:'compress-pdf',group:'PDF',title:'Compress PDF',description:'Make a PDF file smaller.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/compress-pdf.html',icon:'pdf',window:true},
   {id:'merge-pdf',group:'PDF',title:'Merge PDFs',description:'Join several PDF files into one.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/merge-pdf.html',icon:'pdf',window:true},
   {id:'edit-pdf',group:'PDF',title:'Edit PDF',description:'Annotate, highlight, comment and add text or images to a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/edit-pdf.html',icon:'pdf',window:true},
@@ -34,8 +33,7 @@ const TOOLS=Object.freeze([
   {id:'decrypt-pdf',group:'PDF',title:'Remove password',description:'Unlock a PDF whose password you know.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/decrypt-pdf.html',icon:'pdf',window:true},
   {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
   // INKDOS:FROZEN-LEGACY legacy-home-tools (config/frozen-legacy.json): kept working, listed last and out of the
-  // quick tools row; the maintained set is the PDF toolkit (BentoPDF, OCR) and the Python terminal
-  {id:'pdf-tools',group:'Legacy',title:'PDF signer (legacy)',description:'Visual and A1 signature with signature check. Not a legally valid signature service; kept for reference.',href:'./labs/pdf/index.html',icon:'pdf'},
+  // quick tools row; the maintained set is the PDF toolkit (BentoPDF) and the Python terminal
   {id:'squoosh',group:'Legacy',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
   {id:'archivedrop',group:'Legacy',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
   {id:'cyberchef',group:'Legacy',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
@@ -61,7 +59,7 @@ function toolShell(){
   shell.setAttribute('role','dialog');shell.setAttribute('aria-modal','true');shell.setAttribute('aria-labelledby','toolPanelTitle');
   shell.innerHTML='<header class="tool-shell-bar">'
    +'<button type="button" class="tool-shell-back" data-tool-back>‹ <span>Advanced tools</span></button>'
-   +'<strong id="toolPanelTitle" class="tool-shell-title"></strong><span class="tool-shell-badge">beta</span>'
+   +'<strong id="toolPanelTitle" class="tool-shell-title"></strong>'
    +'<a class="tool-shell-full" data-tool-full target="_top" title="Open full window" aria-label="Open full window"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>'
    +'<button type="button" class="tools-close" data-tool-close aria-label="Close" title="Close">×</button>'
    +'</header><div class="tool-shell-body"></div>';
@@ -140,7 +138,7 @@ function install(){
     const tool=TOOLS.find(t=>t.id===button.dataset.quickTool);if(!tool)return;
     lastFocus=button;if(tool.window)openWindowTool(tool);else openTool(tool);
   }));
-  // Full office (beta): the start page on the tools origin follows the InkDOS appearance and language (it cannot
+  // Full office: the start page on the tools origin follows the InkDOS appearance and language (it cannot
   // read InkDOS storage), so they ride on the link; set just before the browser follows it (click, middle click)
   doc.querySelectorAll('a.beta-tool').forEach(link=>{
     const withSettings=()=>{const url=new URL(link.getAttribute('href'),location.href);url.searchParams.set('inkdos-theme',doc.documentElement.dataset.theme==='dark'?'dark':'light');const lang=window.InkDOSLocalization?.currentLanguage;if(lang)url.searchParams.set('lang',lang);link.href=url.href};

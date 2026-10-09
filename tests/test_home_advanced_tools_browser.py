@@ -108,7 +108,6 @@ def main() -> None:
             page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
             page.evaluate("() => { window.open = window.__open; }")
             button.click(); overlay.wait_for(state='visible')
-            assert page.locator('.tools-item[data-tool-id="pdf-tools"]').get_attribute('target') is None
             # the image converter (Squoosh, legacy) needs no isolation and opens in the panel like the other tools
             squoosh = next(t for t in tools if t['id'] == 'squoosh')
             assert squoosh['group'] == 'Legacy' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
@@ -116,7 +115,7 @@ def main() -> None:
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
             assert page.locator('.tools-item').count() == 0 and page.locator('.tools-empty').is_visible()
-            page.fill('#advancedToolsSearch', 'signature')
+            page.fill('#advancedToolsSearch', 'image')
             assert page.locator('.tools-item').count() >= 1
             # Escape closes and returns focus to the button
             page.keyboard.press('Escape')
@@ -129,33 +128,27 @@ def main() -> None:
             page.mouse.click(10, 10); overlay.wait_for(state='hidden')
             # an entry opens its tool inside the InkDOS tool panel (same bar and theme as the workspaces)
             button.click(); overlay.wait_for(state='visible')
-            page.locator('.tools-item[data-tool-id="pdf-tools"]').click()
+            page.locator('.tools-item[data-tool-id="squoosh"]').click()
             tool_panel = page.locator('#toolPanel')
             tool_panel.wait_for(state='visible')
             assert overlay.is_hidden()
             panel_state = page.evaluate("""() => ({ title: document.getElementById('toolPanelTitle').textContent,
                 src: document.querySelector('#toolPanel iframe')?.getAttribute('src'),
                 full: document.querySelector('#toolPanel [data-tool-full]').getAttribute('href') })""")
-            assert panel_state == {'title': 'PDF signer (legacy)', 'src': './labs/pdf/index.html', 'full': './labs/pdf/index.html'}, panel_state
-            page.frame_locator('#toolPanel iframe').locator('body').wait_for(timeout=15000)
+            assert panel_state['title'] == 'Convert and compress images' and panel_state['src'].startswith(TOOLS_SITE + 'squoosh/') and panel_state['full'].startswith(TOOLS_SITE + 'squoosh/'), panel_state
             # back returns to the list, Escape closes everything and drops the frame
             page.click('#toolPanel [data-tool-back]')
             overlay.wait_for(state='visible'); assert tool_panel.is_hidden()
-            page.locator('.tools-item[data-tool-id="pdf-tools"]').click(); tool_panel.wait_for(state='visible')
+            page.locator('.tools-item[data-tool-id="squoosh"]').click(); tool_panel.wait_for(state='visible')
             page.keyboard.press('Escape'); tool_panel.wait_for(state='hidden')
             assert page.locator('#toolPanel iframe').count() == 0 and overlay.is_hidden()
-            # "Open full window" leaves for the tool itself
-            button.click(); overlay.wait_for(state='visible')
-            page.locator('.tools-item[data-tool-id="pdf-tools"]').click(); tool_panel.wait_for(state='visible')
-            page.click('#toolPanel [data-tool-full]')
-            page.wait_for_url('**/labs/pdf/index.html')
             page.goto(BASE + '/index.html', wait_until='load')
             page.evaluate(unhide)
-            # quick tools row on the Home: Convert, OCR, the PDF toolkit and Terminal open their tools directly; the
+            # quick tools row on the Home: Convert, the PDF toolkit and Terminal open their tools directly; the
             # Advanced tools button ends the same row
             row = page.locator('.quick-tools button')
             assert [row.nth(i).get_attribute('data-quick-group') or row.nth(i).get_attribute('data-quick-tool') or row.nth(i).get_attribute('id')
-                    for i in range(row.count())] == ['Convert', 'ocr-pdf', 'bentopdf', 'python', 'advancedToolsButton']
+                    for i in range(row.count())] == ['Convert', 'bentopdf', 'python', 'advancedToolsButton']
             # Convert opens the list with only the conversions (light, inside InkDOS); searching shows every group again
             page.click('[data-quick-group="Convert"]')
             overlay.wait_for(state='visible')
@@ -164,10 +157,6 @@ def main() -> None:
             page.fill('#advancedToolsSearch', 'pdf')
             assert page.locator('.tools-group').count() > 1
             page.keyboard.press('Escape'); overlay.wait_for(state='hidden')
-            with context.expect_page() as opened:
-                page.click('[data-quick-tool="ocr-pdf"]')
-            assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/ocr-pdf.html?inkdos-theme='), opened.value.url
-            opened.value.close()
             with context.expect_page() as opened:
                 page.click('[data-quick-tool="bentopdf"]')
             assert opened.value.url.startswith(TOOLS_SITE + 'bentopdf/?inkdos-theme='), opened.value.url
@@ -181,8 +170,8 @@ def main() -> None:
             assert page.evaluate("() => document.activeElement.dataset.quickTool") == 'python'
             # legacy-home-tools: the tools outside the maintained set (PDF toolkit, Python) come last, in Legacy
             tools = page.evaluate("() => InkDOSAdvancedTools.tools")
-            assert [t['id'] for t in tools if t['group'] == 'Legacy'] == ['pdf-tools', 'squoosh', 'archivedrop', 'cyberchef', 'it-tools']
-            assert [t['group'] for t in tools[-5:]] == ['Legacy'] * 5, tools[-5:]
+            assert [t['id'] for t in tools if t['group'] == 'Legacy'] == ['squoosh', 'archivedrop', 'cyberchef', 'it-tools']
+            assert [t['group'] for t in tools[-4:]] == ['Legacy'] * 4, tools[-4:]
             assert next(t for t in tools if t['id'] == 'python')['group'] == 'Data analysis'
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')

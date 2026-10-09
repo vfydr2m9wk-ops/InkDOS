@@ -17,8 +17,8 @@ INJECTION = '<script src="/desktop-host.js"></script>'
 ROOT_FILES = ("index.html", "manifest.webmanifest", "service-worker.js", "VERSION.json")
 ROOT_DIRS = ("assets", "apps", "shared")
 DOC_FILES = ("KNOWN_LIMITATIONS.md",)
-# web-edition-only assets: the OCR engine (the PDF app hides OCR in the desktop app)
-WEB_ONLY_DIRS = ("apps/pdf/vendor/tesseract",)
+# web-edition-only assets (none today)
+WEB_ONLY_DIRS: tuple[str, ...] = ()
 
 
 def _copy_runtime(destination: Path) -> None:

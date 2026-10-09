@@ -151,7 +151,8 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
     if lock.count():
         lock.click()
         page.wait_for_timeout(300)
-        run.check(f'{app}: lock shows Security / Recovery', page.evaluate(titles) == ['Security', 'Recovery'], str(page.evaluate(titles)))
+        want = ['Security', 'Recovery'] + (['PDF password'] if app == 'pdf' else [])
+        run.check(f'{app}: lock shows ' + ' / '.join(want), page.evaluate(titles) == want, str(page.evaluate(titles)))
         run.shot(page, f'{app}-lock')
         lock.click()
     if app in ('documents', 'spreadsheets', 'presentations'):
