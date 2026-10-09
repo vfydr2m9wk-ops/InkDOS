@@ -32,11 +32,9 @@ def main() -> None:
     assert "'*'" not in script
     host_csp = json.loads((SRC / 'tauri.conf.json').read_text(encoding='utf-8'))['app']['security']['csp']
     assert host_csp['frame-src'] == "'self'", 'InkDOS windows do not frame the office site'
+    # files opened from Windows open in their InkDOS workspace first (no Light/Full switch any more)
     desktop_host = (ROOT / 'desktop/desktop-host.js').read_text(encoding='utf-8')
-    assert "core.invoke('inkdos_open_office_file', { token, lang })" in desktop_host
-    assert "if (engine === 'light'" in desktop_host
-    engine = (ROOT / 'assets/engine-switch.js').read_text(encoding='utf-8')
-    assert "invoke('inkdos_open_office'" in engine
+    assert 'inkdos_open_office_file' not in desktop_host and 'inkdos2:engine' not in desktop_host
     print('Desktop full version contract: OK')
 
 

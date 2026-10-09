@@ -287,19 +287,8 @@
         }
       });
     };
-    // Full version (Home engine switch; Complete unless Light was chosen): a Word, Excel or PowerPoint file opens in
-    // an office window instead (main.rs inkdos_open_office_file, which closes this window); any other file, or a
-    // failure, stays here.
-    let engine = null;
-    try { engine = g.localStorage.getItem('inkdos2:engine'); } catch (_) {}
-    if (engine === 'light' || !core || typeof core.invoke !== 'function') { tryInject(); return; }
-    const lang = String((g.InkDOSLocalization && g.InkDOSLocalization.currentLanguage) || g.navigator.language || '');
-    core.invoke('inkdos_open_office_file', { token, lang }).then(handled => {
-      if (!handled) tryInject();
-    }).catch(error => {
-      console.error('InkDOS desktop could not open the full version:', error);
-      tryInject();
-    });
+    // every file opens in its InkDOS workspace first (ONLYOFFICE is offered from there)
+    tryInject();
   }
 
   function createUpdateModal() {

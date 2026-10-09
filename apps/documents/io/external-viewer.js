@@ -11,20 +11,20 @@ const VIEWERS=Object.freeze([
  {viewer:'pnk',ext:['pages'],label:'Apple Pages'}
 ]);
 const LOAD_TIMEOUT_MS=45000;
-// Light version: OpenDocument files are view only here; the Full version (ONLYOFFICE) edits them. The notice offers
-// the switch and reopens the file there (file-launch.js routes it to the full editor).
+// OpenDocument files are view only here; ONLYOFFICE edits them. The notice opens the file there
+// (InkDOSFileLaunch.openInOffice, file-launch.js).
 const CONVERTIBLE=['odt','ods','odp'];
 function fullOffer(file){
  const m=/\.([a-z0-9]+)$/i.exec(String(file&&file.name||''));if(!m||!CONVERTIBLE.includes(m[1].toLowerCase()))return null;
- try{if(global.localStorage.getItem('inkdos2:engine')==='complete')return null}catch(_){return null}
+ if(typeof global.InkDOSFileLaunch?.openInOffice!=='function')return null;
  const pt=/^pt/i.test(document.documentElement.lang||global.navigator.language||'');
  const bar=document.createElement('div');bar.className='external-viewer-notice';
  bar.style.cssText='display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;background:var(--surface,#fff);border-bottom:1px solid var(--border,#e3e8ef);font-size:13px';
  const text=document.createElement('span');text.style.cssText='flex:1;min-width:200px';
- text.textContent=pt?'Somente visualização. Para converter e editar este arquivo, mude para a versão completa.':'View only. To convert and edit this file, switch to the Full version.';
- const go=document.createElement('button');go.type='button';go.textContent=pt?'Abrir na versão completa':'Open in the Full version';
+ text.textContent=pt?'Somente visualização aqui. Para editar, abra no ONLYOFFICE.':'View only here. To edit, open it in ONLYOFFICE.';
+ const go=document.createElement('button');go.type='button';go.textContent=pt?'Editar com ONLYOFFICE':'Edit with ONLYOFFICE';
  go.style.cssText='height:30px;padding:0 12px;border:1px solid var(--border,#d5dce6);border-radius:8px;background:var(--hover,#f0f2f5);color:inherit;font:inherit;cursor:pointer';
- go.addEventListener('click',()=>{try{global.localStorage.setItem('inkdos2:engine','complete')}catch(_){}global.InkDOSFileLaunch?.routeFile(file)});
+ go.addEventListener('click',()=>global.InkDOSFileLaunch.openInOffice(file));
  bar.append(text,go);return bar;
 }
 function viewerFor(name){const m=/\.([a-z0-9]+)$/i.exec(String(name||''));const ext=m?m[1].toLowerCase():'';return VIEWERS.find(v=>v.ext.includes(ext))||null}
