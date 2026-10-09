@@ -16,7 +16,7 @@ The Windows app is built with [Tauri](https://tauri.app) (MIT or Apache-2.0).
 
 ## Tools opened on request
 
-These run on a separate site (https://inkdos-offic.pages.dev, mirrored at https://inkdos-tools.github.io), not inside
+These run on a separate site (https://inkdos-tools.github.io), not inside
 InkDOS. Each is published there with its own license and a link to its source:
 
 - [ONLYOFFICE](https://github.com/ONLYOFFICE) editors via [ranuts/document](https://github.com/ranuts/document): AGPL-3.0. The site's own repository, [inkdos-tools.github.io](https://github.com/inkdos-tools/inkdos-tools.github.io), is AGPL-3.0.

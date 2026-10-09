@@ -1,6 +1,6 @@
 # InkDOS
 
-**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Tools (ONLYOFFICE, BentoPDF):** https://inkdos-offic.pages.dev · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
+**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Suite (InkDOS apps with ONLYOFFICE and BentoPDF):** https://inkdos-tools.github.io · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
 
 InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser or in a small Windows app. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
@@ -22,14 +22,14 @@ Every file opens in InkDOS first. The mature open-source tools come in only when
 | Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | |
 | Apple Pages, Numbers, Keynote | shown by the pnk viewer, view only | |
 
-- **The tools** live on their own site, **https://inkdos-offic.pages.dev**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. ONLYOFFICE opens over the InkDOS app with "Back to InkDOS"; it gets the file as it was opened.
+- **The tools** live on their own site, **https://inkdos-tools.github.io**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. ONLYOFFICE opens over the InkDOS app with "Back to InkDOS"; it gets the file as it was opened.
 - That site also has its own Home with an **Offline tools** panel that downloads the editors and tools to the device in one go.
 
 Files opened from the system (Windows "Open with", the browser's file handling, XeOS) go to the matching InkDOS app.
 
 **Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) load from the internet.
 
-**Why the tools are on Cloudflare Pages:** the editors are large (about 100 MB), and GitHub Pages tells browsers to recheck every file after 10 minutes. In a web view without service workers that keeps its sessions and site data (XeOS on iPad), that meant hundreds of requests and a slow reload on every open. Cloudflare Pages lets the site tell the browser to keep the program files for a long time (up to a year), so once loaded the editors open from the device's own cache. Every file, pages included, is kept for a year; **Check for updates** in the Offline tools panel fetches a new version. InkDOS opens ONLYOFFICE and BentoPDF from this address. The same site is still published at [inkdos-tools.github.io](https://inkdos-tools.github.io) as a mirror.
+**Cloudflare mirror:** https://inkdos-offic.pages.dev is paused while the suite is settled on GitHub Pages; the address is kept for later.
 
 **Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Other platforms may work but are not maintained.
 

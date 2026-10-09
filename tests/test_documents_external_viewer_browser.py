@@ -95,7 +95,7 @@ def main() -> None:
                 page.wait_for_function("() => !!globalThis.InkDOS2Documents?.DocumentsApp && !!globalThis.InkDOS2Documents?.ExternalViewer")
                 assert '.odt' in page.get_attribute('#fileInput', 'accept') and '.pages' in page.get_attribute('#fileInput', 'accept')
                 csp = page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
-                assert "frame-src 'self' https://inkdos-offic.pages.dev;" in csp, csp
+                assert "frame-src 'self' https://inkdos-tools.github.io;" in csp, csp
 
                 def open_file(name: str) -> None:
                     page.set_input_files('#fileInput', str(files / name))

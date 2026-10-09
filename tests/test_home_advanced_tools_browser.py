@@ -20,7 +20,7 @@ PORT = 8814
 BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
 TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python', 'squoosh'}
-TOOLS_SITE = 'https://inkdos-offic.pages.dev/InkDOS-tools/'
+TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -75,7 +75,7 @@ def main() -> None:
                     assert folder in TOOL_FOLDERS, href
             # Home may frame that origin (and nothing else besides itself)
             csp = page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
-            assert "frame-src 'self' https://inkdos-offic.pages.dev;" in csp, csp
+            assert "frame-src 'self' https://inkdos-tools.github.io;" in csp, csp
             # the other origin cannot read the InkDOS appearance, so the links carry it
             link = page.get_attribute('.tools-item[data-tool-id="cyberchef"]', 'href')
             assert link.startswith(TOOLS_SITE + 'cyberchef/?inkdos-theme='), link

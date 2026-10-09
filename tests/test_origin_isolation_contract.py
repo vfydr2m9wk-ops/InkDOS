@@ -4,7 +4,7 @@
 InkDOS is served from https://vfydr2m9wk-ops.github.io/InkDOS/. Every GitHub Pages site of that
 account shares this origin and therefore InkDOS's storage (recovery drafts), offline cache and
 windows. Third-party or experimental web code must live on another origin: the InkDOS-tools site is
-https://inkdos-offic.pages.dev (a separate GitHub organization). See SECURITY.md, "Origin isolation".
+https://inkdos-tools.github.io (a separate GitHub organization). See SECURITY.md, "Origin isolation".
 
 Checked here:
 - no shipped InkDOS file refers to a page of vfydr2m9wk-ops.github.io outside /InkDOS/;
@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INKDOS_HOST = 'vfydr2m9wk-ops.github.io'
-TOOLS_ORIGIN = 'https://inkdos-offic.pages.dev'
+TOOLS_ORIGIN = 'https://inkdos-tools.github.io'
 SHIPPED = ('index.html', 'service-worker.js', 'manifest.webmanifest', 'assets', 'apps', 'shared', 'labs', 'desktop')
 SKIP_PARTS = {'vendor', 'node_modules', 'target', 'gen', 'icons'}
 TEXT = {'.html', '.js', '.mjs', '.css', '.json', '.webmanifest', '.rs', '.toml'}

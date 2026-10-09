@@ -75,7 +75,7 @@ def main() -> None:
                 first = page.evaluate("() => document.querySelector('#editbar button')?.id")
                 assert first == 'pptPreviewBtn', first
                 csp = page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
-                assert 'frame-src' in csp and 'https://inkdos-offic.pages.dev' in csp, csp
+                assert 'frame-src' in csp and 'https://inkdos-tools.github.io' in csp, csp
 
                 page.click('#startNew')
                 page.wait_for_function('() => globalThis.__inkdosPresentations.session.active')

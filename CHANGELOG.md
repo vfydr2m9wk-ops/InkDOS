@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+Plan (owner, 2026-10-09): InkDOS apps are the entry for every file; ONLYOFFICE (Documents, Spreadsheets,
+Presentations) and BentoPDF (PDF) open only on request from a button left of the Settings (sun) button. Done in
+controlled steps, each listed here.
+
+Step 1 · tools address and suite Home:
+- The tools origin is back to https://inkdos-tools.github.io (CSP, postMessage targets, desktop host, tests): the
+  Cloudflare mirror (https://inkdos-offic.pages.dev) is paused, its address and project kept for later.
+- Suite Home (inkdos-tools.github.io repository): plain workspace cards, no OCR button, Offline tools as a download
+  button left of the sun. See that repository's CHANGELOG.md.
+
 ## 2.8.0 — 2026-10-06
 
 Home:

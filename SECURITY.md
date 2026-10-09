@@ -17,7 +17,7 @@ If a report cannot be reproduced without confidential material, keep that materi
 InkDOS is served from `https://vfydr2m9wk-ops.github.io/InkDOS/`. A browser treats every GitHub Pages site of the `vfydr2m9wk-ops` account as the same origin: such a page could read InkDOS's recovery drafts and settings, rewrite its offline cache or script its windows. Therefore:
 
 - no other GitHub Pages site is published under the `vfydr2m9wk-ops` account (by people or by AI tools);
-- third-party web code (the advanced tools and the OpenDocument/iWork viewers) is served by the separate `inkdos-tools` organization at `https://inkdos-offic.pages.dev/InkDOS-tools/`, a different origin; InkDOS exchanges files with it only through `postMessage` with explicit, checked origins;
+- third-party web code (the advanced tools and the OpenDocument/iWork viewers) is served by the separate `inkdos-tools` organization at `https://inkdos-tools.github.io/InkDOS-tools/`, a different origin; InkDOS exchanges files with it only through `postMessage` with explicit, checked origins;
 - the offline service worker serves a cached file only while it matches the release snapshot hash;
 - every tools page carries a strict Content-Security-Policy: nothing is fetched from or sent to another site.
 

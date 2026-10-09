@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OFFICE = 'https://inkdos-offic.pages.dev'
+OFFICE = 'https://inkdos-tools.github.io'
 APPS = ('documents', 'spreadsheets', 'presentations', 'pdf', 'txt', 'epub')
 
 
