@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.8.0-490b28fcefbdd8b2243b';
+const CACHE_NAME='inkdos-v2.8.0-c8012cb4a7d864146308';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "06153eca6f5a2f749c3dc9ca893fbd6dd724095378b0d3858f3ad11e9ffe3f2b",
@@ -270,8 +270,8 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "4327628aca1a3f633408890ccbe06635bef4aa2ddd4574cf1d70a1c6fdbfd801",
-  "./apps/txt/io/txt-file-controller.js": "8c1a1b7e6b6e33bec84aeb4660b1d5df23b044bb231cf4513bcba7c532b72c9a",
+  "./apps/txt/index.html": "3614a62279256098178cd2a8138d5ea8c8115fee76ddad48e6930b46d9243e6a",
+  "./apps/txt/io/txt-file-controller.js": "5d3f56a6766c96210a17560463d0894f20d2794ce62adbc6e0af2389d73ffb91",
   "./apps/txt/manifest.webmanifest": "a335693895daf02d482e2d7a9275cf3e9a9abe4fcdc737b82d29cd4463a6537c",
   "./apps/txt/page.template.html": "b0724970884a3baab23ae469e0997dbba68e1be105fb825367fc26098fa9830b",
   "./apps/txt/runtime/contracts/document-session.js": "09b4b7d83d82262e1044830afb62a43480b44d7de53e6d9e26f73a4107b4e049",
@@ -299,7 +299,7 @@ const ASSET_HASHES={
   "./assets/icons/presentations.png": "2cebde137cdac3b7e19ecbf312f13dd8bb79be58ff4f9e6d498f8c3d2d064b1c",
   "./assets/icons/spreadsheets.svg": "4123a2a8f058a2c2aa83ccc20fe4a89fe1e56569d8118470c3b0a5db5e47c3f2",
   "./assets/icons/txt.svg": "eca5162e307049cb4e608a2ea9d2bbe393cbfa344e1df4617e1e280e896386a7",
-  "./index.html": "8bfe13b21354840df8b70fe5015a7bd085e39664370f13f8718c9b86dc9b16bb",
+  "./index.html": "ca21d2b3e7fe2817e9f722b286484908eafc7422901d450b16e529d3107aee32",
   "./labs/pdf/index.html": "68551b7915d1ca7aec53cfbafd4516972303aeaf4befc8fd96c5cb9f63558d45",
   "./labs/pdf/lab.css": "d975881abd05434e5edce80def8e4e3c4de4823078e68eb1f6fd1d891b2147be",
   "./labs/pdf/lab.js": "d3918de94ef8b3877bc42417db56b239e25c609537d4f59f1d48c96f6a479d20",
