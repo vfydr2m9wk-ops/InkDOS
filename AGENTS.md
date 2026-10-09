@@ -44,7 +44,7 @@ A workspace must remain usable without depending on another workspace. The Hub m
 InkDOS is published at `https://vfydr2m9wk-ops.github.io/InkDOS/`. Every GitHub Pages site of the `vfydr2m9wk-ops` account shares that origin, and with it InkDOS's storage (recovery drafts), offline cache and windows.
 
 - Never publish another site, tool, demo or test page with GitHub Pages under the `vfydr2m9wk-ops` account, and never make InkDOS load or frame a page of that origin outside `/InkDOS/`.
-- Third-party or experimental web code belongs on a separate origin: the advanced tools and viewers live in the `inkdos-tools` organization (`https://inkdos-tools.github.io/InkDOS-tools/`).
+- Third-party or experimental web code belongs on a separate origin: the advanced tools and viewers live in the `inkdos-tools` organization (`https://inkdos-offic.pages.dev/InkDOS-tools/`).
 - Cross-origin messages always name the expected origin and check `event.origin` and `event.source`; never use `'*'`.
 - Do not widen the CSP (`frame-src`, `connect-src`, `script-src`) beyond `'self'` and that tools origin without the maintainer's explicit approval.
 

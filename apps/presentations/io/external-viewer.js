@@ -29,7 +29,7 @@ function fullOffer(file){
 }
 function viewerFor(name){const m=/\.([a-z0-9]+)$/i.exec(String(name||''));const ext=m?m[1].toLowerCase():'';return VIEWERS.find(v=>v.ext.includes(ext))||null}
 // global.InkDOSToolsBase overrides the published site (local tests serve a stub viewer)
-const TOOLS_BASE=String(global.InkDOSToolsBase||'https://inkdos-tools.github.io/InkDOS-tools/'),TOOLS_ORIGIN=new URL(TOOLS_BASE,global.location.href).origin;
+const TOOLS_BASE=String(global.InkDOSToolsBase||'https://inkdos-offic.pages.dev/InkDOS-tools/'),TOOLS_ORIGIN=new URL(TOOLS_BASE,global.location.href).origin;
 function viewerUrl(viewer){const url=new URL(viewer+'/',new URL(TOOLS_BASE,global.location.href));url.searchParams.set('embed','1');url.searchParams.set('inkdos-theme',document.documentElement.dataset.theme==='dark'?'dark':'light');return url.href}
 function create({host,cover=[]}={}){
  let box=null,cleanup=null;
