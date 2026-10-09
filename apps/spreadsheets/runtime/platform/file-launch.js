@@ -77,7 +77,7 @@ function addOfficeButton(sun){
  b.style.cssText='width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font:inherit;font-size:13px;font-weight:600';
  // the ONLYOFFICE name in its original logo (assets/icons/onlyoffice.svg), light text on the dark theme
  b.innerHTML='<span class="inkdos-office-label">'+(pt?'Editar com':'Edit with')+'</span><img src="../../assets/icons/onlyoffice.svg" alt="ONLYOFFICE" style="height:14px;width:auto;display:block">';b.disabled=!openedFile;
- if(!doc.getElementById('inkdosOfficeBtnStyle')){const st=doc.createElement('style');st.id='inkdosOfficeBtnStyle';st.textContent='html[data-theme="dark"] .inkdos-office-btn img{filter:invert(1) hue-rotate(180deg)}@media (max-width:640px){.inkdos-office-btn .inkdos-office-label{display:none}.inkdos-office-btn{padding:0 6px!important}}';doc.head.appendChild(st)}
+ if(!doc.getElementById('inkdosOfficeBtnStyle')){const st=doc.createElement('style');st.id='inkdosOfficeBtnStyle';st.textContent='html[data-theme="dark"] .inkdos-office-btn img{filter:invert(1) hue-rotate(180deg)}@media (max-width:640px){.inkdos-office-btn .inkdos-office-label{display:none}.inkdos-office-btn{padding:0 6px!important}.inkdos-office-btn img{width:16px!important;height:14px!important;object-fit:cover;object-position:left center}}';doc.head.appendChild(st)}
  b.addEventListener('click',()=>{if(openedFile)openInOffice(openedFile)});
  sun.parentNode.insertBefore(b,sun);
 }

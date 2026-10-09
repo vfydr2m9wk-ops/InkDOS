@@ -159,14 +159,10 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
             "()=>{const b=document.getElementById('inkdosOfficeBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');"
             "return !!b&&!b.disabled&&b.nextElementSibling===s}"))
     if app == 'pdf':
-        run.check('pdf: task bar View · Annotate', page.evaluate(
-            "()=>[...document.querySelectorAll('#pdfTaskBar [data-task]')].map(b=>b.dataset.task).join(',')") == 'view,annotate')
-        run.check('pdf: Edit with BentoPDF left of Settings', page.evaluate(
-            "()=>{const b=document.getElementById('pdfBentoBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');return !!b&&b.nextElementSibling===s}"))
-        page.click('#editModeBtn')
-        page.wait_for_timeout(600)
-        run.check('pdf: tool bar not cut off', page.evaluate(
-            "()=>{const e=document.getElementById('editbar');return e.scrollWidth<=e.clientWidth+1}"))
+        run.check('pdf: one tool bar, as in 2.8 (no task bar; editing switch in the tool bar)', page.evaluate(
+            "()=>!document.getElementById('pdfTaskBar')&&!!document.querySelector('#editbar #editModeBtn')"))
+        run.check('pdf: Edit PDF left of Settings', page.evaluate(
+            "()=>{const b=document.getElementById('pdfEditBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');return !!b&&b.nextElementSibling===s}"))
     run.shot(page, f'{app}-{scheme}-{size[0]}')
     run.check(f'{app}: no page errors', not errors, '; '.join(errors[:2]))
     ctx.close()
@@ -198,6 +194,11 @@ def phone_header(run, browser, base):
         page.wait_for_timeout(500)
         right = page.evaluate("()=>Math.max(...[...document.querySelectorAll('header button')].filter(b=>b.offsetParent).map(b=>b.getBoundingClientRect().right))")
         run.check(f'{app}: phone header fits (390 px)', right <= 391, f'right edge {right:.0f}')
+        # nothing in the header sits on top of the document title
+        gap = page.evaluate("()=>{const t=document.querySelector('.document-title,.presentation-title,.title-input,#titleText');if(!t)return 0;"
+                            "const r=t.getBoundingClientRect(),side=document.querySelector('header .inkdos-frame-right');if(!side)return 0;"
+                            "return side.getBoundingClientRect().left-r.right}")
+        run.check(f'{app}: phone header buttons do not cover the title', gap >= -1, f'gap {gap:.0f}')
         page.close()
     ctx.close()
 

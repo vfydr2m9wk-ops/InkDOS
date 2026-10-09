@@ -17,6 +17,15 @@ ONLYOFFICE button joined the header (it now waits for it).
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 7 · tool bars back to 2.8 (owner, 2026-10-09):
+- PDF: the single 2.8 tool bar is back (the View · Annotate task bar is gone; the editing pencil is in the tool bar
+  again). "Edit with BentoPDF" becomes "Edit PDF" ("Editar PDF") in the header, left of the sun, like Edit with
+  ONLYOFFICE; it still opens BentoPDF's editing tools with the current PDF. Fill & sign (Beta tools) stays removed.
+- Documents and Presentations: the Preview button added after 2.8 leaves the tool bar (with its modules and tests),
+  so the bars match 2.8; the original layout is what Edit with ONLYOFFICE shows.
+- Phones: Edit with ONLYOFFICE shows only the ONLYOFFICE mark, and the Presentations title gives way like the
+  others, so nothing in the header covers the title (`smoke_ui.py` checks it).
+
 Step 6 · PDF: Edit with BentoPDF:
 - "Edit with BentoPDF" ("Editar com BentoPDF") is a header button left of the Settings (sun) button. It opens BentoPDF's
   editing tools over the workspace with the current PDF, as Edit PDF did.

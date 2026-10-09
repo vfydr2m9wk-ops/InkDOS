@@ -53,4 +53,4 @@
 .inkdos-save-label{margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#667085)}
 .inkdos-save-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
 /* phones: the header never runs past the screen; the document title gives way to the header buttons */
-@media (max-width:640px){html.inkdos-frame-actions header.topbar,html.inkdos-frame-actions header.framebar{min-width:0;max-width:100%}html.inkdos-frame-actions .document-title{flex:1 1 0!important;min-width:0!important;overflow:hidden}}
+@media (max-width:640px){html.inkdos-frame-actions header.topbar,html.inkdos-frame-actions header.framebar{min-width:0;max-width:100%}html.inkdos-frame-actions .document-title,html.inkdos-frame-actions .presentation-title{flex:1 1 0!important;min-width:0!important;overflow:hidden}}
