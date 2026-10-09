@@ -1,6 +1,6 @@
 # InkDOS
 
-**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Suite (InkDOS apps with ONLYOFFICE and BentoPDF):** https://inkdos-tools.github.io · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
+**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
 
 InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser or in a small Windows app. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
@@ -22,14 +22,12 @@ Every file opens in InkDOS first. The mature open-source tools come in only when
 | Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | |
 | Apple Pages, Numbers, Keynote | shown by the pnk viewer, view only | |
 
-- **The tools** live on their own site, **https://inkdos-tools.github.io**, kept separate from InkDOS on purpose so third-party code never runs with InkDOS's own data. ONLYOFFICE opens over the InkDOS app with "Back to InkDOS"; it gets the file as it was opened.
-- That site also has its own Home with an **Offline tools** panel that downloads the editors and tools to the device in one go.
+- **ONLYOFFICE and BentoPDF** run from a separate engine site, kept apart from InkDOS on purpose so third-party code never runs with InkDOS's own data. They open over the InkDOS app with "Back to InkDOS" and get the file as it was opened.
+- The **download button** on Home lists those tools and keeps them on the device (Download all, Check for updates).
 
 Files opened from the system (Windows "Open with", the browser's file handling, XeOS) go to the matching InkDOS app.
 
 **Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) load from the internet.
-
-**Cloudflare mirror:** https://inkdos-offic.pages.dev is paused while the suite is settled on GitHub Pages; the address is kept for later.
 
 **Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Other platforms may work but are not maintained.
 
@@ -60,7 +58,5 @@ InkDOS's own code is under the MIT license (`LICENSE`). Each project above keeps
 - `VERSION.json`: the product version.
 
 The project is maintained with AI-assisted changes and human review: small, component-local changes, regression tests before merging, and protected frozen legacy code. See `AGENTS.md`, `CONTRIBUTING.md`, `docs/ARCHITECTURE.md` and `docs/KNOWN_LIMITATIONS.md`.
-
-The full-version tools are built in their own repositories: [InkDOS-tools](https://github.com/inkdos-tools/InkDOS-tools) and [inkdos-tools.github.io](https://github.com/inkdos-tools/inkdos-tools.github.io).
 
 Do not commit real user files; use synthetic fixtures only (see `SECURITY.md`). Security issues: report privately as described in `SECURITY.md`.

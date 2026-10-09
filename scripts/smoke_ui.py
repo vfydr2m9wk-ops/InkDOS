@@ -104,7 +104,8 @@ def home(run, browser, base, scheme, size, no_sw=False):
         else:
             run.check(f'{tag}: tool list ({rows} rows) and Download all', rows >= 5 and all_btn, f'{rows} rows')
     run.shot(page, tag + '-download')
-    if visible:
+    # Close is posted only to the published InkDOS origin, so it can be checked only on the published site
+    if visible and base.startswith('https://vfydr2m9wk-ops.github.io/'):
         panel.locator('[data-offline-close]').click()
         page.wait_for_timeout(500)
         run.check(f'{tag}: Close removes the panel', not page.evaluate("()=>!!document.querySelector('.tools-download-layer')"))

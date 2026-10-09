@@ -9,6 +9,14 @@ controlled steps, each listed here.
 Working method (owner, 2026-10-09): every change is checked with `scripts/smoke_ui.py` before it is pushed, and
 again on the published site after the deploy, with screenshots shown to the owner; one controlled step at a time.
 
+Step 3 · one entry point:
+- Owner decision: everything goes through this repository and https://vfydr2m9wk-ops.github.io/InkDOS/. The site
+  inkdos-tools.github.io is now only the hidden engine InkDOS calls (ONLYOFFICE, BentoPDF, the Offline tools
+  panel): its Home and its copies of the InkDOS apps are gone (its own CHANGELOG.md). The Cloudflare mirror stays
+  paused and isolated.
+- README and third-party notices: no links to the inkdos-tools repositories, the engine site or Cloudflare; the
+  upstream projects (ONLYOFFICE via ranuts/document, BentoPDF) stay credited with their licenses.
+
 Step 1 · tools address and suite Home:
 - The tools origin is back to https://inkdos-tools.github.io (CSP, postMessage targets, desktop host, tests): the
   Cloudflare mirror (https://inkdos-offic.pages.dev) is paused, its address and project kept for later.
