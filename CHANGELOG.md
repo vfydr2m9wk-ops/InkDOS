@@ -6,6 +6,9 @@ Plan (owner, 2026-10-09): InkDOS apps are the entry for every file; ONLYOFFICE (
 Presentations) and BentoPDF (PDF) open only on request from a button left of the Settings (sun) button. Done in
 controlled steps, each listed here.
 
+Working method (owner, 2026-10-09): every change is checked with `scripts/smoke_ui.py` before it is pushed, and
+again on the published site after the deploy, with screenshots shown to the owner; one controlled step at a time.
+
 Step 1 · tools address and suite Home:
 - The tools origin is back to https://inkdos-tools.github.io (CSP, postMessage targets, desktop host, tests): the
   Cloudflare mirror (https://inkdos-offic.pages.dev) is paused, its address and project kept for later.
