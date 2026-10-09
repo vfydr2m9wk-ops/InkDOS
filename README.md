@@ -6,13 +6,13 @@ InkDOS is a personal, local-first office hub: one Home that opens documents, spr
 
 ## Why it exists
 
-I wanted one place to open and edit my files on every device I actually use (an iPad, often inside the XeOS web desktop, iPad Safari, and a Windows PC) without installing a full office suite on each one, without uploading documents anywhere, and without a heavy app eating RAM. Office suites in the browser usually mean a cloud account; desktop suites mean a large install per device. InkDOS sits in between: a static web app that works offline once loaded, and the same thing packaged for Windows.
+I wanted one place to open and edit my files on every device I actually use (an iPad, often inside the XeOS web desktop, iPad Safari, and a Windows PC) without installing a full office suite on each one and without uploading documents anywhere. Office suites in the browser usually mean a cloud account; desktop suites mean a large install per device. InkDOS sits in between: a static web app that works offline once loaded, and the same thing packaged for Windows.
 
-It began as a set of lightweight editors written for this project. Over time the goal changed: instead of rebuilding what mature open-source projects already do well, InkDOS now gathers them behind one Home and keeps them on the device.
+It began as a set of editors written for this project. Over time the goal changed: instead of rebuilding what mature open-source projects already do well, InkDOS now gathers them behind one Home and keeps them on the device.
 
 ## Where it stands
 
-Every file opens in InkDOS first: its own apps are small and fast. The mature open-source tools come in only when you ask, for that file:
+Every file opens in InkDOS first. The mature open-source tools come in only when you ask, for that file:
 
 | | **Opens in** | **On request** |
 | --- | --- | --- |
@@ -38,7 +38,7 @@ Files opened from the system (Windows "Open with", the browser's file handling, 
 - No backend and no analytics. Every tool runs in the browser.
 - Each site's Content Security Policy only lets it reach its own address.
 - No list of recent files is kept: files are found again with the device's own file manager.
-- The only thing stored is the Light editors' recovery drafts, kept on the device and encrypted (AES-GCM) with a key that cannot be exported from it.
+- The only thing stored is the InkDOS editors' recovery drafts, kept on the device and encrypted (AES-GCM) with a key that cannot be exported from it.
 
 ## Credits
 
@@ -48,14 +48,14 @@ InkDOS stands on the work of these projects:
 - [BentoPDF](https://github.com/alam00000/bentopdf) and [PDF.js](https://github.com/mozilla/pdf.js) (the engine of the InkDOS PDF workspace)
 - [Pyodide](https://pyodide.org)
 - [Tauri](https://tauri.app)
-- pdf-lib, JSZip, pako and Tesseract.js in the Light editors
+- pdf-lib, JSZip, pako and Tesseract.js in the InkDOS editors
 
 Each keeps its own license; see `docs/THIRD_PARTY_NOTICES.md` and the license files shipped with each tool.
 
 ## For contributors
 
 - `index.html`, `assets/`, `service-worker.js` and `manifest.webmanifest`: the Home and offline shell.
-- `apps/<workspace>/`: the Light editors.
+- `apps/<workspace>/`: the InkDOS editors.
 - `desktop/`: the Windows app (Tauri v2), its installer and updater.
 - `VERSION.json`: the product version.
 
