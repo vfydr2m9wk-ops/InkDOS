@@ -16,8 +16,8 @@ The Windows app is built with [Tauri](https://tauri.app) (MIT or Apache-2.0).
 
 ## Tools opened on request
 
-These run on a separate site (https://inkdos-tools.github.io), not inside
-InkDOS. Each is published there with its own license and a link to its source:
+These run on a separate engine site, not inside InkDOS. Each is published there with its own license file and a
+reference to its source (`UPSTREAM-LICENSE.txt`, `UPSTREAM-SOURCE.txt`):
 
-- [ONLYOFFICE](https://github.com/ONLYOFFICE) editors via [ranuts/document](https://github.com/ranuts/document): AGPL-3.0. The site's own repository, [inkdos-tools.github.io](https://github.com/inkdos-tools/inkdos-tools.github.io), is AGPL-3.0.
-- [BentoPDF](https://github.com/alam00000/bentopdf) and the other tools built by [InkDOS-tools](https://github.com/inkdos-tools/InkDOS-tools), whose README lists each tool with its license.
+- [ONLYOFFICE](https://github.com/ONLYOFFICE) editors via [ranuts/document](https://github.com/ranuts/document): AGPL-3.0.
+- [BentoPDF](https://github.com/alam00000/bentopdf): AGPL-3.0.
