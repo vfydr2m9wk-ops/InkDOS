@@ -56,3 +56,11 @@ html[data-inkdos-host=tauri] .brand-row .home-appearance{margin-left:auto}
 /* Full office (beta), superseded by the engine switch above (kept for the legacy markup) */
 .beta-office{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:28px}.beta-tool{text-decoration:none}.beta-office small{color:var(--footer);font-size:12px;line-height:1.4}
 @media(max-width:720px){.quick-tools{margin-top:16px;gap:8px}.quick-tool{height:38px;padding:0 12px 0 10px;font-size:13px}}
+
+/* header: tools download left of Settings; footer: ONLYOFFICE credit and Source */
+.home-actions{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
+a.theme-button{display:inline-grid;place-items:center;text-decoration:none;color:inherit}
+.home-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.home-footer .powered{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
+.home-footer .powered img{height:14px;width:auto}
+:root[data-theme=dark] .home-footer .powered img{filter:invert(1) hue-rotate(180deg)}
