@@ -12,7 +12,7 @@ async function injectFile(file,input=compatibleInput(file)){if(!file)return fals
 // view-only notice of the external viewers) hands the document to the ONLYOFFICE editors of InkDOS Office, which live
 // on their own origin (AGENTS.md, origin isolation): the editor is framed over this workspace in its embed mode
 // (/editor?embed=1, which takes orders only from embedOrigin, this origin) and gets the file with document:open-file.
-const OFFICE_ORIGIN='https://inkdos-offic.pages.dev',OFFICE_EXT=new Set(['docx','doc','odt','rtf','xlsx','xls','ods','csv','pptx','ppt','odp','docm','dotx','dot','fodt','xlsm','xltx','fods','pptm','ppsx','pps','potx','fodp']);
+const OFFICE_ORIGIN='https://inkdos-tools.github.io',OFFICE_EXT=new Set(['docx','doc','odt','rtf','xlsx','xls','ods','csv','pptx','ppt','odp','docm','dotx','dot','fodt','xlsm','xltx','fods','pptm','ppsx','pps','potx','fodp']);
 try{g.localStorage?.removeItem('inkdos2:engine')}catch(_){} // the Light/Full switch is gone
 // the full-screen layer over the workspace: a bar (name, "Back to InkDOS") and the editor's frame
 function launchShell(file,light,src){

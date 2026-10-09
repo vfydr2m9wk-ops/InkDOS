@@ -81,7 +81,7 @@ FRAME_SELF_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/pdf/index.ht
 # InkDOS-tools is served from its own origin (a separate GitHub organization) so its third-party
 # code cannot reach InkDOS storage; Home's Advanced tools panel and the three viewers frame it, and every workspace
 # frames the full tools over itself for a file opened from the system in the Full version (file-launch.js).
-TOOLS_ORIGIN = "https://inkdos-offic.pages.dev"
+TOOLS_ORIGIN = "https://inkdos-tools.github.io"
 FRAME_TOOLS_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/documents/index.html"),
                                       Path("apps/spreadsheets/index.html"), Path("apps/presentations/index.html"),
                                       Path("apps/pdf/index.html"), Path("apps/txt/index.html"), Path("apps/epub/index.html")})

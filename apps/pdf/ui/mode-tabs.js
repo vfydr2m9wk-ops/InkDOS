@@ -5,7 +5,7 @@
 // origin, AGENTS.md origin isolation) over the workspace and hands it the open PDF through the viewer protocol
 // (InkDOS-tools viewers/viewer-embed.js + bento-carry.js): every message checked against, and sent to, that origin.
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{};
-const TOOLS_ORIGIN='https://inkdos-offic.pages.dev',TOOLKIT=TOOLS_ORIGIN+'/InkDOS-tools/bentopdf/';
+const TOOLS_ORIGIN='https://inkdos-tools.github.io',TOOLKIT=TOOLS_ORIGIN+'/InkDOS-tools/bentopdf/';
 const doc=document,root=doc.documentElement,$=id=>doc.getElementById(id);
 const pt=()=>/^pt/i.test(String(global.InkDOSLocalization?.currentLanguage||root.lang||global.navigator.language||''));
 const LABELS={view:['Visualizar','View'],annotate:['Anotar','Annotate'],edit:['Editar PDF','Edit PDF'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.']};

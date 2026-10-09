@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   // InkDOS desktop: the file opened from the system, handed to this ONLYOFFICE window once (embed mode, own origin)
-  if (location.origin !== 'https://inkdos-offic.pages.dev' || location.pathname !== '/editor') return;
+  if (location.origin !== 'https://inkdos-tools.github.io' || location.pathname !== '/editor') return;
   try { if (sessionStorage.getItem('inkdos-office-file')) return; sessionStorage.setItem('inkdos-office-file', '1'); } catch (_) {}
   var name = __NAME__, data = __DATA__;
   addEventListener('message', function ready(event) {
