@@ -11,6 +11,22 @@ const VIEWERS=Object.freeze([
  {viewer:'pnk',ext:['key'],label:'Apple Keynote'}
 ]);
 const LOAD_TIMEOUT_MS=45000;
+// Light version: OpenDocument files are view only here; the Full version (ONLYOFFICE) edits them. The notice offers
+// the switch and reopens the file there (file-launch.js routes it to the full editor).
+const CONVERTIBLE=['odt','ods','odp'];
+function fullOffer(file){
+ const m=/\.([a-z0-9]+)$/i.exec(String(file&&file.name||''));if(!m||!CONVERTIBLE.includes(m[1].toLowerCase()))return null;
+ try{if(global.localStorage.getItem('inkdos2:engine')==='complete')return null}catch(_){return null}
+ const pt=/^pt/i.test(document.documentElement.lang||global.navigator.language||'');
+ const bar=document.createElement('div');bar.className='external-viewer-notice';
+ bar.style.cssText='display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;background:var(--surface,#fff);border-bottom:1px solid var(--border,#e3e8ef);font-size:13px';
+ const text=document.createElement('span');text.style.cssText='flex:1;min-width:200px';
+ text.textContent=pt?'Somente visualização. Para converter e editar este arquivo, mude para a versão completa.':'View only. To convert and edit this file, switch to the Full version.';
+ const go=document.createElement('button');go.type='button';go.textContent=pt?'Abrir na versão completa':'Open in the Full version';
+ go.style.cssText='height:30px;padding:0 12px;border:1px solid var(--border,#d5dce6);border-radius:8px;background:var(--hover,#f0f2f5);color:inherit;font:inherit;cursor:pointer';
+ go.addEventListener('click',()=>{try{global.localStorage.setItem('inkdos2:engine','complete')}catch(_){}global.InkDOSFileLaunch?.routeFile(file)});
+ bar.append(text,go);return bar;
+}
 function viewerFor(name){const m=/\.([a-z0-9]+)$/i.exec(String(name||''));const ext=m?m[1].toLowerCase():'';return VIEWERS.find(v=>v.ext.includes(ext))||null}
 // global.InkDOSToolsBase overrides the published site (local tests serve a stub viewer)
 const TOOLS_BASE=String(global.InkDOSToolsBase||'https://inkdos-tools.github.io/InkDOS-tools/'),TOOLS_ORIGIN=new URL(TOOLS_BASE,global.location.href).origin;
@@ -24,9 +40,9 @@ function create({host,cover=[]}={}){
   const v=options.viewer?{viewer:options.viewer,label:options.label||'Presentation'}:viewerFor(file&&file.name);
   if(!v||!host)return Promise.reject(new Error('This file type has no viewer.'));
   box=document.createElement('div');box.className='external-viewer';box.dataset.viewer=v.viewer;
-  box.style.cssText='position:absolute;inset:0;z-index:4;background:var(--bg)';
+  box.style.cssText='position:absolute;inset:0;z-index:4;background:var(--bg);display:flex;flex-direction:column';
   const frame=document.createElement('iframe');frame.title=v.label+' (view only)';
-  frame.style.cssText='display:block;width:100%;height:100%;border:0;background:transparent';
+  frame.style.cssText='display:block;width:100%;flex:1;min-height:0;border:0;background:transparent';
   // the covered workspace content leaves the layout, so the viewer fills the (scrolling) host
   for(const el of cover)if(el)el.style.display='none';
   if(global.getComputedStyle(host).position==='static')host.style.position='relative';
@@ -42,7 +58,7 @@ function create({host,cover=[]}={}){
    const timer=setTimeout(()=>finish(false,new Error('The viewer did not load. It is part of the InkDOS web edition and needs a connection the first time it is used.')),LOAD_TIMEOUT_MS);
    global.addEventListener('message',onMessage);
    cleanup=()=>{global.removeEventListener('message',onMessage);finish(false,new Error('closed'))};
-   frame.src=viewerUrl(v.viewer);box.appendChild(frame);host.appendChild(box);
+   frame.src=viewerUrl(v.viewer);const offer=fullOffer(file);if(offer)box.appendChild(offer);box.appendChild(frame);host.appendChild(box);
   });
  }
  return Object.freeze({show,close,get active(){return !!box}});

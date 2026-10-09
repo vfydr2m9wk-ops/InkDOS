@@ -23,9 +23,13 @@ def main() -> None:
     assert 'event.origin!==OFFICE_ORIGIN||event.source!==frame.contentWindow' in bridge
     assert "'*'" not in bridge, 'no wildcard target origin'
     exts = set(re.search(r"OFFICE_EXT=new Set\(\[([^\]]*)\]\)", bridge).group(1).replace("'", '').split(','))
-    assert exts == {'docx', 'doc', 'odt', 'rtf', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp'}, exts
-    assert 'routeFile(file){if(!file)return false;if(fullEngine(file)&&openInOffice(file,lightRoute))return true;return lightRoute(file)}' in bridge
-    for app in ('documents', 'spreadsheets', 'presentations'):
+    assert {'docx', 'doc', 'odt', 'rtf', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp'} <= exts, exts
+    assert ('routeFile(file){if(!file)return false;if(fullEngine(file)&&openInOffice(file,lightRoute))return true;'
+            'if(openInViewer(file,lightRoute,viewerPage(file)))return true;return lightRoute(file)}') in bridge
+    # iWork, PDF, e-books and text go to the InkDOS-tools viewers through the viewer protocol, origin-checked
+    assert "postMessage({type:'inkdos-viewer-open',file},OFFICE_ORIGIN)" in bridge
+    assert all(f"{ext}:'{page}'" in bridge for ext, page in (('pages', 'pnk/'), ('key', 'pnk/'), ('epub', 'epub/'), ('txt', 'txt/')))
+    for app in ('documents', 'spreadsheets', 'presentations', 'pdf', 'txt', 'epub'):
         html = (ROOT / f'apps/{app}/index.html').read_text(encoding='utf-8')
         assert f"frame-src 'self' {OFFICE}" in html, app
     print('Full version launch route: OK')
