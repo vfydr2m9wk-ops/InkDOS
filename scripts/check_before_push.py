@@ -15,6 +15,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PY = sys.executable
 STEPS = [
+    # the CI's first gate: product changes and the version identity go in separate PRs (committed changes only)
+    ('change boundary (CI)', [PY, 'scripts/check_change_boundaries.py', '--base', 'origin/main', '--head', 'HEAD']),
     ('Plain Text bundle', [PY, 'scripts/build_txt_bundle.py']),
     ('offline snapshot', [PY, 'scripts/build_offline_snapshot.py']),
     ('release validation (CI)', [PY, 'scripts/run_release_validation.py']),
