@@ -45,7 +45,7 @@ def main():
     try:
         wait_port()
         browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
-        if browser_name not in {"chromium", "firefox", "webkit"}:
+        if browser_name not in {"chromium", "webkit"}:
             raise RuntimeError(f"Unsupported BROWSER={browser_name}")
         with sync_playwright() as pw:
             browser = getattr(pw, browser_name).launch(headless=True)

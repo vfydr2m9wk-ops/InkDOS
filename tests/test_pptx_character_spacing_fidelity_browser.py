@@ -31,7 +31,7 @@ def wait_port(timeout: float = 10.0) -> None:
 def main() -> None:
     browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
     phase = os.environ.get("PPTX_TRACKING_PHASE", "all").strip().lower()
-    if browser_name not in {"chromium", "firefox", "webkit"}:
+    if browser_name not in {"chromium", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={browser_name}")
     if phase not in {"all", "render", "preserve", "build", "text", "spc"}:
         raise RuntimeError(f"Unsupported PPTX_TRACKING_PHASE={phase}")

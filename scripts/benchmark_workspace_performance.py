@@ -619,7 +619,7 @@ def run_visual_benchmark(browser: Browser, fixtures: dict[str, bytes]) -> dict:
 
 
 def main() -> None:
-    if BROWSER_NAME not in {"chromium", "firefox", "webkit"}:
+    if BROWSER_NAME not in {"chromium", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={BROWSER_NAME}")
 
     OUT.mkdir(parents=True, exist_ok=True)

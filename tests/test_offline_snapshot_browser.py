@@ -56,7 +56,7 @@ def main():
                     # Playwright WebKit 26.5 fails all controlled requests after
                     # context.set_offline(True) before the service worker can answer.
                     # Keep WebKit coverage for install/update/waiting above and leave
-                    # offline network-emulation to Chromium/Firefox plus the Node
+                    # offline network-emulation to Chromium plus the Node
                     # worker snapshot harness.
                     print('WebKit offline network emulation unavailable; lifecycle verified before offline mode.')
                 else:

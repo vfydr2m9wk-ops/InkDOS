@@ -47,7 +47,7 @@ InkDOS is maintained with small, audited changes. The rules are in [AGENTS.md](A
 
 ## Tests
 
-Every fix should come with a regression test that fails before the change and passes after it. Browser tests use Playwright (Chromium, Firefox and WebKit run in CI).
+Every fix should come with a regression test that fails before the change and passes after it. Browser tests use Playwright (Chromium and WebKit run in CI; see SUPPORT.md).
 
 ```bash
 pip install -r requirements-ci.txt
