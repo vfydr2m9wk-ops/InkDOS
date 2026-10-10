@@ -1,6 +1,6 @@
 # InkDOS
 
-**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
+**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Also on one address (Cloudflare):** https://inkdos-offic.pages.dev · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
 
 InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser or in a small Windows app. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
@@ -17,7 +17,7 @@ Every file opens in InkDOS first. The mature open-source tools come in only when
 | | **Opens in** | **On request** |
 | --- | --- | --- |
 | Word, Excel, PowerPoint (also DOC, XLS, PPT, OpenDocument) | InkDOS Documents, Spreadsheets, Presentations | **Edit with ONLYOFFICE**: the ONLYOFFICE editors running in the browser ([ranuts/document](https://github.com/ranuts/document)) |
-| PDF | InkDOS PDF workspace (forms, highlights, notes, text; verified saves) | the BentoPDF toolkit (split, merge, OCR, convert) |
+| PDF | InkDOS PDF workspace (forms, highlights, notes, text; verified saves) | **Edit PDF**: the BentoPDF toolkit (split, merge, OCR, convert) |
 | EPUB | InkDOS EPUB reader (search, bookmarks, highlights, resume) | |
 | Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | |
 | Apple Pages, Numbers, Keynote | shown by the pnk viewer, view only | |
