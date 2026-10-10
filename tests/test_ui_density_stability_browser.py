@@ -91,108 +91,31 @@ def main() -> None:
         with sync_playwright() as pw:
             browser = getattr(pw, browser_name).launch(headless=True)
 
-            desktop_context = browser.new_context(viewport={'width': 1360, 'height': 900})
-            desktop_context.add_init_script(fine_pointer_script(True))
-            page = desktop_context.new_page()
-
-            for path in WORKSPACES:
-                page.goto(BASE + path, wait_until='load')
+            # Owner decision (2026-10-10): always the desktop density, on any screen and pointer, with no density
+            # controls; a stored or requested 'mobile' no longer changes it.
+            for viewport, fine in (({'width': 1360, 'height': 900}, True), ({'width': 720, 'height': 900}, False), ({'width': 390, 'height': 844}, False)):
+                context = browser.new_context(viewport=viewport)
+                context.add_init_script(fine_pointer_script(fine))
+                context.add_init_script("localStorage.setItem('inkdos2:documents:ui-density','mobile')")
+                page = context.new_page()
+                for path in WORKSPACES:
+                    page.goto(BASE + path, wait_until='load')
+                    page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
+                    page.wait_for_timeout(300)
+                    state = root_state(page)
+                    assert state['density'] == 'desktop', (viewport, path, state)
+                    assert state['preference'] == 'desktop', (viewport, path, state)
+                    assert state['controlCount'] == 0, (viewport, path, state)
+                page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
                 page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
-                page.wait_for_function("() => document.querySelectorAll('[data-inkdos-density-control]').length === 1")
+                switched = page.evaluate("() => globalThis.InkDOSUiDensity.set('mobile')")
                 state = root_state(page)
-                assert state['density'] == 'desktop', (path, state)
-                assert state['preference'] == 'auto', (path, state)
-                assert state['controlCount'] == 1, (path, state)
-                expected_key = 'inkdos2:ui-density' if path == '/index.html' else 'inkdos2:' + path.split('/')[2].split('?')[0] + ':ui-density'
-                assert state['storageKey'] == expected_key, (path, state)
-
-            page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
-            page.wait_for_function("() => document.querySelectorAll('[data-inkdos-density-control]').length === 1")
-            desktop = root_state(page)
-            assert desktop['control'] == '30px', desktop
-            assert 0 < desktop['topbar'] <= 46, desktop
-
-            switched = page.evaluate("""()=>{
-              const before=location.href;
-              const effective=globalThis.InkDOSUiDensity.set('mobile');
-              return {before,after:location.href,effective,
-                density:document.documentElement.dataset.uiDensity,
-                preference:globalThis.InkDOSUiDensity.preference,
-                storageKey:globalThis.InkDOSUiDensity.STORAGE_KEY,
-                stored:localStorage.getItem(globalThis.InkDOSUiDensity.STORAGE_KEY),
-                legacy:localStorage.getItem('inkdos2:ui-density'),
-                control:getComputedStyle(document.documentElement).getPropertyValue('--control').trim()};
-            }""")
-            assert switched['before'] == switched['after'], switched
-            assert switched['effective'] == 'mobile', switched
-            assert switched['density'] == 'mobile', switched
-            assert switched['preference'] == 'mobile', switched
-            assert switched['storageKey'] == 'inkdos2:documents:ui-density', switched
-            assert switched['stored'] == 'mobile', switched
-            assert switched['legacy'] is None, switched
-            assert switched['control'] == '42px', switched
-
-            # A workspace-local choice in Documents must not carry into Spreadsheets.
-            page.goto(BASE + '/apps/spreadsheets/index.html?suite=1', wait_until='load')
-            page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
-            independent = root_state(page)
-            assert independent['density'] == 'desktop', independent
-            assert independent['preference'] == 'auto', independent
-            assert independent['stored'] is None, independent
-            assert independent['storageKey'] == 'inkdos2:spreadsheets:ui-density', independent
-
-            # Returning to Documents sees its own persisted preference.
-            page.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
-            page.wait_for_function("() => !!globalThis.InkDOSUiDensity")
-            returned = root_state(page)
-            assert returned['density'] == 'mobile', returned
-            assert returned['preference'] == 'mobile', returned
-            assert returned['stored'] == 'mobile', returned
-            assert returned['storageKey'] == 'inkdos2:documents:ui-density', returned
-            page.evaluate("() => globalThis.InkDOSUiDensity.set('auto')")
-            reset = root_state(page)
-            assert reset['density'] == 'desktop', reset
-            assert reset['preference'] == 'auto', reset
-            assert reset['stored'] == 'auto', reset
-
-            # Automatic density must follow viewport changes without a reload.
-            page.set_viewport_size({'width': 720, 'height': 900})
-            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'mobile'")
-            resized_mobile = root_state(page)
-            assert resized_mobile['preference'] == 'auto', resized_mobile
-            assert resized_mobile['density'] == 'mobile', resized_mobile
-
-            page.set_viewport_size({'width': 1360, 'height': 900})
-            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'desktop'")
-            resized_desktop = root_state(page)
-            assert resized_desktop['density'] == 'desktop', resized_desktop
-
-            # Automatic density must also follow a pointer capability change.
-            page.evaluate("() => window.__inkdosSetFinePointer(false)")
-            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'mobile'")
-            pointer_mobile = root_state(page)
-            assert pointer_mobile['density'] == 'mobile', pointer_mobile
-            page.evaluate("() => window.__inkdosSetFinePointer(true)")
-            page.wait_for_function("() => document.documentElement.dataset.uiDensity === 'desktop'")
-            pointer_desktop = root_state(page)
-            assert pointer_desktop['density'] == 'desktop', pointer_desktop
-            desktop_context.close()
-
-            mobile_context = browser.new_context(viewport={'width': 720, 'height': 900})
-            mobile_context.add_init_script(fine_pointer_script(False))
-            mobile = mobile_context.new_page()
-            mobile.goto(BASE + '/apps/documents/index.html?suite=1', wait_until='load')
-            mobile.wait_for_function("() => !!globalThis.InkDOSUiDensity")
-            mobile.wait_for_function("() => document.querySelectorAll('[data-inkdos-density-control]').length === 1")
-            mobile_state = root_state(mobile)
-            assert mobile_state['density'] == 'mobile', mobile_state
-            assert mobile_state['preference'] == 'auto', mobile_state
-            assert mobile_state['control'] == '42px', mobile_state
-            mobile_context.close()
+                assert switched == 'desktop' and state['density'] == 'desktop' and state['control'] == '30px', (viewport, state)
+                context.close()
 
             browser.close()
 
-        print(f'Workspace-local adaptive interface density browser ({browser_name}): OK')
+        print(f'Desktop-only interface density browser ({browser_name}): OK')
     finally:
         server.terminate()
         try:
