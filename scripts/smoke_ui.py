@@ -209,9 +209,11 @@ def menus(run, browser, base, app):
 
 
 def office_new(run, browser, base):
-    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen
+    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen, as a page of its own (no
+    # InkDOS bar over it); the editor page itself is stubbed here
     ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
-    for app, ext in (('documents', 'docx'), ('spreadsheets', 'xlsx'), ('presentations', 'pptx')):
+    ctx.route(lambda url: url.startswith(TOOLS + '/editor'), lambda route: route.fulfill(body='<!doctype html><title>editor stub</title>', content_type='text/html'))
+    for app in ('documents', 'spreadsheets', 'presentations'):
         page = ctx.new_page()
         page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
         page.wait_for_selector('#inkdosOfficeBtn', timeout=15000)
@@ -219,11 +221,11 @@ def office_new(run, browser, base):
         page.wait_for_timeout(1200)
         page.click('#inkdosOfficeBtn')
         try:
-            page.wait_for_selector('.inkdos-office-launch', timeout=10000)
-            name = page.evaluate("()=>document.querySelector('.inkdos-office-launch span').textContent")
+            page.wait_for_url(lambda url: url.startswith(TOOLS + '/editor'), timeout=10000)
+            target = page.url
         except Exception as error:
-            name = f'no ONLYOFFICE frame ({type(error).__name__})'
-        run.check(f'{app}: new document → Edit with ONLYOFFICE opens it as .{ext}', name.endswith('.' + ext), name)
+            target = f'no navigation ({type(error).__name__})'
+        run.check(f'{app}: new document → Edit with ONLYOFFICE opens the editor as its own page', 'inkdos-handoff=' in target and 'inkdos-return=' in target, target[:110])
         page.close()
     ctx.close()
 
