@@ -24,8 +24,11 @@ function launchShell(file,light,src){
  const back=doc.createElement('button');back.type='button';back.textContent=pt?'Voltar ao InkDOS':'Back to InkDOS';
  back.style.cssText='height:32px;padding:0 12px;border:1px solid #d5dce6;border-radius:9px;background:#f0f2f5;color:#192235;font:inherit;cursor:pointer';
  bar.append(title,back);
- const frame=doc.createElement('iframe');frame.title='InkDOS Office';frame.style.cssText='flex:1;width:100%;border:0;background:#fff';frame.setAttribute('allow','clipboard-read; clipboard-write');frame.src=src;
- shell.append(bar,frame);doc.body.appendChild(shell);
+ const frame=doc.createElement('iframe');frame.title='InkDOS Office';frame.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff';frame.setAttribute('allow','clipboard-read; clipboard-write');frame.src=src;
+ // iPad: the editor frame sits in a box that fills the rest of the screen and scrolls itself if Safari sizes the frame
+ // to its content (as the Edit PDF layer)
+ const box=doc.createElement('div');box.style.cssText='position:relative;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch';box.appendChild(frame);
+ shell.append(bar,box);doc.body.appendChild(shell);
  let onMessage=null;
  const toLight=()=>{if(onMessage)g.removeEventListener('message',onMessage);shell.remove();light(file)};
  back.addEventListener('click',toLight);

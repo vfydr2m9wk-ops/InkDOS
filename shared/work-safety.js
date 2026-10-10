@@ -98,7 +98,7 @@
       const shade = document.createElement('div');
       shade.className = 'inkdos-safety-dialog';
       shade.style.cssText = 'position:fixed;inset:0;z-index:2147483001;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;padding:16px';
-      const dark = g.matchMedia && g.matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light';
+      const dark = document.documentElement.dataset.theme === 'dark';
       const box = document.createElement('div');
       box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', title);
       box.style.cssText = 'width:min(440px,100%);border-radius:12px;padding:18px;font:14px/1.45 system-ui,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.3);' + (dark ? 'background:#23262c;color:#e8eaed' : 'background:#fff;color:#1f2329');
@@ -174,7 +174,7 @@
     const el = document.createElement('div');
     el.className = 'inkdos-safety-bar'; el.setAttribute('role', 'status');
     el.style.cssText = 'position:fixed;left:50%;bottom:44px;transform:translateX(-50%);z-index:2147483000;max-width:min(680px,calc(100vw - 24px));display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-radius:10px;font:13px/1.4 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.18);background:#fff;color:#1f2329;border:1px solid #d9dde3';
-    if (g.matchMedia && g.matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light') { el.style.background = '#23262c'; el.style.color = '#e8eaed'; el.style.borderColor = '#3a3e46'; }
+    if (document.documentElement.dataset.theme === 'dark') { el.style.background = '#23262c'; el.style.color = '#e8eaed'; el.style.borderColor = '#3a3e46'; }
     const msg = document.createElement('span'); msg.textContent = text; msg.style.flex = '1 1 260px'; el.append(msg);
     for (const a of actions) {
       const b = document.createElement('button'); b.type = 'button'; b.textContent = a.label;

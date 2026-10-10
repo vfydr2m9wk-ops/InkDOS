@@ -40,8 +40,8 @@ def main() -> None:
     require(home, 'aria-label="Settings" title="Settings"', "Home unified settings control")
     require(sw, '"./shared/localization/home-settings.js"', "Offline Home language settings")
 
-    # Every workspace theme runtime owns its local key and uses the former suite
-    # appearance key only as a one-time migration source.
+    # Owner decision (2026-10-09): one InkDOS theme. Every workspace reads and writes the shared key, so the sun
+    # changes every open workspace at once, and nothing follows the system theme.
     appearance_files = [
         "apps/documents/state/appearance.js",
         "apps/spreadsheets/state/appearance.js",
@@ -52,18 +52,17 @@ def main() -> None:
     ]
     for rel in appearance_files:
         text = read(rel)
-        require(text, "LEGACY_SUITE_KEY='inkdos2:appearance'", f"Legacy appearance migration: {rel}")
+        require(text, "'inkdos2:appearance'", f"Shared appearance key: {rel}")
         require(text, "dataset.theme", f"Common resolved theme marker: {rel}")
-        if "setItem(LEGACY_SUITE_KEY" in text:
-            raise AssertionError(f"Workspace must not publish appearance back to suite key: {rel}")
+        if "'system'" in text:
+            raise AssertionError(f"Workspace must not offer or follow the system theme: {rel}")
 
-    first_paint = {
-        "apps/epub/index.html": 'var k="inkdos2:epub:appearance",l="inkdos2:appearance"',
-        "apps/txt/page.template.html": 'var k="inkdos2:txt:appearance",l="inkdos2:appearance"',
-    }
-    for rel, marker in first_paint.items():
+    first_paint = ["apps/epub/index.html", "apps/txt/page.template.html", "index.html"]
+    for rel in first_paint:
         text = read(rel)
-        require(text, marker, f"Workspace-first appearance migration: {rel}")
+        require(text, "inkdos2:appearance", f"First paint reads the shared theme: {rel}")
+        if "prefers-color-scheme" in text:
+            raise AssertionError(f"First paint must not follow the system theme: {rel}")
 
     # Locale packages stay key-identical and include the Home shell terminology.
     locale_dir = ROOT / "shared/localization/locales"

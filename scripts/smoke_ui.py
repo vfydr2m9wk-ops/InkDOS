@@ -191,6 +191,7 @@ def menus(run, browser, base, app):
     page.click('[data-frame-action="sun"]')
     page.wait_for_timeout(300)
     run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', page.evaluate(titles) == ['Appearance', 'Interface', 'Language'], str(page.evaluate(titles)))
+    run.check(f'{app}: theme is Light or Dark only (no System)', page.locator('.inkdos-settings-popover [data-settings-value="system"]').count() == 0)
     page.click('[data-frame-action="sun"]')
     run.check(f'{app}: lock right of the sun', page.evaluate(
         "()=>document.querySelector('[data-frame-action=\"sun\"]').nextElementSibling===document.querySelector('[data-frame-action=\"lock\"]')"))
@@ -214,6 +215,22 @@ def office_new(run, browser, base):
             name = f'no ONLYOFFICE frame ({type(error).__name__})'
         run.check(f'{app}: new document → Edit with ONLYOFFICE opens it as .{ext}', name.endswith('.' + ext), name)
         page.close()
+    ctx.close()
+
+
+def theme_sync(run, browser, base):
+    # one InkDOS theme: Dark chosen on Home reaches an open workspace at once, and the system's dark mode is ignored
+    ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, color_scheme='dark', user_agent=IPAD_UA)
+    home = ctx.new_page()
+    home.goto(base + f'index.html?smoke={time.time()}', wait_until='load')
+    app = ctx.new_page()
+    app.goto(base + f'apps/documents/index.html?suite=1&smoke={time.time()}', wait_until='load')
+    app.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
+    run.check('theme: system dark mode ignored (workspace stays light)', app.evaluate("()=>document.documentElement.dataset.theme") == 'light')
+    home.click('#appearanceButton')
+    home.click('[data-home-appearance-mode="dark"]')
+    app.wait_for_timeout(600)
+    run.check('theme: Dark on Home reaches an open workspace', app.evaluate("()=>document.documentElement.dataset.theme") == 'dark')
     ctx.close()
 
 
@@ -259,6 +276,7 @@ def main():
         for app in ('spreadsheets', 'presentations', 'epub'):
             menus(run, browser, base, app)
         office_new(run, browser, base)
+        theme_sync(run, browser, base)
         phone_header(run, browser, base)
         browser.close()
     if server:

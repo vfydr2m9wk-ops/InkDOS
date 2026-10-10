@@ -76,9 +76,8 @@ def main() -> None:
             dark.evaluate("el => el.click()")
             page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'dark'")
             assert dark.get_attribute("aria-pressed") == "true"
-            system = page.locator('[data-appearance-choice="system"]')
-            system.evaluate("el => el.click()")
-            page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'system'")
+            # one InkDOS theme, Light or Dark only (owner, 2026-10-09): no System choice in the menu
+            assert page.locator('[data-appearance-choice="system"]').count() == 0
 
             # PDF-P1 Reader Completion: controls are bindings, commands survive movement/removal.
             reader_commands = page.evaluate("() => globalThis.InkDOS2PdfP4.PdfStabilityDebug.registry.inspect().commands")

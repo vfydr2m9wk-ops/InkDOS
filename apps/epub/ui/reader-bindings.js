@@ -64,7 +64,9 @@ function create({elements:E,reader,navigation,annotationModes}={}){
   E.highlightClose.addEventListener('click',()=>E.highlight.hidden=true);
   E.highlightClear.addEventListener('click',()=>reader.removeHighlight());
   for(const button of document.querySelectorAll('[data-highlight-color]'))button.addEventListener('click',()=>reader.applyHighlight(button.dataset.highlightColor));
-  E.pagesBtn.addEventListener('click',()=>reader.setFlow('pages'));
+  // three view symbols: Pages (page by page, no effect), Turn page (page by page, turned like a book), Scroll
+  E.pagesBtn.addEventListener('click',()=>{reader.setFlow('pages');reader.setTurnStyle('none')});
+  E.turnBtn?.addEventListener('click',()=>{reader.setFlow('pages');reader.setTurnStyle('book')});
   E.scrollBtn.addEventListener('click',()=>reader.setFlow('scroll'));
   E.prev.addEventListener('click',()=>reader.goPage(state().pageIndex-1));
   E.next.addEventListener('click',()=>reader.goPage(state().pageIndex+1));

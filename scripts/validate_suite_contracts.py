@@ -75,23 +75,16 @@ class SuiteIntegration(unittest.TestCase):
         self.assertIn("inkdos2:appearance", home)
         self.assertIn('id="appearanceButton"', home)
         self.assertIn('id="appearanceMenu"', home)
-        for mode in ("light", "dark", "system"):
+        # one InkDOS theme, Light or Dark only, shared by every workspace (owner, 2026-10-09)
+        for mode in ("light", "dark"):
             self.assertIn(f'data-home-appearance-mode="{mode}"', home)
+        self.assertNotIn('data-home-appearance-mode="system"', home)
         self.assertIn('html[data-theme="dark"]', css)
-        local_keys = {
-            "documents": "inkdos2:documents:appearance",
-            "spreadsheets": "inkdos2:spreadsheets:appearance",
-            "presentations": "inkdos2:presentations:appearance",
-            "txt": "inkdos2:txt:appearance",
-            "epub": "inkdos2:epub:appearance",
-            "pdf": "inkdos2:pdf:p1:appearance",
-        }
-        for app, local_key in local_keys.items():
+        for app in ("documents", "spreadsheets", "presentations", "txt", "epub", "pdf"):
             text = (ROOT / "apps" / app / "state" / "appearance.js").read_text(encoding="utf-8")
-            self.assertIn(local_key, text, app)
-            self.assertIn("LEGACY_SUITE_KEY='inkdos2:appearance'", text, app)
+            self.assertIn("'inkdos2:appearance'", text, app)
             self.assertIn("'storage'", text, app)
-            self.assertNotIn("setItem(LEGACY_SUITE_KEY", text, app)
+            self.assertNotIn("prefers-color-scheme", text, app)
 
     def test_share_action_contract(self):
         direct = {"txt": ("index.html", "shareBtn"), "epub": ("index.html", "shareBtn")}

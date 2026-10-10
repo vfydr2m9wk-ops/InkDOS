@@ -78,22 +78,14 @@ def main() -> None:
     if 'html[data-theme="dark"]' not in home_css:
         raise SystemExit("Home dark appearance missing")
 
-    local_keys = {
-        "documents": "inkdos2:documents:appearance",
-        "spreadsheets": "inkdos2:spreadsheets:appearance",
-        "presentations": "inkdos2:presentations:appearance",
-        "txt": "inkdos2:txt:appearance",
-        "epub": "inkdos2:epub:appearance",
-        "pdf": "inkdos2:pdf:p1:appearance",
-    }
-    for app, local_key in local_keys.items():
+    # Owner decision (2026-10-09): one InkDOS theme. Every workspace uses the shared key and follows changes made
+    # elsewhere at once (storage event); none follows the system theme.
+    for app in ("documents", "spreadsheets", "presentations", "txt", "epub", "pdf"):
         appearance = (ROOT / "apps" / app / "state" / "appearance.js").read_text(encoding="utf-8")
-        if local_key not in appearance:
-            raise SystemExit(f"App-local appearance key missing: {app}")
-        if "LEGACY_SUITE_KEY='inkdos2:appearance'" not in appearance or "'storage'" not in appearance:
-            raise SystemExit(f"Workspace appearance migration/storage listener missing: {app}")
-        if "setItem(LEGACY_SUITE_KEY" in appearance:
-            raise SystemExit(f"Workspace appearance must not publish to legacy suite key: {app}")
+        if "'inkdos2:appearance'" not in appearance or "'storage'" not in appearance:
+            raise SystemExit(f"Workspace appearance shared key/storage listener missing: {app}")
+        if "prefers-color-scheme" in appearance:
+            raise SystemExit(f"Workspace appearance must not follow the system theme: {app}")
 
     starts = {
         "documents": ("startNew", "startOpen"),
