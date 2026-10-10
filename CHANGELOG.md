@@ -17,8 +17,18 @@ check again on the published site, and the CI result on GitHub, before telling t
 CI fixes (2026-10-09): the CI had been red since the Plain Text wording change, whose generated bundle was not
 rebuilt (`build_txt_bundle.py --check`); and the localization test took its snapshot before the Edit with
 ONLYOFFICE button joined the header (it now waits for it).
+CI, minor fixes (owner, 2026-10-10): a minor, low-risk fix may skip the full visual audit (candidate-distribution) on
+its PR, with a line "Visual audit: skip" and the reason in the PR description; the audit now also runs on main after
+every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
+
+Step 10 · Edit PDF layer (owner report, 2026-10-10):
+- The "Back to the PDF" button was light text on a light background in the dark theme (it used a colour the PDF
+  workspace does not define); it now uses the workspace's control colours. `smoke_ui.py` checks its contrast in both
+  themes.
+- Scrolling on iPad: the BentoPDF frame now sits in a scrolling box that fills the rest of the screen, so the page
+  scrolls even when Safari sizes the frame to its content.
 
 Step 9 · Edit with ONLYOFFICE takes the document on screen (owner report, 2026-10-10):
 - A document started in InkDOS did nothing on "Edit with ONLYOFFICE": the button only sent a file opened from the

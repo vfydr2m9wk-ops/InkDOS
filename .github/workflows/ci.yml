@@ -90,9 +90,11 @@ jobs:
 
   # Owner decision (2026-10-09): one browser (Chromium) for now, and only after the fast validation above passed,
   # so a red run stops early instead of running for minutes more.
+  # Owner decision (2026-10-10): a minor, low-risk fix may skip this full visual audit on its PR (a line
+  # "Visual audit: skip" in the PR description, with the reason); it always runs again on main after the merge.
   candidate-distribution:
     name: Candidate distribution (${{ matrix.browser }})
-    if: github.event_name == 'pull_request'
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && !contains(github.event.pull_request.body || '', 'Visual audit: skip')) }}"
     needs: integration-validation
     runs-on: ubuntu-22.04
     timeout-minutes: 30
@@ -103,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
@@ -136,7 +138,7 @@ jobs:
         run: python tests/test_pdf_first_page_first_browser.py
       - name: Audit exact candidate without deployment
         env:
-          INKDOS_EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+          INKDOS_EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           INKDOS_AUDIT_BROWSER: ${{ matrix.browser }}
           INKDOS_CLICK_SWEEP: ${{ matrix.browser == 'chromium' && '1' || '0' }}
         run: python scripts/run_candidate_audit.py
