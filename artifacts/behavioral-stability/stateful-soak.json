@@ -1,0 +1,710 @@
+{
+  "browser": "chromium",
+  "cycles": 3,
+  "errors": [],
+  "replay": "BROWSER=chromium INKDOS_STATEFUL_CYCLES=3 python tests/test_cross_suite_stateful_soak_browser.py",
+  "workspaces": {
+    "documents": [
+      {
+        "cycle": 1,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 93,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 565,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.docx \u2014 Documents"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 92,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 556,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.docx \u2014 Documents"
+        },
+        "metrics": {
+          "documents": 7,
+          "jsEventListeners": 242,
+          "nodes": 1245,
+          "totalHeap": 4005888,
+          "usedHeap": 2985072
+        },
+        "semantic": {
+          "pages": 1,
+          "redoDisabled": true,
+          "undoDisabled": true,
+          "welcomeHidden": true
+        }
+      },
+      {
+        "cycle": 2,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 93,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 565,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.docx \u2014 Documents"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 92,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 556,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.docx \u2014 Documents"
+        },
+        "metrics": {
+          "documents": 18,
+          "jsEventListeners": 242,
+          "nodes": 1295,
+          "totalHeap": 3743744,
+          "usedHeap": 3088808
+        },
+        "semantic": {
+          "pages": 1,
+          "redoDisabled": true,
+          "undoDisabled": true,
+          "welcomeHidden": true
+        }
+      },
+      {
+        "cycle": 3,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 93,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 565,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.docx \u2014 Documents"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 92,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 556,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.docx \u2014 Documents"
+        },
+        "metrics": {
+          "documents": 18,
+          "jsEventListeners": 242,
+          "nodes": 1295,
+          "totalHeap": 4530176,
+          "usedHeap": 3103284
+        },
+        "semantic": {
+          "pages": 1,
+          "redoDisabled": true,
+          "undoDisabled": true,
+          "welcomeHidden": true
+        }
+      }
+    ],
+    "epub": [
+      {
+        "cycle": 1,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 67,
+          "dialogs": 6,
+          "duplicateIds": [],
+          "elements": 357,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "EPUB Reader \u2014 InkDOS 2.0"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 67,
+          "dialogs": 6,
+          "duplicateIds": [],
+          "elements": 357,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "EPUB Reader \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 143,
+          "nodes": 643,
+          "totalHeap": 3182592,
+          "usedHeap": 1985872
+        },
+        "semantic": {}
+      },
+      {
+        "cycle": 2,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 67,
+          "dialogs": 6,
+          "duplicateIds": [],
+          "elements": 357,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "EPUB Reader \u2014 InkDOS 2.0"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 67,
+          "dialogs": 6,
+          "duplicateIds": [],
+          "elements": 357,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "EPUB Reader \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 143,
+          "nodes": 643,
+          "totalHeap": 2658304,
+          "usedHeap": 1987644
+        },
+        "semantic": {}
+      },
+      {
+        "cycle": 3,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 67,
+          "dialogs": 6,
+          "duplicateIds": [],
+          "elements": 357,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "EPUB Reader \u2014 InkDOS 2.0"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 67,
+          "dialogs": 6,
+          "duplicateIds": [],
+          "elements": 357,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "EPUB Reader \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 143,
+          "nodes": 643,
+          "totalHeap": 2658304,
+          "usedHeap": 1987644
+        },
+        "semantic": {}
+      }
+    ],
+    "pdf": [
+      {
+        "cycle": 1,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 73,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 398,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "PDF Workspace \u2014 InkDOS 2.0"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 73,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 398,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "PDF Workspace \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 158,
+          "nodes": 738,
+          "totalHeap": 3706880,
+          "usedHeap": 2897904
+        },
+        "semantic": {}
+      },
+      {
+        "cycle": 2,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 73,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 398,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "PDF Workspace \u2014 InkDOS 2.0"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 73,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 398,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "PDF Workspace \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 158,
+          "nodes": 738,
+          "totalHeap": 3444736,
+          "usedHeap": 2897976
+        },
+        "semantic": {}
+      },
+      {
+        "cycle": 3,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 73,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 398,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "PDF Workspace \u2014 InkDOS 2.0"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 73,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 398,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "PDF Workspace \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 158,
+          "nodes": 738,
+          "totalHeap": 3444736,
+          "usedHeap": 2897976
+        },
+        "semantic": {}
+      }
+    ],
+    "presentations": [
+      {
+        "cycle": 1,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 93,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 565,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.pptx \u2014 Presentations"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 92,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 552,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Presentations \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 207,
+          "nodes": 1316,
+          "totalHeap": 4792320,
+          "usedHeap": 3269464
+        },
+        "semantic": {
+          "active": true,
+          "currentIndex": 0,
+          "dirty": false,
+          "slides": 1
+        }
+      },
+      {
+        "cycle": 2,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 93,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 564,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.pptx \u2014 Presentations"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 92,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 551,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Presentations \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 205,
+          "nodes": 1315,
+          "totalHeap": 4792320,
+          "usedHeap": 3308924
+        },
+        "semantic": {
+          "active": true,
+          "currentIndex": 0,
+          "dirty": false,
+          "slides": 1
+        }
+      },
+      {
+        "cycle": 3,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 93,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 564,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.pptx \u2014 Presentations"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 92,
+          "dialogs": 3,
+          "duplicateIds": [],
+          "elements": 551,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Presentations \u2014 InkDOS 2.0"
+        },
+        "metrics": {
+          "documents": 17,
+          "jsEventListeners": 205,
+          "nodes": 1315,
+          "totalHeap": 4792320,
+          "usedHeap": 3307964
+        },
+        "semantic": {
+          "active": true,
+          "currentIndex": 0,
+          "dirty": false,
+          "slides": 1
+        }
+      }
+    ],
+    "spreadsheets": [
+      {
+        "cycle": 1,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 71,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 1594,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.xlsx \u2014 Spreadsheets"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 68,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 468,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.xlsx \u2014 Spreadsheets"
+        },
+        "metrics": {
+          "documents": 15,
+          "jsEventListeners": 3264,
+          "nodes": 2314,
+          "totalHeap": 4268032,
+          "usedHeap": 3345472
+        },
+        "semantic": {
+          "dirty": false,
+          "fileName": "Untitled.xlsx",
+          "loaded": true,
+          "sheets": 1
+        }
+      },
+      {
+        "cycle": 2,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 71,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 1594,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.xlsx \u2014 Spreadsheets"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 68,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 468,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.xlsx \u2014 Spreadsheets"
+        },
+        "metrics": {
+          "documents": 18,
+          "jsEventListeners": 3264,
+          "nodes": 2327,
+          "totalHeap": 4268032,
+          "usedHeap": 3461272
+        },
+        "semantic": {
+          "dirty": false,
+          "fileName": "Untitled.xlsx",
+          "loaded": true,
+          "sheets": 1
+        }
+      },
+      {
+        "cycle": 3,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 71,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 1594,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.xlsx \u2014 Spreadsheets"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 68,
+          "dialogs": 2,
+          "duplicateIds": [],
+          "elements": 468,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.xlsx \u2014 Spreadsheets"
+        },
+        "metrics": {
+          "documents": 18,
+          "jsEventListeners": 3264,
+          "nodes": 2327,
+          "totalHeap": 4268032,
+          "usedHeap": 3461272
+        },
+        "semantic": {
+          "dirty": false,
+          "fileName": "Untitled.xlsx",
+          "loaded": true,
+          "sheets": 1
+        }
+      }
+    ],
+    "txt": [
+      {
+        "cycle": 1,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 57,
+          "dialogs": 5,
+          "duplicateIds": [],
+          "elements": 368,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.txt \u2014 InkDOS Plain Text"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 57,
+          "dialogs": 5,
+          "duplicateIds": [],
+          "elements": 368,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.txt \u2014 InkDOS Plain Text"
+        },
+        "metrics": {
+          "documents": 16,
+          "jsEventListeners": 157,
+          "nodes": 744,
+          "totalHeap": 3219456,
+          "usedHeap": 2376348
+        },
+        "semantic": {
+          "dirty": false,
+          "length": 0,
+          "loaded": true,
+          "wrap": true
+        }
+      },
+      {
+        "cycle": 2,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 57,
+          "dialogs": 5,
+          "duplicateIds": [],
+          "elements": 368,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.txt \u2014 InkDOS Plain Text"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 57,
+          "dialogs": 5,
+          "duplicateIds": [],
+          "elements": 368,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.txt \u2014 InkDOS Plain Text"
+        },
+        "metrics": {
+          "documents": 16,
+          "jsEventListeners": 157,
+          "nodes": 744,
+          "totalHeap": 3481600,
+          "usedHeap": 2397884
+        },
+        "semantic": {
+          "dirty": false,
+          "length": 0,
+          "loaded": true,
+          "wrap": true
+        }
+      },
+      {
+        "cycle": 3,
+        "domAfter": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 57,
+          "dialogs": 5,
+          "duplicateIds": [],
+          "elements": 368,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.txt \u2014 InkDOS Plain Text"
+        },
+        "domBefore": {
+          "bodyHeight": 900,
+          "bodyWidth": 1360,
+          "buttons": 57,
+          "dialogs": 5,
+          "duplicateIds": [],
+          "elements": 368,
+          "readyState": "complete",
+          "scrollHeight": 900,
+          "scrollWidth": 1360,
+          "title": "Untitled.txt \u2014 InkDOS Plain Text"
+        },
+        "metrics": {
+          "documents": 16,
+          "jsEventListeners": 162,
+          "nodes": 746,
+          "totalHeap": 3481600,
+          "usedHeap": 2400220
+        },
+        "semantic": {
+          "dirty": false,
+          "length": 0,
+          "loaded": true,
+          "wrap": true
+        }
+      }
+    ]
+  }
+}

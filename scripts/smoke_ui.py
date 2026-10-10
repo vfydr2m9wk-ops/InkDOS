@@ -184,6 +184,8 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
 def menus(run, browser, base, app):
     ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
     page = ctx.new_page()
+    errors = []
+    page.on('pageerror', lambda e: errors.append(str(e)[:160]))
     page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
     page.wait_for_selector('[data-frame-action="sun"]', timeout=15000)
     titles = ("()=>Array.from(document.querySelectorAll('.inkdos-settings-popover-title'))"
@@ -195,6 +197,14 @@ def menus(run, browser, base, app):
     page.click('[data-frame-action="sun"]')
     run.check(f'{app}: lock right of the sun', page.evaluate(
         "()=>document.querySelector('[data-frame-action=\"sun\"]').nextElementSibling===document.querySelector('[data-frame-action=\"lock\"]')"))
+    if app == 'epub':
+        # three view symbols: Pages, Turn page, Scroll
+        page.click('#turnBtn')
+        page.wait_for_timeout(300)
+        run.check('epub: Turn page symbol selects the page-turn view', page.evaluate(
+            "()=>document.getElementById('turnBtn').getAttribute('aria-pressed')==='true'&&document.getElementById('pagesBtn').getAttribute('aria-pressed')==='false'"))
+        page.click('#pagesBtn')
+    run.check(f'{app}: no page errors', not errors, '; '.join(errors[:2]))
     ctx.close()
 
 

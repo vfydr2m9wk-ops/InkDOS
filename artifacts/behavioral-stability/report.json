@@ -1,0 +1,95 @@
+{
+  "browser": "chromium",
+  "passed": true,
+  "statefulCycles": 3,
+  "tests": [
+    {
+      "durationSeconds": 5.699,
+      "replay": "BROWSER=chromium INKDOS_STATEFUL_CYCLES=3 python tests/test_cross_suite_stateful_soak_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "Cross-suite stateful soak (chromium, 3 cycles): OK\nReport: artifacts/behavioral-stability/stateful-soak.json",
+      "test": "tests/test_cross_suite_stateful_soak_browser.py"
+    },
+    {
+      "durationSeconds": 2.203,
+      "replay": "BROWSER=chromium python tests/test_documents_stability_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "Documents command/control and unsaved-exit browser isolation passed on chromium.",
+      "test": "tests/test_documents_stability_browser.py"
+    },
+    {
+      "durationSeconds": 1.16,
+      "replay": "BROWSER=chromium python tests/test_doc_d1_roundtrip.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "DOC-D1 browser save/OOXML/reopen roundtrip passed.\n{\"orientation\": \"landscape\", \"pages\": 2}",
+      "test": "tests/test_doc_d1_roundtrip.py"
+    },
+    {
+      "durationSeconds": 2.965,
+      "replay": "BROWSER=chromium python tests/test_spreadsheets_stability_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "Spreadsheets stability browser (chromium): OK",
+      "test": "tests/test_spreadsheets_stability_browser.py"
+    },
+    {
+      "durationSeconds": 2.179,
+      "replay": "BROWSER=chromium python tests/test_presentations_stability_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "Presentations stability browser regression passed on chromium.",
+      "test": "tests/test_presentations_stability_browser.py"
+    },
+    {
+      "durationSeconds": 1.198,
+      "replay": "BROWSER=chromium python tests/test_ppt_p1_structure_roundtrip.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "PPT-P1 imported slide add/duplicate/delete/reorder roundtrip passed.",
+      "test": "tests/test_ppt_p1_structure_roundtrip.py"
+    },
+    {
+      "durationSeconds": 2.649,
+      "replay": "BROWSER=chromium python tests/test_epub_stability_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "EPUB stability browser (chromium): OK",
+      "test": "tests/test_epub_stability_browser.py"
+    },
+    {
+      "durationSeconds": 2.861,
+      "replay": "BROWSER=chromium python tests/test_pdf_stability_roundtrip.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "PDF save/reopen round-trip regression passed on chromium.",
+      "test": "tests/test_pdf_stability_roundtrip.py"
+    },
+    {
+      "durationSeconds": 2.255,
+      "replay": "BROWSER=chromium python tests/test_pdf_editor_annotations_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "PDF editor annotations (pen, free text, highlight, underline) round-trip passed on chromium.",
+      "test": "tests/test_pdf_editor_annotations_browser.py"
+    },
+    {
+      "durationSeconds": 3.364,
+      "replay": "BROWSER=chromium python tests/test_pdf_view_text_selection_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "PDF view-mode text selection and copy passed on chromium.",
+      "test": "tests/test_pdf_view_text_selection_browser.py"
+    },
+    {
+      "durationSeconds": 3.411,
+      "replay": "BROWSER=chromium python tests/test_pdf_navigation_during_rerender_browser.py",
+      "returncode": 0,
+      "stderrTail": "",
+      "stdoutTail": "PDF navigation during re-render regression passed on chromium.",
+      "test": "tests/test_pdf_navigation_during_rerender_browser.py"
+    }
+  ]
+}
