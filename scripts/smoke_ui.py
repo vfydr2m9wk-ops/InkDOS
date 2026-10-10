@@ -244,6 +244,29 @@ def theme_sync(run, browser, base):
     ctx.close()
 
 
+def framed_handoff(run, browser, base):
+    # inside another web page (XeOS): Edit with ONLYOFFICE opens the editor as a separate page, carrying the document
+    # through IndexedDB and a way back (the editor page itself is stubbed here)
+    ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, user_agent=IPAD_UA)
+    ctx.route(lambda url: url.startswith(TOOLS + '/editor'), lambda route: route.fulfill(body='<!doctype html><title>editor stub</title>', content_type='text/html'))
+    page = ctx.new_page()
+    page.set_content(f'<iframe id="xeos" src="{base}apps/documents/index.html?suite=1" style="width:1100px;height:760px"></iframe>')
+    frame = page.frame_locator('#xeos')
+    frame.locator('#inkdosOfficeBtn').wait_for(timeout=15000)
+    frame.locator('[data-frame-action="new"]').click()
+    page.wait_for_timeout(1200)
+    frame.locator('#inkdosOfficeBtn').click()
+    target = ''
+    for _ in range(40):
+        target = next((f.url for f in page.frames if f.url.startswith(TOOLS + '/editor')), '')
+        if target:
+            break
+        page.wait_for_timeout(250)
+    ok = 'inkdos-handoff=' in target and 'inkdos-return=' in target and 'embedOrigin=' + 'https%3A%2F%2Finkdos-tools.github.io' in target
+    run.check('framed (XeOS): Edit with ONLYOFFICE opens the editor as a separate page', ok, target[:120] or 'no navigation')
+    ctx.close()
+
+
 def phone_header(run, browser, base):
     # a phone-width header must keep every button on screen (the sun, the lock and share included)
     ctx = browser.new_context(viewport={'width': 390, 'height': 844}, has_touch=True, is_mobile=True)
@@ -287,6 +310,7 @@ def main():
             menus(run, browser, base, app)
         office_new(run, browser, base)
         theme_sync(run, browser, base)
+        framed_handoff(run, browser, base)
         phone_header(run, browser, base)
         browser.close()
     if server:

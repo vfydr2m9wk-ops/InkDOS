@@ -34,8 +34,24 @@ function launchShell(file,light,src){
  back.addEventListener('click',toLight);
  return {frame,toLight,listen(handler){onMessage=handler;g.addEventListener('message',handler)}};
 }
+// InkDOS inside another web page (the XeOS web desktop on iPad): an editor framed in InkDOS does not scroll there, so
+// the editor opens as a separate page instead. The document waits in this origin's IndexedDB; the editor page fetches
+// it through the hidden handoff.html (engine site: inkdos-handoff.js / bento-carry.js) and offers a way back here.
+function framedPage(){try{return g.top!==g.self}catch(_){return true}}
+function handOff(file,url){
+ const id=g.crypto?.randomUUID?g.crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2,10);
+ return new Promise((resolve,reject)=>{const req=g.indexedDB.open('inkdos-tool-handoff',1);req.onupgradeneeded=()=>req.result.createObjectStore('files');req.onerror=()=>reject(req.error);
+  req.onsuccess=()=>{const db=req.result,tx=db.transaction('files','readwrite');tx.objectStore('files').put({file,name:file.name,at:Date.now()},id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>reject(tx.error)}})
+  .then(()=>{url.searchParams.set('inkdos-handoff',id);url.searchParams.set('inkdos-return',g.location.href);g.location.href=url.href;return true});
+}
 function openInOffice(file,light){
  if(!doc?.body)return false;
+ if(framedPage()&&g.indexedDB){
+  const lang=String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||'en');
+  const LOCALE={pt:'pt',es:'es',de:'de',ja:'ja',zh:'zh-CN',fr:'fr',ru:'ru'}[lang.toLowerCase().split('-')[0]];
+  const url=new URL('/editor',OFFICE_ORIGIN);url.searchParams.set('embed','1');url.searchParams.set('embedOrigin',OFFICE_ORIGIN);if(LOCALE)url.searchParams.set('locale',LOCALE);
+  handOff(file,url).catch(error=>{console.error('InkDOS: could not hand the document to ONLYOFFICE',error)});return true;
+ }
  const lang=String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||'en');
  const LOCALE={pt:'pt',es:'es',de:'de',ja:'ja',zh:'zh-CN',fr:'fr',ru:'ru'}[lang.toLowerCase().split('-')[0]];
  const url=new URL('/editor',OFFICE_ORIGIN);url.searchParams.set('embed','1');url.searchParams.set('embedOrigin',g.location.origin);if(LOCALE)url.searchParams.set('locale',LOCALE);
@@ -99,5 +115,5 @@ function addOfficeButton(sun){
 install();
 takeHandoff();
 if(doc){if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>installOfficeButton(),{once:true});else installOfficeButton()}
-g.InkDOSFileLaunch=Object.freeze({openInOffice:file=>OFFICE_EXT.has(extension(file?.name))&&openInOffice(file),officeExtensions:OFFICE_EXT,install,consume,openHandle,routeFile,injectFile,compatibleInput,acceptsFile,extensionsFromAccept,requestPicker,setOpenHandler});
+g.InkDOSFileLaunch=Object.freeze({handOff,framedPage,openInOffice:file=>OFFICE_EXT.has(extension(file?.name))&&openInOffice(file),officeExtensions:OFFICE_EXT,install,consume,openHandle,routeFile,injectFile,compatibleInput,acceptsFile,extensionsFromAccept,requestPicker,setOpenHandler});
 })(globalThis);

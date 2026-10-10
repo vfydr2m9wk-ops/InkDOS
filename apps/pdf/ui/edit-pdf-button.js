@@ -27,6 +27,9 @@ function css(){if($('pdfEditBtnStyle'))return;const s=doc.createElement('style')
  doc.head.appendChild(s)}
 function openToolkit(page){
  const file=currentFile();if(!file){status(label('open'));return}
+ // inside another web page (XeOS) the toolkit opens as a separate page; the PDF goes through runtime/platform/file-launch.js
+ const launch=global.InkDOSFileLaunch;
+ if(launch?.framedPage?.()&&launch.handOff&&global.indexedDB){launch.handOff(file,new URL(typeof page==='string'?page:'',TOOLKIT)).catch(error=>{console.error('InkDOS: could not hand the PDF to BentoPDF',error);status(label('open'))});return}
  const layer=doc.createElement('div');layer.className='pdf-toolkit-layer';layer.setAttribute('role','dialog');layer.setAttribute('aria-label','BentoPDF');
  const head=doc.createElement('div'),body=doc.createElement('div'),title=doc.createElement('span'),back=doc.createElement('button');
  title.textContent='BentoPDF · '+file.name;back.type='button';back.textContent=label('back');head.append(title,back);
