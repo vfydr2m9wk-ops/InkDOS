@@ -89,7 +89,7 @@ jobs:
         run: python desktop/scripts/stage_web.py --check
 
   # Owner decision (2026-10-09): only after the fast validation above passed, so a red run stops early instead of
-  # running for minutes more. Owner decision (2026-10-10): the audit runs again in Chromium, Firefox and WebKit, to
+  # running for minutes more. Owner decision (2026-10-10): the audit runs again in Chromium and WebKit (Firefox dropped on 2026-10-10, SUPPORT.md), to
   # prepare the 2.9 release (fail-fast: the first browser that fails stops the others).
   # Owner decision (2026-10-10): a minor, low-risk fix may skip this full visual audit on its PR (a line
   # "Visual audit: skip" in the PR description, with the reason); it always runs again on main after the merge.
@@ -102,7 +102,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium, webkit]
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:

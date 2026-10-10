@@ -1,6 +1,6 @@
 # InkDOS
 
-**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Also on one address (Cloudflare):** https://inkdos-offic.pages.dev · **Windows app:** [latest release](https://github.com/vfydr2m9wk-ops/InkDOS/releases/latest)
+**Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Also on one address (Cloudflare):** https://inkdos-offic.pages.dev · **Past versions:** [legacy branch](https://github.com/vfydr2m9wk-ops/InkDOS/tree/legacy/releases) (no downloads are published for now)
 
 InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser or in a small Windows app. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
@@ -29,7 +29,7 @@ Files opened from the system (Windows "Open with", the browser's file handling, 
 
 **Offline:** on Safari, Chromium-based browsers and the Windows app, everything is kept on the device after the first use or after Download all. Web views without service workers (XeOS today) load from the internet.
 
-**Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Other platforms may work but are not maintained.
+**Supported:** iOS/iPadOS WebKit (Safari, XeOS), Chromium-based browsers, and the Windows app (Tauri). Firefox is not supported or tested; see [SUPPORT.md](SUPPORT.md) for why.
 
 ## Privacy and storage
 

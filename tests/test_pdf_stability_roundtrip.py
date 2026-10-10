@@ -19,7 +19,7 @@ def save_download(page,target):
     download=info.value;download.save_as(str(target));return download.suggested_filename
 def main():
     browser_name=os.environ.get("BROWSER","chromium").strip().lower()
-    if browser_name not in {"chromium","firefox","webkit"}:raise RuntimeError(f"Unsupported BROWSER={browser_name}")
+    if browser_name not in {"chromium", "webkit"}:raise RuntimeError(f"Unsupported BROWSER={browser_name}")
     server=subprocess.Popen([sys.executable,"-m","http.server",str(PORT),"--bind","127.0.0.1"],cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);errors=[]
     try:
         wait_port(PORT)

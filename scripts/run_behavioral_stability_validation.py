@@ -34,7 +34,7 @@ def tail(value: str, lines: int = 80) -> str:
 
 def main() -> None:
     browser = os.environ.get("BROWSER", "chromium").strip().lower()
-    if browser not in {"chromium", "firefox", "webkit"}:
+    if browser not in {"chromium", "webkit"}:
         raise SystemExit(f"Unsupported BROWSER={browser}")
 
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

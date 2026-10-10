@@ -25,7 +25,7 @@ def wait_port(port: int, timeout: float = 10.0) -> None:
 
 def main() -> None:
     browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
-    if browser_name not in {"chromium", "firefox", "webkit"}:
+    if browser_name not in {"chromium", "webkit"}:
         raise RuntimeError(f"Unsupported BROWSER={browser_name}")
     server = subprocess.Popen([sys.executable, "-m", "http.server", str(PORT), "--bind", "127.0.0.1"], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     errors: list[str] = []
