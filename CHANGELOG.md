@@ -26,7 +26,8 @@ only after integration-validation passed, so a red run stops early; its optional
 
 Step 12 · Windows app without the beta channel (owner, 2026-10-09):
 - The Windows app no longer has a beta tools channel: `desktop/src-tauri/src/beta.rs` (signed bundle download,
-  `inkdos-beta` windows), its commands and pinned key (its crates leave Cargo.toml in a separate release PR),
+  `inkdos-beta` windows), its commands and pinned key; its crates (flate2, minisign-verify, reqwest, rustls, sha2,
+  tar) left Cargo.toml in a separate release PR,
   `desktop-host.js` betaTools, the beta-channel workflow, bundle script and config are gone.
 - `labs/pdf` (the old PDF tools page: OCR, visual/A1 signature, ICP-Brasil list) is removed with its vendored
   Tesseract and node-forge copies, licences, tests and docs. PDF editing is BentoPDF.
