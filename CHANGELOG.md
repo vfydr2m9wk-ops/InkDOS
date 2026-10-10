@@ -24,6 +24,10 @@ every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 16 · Cloudflare fix: Cloudflare Pages redirects /x/index.html to /x/, and the offline cache served that redirected
+response for a page, which browsers refuse (the PDF workspace failed to open there after a first visit). The service
+worker now keeps the same bytes as a plain response.
+
 Step 15 · ONLYOFFICE and BentoPDF as their own pages (owner, 2026-10-10, web only): Edit with ONLYOFFICE and Edit
 PDF (and the PDF password options) always open the tool as a page of its own, with no InkDOS frame (file title,
 Back) over the workspace; the browser's Back returns to it. BentoPDF shows its original start page again (search bar,
