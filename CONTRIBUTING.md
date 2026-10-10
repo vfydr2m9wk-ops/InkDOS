@@ -1,6 +1,6 @@
 # Contributing to InkDOS
 
-Thank you for helping InkDOS. It is a local-first productivity suite (Documents, Spreadsheets, Presentations, PDF, EPUB and Plain Text) that runs entirely in the browser, as an installable PWA and as a Tauri desktop app. Contributions of every size are welcome: bug reports, reproductions, translations, documentation and code.
+Thank you for helping InkDOS. It is a local-first productivity suite (Documents, Spreadsheets, Presentations, PDF, EPUB and Plain Text) that runs entirely in the browser (Chromium and iOS/iPadOS WebKit; see `SUPPORT.md`). The Tauri desktop app in `desktop/` is kept but not published. Contributions of every size are welcome: bug reports, reproductions, translations, documentation and code.
 
 By participating you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 

@@ -48,7 +48,7 @@ InkDOS stands on the work of these projects:
 - [BentoPDF](https://github.com/alam00000/bentopdf) and [PDF.js](https://github.com/mozilla/pdf.js) (the engine of the InkDOS PDF workspace)
 - [Pyodide](https://pyodide.org)
 - [Tauri](https://tauri.app)
-- pdf-lib, JSZip, pako, Tesseract.js and node-forge in the InkDOS editors
+- pdf-lib, JSZip and pako in the InkDOS editors
 
 InkDOS's own code is under the MIT license (`LICENSE`). Each project above keeps its own license; see `docs/THIRD_PARTY_NOTICES.md` and the license files shipped with each tool.
 

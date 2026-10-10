@@ -25,6 +25,8 @@ InkDOS is served from `https://vfydr2m9wk-ops.github.io/InkDOS/`. A browser trea
 
 ## Desktop update trust boundary
 
+The Windows app is not published at present (see `SUPPORT.md`); this section applies if desktop releases resume.
+
 Desktop releases are built from an immutable version tag. The release workflow validates the tagged source, builds native artifacts on platform runners, signs updater artifacts, records build provenance and verifies that provenance before publication.
 
 The Tauri updater public key may be configured in the built application. The signing private key and its password must remain GitHub Actions secrets and must never be committed to this repository.

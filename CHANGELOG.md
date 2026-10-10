@@ -5,6 +5,8 @@
 Version 2.9.0 (owner: the project is still young, so 2.9 rather than 3.0). The web edition carries it now; the
 Windows installer and the release tag (config/release-trigger-2.9.0.json) follow once the owner has checked the web
 edition.
+Update (owner, 2026-10-10): no Windows installer is published for 2.9.0 or later; InkDOS is the web app only
+(Chromium and iOS/iPadOS WebKit). Past versions are in the legacy branch (SUPPORT.md).
 
 Plan (owner, 2026-10-09): InkDOS apps are the entry for every file; ONLYOFFICE (Documents, Spreadsheets,
 Presentations) and BentoPDF (PDF) open only on request from a button left of the Settings (sun) button. Done in

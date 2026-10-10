@@ -20,7 +20,7 @@ Supported open, edit, conversion and save/export paths execute locally. There is
 
 ## Desktop host
 
-`desktop/` is a thin Tauri v2 host around the web runtime. It adds native file dialogs/filesystem access, native windows, platform packaging and the signed Tauri updater while preserving browser/PWA fallbacks.
+`desktop/` is a thin Tauri v2 host around the web runtime, kept in the repository but not published at present (see `SUPPORT.md`). It adds native file dialogs/filesystem access, native windows, platform packaging and the signed Tauri updater while preserving browser/PWA fallbacks.
 
 `VERSION.json` is the version authority. `desktop/scripts/release_version.py` verifies the Tauri configuration against it.
 

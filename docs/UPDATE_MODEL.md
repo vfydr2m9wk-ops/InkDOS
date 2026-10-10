@@ -1,5 +1,8 @@
 # Desktop update model
 
+The Windows app is not published at present: no installer or updater is released and the published tags and releases
+were removed (see `SUPPORT.md`). This document describes the model to use if desktop releases resume.
+
 InkDOS desktop updates use the signed Tauri updater for Windows. macOS and Linux desktop builds are discontinued after 2.7.8: those installs keep working but receive no further desktop updates (use the web/PWA edition).
 
 ## Version authority
