@@ -54,3 +54,10 @@
 .inkdos-save-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
 /* phones: the header never runs past the screen; the document title gives way to the header buttons */
 @media (max-width:640px){html.inkdos-frame-actions header.topbar,html.inkdos-frame-actions header.framebar{min-width:0;max-width:100%}html.inkdos-frame-actions .document-title,html.inkdos-frame-actions .presentation-title{flex:1 1 0!important;min-width:0!important;overflow:hidden}}
+
+/* Home sits with the frame icons at their size (it was 22px beside 19px, and beside 16px in desktop density) */
+.topbar a.menu-btn svg,.framebar a.menu-btn svg{width:19px;height:19px;stroke-width:1.7}
+:root[data-ui-density="desktop"] .topbar a.menu-btn svg,:root[data-ui-density="desktop"] .framebar a.menu-btn svg{width:16px;height:16px}
+/* a tool bar that fits shows no scroll arrows or their separator bars */
+.inkdos-toolbar-rail.inkdos-toolbar-fits{grid-template-columns:0 0 minmax(0,1fr) 0 0!important}
+.inkdos-toolbar-rail.inkdos-toolbar-fits>.inkdos-toolbar-arrow,.inkdos-toolbar-rail.inkdos-toolbar-fits>.inkdos-toolbar-separator{display:none!important}

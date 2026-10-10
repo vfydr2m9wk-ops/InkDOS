@@ -111,10 +111,9 @@ process.stdout.write(JSON.stringify(out));
     assert result["translated"] == "Traduzido", result
     assert result["languages"] == expected_languages, result
 
-    # The compact bottom strip is always ordered Appearance, Interface, Language, Help.
+    # The compact bottom strip is always ordered Appearance, Language, Help (no Interface choice since 2026-10-10).
     ordered = [
         "button('appearance'",
-        "button('interface'",
         "button('language'",
         "button('help'",
     ]

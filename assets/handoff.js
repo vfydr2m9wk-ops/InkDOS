@@ -21,7 +21,9 @@
     };
     tx.oncomplete = function () {
       db.close();
-      if (item && item.file instanceof Blob) window.parent.postMessage({ type: 'inkdos-handoff-file', file: item.file, name: item.name }, TOOLS);
+      if (!item) return;
+      var file = item.file instanceof Blob ? item.file : item.bytes ? new File([item.bytes], item.name || 'document', { type: item.type || '' }) : null;
+      if (file) window.parent.postMessage({ type: 'inkdos-handoff-file', file: file, name: item.name }, TOOLS);
     };
   };
 })();
