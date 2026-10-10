@@ -24,6 +24,13 @@ every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 13 · XeOS: ONLYOFFICE and BentoPDF as separate pages (owner, 2026-10-10):
+- Inside the XeOS web desktop an editor framed inside InkDOS (itself framed by XeOS) did not scroll, while Safari
+  did. When InkDOS runs inside another web page, Edit with ONLYOFFICE, Edit PDF and the PDF password options now open
+  the tool as a page of its own: the document waits in InkDOS's IndexedDB, the tool page fetches it through the
+  hidden `handoff.html` (answers only the engine origin, forgets the document once given) and shows a "← InkDOS"
+  button back to the workspace. In Safari (not framed) nothing changes. `smoke_ui.py` checks the separate page.
+
 Step 12 · Windows app without the beta channel (owner, 2026-10-09):
 - The Windows app no longer has a beta tools channel: `desktop/src-tauri/src/beta.rs` (signed bundle download,
   `inkdos-beta` windows), its commands and pinned key; its crates (flate2, minisign-verify, reqwest, rustls, sha2,
