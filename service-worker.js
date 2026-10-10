@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.9.0-b0793857e7a0a44faa43';
+const CACHE_NAME='inkdos-v2.9.0-c0d5dd087d4f6ee0e7f4';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "ce3955622e2396b498a197f49d58fdad5f13473ff4e1587db4538d05b0ecf654",
@@ -634,7 +634,10 @@ async function matchesSnapshot(response,expected){
 }
 async function verifiedFetch(request){
   const expected=HASH_BY_URL.get(request.url);
-  const response=await fetch(new Request(request,{cache:'no-store'}));
+  let response=await fetch(new Request(request,{cache:'no-store'}));
+  // A host that redirects /x/index.html to /x/ (Cloudflare Pages) returns a redirected response, which a browser
+  // refuses for a page opened through the worker: keep the same bytes as a plain response.
+  if(response.redirected)response=new Response(await response.arrayBuffer(),{status:response.status,statusText:response.statusText,headers:response.headers});
   if(!expected||!response.ok||response.type==='opaque')throw new Error('Offline snapshot response unavailable');
   if(!await matchesSnapshot(response,expected))throw new Error('Offline snapshot integrity mismatch');
   return response;
@@ -670,7 +673,7 @@ self.addEventListener('fetch',event=>{
     const cache=await caches.open(CACHE_KEY),cached=await cache.match(normalized);
     // Cache Storage is shared by every page of this origin (including sibling projects such as
     // InkDOS-tools), so a cached entry is served only while it still matches this snapshot.
-    if(cached&&await matchesSnapshot(cached,HASH_BY_URL.get(normalized.url)))return cached;
+    if(cached&&!cached.redirected&&await matchesSnapshot(cached,HASH_BY_URL.get(normalized.url)))return cached;
     if(cached)await cache.delete(normalized);
     // Evicted entries may only be repaired with bytes from this exact snapshot.
     const response=await verifiedFetch(normalized);await cache.put(normalized,response.clone());return response;
