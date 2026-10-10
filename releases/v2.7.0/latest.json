@@ -1,0 +1,18 @@
+{
+  "version": "2.7.0",
+  "notes": "# InkDOS 2.7.0\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nDesktop installers attached to this stable release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.0/InkDOS_2.7.0_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDRUL2hTcjM3TG1IdmpXaEpKc3k1Q2xGY2hjZXRlVjN0NHRuV3ZHZ0N1akRhR3FNSGFMV25QKzZtNGdteHdvRzU5QzdkSUk1dEJpTndVNHdIRllyRXdzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNTIyMjIyCWZpbGU6SW5rRE9TXzIuNy4wX3g2NC1zZXR1cC5leGUKWnlBWW5HZ3F4NmNxNXdYWlVxRmhwV1VKSVhJcjliV1h0cFBTbkhHbUx2ZUFYK050TDFTNXZuaXFoa1hCWkdRWHRaYk5ySTlMWnNvRW9tNWdvTDFhRFE9PQo="
+    },
+    "darwin-aarch64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.0/InkDOS.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDhsNlJ5Mm1Xb0hEYkpFQ1RjWjBaUkl4TGF0UVlQWmxKQjNrZE03cmN3YUR6OFNQa1lQNTFmaW1uQ1I1V0Q2S0MwZjcrVkEraTZhcEZvNGVEZVUxd1FnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNTIyMDQyCWZpbGU6SW5rRE9TLmFwcC50YXIuZ3oKcmFzVkluUzAvRjZEWVRqOExITEJMQTI5UzY0WUhpS1R6QmROZnlySW9ETldUdFpjaSttdXFVTGcvc3FRUElkaGlsaVd4R3ZzTnUvY3pMbkFRRUU4QlE9PQo="
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.0/InkDOS_2.7.0_amd64.AppImage",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDZZd3FYV0ZYdXJtc1pMUTFoTWNLejR4cCtzOURHYXArci9rTHlVRjdPdUNrYS9pK3JRNm9mV3EwT0ZFWEpkYndWVnRNVnZ4RVhqOEF6c2djdDM4N0FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNTIxOTIzCWZpbGU6SW5rRE9TXzIuNy4wX2FtZDY0LkFwcEltYWdlCkhTSC8weWhyRkFPYnluUXY4NUZpaVRyUEdWVGp5dlh5VUdTWGF1ZjJZR3RoazZqQUhQUStDa1RYYi9veEFGbGNQckIxQmVKdzNuWmRZcFNTdm1Ob0RBPT0K"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "version": "2.7.3",
+  "notes": "# InkDOS 2.7.3\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nDesktop installers attached to this stable release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.3/InkDOS_2.7.3_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDJQa0NzYytmS1luT09GZ2NOVE1BTHVaQW42Vmo2dkh0Y3cyK0JYQjJOTXArU0dFb3pXKzc4KzlINEQyM2o1QjFhZzVtVDc5MW5rNWhjRnJwV00veUFVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNzEyMzc3CWZpbGU6SW5rRE9TXzIuNy4zX3g2NC1zZXR1cC5leGUKeHVYci9iaFBOVVNlaWxYcEdVb3h2dGV4ZVdVOVNPNEZpa2NsdGc1cUJacVdGcFBQcFNhd2psd3RRdTE5MU1PU0hNa016dlg5KzU1a05ja2xqY1B5Qmc9PQo="
+    },
+    "darwin-aarch64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.3/InkDOS.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INHpUYzJlK2c4aW5RMGJUWjBqaTZFdFFzcXBRcWdyVk52TTZITHBtK2s3dmtIV3BFaWlVQ2dtUjJBTUVQeS9OT1BvSWY5eHRoRHBpL0Qya1VFU010Q2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNzEyMTkyCWZpbGU6SW5rRE9TLmFwcC50YXIuZ3oKTmpxZm5BMnBSanpiNFdCbVQ3ZEFHNU9Ea0o5Z1dRMnJ6cG9PRHJLOUdoWWZoQkcrajhIZmV6LzVKbDhrVC9PU2Q3eXNJUG9PZ2RpRkFtanlvWVRNQlE9PQo="
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.3/InkDOS_2.7.3_amd64.AppImage",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDVLRHpuZlpXY2Mxa3k0TndwaFRNNUI1VGNvekNqODR2dk1xWXA2QzZQeDd2Z0FRYlpJWXpvdFVrdUdKckpjNlZVdzFXd1NvTHEzalJQY2o3ZTBSeXdZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNzExOTE3CWZpbGU6SW5rRE9TXzIuNy4zX2FtZDY0LkFwcEltYWdlCmlzZ1g1TmlpYys4M2RtWWF1WUFqS2Yva1JaQU9tTFFKRm42VXFuUWw4WGJQM0M1K1ZBZ1FTSTRSRlpjWDdEa2VVS25LU3Y1dndxdlloRE1tczNyaUNnPT0K"
+    }
+  }
+}

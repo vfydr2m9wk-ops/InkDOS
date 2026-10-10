@@ -1,0 +1,18 @@
+{
+  "version": "2.3.0",
+  "notes": "# InkDOS 2.3.0\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nDesktop installers for Windows, macOS, and Linux are attached to this release. They were built from the same tagged commit as the web source.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.3.0/InkDOS_2.3.0_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDFieW5lenk1SWNxN2gyZXZScmR5TzRlT1lnbDJRRGdlUFFZV0Z3a0hNTThlemQ1UzZ4UUQxeW9PRERGRFdXVHpJTVY5ZjcyVTA5R20zaGVSak5BSUFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5NTk4ODk3CWZpbGU6SW5rRE9TXzIuMy4wX3g2NC1zZXR1cC5leGUKN3RKMHhwMTVyd2QwM3lXcURJZzFFdzF4ckxyV0hiK1pQMk1vV2dLcEgweS9mMFVjSkVCbkM5MVpyY0JhUmVMZENMNEZCdmdETXRzM1RrWWVZN2lYRFE9PQo="
+    },
+    "darwin-aarch64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.3.0/InkDOS.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDFETUZXY09CbjNWc3hEZzY5UEppQkZUdEtFaW9KRUdGaEFQR2dMYkZQRjVQM2poK2V4cDB6RCtuYjdwT24ybDhobnpkVVRGMGE5K2QvSmZZWVVURlFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5NjA3NTA0CWZpbGU6SW5rRE9TLmFwcC50YXIuZ3oKclNCNVVtRDY1MXJGY3BFYU90Skw5bGpCWjlwY3dJMlB3NkQ3eS9zK3hpajV4TnkzYTd5RWRsdFhaUEMzR09zVDlBbTBKZVpLUU9QQzVnZzhERlplQWc9PQo="
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.3.0/InkDOS_2.3.0_amd64.AppImage",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDBub1lkNUZMOXJuQW5oREJEZ0xqMGplckttTDJpdFNXeVJCeHpaekZIb2Vqc202SnpYejhMQWdHYk4xVCtCNlhqeldiVzhQbUNvQ2tmRjhjNXRiRXdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5NTk4NTg1CWZpbGU6SW5rRE9TXzIuMy4wX2FtZDY0LkFwcEltYWdlCm5aY0Q0eDQwOWVLZmVWbmliRTZ1UnpoejZvVUhvZ1FVUmdiRUVzb0hiVFJLMVNQcFRxb2ovekRqa0JFZThveE1ZMXhGaHV1RkQxNWU2bXhLUnZJRkRBPT0K"
+    }
+  }
+}

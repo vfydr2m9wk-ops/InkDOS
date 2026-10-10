@@ -1,0 +1,10 @@
+{
+  "version": "2.9.0",
+  "notes": "# InkDOS 2.9.0\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nThe desktop installer attached to this stable release is NSIS/EXE for Windows (macOS and Linux builds are discontinued). Signed Tauri updater artifacts are generated from the same tagged commit.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.9.0/InkDOS_2.9.0_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDNXMUsxTWRBL3hCRkxzdlQrQzdiOUlWTldFNmtKQ2lJWHpmREsyZXZsRVFZWktkQzYyNUlIRU1pQVl1aHRPTWF2T3FDUTRPVDA2K1AvS0FYN1IrMHdBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkxNjA1NDMzCWZpbGU6SW5rRE9TXzIuOS4wX3g2NC1zZXR1cC5leGUKQlJYU01hR1BrMjg3dE9FLzdKcnZNMmNBNGcvc3BMbFBTbkVFaTY2VllTTjdmaFZUaXhqR0FUVGJHYUVPaU4rVXlTYWw4djFVQTZsOUo5ZktWS0dtRGc9PQo="
+    }
+  }
+}

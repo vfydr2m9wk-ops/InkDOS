@@ -1,0 +1,18 @@
+{
+  "version": "2.7.7",
+  "notes": "# InkDOS 2.7.7\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nDesktop installers attached to this stable release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.7/InkDOS_2.7.7_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INHpXUGpzMHdDcUxLSm5SZFFRRyswN1d1Qm9zUkwweDBGbGZqZjU3aGoxaUg5Z1NrWnRPc2FOb1BvWldBS3dxTnI0SEhGRG9xV0J5YmMwaTRaOTRZRWcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkxMTQ1ODYwCWZpbGU6SW5rRE9TXzIuNy43X3g2NC1zZXR1cC5leGUKVGtCaWVEbEdJNlR3Ykc3dm5aeWNWN2tLUVZjZFJtTS8xc2ZGSUVIVWNoNkpTTlpKQ0UyckJFWWZYZENJVjRML21RK3c3Z1ZlWTFEdmVxem80bmJhQ2c9PQo="
+    },
+    "darwin-aarch64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.7/InkDOS.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDZNWFlOdUVVUlo3Q2RpSyt0UldHenI1eFQ3YTRaeTgwUlpuVFdwSkZpUXhHNnhWV2RMQ3pUSTVnN3MvV0xNNERXU1RZdXRnaTJHK2xWSFovUVNJZ3dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkxMTQ1NjQyCWZpbGU6SW5rRE9TLmFwcC50YXIuZ3oKSk9zM2l1Z0xCSHUvVTl3aUFJNzBQbU82QTNGWTZDK1hHSWFYU0xXc0dQVmFwSXNEMUVWaW5tQjBjZ09hUmxMd1N6WDRRYWd0UzlMZHZzZ3AvUHpsQUE9PQo="
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.7.7/InkDOS_2.7.7_amd64.AppImage",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDVOa29kbG5naUs2Y05iMlNqY3pqa1dJTW5OV1dkN2FZQUVXaFVmR1ZQTHZVRlB3UFNISjlJT0VZSW9yY1gxbjVPYnB5S3dkcTUxVU1oM0Rjc09VN0FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkxMTQ1NTcwCWZpbGU6SW5rRE9TXzIuNy43X2FtZDY0LkFwcEltYWdlCjVRR0lVVXA2Nk01SVkva3JPWWVIMFRzZXR6ZFphTVd2ZU44eTY2MlVGMjNLRTZHRXJ2VFhFQnpGVEthMWVvb1VYRGRETmdCV1hEWGI1T2NMZWNDVkFnPT0K"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "version": "2.4.4",
+  "notes": "# InkDOS 2.4.4\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nDesktop installers attached to this release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.4.4/InkDOS_2.4.4_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDZ2YUFpQU1RZUU2ajRaN3pyRnNuOFVDWnNOOG1qWk41NkE4ZzZUZ3dxSlR2ZFhkWk56aVYyYTJEQ1BkQjRNRzVpK2VwdURHanNVTnhnaGRUSmRYdFFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5OTkxNzYyCWZpbGU6SW5rRE9TXzIuNC40X3g2NC1zZXR1cC5leGUKWXB4dDhITFpyZXNrdUhNZmgzODJDaUFYazVrZVhxSDNNOWpxcUNHejNTNE5UQnBQWG1CMTEwa2w0alZ2a0I1Yk1yV0hEWVV1ak5oZi9SaGVscHp0QkE9PQo="
+    },
+    "darwin-aarch64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.4.4/InkDOS.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INHk3QW8wSE80MGF3UEFhR3VpclhydUtaSTZOTitFSkdua2ZsYnAxamIyWnk4NW9zVDRHQjRrTTVJZ2FmQkxOWW9VTE5EUzFra1hKb3lTdS9TSHNhcUFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5OTkxNjM5CWZpbGU6SW5rRE9TLmFwcC50YXIuZ3oKQjBpMlNzYUpNVTM0WVJ2TzAxYnVndVFvcWJNdDF0NnNpTW1EbTRraS9uQzdNVS8yQnBhRzdSalRlbWlVUHpzTDhpQWV5UWlWK2U1N0p3Zm8yVlA0QUE9PQo="
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.4.4/InkDOS_2.4.4_amd64.AppImage",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INHo5WFI1ZFF5ZWNQOHFONFVrMEFtMFFTTVpqTUdSYlQ0VmNLWUU5M0FVSmY2cGxSNWhlblVpQmwwRHU0Wm1tNGsvSnU1MUkvTGU1VDYrSmJScXdzeHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5OTkxNDgxCWZpbGU6SW5rRE9TXzIuNC40X2FtZDY0LkFwcEltYWdlCkdrMEsvdktxWHpwN2lYR29mYWxYOUVDbWtxeTdDQzZPdzk2QWFVekc4QnVXY2MxbmdkWkJNTUdPNCtLU2taU2krL2tiQStJS1ZrUlZ0SUc3UTFFaURnPT0K"
+    }
+  }
+}

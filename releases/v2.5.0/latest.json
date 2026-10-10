@@ -1,0 +1,18 @@
+{
+  "version": "2.5.0",
+  "notes": "# InkDOS 2.5.0\n\nOne source version for the web/PWA and installable desktop editions.\n\nWeb edition: https://vfydr2m9wk-ops.github.io/InkDOS/\n\nDesktop installers attached to this release are NSIS/EXE for Windows, DMG for macOS and AppImage for Linux. Signed Tauri updater artifacts are generated from the same tagged commit.\n",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.5.0/InkDOS_2.5.0_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDhkVjZhdjVWb0x1RnI5NkZxUm1RbU13YzlqTjFrUGU2VFJHcDMzWnA4aFovRHE2elBOMjFhN1QvdUxleXhDb1ppdlNkUjVoTGl2akFyUElKRXZHNHc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwMDk2OTMzCWZpbGU6SW5rRE9TXzIuNS4wX3g2NC1zZXR1cC5leGUKVDB4L0ZKWDVLdnV0WkU5Z3hMcVNaK2VWckJ4Ly9vZ2lQNEFHd01ZV0JSWThaNFdLMlRGZUpCNEZtQWM0Mm9COWM0TU1SRXVDS1M1WXFsN1JOdnhDQkE9PQo="
+    },
+    "darwin-aarch64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.5.0/InkDOS.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDFWTy9mendnNEI3TW9UUXFHY1NuZURJd2dIUWNMdktET2QxajdnS0pCRzlKbEgzNFQxWUpFUU42RjdtYUJDQkNST0YxODFQVlpOc2x5ajVjK3g4bVFjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwMDk2ODc5CWZpbGU6SW5rRE9TLmFwcC50YXIuZ3oKSU95U1QySTJpTnQxUkE5eGdicXRsTWJ2UWMwa0R3RjZyODlWTlpXc1crRTZpQ3RidktPWTZ6c2dSSVVOcVhSUW00UUtnbTdReFBLcGlwZnY5WTZLQnc9PQo="
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/vfydr2m9wk-ops/InkDOS/releases/download/v2.5.0/InkDOS_2.5.0_amd64.AppImage",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRVlVIWERwYU1INDhYU2llUmRubEh6NE9VNXh1Z0NCdDFzTnZNQ1NzbjBSSkpEQzB5NzFrZ1oveHNuVy80V0JuNDVLNy82K3B5K3c4T3FvSXRzdS9zT1VpaU9UMno3SFE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwMDk2NzE4CWZpbGU6SW5rRE9TXzIuNS4wX2FtZDY0LkFwcEltYWdlCk01djdZVFpUcHMvVDhtUHN2KzlOZjlnc0tETE1Dc2djRzBOb1BmZjdXd2NZcklYeXRmeHJVSUQ5QjVMalRlTzQ2cUNJZm04M0l1dTJEMndtcDFmOUNBPT0K"
+    }
+  }
+}
