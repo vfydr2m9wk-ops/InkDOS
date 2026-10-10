@@ -94,7 +94,16 @@ CMDS = [
 
 def main():
     for command in CMDS:
-        subprocess.run(command, cwd=ROOT, check=True)
+        # A headless browser can stall now and then with no error (seen in the release job): a command stuck for ten
+        # minutes gets one more try instead of holding the job until its time limit. A failure is never retried.
+        for attempt in (1, 2):
+            try:
+                subprocess.run(command, cwd=ROOT, check=True, timeout=600)
+                break
+            except subprocess.TimeoutExpired:
+                if attempt == 2:
+                    raise
+                print(f"Stuck over 10 minutes, trying once more: {' '.join(command[1:])}", flush=True)
     print("InkDOS clean-snapshot release validation passed.")
 
 

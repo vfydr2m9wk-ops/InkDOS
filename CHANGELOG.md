@@ -24,6 +24,9 @@ every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Release validation: a command stuck for ten minutes (a headless browser stall, seen in the 2.9.0 release job) gets
+one more try instead of holding the job until its 40-minute limit; a failure is never retried.
+
 Step 16 · Cloudflare fix: Cloudflare Pages redirects /x/index.html to /x/, and the offline cache served that redirected
 response for a page, which browsers refuse (the PDF workspace failed to open there after a first visit). The service
 worker now keeps the same bytes as a plain response.
