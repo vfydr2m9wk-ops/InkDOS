@@ -5,9 +5,11 @@
 // viewers/viewer-embed.js + bento-carry.js): every message checked against, and sent to, that origin.
 const NS=global.InkDOS2PdfP4=global.InkDOS2PdfP4||{};
 const TOOLS_ORIGIN='https://inkdos-tools.github.io',TOOLKIT=TOOLS_ORIGIN+'/InkDOS-tools/bentopdf/';
+// BentoPDF pages opened with the current PDF from the Security (lock) menu
+const PAGES={protect:'encrypt-pdf.html',unprotect:'decrypt-pdf.html'};
 const doc=document,root=doc.documentElement,$=id=>doc.getElementById(id);
 const pt=()=>/^pt/i.test(String(global.InkDOSLocalization?.currentLanguage||root.lang||global.navigator.language||''));
-const LABELS={edit:['Editar PDF','Edit PDF'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.']};
+const LABELS={edit:['Editar PDF','Edit PDF'],section:['Senha do PDF','PDF password'],protect:['Proteger com senha','Protect with password'],unprotect:['Remover senha','Remove password'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.']};
 const label=k=>LABELS[k][pt()?0:1];
 const desktop=()=>!!global.InkDOSDesktop||root.dataset.inkdosHost==='tauri';
 function debug(){return NS.PdfStabilityDebug||null}
@@ -22,13 +24,13 @@ function css(){if($('pdfEditBtnStyle'))return;const s=doc.createElement('style')
  '.pdf-toolkit-layer>div button{height:32px;padding:0 12px;border:1px solid var(--line,#d5dce6);border-radius:9px;background:var(--surface,#f0f2f5);color:inherit;font:inherit;cursor:pointer}'+
  '.pdf-toolkit-layer iframe{flex:1;width:100%;border:0;background:#fff}';
  doc.head.appendChild(s)}
-function openToolkit(){
+function openToolkit(page){
  const file=currentFile();if(!file){status(label('open'));return}
  const layer=doc.createElement('div');layer.className='pdf-toolkit-layer';layer.setAttribute('role','dialog');layer.setAttribute('aria-label','BentoPDF');
  const head=doc.createElement('div'),title=doc.createElement('span'),back=doc.createElement('button');
  title.textContent='BentoPDF · '+file.name;back.type='button';back.textContent=label('back');head.append(title,back);
  const frame=doc.createElement('iframe');frame.title='BentoPDF';
- const url=new URL(TOOLKIT);url.searchParams.set('embed','1');url.searchParams.set('inkdos-theme',root.dataset.theme==='dark'?'dark':'light');frame.src=url.href;
+ const url=new URL(typeof page==='string'?page:'',TOOLKIT);url.searchParams.set('embed','1');url.searchParams.set('inkdos-theme',root.dataset.theme==='dark'?'dark':'light');frame.src=url.href;
  layer.append(head,frame);doc.body.appendChild(layer);
  let sent=false;
  const onMessage=event=>{if(event.origin!==TOOLS_ORIGIN||event.source!==frame.contentWindow)return;if(event.data?.type==='inkdos-viewer-ready'&&!sent){sent=true;frame.contentWindow.postMessage({type:'inkdos-viewer-open',file},TOOLS_ORIGIN)}};
@@ -45,9 +47,11 @@ function installHeaderButton(){
 }
 function addHeaderButton(sun){
  css();const b=doc.createElement('button');b.type='button';b.id='pdfEditBtn';b.className='frame-btn inkdos-office-btn';
- b.textContent=label('edit');b.title=label('edit')+' (BentoPDF)';b.setAttribute('aria-label',label('edit'));b.addEventListener('click',openToolkit);
+ b.textContent=label('edit');b.title=label('edit')+' (BentoPDF)';b.setAttribute('aria-label',label('edit'));b.addEventListener('click',()=>openToolkit());
  sun.parentNode.insertBefore(b,sun);
 }
 installHeaderButton();
+// Security (lock): protect the open PDF with a password, or remove one the user knows (BentoPDF, encrypted there)
+if(!desktop())global.InkDOSSecurityExtras=[...(global.InkDOSSecurityExtras||[]),...['protect','unprotect'].map(k=>({get section(){return label('section')},get label(){return label(k)},value:'pdf-'+k,run:()=>openToolkit(PAGES[k])}))];
 NS.PdfEditButton=Object.freeze({open:openToolkit});
 })(globalThis);

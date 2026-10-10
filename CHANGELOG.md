@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+Next version: 2.9.0 (owner: the project is still young, so 2.9 rather than 3.0); its identity lands in a separate
+release PR (repository rule), and the Windows installer and tag follow once the owner has checked the web edition.
+
 Plan (owner, 2026-10-09): InkDOS apps are the entry for every file; ONLYOFFICE (Documents, Spreadsheets,
 Presentations) and BentoPDF (PDF) open only on request from a button left of the Settings (sun) button. Done in
 controlled steps, each listed here.
@@ -16,6 +19,20 @@ rebuilt (`build_txt_bundle.py --check`); and the localization test took its snap
 ONLYOFFICE button joined the header (it now waits for it).
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
+
+Step 8 · OCR, beta tools, cache promises, lock, EPUB (owner, 2026-10-09):
+- OCR only in BentoPDF: the PDF workspace loses Page tools → Make searchable (OCR), its engine (Tesseract) and
+  translations; the Home quick tools lose OCR; the offline cache no longer lists the OCR files or the PDF tools page.
+- Beta tools: no mention left in the web edition (the PDF workspace's hidden Beta tools panel and its bridge, the
+  Windows-only Beta tools entry in the sun, the "beta" badge and translations). The Windows app's beta channel
+  (desktop/src-tauri/src/beta.rs, labs/pdf) goes in the next step, when the installer brings every tool with it.
+- No cache-time promise: the Offline tools panel (engine site) no longer says "up to a year".
+- Home: the download button does not appear in browsers that cannot keep pages offline (no service worker or Cache
+  Storage).
+- Security (lock): besides the recovery drafts (with password = encrypted on this device), the PDF workspace offers
+  "Protect with password" and "Remove password", which open BentoPDF's page for it with the open PDF.
+- EPUB: the page-animation list (Turn / Slide / Off) leaves the tool bar; only the two view symbols (pages, scroll)
+  remain.
 
 Step 7 · tool bars back to 2.8 (owner, 2026-10-09):
 - PDF: the single 2.8 tool bar is back (the View · Annotate task bar is gone; the editing pencil is in the tool bar

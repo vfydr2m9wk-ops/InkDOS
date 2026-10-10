@@ -90,38 +90,6 @@
       "sha256": "663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e"
     },
     {
-      "path": "apps/pdf/vendor/tesseract/core/tesseract-core-lstm.wasm.js",
-      "package": "tesseract.js-core",
-      "ecosystem": "npm",
-      "version": "7.0.0",
-      "sha256": "eef5f8b2f8e20e150680b20adaec4a60babafee3adbe8a94583c81fee46e8680",
-      "note": "Official OCR in the PDF workspace (web edition); same bytes as the labs copy"
-    },
-    {
-      "path": "apps/pdf/vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js",
-      "package": "tesseract.js-core",
-      "ecosystem": "npm",
-      "version": "7.0.0",
-      "sha256": "c58b46a4c796c0b8afccf77591d5b875b6896b45d402bbce8caa6f5362447b38",
-      "note": "Official OCR in the PDF workspace (web edition); same bytes as the labs copy"
-    },
-    {
-      "path": "apps/pdf/vendor/tesseract/tesseract.min.js",
-      "package": "tesseract.js",
-      "ecosystem": "npm",
-      "version": "7.0.0",
-      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
-      "note": "Official OCR in the PDF workspace (web edition); same bytes as the labs copy"
-    },
-    {
-      "path": "apps/pdf/vendor/tesseract/worker.min.js",
-      "package": "tesseract.js",
-      "ecosystem": "npm",
-      "version": "7.0.0",
-      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d",
-      "note": "Official OCR in the PDF workspace (web edition); same bytes as the labs copy"
-    },
-    {
       "path": "apps/presentations/vendor/jszip.min.js",
       "package": "jszip",
       "ecosystem": "npm",

@@ -3,6 +3,9 @@
 // the suite's own origin (AGENTS.md origin isolation: messages checked against, and only accepted from, that origin).
 const ORIGIN='https://inkdos-tools.github.io',button=document.getElementById('toolsDownload');
 if(!button)return;
+// Browsers that cannot keep pages for offline use (no service worker or Cache Storage, e.g. some in-app web views)
+// get no download button at all.
+if(!('serviceWorker' in navigator)||!('caches' in window)){button.hidden=true;button.style.display='none';return}
 let layer=null,frame=null;
 // Closing: the frame goes at once, but an empty shield stays half a second so the rest of the tap (iPad sends the
 // click after the finger lifts) does not land on the workspace card behind it.
