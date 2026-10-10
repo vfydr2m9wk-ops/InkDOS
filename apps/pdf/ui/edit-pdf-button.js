@@ -18,20 +18,21 @@ function currentFile(){const s=debug()?.session;if(!s?.sourceBytes)return null;c
 function css(){if($('pdfEditBtnStyle'))return;const s=doc.createElement('style');s.id='pdfEditBtnStyle';s.textContent=
  '#pdfEditBtn{width:auto;min-width:0;padding:0 10px;display:inline-flex;align-items:center;white-space:nowrap;font:inherit;font-size:13px;font-weight:600}'+
  '@media (max-width:640px){#pdfEditBtn{padding:0 6px;font-size:12px}}'+
- '.pdf-toolkit-layer{position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;background:var(--bg,#f2f5f8)}'+
- '.pdf-toolkit-layer>div{display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--chrome,#fff);border-bottom:1px solid var(--line,#e3e8ef);font-weight:600;font-size:13px}'+
- '.pdf-toolkit-layer>div span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
- '.pdf-toolkit-layer>div button{height:32px;padding:0 12px;border:1px solid var(--line,#d5dce6);border-radius:9px;background:var(--surface,#f0f2f5);color:inherit;font:inherit;cursor:pointer}'+
- '.pdf-toolkit-layer iframe{flex:1;width:100%;border:0;background:#fff}';
+ '.pdf-toolkit-layer{position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;background:var(--bg,#f2f5f8);color:var(--text,#192235)}'+
+ '.pdf-toolkit-layer>.pdf-toolkit-head{display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--chrome,#fff);border-bottom:1px solid var(--line,#e3e8ef);font-weight:600;font-size:13px}'+
+ '.pdf-toolkit-head span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+ '.pdf-toolkit-head button{height:32px;padding:0 12px;border:1px solid var(--line,#d5dce6);border-radius:9px;background:var(--control-bg,var(--panel,#f0f2f5));color:var(--control-fg,var(--text,#192235));font:inherit;cursor:pointer}'+
+ '.pdf-toolkit-body{position:relative;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}'+
+ '.pdf-toolkit-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}';
  doc.head.appendChild(s)}
 function openToolkit(page){
  const file=currentFile();if(!file){status(label('open'));return}
  const layer=doc.createElement('div');layer.className='pdf-toolkit-layer';layer.setAttribute('role','dialog');layer.setAttribute('aria-label','BentoPDF');
- const head=doc.createElement('div'),title=doc.createElement('span'),back=doc.createElement('button');
+ const head=doc.createElement('div'),body=doc.createElement('div'),title=doc.createElement('span'),back=doc.createElement('button');
  title.textContent='BentoPDF · '+file.name;back.type='button';back.textContent=label('back');head.append(title,back);
  const frame=doc.createElement('iframe');frame.title='BentoPDF';
  const url=new URL(typeof page==='string'?page:'',TOOLKIT);url.searchParams.set('embed','1');url.searchParams.set('inkdos-theme',root.dataset.theme==='dark'?'dark':'light');frame.src=url.href;
- layer.append(head,frame);doc.body.appendChild(layer);
+ head.className='pdf-toolkit-head';body.className='pdf-toolkit-body';body.appendChild(frame);layer.append(head,body);doc.body.appendChild(layer);
  let sent=false;
  const onMessage=event=>{if(event.origin!==TOOLS_ORIGIN||event.source!==frame.contentWindow)return;if(event.data?.type==='inkdos-viewer-ready'&&!sent){sent=true;frame.contentWindow.postMessage({type:'inkdos-viewer-open',file},TOOLS_ORIGIN)}};
  global.addEventListener('message',onMessage);
