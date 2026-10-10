@@ -46,7 +46,9 @@ function handOff(file,url){
 }
 function openInOffice(file,light){
  if(!doc?.body)return false;
- if(framedPage()&&g.indexedDB){
+ // web edition (owner, 2026-10-10): the editor always opens as a page of its own, with no InkDOS bar over it; the
+ // browser's Back returns to this workspace. The Windows app keeps its own office windows.
+ if(!g.InkDOSDesktop&&doc.documentElement.dataset.inkdosHost!=='tauri'&&g.indexedDB){
   const lang=String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||'en');
   const LOCALE={pt:'pt',es:'es',de:'de',ja:'ja',zh:'zh-CN',fr:'fr',ru:'ru'}[lang.toLowerCase().split('-')[0]];
   const url=new URL('/editor',OFFICE_ORIGIN);url.searchParams.set('embed','1');url.searchParams.set('embedOrigin',OFFICE_ORIGIN);if(LOCALE)url.searchParams.set('locale',LOCALE);

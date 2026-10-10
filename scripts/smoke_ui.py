@@ -164,18 +164,15 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
             "()=>!document.getElementById('pdfTaskBar')&&!!document.querySelector('#editbar #editModeBtn')"))
         run.check('pdf: Edit PDF left of Settings', page.evaluate(
             "()=>{const b=document.getElementById('pdfEditBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');return !!b&&b.nextElementSibling===s}"))
-        # Edit PDF layer: its Back button stays readable in both themes, and the tools sit in a scrolling box
+        # Edit PDF opens BentoPDF as a page of its own (no frame over the workspace); the toolkit page is stubbed here
+        ctx.route(lambda url: url.startswith(TOOLS + '/InkDOS-tools/bentopdf/'), lambda route: route.fulfill(body='<!doctype html><title>bento stub</title>', content_type='text/html'))
         page.click('#pdfEditBtn')
-        page.wait_for_selector('.pdf-toolkit-layer .pdf-toolkit-body iframe', timeout=10000)
-        contrast = ("()=>{const b=document.querySelector('.pdf-toolkit-head button'),cs=getComputedStyle(b),"
-                    "l=c=>{const [r,g,bl]=c.match(/[0-9.]+/g).map(Number);return 0.2126*r+0.7152*g+0.0722*bl};"
-                    "return Math.abs(l(cs.color)-l(cs.backgroundColor))}")
-        light = page.evaluate(contrast)
-        page.evaluate("()=>{const r=document.documentElement;r.dataset.theme='dark';r.dataset.appearance='dark';r.dataset.appearanceResolved='dark'}")
-        dark = page.evaluate(contrast)
-        run.check('pdf: Edit PDF Back button readable (light and dark)', light > 80 and dark > 80, f'light {light:.0f} · dark {dark:.0f}')
-        page.evaluate("()=>{const r=document.documentElement;r.dataset.theme='light';r.dataset.appearance='light';r.dataset.appearanceResolved='light'}")
-        page.click('.pdf-toolkit-head button')
+        try:
+            page.wait_for_url(lambda url: url.startswith(TOOLS + '/InkDOS-tools/bentopdf/'), timeout=10000)
+            target = page.url
+        except Exception as error:
+            target = f'no navigation ({type(error).__name__})'
+        run.check('pdf: Edit PDF opens BentoPDF as its own page', 'inkdos-handoff=' in target and 'inkdos-return=' in target, target[:110])
     run.shot(page, f'{app}-{scheme}-{size[0]}')
     run.check(f'{app}: no page errors', not errors, '; '.join(errors[:2]))
     ctx.close()
@@ -209,9 +206,11 @@ def menus(run, browser, base, app):
 
 
 def office_new(run, browser, base):
-    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen
+    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen, as a page of its own (no
+    # InkDOS bar over it); the editor page itself is stubbed here
     ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
-    for app, ext in (('documents', 'docx'), ('spreadsheets', 'xlsx'), ('presentations', 'pptx')):
+    ctx.route(lambda url: url.startswith(TOOLS + '/editor'), lambda route: route.fulfill(body='<!doctype html><title>editor stub</title>', content_type='text/html'))
+    for app in ('documents', 'spreadsheets', 'presentations'):
         page = ctx.new_page()
         page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
         page.wait_for_selector('#inkdosOfficeBtn', timeout=15000)
@@ -219,11 +218,11 @@ def office_new(run, browser, base):
         page.wait_for_timeout(1200)
         page.click('#inkdosOfficeBtn')
         try:
-            page.wait_for_selector('.inkdos-office-launch', timeout=10000)
-            name = page.evaluate("()=>document.querySelector('.inkdos-office-launch span').textContent")
+            page.wait_for_url(lambda url: url.startswith(TOOLS + '/editor'), timeout=10000)
+            target = page.url
         except Exception as error:
-            name = f'no ONLYOFFICE frame ({type(error).__name__})'
-        run.check(f'{app}: new document → Edit with ONLYOFFICE opens it as .{ext}', name.endswith('.' + ext), name)
+            target = f'no navigation ({type(error).__name__})'
+        run.check(f'{app}: new document → Edit with ONLYOFFICE opens the editor as its own page', 'inkdos-handoff=' in target and 'inkdos-return=' in target, target[:110])
         page.close()
     ctx.close()
 

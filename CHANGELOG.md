@@ -24,6 +24,11 @@ every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 15 · ONLYOFFICE and BentoPDF as their own pages (owner, 2026-10-10, web only): Edit with ONLYOFFICE and Edit
+PDF (and the PDF password options) always open the tool as a page of its own, with no InkDOS frame (file title,
+Back) over the workspace; the browser's Back returns to it. BentoPDF shows its original start page again (search bar,
+its own tool layout). The Windows app keeps its office windows.
+
 Step 14 · Cloudflare link (owner, 2026-10-10): README links https://inkdos-offic.pages.dev, the whole suite on one
 address (InkDOS at /InkDOS/, the editors and BentoPDF on the same address); published by the engine site's workflow.
 The BentoPDF pages opened from InkDOS have an Up / Down side bar (InkDOS-tools).
