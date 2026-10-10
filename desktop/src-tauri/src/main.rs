@@ -1,7 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod beta;
-
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
@@ -71,14 +69,13 @@ fn discard_open_file(token: &str) {
 
 const MAX_OPEN_FILE_BYTES: u64 = 256 * 1024 * 1024;
 
-/// InkDOS windows only ever show the app's own pages (and beta tool pages in beta windows). Any other
+/// InkDOS windows only ever show the app's own pages. Any other
 /// navigation, e.g. a footer link to GitHub, opens https in the user's browser instead of inside an
 /// InkDOS window.
 fn is_app_page(url: &tauri::Url) -> bool {
     match url.scheme() {
         "tauri" => url.host_str() == Some("localhost"),
-        "http" | "https" => matches!(url.host_str(), Some("tauri.localhost") | Some("inkdos-beta.localhost")),
-        "inkdos-beta" => url.host_str() == Some("localhost"),
+        "http" | "https" => url.host_str() == Some("tauri.localhost"),
         "about" | "blob" | "data" => true,
         _ => false,
     }
@@ -107,7 +104,7 @@ fn navigation_guard<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
         .build()
 }
 
-/// App commands are for InkDOS's own windows only; beta tool windows get no native access.
+/// App commands are for InkDOS's own windows only (office windows get no native access).
 fn require_trusted_window<R: tauri::Runtime>(webview: &tauri::Webview<R>) -> Result<(), String> {
     let label = webview.label();
     if label == "main" || label.starts_with("file-") || label.starts_with("workspace-") {
@@ -213,45 +210,6 @@ async fn inkdos_install_update(
         .download_and_install(|_, _| {}, || {})
         .await
         .map_err(|error| format!("InkDOS could not install update {expected_version}: {error}"))
-}
-
-#[tauri::command]
-fn inkdos_beta_status(app: tauri::AppHandle, webview: tauri::Webview) -> Result<beta::BetaStatus, String> {
-    require_trusted_window(&webview)?;
-    Ok(beta::status(&app))
-}
-
-#[tauri::command]
-async fn inkdos_beta_update(app: tauri::AppHandle, webview: tauri::Webview) -> Result<beta::BetaUpdate, String> {
-    require_trusted_window(&webview)?;
-    beta::update(&app).await
-}
-
-#[tauri::command]
-fn inkdos_beta_open(app: tauri::AppHandle, webview: tauri::Webview, tool: String) -> Result<(), String> {
-    require_trusted_window(&webview)?;
-    beta::open(&app, &tool)
-}
-
-/// Opens a beta tool with the PDF this window has open: raw PDF bytes as the body, the tool id and the
-/// percent-encoded file name as headers.
-#[tauri::command]
-fn inkdos_beta_open_with_file(app: tauri::AppHandle, webview: tauri::Webview, request: tauri::ipc::Request<'_>) -> Result<(), String> {
-    require_trusted_window(&webview)?;
-    let header = |name: &str| request.headers().get(name).and_then(|value| value.to_str().ok()).unwrap_or("").to_string();
-    let tauri::ipc::InvokeBody::Raw(bytes) = request.body() else {
-        return Err("InkDOS could not hand this PDF to the beta tools.".to_string());
-    };
-    beta::open_with_file(&app, &header("x-inkdos-tool"), webview.label(), &header("x-inkdos-file-name"), bytes.clone())
-}
-
-/// The PDF a beta tool sent back to this window (announced by the `inkdos-beta-result` event).
-#[tauri::command]
-fn inkdos_beta_take_result(webview: tauri::Webview) -> Result<tauri::ipc::Response, String> {
-    require_trusted_window(&webview)?;
-    beta::take_result(webview.label())
-        .map(tauri::ipc::Response::new)
-        .ok_or_else(|| "No beta tools result is waiting.".to_string())
 }
 
 /// The ONLYOFFICE editor language for an InkDOS language code (the editor's own site codes).
@@ -606,18 +564,10 @@ fn main() {
         .plugin(tauri_plugin_opener::init())
         .plugin(navigation_guard())
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .register_uri_scheme_protocol(beta::SCHEME, |ctx, request| {
-            beta::serve(ctx.app_handle(), ctx.webview_label(), &request)
-        })
         .invoke_handler(tauri::generate_handler![
             inkdos_read_open_file,
             inkdos_check_for_updates,
             inkdos_install_update,
-            inkdos_beta_status,
-            inkdos_beta_update,
-            inkdos_beta_open,
-            inkdos_beta_open_with_file,
-            inkdos_beta_take_result,
             inkdos_open_office,
             inkdos_open_office_file
         ])

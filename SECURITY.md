@@ -29,14 +29,3 @@ Desktop releases are built from an immutable version tag. The release workflow v
 
 The Tauri updater public key may be configured in the built application. The signing private key and its password must remain GitHub Actions secrets and must never be committed to this repository.
 
-## Desktop beta tools trust boundary
-
-Beta tools are delivered to the desktop app outside desktop releases (see `docs/UPDATE_MODEL.md`). The app installs a bundle only when its manifest is signed by the beta-channel key pinned in the app (separate from the updater key) and every file matches the signed hash, and never installs an older bundle over a newer one. Beta tools run in isolated windows with no native access: they cannot read or write files except those the user picks in the page, and cannot call the updater or any other InkDOS desktop command.
-
-## Digital signatures (PDF tools, beta)
-
-The PDF tools sign with an A1 certificate (.pfx/.p12) entirely in the browser; the certificate, key and password never leave the device. Signatures are PAdES baseline B-B (`/ETSI.CAdES.detached`, SHA-256, signing-certificate-v2). Expired, not-yet-valid, sub-2048-bit or non-signing certificates are refused, and every new signature must pass the built-in check before it is returned.
-
-The built-in check verifies integrity, the signer's signature, the signing-certificate binding, the byte range, an optional signature policy and the certificate chain. The chain is completed from the bundled ICP-Brasil list (`labs/pdf/trust/`, pinned document-signing roots; see its PROVENANCE.txt) and reported as "ICP-Brasil certificate" only when it ends at one of those roots. It does not check revocation (CRL/OCSP) or timestamps: ICP-Brasil revocation lists are served over plain HTTP without CORS, so a web page cannot fetch them without an intermediary.
-
-For the complete validation the page offers the official ITI validator (https://validar.iti.gov.br). InkDOS never contacts it: after a warning that the document will be sent to the government's servers, the user opens the site in a new tab (`noopener,noreferrer`) and uploads the file there. Signing can optionally declare the ICP-Brasil policy PA_PAdES_AD_RB v1.1 (experimental; confirm the result on the ITI validator). Legal validity depends on the certificate (for Brazil, an ICP-Brasil certificate).

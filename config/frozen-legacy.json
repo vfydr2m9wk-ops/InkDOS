@@ -4,23 +4,11 @@
   "policy": "Preserve registered legacy code unless a task explicitly authorizes its frozen-legacy ID.",
   "entries": [
     {
-      "id": "legacy-pdf-signer",
-      "components": [
-        "hub",
-        "pdf"
-      ],
-      "reason": "InkDOS's own PDF signer (visual/A1 signature, signature check). Its signatures carry no legal validity a user could rely on, so it is no longer offered in the PDF workspace or the settings menu; reachable only from the Legacy group of the Home advanced tools. PDF editing is BentoPDF (with OCR).",
-      "paths": [
-        "labs/pdf/",
-        "apps/pdf/ui/beta-tools-panel.js"
-      ]
-    },
-    {
       "id": "legacy-home-tools",
       "components": [
         "hub"
       ],
-      "reason": "Advanced tools outside the maintained set (BentoPDF PDF toolkit with OCR, Python terminal): Squoosh, ArchiveDrop, CyberChef, IT-Tools and the PDF signer stay listed in the Legacy group of assets/advanced-tools.js, out of the quick tools row.",
+      "reason": "Advanced tools outside the maintained set (BentoPDF PDF toolkit, Python terminal): Squoosh, ArchiveDrop, CyberChef and IT-Tools stay listed in the Legacy group of assets/advanced-tools.js, out of the quick tools row.",
       "paths": []
     }
   ]
