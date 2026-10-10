@@ -3,7 +3,8 @@ const SUITE_STORAGE_KEY='inkdos2:ui-density',VALID=new Set(['auto','desktop','mo
 const doc=typeof document!=='undefined'?document:null;
 function workspaceContext(){let parts=[];try{parts=decodeURIComponent(root.location?.pathname||'').split('/').filter(Boolean)}catch(_){}return parts.find(part=>APPS.has(part))||null}
 const WORKSPACE=workspaceContext(),STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY,LEGACY_SUITE_KEY=WORKSPACE?SUITE_STORAGE_KEY:null;
-function normalize(value){return VALID.has(value)?value:'auto'}
+// the interface is always the desktop density (owner, 2026-10-10); the Auto/Desktop/Smartphone choice is in docs/legacy
+function normalize(value){return 'desktop'}
 function currentEnvironment(){const width=doc?.documentElement?.clientWidth||Number(root.innerWidth)||0;let finePointer=false;try{finePointer=typeof root.matchMedia==='function'&&root.matchMedia(POINTER_QUERY).matches}catch(_){}return{width,finePointer}}
 function resolve(value='auto',environment={}){const preference=normalize(value);if(preference==='desktop'||preference==='mobile')return preference;const fallback=currentEnvironment(),width=Number(environment.width??fallback.width)||0,finePointer=environment.finePointer==null?!!fallback.finePointer:!!environment.finePointer;return width>=THRESHOLD&&finePointer?'desktop':'mobile'}
 function read(){try{const ls=root.localStorage;if(LEGACY_SUITE_KEY&&ls){/* Home is the master: a Home change newer than this app's own choice wins. */const suiteAt=Number(ls.getItem(LEGACY_SUITE_KEY+':changedAt'))||0,suite=ls.getItem(LEGACY_SUITE_KEY);if(suite!=null&&suiteAt>(Number(ls.getItem(STORAGE_KEY+':changedAt'))||0)){const v=normalize(suite);ls.setItem(STORAGE_KEY,v);ls.setItem(STORAGE_KEY+':changedAt',String(suiteAt));return v}}const saved=root.localStorage?.getItem(STORAGE_KEY);if(saved!=null)return normalize(saved);if(LEGACY_SUITE_KEY){const legacy=root.localStorage?.getItem(LEGACY_SUITE_KEY);if(legacy!=null){const migrated=normalize(legacy);root.localStorage?.setItem(STORAGE_KEY,migrated);return migrated}}}catch(_){}return'auto'}
@@ -25,7 +26,7 @@ function ensureStyle(href,id){if(!doc||!href||doc.getElementById(id))return;cons
 function ensureScript(src,id){if(!doc||!src)return Promise.resolve(null);const existing=doc.getElementById(id);if(existing){if(existing.dataset.loaded==='true')return Promise.resolve(existing);return new Promise((resolve,reject)=>{existing.addEventListener('load',()=>resolve(existing),{once:true});existing.addEventListener('error',reject,{once:true})})}return new Promise((resolve,reject)=>{const script=doc.createElement('script');script.id=id;script.src=src;script.async=false;script.addEventListener('load',()=>{script.dataset.loaded='true';resolve(script)},{once:true});script.addEventListener('error',reject,{once:true});(doc.head||doc.documentElement).appendChild(script)})}
 function bootstrapWorkspaceSettings(){if(!doc||!WORKSPACE||!SHARED_BASE)return;ensureStyle(SHARED_BASE+'localization/localization.css','inkdosLocalizationStyles');ensureScript(SHARED_BASE+'localization/ui-localization.js','inkdosLocalizationRuntime').then(()=>ensureScript(SHARED_BASE+'localization/settings-strip.js','inkdosSettingsStripRuntime')).catch(()=>{})}
 if(doc?.documentElement)apply(preference);
-if(doc){if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',autoInstall,{once:true});else autoInstall();bootstrapWorkspaceSettings()}
+if(doc){bootstrapWorkspaceSettings()}
 function refreshAutoDensity(){if(preference!=='auto')return effective;const previous=effective;apply(preference);if(effective!==previous)announce();return effective}
 if(typeof root.addEventListener==='function'){
   root.addEventListener('resize',refreshAutoDensity,{passive:true});

@@ -40,8 +40,9 @@ function launchShell(file,light,src){
 function framedPage(){try{return g.top!==g.self}catch(_){return true}}
 function handOff(file,url){
  const id=g.crypto?.randomUUID?g.crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2,10);
- return new Promise((resolve,reject)=>{const req=g.indexedDB.open('inkdos-tool-handoff',1);req.onupgradeneeded=()=>req.result.createObjectStore('files');req.onerror=()=>reject(req.error);
-  req.onsuccess=()=>{const db=req.result,tx=db.transaction('files','readwrite');tx.objectStore('files').put({file,name:file.name,at:Date.now()},id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>reject(tx.error)}})
+ // kept as bytes, not as a File: WebKit web views without persistent storage (XeOS) refuse files in IndexedDB
+ return file.arrayBuffer().then(bytes=>new Promise((resolve,reject)=>{const req=g.indexedDB.open('inkdos-tool-handoff',1);req.onupgradeneeded=()=>req.result.createObjectStore('files');req.onerror=()=>reject(req.error);
+  req.onsuccess=()=>{const db=req.result,tx=db.transaction('files','readwrite');tx.objectStore('files').put({bytes,type:file.type||'',name:file.name,at:Date.now()},id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=tx.onabort=()=>reject(tx.error)}}))
   .then(()=>{url.searchParams.set('inkdos-handoff',id);url.searchParams.set('inkdos-return',g.location.href);g.location.href=url.href;return true});
 }
 function openInOffice(file,light){

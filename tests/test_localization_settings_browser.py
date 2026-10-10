@@ -119,7 +119,7 @@ def main() -> None:
                   densityKey:globalThis.InkDOSUiDensity.STORAGE_KEY,
                   count:document.querySelectorAll('.inkdos-settings-strip').length
                 })""")
-                assert state["items"] == ["appearance", "interface", "language", "help"], (app, state)
+                assert state["items"] == ["appearance", "language", "help"], (app, state)  # no Interface choice (2026-10-10)
                 assert state["languageKey"] == f"inkdos2:{app}:language", (app, state)
                 assert state["densityKey"] == f"inkdos2:{app}:ui-density", (app, state)
                 assert state["count"] == 1, (app, state)
@@ -149,24 +149,24 @@ def main() -> None:
             assert page.evaluate("() => document.querySelectorAll('script[data-inkdos-locale-package]').length") == 0
             assert snapshot_functional_attributes(page) == before
 
-            # Language and interface preferences are independent between workspaces.
+            # Language preferences are independent between workspaces; the interface is always the desktop density.
             choose_language(page, "Português", "pt-BR")
             page.evaluate("() => globalThis.InkDOSUiDensity.set('mobile')")
             assert page.evaluate("() => localStorage.getItem('inkdos2:documents:language')") == "pt-BR"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") == "mobile"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") == "desktop"
             assert page.evaluate("() => localStorage.getItem('inkdos2:language')") is None
             assert page.evaluate("() => localStorage.getItem('inkdos2:ui-density')") is None
 
             page.goto(BASE + "/apps/spreadsheets/index.html?suite=1", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && !!globalThis.InkDOSLocalization")
             assert page.evaluate("() => globalThis.InkDOSLocalization.currentLanguage") == "en"
-            assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "auto"
+            assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
             assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:language')") == "en"
             assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:ui-density')") is None
 
             page.goto(BASE + "/apps/documents/index.html?suite=1", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
-            assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "mobile"
+            assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
 
             # A 2.5.2 suite-level preference is migrated once into a workspace key.
             migration = browser.new_context(viewport={"width": 1280, "height": 820})
@@ -177,9 +177,9 @@ def main() -> None:
             migrated = migration.new_page()
             migrated.goto(BASE + "/apps/presentations/index.html?suite=1", wait_until="load")
             migrated.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
-            assert migrated.evaluate("() => globalThis.InkDOSUiDensity.preference") == "mobile"
+            assert migrated.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
             assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:language')") == "pt-BR"
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") == "mobile"
+            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") == "desktop"
             open_menu(migrated)
             choose_language(migrated, "English", "en")
             migrated.evaluate("() => globalThis.InkDOSUiDensity.set('desktop')")

@@ -94,14 +94,8 @@ process.stdout.write(JSON.stringify(out));
         capture_output=True,
     )
     result = json.loads(completed.stdout)
-    expected = {
-        'desktop': 'desktop',
-        'narrow': 'mobile',
-        'coarse': 'mobile',
-        'forcedDesktop': 'desktop',
-        'forcedMobile': 'mobile',
-        'invalid': 'desktop',
-    }
+    # owner decision (2026-10-10): always the desktop density, whatever the screen or a stored choice
+    expected = {key: 'desktop' for key in ('desktop', 'narrow', 'coarse', 'forcedDesktop', 'forcedMobile', 'invalid')}
     if result != expected:
         raise AssertionError(f'Adaptive density resolution mismatch: {result!r}')
 

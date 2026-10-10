@@ -141,7 +141,7 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
     page.click('[data-frame-action="sun"]')
     page.wait_for_timeout(300)
     sun = page.evaluate(titles)
-    run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', sun == ['Appearance', 'Interface', 'Language'], str(sun))
+    run.check(f'{app}: Settings (sun) only Appearance and Language', sun == ['Appearance', 'Language'], str(sun))
     run.shot(page, f'{app}-sun')
     page.click('[data-frame-action="sun"]')
     lock = page.locator('[data-frame-action="lock"]')
@@ -189,7 +189,7 @@ def menus(run, browser, base, app):
               ".filter(x=>x.offsetParent).map(x=>x.textContent.trim())")
     page.click('[data-frame-action="sun"]')
     page.wait_for_timeout(300)
-    run.check(f'{app}: Settings (sun) only Appearance, Interface, Language', page.evaluate(titles) == ['Appearance', 'Interface', 'Language'], str(page.evaluate(titles)))
+    run.check(f'{app}: Settings (sun) only Appearance and Language', page.evaluate(titles) == ['Appearance', 'Language'], str(page.evaluate(titles)))
     run.check(f'{app}: theme is Light or Dark only (no System)', page.locator('.inkdos-settings-popover [data-settings-value="system"]').count() == 0)
     page.click('[data-frame-action="sun"]')
     run.check(f'{app}: lock right of the sun', page.evaluate(

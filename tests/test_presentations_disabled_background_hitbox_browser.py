@@ -82,9 +82,8 @@ def main():
             page.keyboard.press("Escape")
 
             right = page.get_by_role("button", name="Scroll toolbar right")
-            assert right.is_visible()
-            # The icon-only toolbar can fit without overflow; scroll only when needed.
-            if right.is_enabled():
+            # The icon-only toolbar can fit without overflow: then the arrows are hidden; scroll only when needed.
+            if right.is_visible() and right.is_enabled():
                 right.click(timeout=2500)
 
             # Once a presentation becomes active, Background opens an

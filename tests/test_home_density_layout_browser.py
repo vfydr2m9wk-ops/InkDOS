@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Home keeps no Interface (density) choice since 2026-10-10 (owner): the Appearance menu fits the window at Windows
+100/125/150% scale and on a phone, shows no Auto/Desktop/Smartphone control, and the page uses the desktop density."""
 from __future__ import annotations
 
 import socket
@@ -25,56 +27,16 @@ def wait_port():
     raise RuntimeError("Home test server did not start")
 
 
-def assert_no_overlap(rects):
-    for i, a in enumerate(rects):
-        for b in rects[i + 1:]:
-            separated = (a["right"] <= b["left"] or b["right"] <= a["left"] or a["bottom"] <= b["top"] or b["bottom"] <= a["top"])
-            assert separated, (a, b)
-
-
 def inspect(page):
     page.goto(BASE + "/index.html", wait_until="load")
     page.click("#appearanceButton")
     page.wait_for_selector("#appearanceMenu:not([hidden])")
-    data = page.evaluate("""()=>{
-      const buttons=[...document.querySelectorAll('.home-density-control [data-inkdos-density-mode]')];
-      return {
-        labels:buttons.map(x=>x.textContent.trim()), modes:buttons.map(x=>x.dataset.inkdosDensityMode),
-        rects:buttons.map(x=>{const r=x.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}}),
-        icons:buttons.map(x=>{const svg=x.querySelector('.inkdos-density-icon');if(!svg)return null;const r=svg.getBoundingClientRect();return {width:r.width,height:r.height}}),
-        menu:(()=>{const r=document.getElementById('appearanceMenu').getBoundingClientRect();return {left:r.left,right:r.right,width:r.width}})()
-      };
-    }""")
-    assert data["labels"] == ["Auto", "Desktop", "Smartphone"], data
-    assert data["modes"] == ["auto", "desktop", "mobile"], data
-    assert data["icons"][0] is None, data
-    for icon in data["icons"][1:]: assert 12 <= icon["width"] <= 16 and 12 <= icon["height"] <= 16, data
-    assert_no_overlap(data["rects"])
-    assert data["menu"]["left"] >= 0 and data["menu"]["right"] <= page.viewport_size["width"], data
-    return data
-
-
-def inspect_desktop_scale(browser, scale):
-    # Approximate a fixed 1280x900 physical window at Windows 100/125/150% by
-    # reducing the CSS viewport as scale rises. DPR is set as a secondary
-    # fidelity signal, but assertions intentionally target CSS layout geometry;
-    # native Windows/WebView2 validation remains a separate release gate.
-    physical_width, physical_height = 1280, 900
-    viewport = {
-        "width": round(physical_width / scale),
-        "height": round(physical_height / scale),
-    }
-    context = browser.new_context(viewport=viewport, device_scale_factor=scale)
-    try:
-        page = context.new_page()
-        data = inspect(page)
-        assert page.viewport_size == viewport, (scale, page.viewport_size, viewport)
-        assert len({round(r["top"], 1) for r in data["rects"]}) == 1, (scale, data)
-        heights = [r["height"] for r in data["rects"]]
-        assert max(heights) - min(heights) <= 1, (scale, data)
-        return data
-    finally:
-        context.close()
+    data = page.evaluate("""()=>{const r=document.getElementById('appearanceMenu').getBoundingClientRect();return {
+      controls:document.querySelectorAll('[data-inkdos-density-control],[data-inkdos-density-mode]').length,
+      density:document.documentElement.dataset.uiDensity,left:r.left,right:r.right}}""")
+    assert data["controls"] == 0, data
+    assert data["density"] == "desktop", data
+    assert data["left"] >= 0 and data["right"] <= page.viewport_size["width"], data
 
 
 def main():
@@ -83,17 +45,14 @@ def main():
         wait_port()
         with sync_playwright() as pw:
             browser = pw.chromium.launch(headless=True)
-            scaled = {scale: inspect_desktop_scale(browser, scale) for scale in (1.0, 1.25, 1.5)}
-            # The scaled cases deliberately have different CSS viewport widths;
-            # requiring identical button widths would defeat responsive coverage.
-            for scale, data in scaled.items():
-                assert all(r["width"] > 0 and r["height"] > 0 for r in data["rects"]), (scale, data)
+            for scale in (1.0, 1.25, 1.5):
+                context = browser.new_context(viewport={"width": round(1280 / scale), "height": round(900 / scale)}, device_scale_factor=scale)
+                inspect(context.new_page())
+                context.close()
             context = browser.new_context(viewport={"width": 390, "height": 844})
-            n = inspect(context.new_page())
-            tops = [r["top"] for r in n["rects"]]
-            assert tops[0] < tops[1] < tops[2], n
+            inspect(context.new_page())
             context.close(); browser.close()
-        print("Home 2.4.3 density layout browser regression passed at effective Windows 100%, 125%, and 150% scale.")
+        print("Home Appearance menu without an Interface choice: OK at Windows 100%, 125%, 150% and on a phone.")
     finally:
         server.terminate()
         try: server.wait(timeout=3)
