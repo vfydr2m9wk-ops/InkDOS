@@ -164,18 +164,15 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
             "()=>!document.getElementById('pdfTaskBar')&&!!document.querySelector('#editbar #editModeBtn')"))
         run.check('pdf: Edit PDF left of Settings', page.evaluate(
             "()=>{const b=document.getElementById('pdfEditBtn'),s=document.querySelector('[data-frame-action=\"sun\"]');return !!b&&b.nextElementSibling===s}"))
-        # Edit PDF layer: its Back button stays readable in both themes, and the tools sit in a scrolling box
+        # Edit PDF opens BentoPDF as a page of its own (no frame over the workspace); the toolkit page is stubbed here
+        ctx.route(lambda url: url.startswith(TOOLS + '/InkDOS-tools/bentopdf/'), lambda route: route.fulfill(body='<!doctype html><title>bento stub</title>', content_type='text/html'))
         page.click('#pdfEditBtn')
-        page.wait_for_selector('.pdf-toolkit-layer .pdf-toolkit-body iframe', timeout=10000)
-        contrast = ("()=>{const b=document.querySelector('.pdf-toolkit-head button'),cs=getComputedStyle(b),"
-                    "l=c=>{const [r,g,bl]=c.match(/[0-9.]+/g).map(Number);return 0.2126*r+0.7152*g+0.0722*bl};"
-                    "return Math.abs(l(cs.color)-l(cs.backgroundColor))}")
-        light = page.evaluate(contrast)
-        page.evaluate("()=>{const r=document.documentElement;r.dataset.theme='dark';r.dataset.appearance='dark';r.dataset.appearanceResolved='dark'}")
-        dark = page.evaluate(contrast)
-        run.check('pdf: Edit PDF Back button readable (light and dark)', light > 80 and dark > 80, f'light {light:.0f} · dark {dark:.0f}')
-        page.evaluate("()=>{const r=document.documentElement;r.dataset.theme='light';r.dataset.appearance='light';r.dataset.appearanceResolved='light'}")
-        page.click('.pdf-toolkit-head button')
+        try:
+            page.wait_for_url(lambda url: url.startswith(TOOLS + '/InkDOS-tools/bentopdf/'), timeout=10000)
+            target = page.url
+        except Exception as error:
+            target = f'no navigation ({type(error).__name__})'
+        run.check('pdf: Edit PDF opens BentoPDF as its own page', 'inkdos-handoff=' in target and 'inkdos-return=' in target, target[:110])
     run.shot(page, f'{app}-{scheme}-{size[0]}')
     run.check(f'{app}: no page errors', not errors, '; '.join(errors[:2]))
     ctx.close()
