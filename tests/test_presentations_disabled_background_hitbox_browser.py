@@ -15,6 +15,15 @@ PORT = 8791
 BASE = f"http://127.0.0.1:{PORT}"
 
 
+
+def click_when_still(page, locator, element_id: str) -> None:
+    # WebKit on a busy CI runner may still be laying out the toolbar: wait until the button stops moving
+    page.wait_for_function(
+        "id => new Promise(r => { const b = document.getElementById(id), a = b.getBoundingClientRect();"
+        " requestAnimationFrame(() => requestAnimationFrame(() => { const c = b.getBoundingClientRect();"
+        " r(a.x === c.x && a.y === c.y); })); })", arg=element_id, timeout=10000)
+    locator.click(timeout=10000)
+
 def wait_port():
     deadline = time.time() + 10
     while time.time() < deadline:
@@ -68,7 +77,7 @@ def main():
 
             zoom = page.locator("#zoomMenuBtn")
             assert zoom.is_visible() and zoom.is_enabled()
-            zoom.click(timeout=2500)
+            click_when_still(page, zoom, "zoomMenuBtn")
             page.wait_for_selector("#zoomPopover:not([hidden])")
             page.keyboard.press("Escape")
 
@@ -99,7 +108,7 @@ def main():
             page.keyboard.press("Escape")
             assert palette.is_hidden()
 
-            zoom.click(timeout=2500)
+            click_when_still(page, zoom, "zoomMenuBtn")
             page.wait_for_selector("#zoomPopover:not([hidden])")
             page.keyboard.press("Escape")
 

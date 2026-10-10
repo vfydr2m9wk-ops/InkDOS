@@ -34,8 +34,6 @@ VIEWPORTS = {
 APPEARANCES = {
     "light": ("light", "light"),
     "dark": ("dark", "dark"),
-    "system-light": ("system", "light"),
-    "system-dark": ("system", "dark"),
 }
 DENSITIES = ("auto", "desktop", "mobile")
 CONTROL_SELECTOR = "button,input[type=button],input[type=submit],[role=button]"

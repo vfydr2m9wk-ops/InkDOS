@@ -15,12 +15,12 @@ PORT = 8820
 BASE = f"http://127.0.0.1:{PORT}"
 
 WORKSPACES = {
-    "documents": ("/apps/documents/index.html?suite=1", "inkdos2:documents:appearance", "globalThis.InkDOS2Documents?.Appearance?.set"),
-    "spreadsheets": ("/apps/spreadsheets/index.html?suite=1", "inkdos2:spreadsheets:appearance", "globalThis.InkDOS2Spreadsheets?.Appearance?.set"),
-    "presentations": ("/apps/presentations/index.html?suite=1", "inkdos2:presentations:appearance", "globalThis.InkDOS2Presentations?.Appearance?.set"),
-    "pdf": ("/apps/pdf/index.html?suite=1", "inkdos2:pdf:p1:appearance", "globalThis.InkDOS2PdfP4?.Appearance?.set"),
-    "epub": ("/apps/epub/index.html?suite=1", "inkdos2:epub:appearance", "globalThis.InkDOS2Epub?.AppearanceController?.apply"),
-    "txt": ("/apps/txt/index.html?suite=1", "inkdos2:txt:appearance", "globalThis.InkDOS2?.AppearanceController?.apply"),
+    "documents": ("/apps/documents/index.html?suite=1", "inkdos2:appearance", "globalThis.InkDOS2Documents?.Appearance?.set"),
+    "spreadsheets": ("/apps/spreadsheets/index.html?suite=1", "inkdos2:appearance", "globalThis.InkDOS2Spreadsheets?.Appearance?.set"),
+    "presentations": ("/apps/presentations/index.html?suite=1", "inkdos2:appearance", "globalThis.InkDOS2Presentations?.Appearance?.set"),
+    "pdf": ("/apps/pdf/index.html?suite=1", "inkdos2:appearance", "globalThis.InkDOS2PdfP4?.Appearance?.set"),
+    "epub": ("/apps/epub/index.html?suite=1", "inkdos2:appearance", "globalThis.InkDOS2Epub?.AppearanceController?.apply"),
+    "txt": ("/apps/txt/index.html?suite=1", "inkdos2:appearance", "globalThis.InkDOS2?.AppearanceController?.apply"),
 }
 
 
@@ -59,50 +59,39 @@ def main() -> None:
             context = browser.new_context(viewport={"width": 1280, "height": 820})
             page = context.new_page()
 
-            docs_path, docs_key, _ = WORKSPACES["documents"]
+            # Owner decision (2026-10-09): one InkDOS theme shared by every workspace, never the system's.
+            docs_path, key, _ = WORKSPACES["documents"]
             page.goto(BASE + docs_path, wait_until="load")
             set_mode(page, "documents", "dark")
-            assert page.evaluate(f"() => localStorage.getItem({docs_key!r})") == "dark"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:appearance')") is None
+            assert page.evaluate(f"() => localStorage.getItem({key!r})") == "dark"
 
-            sheets_path, sheets_key, _ = WORKSPACES["spreadsheets"]
-            page.goto(BASE + sheets_path, wait_until="load")
-            page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'system'")
-            set_mode(page, "spreadsheets", "light")
-            assert page.evaluate(f"() => localStorage.getItem({sheets_key!r})") == "light"
-            assert page.evaluate(f"() => localStorage.getItem({docs_key!r})") == "dark"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:appearance')") is None
-
+            # another workspace opens in the same theme, and changing it there changes it for all
+            for app in ("spreadsheets", "presentations", "pdf", "epub", "txt"):
+                path, _, _ = WORKSPACES[app]
+                page.goto(BASE + path, wait_until="load")
+                page.wait_for_function("() => document.documentElement.dataset.theme === 'dark'")
+            set_mode(page, "txt", "light")
             page.goto(BASE + docs_path, wait_until="load")
-            page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'dark'")
-            assert page.evaluate(f"() => localStorage.getItem({sheets_key!r})") == "light"
+            page.wait_for_function("() => document.documentElement.dataset.theme === 'light'")
 
-            # 2.5.2 suite appearance migrates once into an app-local key.
-            migration = browser.new_context(viewport={"width": 1280, "height": 820})
-            migration.add_init_script("""(() => {
-              localStorage.setItem('inkdos2:appearance','dark');
-            })();""")
-            migrated = migration.new_page()
-            epub_path, epub_key, _ = WORKSPACES["epub"]
-            migrated.goto(BASE + epub_path, wait_until="load")
-            migrated.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'dark'")
-            assert migrated.evaluate(f"() => localStorage.getItem({epub_key!r})") == "dark"
-            set_mode(migrated, "epub", "light")
-            assert migrated.evaluate(f"() => localStorage.getItem({epub_key!r})") == "light"
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:appearance')") == "dark"
-            migration.close()
+            # an open workspace follows a change made in another one at once
+            other = context.new_page()
+            sheets_path, _, _ = WORKSPACES["spreadsheets"]
+            other.goto(BASE + sheets_path, wait_until="load")
+            set_mode(other, "spreadsheets", "dark")
+            page.wait_for_function("() => document.documentElement.dataset.theme === 'dark'")
+            set_mode(other, "spreadsheets", "light")
+            other.close()
 
-            # Existing app-local preference wins over the legacy suite value on first paint.
-            priority = browser.new_context(viewport={"width": 1280, "height": 820})
-            priority.add_init_script("""(() => {
-              localStorage.setItem('inkdos2:appearance','dark');
-              localStorage.setItem('inkdos2:txt:appearance','light');
-            })();""")
-            priority_page = priority.new_page()
-            txt_path, _, _ = WORKSPACES["txt"]
-            priority_page.goto(BASE + txt_path, wait_until="load")
-            priority_page.wait_for_function("() => document.documentElement.dataset.appearanceMode === 'light'")
-            priority.close()
+            # an old System value counts as Light; the system's dark mode is never followed
+            system = browser.new_context(viewport={"width": 1280, "height": 820}, color_scheme="dark")
+            system.add_init_script("(() => { localStorage.setItem('inkdos2:appearance','system'); })();")
+            system_page = system.new_page()
+            for app in ("documents", "epub", "txt"):
+                path, _, _ = WORKSPACES[app]
+                system_page.goto(BASE + path, wait_until="load")
+                system_page.wait_for_function("() => document.documentElement.dataset.theme === 'light'")
+            system.close()
 
             # Native WebKit/XeOS controls must follow the workspace-selected theme,
             # not the host OS scheme. Reproduce dark host + explicitly light app.
@@ -121,7 +110,7 @@ def main() -> None:
 
             context.close()
             browser.close()
-        print(f"InkDOS 2.6 workspace-local appearance browser ({browser_name}): OK")
+        print(f"InkDOS shared appearance browser ({browser_name}): OK")
     finally:
         server.terminate()
         try:

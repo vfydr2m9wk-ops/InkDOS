@@ -24,6 +24,16 @@ every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 11 · one theme, EPUB page turn, ONLYOFFICE, three browsers (owner, 2026-10-09 evening):
+- One InkDOS theme: every workspace and Home read and write the same key; the sun (or Home's menu) sets Light or Dark
+  and every open workspace follows at once. "System" is gone and nothing follows the system's dark mode any more
+  (pre-paint scripts, appearance modules, recovery dialogs). `smoke_ui.py` checks both.
+- ONLYOFFICE: always the classic light editor, whatever the InkDOS or system theme (engine site build). Its frame
+  sits in a scrolling box, as Edit PDF does, for iPad.
+- EPUB: three view symbols again: Pages (page by page), Turn page (the book page-turn animation, restored) and
+  Scroll.
+- CI: the full audit runs again in Chromium, Firefox and WebKit.
+
 Step 10 · Edit PDF layer (owner report, 2026-10-10):
 - The "Back to the PDF" button was light text on a light background in the dark theme (it used a colour the PDF
   workspace does not define); it now uses the workspace's control colours. `smoke_ui.py` checks its contrast in both
