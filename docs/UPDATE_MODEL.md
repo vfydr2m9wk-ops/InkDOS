@@ -34,15 +34,6 @@ Release CI pins the Rust toolchain to 1.98.1 and the Tauri CLI to 2.11.4, matchi
 
 Update checking is explicit. Finding an update does not itself install it. Installation is a separate user action and can be cancelled.
 
-## Beta tools channel
-
-Beta tools (today the PDF tools from `labs/`) reach the desktop app without a desktop release.
-
-- `.github/workflows/beta-channel.yml` runs on `main` changes to the beta tools: it tests them, builds a bundle with `scripts/build_beta_bundle.py` (contents listed in `config/beta-channel.json`), signs its manifest with the beta-channel key and publishes it as an immutable `beta-tools-<run number>` prerelease. Prereleases never become `releases/latest`, so the desktop updater is unaffected.
-- The desktop app (Settings → Beta tools) checks for a newer bundle when a tool is opened. It installs one only if the manifest signature matches the public key pinned in `desktop/src-tauri/beta-channel.pub`, the version is newer than the installed one, the app is at least the manifest's `minDesktop`, and every file matches the SHA-256 the signed manifest lists. Otherwise it keeps the installed bundle.
-- Beta tools open in their own `beta-*` windows through the `inkdos-beta` scheme. No capability names those windows and every InkDOS command refuses them, so beta code has no file-system, dialog, updater or other native access; external `https` links open in the system browser. When the PDF workspace opens a beta tool, the host hands that window the open PDF and takes the tool's result back through the window's own scheme (`/__inkdos/file`, `/__inkdos/result`), scoped to that window and delivered only to the window that opened it; older desktop builds simply open the tool without the PDF.
-- The beta signing key is separate from the updater key. Its private key and password are the `INKDOS_BETA_SIGNING_KEY` and `INKDOS_BETA_SIGNING_KEY_PASSWORD` Actions secrets. Until they and the public key exist, the workflow publishes nothing and the desktop menu reports that beta tools are not configured.
-
 ## Retired repository updater
 
 The former repository `InkDOS-update-v*.zip` transaction mechanism is not part of the maintained desktop update path. Its workflow, ledger, trust-boundary tests and source-snapshot metadata have been removed from `main`.

@@ -21,7 +21,7 @@ def test_pdfjs_vendor_provenance_is_declared():
 
 def test_every_pdfjs_open_disables_eval():
     import re
-    for path in [*ROOT.glob("apps/**/*.js"), *ROOT.glob("labs/**/*.js")]:
+    for path in ROOT.glob("apps/**/*.js"):
         if "vendor" in path.parts:
             continue
         source = path.read_text(encoding="utf-8")
@@ -34,7 +34,7 @@ def test_vendored_scripts_match_inventory():
     import json
     inventory = json.loads((ROOT / "config/vendor-inventory.json").read_text(encoding="utf-8"))
     listed = {f["path"]: f["sha256"] for f in inventory["files"]}
-    shipped = sorted(p.relative_to(ROOT).as_posix() for pattern in ("apps/*/vendor/**/*.js", "apps/*/vendor/**/*.mjs", "apps/*/vendor/**/*.wasm", "labs/*/vendor/**/*.js") for p in ROOT.glob(pattern))
+    shipped = sorted(p.relative_to(ROOT).as_posix() for pattern in ("apps/*/vendor/**/*.js", "apps/*/vendor/**/*.mjs", "apps/*/vendor/**/*.wasm") for p in ROOT.glob(pattern))
     assert sorted(listed) == shipped, "update config/vendor-inventory.json when adding or removing vendored code"
     for rel, digest in listed.items():
         assert hashlib.sha256((ROOT / rel).read_bytes()).hexdigest() == digest, f"{rel} changed: record the new version in config/vendor-inventory.json"

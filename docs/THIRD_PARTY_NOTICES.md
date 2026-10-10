@@ -7,10 +7,8 @@ its license text and provenance file. App-private vendor copies are intentionall
 | --- | --- | --- |
 | [PDF.js](https://github.com/mozilla/pdf.js) 6.4.299 (legacy build, WebAssembly image decoders, modified worker) | Apache-2.0 | `apps/pdf/vendor/pdfjs/` |
 | [pdf-lib](https://github.com/Hopding/pdf-lib) | MIT | `apps/pdf/vendor/pdf-lib/`, `apps/spreadsheets/vendor/pdf-lib/` |
-| [Tesseract.js](https://github.com/naptha/tesseract.js) and tesseract.js-core, with Tesseract language data | Apache-2.0 | `labs/pdf/vendor/tesseract/` (desktop beta channel, removed in the next step), `licenses/TESSERACT-*.txt` |
 | [JSZip](https://github.com/Stuk/jszip) | MIT or GPL-3.0 (used under MIT) | Documents, Spreadsheets, Presentations, PDF; `licenses/JSZIP.txt` |
 | [pako](https://github.com/nodeca/pako) | MIT and Zlib | Documents, Spreadsheets, EPUB; `licenses/PAKO.txt` |
-| [node-forge](https://github.com/digitalbazaar/forge) | BSD-3-Clause or GPL-2.0 (used under BSD) | `labs/pdf/`; `licenses/NODE-FORGE.txt` |
 
 The Windows app is built with [Tauri](https://tauri.app) (MIT or Apache-2.0).
 

@@ -24,6 +24,13 @@ every merge, so nothing goes unaudited.
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 12 · Windows app without the beta channel (owner, 2026-10-09):
+- The Windows app no longer has a beta tools channel: `desktop/src-tauri/src/beta.rs` (signed bundle download,
+  `inkdos-beta` windows), its commands and pinned key (its crates leave Cargo.toml in a separate release PR),
+  `desktop-host.js` betaTools, the beta-channel workflow, bundle script and config are gone.
+- `labs/pdf` (the old PDF tools page: OCR, visual/A1 signature, ICP-Brasil list) is removed with its vendored
+  Tesseract and node-forge copies, licences, tests and docs. PDF editing is BentoPDF.
+- The Windows app runs the InkDOS workspaces; the 2.9.0 installer carries them all.
 Step 11 · one theme, EPUB page turn, ONLYOFFICE, three browsers (owner, 2026-10-09 evening):
 - One InkDOS theme: every workspace and Home read and write the same key; the sun (or Home's menu) sets Light or Dark
   and every open workspace follows at once. "System" is gone and nothing follows the system's dark mode any more

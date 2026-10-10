@@ -70,10 +70,9 @@ def inline_script_hashes(text: str) -> list[str]:
     return sorted(hashes)
 
 
-# Home hosts a launched file's workspace in a same-origin frame, the PDF workspace hosts the
-# PDF tools (beta) page in its panel, and Documents, Spreadsheets and Presentations show
-# OpenDocument and Apple iWork files in the InkDOS-tools viewers (view only); the other
-# workspaces frame nothing.
+# Home hosts a launched file's workspace in a same-origin frame, the PDF workspace frames the BentoPDF toolkit
+# (Edit PDF), and Documents, Spreadsheets and Presentations show OpenDocument and Apple iWork files in the
+# InkDOS-tools viewers (view only); the other workspaces frame nothing.
 FRAME_SELF_ENTRY_POINTS = frozenset({Path("index.html"), Path("apps/pdf/index.html"),
                                      Path("apps/documents/index.html"), Path("apps/spreadsheets/index.html"),
                                      Path("apps/presentations/index.html"), Path("apps/txt/index.html"),

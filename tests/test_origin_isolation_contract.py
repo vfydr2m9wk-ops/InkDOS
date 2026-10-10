@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INKDOS_HOST = 'vfydr2m9wk-ops.github.io'
 TOOLS_ORIGIN = 'https://inkdos-tools.github.io'
-SHIPPED = ('index.html', 'service-worker.js', 'manifest.webmanifest', 'assets', 'apps', 'shared', 'labs', 'desktop')
+SHIPPED = ('index.html', 'service-worker.js', 'manifest.webmanifest', 'assets', 'apps', 'shared', 'desktop')
 SKIP_PARTS = {'vendor', 'node_modules', 'target', 'gen', 'icons'}
 TEXT = {'.html', '.js', '.mjs', '.css', '.json', '.webmanifest', '.rs', '.toml'}
 URL = re.compile(r'(?:https?:)?//' + re.escape(INKDOS_HOST) + r'(/[^\s"\'<>)`\\]*)?')
@@ -59,7 +59,7 @@ def main() -> None:
         assert 'event.origin!==TOOLS_ORIGIN' in viewer and 'location.origin' not in viewer.split('TOOLS_ORIGIN=')[1].split(';')[0], app
 
     meta = re.compile(r'http-equiv="Content-Security-Policy" content="([^"]+)"')
-    for page in [ROOT / 'index.html', *(ROOT / 'apps').glob('*/index.html'), ROOT / 'labs' / 'pdf' / 'index.html']:
+    for page in [ROOT / 'index.html', *(ROOT / 'apps').glob('*/index.html')]:
         policy = meta.search(page.read_text(encoding='utf-8')).group(1)
         frame = next(d for d in policy.split(';') if d.strip().startswith('frame-src')).split()[1:]
         assert set(frame) <= {"'self'", "'none'", TOOLS_ORIGIN}, f'{page.relative_to(ROOT)}: frame-src {frame}'
