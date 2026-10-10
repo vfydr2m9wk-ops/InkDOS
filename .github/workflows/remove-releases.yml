@@ -1,0 +1,32 @@
+name: Remove published releases
+
+# Owner decision (2026-10-10): the versions published until 2.9.0 no longer reflect the project; their notes and
+# small files are in the legacy branch (SUPPORT.md). Run by hand: deletes every GitHub release and every tag.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type REMOVE to delete every release and tag
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    if: ${{ inputs.confirm == 'REMOVE' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Delete releases and their tags
+        run: |
+          gh release list --limit 200 --json tagName --jq '.[].tagName' | while read -r tag; do
+            gh release delete "$tag" --cleanup-tag --yes
+          done
+      - name: Delete remaining tags
+        run: |
+          gh api "repos/$GH_REPO/git/matching-refs/tags" --jq '.[].ref' | while read -r ref; do
+            gh api -X DELETE "repos/$GH_REPO/git/$ref"
+          done
