@@ -10,7 +10,7 @@ its license text and provenance file. App-private vendor copies are intentionall
 | [JSZip](https://github.com/Stuk/jszip) | MIT or GPL-3.0 (used under MIT) | Documents, Spreadsheets, Presentations, PDF; `licenses/JSZIP.txt` |
 | [pako](https://github.com/nodeca/pako) | MIT and Zlib | Documents, Spreadsheets, EPUB; `licenses/PAKO.txt` |
 
-The Windows app is built with [Tauri](https://tauri.app) (MIT or Apache-2.0).
+The Windows app (`desktop/`, not published at present) is built with [Tauri](https://tauri.app) (MIT or Apache-2.0).
 
 ## Tools opened on request
 

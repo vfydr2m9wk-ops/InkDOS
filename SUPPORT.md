@@ -1,7 +1,7 @@
 # Support policy
 
-InkDOS is maintained for **Chromium-based browsers (Chrome, Edge)** and **iOS/iPadOS WebKit (Safari, XeOS)**, plus the
-Windows app, which runs on Chromium (WebView2).
+InkDOS is maintained for **Chromium-based browsers (Chrome, Edge)** and **iOS/iPadOS WebKit (Safari, XeOS)**, in the
+browser only.
 
 ## Why Firefox was dropped (2026-10-10)
 
@@ -15,3 +15,9 @@ The versions published on GitHub until 2.9.0 no longer reflected the project, so
 to keep people from downloading them. Their notes and small files are kept in the
 [`legacy` branch](https://github.com/vfydr2m9wk-ops/InkDOS/tree/legacy/releases), which also keeps the project as it
 was before Firefox was dropped. The web app (https://vfydr2m9wk-ops.github.io/InkDOS/) always has the current version.
+
+## Why there is no installable version
+
+The Windows app (Tauri) is no longer published, and no installer or updater is released. An installer, its updater
+and its own release pipeline were a second product to maintain beside the web app, which is always current. The
+`desktop/` code stays in the repository, unpublished, so it can be revived later.
