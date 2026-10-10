@@ -22,7 +22,7 @@ Every file opens in InkDOS first. The mature open-source tools come in only when
 | Plain text | InkDOS text editor (keeps encoding and line endings, recovers drafts) | |
 | Apple Pages, Numbers, Keynote | shown by the pnk viewer, view only | |
 
-- **ONLYOFFICE and BentoPDF** run from a separate engine site, kept apart from InkDOS on purpose so third-party code never runs with InkDOS's own data. They open over the InkDOS app with "Back to InkDOS" and get the file as it was opened.
+- **ONLYOFFICE and BentoPDF** run from a separate engine site, kept apart from InkDOS on purpose so third-party code never runs with InkDOS's own data. On the web they open only on request ("Edit with ONLYOFFICE", "Edit PDF") as a page of their own, with the file as it is on screen; the browser's Back returns to InkDOS. The Windows app opens them in its own windows.
 - The **download button** on Home lists those tools and keeps them on the device (Download all, Check for updates).
 
 Files opened from the system (Windows "Open with", the browser's file handling, XeOS) go to the matching InkDOS app.
