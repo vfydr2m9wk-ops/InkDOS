@@ -185,6 +185,26 @@ def menus(run, browser, base, app):
     ctx.close()
 
 
+def office_new(run, browser, base):
+    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen
+    ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
+    for app, ext in (('documents', 'docx'), ('spreadsheets', 'xlsx'), ('presentations', 'pptx')):
+        page = ctx.new_page()
+        page.goto(base + f'apps/{app}/index.html?suite=1&smoke={time.time()}', wait_until='load')
+        page.wait_for_selector('#inkdosOfficeBtn', timeout=15000)
+        page.click('[data-frame-action="new"]')
+        page.wait_for_timeout(1200)
+        page.click('#inkdosOfficeBtn')
+        try:
+            page.wait_for_selector('.inkdos-office-launch', timeout=10000)
+            name = page.evaluate("()=>document.querySelector('.inkdos-office-launch span').textContent")
+        except Exception as error:
+            name = f'no ONLYOFFICE frame ({type(error).__name__})'
+        run.check(f'{app}: new document → Edit with ONLYOFFICE opens it as .{ext}', name.endswith('.' + ext), name)
+        page.close()
+    ctx.close()
+
+
 def phone_header(run, browser, base):
     # a phone-width header must keep every button on screen (the sun, the lock and share included)
     ctx = browser.new_context(viewport={'width': 390, 'height': 844}, has_touch=True, is_mobile=True)
@@ -226,6 +246,7 @@ def main():
         workspace(run, browser, base, 'txt', 'smoke.txt', b'InkDOS smoke\n', '.txt')
         for app in ('spreadsheets', 'presentations', 'epub'):
             menus(run, browser, base, app)
+        office_new(run, browser, base)
         phone_header(run, browser, base)
         browser.close()
     if server:

@@ -20,6 +20,13 @@ ONLYOFFICE button joined the header (it now waits for it).
 CI speed (2026-10-09): the candidate-distribution job runs in Chromium only (Firefox and WebKit dropped for now) and
 only after integration-validation passed, so a red run stops early; its optional performance benchmark is gone.
 
+Step 9 · Edit with ONLYOFFICE takes the document on screen (owner report, 2026-10-10):
+- A document started in InkDOS did nothing on "Edit with ONLYOFFICE": the button only sent a file opened from the
+  device (and then as it was opened, without the edits made here), and stayed disabled otherwise. Now the workspace
+  writes what is on screen to DOCX / XLSX / PPTX with its own Save writers (nothing is saved or marked saved) and
+  ONLYOFFICE opens that. Files InkDOS only views (.doc, OpenDocument) still go as they were opened.
+- `smoke_ui.py`: new document → Edit with ONLYOFFICE, in all three office workspaces.
+
 Step 8 · OCR, beta tools, cache promises, lock, EPUB (owner, 2026-10-09):
 - OCR only in BentoPDF: the PDF workspace loses Page tools → Make searchable (OCR), its engine (Tesseract) and
   translations; the Home quick tools lose OCR; the offline cache no longer lists the OCR files or the PDF tools page.
