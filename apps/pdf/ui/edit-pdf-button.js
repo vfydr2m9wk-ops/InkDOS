@@ -9,7 +9,7 @@ const TOOLS_ORIGIN='https://inkdos-tools.github.io',TOOLKIT=TOOLS_ORIGIN+'/InkDO
 const PAGES={protect:'encrypt-pdf.html',unprotect:'decrypt-pdf.html'};
 const doc=document,root=doc.documentElement,$=id=>doc.getElementById(id);
 const pt=()=>/^pt/i.test(String(global.InkDOSLocalization?.currentLanguage||root.lang||global.navigator.language||''));
-const LABELS={edit:['Editar PDF','Edit PDF'],section:['Senha do PDF','PDF password'],protect:['Proteger com senha','Protect with password'],unprotect:['Remover senha','Remove password'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.'],pick:['Ferramentas de PDF','PDF tools'],advanced:['Ferramentas avançadas','Advanced tools'],search:['Pesquisar ferramentas','Search tools'],none:['Nenhuma ferramenta encontrada.','No tools match your search.'],close:['Fechar','Close'],all:['Página inicial do BentoPDF','BentoPDF start page']};
+const LABELS={edit:['Editar PDF','Edit PDF'],section:['Senha do PDF','PDF password'],protect:['Proteger com senha','Protect with password'],unprotect:['Remover senha','Remove password'],back:['Voltar ao PDF','Back to the PDF'],open:['Abra um PDF primeiro.','Open a PDF first.'],pick:['Ferramentas de PDF','PDF tools'],advanced:['Ferramentas avançadas','Advanced tools'],search:['Pesquisar ferramentas','Search tools'],none:['Nenhuma ferramenta encontrada.','No tools match your search.'],close:['Fechar','Close']};
 const label=k=>LABELS[k][pt()?0:1];
 const desktop=()=>!!global.InkDOSDesktop||root.dataset.inkdosHost==='tauri';
 function debug(){return NS.PdfStabilityDebug||null}
@@ -92,8 +92,8 @@ function advanced(choose){
  search.type='search';search.placeholder=label('search');search.setAttribute('aria-label',label('search'));search.autocomplete='off';search.spellcheck=false;list.className='pdf-adv-list';
  const shut=()=>{doc.removeEventListener('keydown',onKey,true);veil.remove()};
  const render=()=>{const q=search.value.trim().toLowerCase();list.replaceChildren();
-  const rows=[['',label('all')],...ALL].filter(([id,name])=>!q||(name+' '+id).toLowerCase().includes(q));
-  for(const [id,name] of rows){const b=doc.createElement('button');b.type='button';b.textContent=name;b.dataset.pdfTool=id||'bentopdf';b.addEventListener('click',()=>{shut();choose(id?id+'.html':'')});list.appendChild(b)}
+  const rows=ALL.filter(([id,name])=>!q||(name+' '+id).toLowerCase().includes(q));
+  for(const [id,name] of rows){const b=doc.createElement('button');b.type='button';b.textContent=name;b.dataset.pdfTool=id;b.addEventListener('click',()=>{shut();choose(id+'.html')});list.appendChild(b)}
   if(!rows.length){const p=doc.createElement('p');p.textContent=label('none');list.appendChild(p)}};
  const onKey=event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();shut()}};
  doc.addEventListener('keydown',onKey,true);search.addEventListener('input',render);veil.addEventListener('click',event=>{if(event.target===veil)shut()});
