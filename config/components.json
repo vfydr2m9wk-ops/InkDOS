@@ -83,7 +83,8 @@
       "smokeTests": [
         "tests/test_txt_stability_contract.py",
         "tests/test_txt_unsaved_exit_contract.py",
-        "tests/test_txt_format_expansion_contract.py"
+        "tests/test_txt_format_expansion_contract.py",
+        "tests/test_txt_windows1252_codec.py"
       ],
       "browserSmokeTests": ["tests/test_txt_stability_browser.py"],
       "testGlobs": ["tests/test_txt*.py"]
@@ -109,6 +110,7 @@
       "formats": ["PDF"],
       "ownedPrefixes": ["apps/pdf/"],
       "smokeTests": [
+        "tests/test_pdf_password_open_contract.py",
         "tests/test_pdf_stability_contract.py",
         "tests/test_pdf_toolbar_25_contract.py",
         "tests/test_pdf_stability_offline_contract.py"

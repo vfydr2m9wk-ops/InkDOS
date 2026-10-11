@@ -62,6 +62,14 @@ class LegacyDocImportContractTests(unittest.TestCase):
         self.assertNotIn("fetch(", source)
         self.assertNotIn("XMLHttpRequest", source)
 
+    def test_reader_takes_root_streams_before_embedded_objects(self):
+        # A .doc with embedded Word objects has more WordDocument/1Table streams under ObjectPool; the
+        # first one by name is an embedded document's, whose CLX broke the open ("Unsupported CLX record").
+        source = (DOCS / "io" / "legacy-doc-reader.js").read_text(encoding="utf-8")
+        self.assertIn("child:u32(e,76)", source)
+        self.assertIn("walk(this.entries[0].child)", source)
+        self.assertIn("top.find(match)||this.entries.find(match)", source)
+
 
 if __name__ == "__main__":
     unittest.main()

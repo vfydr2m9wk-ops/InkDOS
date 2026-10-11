@@ -44,6 +44,7 @@ InkDOS is intentionally narrower than Microsoft Office, LibreOffice or Acrobat. 
 
 - TXT editing is intentionally format-light and does not provide rich-text/media/layout semantics.
 - Very large files remain subject to host memory/performance limits even where large-file safeguards are present.
+- Apple Pages, Numbers and Keynote: only the current format (iWork 2013 and later) is shown. Files saved by iWork '09 or earlier (XML inside the package) cannot be shown; InkDOS reports "could not be opened" without changing the file.
 
 ## Release and device validation
 

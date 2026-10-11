@@ -167,6 +167,16 @@ def workspace(run, browser, base, app, name, data, accept, scheme='light', size=
         # Edit PDF opens BentoPDF as a page of its own (no frame over the workspace); the toolkit page is stubbed here
         ctx.route(lambda url: url.startswith(TOOLS + '/InkDOS-tools/bentopdf/'), lambda route: route.fulfill(body='<!doctype html><title>bento stub</title>', content_type='text/html'))
         page.click('#pdfEditBtn')
+        # Edit PDF first shows the tool tags; the last one opens every tool, alphabetical and searchable
+        page.wait_for_selector('.pdf-picker [data-pdf-tool="advanced"]', timeout=5000)
+        run.check('pdf: Edit PDF shows the tool tags, Advanced tools last', page.evaluate(
+            "()=>{const t=[...document.querySelectorAll('.pdf-picker .pdf-tag')];return t.length>10&&t[t.length-1].dataset.pdfTool==='advanced'}"))
+        page.click('.pdf-picker [data-pdf-tool="advanced"]')
+        page.fill('.pdf-adv input', 'compress')
+        run.check('pdf: advanced tools search filters the list', page.evaluate(
+            "()=>[...document.querySelectorAll('.pdf-adv-list button')].map(b=>b.dataset.pdfTool).join()==='compress-pdf'"))
+        page.keyboard.press('Escape')
+        page.click('.pdf-picker [data-pdf-tool="compress-pdf"]')
         try:
             page.wait_for_url(lambda url: url.startswith(TOOLS + '/InkDOS-tools/bentopdf/'), timeout=10000)
             target = page.url

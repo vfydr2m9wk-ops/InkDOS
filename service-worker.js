@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.9.0-1a0629de20b48373d215';
+const CACHE_NAME='inkdos-v2.9.0-e700664e8f925adc38e9';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "ce3955622e2396b498a197f49d58fdad5f13473ff4e1587db4538d05b0ecf654",
@@ -18,7 +18,7 @@ const ASSET_HASHES={
   "./apps/documents/io/external-viewer.js": "0f76b03fdc82328de62ee1ee63422f13c9065441567b047a72b5732c4671c97c",
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
   "./apps/documents/io/file-open-controller.js": "13155366d406a8c2d49fb26d6dabd9ede7c5905239fa0093db17ea3e99118cc9",
-  "./apps/documents/io/legacy-doc-reader.js": "75e59ed490020c02f5f0f30deada1f1ae7ad3d3715cccdd6951816136552b343",
+  "./apps/documents/io/legacy-doc-reader.js": "ecbe4a7ba8b3466ed25353dc4f79121384340700c307a6a4b08b6ab6095753de",
   "./apps/documents/io/package-reader.js": "3c3687fc44b1565102f82468f0f54a3b6b7492dc420d6acd80aed72b38aa69ad",
   "./apps/documents/io/rtf-importer.js": "c68088a02a0b6bcaf31d62855c61238363fd4dbc9bba44c9ca9a1a787912583c",
   "./apps/documents/io/save-controller.js": "c40d686abbd5b88552c2f006b69c5446319b04a2b8abea2f7f2ef70101b316fa",
@@ -101,9 +101,9 @@ const ASSET_HASHES={
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
   "./apps/pdf/index.html": "4f697c3518a36b7942ff3de860bdbce3e426ecc0e11098cbac6951dd32ae5c19",
   "./apps/pdf/io/file-delivery.js": "1a3423052004a5f313fec4cce0f259fb1810e895dca8a248515c78ff86bb382b",
-  "./apps/pdf/io/file-open-controller.js": "2eee97ff2bceefebd63f74cad81889154ff6b5a46fd87c01bebac57dde5f36f0",
+  "./apps/pdf/io/file-open-controller.js": "800b71543dd2c61b96e28dd232c47513e0aefab9b21d95d405add28ae2fce974",
   "./apps/pdf/io/pdf-worker.js": "55974feabadcae35091b4964dbd8440d2777db57cb7747100fb21e3569c62b12",
-  "./apps/pdf/io/save-adapter.js": "22e197727343b5b743d7e27c9f4b708283f34fb2957209da00d35077c0167536",
+  "./apps/pdf/io/save-adapter.js": "9efd6bb7c4d341e4f578df1d065d8408088a4418aeb7060b6179c03a26f52895",
   "./apps/pdf/io/save-controller.js": "82f83559d6697cffbcd3e2c7137f69453bf652c8a96f67ba2c04d9ebf0f5f183",
   "./apps/pdf/manifest.webmanifest": "922457bc98a13c0dec23ec5105c74ca32604e253936b81921a874f1a5c629d03",
   "./apps/pdf/modes/mode-controller.js": "5696b07a8ece0a04b56e62d765ebff7a8ba4436f2ff56a056abdc8c63f648a9d",
@@ -124,7 +124,7 @@ const ASSET_HASHES={
   "./apps/pdf/ui/chrome-controller.js": "b181c2cb7405800bf75bd63859725e53bc54b63bfedf7646320951781c3390ee",
   "./apps/pdf/ui/command-bindings.js": "31189aade6c8a797128e491b78e727939ee79e1789f17bd0b3401c0fda1d4c21",
   "./apps/pdf/ui/command-controller.js": "a0e7bdf1da3266284992b206a39010d093ddedfbd3dcdd1ad91ce21a4c360c4e",
-  "./apps/pdf/ui/edit-pdf-button.js": "8238632b04636e8df8e30a94cbbb6c54c647ab9f1e3a07c24780381959a0088e",
+  "./apps/pdf/ui/edit-pdf-button.js": "47df48030a207743c8f1fb4dfb3092eacac4676f383b42d538959390112880b4",
   "./apps/pdf/ui/mode-bindings.js": "2b793ae38657a18a8972e62c14d77c6c48bf9427c891c40b836f1d0c61dbcbe3",
   "./apps/pdf/ui/navigation-controller.js": "c84cae8aa15f289db3620a788dede851cff0e8a1e56c7a77ef37b1f9004901dd",
   "./apps/pdf/ui/navigation.css": "845a2ee58082e3adefd23c96ed2fe74cdcc19b262b46b76b00877b8eb8030498",
@@ -261,7 +261,7 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "20737dfb9385dea913afb51e7b396bdd4bc6681d62812a3c4564fe23a39a09db",
+  "./apps/txt/index.html": "df4707584cc283a884bdb073e96f3b357ea0b6866aaa3461049f5da637bb30d4",
   "./apps/txt/io/txt-file-controller.js": "5d3f56a6766c96210a17560463d0894f20d2794ce62adbc6e0af2389d73ffb91",
   "./apps/txt/manifest.webmanifest": "a335693895daf02d482e2d7a9275cf3e9a9abe4fcdc737b82d29cd4463a6537c",
   "./apps/txt/page.template.html": "f977c1f174b36e85e9415ab3b785bb0cb3fedacfc1fbd5376082262ae8d0f148",
@@ -276,7 +276,7 @@ const ASSET_HASHES={
   "./apps/txt/state/appearance.js": "695f95ba6cb20241237cc62e01b03dba6b393c383c7e8ec5e948e5ef73473ee6",
   "./apps/txt/state/txt-state.js": "dad48ffca1278c19465c4a2d3a4b561e2efce5cb01257c3fe5270b2bd4ad23de",
   "./apps/txt/styles.css": "af109f3b9021e3f7b3a2027574e0fe04c808ae6ee95643f0d18b264c22a61ee5",
-  "./apps/txt/txt-codec.js": "86047412fbe917531a649c53abd2ddae009c270ab59e0463779e0828536e6483",
+  "./apps/txt/txt-codec.js": "96264d08757dd47bb155abee529b0634e3e5e5354215201903fa80a4f3cb83e5",
   "./apps/txt/txt-policy.js": "fa228ba9463515fa4b31693af56e14578ed74f80fcde2341ba53b75dee0b06fa",
   "./apps/txt/ui/txt-controls.js": "54d912f4fa6fee8b49717d3948e77e3510756f8269c8e7a40e668d1bf6f9bf9d",
   "./assets/advanced-tools.js": "8d2780d54b638ea0ec8ea432929de0a6f9c48f26be6f42f9e4c99918d211a6a2",
