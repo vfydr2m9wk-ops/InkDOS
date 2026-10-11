@@ -9,6 +9,7 @@ its license text and provenance file. App-private vendor copies are intentionall
 | [pdf-lib](https://github.com/Hopding/pdf-lib) | MIT | `apps/pdf/vendor/pdf-lib/`, `apps/spreadsheets/vendor/pdf-lib/` |
 | [JSZip](https://github.com/Stuk/jszip) | MIT or GPL-3.0 (used under MIT) | Documents, Spreadsheets, Presentations, PDF; `licenses/JSZIP.txt` |
 | [pako](https://github.com/nodeca/pako) | MIT and Zlib | Documents, Spreadsheets, EPUB; `licenses/PAKO.txt` |
+| [Phosphor Icons](https://github.com/phosphor-icons/core) 2.1.1 (19 regular icons, inlined) | MIT | `apps/pdf/ui/edit-pdf-button.js` (PDF tools tags) |
 
 The Windows app (`desktop/`, not published at present) is built with [Tauri](https://tauri.app) (MIT or Apache-2.0).
 
