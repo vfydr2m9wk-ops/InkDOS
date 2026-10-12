@@ -40,10 +40,12 @@ def main():
     assert "button.title='Organize pages'" in pages
     assert "nav.insertAdjacentElement('afterend',button)" in pages
 
-    # Annotation order is explicit: highlight before underline, note/delete after it.
+    # Annotation order is explicit: highlight before underline, note after it, then the one trash button (the toolbar's
+    # Delete annotation button also switches the delete mode; there is no second trash button).
     assert "oldHighlight?.insertAdjacentElement('afterend',highlightBtn)" in modes
     assert "(underline||highlightBtn).insertAdjacentElement('afterend',noteBtn)" in modes
-    assert "noteBtn.insertAdjacentElement('afterend',deleteBtn)" in modes
+    assert "deleteBtn=document.getElementById('deleteAnnotationBtn')" in modes
+    assert "persistentDeleteBtn" not in modes
 
     # Annotation tools use compact icon geometry while keeping accessible labels/tooltips.
     assert ".pdf-annotation-tools .tool-label{display:none}" in css
