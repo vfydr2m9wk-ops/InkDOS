@@ -31,7 +31,7 @@ python desktop/scripts/stage_web.py --check
 `.github/workflows/desktop-tauri.yml` runs the desktop contracts and the staging check on pushes to `main`; it builds
 no native package. Native builds belong only to `.github/workflows/release.yml`, which builds the Windows NSIS
 installer and its signed updater artifacts from an immutable `vX.Y.Z` tag (see `docs/UPDATE_MODEL.md`). macOS and
-Linux desktop builds were discontinued after 2.7.8; their launcher files and contracts are kept for a possible return.
+Linux desktop builds were discontinued after 2.7.8 and their packaging was removed; Windows (NSIS) is the only target.
 
 Bundle files are produced under `desktop/src-tauri/target/release/bundle/` and are never committed to Git.
 
