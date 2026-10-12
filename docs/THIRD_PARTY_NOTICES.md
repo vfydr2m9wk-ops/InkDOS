@@ -20,3 +20,10 @@ reference to its source (`UPSTREAM-LICENSE.txt`, `UPSTREAM-SOURCE.txt`):
 
 - [ONLYOFFICE](https://github.com/ONLYOFFICE) editors via [ranuts/document](https://github.com/ranuts/document): AGPL-3.0.
 - [BentoPDF](https://github.com/alam00000/bentopdf): AGPL-3.0.
+- [Pyodide](https://github.com/pyodide/pyodide) (Python terminal): MPL-2.0.
+- The pnk viewer for Apple Pages, Numbers and Keynote (view only).
+- Legacy tools group of the Home (`config/frozen-legacy.json`, `legacy-home-tools`): [Squoosh](https://github.com/GoogleChromeLabs/squoosh)
+  (Apache-2.0), ArchiveDrop, [CyberChef](https://github.com/gchq/CyberChef) (Apache-2.0) and
+  [IT-Tools](https://github.com/CorentinTh/it-tools) (GPL-3.0).
+
+The engine site's own license and source files are authoritative for each of these.

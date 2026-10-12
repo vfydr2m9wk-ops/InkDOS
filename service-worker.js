@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.9.0-330c18b59369e106daf4';
+const CACHE_NAME='inkdos-v2.9.0-629a01ae7439f87540cc';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "ce3955622e2396b498a197f49d58fdad5f13473ff4e1587db4538d05b0ecf654",
@@ -13,7 +13,7 @@ const ASSET_HASHES={
   "./apps/documents/engine/docx-parser.js": "4cb4051746f94b8f555a7d89c85b614a1ea83915c22e93d917748d5d722b115e",
   "./apps/documents/engine/page-spec.js": "34689c76aa527609df067cea8aec34cdea35c1dfffb1e140d19442766456ff44",
   "./apps/documents/help/help.js": "7b9bb5236b5def839b186ec42fb1df0b9c46d89ac0c6f41abf936def16ea4b42",
-  "./apps/documents/index.html": "d52ff955aa0dcc4ba9c649576f6ba2ddac8409a6355fc4efc1104aa27346c62f",
+  "./apps/documents/index.html": "a7be8cad202ea6e056d5a9020eb81b8cbe35e60442a487dbd23f169d881f9587",
   "./apps/documents/io/docx-writer.js": "c8127b883ee9be7c71627cf52968ac1316c828d35763761ac19b12382e30bf25",
   "./apps/documents/io/external-viewer.js": "0f76b03fdc82328de62ee1ee63422f13c9065441567b047a72b5732c4671c97c",
   "./apps/documents/io/file-delivery.js": "f4d0d535db963a8351518278151d51c98094d08ce83380ffa16b6d4ce91c2183",
@@ -59,7 +59,7 @@ const ASSET_HASHES={
   "./apps/epub/engine/content-projector.js": "4701aa8b4d75d14bafff212c60e56ad1f38ddc6b7e7e8c4588695c1c04752e9b",
   "./apps/epub/engine/navigation-index.js": "c349754e6e2994914449df235cc821d7274a937a8a026af72eb43a318bf196ba",
   "./apps/epub/help/help.js": "2640a7fdb41d2d194dd6f349669cc37c7dfa909229eb17c4843b3a9514c213fe",
-  "./apps/epub/index.html": "0e18db976404f7b9fa29edede79006482730bcf9d646eeb0acd4a3373e164548",
+  "./apps/epub/index.html": "43d2d06e961e6dd68a972b97ce45dd5fe30fd7fbc31fe17c2eca2eb02b786224",
   "./apps/epub/io/epub-writer.js": "27da3f4fcea3e756785e96faef83ba5d27e220d2abe813d0811405bf53f30ae7",
   "./apps/epub/io/file-delivery.js": "1e81a4c8220fd6575b6f56173ac0501a3e613c85dc27ed096ef084067a375e58",
   "./apps/epub/io/package-reader.js": "9ba3db3c3f767f941ff182c5cf2c5213ffec8b1b4473485128dfdc70a82556ed",
@@ -99,7 +99,7 @@ const ASSET_HASHES={
   "./apps/pdf/features/page-tools/page-tools-runtime.js": "d7d01f8dff7aae1e8b3f3cf6b277c0763a99f2c3d4f46532759e78696693d63b",
   "./apps/pdf/features/reader/reader-runtime.js": "21bba18a73b6abbaf1e1c140285ed85811ad21627b203ddb8abda94159443669",
   "./apps/pdf/help/help.js": "9cfc68641fd55fd6cc9b2190483245175775f21896cda637fd48be2645e5d715",
-  "./apps/pdf/index.html": "4f697c3518a36b7942ff3de860bdbce3e426ecc0e11098cbac6951dd32ae5c19",
+  "./apps/pdf/index.html": "b75eaee1422bf02a74f97ea6d98ce1ce2de77aca11e8289c8ba41ba3c6c244c4",
   "./apps/pdf/io/file-delivery.js": "1a3423052004a5f313fec4cce0f259fb1810e895dca8a248515c78ff86bb382b",
   "./apps/pdf/io/file-open-controller.js": "800b71543dd2c61b96e28dd232c47513e0aefab9b21d95d405add28ae2fce974",
   "./apps/pdf/io/pdf-worker.js": "55974feabadcae35091b4964dbd8440d2777db57cb7747100fb21e3569c62b12",
@@ -155,7 +155,7 @@ const ASSET_HASHES={
   "./apps/presentations/engine/presentation-policy.js": "1f10917e1bc9e6fd810ef6ac71881f72f916e840eebed0c52c58b2c26372550f",
   "./apps/presentations/engine/presentation-session.js": "b0d37cac3c5b3698f72630593f008efd8a0233d5bbf3ef65420e63c275ee34ae",
   "./apps/presentations/help/help.js": "f24b8f715a173ba50432132924218c7712a5fdc74ece3840feb6b6f448d46377",
-  "./apps/presentations/index.html": "5be7d82dde6b95fec7cb8faa09c1f928b56b421def96b5630756990f15238533",
+  "./apps/presentations/index.html": "61b95f2597baaf254bdfbdfb51b43447b955b49cf3bc6cf0e58c009ad05bb09e",
   "./apps/presentations/io/external-viewer.js": "ff564fe359fa0d94b7c722cff1c79d59d468b420a50df2cfafa2276ae439806d",
   "./apps/presentations/io/file-delivery.js": "ec01fc4533f885f291b92845b79a1f46b4eaebdf3ce99509b497dd5ff191bf3e",
   "./apps/presentations/io/metafile-render.js": "96bf2231d2810470afb9e6a56d7d9a4f98bc2451352eaf1c59e42cff8051b7fc",
@@ -178,7 +178,7 @@ const ASSET_HASHES={
   "./apps/presentations/state/appearance.js": "42c8a693f135a538c9f86030f9f01aa0e31c0978319cbbb71c6acca259fa9b56",
   "./apps/presentations/state/history-controller.js": "4fbce5970961018d076e26f4f10a4ad858b4c08f22448d8c431220c4944ae875",
   "./apps/presentations/state/selection-controller.js": "99e3e735738ac1eaa71993224530d7346f22f3f07b302ba2bfc057bd368d81d8",
-  "./apps/presentations/ui/chrome-controller.js": "1d25be7fd41a1b2e65853334afb2cbb8eb4dafab5708ef1bd96c0d499ab4dfb2",
+  "./apps/presentations/ui/chrome-controller.js": "fde84bacb9cfd19acd41cc4dae3255a6230d243e4c4fc7245c435c021b211c32",
   "./apps/presentations/ui/command-controller.js": "dcbc7ab0579e6018bdf89e4fbcc2d1004a391b1c932daf6a1b5f6b918da5d6ea",
   "./apps/presentations/ui/editing-controller.js": "e98bee32e7a8d2c84bd94fc5c73731defd97b9392be5c29895f2d176a6f47b22",
   "./apps/presentations/ui/editor.css": "74b92b9343852886a4969f28bdd397ee51148a91a793bcdc591f70ff72dc1232",
@@ -211,7 +211,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/engine/workbook-editor.js": "a984140bf432f783da9600790a22f4fdb525f62e2cc3e515108fc10d272f2b58",
   "./apps/spreadsheets/engine/workbook-session.js": "ed475f6f34bc67772175f39a10562ad5a5fb2eebcf181833577558fd2f3ceda7",
   "./apps/spreadsheets/help/help.js": "33f00c3f3427562b81d9a6a2e20dbfc8196808d778b9f7119c0f4f77e8cd4925",
-  "./apps/spreadsheets/index.html": "7c55b76b37a65169de9ff342e6b4e4cbe70e9aa0fb72edc64910755d691cc8f4",
+  "./apps/spreadsheets/index.html": "58ad8ab9e0c25bd84f8e6159b6c7b94d813cdb778bed40f29dc3fb00a33a24a5",
   "./apps/spreadsheets/io/delimited-text.js": "31d5ab740c1dc7d690a5a6190d3d942d9c9318e2b0a216f2af0c25d56e22c5ba",
   "./apps/spreadsheets/io/external-viewer.js": "ae8795f23e068c26db0ef8b997b3938d610859e86c6d6c95cce75ed712fdde60",
   "./apps/spreadsheets/io/file-delivery.js": "ada263ecbd4bdd4e66d6062eae76d3180572dc18d661efc9d014736eecb03761",
@@ -224,7 +224,6 @@ const ASSET_HASHES={
   "./apps/spreadsheets/io/xlsx-color-fidelity.js": "2d282532417e9c4d2691506a35eddb25f0030bc51a1c5d9f2b29d80067285873",
   "./apps/spreadsheets/io/xlsx-engine.js": "6b28a5d72288434a25244c5e204de1666c1a74fa1e58083094b7bc8da80ed202",
   "./apps/spreadsheets/manifest.webmanifest": "5a80f3de864b3e6eaa494086bbd0e401743fd08c236ccf949569875c41b4904d",
-  "./apps/spreadsheets/module.json": "247039b27391d84240f1dece6499e24ad760c39c4225ce4ff9ac6b5ddb18b8ca",
   "./apps/spreadsheets/runtime/frame/app-frame.css": "e95874e209605ac43a559f868be937ea03cac33d386978258e14c2f7953690e0",
   "./apps/spreadsheets/runtime/frame/frame-menu.js": "c41f549f9d4bcb905060b7010207641a4c7b139f13d4ab89938f26188395accb",
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js": "93e4a7b1dac4e9da8bc319ad518d5763276426f926f71d3e52c245ca19968c33",
@@ -261,17 +260,17 @@ const ASSET_HASHES={
   "./apps/txt/export-verify.js": "242893114e6eeddf292d15fe6ffc236d75fa78a15b1e5282bad902847ccf2865",
   "./apps/txt/help/help.js": "46ec8f162e10cfe3a66a486f291c3ad6d5354b5a148b671860b8543e28c69ed7",
   "./apps/txt/history.js": "b724b2a4cbaa7e5130c690af0344c34fd25948abf600ed7915e94642c4fad113",
-  "./apps/txt/index.html": "df4707584cc283a884bdb073e96f3b357ea0b6866aaa3461049f5da637bb30d4",
+  "./apps/txt/index.html": "fe5fa898fa44b6cc75bef65d1f13e0da31c2b3d33499a448ee007d5a01bcc92f",
   "./apps/txt/io/txt-file-controller.js": "5d3f56a6766c96210a17560463d0894f20d2794ce62adbc6e0af2389d73ffb91",
   "./apps/txt/manifest.webmanifest": "a335693895daf02d482e2d7a9275cf3e9a9abe4fcdc737b82d29cd4463a6537c",
-  "./apps/txt/page.template.html": "f977c1f174b36e85e9415ab3b785bb0cb3fedacfc1fbd5376082262ae8d0f148",
+  "./apps/txt/page.template.html": "5204d3688a4eee71a23ee3837c09d18ba934737c87bf737f86ff38b9fb9f6de2",
   "./apps/txt/runtime/contracts/document-session.js": "09b4b7d83d82262e1044830afb62a43480b44d7de53e6d9e26f73a4107b4e049",
   "./apps/txt/runtime/frame/app-frame.css": "11b2b77ee72e8047dd6d9c484c9564bd1ce4f3c31b92545e808523b6a8a7d524",
   "./apps/txt/runtime/frame/app-frame.js": "8c0c4a1be93bb1a92114d45ae2f760e56e3ea59f53f4e227e5f588741af7e9ff",
   "./apps/txt/runtime/platform/content-viewport-adapter.js": "0c48d18a5230f540dd36a1e52659f72cec1041123ca5b0d45cc3d65c255639c8",
   "./apps/txt/runtime/platform/file-launch.js": "3b4c7e45ccc3ee4cc48a8064f6aec1a8377d78f063db8aff267b88f596293bc8",
   "./apps/txt/runtime/services/file-delivery.js": "0988213acf0a9d65b59320e5f53bf9cdc1683de9ae4ca61693fbba4d3ae6baf3",
-  "./apps/txt/runtime/services/recovery-store.js": "1928d3db8bada6d60e918ff0d29c8640058c9d7324331f1b07defd69cb15bff0",
+  "./apps/txt/runtime/services/recovery-store.js": "9fa2afb0ce7e82317d7fcb37e28c5de242cb10f8167beb4d2135031ee2b78411",
   "./apps/txt/runtime/tokens/base.css": "3ca9310a61d220437a5748fb44f93476397c44a34b067506e8df0cf76b7f7fd7",
   "./apps/txt/state/appearance.js": "695f95ba6cb20241237cc62e01b03dba6b393c383c7e8ec5e948e5ef73473ee6",
   "./apps/txt/state/txt-state.js": "dad48ffca1278c19465c4a2d3a4b561e2efce5cb01257c3fe5270b2bd4ad23de",
@@ -494,7 +493,6 @@ const APP_SHELL=[
   "./apps/spreadsheets/io/xls-biff8-engine.js",
   "./apps/spreadsheets/io/xlsx-engine.js",
   "./apps/spreadsheets/io/xlsx-color-fidelity.js",
-  "./apps/spreadsheets/module.json",
   "./apps/spreadsheets/runtime/frame/app-frame.css",
   "./apps/spreadsheets/runtime/frame/frame-menu.js",
   "./apps/spreadsheets/runtime/platform/content-viewport-adapter.js",
@@ -671,8 +669,8 @@ self.addEventListener('fetch',event=>{
   const normalized=key(request);if(!HASH_BY_URL.has(normalized.url))return;
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE_KEY),cached=await cache.match(normalized);
-    // Cache Storage is shared by every page of this origin (including sibling projects such as
-    // InkDOS-tools), so a cached entry is served only while it still matches this snapshot.
+    // Cache Storage is shared by every page of this origin (every GitHub Pages site of the account; see
+    // SECURITY.md, "Origin isolation"), so a cached entry is served only while it still matches this snapshot.
     if(cached&&!cached.redirected&&await matchesSnapshot(cached,HASH_BY_URL.get(normalized.url)))return cached;
     if(cached)await cache.delete(normalized);
     // Evicted entries may only be repaired with bytes from this exact snapshot.

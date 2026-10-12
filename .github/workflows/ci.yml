@@ -56,6 +56,12 @@ jobs:
         run: python tests/test_spreadsheets_243_fill_clear_browser.py
       - name: Run Plain Text multi-instance recovery isolation
         run: python tests/test_txt_multi_instance_recovery_browser.py
+      - name: Run Plain Text recovery offer regression
+        run: python tests/test_txt_recovery_offer_browser.py
+      - name: Run Plain Text encrypted recovery regression
+        run: python tests/test_txt_recovery_encrypted_browser.py
+      - name: Run suite recovery drafts regression
+        run: python tests/test_suite_work_safety_browser.py
       - name: Run Presentations color-control hitbox regression
         run: python tests/test_presentations_disabled_background_hitbox_browser.py
       - name: Run Presentations shared-context cache regression

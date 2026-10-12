@@ -38,7 +38,11 @@ Files opened from the system (the browser's file handling, XeOS) go to the match
 - No backend and no analytics. Every tool runs in the browser.
 - Each site's Content Security Policy only lets it reach its own address.
 - No list of recent files is kept: files are found again with the device's own file manager.
-- The only thing stored is the InkDOS editors' recovery drafts, kept on the device and encrypted (AES-GCM) with a key that cannot be exported from it.
+- What InkDOS keeps on the device:
+  - the editors' recovery drafts (Plain Text included), encrypted (AES-GCM) with a key that cannot be exported from it, kept at most 7 days and turned off (or password-protected) in Settings;
+  - the EPUB reader's reading position, bookmarks, highlights and notes for each book, so a book reopens where it was left;
+  - while a document is handed to ONLYOFFICE or BentoPDF as a page of its own, a copy of it, deleted once the tool has taken it (a copy left over, older than a day, is cleared on the next hand-over);
+  - the appearance and language settings.
 
 ## Credits
 

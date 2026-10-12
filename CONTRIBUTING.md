@@ -57,7 +57,9 @@ python scripts/agent_test.py <component> --browser # plus browser tests
 python scripts/agent_verify.py <component> --base main
 ```
 
-`scripts/run_release_validation.py` is the full release gate; the maintainers run it before a release.
+`python scripts/check_before_push.py` regenerates the generated files and runs the same release validation as the first CI job, then a UI smoke check (`--full` adds the browser tests listed in `.github/workflows/ci.yml`). `scripts/run_release_validation.py` is the full release gate.
+
+Manual tools that CI does not run: `scripts/documents_acceptance.py`, `scripts/spreadsheets_acceptance.py`, `scripts/pdf_acceptance.py` and `scripts/presentations_fidelity*.py` (acceptance against reference corpora, `config/reference-corpus/`), `scripts/public_reference_corpus.py` and `scripts/presentations_public_corpus.py` (build those corpora from public files), `scripts/presentations_export_pdf.ps1` (PowerPoint reference PDFs, Windows) and `scripts/benchmark_workspace_performance.py`.
 
 Vendored third-party code is listed with exact hashes in `config/vendor-inventory.json`. Before a release, run `python3 scripts/check_vendor_advisories.py` (network) to check those versions for known advisories on OSV.dev; an advisory must be fixed by updating the library or accepted with a written reason.
 

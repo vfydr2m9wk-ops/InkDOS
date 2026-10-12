@@ -1,6 +1,9 @@
 # InkDOS desktop (Tauri v2)
 
-This directory contains the installable InkDOS desktop host. The browser/PWA source remains at the repository root and is not rewritten for desktop distribution.
+This directory contains the InkDOS desktop host. **It is not published at present**: no installer, updater or
+GitHub release is produced (see `SUPPORT.md`). The code stays in the repository, validated by CI, so desktop
+releases can resume later. The browser/PWA source remains at the repository root and is not rewritten for desktop
+distribution.
 
 ## Architecture
 
@@ -8,13 +11,13 @@ This directory contains the installable InkDOS desktop host. The browser/PWA sou
 
 ## Local build
 
-Prerequisites are Rust stable, the Tauri v2 CLI, and the platform prerequisites documented by Tauri.
+Prerequisites are Rust (the release workflow pins 1.98.1), the Tauri v2 CLI (2.11.4), and the platform prerequisites documented by Tauri.
 
 ```sh
 python desktop/scripts/stage_web.py
 cd desktop/src-tauri
 cargo tauri icon ../../assets/icons/office.png
-cargo tauri build
+cargo tauri build --bundles nsis
 ```
 
 To validate staging without changing `web-dist`:
@@ -23,16 +26,15 @@ To validate staging without changing `web-dist`:
 python desktop/scripts/stage_web.py --check
 ```
 
-## CI artifacts
+## CI and releases
 
-Pushes to `desktop-tauri` run `.github/workflows/desktop-tauri.yml` on native GitHub-hosted runners. Successful builds upload:
+`.github/workflows/desktop-tauri.yml` runs the desktop contracts and the staging check on pushes to `main`; it builds
+no native package. Native builds belong only to `.github/workflows/release.yml`, which builds the Windows NSIS
+installer and its signed updater artifacts from an immutable `vX.Y.Z` tag (see `docs/UPDATE_MODEL.md`). macOS and
+Linux desktop builds were discontinued after 2.7.8; their launcher files and contracts are kept for a possible return.
 
-- `InkDOS-Windows`: NSIS setup `.exe` and WiX `.msi` bundles.
-- `InkDOS-macOS`: `.app` and `.dmg` bundles.
-- `InkDOS-Linux`: `.deb`, `.AppImage` and `.rpm` bundles.
-
-The bundle files are produced under `desktop/src-tauri/target/release/bundle/` and uploaded as workflow artifacts. They are intentionally not committed to Git.
+Bundle files are produced under `desktop/src-tauri/target/release/bundle/` and are never committed to Git.
 
 ## Signing
 
-Branch builds are unsigned development artifacts. Windows code signing and Apple Developer ID signing/notarization require platform credentials and are intentionally outside this branch's first implementation.
+Updater artifacts are signed with the Tauri signing key kept in GitHub Actions secrets. Windows Authenticode signing is not configured.

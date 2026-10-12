@@ -9,6 +9,9 @@
         "hub"
       ],
       "reason": "Advanced tools outside the maintained set (BentoPDF PDF toolkit, Python terminal): Squoosh, ArchiveDrop, CyberChef and IT-Tools stay listed in the Legacy group of assets/advanced-tools.js, out of the quick tools row.",
+      "locations": [
+        "assets/advanced-tools.js: the TOOLS entries after the INKDOS:FROZEN-LEGACY legacy-home-tools marker (group Legacy)"
+      ],
       "paths": []
     }
   ]
