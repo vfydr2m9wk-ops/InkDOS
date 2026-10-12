@@ -59,6 +59,8 @@ python scripts/agent_verify.py <component> --base main
 
 `python scripts/check_before_push.py` regenerates the generated files and runs the same release validation as the first CI job, then a UI smoke check (`--full` adds the browser tests listed in `.github/workflows/ci.yml`). `scripts/run_release_validation.py` is the full release gate.
 
+The CI on pull requests stays short. Every test of every component, browser tests included, runs once a week and on demand in `.github/workflows/browser-suite.yml` (Actions → InkDOS full browser suite → Run workflow); its summary lists the failing tests.
+
 Manual tools that CI does not run: `scripts/documents_acceptance.py`, `scripts/spreadsheets_acceptance.py`, `scripts/pdf_acceptance.py` and `scripts/presentations_fidelity*.py` (acceptance against reference corpora, `config/reference-corpus/`), `scripts/public_reference_corpus.py` and `scripts/presentations_public_corpus.py` (build those corpora from public files), `scripts/presentations_export_pdf.ps1` (PowerPoint reference PDFs, Windows) and `scripts/benchmark_workspace_performance.py`.
 
 Vendored third-party code is listed with exact hashes in `config/vendor-inventory.json`. Before a release, run `python3 scripts/check_vendor_advisories.py` (network) to check those versions for known advisories on OSV.dev; an advisory must be fixed by updating the library or accepted with a written reason.
