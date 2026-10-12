@@ -31,13 +31,7 @@ const TOOLS=Object.freeze([
   {id:'add-watermark',group:'PDF',title:'Watermark',description:'Add a text or image watermark to a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/add-watermark.html',icon:'pdf',window:true},
   {id:'encrypt-pdf',group:'PDF',title:'Protect with password',description:'Lock a PDF with a password.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/encrypt-pdf.html',icon:'pdf',window:true},
   {id:'decrypt-pdf',group:'PDF',title:'Remove password',description:'Unlock a PDF whose password you know.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/decrypt-pdf.html',icon:'pdf',window:true},
-  {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
-  // INKDOS:FROZEN-LEGACY legacy-home-tools (config/frozen-legacy.json): kept working, listed last and out of the
-  // quick tools row; the maintained set is the PDF toolkit (BentoPDF) and the Python terminal
-  {id:'squoosh',group:'Legacy',title:'Convert and compress images',description:'Convert images between JPG, PNG, WebP and AVIF, resize them and make them smaller (Squoosh).',href:'https://inkdos-tools.github.io/InkDOS-tools/squoosh/',icon:'image'},
-  {id:'archivedrop',group:'Legacy',title:'Extract ZIP, RAR and 7z',description:'Open ZIP, RAR and 7z archives and save the files inside (ArchiveDrop).',href:'https://inkdos-tools.github.io/InkDOS-tools/archivedrop/',icon:'archive'},
-  {id:'cyberchef',group:'Legacy',title:'CyberChef (data toolbox)',description:'Encode, decode, hash, encrypt, compress and analyse data.',href:'https://inkdos-tools.github.io/InkDOS-tools/cyberchef/',icon:'code'},
-  {id:'it-tools',group:'Legacy',title:'IT-Tools (developer utilities)',description:'JSON, YAML, UUID, JWT, regex, converters and generators.',href:'https://inkdos-tools.github.io/InkDOS-tools/it-tools/',icon:'code'}
+  {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'}
 ]);
 const ICONS={
   pdf:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/>',
@@ -138,12 +132,6 @@ function install(){
     const tool=TOOLS.find(t=>t.id===button.dataset.quickTool);if(!tool)return;
     lastFocus=button;if(tool.window)openWindowTool(tool);else openTool(tool);
   }));
-  // Full office: the start page on the tools origin follows the InkDOS appearance and language (it cannot
-  // read InkDOS storage), so they ride on the link; set just before the browser follows it (click, middle click)
-  doc.querySelectorAll('a.beta-tool').forEach(link=>{
-    const withSettings=()=>{const url=new URL(link.getAttribute('href'),location.href);url.searchParams.set('inkdos-theme',doc.documentElement.dataset.theme==='dark'?'dark':'light');const lang=window.InkDOSLocalization?.currentLanguage;if(lang)url.searchParams.set('lang',lang);link.href=url.href};
-    link.addEventListener('pointerdown',withSettings);link.addEventListener('click',withSettings);link.addEventListener('focus',withSettings);
-  });
   doc.getElementById('advancedToolsClose')?.addEventListener('click',close);
   overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
   search.addEventListener('input',()=>{onlyGroup=null;render(search.value)});

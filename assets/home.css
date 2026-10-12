@@ -20,7 +20,6 @@ body.home-launching .home-shell{display:none}
 .home-launch-frame[hidden]{display:none}
 .home-launch-note{margin:24px;font-size:15px}
 html.home-launch-pending .home-shell{display:none}
-.home-beta{margin-top:30px}.home-beta h2{margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.home-beta .workspace-card{max-width:560px;min-height:0}.beta-extension{--accent:#0f766e}.beta-badge{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.03em;vertical-align:2px}
 html[data-inkdos-host=tauri] .web-only{display:none}
 .brand-row{gap:12px}.brand-row .tools-button{margin-left:auto}.brand-row .tools-button+.home-appearance{margin-left:0}
 .tools-button{height:38px;padding:0 14px 0 11px;border:1px solid var(--border);border-radius:11px;background:var(--card);color:var(--text);display:inline-flex;align-items:center;gap:8px;font:600 14px/1 inherit;font-family:inherit;box-shadow:0 1px 3px rgba(31,45,61,.045);cursor:pointer}
@@ -53,8 +52,6 @@ html.tools-open,html.tools-open body{overflow:hidden}
 html[data-inkdos-host=tauri] .brand-row .home-appearance{margin-left:auto}
 /* quick tools: the most used advanced tools, one tap from the Home (assets/advanced-tools.js opens them) */
 .quick-tools[hidden]{display:none}.quick-tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.quick-tool{height:40px;padding:0 16px 0 12px;border:1px solid var(--border);border-radius:12px;background:var(--pill-bg);color:var(--text);display:inline-flex;align-items:center;gap:8px;font:600 14px/1 inherit;font-family:inherit;cursor:pointer}.quick-tool:hover{background:var(--menu-active)}.quick-tool:focus-visible{outline:3px solid color-mix(in srgb,#2f6fed 32%,transparent);outline-offset:2px}.quick-tool svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-/* Full office (beta), superseded by the engine switch above (kept for the legacy markup) */
-.beta-office{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:28px}.beta-tool{text-decoration:none}.beta-office small{color:var(--footer);font-size:12px;line-height:1.4}
 @media(max-width:720px){.quick-tools{margin-top:16px;gap:8px}.quick-tool{height:38px;padding:0 12px 0 10px;font-size:13px}}
 
 /* header: tools download left of Settings; footer: ONLYOFFICE credit and Source */

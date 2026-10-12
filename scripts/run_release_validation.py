@@ -9,6 +9,7 @@ CMDS = [
     ["node", "tests/test_offline_snapshot.cjs"],
     [sys.executable, "scripts/check_no_legacy_runtime.py"],
     [sys.executable, "scripts/build_txt_bundle.py", "--check"],
+    [sys.executable, "scripts/generate_csp.py", "--check"],
     # test files made only of test_* functions do nothing when run as scripts: run them all here
     [sys.executable, "scripts/run_function_tests.py"],
     [sys.executable, "tests/test_csp_contract.py"],

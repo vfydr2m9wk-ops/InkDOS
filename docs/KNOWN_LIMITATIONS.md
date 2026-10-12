@@ -4,7 +4,7 @@ InkDOS is intentionally narrower than Microsoft Office, LibreOffice or Acrobat. 
 
 ## General
 
-- The desktop host uses the operating system WebView rather than a bundled browser engine.
+- The desktop host (`desktop/`, not published at present) uses the operating system WebView rather than a bundled browser engine.
 - Service-worker/PWA caching requires HTTP(S); direct `file://` execution depends on host policy.
 - Browser and embedded-WebKit behavior can differ. Repository tests do not substitute for every real-device/OS combination.
 - Share and Save are different operations. A Share Sheet handoff does not itself prove persistent storage.
@@ -48,4 +48,4 @@ InkDOS is intentionally narrower than Microsoft Office, LibreOffice or Acrobat. 
 
 ## Release and device validation
 
-The maintained release workflow validates source contracts and builds the native Windows package (macOS and Linux desktop builds are discontinued after 2.7.8). That does not constitute manual acceptance on every OS distribution, device or embedded WebView. Real-device findings remain authoritative when they differ from synthetic browser tests.
+InkDOS is published only as the web app; no installer, updater or GitHub release is published at present (see `SUPPORT.md`). CI validates source contracts and runs browser tests in Chromium and WebKit. That does not constitute manual acceptance on every OS distribution, device or embedded WebView. Real-device findings remain authoritative when they differ from synthetic browser tests.

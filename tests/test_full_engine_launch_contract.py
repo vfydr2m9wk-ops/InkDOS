@@ -32,7 +32,8 @@ def main() -> None:
     assert not (ROOT / 'assets/engine-switch.js').exists() and 'engine-switch' not in (ROOT / 'index.html').read_text(encoding='utf-8')
     for app in APPS:
         html = (ROOT / f'apps/{app}/index.html').read_text(encoding='utf-8')
-        assert f"frame-src 'self' {OFFICE}" in html, app
+        # Plain Text accepts no Office file, so it never frames the editor and keeps frame-src 'none'
+        assert (f"frame-src 'none'" if app == 'txt' else f"frame-src 'self' {OFFICE}") in html, app
     print('Launch route (InkDOS first, ONLYOFFICE on request): OK')
 
 

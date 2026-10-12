@@ -10,7 +10,7 @@ Deliberate duplication is acceptable when it preserves workspace isolation. Func
 
 ## Approved shared presentation layer
 
-`shared/` is restricted by `config/shared-runtime-policy.json`. It contains only the approved localization and interface-density presentation helpers. IDs, command names, parsers, spreadsheet formulas, serialization keys and user content remain app-owned.
+`shared/` is restricted by `config/shared-runtime-policy.json`. It contains only the approved localization and interface-density presentation helpers and `work-safety.js` (encrypted recovery drafts, persistent-storage request and the new-version notice), which every workspace attaches to through its own adapter. IDs, command names, parsers, spreadsheet formulas, serialization keys and user content remain app-owned.
 
 `scripts/shared_runtime_policy.py`, `scripts/check_no_legacy_runtime.py`, `scripts/validate_app_isolation.py` and `scripts/validate_suite_contracts.py` enforce this boundary.
 
