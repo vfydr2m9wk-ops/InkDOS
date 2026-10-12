@@ -126,10 +126,9 @@ process.stdout.write(JSON.stringify(out));
     for marker in ("Getting started", "Keyboard shortcuts", "File compatibility", "Check for updates", "About InkDOS"):
         require(settings, marker, "Compact Help menu")
 
-    # Density is workspace-local; the 2.5.2 suite key is migration-only inside apps.
-    require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Legacy suite density migration source")
-    require(density, "STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY", "Workspace-local density persistence")
-    require(density, "LEGACY_SUITE_KEY=WORKSPACE?SUITE_STORAGE_KEY:null", "Suite-to-workspace density migration")
+    # Density is always the desktop density (no stored choice); the module keeps its workspace-scoped key names in its API.
+    require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Suite density key name")
+    require(density, "STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY", "Workspace density key name")
     require(density, "localization/ui-localization.js", "Localization runtime bootstrap")
     require(density, "localization/settings-strip.js", "Settings strip bootstrap")
     require(density, "localization/localization.css", "Settings CSS bootstrap")

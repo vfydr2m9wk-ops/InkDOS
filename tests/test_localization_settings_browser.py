@@ -153,7 +153,9 @@ def main() -> None:
             choose_language(page, "Português", "pt-BR")
             page.evaluate("() => globalThis.InkDOSUiDensity.set('mobile')")
             assert page.evaluate("() => localStorage.getItem('inkdos2:documents:language')") == "pt-BR"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") == "desktop"
+            # no density preference is stored any more: there is nothing to choose
+            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") is None
+            assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
             assert page.evaluate("() => localStorage.getItem('inkdos2:language')") is None
             assert page.evaluate("() => localStorage.getItem('inkdos2:ui-density')") is None
 
@@ -168,7 +170,8 @@ def main() -> None:
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
             assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
 
-            # A 2.5.2 suite-level preference is migrated once into a workspace key.
+            # A 2.5.2 suite-level preference no longer matters: the language is migrated once into a workspace key,
+            # a stored density is ignored and left as it was.
             migration = browser.new_context(viewport={"width": 1280, "height": 820})
             migration.add_init_script("""(() => {
               localStorage.setItem('inkdos2:language','pt-BR');
@@ -179,7 +182,7 @@ def main() -> None:
             migrated.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
             assert migrated.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
             assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:language')") == "pt-BR"
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") == "desktop"
+            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") is None
             open_menu(migrated)
             choose_language(migrated, "English", "en")
             migrated.evaluate("() => globalThis.InkDOSUiDensity.set('desktop')")

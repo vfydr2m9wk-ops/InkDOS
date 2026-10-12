@@ -24,13 +24,13 @@ def main() -> None:
 
     require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Legacy suite display preference")
     require(density, "STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY", "Workspace display preference")
-    require(density, "LEGACY_SUITE_KEY=WORKSPACE?SUITE_STORAGE_KEY:null", "Display migration")
     require(settings, "SUITE_LANGUAGE_KEY='inkdos2:language'", "Legacy suite language preference")
     require(settings, "return app?'inkdos2:'+app+':language':SUITE_LANGUAGE_KEY", "Workspace language preference")
     require(settings, "legacyLanguageKey", "Language migration")
     require(settings, "[data-appearance-mode=\"'+mode+'\"]", "EPUB/TXT appearance selector parity")
-    # Owner decision (2026-10-10): always the desktop density; the sun offers no Interface choice (docs/legacy)
-    require(density, "function normalize(value){return 'desktop'}", "Desktop density only")
+    # Owner decision (2026-10-10): always the desktop density; the sun offers no Interface choice
+    require(density, "function resolve(){return DENSITY}", "Desktop density only")
+    require(density, "DENSITY='desktop'", "Desktop density only")
     if "section('Interface')" in settings or "'interface'" in settings:
         raise AssertionError("The sun must not offer an Interface choice")
     require(localization, "doc.documentElement.lang=language", "Document language synchronization")

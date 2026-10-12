@@ -78,4 +78,4 @@ html[data-theme="dark"] #editor::selection{background:#36577f}
 #editor,.editor-surface .t2-view{padding:12px max(14px,var(--safe-r)) 24px max(14px,var(--safe-l))}
 /* Start page: two actions side by side in desktop mode, stacked in smartphone mode (like the other workspaces). */
 html[data-ui-density="desktop"] .start-actions{flex-flow:row nowrap}
-html[data-ui-density="mobile"] .start-actions{flex-direction:column;align-items:center}
+
