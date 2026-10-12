@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PORT = 8814
 BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
-TOOL_FOLDERS = {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python', 'squoosh'}
+TOOL_FOLDERS = {'bentopdf', 'python'}
 TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
 
 
@@ -77,9 +77,12 @@ def main() -> None:
             csp = page.get_attribute('meta[http-equiv="Content-Security-Policy"]', 'content')
             assert "frame-src 'self' https://inkdos-tools.github.io;" in csp, csp
             # the other origin cannot read the InkDOS appearance, so the links carry it
-            link = page.get_attribute('.tools-item[data-tool-id="cyberchef"]', 'href')
-            assert link.startswith(TOOLS_SITE + 'cyberchef/?inkdos-theme='), link
-            assert {'archivedrop', 'cyberchef', 'it-tools', 'bentopdf', 'python'} <= {t['id'] for t in tools}
+            link = page.get_attribute('.tools-item[data-tool-id="python"]', 'href')
+            assert link.startswith(TOOLS_SITE + 'python/?inkdos-theme='), link
+            assert {'bentopdf', 'python'} <= {t['id'] for t in tools}
+            # the unmaintained legacy tools (Squoosh, ArchiveDrop, CyberChef, IT-Tools) were removed from the catalog
+            assert not {'squoosh', 'archivedrop', 'cyberchef', 'it-tools'} & {t['id'] for t in tools}
+            assert 'Legacy' not in {t['group'] for t in tools}
             # LibreOffice and Apple iWork files open in Documents, Spreadsheets and Presentations instead
             assert not {'pnk', 'odt-view', 'ods-view', 'odp-view'} & {t['id'] for t in tools}
             assert page.locator('.tools-item').count() == len(tools)
@@ -108,10 +111,10 @@ def main() -> None:
             page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
             page.evaluate("() => { window.open = window.__open; }")
             button.click(); overlay.wait_for(state='visible')
-            # the image converter (Squoosh, legacy) needs no isolation and opens in the panel like the other tools
-            squoosh = next(t for t in tools if t['id'] == 'squoosh')
-            assert squoosh['group'] == 'Legacy' and not squoosh.get('window') and squoosh['href'] == TOOLS_SITE + 'squoosh/', squoosh
-            assert page.locator('.tools-item[data-tool-id="squoosh"]').get_attribute('target') is None
+            # the Python terminal needs no isolation and opens in the panel
+            python = next(t for t in tools if t['id'] == 'python')
+            assert python['group'] == 'Data analysis' and not python.get('window') and python['href'] == TOOLS_SITE + 'python/', python
+            assert page.locator('.tools-item[data-tool-id="python"]').get_attribute('target') is None
             # search filters, and says so when nothing matches
             page.fill('#advancedToolsSearch', 'zzz-no-such-tool')
             assert page.locator('.tools-item').count() == 0 and page.locator('.tools-empty').is_visible()
@@ -128,18 +131,18 @@ def main() -> None:
             page.mouse.click(10, 10); overlay.wait_for(state='hidden')
             # an entry opens its tool inside the InkDOS tool panel (same bar and theme as the workspaces)
             button.click(); overlay.wait_for(state='visible')
-            page.locator('.tools-item[data-tool-id="squoosh"]').click()
+            page.locator('.tools-item[data-tool-id="python"]').click()
             tool_panel = page.locator('#toolPanel')
             tool_panel.wait_for(state='visible')
             assert overlay.is_hidden()
             panel_state = page.evaluate("""() => ({ title: document.getElementById('toolPanelTitle').textContent,
                 src: document.querySelector('#toolPanel iframe')?.getAttribute('src'),
                 full: document.querySelector('#toolPanel [data-tool-full]').getAttribute('href') })""")
-            assert panel_state['title'] == 'Convert and compress images' and panel_state['src'].startswith(TOOLS_SITE + 'squoosh/') and panel_state['full'].startswith(TOOLS_SITE + 'squoosh/'), panel_state
+            assert panel_state['title'] == 'Python terminal' and panel_state['src'].startswith(TOOLS_SITE + 'python/') and panel_state['full'].startswith(TOOLS_SITE + 'python/'), panel_state
             # back returns to the list, Escape closes everything and drops the frame
             page.click('#toolPanel [data-tool-back]')
             overlay.wait_for(state='visible'); assert tool_panel.is_hidden()
-            page.locator('.tools-item[data-tool-id="squoosh"]').click(); tool_panel.wait_for(state='visible')
+            page.locator('.tools-item[data-tool-id="python"]').click(); tool_panel.wait_for(state='visible')
             page.keyboard.press('Escape'); tool_panel.wait_for(state='hidden')
             assert page.locator('#toolPanel iframe').count() == 0 and overlay.is_hidden()
             page.goto(BASE + '/index.html', wait_until='load')
@@ -168,10 +171,7 @@ def main() -> None:
             assert page.get_attribute('#toolPanel iframe', 'src').startswith(TOOLS_SITE + 'python/?inkdos-theme=')
             page.keyboard.press('Escape'); page.locator('#toolPanel').wait_for(state='hidden')
             assert page.evaluate("() => document.activeElement.dataset.quickTool") == 'python'
-            # legacy-home-tools: the tools outside the maintained set (PDF toolkit, Python) come last, in Legacy
             tools = page.evaluate("() => InkDOSAdvancedTools.tools")
-            assert [t['id'] for t in tools if t['group'] == 'Legacy'] == ['squoosh', 'archivedrop', 'cyberchef', 'it-tools']
-            assert [t['group'] for t in tools[-4:]] == ['Legacy'] * 4, tools[-4:]
             assert next(t for t in tools if t['id'] == 'python')['group'] == 'Data analysis'
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')
