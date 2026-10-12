@@ -1,0 +1,59 @@
+name: InkDOS full browser suite
+
+# Every test of every component, browser tests included (scripts/agent_test.py <component> --full --browser).
+# Kept out of the CI that runs on each push and pull request so that CI stays short (owner, 2026-10-12): this runs
+# once a week and by hand (Actions → InkDOS full browser suite → Run workflow), one job per component in parallel.
+on:
+  schedule:
+    - cron: '17 6 * * 1'  # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkdos-browser-suite-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suite:
+    name: Full suite (${{ matrix.component }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [hub, documents, spreadsheets, presentations, txt, epub, pdf]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      # Every test runs even after a failure (agent_test.py stops at the first one); the job summary lists the failures.
+      - name: Run every ${{ matrix.component }} test
+        shell: bash
+        env:
+          COMPONENT: ${{ matrix.component }}
+        run: |
+          set -uo pipefail
+          mapfile -t tests < <(python scripts/agent_test.py "$COMPONENT" --full --browser --list | sed -n 's/^  //p')
+          failed=()
+          for test in "${tests[@]}"; do
+            echo "::group::$test"
+            case "$test" in *.py) runner=python ;; *) runner=node ;; esac
+            "$runner" "$test" || failed+=("$test")
+            echo "::endgroup::"
+          done
+          {
+            echo "### $COMPONENT: $(( ${#tests[@]} - ${#failed[@]} )) of ${#tests[@]} tests passed"
+            for test in "${failed[@]}"; do echo "- failed: \`$test\`"; done
+          } >> "$GITHUB_STEP_SUMMARY"
+          if (( ${#failed[@]} )); then printf 'Failed: %s\n' "${failed[@]}"; exit 1; fi

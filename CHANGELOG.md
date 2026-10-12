@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+Repository audit and clean-up (owner, 2026-10-12). No version change.
+
+- Plain Text recovery drafts are encrypted (AES-GCM, non-extractable key), kept at most 7 days, and not written while
+  drafts are off or password-protected in Settings; plain drafts of earlier versions are encrypted in place (#409).
+- The Plain Text source template no longer runs as a page (inert CSP); `generate_csp.py --check` agrees with the Plain
+  Text bundle again and is part of the release validation (#409).
+- Legacy removed: the Home's legacy tools (Squoosh, ArchiveDrop, CyberChef, IT-Tools) and their translations, the
+  former Full office (beta) and extension leftovers, closed-phase documents and audit evidence, committed CI output
+  (#409); the same tools are no longer published by InkDOS-tools (inkdos-tools/InkDOS-tools#34).
+- The interface density choice is gone from the code too: always the desktop density, no mobile layout (#411).
+- Release workflow: tag-only, read-only validation job; the release triggers and the macOS/Linux desktop packaging
+  are removed (#410). No release is published.
+- Docs match the web-only, no-release state; `remove-releases.yml` is removed.
+- CI: the pull-request CI stays short; every test of every component, browser tests included, runs once a week and
+  by hand in `.github/workflows/browser-suite.yml`.
+
 ## 2.9.0 — 2026-10-10
 
 Version 2.9.0 (owner: the project is still young, so 2.9 rather than 3.0). The web edition carries it now; the
