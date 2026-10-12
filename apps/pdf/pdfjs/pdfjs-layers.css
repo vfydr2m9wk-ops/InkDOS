@@ -25,5 +25,8 @@
 .pdf-page-shell>svg.draw{mix-blend-mode:normal}
 .pdf-page-shell>svg.draw[data-draw-rotation="90"]{transform:rotate(90deg)}.pdf-page-shell>svg.draw[data-draw-rotation="180"]{transform:rotate(180deg)}.pdf-page-shell>svg.draw[data-draw-rotation="270"]{transform:rotate(270deg)}
 .pdf-page-shell>svg.moving{z-index:100000}
+/* PDF.js 6 puts the text under a saved highlight or underline in a <mark class="overlaidText"> for screen readers; its
+   viewer CSS keeps it invisible (without that the browser's yellow <mark> showed the text over the page). */
+.annotationLayer .overlaidText{opacity:0;position:absolute;top:0;left:0;width:100%;height:100%;margin:0;padding:0;pointer-events:none}
 /* PDF.js 6 floating per-annotation toolbar (alt text, comment, delete): not part of the InkDOS editor, which deletes from its own toolbar. */
 .annotationEditorLayer .editToolbar{display:none!important}

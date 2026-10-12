@@ -48,10 +48,14 @@ class PdfAnnotationModesContractTests(unittest.TestCase):
     def test_pdf_delete_mode_removes_extension_annotations_intersecting_selection(self):
         module = read("apps/pdf/ui/mode-bindings.js")
         self.assertIn("deleteSelectedAnnotations", module)
-        self.assertIn("extensions.doc.annotationStorage", module)
+        self.assertIn("storage=doc.annotationStorage", module)
         self.assertIn("extensions.editor.addCommand", module)
         self.assertIn("storage.remove(item.key)", module)
-        self.assertIn("No saved annotation overlaps this selection.", module)
+        self.assertIn("No annotation overlaps this selection.", module)
+        # highlights/underlines already saved in the file are deleted too: {id, deleted} in the storage, hidden from the page
+        self.assertIn("savedMarkups(page,pending.rects)", module)
+        self.assertIn("deleted:true", module)
+        self.assertIn("inkdosHiddenAnnotations", read("apps/pdf/view/page-renderer.js"))
 
 
 if __name__ == "__main__":
