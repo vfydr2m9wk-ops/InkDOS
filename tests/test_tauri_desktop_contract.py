@@ -251,7 +251,8 @@ def test_generated_desktop_bundles_are_ignored_within_desktop_boundary():
 
 def test_bundle_targets_cover_only_supported_installers():
     config = json.loads(read(TAURI / "tauri.conf.json"))
-    assert set(config["bundle"]["targets"]) == {"nsis", "app", "dmg", "appimage"}
+    assert config["bundle"]["targets"] == ["nsis"]  # desktop releases are Windows-only
+    assert "macOS" not in config["bundle"] and "linux" not in config["bundle"]
     assert "wix" not in config["bundle"].get("windows", {})
     linux = config["bundle"].get("linux", {})
     assert "deb" not in linux

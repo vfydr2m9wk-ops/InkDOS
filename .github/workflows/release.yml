@@ -1,13 +1,11 @@
 name: InkDOS unified release
 
+# Tag-only: a release needs a deliberate, maintainer-approved vX.Y.Z tag (AGENTS.md; none is published at present,
+# see SUPPORT.md). The former one-shot main trigger (config/release-trigger-*.json) was removed with its files.
 on:
   push:
     tags:
       - 'v*.*.*'
-    branches:
-      - main
-    paths:
-      - 'config/release-trigger-*.json'
 
 permissions:
   contents: read
@@ -25,7 +23,7 @@ jobs:
     name: Validate tagged release
     runs-on: ubuntu-22.04
     permissions:
-      contents: write
+      contents: read
     timeout-minutes: 40
     outputs:
       channel: ${{ steps.release.outputs.channel }}
@@ -54,22 +52,8 @@ jobs:
           set -euo pipefail
           VERSION="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["version"])')"
           CHANNEL="$(python -c 'import json; print(json.load(open("VERSION.json", encoding="utf-8"))["releaseChannel"])')"
-          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
-            RELEASE_TAG="$GITHUB_REF_NAME"
-          else
-            test "$GITHUB_REF" = "refs/heads/main"
-            RELEASE_TAG="v${VERSION}"
-            TRIGGER="config/release-trigger-${VERSION}.json"
-            test -f "$TRIGGER"
-            python - "$TRIGGER" "$VERSION" "$RELEASE_TAG" "$CHANNEL" <<'PY'
-          import json, sys
-          path, version, tag, channel = sys.argv[1:]
-          data = json.load(open(path, encoding='utf-8'))
-          expected = {'version': version, 'tag': tag, 'channel': channel}
-          if data != expected:
-              raise SystemExit(f'Release trigger mismatch: expected {expected!r}, received {data!r}')
-          PY
-          fi
+          test "${GITHUB_REF}" = "refs/tags/${GITHUB_REF_NAME}"
+          RELEASE_TAG="$GITHUB_REF_NAME"
           case "$CHANNEL" in
             stable) NATIVE_BUILDS=true; PRERELEASE=false; LATEST=true; TITLE="InkDOS ${VERSION}" ;;
             beta) NATIVE_BUILDS=false; PRERELEASE=true; LATEST=false; TITLE="InkDOS ${VERSION} Beta" ;;
@@ -90,11 +74,7 @@ jobs:
           git fetch origin main --tags
           git merge-base --is-ancestor "${RELEASE_COMMIT}" origin/main
           test "$(git rev-parse HEAD)" = "${RELEASE_COMMIT}"
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            test "$(git rev-parse "${RELEASE_TAG}^{commit}")" = "${RELEASE_COMMIT}"
-          else
-            ! git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1
-          fi
+          test "$(git rev-parse "${RELEASE_TAG}^{commit}")" = "${RELEASE_COMMIT}"
 
       - name: Validate tag and desktop version
         run: |
@@ -235,23 +215,6 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Linux Tauri prerequisites
-        if: runner.os == 'Linux'
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y \
-            libwebkit2gtk-4.1-dev \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libxdo-dev \
-            libssl-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev
-
       - name: Install verified Rust toolchain
         uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87
         with:
@@ -291,10 +254,6 @@ jobs:
 
       - name: Generate workspace native icons from canonical sources
         run: python desktop/scripts/generate_workspace_icons.py
-
-      - name: Generate macOS workspace launch entries
-        if: runner.os == 'macOS'
-        run: python desktop/scripts/generate_macos_workspace_launchers.py
 
       - name: Check Tauri shell
         working-directory: desktop/src-tauri

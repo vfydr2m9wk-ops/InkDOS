@@ -55,10 +55,7 @@
   "bundle": {
     "active": true,
     "targets": [
-      "nsis",
-      "app",
-      "dmg",
-      "appimage"
+      "nsis"
     ],
     "category": "Productivity",
     "shortDescription": "Local-first productivity suite",
@@ -133,21 +130,6 @@
         ]
       }
     ],
-    "macOS": {
-      "files": {
-        "Helpers/InkDOS Documents.app": "./macos/workspace-launchers/InkDOS Documents.app",
-        "Helpers/InkDOS Spreadsheets.app": "./macos/workspace-launchers/InkDOS Spreadsheets.app",
-        "Helpers/InkDOS Presentations.app": "./macos/workspace-launchers/InkDOS Presentations.app",
-        "Helpers/InkDOS PDF.app": "./macos/workspace-launchers/InkDOS PDF.app",
-        "Helpers/InkDOS EPUB.app": "./macos/workspace-launchers/InkDOS EPUB.app",
-        "Helpers/InkDOS Plain Text.app": "./macos/workspace-launchers/InkDOS Plain Text.app"
-      }
-    },
-    "linux": {
-      "appimage": {
-        "files": {}
-      }
-    },
     "windows": {
       "webviewInstallMode": {
         "type": "downloadBootstrapper",
