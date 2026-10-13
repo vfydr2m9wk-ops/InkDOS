@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.9.0-39f1e6042c8aa78f10b3';
+const CACHE_NAME='inkdos-v2.9.0-23e9f8a54b93d788f314';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "ce3955622e2396b498a197f49d58fdad5f13473ff4e1587db4538d05b0ecf654",
@@ -88,7 +88,7 @@ const ASSET_HASHES={
   "./apps/pdf/engine/page-tools-engine.js": "a7f293d072e0b52f4667429243517fb35faccccec89df6ac8f3bc27a5a109b5c",
   "./apps/pdf/engine/pdf-policy.js": "29a5ae96d63a97c63cf81fb593342adb0a6d1188d187f3d29b510a79336fad06",
   "./apps/pdf/engine/pdf-session.js": "89395397bed46650417033b2eb02abacc37161e020e2c8a6fb544fd58e9f05f8",
-  "./apps/pdf/extensions/review-annotations.css": "ee551ab5dce861224c66324d4f999b47fecee63516f3eb5f5c6e400d244cdb2b",
+  "./apps/pdf/extensions/review-annotations.css": "332f5819ad14c6e1ff98201af300ea79bdea75f7e20d66da3c3f084371a5dc02",
   "./apps/pdf/extensions/review-annotations.js": "7e7c9758c20f19a2bac5984525a03e47bf92247de0a1ee7c9e11a2b1d25f0056",
   "./apps/pdf/features/page-tools/actions/delete-page.js": "918f6eb61b61b013c7deb8249e8a07bc9e1396174d054c4e1ebac71a47656602",
   "./apps/pdf/features/page-tools/actions/extract-page.js": "d673d74fcf8b947cb8c6edc8177abb488e9bbca6cbacd0c62c15d54048c94096",
@@ -145,7 +145,7 @@ const ASSET_HASHES={
   "./apps/pdf/vendor/pdfjs/wasm/openjpeg.wasm": "95e5002597af0824004aa57b1900fe019715db389e37640b1e58395e42f00cc5",
   "./apps/pdf/vendor/pdfjs/wasm/openjpeg_nowasm_fallback.js": "9047b34b6bc142d85e4b0aa1b08b0b9baad4c6f8b7ac87641b9e8f90eb6fd23e",
   "./apps/pdf/vendor/pdfjs/wasm/qcms_bg.wasm": "663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e",
-  "./apps/pdf/view/page-layout.js": "1079703c4e64f21f9aa6ceaacb27949aae1d3730dad3457e5657be889910e164",
+  "./apps/pdf/view/page-layout.js": "be1cc024304531aa893e714c56fd82ed7247ef01a8053bf60bdb9f80c04c9ed8",
   "./apps/pdf/view/page-renderer.js": "ae38a0b21562714701035738a5c1c4d9332f0547cb7c3fd73c60341668cfee42",
   "./apps/pdf/view/page-scheduler.js": "f62dced89ba9cb077b66918d797528be1c48a5fd0a441ab3910d8d1ac3a712d0",
   "./apps/pdf/view/pdf-surface.css": "288b31b86bfcbaf6b28c8d96d09a7564b1b8c3bae4d3f7d604cff2426dfe83ed",
