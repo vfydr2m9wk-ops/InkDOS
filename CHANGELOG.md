@@ -4,6 +4,7 @@
 
 Repository audit and clean-up (owner, 2026-10-12). No version change.
 
+- The Cloudflare mirror (inkdos-offic.pages.dev) is retired (owner, 2026-10-13): the README no longer links it.
 - Plain Text recovery drafts are encrypted (AES-GCM, non-extractable key), kept at most 7 days, and not written while
   drafts are off or password-protected in Settings; plain drafts of earlier versions are encrypted in place (#409).
 - The Plain Text source template no longer runs as a page (inert CSP); `generate_csp.py --check` agrees with the Plain
