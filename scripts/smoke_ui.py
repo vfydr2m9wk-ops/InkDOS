@@ -216,8 +216,8 @@ def menus(run, browser, base, app):
 
 
 def office_new(run, browser, base):
-    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen, as a page of its own (no
-    # InkDOS bar over it); the editor page itself is stubbed here
+    # a new document (nothing opened from the device) goes to ONLYOFFICE as it is on screen, in a new tab (no InkDOS
+    # bar over it; the document follows by postMessage); the editor page itself is stubbed here
     ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, has_touch=True, user_agent=IPAD_UA)
     ctx.route(lambda url: url.startswith(TOOLS + '/editor'), lambda route: route.fulfill(body='<!doctype html><title>editor stub</title>', content_type='text/html'))
     for app in ('documents', 'spreadsheets', 'presentations'):
@@ -226,13 +226,16 @@ def office_new(run, browser, base):
         page.wait_for_selector('#inkdosOfficeBtn', timeout=15000)
         page.click('[data-frame-action="new"]')
         page.wait_for_timeout(1200)
-        page.click('#inkdosOfficeBtn')
         try:
-            page.wait_for_url(lambda url: url.startswith(TOOLS + '/editor'), timeout=10000)
-            target = page.url
+            with ctx.expect_page(timeout=10000) as opened:
+                page.click('#inkdosOfficeBtn')
+            tab = opened.value
+            tab.wait_for_url(lambda url: url.startswith(TOOLS + '/editor'), timeout=10000)
+            target = tab.url
+            tab.close()
         except Exception as error:
-            target = f'no navigation ({type(error).__name__})'
-        run.check(f'{app}: new document → Edit with ONLYOFFICE opens the editor as its own page', 'inkdos-handoff=' in target and 'inkdos-return=' in target, target[:110])
+            target = f'no new tab ({type(error).__name__})'
+        run.check(f'{app}: new document → Edit with ONLYOFFICE opens the editor in a new tab', 'inkdos-opener=1' in target, target[:110])
         page.close()
     ctx.close()
 
@@ -254,8 +257,8 @@ def theme_sync(run, browser, base):
 
 
 def framed_handoff(run, browser, base):
-    # inside another web page (XeOS): Edit with ONLYOFFICE opens the editor as a separate page, carrying the document
-    # through IndexedDB and a way back (the editor page itself is stubbed here)
+    # inside another web page (XeOS): Edit with ONLYOFFICE opens the editor in a new tab too (the editor page itself
+    # is stubbed here)
     ctx = browser.new_context(viewport={'width': IPAD[0], 'height': IPAD[1]}, user_agent=IPAD_UA)
     ctx.route(lambda url: url.startswith(TOOLS + '/editor'), lambda route: route.fulfill(body='<!doctype html><title>editor stub</title>', content_type='text/html'))
     page = ctx.new_page()
@@ -264,15 +267,16 @@ def framed_handoff(run, browser, base):
     frame.locator('#inkdosOfficeBtn').wait_for(timeout=15000)
     frame.locator('[data-frame-action="new"]').click()
     page.wait_for_timeout(1200)
-    frame.locator('#inkdosOfficeBtn').click()
-    target = ''
-    for _ in range(40):
-        target = next((f.url for f in page.frames if f.url.startswith(TOOLS + '/editor')), '')
-        if target:
-            break
-        page.wait_for_timeout(250)
-    ok = 'inkdos-handoff=' in target and 'inkdos-return=' in target and 'embedOrigin=' + 'https%3A%2F%2Finkdos-tools.github.io' in target
-    run.check('framed (XeOS): Edit with ONLYOFFICE opens the editor as a separate page', ok, target[:120] or 'no navigation')
+    try:
+        with ctx.expect_page(timeout=10000) as opened:
+            frame.locator('#inkdosOfficeBtn').click()
+        tab = opened.value
+        tab.wait_for_url(lambda url: url.startswith(TOOLS + '/editor'), timeout=10000)
+        target = tab.url
+    except Exception as error:
+        target = f'no new tab ({type(error).__name__})'
+    ok = 'inkdos-opener=1' in target and 'embedOrigin=' + 'https%3A%2F%2Finkdos-tools.github.io' in target
+    run.check('framed (XeOS): Edit with ONLYOFFICE opens the editor in a new tab', ok, target[:120])
     ctx.close()
 
 
