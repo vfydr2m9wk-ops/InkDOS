@@ -78,6 +78,8 @@ python scripts/agent_verify.py <component> --base main
 
 Use `--browser` when the change affects rendered/interactive behavior and the local environment supports browser tests.
 
+To look at a page by hand (reproduce a bug, check a fix), use the `playwright-cli` skill (`.claude/skills/playwright-cli`, Apache-2.0, from `@playwright/cli`): `npm install -g @playwright/cli@0.1.22`, serve the checkout with `python -m http.server 8000` and drive `http://127.0.0.1:8000/`. Its page snapshots cost far fewer tokens than screenshots. Where Chromium is preinstalled but not the build the CLI expects (Claude Code on the web: `/opt/pw-browsers/chromium-*/chrome-linux/chrome`), pass `--config` with a file holding `{"browser":{"browserName":"chromium","launchOptions":{"executablePath":"<that path>"}}}`.
+
 `scripts/run_release_validation.py` remains the full integration/release gate. Do not run or reinterpret the entire release suite after every small edit unless the task requires it.
 
 ## Version and release discipline
