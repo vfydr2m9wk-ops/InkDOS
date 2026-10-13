@@ -44,15 +44,22 @@ function handOff(file,url){
   req.onsuccess=()=>{const db=req.result,tx=db.transaction('files','readwrite');tx.objectStore('files').put({bytes,type:file.type||'',name:file.name,at:Date.now()},id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=tx.onabort=()=>reject(tx.error)}}))
   .then(()=>{url.searchParams.set('inkdos-handoff',id);url.searchParams.set('inkdos-return',g.location.href);g.location.href=url.href;return true});
 }
-function openInOffice(file,light){
+function webEdition(){return !g.InkDOSDesktop&&doc?.documentElement.dataset.inkdosHost!=='tauri'}
+function openInOffice(file,light,win){
  if(!doc?.body)return false;
- // web edition (owner, 2026-10-10): the editor always opens as a page of its own, with no InkDOS bar over it; the
- // browser's Back returns to this workspace. The Windows app keeps its own office windows.
- if(!g.InkDOSDesktop&&doc.documentElement.dataset.inkdosHost!=='tauri'&&g.indexedDB){
+ // web edition (owner, 2026-10-10 / 2026-10-13): the editor opens as a page of its own, in a new tab, with no InkDOS
+ // bar over it. The document goes to that tab by postMessage (the editor page asks with inkdos-opener-ready): Safari
+ // keeps a cross-site frame's IndexedDB apart, so the hidden handoff.html saw nothing there and the editor opened
+ // empty on iPad. A blocked new tab falls back to the same-tab hand-over. The Windows app keeps its office windows.
+ if(webEdition()&&g.indexedDB){
   const lang=String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||'en');
   const LOCALE={pt:'pt',es:'es',de:'de',ja:'ja',zh:'zh-CN',fr:'fr',ru:'ru'}[lang.toLowerCase().split('-')[0]];
   const url=new URL('/editor',OFFICE_ORIGIN);url.searchParams.set('embed','1');url.searchParams.set('embedOrigin',OFFICE_ORIGIN);if(LOCALE)url.searchParams.set('locale',LOCALE);
-  handOff(file,url).catch(error=>{console.error('InkDOS: could not hand the document to ONLYOFFICE',error)});return true;
+  let tab=win||null;if(!tab){try{tab=g.open('','_blank')}catch(_){tab=null}}
+  if(!tab){handOff(file,url).catch(error=>{console.error('InkDOS: could not hand the document to ONLYOFFICE',error)});return true}
+  const onMessage=event=>{if(event.origin!==OFFICE_ORIGIN||event.source!==tab||event.data?.type!=='inkdos-opener-ready')return;g.removeEventListener('message',onMessage);tab.postMessage({type:'inkdos-handoff-file',file,name:file.name},OFFICE_ORIGIN)};
+  g.addEventListener('message',onMessage);g.setTimeout(()=>g.removeEventListener('message',onMessage),300000);
+  url.searchParams.set('inkdos-opener','1');tab.location.href=url.href;return true;
  }
  const lang=String(g.InkDOSLocalization?.currentLanguage||doc.documentElement.lang||g.navigator?.language||'en');
  const LOCALE={pt:'pt',es:'es',de:'de',ja:'ja',zh:'zh-CN',fr:'fr',ru:'ru'}[lang.toLowerCase().split('-')[0]];
@@ -96,7 +103,8 @@ async function currentDocument(){
  return openedFile;
 }
 function officeStatus(text){const live=doc.getElementById('statusText')||doc.querySelector('[role=status]');if(live)live.textContent=text}
-async function editInOffice(pt){let file=null;try{file=await currentDocument()}catch(error){console.error('InkDOS: could not prepare the document for ONLYOFFICE',error)}if(!file){officeStatus(pt?'Abra ou crie um documento primeiro.':'Open or create a document first.');return}openInOffice(file)}
+// the new tab opens at the click (Safari blocks one opened after the document is prepared) and gets the editor after
+async function editInOffice(pt){let win=null;if(webEdition()){try{win=g.open('','_blank')}catch(_){win=null}}let file=null;try{file=await currentDocument()}catch(error){console.error('InkDOS: could not prepare the document for ONLYOFFICE',error)}if(!file){win?.close();officeStatus(pt?'Abra ou crie um documento primeiro.':'Open or create a document first.');return}openInOffice(file,null,win)}
 // The button joins the header in the same moment as the Settings (sun) button (no shift under a finger or a click)
 function whenSun(run){const find=()=>doc.querySelector('[data-frame-action="sun"]');const sun=find();if(sun)return run(sun);const watch=new MutationObserver(()=>{const s=find();if(s){watch.disconnect();run(s)}});watch.observe(doc.documentElement,{childList:true,subtree:true});setTimeout(()=>watch.disconnect(),15000)}
 function installOfficeButton(){
