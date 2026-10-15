@@ -35,3 +35,5 @@
 :root[data-appearance-resolved="dark"] textarea,
 :root[data-appearance-resolved="dark"] option{color-scheme:dark}
 
+/* Native dropdowns follow the InkDOS theme, not the device: with the device dark and InkDOS light they were drawn dark */
+:root[data-theme="light"] select{color-scheme:light}:root[data-theme="dark"] select{color-scheme:dark}
