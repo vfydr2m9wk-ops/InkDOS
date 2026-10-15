@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.9.0-f23974dc1862980a4ede';
+const CACHE_NAME='inkdos-v2.9.0-e329955fb59394427744';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "ce3955622e2396b498a197f49d58fdad5f13473ff4e1587db4538d05b0ecf654",
@@ -42,7 +42,7 @@ const ASSET_HASHES={
   "./apps/documents/ui/navigation-panel.js": "87be9a118d7b3175e98fd60bb62e49ecb517dc4b2dd1a87970ab214e50410ba7",
   "./apps/documents/ui/ruler-controller.js": "7ced9c6e4d808038a5a4b2874df7c24cd585f9f3ab50bb6e82d4f48702a21b80",
   "./apps/documents/ui/session-dialog.js": "4f1b50ff60660652eb89589630254862893e66dc2e29d40581dc8f7fd82986cd",
-  "./apps/documents/ui/toolbar-pickers.js": "9473f8265649b89c84891b1a35541ab638299ad00f55238d1511690e070b89ee",
+  "./apps/documents/ui/toolbar-pickers.js": "9053bd53635f41b3e881a58f36f4862818ef3eab25c04512c330d81ffa6fa1cc",
   "./apps/documents/ui/zoom-controls.js": "153c448bb6d3723581aa05a275a3f38cb410b28c9357cd4b21229970d54d8022",
   "./apps/documents/ui/zoom-menu.css": "f3c24225eff4bd90b5f9236d2639f50902ae6bfafed09370c26f7af6b4598f25",
   "./apps/documents/vendor/jszip.min.js": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e",
@@ -186,7 +186,7 @@ const ASSET_HASHES={
   "./apps/presentations/ui/ppt-p2-table-tools-ui.js": "6a046bcc3c826b1bd2be69d8a6ef48635272ccbe54210b8817634af53ec0077c",
   "./apps/presentations/ui/ppt-p2-tools.js": "04c763603cb8170a4a50d66e56292db5850d4fb2e351ff410eb70f9429c03d08",
   "./apps/presentations/ui/slide-panel-controller.js": "7fdcddeb0b12ddc0011f57edbb69db65de4ec81365e0d05e63fbdccd57fb97d1",
-  "./apps/presentations/ui/toolbar-pickers.js": "4dd044e74c8479183537aa2824047ae3175ee5ca86f45b25b2dd17a014e828fc",
+  "./apps/presentations/ui/toolbar-pickers.js": "68a35e9e8d6997721a3fb59508c4b967d813b62757bacc71be19964ffdfcd1cf",
   "./apps/presentations/ui/zoom-controls.js": "d3072d3f3dfd1de9b20cbdc68e29167203b2c116e1d24265111581e55396b4d9",
   "./apps/presentations/ui/zoom-menu.css": "f3c24225eff4bd90b5f9236d2639f50902ae6bfafed09370c26f7af6b4598f25",
   "./apps/presentations/vendor/fonts/InkDOSSans-Bold.ttf": "7697382a540d9a1a91b492312df06565849858c072b4296e6139a27d6f26775e",
@@ -235,7 +235,7 @@ const ASSET_HASHES={
   "./apps/spreadsheets/ui/file-menu-controller.js": "d20f19b56b6db9917837fba9d52cf0a38bb58006a7476058aa187a4eb0790dd1",
   "./apps/spreadsheets/ui/formula-bar.js": "29587039c397b64fc22dbb305357f8d86276e04fba3e27583198bc4c20137ea6",
   "./apps/spreadsheets/ui/session-dialog.js": "4bb2c52e1d03338829f5cea276beab567a5eafefb6926629d681689db57f8220",
-  "./apps/spreadsheets/ui/toolbar-pickers.js": "7d7e4adb2bbfde3681caa61531e4ed4755f47d55dc5fd9cd14133e509b617fe6",
+  "./apps/spreadsheets/ui/toolbar-pickers.js": "5a92c9610c9c101fed94985ef820bbf0db20949e86b10532e2dd2f1d89a141a6",
   "./apps/spreadsheets/ui/worksheet-tabs.js": "e6962f72a16ac3a8e4ee18237baaa3d0aec8f124781965a241c9188057d24d58",
   "./apps/spreadsheets/ui/zoom-controls.js": "8220e1fd7e9e35c0e752511bb6481e0b0b5ae5d4bfe4fe6714e403118288a534",
   "./apps/spreadsheets/ui/zoom-menu.css": "f3c24225eff4bd90b5f9236d2639f50902ae6bfafed09370c26f7af6b4598f25",
