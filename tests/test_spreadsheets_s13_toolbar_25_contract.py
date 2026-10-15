@@ -12,5 +12,5 @@ def test_s13_print_and_structural_tail():
     assert html.index('id="operationSelect"') < html.index('id="addRowBtn"')
     assert html.index('id="addRowBtn"') < html.index('class="toolbar-end-spacer"')
 def test_s13_preserves_horizontal_rail():
-    css=read('apps/spreadsheets/ui/editor-toolbar.css')
+    css=read('apps/spreadsheets/index.html')
     assert '.command-scroll{overflow-x:auto' in css
