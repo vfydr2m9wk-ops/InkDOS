@@ -42,6 +42,8 @@ jobs:
         run: python scripts/run_release_validation.py
       - name: Run Documents interaction regression
         run: python tests/test_documents_243_interaction_browser.py
+      - name: Run tool bar pickers regression (2.8 look, XeOS restyle)
+        run: python tests/test_toolbar_pickers_browser.py
       - name: Run Home Windows-scale layout harness
         run: python tests/test_home_density_layout_browser.py
       - name: Run workspace-local settings regression

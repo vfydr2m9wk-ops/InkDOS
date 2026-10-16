@@ -4,6 +4,11 @@
 
 Repository audit and clean-up (owner, 2026-10-12). No version change.
 
+- Tool bars of Documents, Presentations and Spreadsheets (owner, 2026-10-15): the 2.8 look (icon pickers, value
+  boxes) is written in each page, and each picker is a fixed box with its dropdown invisible on top, at least 260px
+  wide, so XeOS no longer turns them into wide dark menus or cuts their lists (#420–#426). The value is centred,
+  disabled pickers are dimmed, and `test_toolbar_pickers_contract.py` / `test_toolbar_pickers_browser.py` (in CI)
+  guard the look.
 - The Cloudflare mirror (inkdos-offic.pages.dev) is retired (owner, 2026-10-13): the README no longer links it.
 - Plain Text recovery drafts are encrypted (AES-GCM, non-extractable key), kept at most 7 days, and not written while
   drafts are off or password-protected in Settings; plain drafts of earlier versions are encrypted in place (#409).
