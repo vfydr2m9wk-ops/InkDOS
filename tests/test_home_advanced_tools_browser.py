@@ -21,6 +21,8 @@ BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
 TOOL_FOLDERS = {'bentopdf', 'python'}
 TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
+# InkTerminal has its own origin (it needs internet) and is never framed
+TERMINAL_SITE = 'https://inkterminal.github.io/'
 
 
 def wait_port(timeout: float = 10.0) -> None:
@@ -45,6 +47,7 @@ def main() -> None:
             context = browser.new_context(service_workers='block', viewport={'width': 1180, 'height': 820})
             # the tools site is not loaded for real: a tab opened on it gets a stub page
             context.route(TOOLS_SITE + '**', lambda route: route.fulfill(status=200, content_type='text/html', body='<title>tool</title>'))
+            context.route(TERMINAL_SITE + '**', lambda route: route.fulfill(status=200, content_type='text/html', body='<title>terminal</title>'))
             page = context.new_page()
             page.on('pageerror', lambda e: errors.append(str(e)))
             page.goto(BASE + '/index.html', wait_until='load')
@@ -65,6 +68,9 @@ def main() -> None:
             assert tools, 'the catalog must not be empty'
             for tool in tools:
                 href = tool['href']
+                if href.startswith(TERMINAL_SITE):
+                    assert tool.get('window') and tool.get('external'), tool
+                    continue
                 # third-party tools are served from their own origin, never from the InkDOS one
                 assert href.startswith('./') or href.startswith(TOOLS_SITE), href
                 if href.startswith('./'):
@@ -173,6 +179,16 @@ def main() -> None:
             assert page.evaluate("() => document.activeElement.dataset.quickTool") == 'python'
             tools = page.evaluate("() => InkDOSAdvancedTools.tools")
             assert next(t for t in tools if t['id'] == 'python')['group'] == 'Data analysis'
+            # the Linux terminal opens in its own tab and is never framed inside InkDOS
+            button.click(); overlay.wait_for(state='visible')
+            item = page.locator('.tools-item[data-tool-id="linux-terminal"]')
+            assert item.get_attribute('target') == '_blank' and item.get_attribute('href').startswith(TERMINAL_SITE)
+            with context.expect_page() as opened:
+                item.click()
+            assert opened.value.url.startswith(TERMINAL_SITE), opened.value.url
+            opened.value.close()
+            assert page.locator('#toolPanel iframe').count() == 0
+            page.keyboard.press('Escape')
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')
             page.evaluate("() => { document.documentElement.dataset.inkdosHost = 'tauri'; }")

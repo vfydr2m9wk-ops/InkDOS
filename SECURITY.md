@@ -18,6 +18,7 @@ InkDOS is served from `https://vfydr2m9wk-ops.github.io/InkDOS/`. A browser trea
 
 - no other GitHub Pages site is published under the `vfydr2m9wk-ops` account (by people or by AI tools);
 - third-party web code (the advanced tools and the OpenDocument/iWork viewers) is served by the separate `inkdos-tools` organization at `https://inkdos-tools.github.io/InkDOS-tools/`, a different origin; InkDOS exchanges files with it only through `postMessage` with explicit, checked origins;
+- one exception, approved by the maintainer: the Linux terminal [InkTerminal](https://github.com/vfydr2m9wk-ops/inkterminal) needs internet access, which the tools pages forbid, so it is served by its own organization at `https://inkterminal.github.io/`. InkDOS only links to it (Advanced tools, opened in its own tab); it is never framed, exchanges no messages with InkDOS and is not in the CSP;
 - the offline service worker serves a cached file only while it matches the release snapshot hash;
 - every tools page carries a strict Content-Security-Policy: nothing is fetched from or sent to another site.
 

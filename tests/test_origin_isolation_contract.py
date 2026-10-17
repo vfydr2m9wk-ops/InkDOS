@@ -20,6 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INKDOS_HOST = 'vfydr2m9wk-ops.github.io'
 TOOLS_ORIGIN = 'https://inkdos-tools.github.io'
+# InkTerminal needs internet, which the tools origin forbids: its own origin, only ever opened in its own tab
+TERMINAL_ORIGIN = 'https://inkterminal.github.io'
 SHIPPED = ('index.html', 'service-worker.js', 'manifest.webmanifest', 'assets', 'apps', 'shared', 'desktop')
 SKIP_PARTS = {'vendor', 'node_modules', 'target', 'gen', 'icons'}
 TEXT = {'.html', '.js', '.mjs', '.css', '.json', '.webmanifest', '.rs', '.toml'}
@@ -51,7 +53,11 @@ def main() -> None:
     assert csp.TOOLS_ORIGIN == TOOLS_ORIGIN, csp.TOOLS_ORIGIN
 
     catalog = (ROOT / 'assets' / 'advanced-tools.js').read_text(encoding='utf-8')
-    for href in re.findall(r"href:'([^']+)'", catalog):
+    for entry in re.findall(r"\{id:'[^}]*\}", catalog):
+        href = re.search(r"href:'([^']+)'", entry).group(1)
+        if href.startswith(TERMINAL_ORIGIN + '/'):
+            assert 'window:true' in entry and 'external:true' in entry, entry  # never framed
+            continue
         assert href.startswith('./') or href.startswith(TOOLS_ORIGIN + '/'), href
     for app in ('documents', 'spreadsheets', 'presentations'):
         viewer = (ROOT / 'apps' / app / 'io' / 'external-viewer.js').read_text(encoding='utf-8')

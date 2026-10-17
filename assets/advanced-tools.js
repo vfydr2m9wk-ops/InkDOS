@@ -31,7 +31,10 @@ const TOOLS=Object.freeze([
   {id:'add-watermark',group:'PDF',title:'Watermark',description:'Add a text or image watermark to a PDF.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/add-watermark.html',icon:'pdf',window:true},
   {id:'encrypt-pdf',group:'PDF',title:'Protect with password',description:'Lock a PDF with a password.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/encrypt-pdf.html',icon:'pdf',window:true},
   {id:'decrypt-pdf',group:'PDF',title:'Remove password',description:'Unlock a PDF whose password you know.',href:'https://inkdos-tools.github.io/InkDOS-tools/bentopdf/decrypt-pdf.html',icon:'pdf',window:true},
-  {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'}
+  {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
+  // InkTerminal (https://github.com/vfydr2m9wk-ops/inkterminal) has internet access, which the tools origin forbids, so it
+  // is served by its own origin and is never framed: external:true opens it only in its own tab (SECURITY.md, "Origin isolation")
+  {id:'linux-terminal',group:'Linux',title:'Linux terminal',description:'A real Linux (Alpine) in this browser: shell, packages, internet and file exchange (InkTerminal). Opens in its own tab.',href:'https://inkterminal.github.io/',icon:'code',window:true,external:true}
 ]);
 const ICONS={
   pdf:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/>',
@@ -83,6 +86,7 @@ function openWindowTool(tool){
   let win=null;
   try{win=window.open(toolHref(tool),'_blank')}catch(_){}
   if(win){try{win.opener=null}catch(_){}close();return}
+  if(tool.external){close();location.assign(toolHref(tool));return} // never framed: leave for the tool instead
   openTool(tool);
 }
 function closeTool(){
