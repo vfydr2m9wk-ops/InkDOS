@@ -189,10 +189,18 @@ def main() -> None:
             opened.value.close()
             assert page.locator('#toolPanel iframe').count() == 0
             page.keyboard.press('Escape')
+            # the Home lists the Linux terminal as a card that opens its own origin in a new tab
+            page.goto(BASE + '/index.html', wait_until='load')
+            card = page.locator('.workspace-card.terminal')
+            assert card.is_visible() and card.get_attribute('href') == TERMINAL_SITE and card.get_attribute('target') == '_blank'
+            with context.expect_page() as opened:
+                card.click()
+            assert opened.value.url.startswith(TERMINAL_SITE), opened.value.url
+            opened.value.close()
             # desktop app: no Advanced tools button
             page.goto(BASE + '/index.html', wait_until='load')
             page.evaluate("() => { document.documentElement.dataset.inkdosHost = 'tauri'; }")
-            assert button.is_hidden() and page.locator('.quick-tools').is_hidden()
+            assert button.is_hidden() and page.locator('.quick-tools').is_hidden() and page.locator('.workspace-card.terminal').is_hidden()
             assert not errors, errors
             browser.close()
     finally:
