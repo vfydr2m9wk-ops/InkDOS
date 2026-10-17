@@ -5,7 +5,8 @@ def test_s2_toolbar_exposes_text_and_fill_color():
     h=text('apps/spreadsheets/index.html')
     assert 'id="textColorInput" type="color"' in h
     assert 'id="fillColorInput" type="color"' in h
-    assert h.index('underlineBtn') < h.index('textColorInput') < h.index('fillColorInput') < h.index('alignmentSelect')
+    b=h[h.index('<body'):]  # the tool bar look in <head> also names the pickers
+    assert b.index('underlineBtn') < b.index('textColorInput') < b.index('fillColorInput') < b.index('alignmentSelect')
 def test_s2_commands_are_guarded_and_style_only():
     c=text('apps/spreadsheets/ui/editor-controller.js'); e=text('apps/spreadsheets/engine/workbook-editor.js')
     assert "registerGuarded('format.textColor','Text color'" in c

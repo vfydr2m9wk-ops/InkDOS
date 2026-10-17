@@ -47,7 +47,10 @@
 .inkdos-picker>*{position:absolute!important;inset:0 auto 0 0!important;width:max-content!important;height:100%!important;min-width:260px!important;max-width:none!important;margin:0!important;opacity:0!important}
 .inkdos-value-picker{display:inline-flex;align-items:center;justify-content:center;height:28px;min-width:44px;padding:0 8px;border-radius:10px;background:var(--panel,#fff);color:var(--text,#1b1f27);font-size:14px;white-space:nowrap}
 .inkdos-value-picker[data-for="functionSelect"]{height:auto;align-self:stretch;padding:0 12px}
-.inkdos-picker>.inkdos-picker-label{position:static!important;width:auto!important;min-width:0!important;opacity:1!important;pointer-events:none}
+.inkdos-picker>.inkdos-picker-label{position:static!important;width:auto!important;min-width:0!important;height:auto!important;line-height:1.2;opacity:1!important;pointer-events:none}
+/* a disabled picker looks disabled, as its select did */
+.inkdos-picker:has(>select:disabled){opacity:.35;cursor:default}
+.inkdos-picker:has(>select[hidden]){display:none}
 </style>
   <script src="../../shared/ui-density.js"></script><script src="../../shared/work-safety.js"></script>
   <script src="runtime/platform/file-launch.js"></script>
