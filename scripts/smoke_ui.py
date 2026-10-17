@@ -83,7 +83,7 @@ def home(run, browser, base, scheme, size, no_sw=False):
     page.on('pageerror', lambda e: errors.append(str(e)[:160]))
     page.goto(base + 'index.html?smoke=' + str(time.time()), wait_until='load')
     page.wait_for_timeout(800)
-    run.check(f'{tag}: six workspace cards', page.locator('.workspace-card').count() == 6)
+    run.check(f'{tag}: six workspace cards', page.locator('.workspace-card:not(.terminal)').count() == 6)
     run.check(f'{tag}: download button left of Settings', page.evaluate(
         "()=>{const d=document.getElementById('toolsDownload'),s=document.getElementById('appearanceButton');"
         "return !!d&&!!s&&d.getBoundingClientRect().right<=s.getBoundingClientRect().left}"))
