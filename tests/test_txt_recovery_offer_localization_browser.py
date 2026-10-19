@@ -31,7 +31,7 @@ def main():
         with sync_playwright() as pw:
             browser = getattr(pw, browser_name).launch(headless=True)
             ctx = browser.new_context()
-            ctx.add_init_script("try{localStorage.setItem('inkdos2:txt:language','pt-BR')}catch(_){}")
+            ctx.add_init_script("try{localStorage.setItem('inkdos2:language','pt-BR')}catch(_){}")
             page = ctx.new_page()
             page.goto(BASE + "/apps/txt/", wait_until="load"); ready(page)
             page.click("#startNew"); page.wait_for_function("() => InkDOS2.TxtAppDebug.state.loaded")

@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME='inkdos-v2.9.0-793a606bad972fc169e1';
+const CACHE_NAME='inkdos-v2.9.0-a2e3b66e70026d5daf08';
 // BEGIN OFFLINE HASHES
 const ASSET_HASHES={
   "./VERSION.json": "ce3955622e2396b498a197f49d58fdad5f13473ff4e1587db4538d05b0ecf654",
@@ -293,17 +293,17 @@ const ASSET_HASHES={
   "./assets/tools-download.js": "edf5da49ad63eecb3110b8944cc2ac6966b6d77865c0b45403a7e970be279420",
   "./index.html": "103664939cdb3820c6e2225b36dbccd93acd00c47da748f1e792991d7249c52c",
   "./manifest.webmanifest": "0d0938adf9208849472062be4b8a5a247c986d76ca982095f1cf4ec05e4cdaf8",
-  "./shared/localization/home-settings.js": "f75c4ba1943cf6a9c2cf9bf907c50d9a246f6e8bdcfdafdc7ba279d558b99d81",
-  "./shared/localization/locales/de.js": "1fa27f35d3524510c69a70d3b3cb0a560fe4a994e7bf13d4daf78b4d6a7ecea5",
-  "./shared/localization/locales/es.js": "f8f8db00f88b4c7fb6f1bae7d280989d61ed7dd7c323c1f729cd74e655b1168d",
-  "./shared/localization/locales/fr.js": "8f05073becb9a30f441535a78bc89d2a4b99c3bf662756e07f8932f959b186f8",
-  "./shared/localization/locales/ja.js": "4ac7aff3dd171d6d8008a33cf019e78b908044db757126838d0ba21f59770603",
-  "./shared/localization/locales/pt-BR.js": "b56dd8422760829ae0961ed2e32d052a1f42024f14831ac4b9520440a3b399fc",
-  "./shared/localization/locales/ru.js": "dc3235658d6ea52af9b89f4c9ee4e7175c4e5fa43f31afa8118c86914e3b8494",
-  "./shared/localization/locales/zh-CN.js": "ac696521b8d3f7c86ab9a26c582e0c44edf98d3d7fa9a26d7d17de65dd5fa91a",
+  "./shared/localization/home-settings.js": "e8a713659c58919cfdadfdca7be55eeaa951b8948c1465cd57e918dd48c6ffbb",
+  "./shared/localization/locales/de.js": "90dd1d8ff3f13a815fda168f008bb4f387ec78b927dcec388874190c34d6d139",
+  "./shared/localization/locales/es.js": "839076e35d082cac9e647b8781e87143555e568d9a663a3ac0127d25a2623e17",
+  "./shared/localization/locales/fr.js": "543915d8ab1a51c2eb313164ae78d6780a03fa33a614989f8158525d52d0666b",
+  "./shared/localization/locales/ja.js": "08f2dddc4fd166428ecee4d6e48b9eb7a0061cc6fbbc1459e4a1b34c792fb5d4",
+  "./shared/localization/locales/pt-BR.js": "b05a8bf5d304accf826745b526e805fe044e974789ad510df32624699fadfe0c",
+  "./shared/localization/locales/ru.js": "31c3fc48706b9d912ebb3f3117d8ea9d52a68d5d1c567a429bcda002c17c18d5",
+  "./shared/localization/locales/zh-CN.js": "e140adb0fcebe7f862b58d8e4f8780dd21020915af353ae8cdbdc582e4e4eca2",
   "./shared/localization/localization.css": "0f7df02c80d0f83a00d31b720b2dd2adf46ad724b94e9851a3cc61f872d74be4",
-  "./shared/localization/settings-strip.js": "685120c94258e9ecadf91af45d54ba6d3717f276508e9d6a194a74fb8d6be8cf",
-  "./shared/localization/ui-localization.js": "eb62e894fbf7f5c4851198b913c49faeb77389dc3aef3d7d61df711c5f2c1f79",
+  "./shared/localization/settings-strip.js": "4fdb8c0deef91957dbe1b9a3aa7545d4a55173164aef8123698abafc78aec364",
+  "./shared/localization/ui-localization.js": "cac735a54fb21e3f5db5d72086ee10460e381a2d2bcf419cb00299afcf0e06db",
   "./shared/ui-density.css": "ae3a406892eddfb23b2014531394785eac304c4a47916945827b8c7fe859ef07",
   "./shared/ui-density.js": "6af64177ec74967b9c91d5dd1c841c28cb6ad177da0fe144648d0607938212aa",
   "./shared/work-safety.js": "68ceae8a7a851fe64c3d00998a0bddec1ff75d83b8ec3c9574d00dc1fe9f40fd"
@@ -330,13 +330,6 @@ const APP_SHELL=[
   "./shared/localization/settings-strip.js",
   "./shared/localization/home-settings.js",
   "./shared/localization/localization.css",
-  "./shared/localization/locales/pt-BR.js",
-  "./shared/localization/locales/es.js",
-  "./shared/localization/locales/de.js",
-  "./shared/localization/locales/fr.js",
-  "./shared/localization/locales/zh-CN.js",
-  "./shared/localization/locales/ja.js",
-  "./shared/localization/locales/ru.js",
   "./apps/pdf/app.js",
   "./apps/pdf/assets/pdf.svg",
   "./apps/pdf/engine/page-tools-engine.js",
@@ -617,13 +610,17 @@ const APP_SHELL=[
   "./apps/epub/view/reader.css",
   "./apps/epub/view/renderer.js"
 ];
-// Large or rarely used assets: integrity-checked and cached on first use, not at install (none today).
-const ON_DEMAND=[];
+// Large or rarely used assets: integrity-checked and cached on first use, not at install. English is built in; each
+// other language is a package the person downloads, and only one package is kept on the device at a time.
+const ON_DEMAND=["./shared/localization/locales/pt-BR.js", "./shared/localization/locales/es.js", "./shared/localization/locales/de.js", "./shared/localization/locales/fr.js", "./shared/localization/locales/zh-CN.js", "./shared/localization/locales/ja.js", "./shared/localization/locales/ru.js"];
 const NAVIGATION_PATHS=new Set(["./", "./index.html", "./apps/pdf/", "./apps/pdf/index.html", "./apps/documents/", "./apps/documents/index.html", "./apps/spreadsheets/", "./apps/spreadsheets/index.html", "./apps/presentations/", "./apps/presentations/index.html", "./apps/txt/", "./apps/txt/index.html", "./apps/epub/", "./apps/epub/index.html"].map(p=>new URL(p,self.registration.scope).pathname));
 // The cache is scoped to this installation, including same-origin sibling projects.
 const CACHE_SUFFIX=':'+encodeURIComponent(self.registration.scope);
 const CACHE_KEY=CACHE_NAME+CACHE_SUFFIX;
 const HASH_BY_URL=new Map(Object.entries(ASSET_HASHES).map(([path,hash])=>[new URL(path,self.registration.scope).href,hash]));
+const LOCALE_PATH=new URL('./shared/localization/locales/',self.registration.scope).href;
+const isLocale=url=>url.startsWith(LOCALE_PATH);
+async function dropLocales(cache,keep){for(const request of await cache.keys())if(isLocale(request.url)&&request.url!==keep)await cache.delete(request)}
 function key(request){const u=new URL(request.url);u.search='';u.hash='';if(request.mode==='navigate'&&NAVIGATION_PATHS.has(u.pathname)&&u.pathname.endsWith('/'))u.pathname+='index.html';return new Request(u.href,{method:'GET'})}
 async function matchesSnapshot(response,expected){
   const bytes=await response.clone().arrayBuffer();
@@ -657,6 +654,8 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
 // asks a waiting worker to take over only when no other InkDOS page is open, so an installed app or a web desktop that
 // keeps one tab alive still receives updates.
 self.addEventListener('message',event=>{
+  // Switching back to English removes the downloaded language package from the device.
+  if(event.data==='inkdos:drop-locales'){event.waitUntil(caches.open(CACHE_KEY).then(cache=>dropLocales(cache,null)));return}
   if(event.data!=='inkdos:activate-if-alone')return;
   event.waitUntil((async()=>{
     const pages=(await self.clients.matchAll({type:'window',includeUncontrolled:true})).filter(c=>c.url.startsWith(self.registration.scope));
@@ -674,6 +673,6 @@ self.addEventListener('fetch',event=>{
     if(cached&&!cached.redirected&&await matchesSnapshot(cached,HASH_BY_URL.get(normalized.url)))return cached;
     if(cached)await cache.delete(normalized);
     // Evicted entries may only be repaired with bytes from this exact snapshot.
-    const response=await verifiedFetch(normalized);await cache.put(normalized,response.clone());return response;
+    const response=await verifiedFetch(normalized);if(isLocale(normalized.url))await dropLocales(cache,normalized.url);await cache.put(normalized,response.clone());return response;
   })());
 });

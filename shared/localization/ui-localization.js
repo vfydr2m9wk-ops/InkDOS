@@ -40,10 +40,65 @@ function packageElement(code){return doc?.querySelector('script[data-inkdos-loca
 function purgePackages(keep){for(const item of LANGUAGES){const code=item.code;if(code===DEFAULT_LANGUAGE||code===keep)continue;try{delete packages[code]}catch(_){}packageElement(code)?.remove()}if(keep===DEFAULT_LANGUAGE){for(const item of LANGUAGES){if(item.code===DEFAULT_LANGUAGE)continue;try{delete packages[item.code]}catch(_){}packageElement(item.code)?.remove()}}}
 function loadPackage(value){const code=normalizeLanguage(value);if(code===DEFAULT_LANGUAGE)return Promise.resolve(null);purgePackages(code);const existing=packageFor(code);if(existing)return Promise.resolve(existing);if(!doc)return Promise.reject(new Error('Locale package requires a document environment.'));return new Promise((resolve,reject)=>{const prior=packageElement(code);if(prior){prior.addEventListener('load',()=>resolve(packageFor(code)||Object.freeze({})),{once:true});prior.addEventListener('error',()=>reject(new Error('Unable to load locale '+code)),{once:true});return}const script=doc.createElement('script');script.setAttribute('data-inkdos-locale-package',code);script.src=base+'locales/'+packagePath(code);script.async=true;script.addEventListener('load',()=>resolve(packageFor(code)||Object.freeze({})),{once:true});script.addEventListener('error',()=>reject(new Error('Unable to load locale '+code)),{once:true});(doc.head||doc.documentElement).appendChild(script)})}
 function persist(code){if(!storageKey)return;try{root.localStorage?.setItem(storageKey,code);root.localStorage?.setItem(storageKey+':changedAt',String(Date.now()))}catch(_){}}
-async function setLanguage(value,options){const code=normalizeLanguage(value);if(options&&typeof options.storageKey==='string')storageKey=options.storageKey;const shouldPersist=options?.persist!==false;language=code;if(shouldPersist)persist(code);if(code===DEFAULT_LANGUAGE){purgePackages(DEFAULT_LANGUAGE);dictionary=Object.freeze({});apply();return language}try{dictionary=await loadPackage(code)}catch(_){language=DEFAULT_LANGUAGE;purgePackages(DEFAULT_LANGUAGE);dictionary=Object.freeze({});if(shouldPersist)persist(language)}apply();return language}
+async function setLanguage(value,options){const code=normalizeLanguage(value);if(options&&typeof options.storageKey==='string')storageKey=options.storageKey;const shouldPersist=options?.persist!==false;language=code;if(shouldPersist)persist(code);if(code===DEFAULT_LANGUAGE){purgePackages(DEFAULT_LANGUAGE);if(shouldPersist)dropCachedPackages();dictionary=Object.freeze({});apply();return language}try{dictionary=await loadPackage(code)}catch(_){language=DEFAULT_LANGUAGE;purgePackages(DEFAULT_LANGUAGE);dictionary=Object.freeze({});if(shouldPersist)persist(language)}apply();return language}
 function readLanguage(key,legacyKeys=legacyStorageKeys){storageKey=typeof key==='string'?key:storageKey;if(!storageKey)return DEFAULT_LANGUAGE;try{const ls=root.localStorage;/* Home is the master: a Home language change newer than this app's own choice wins. */for(const legacyKey of legacyKeys||[]){if(!ls||!legacyKey||legacyKey===storageKey)continue;const at=Number(ls.getItem(legacyKey+':changedAt'))||0,v=ls.getItem(legacyKey);if(v!=null&&at>(Number(ls.getItem(storageKey+':changedAt'))||0)){const code=normalizeLanguage(v);ls.setItem(storageKey,code);ls.setItem(storageKey+':changedAt',String(at));return code}}const saved=root.localStorage?.getItem(storageKey);if(saved!=null)return normalizeLanguage(saved);for(const legacyKey of legacyKeys||[]){if(!legacyKey||legacyKey===storageKey)continue;const legacy=root.localStorage?.getItem(legacyKey);if(legacy!=null){const migrated=normalizeLanguage(legacy);root.localStorage?.setItem(storageKey,migrated);return migrated}}}catch(_){}return DEFAULT_LANGUAGE}
 function bindStorage(){if(storageBound||typeof root.addEventListener!=='function')return;storageBound=true;root.addEventListener('storage',event=>{if(!storageKey||event.key!==storageKey)return;setLanguage(event.newValue,{storageKey,persist:false}).catch(()=>{})})}
 function install(options){const key=options&&typeof options.storageKey==='string'?options.storageKey:null;if(key)storageKey=key;legacyStorageKeys=Array.isArray(options?.legacyStorageKeys)?options.legacyStorageKeys.filter(x=>typeof x==='string'&&x):[];observe();bindStorage();return setLanguage(readLanguage(storageKey,legacyStorageKeys),{storageKey})}
+/* Language packages are optional downloads: English is built in and only one package stays on the device
+   (the service worker caches a package when it is first used and removes the previous one). Before switching,
+   chooseLanguage() shows the same notice everywhere: what is translated, what stays in English and the space used. */
+const PACKAGE_BYTES=Object.freeze({"pt-BR":34445,"es":34514,"de":34869,"fr":35992,"zh-CN":30763,"ja":38152,"ru":46936});
+function dropCachedPackages(){try{root.navigator?.serviceWorker?.controller?.postMessage('inkdos:drop-locales')}catch(_){}}
+function sizeLabel(bytes){const kb=Math.max(1,Math.round(bytes/1024));return kb.toLocaleString(language)+' KB'}
+const NOTICE_CSS='.inkdos-language-notice{position:fixed;inset:0;z-index:10100;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,14,20,.45);font:14px/1.4 system-ui,-apple-system,sans-serif}'+
+ '.inkdos-language-notice[hidden]{display:none!important}'+
+ '.inkdos-language-notice-box{width:min(420px,100%);max-height:calc(100vh - 32px);overflow:auto;box-sizing:border-box;padding:16px;border:1px solid var(--line,var(--frame-line,#d7dce2));border-radius:14px;background:var(--chrome,var(--frame-chrome,#fff));color:var(--text,var(--frame-text,#202124));overflow-wrap:anywhere}'+
+ '.inkdos-language-notice h2{margin:0 0 8px;font-size:17px}.inkdos-language-notice h3{margin:12px 0 4px;font-size:14px}.inkdos-language-notice ul{margin:0;padding:0 0 0 18px}.inkdos-language-notice p{margin:8px 0}'+
+ '.inkdos-language-notice-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}'+
+ '.inkdos-language-notice button{font:inherit;padding:8px 12px;border-radius:9px;border:1px solid var(--line,var(--frame-line,#d7dce2));background:transparent;color:inherit;cursor:pointer}'+
+ '.inkdos-language-notice button[data-language-confirm]{background:#1a73e8;border-color:#1a73e8;color:#fff;font-weight:600}';
+function noticeElement(tag,text){const el=doc.createElement(tag);if(text!=null)el.textContent=text;return el}
+function noticeList(items){const list=doc.createElement('ul');for(const item of items)list.appendChild(noticeElement('li',item));return list}
+function showNotice(code){
+ return new Promise(resolve=>{
+  if(!doc?.body){resolve(true);return}
+  if(!doc.querySelector('style[data-inkdos-language-notice]')){const style=doc.createElement('style');style.dataset.inkdosLanguageNotice='';style.textContent=NOTICE_CSS;(doc.head||doc.documentElement).appendChild(style)}
+  const label=LANGUAGES.find(item=>item.code===code)?.label||code,currentLabel=LANGUAGES.find(item=>item.code===language)?.label||language;
+  const layer=noticeElement('div'),box=noticeElement('div');layer.className='inkdos-language-notice';box.className='inkdos-language-notice-box';
+  box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',label);box.lang=code;layer.appendChild(box);
+  box.appendChild(noticeElement('h2',label));
+  const current=PACKAGE_BYTES[language]||0;
+  if(code===DEFAULT_LANGUAGE){
+   box.appendChild(noticeElement('p',t('English is built in, so nothing is downloaded.')));
+   box.appendChild(noticeElement('p',t('The {name} package will be removed from this device, freeing {size}.',{name:currentLabel,size:sizeLabel(current)})));
+  }else{
+   box.appendChild(noticeElement('h3',t('Translated')));
+   box.appendChild(noticeList([t('The InkDOS home screen'),t('Menus, buttons and messages of Documents, Spreadsheets, Presentations, PDF, Plain text and EPUB reader')]));
+   box.appendChild(noticeElement('h3',t('Stays in English')));
+   box.appendChild(noticeList([t('Style and font names, and some less common messages'),t('The content of your files (it is never translated)')]));
+   box.appendChild(noticeElement('h3',t('Space')));
+   const size=PACKAGE_BYTES[code]||0,diff=size-current;
+   box.appendChild(noticeElement('p',t('Download: {size}.',{size:sizeLabel(size)})));
+   box.appendChild(noticeElement('p',diff>=0?t('This device will use {size} more than now.',{size:sizeLabel(diff)}):t('This device will use {size} less than now.',{size:sizeLabel(-diff)})));
+   if(language!==DEFAULT_LANGUAGE)box.appendChild(noticeElement('p',t('The {name} package will be removed. Only one language package is kept at a time.',{name:currentLabel})));
+  }
+  const actions=noticeElement('div'),cancel=noticeElement('button',t('Cancel')),confirm=noticeElement('button',code===DEFAULT_LANGUAGE?t('Switch to English'):t('Download and switch'));
+  actions.className='inkdos-language-notice-actions';cancel.type=confirm.type='button';confirm.dataset.languageConfirm='';actions.append(cancel,confirm);box.appendChild(actions);
+  const finish=answer=>{layer.remove();doc.removeEventListener('keydown',onKey,true);resolve(answer)};
+  const onKey=event=>{if(event.key==='Escape'){event.preventDefault();finish(false)}};
+  cancel.addEventListener('click',()=>finish(false));confirm.addEventListener('click',()=>finish(true));
+  layer.addEventListener('click',event=>{if(event.target===layer)finish(false)});doc.addEventListener('keydown',onKey,true);
+  doc.body.appendChild(layer);confirm.focus?.();
+ });
+}
+async function chooseLanguage(value,options){
+ const code=normalizeLanguage(value);
+ if(code===language)return language;
+ if(!await showNotice(code))return language;
+ const result=await setLanguage(code,options);
+ if(result!==code&&doc?.defaultView?.alert){try{doc.defaultView.alert(t('The language package could not be downloaded. Check the internet connection and try again.'))}catch(_){}}
+ return result;
+}
 observe();
-root.InkDOSLocalization=Object.freeze({DEFAULT_LANGUAGE,ALLOWED_ATTRIBUTES,EXPLICIT_ROOT_SELECTOR,languages:LANGUAGES,normalizeLanguage,packagePath,translateValue,interpolate,t,loadPackage,setLanguage,readLanguage,install,apply,get currentLanguage(){return language},get storageKey(){return storageKey}});
+root.InkDOSLocalization=Object.freeze({DEFAULT_LANGUAGE,ALLOWED_ATTRIBUTES,EXPLICIT_ROOT_SELECTOR,languages:LANGUAGES,packageBytes:PACKAGE_BYTES,normalizeLanguage,packagePath,translateValue,interpolate,t,loadPackage,setLanguage,chooseLanguage,readLanguage,install,apply,get currentLanguage(){return language},get storageKey(){return storageKey}});
 })(globalThis);

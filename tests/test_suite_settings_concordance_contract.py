@@ -25,8 +25,8 @@ def main() -> None:
     require(density, "SUITE_STORAGE_KEY='inkdos2:ui-density'", "Legacy suite display preference")
     require(density, "STORAGE_KEY=WORKSPACE?'inkdos2:'+WORKSPACE+':ui-density':SUITE_STORAGE_KEY", "Workspace display preference")
     require(settings, "SUITE_LANGUAGE_KEY='inkdos2:language'", "Legacy suite language preference")
-    require(settings, "return app?'inkdos2:'+app+':language':SUITE_LANGUAGE_KEY", "Workspace language preference")
-    require(settings, "legacyLanguageKey", "Language migration")
+    # Owner decision (2026-10-19): one downloadable language package for the whole suite, so one language key.
+    require(settings, "function languageKey(){return SUITE_LANGUAGE_KEY}", "Suite-wide language preference")
     require(settings, "[data-appearance-mode=\"'+mode+'\"]", "EPUB/TXT appearance selector parity")
     # Owner decision (2026-10-10): always the desktop density; the sun offers no Interface choice
     require(density, "function resolve(){return DENSITY}", "Desktop density only")
