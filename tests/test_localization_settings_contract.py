@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -121,8 +122,13 @@ process.stdout.write(JSON.stringify(out));
     if any(pos < 0 for pos in positions) or positions != sorted(positions):
         raise AssertionError(f"Settings order mismatch: {positions}")
     require(settings, "SUITE_LANGUAGE_KEY='inkdos2:language'", "Legacy suite language migration source")
-    require(settings, "return app?'inkdos2:'+app+':language':SUITE_LANGUAGE_KEY", "Workspace-local language persistence")
-    require(settings, "return appContext()?SUITE_LANGUAGE_KEY:null", "Suite-to-workspace language migration")
+    # Owner decision (2026-10-19): English is built in and one downloaded language package serves the whole suite,
+    # so every workspace shares the suite language key and every choice goes through the package notice.
+    require(settings, "function languageKey(){return SUITE_LANGUAGE_KEY}", "Suite-wide language persistence")
+    require(settings, "api.chooseLanguage(language.code", "Language package notice in workspaces")
+    if "api.setLanguage(" in settings:
+        raise AssertionError("Workspaces must switch language through chooseLanguage (the package notice)")
+    require((ROOT / "shared/localization/home-settings.js").read_text(encoding="utf-8"), "api.chooseLanguage(language.code", "Language package notice on Home")
     for marker in ("Getting started", "Keyboard shortcuts", "File compatibility", "Check for updates", "About InkDOS"):
         require(settings, marker, "Compact Help menu")
 
@@ -152,16 +158,31 @@ process.stdout.write(JSON.stringify(out));
     for needle in ("overflow-wrap", "max-inline-size", "text-overflow", "[data-settings-item]"):
         require(css, needle, "Long-label overflow guard")
 
-    # PWA install shell contains the separated layer and all optional locale packages.
+    # PWA install shell contains the separated layer; locale packages are downloaded on demand, one at a time.
     sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
     for asset in [
         '"./shared/localization/ui-localization.js"',
         '"./shared/localization/settings-strip.js"',
         '"./shared/localization/home-settings.js"',
         '"./shared/localization/localization.css"',
-        *[f'"./shared/localization/locales/{code}.js"' for code in LOCALES],
     ]:
         require(sw, asset, "Offline localization shell")
+    shell = re.search(r"const APP_SHELL=(\[.*?\]);", sw, re.S).group(1)
+    on_demand = re.search(r"const ON_DEMAND=(\[.*?\]);", sw, re.S).group(1)
+    for code in LOCALES:
+        asset = f'"./shared/localization/locales/{code}.js"'
+        if asset in shell:
+            raise AssertionError(f"Locale package {code} must not be precached")
+        require(on_demand, asset, "Downloadable locale package")
+    require(sw, "inkdos:drop-locales", "Switching to English removes the language package")
+    require(sw, "dropLocales(cache,normalized.url)", "Only one language package on the device")
+
+    # The notice shows each package's real size.
+    sizes = json.loads(re.search(r"const PACKAGE_BYTES=Object.freeze\((\{.*?\})\);", runtime).group(1))
+    for code in LOCALES:
+        actual = (ROOT / f"shared/localization/locales/{code}.js").stat().st_size
+        if sizes.get(code) != actual:
+            raise AssertionError(f"PACKAGE_BYTES[{code}]={sizes.get(code)} but the file has {actual} bytes")
 
     print("InkDOS 2.4 localization/settings contract: OK")
 

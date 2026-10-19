@@ -77,6 +77,10 @@ def choose_language(page, label: str, code: str) -> None:
     sun.click()
     popover = page.locator(".inkdos-settings-popover")
     popover.locator("button.inkdos-settings-option", has_text=label).first.click()
+    # every language choice first shows the package notice (what is translated and the download size)
+    notice = page.locator(".inkdos-language-notice [data-language-confirm]")
+    notice.wait_for(state="visible")
+    notice.click()
     page.wait_for_function(f"() => globalThis.InkDOSLocalization?.currentLanguage === {code!r}")
     # the option closes the popover only after the language switch resolves; wait for it, or the next
     # sun click lands while it is still open and toggles it shut instead of opening it
@@ -120,7 +124,7 @@ def main() -> None:
                   count:document.querySelectorAll('.inkdos-settings-strip').length
                 })""")
                 assert state["items"] == ["appearance", "language", "help"], (app, state)  # no Interface choice (2026-10-10)
-                assert state["languageKey"] == f"inkdos2:{app}:language", (app, state)
+                assert state["languageKey"] == "inkdos2:language", (app, state)  # one suite language (2026-10-19)
                 assert state["densityKey"] == f"inkdos2:{app}:ui-density", (app, state)
                 assert state["count"] == 1, (app, state)
 
@@ -149,50 +153,40 @@ def main() -> None:
             assert page.evaluate("() => document.querySelectorAll('script[data-inkdos-locale-package]').length") == 0
             assert snapshot_functional_attributes(page) == before
 
-            # Language preferences are independent between workspaces; the interface is always the desktop density.
+            # One language for the whole suite (owner decision 2026-10-19): the downloaded package is shared, so a
+            # choice made in one workspace is the language of every workspace; the interface is always desktop density.
             choose_language(page, "Português", "pt-BR")
             page.evaluate("() => globalThis.InkDOSUiDensity.set('mobile')")
-            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:language')") == "pt-BR"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:language')") == "pt-BR"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:documents:language')") is None
             # no density preference is stored any more: there is nothing to choose
             assert page.evaluate("() => localStorage.getItem('inkdos2:documents:ui-density')") is None
             assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:language')") is None
             assert page.evaluate("() => localStorage.getItem('inkdos2:ui-density')") is None
 
             page.goto(BASE + "/apps/spreadsheets/index.html?suite=1", wait_until="load")
-            page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && !!globalThis.InkDOSLocalization")
-            assert page.evaluate("() => globalThis.InkDOSLocalization.currentLanguage") == "en"
-            assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:language')") == "en"
-            assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:ui-density')") is None
-
-            page.goto(BASE + "/apps/documents/index.html?suite=1", wait_until="load")
             page.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
             assert page.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
+            assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:language')") is None
+            assert page.evaluate("() => localStorage.getItem('inkdos2:spreadsheets:ui-density')") is None
+            open_menu(page)
+            choose_language(page, "English", "en")
+            assert page.evaluate("() => localStorage.getItem('inkdos2:language')") == "en"
 
-            # A 2.5.2 suite-level preference no longer matters: the language is migrated once into a workspace key,
-            # a stored density is ignored and left as it was.
-            migration = browser.new_context(viewport={"width": 1280, "height": 820})
-            migration.add_init_script("""(() => {
-              localStorage.setItem('inkdos2:language','pt-BR');
-              localStorage.setItem('inkdos2:ui-density','mobile');
-            })();""")
-            migrated = migration.new_page()
-            migrated.goto(BASE + "/apps/presentations/index.html?suite=1", wait_until="load")
-            migrated.wait_for_function("() => !!globalThis.InkDOSSettingsStrip && globalThis.InkDOSLocalization?.currentLanguage === 'pt-BR'")
-            assert migrated.evaluate("() => globalThis.InkDOSUiDensity.preference") == "desktop"
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:language')") == "pt-BR"
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:presentations:ui-density')") is None
-            open_menu(migrated)
-            choose_language(migrated, "English", "en")
-            migrated.evaluate("() => globalThis.InkDOSUiDensity.set('desktop')")
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:language')") == "pt-BR"
-            assert migrated.evaluate("() => localStorage.getItem('inkdos2:ui-density')") == "mobile"
-            migration.close()
+            # Cancelling the notice keeps the current language and downloads nothing.
+            page.locator("[data-frame-action='sun']").click()
+            page.locator(".inkdos-settings-popover button.inkdos-settings-option", has_text="Deutsch").first.click()
+            page.locator(".inkdos-language-notice").wait_for(state="visible")
+            notice_text = page.locator(".inkdos-language-notice").inner_text()
+            assert "KB" in notice_text, notice_text
+            page.locator(".inkdos-language-notice button:not([data-language-confirm])").first.click()
+            page.locator(".inkdos-language-notice").wait_for(state="detached")
+            assert page.evaluate("() => globalThis.InkDOSLocalization.currentLanguage") == "en"
+            assert page.evaluate("() => document.querySelectorAll('script[data-inkdos-locale-package]').length") == 0
 
             context.close()
             browser.close()
-        print(f"InkDOS 2.6 workspace-local localization/settings browser ({browser_name}): OK")
+        print(f"InkDOS suite-wide localization/settings browser ({browser_name}): OK")
     finally:
         server.terminate()
         try:
