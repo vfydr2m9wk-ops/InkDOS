@@ -34,7 +34,7 @@ const TOOLS=Object.freeze([
   {id:'python',group:'Data analysis',title:'Python terminal',description:'Python 3 with numpy, pandas, matplotlib, scipy, openpyxl and more; open and save files (Pyodide).',href:'https://inkdos-tools.github.io/InkDOS-tools/python/',icon:'code'},
   // InkDOS Hub (https://github.com/vfydr2m9wk-ops/inkdoshub) has internet access, which the tools origin forbids, so it
   // is served by its own origin and is never framed: external:true opens it only in its own tab (SECURITY.md, "Origin isolation")
-  {id:'linux-terminal',group:'Linux',title:'Linux terminal',description:'A real Linux (Alpine) in this browser: shell, packages, internet and file exchange (InkDOS Hub). Opens in its own tab.',href:'https://inkterminal.github.io/terminal/',icon:'code',window:true,external:true}
+  {id:'linux-terminal',group:'Linux',title:'Linux terminal',description:'A real Linux (Alpine) in this browser: shell, packages, internet and file exchange (InkDOS Hub). Opens in its own tab.',href:'https://inkdoshub.github.io/terminal/',icon:'code',window:true,external:true}
 ]);
 const ICONS={
   pdf:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16.5h5"/>',
