@@ -2,6 +2,8 @@
 
 **Use it:** https://vfydr2m9wk-ops.github.io/InkDOS/ · **Past versions:** [legacy branch](https://github.com/vfydr2m9wk-ops/InkDOS/tree/legacy/releases) (no downloads are published for now)
 
+**InkDOS Hub (formerly InkTerminal):** https://inkdoshub.github.io/
+
 InkDOS is a personal, local-first office hub: one Home that opens documents, spreadsheets, presentations, PDFs, e-books and plain text, entirely in the browser. There is no account, no server and no telemetry. Files are opened from the device and saved back to it.
 
 ## Why it exists
