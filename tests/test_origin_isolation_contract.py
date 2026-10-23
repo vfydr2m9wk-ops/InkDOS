@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INKDOS_HOST = 'vfydr2m9wk-ops.github.io'
 TOOLS_ORIGIN = 'https://inkdos-tools.github.io'
-# InkTerminal needs internet, which the tools origin forbids: its own origin, only ever opened in its own tab
+# InkDOS Hub needs internet, which the tools origin forbids: its own origin, only ever opened in its own tab
 TERMINAL_ORIGIN = 'https://inkterminal.github.io'
 SHIPPED = ('index.html', 'service-worker.js', 'manifest.webmanifest', 'assets', 'apps', 'shared', 'desktop')
 SKIP_PARTS = {'vendor', 'node_modules', 'target', 'gen', 'icons'}

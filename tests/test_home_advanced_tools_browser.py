@@ -21,7 +21,7 @@ BASE = f'http://127.0.0.1:{PORT}'
 # tool folders published by https://github.com/vfydr2m9wk-ops/InkDOS-tools (its tools.json)
 TOOL_FOLDERS = {'bentopdf', 'python'}
 TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
-# InkTerminal has its own origin (it needs internet) and is never framed
+# InkDOS Hub has its own origin (it needs internet) and is never framed
 TERMINAL_SITE = 'https://inkterminal.github.io/'
 
 
