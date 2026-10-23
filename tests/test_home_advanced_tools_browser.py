@@ -22,7 +22,7 @@ BASE = f'http://127.0.0.1:{PORT}'
 TOOL_FOLDERS = {'bentopdf', 'python'}
 TOOLS_SITE = 'https://inkdos-tools.github.io/InkDOS-tools/'
 # InkDOS Hub has its own origin (it needs internet) and is never framed
-TERMINAL_SITE = 'https://inkterminal.github.io/'
+TERMINAL_SITE = 'https://inkdoshub.github.io/'
 
 
 def wait_port(timeout: float = 10.0) -> None:

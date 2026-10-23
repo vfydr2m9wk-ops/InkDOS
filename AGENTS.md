@@ -45,7 +45,7 @@ InkDOS is published at `https://vfydr2m9wk-ops.github.io/InkDOS/`. Every GitHub 
 
 - Never publish another site, tool, demo or test page with GitHub Pages under the `vfydr2m9wk-ops` account, and never make InkDOS load or frame a page of that origin outside `/InkDOS/`.
 - Third-party or experimental web code belongs on a separate origin: the advanced tools and viewers live in the `inkdos-tools` organization (`https://inkdos-tools.github.io/InkDOS-tools/`).
-- The only other origin InkDOS points to is InkDOS Hub (`https://inkterminal.github.io/`, the advanced tools home, a separate organization because it needs internet): a link opened in its own tab, never framed and never messaged.
+- The only other origin InkDOS points to is InkDOS Hub (`https://inkdoshub.github.io/`, the advanced tools home, a separate organization because it needs internet): a link opened in its own tab, never framed and never messaged.
 - Cross-origin messages always name the expected origin and check `event.origin` and `event.source`; never use `'*'`.
 - Do not widen the CSP (`frame-src`, `connect-src`, `script-src`) beyond `'self'` and that tools origin without the maintainer's explicit approval.
 
